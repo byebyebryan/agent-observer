@@ -1,0 +1,667 @@
+{
+  "evidence_format_version": 1,
+  "scope": "P1 current-host read-only preflight; study evidence, not the public observation contract",
+  "host": "starship",
+  "uid": 1000,
+  "capture_window": {
+    "first_census_at": "2026-10-02T22:22:21Z",
+    "baseline_at": "2026-10-02T22:26:06Z",
+    "preservation_check_at": "2026-10-02T22:38:09Z",
+    "last_metadata_at": "2026-10-02T22:39:06Z"
+  },
+  "checkpoint": {
+    "read_only_host_report": "complete",
+    "P1": "pending_native_passivity_and_isolation_proof",
+    "P2_through_P5": "not_run"
+  },
+  "providers": {
+    "codex": {
+      "executable": "/usr/bin/codex",
+      "resolved_executable": "/opt/openai-codex/bin/codex",
+      "cli_version": "codex-cli 0.160.0",
+      "server_version": null,
+      "server_version_status": "unavailable",
+      "running_and_installed_binary_sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+      "current_profile_free_features": {
+        "hooks": {
+          "stage": "stable",
+          "value": true
+        },
+        "daemon_auto_start": {
+          "stage": "stable",
+          "value": false
+        }
+      },
+      "configuration": {
+        "user_config": "/home/bryan/.codex/config.toml",
+        "CODEX_HOME_override": null,
+        "additional_system_or_project_layer_found": false,
+        "template_provenance": {
+          "canonical_template": "/home/bryan/.local/share/chezmoi/.chezmoitemplates/codex-portable-config.toml.tmpl",
+          "exists": true,
+          "sha256": "9be46647966ccd6665b4c41ba874c116bc954fe62a51cb30442f78d43e0aa64f",
+          "selected_literal_feature_values": {
+            "hooks": [
+              true
+            ],
+            "daemon_auto_start": [
+              false
+            ]
+          }
+        },
+        "ordinary_hooks_json_event_entry_counts": {
+          "Stop": 1
+        },
+        "ordinary_hook_delivery": "not_run",
+        "observed_launch_profile_selections": [],
+        "observed_process_CODEX_HOME_overrides": [],
+        "launch_time_effective_settings": "unknown",
+        "reference_profile_not_explicitly_selected": {
+          "path": "/home/bryan/.codex/wsnav-observer.config.toml",
+          "sha256": "26b4f6edbb9a54bb92add9a369f161a275af966bb8520b375ae5cbedfd3aec60",
+          "event_entry_counts": {
+            "SessionStart": 1,
+            "UserPromptSubmit": 1,
+            "Stop": 1,
+            "SessionEnd": 1
+          },
+          "explicitly_selected_by_observed_processes": false
+        }
+      },
+      "auth_availability": {
+        "file_credentials_present": true,
+        "inherited_openai_api_key_present": false,
+        "validation": "not_run",
+        "credential_store_setting": "not_explicitly_set"
+      },
+      "installed_help": {
+        "no_daemon_flag": "Runs without the shared background server even if already running",
+        "remote_endpoint_forms": [
+          "ws://host:port",
+          "wss://host:port",
+          "unix://",
+          "unix://PATH"
+        ],
+        "app_server_listen_forms": [
+          "stdio://",
+          "unix://",
+          "unix://PATH",
+          "ws://IP:PORT",
+          "off"
+        ],
+        "agents": "Interactive shared-daemon browser; no machine-readable roster option established"
+      },
+      "isolated_features_probe": {
+        "evidence_type": "static_config_probe",
+        "outcome": "passed",
+        "command": "CODEX_HOME=TEMP_DIR/codex-home /usr/bin/codex features list (disposable cwd)",
+        "config_feature_values": {
+          "hooks": false,
+          "daemon_auto_start": false
+        },
+        "observed_feature_values": {
+          "hooks": false,
+          "daemon_auto_start": false
+        },
+        "exit_code": 0,
+        "stderr_present": true,
+        "stderr_retained": false,
+        "temporary_directory_removed": true,
+        "daemon_endpoint_isolation_proven": false
+      },
+      "installed_schema": {
+        "captured_at": "2026-10-02T22:37:01Z",
+        "evidence_type": "static_schema",
+        "command": "/usr/bin/codex app-server generate-json-schema --out TEMP_DIR/schema",
+        "experimental_fields": false,
+        "exit_code": 0,
+        "stderr_present": true,
+        "schema_summaries": [
+          {
+            "file": "v2/ThreadReadParams.json",
+            "top_level_properties": [
+              "includeTurns",
+              "threadId"
+            ],
+            "required": [
+              "threadId"
+            ]
+          },
+          {
+            "file": "v2/ThreadListParams.json",
+            "top_level_properties": [
+              "archived",
+              "cursor",
+              "cwd",
+              "limit",
+              "modelProviders",
+              "originators",
+              "searchTerm",
+              "sectionId",
+              "sortDirection",
+              "sortKey",
+              "sourceKinds",
+              "useStateDbOnly"
+            ],
+            "required": [],
+            "source_kinds_property_present": true
+          },
+          {
+            "file": "v2/ThreadLoadedListParams.json",
+            "top_level_properties": [
+              "cursor",
+              "limit"
+            ],
+            "required": []
+          },
+          {
+            "file": "v2/ThreadLoadedListResponse.json",
+            "top_level_properties": [
+              "data",
+              "nextCursor"
+            ],
+            "required": [
+              "data"
+            ]
+          },
+          {
+            "file": "v2/ThreadStatusChangedNotification.json",
+            "top_level_properties": [
+              "status",
+              "threadId"
+            ],
+            "required": [
+              "status",
+              "threadId"
+            ]
+          }
+        ],
+        "selected_definitions": {
+          "ThreadSourceKind": {
+            "found_in": "v2/ThreadListParams.json",
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "cli",
+              "vscode",
+              "exec",
+              "appServer",
+              "subAgent",
+              "subAgentReview",
+              "subAgentCompact",
+              "subAgentThreadSpawn",
+              "subAgentOther",
+              "unknown"
+            ]
+          },
+          "Thread": {
+            "found_in": "v2/ThreadReadResponse.json",
+            "properties": [
+              "agentNickname",
+              "agentRole",
+              "cliVersion",
+              "createdAt",
+              "cwd",
+              "ephemeral",
+              "forkedFromId",
+              "gitInfo",
+              "historyMode",
+              "id",
+              "model",
+              "modelProvider",
+              "name",
+              "originator",
+              "parentThreadId",
+              "path",
+              "preview",
+              "projectId",
+              "reasoningEffort",
+              "recencyAt",
+              "section",
+              "sectionEnteredAt",
+              "sessionId",
+              "source",
+              "status",
+              "threadSource",
+              "turns",
+              "updatedAt"
+            ],
+            "required": [
+              "cliVersion",
+              "createdAt",
+              "cwd",
+              "ephemeral",
+              "id",
+              "modelProvider",
+              "preview",
+              "projectId",
+              "sessionId",
+              "source",
+              "status",
+              "turns",
+              "updatedAt"
+            ]
+          },
+          "ThreadActiveFlag": {
+            "found_in": "v2/ThreadReadResponse.json",
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "waitingOnApproval",
+              "waitingOnUserInput"
+            ]
+          },
+          "ThreadStatus": {
+            "found_in": "v2/ThreadReadResponse.json",
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "notLoaded",
+              "idle",
+              "systemError",
+              "active"
+            ]
+          }
+        },
+        "extraction_passes": 2
+      },
+      "identity_gaps": [
+        "Relationship between schema Thread.id and Thread.sessionId is not established live",
+        "Fork/resume/source inclusion and worker/client lifetime are not established",
+        "No native logical sessions were bound from PID/cwd/title/history"
+      ]
+    },
+    "claude": {
+      "executable": null,
+      "cli_version": null,
+      "server_version": null,
+      "search": {
+        "path_result": null,
+        "selected_paths": [
+          {
+            "path": "/home/bryan/.local/bin/claude",
+            "exists": false
+          },
+          {
+            "path": "/usr/bin/claude",
+            "exists": false
+          },
+          {
+            "path": "/usr/local/bin/claude",
+            "exists": false
+          },
+          {
+            "path": "/home/bryan/.claude/local/claude",
+            "exists": false
+          },
+          {
+            "path": "/home/bryan/.local/share/claude/versions",
+            "exists": false
+          }
+        ]
+      },
+      "configuration": {
+        "user_settings": "/home/bryan/.claude/settings.json",
+        "disableAgentView_key_present": false,
+        "user_hook_event_entry_counts": {},
+        "CLAUDE_CONFIG_DIR_override": null,
+        "CLAUDE_CODE_DISABLE_AGENT_VIEW_present": false,
+        "managed_or_workspace_settings_found": false,
+        "effective_runtime_settings": "unavailable"
+      },
+      "reason": "executable_not_found_in_bounded_search",
+      "native_commands_executed": [],
+      "credential_and_account_availability": "not_run"
+    }
+  },
+  "topology": {
+    "evidence_type": "host_process_socket_metadata",
+    "boot_id": "d211a380-0e46-4552-838e-ad29c7b90120",
+    "observed_provider_processes": [
+      {
+        "provider": "codex",
+        "pid": 7657,
+        "ppid": 7656,
+        "start_ticks": 39833,
+        "exe": "/opt/openai-codex/bin/codex",
+        "tty_nr": 34817,
+        "standard_fds": {
+          "0": "/dev/pts/1",
+          "1": "/dev/pts/1",
+          "2": "/dev/pts/1"
+        },
+        "no_daemon_flag": false,
+        "managed_daemon_flag": false,
+        "app_server_marker": false
+      },
+      {
+        "provider": "codex",
+        "pid": 8274,
+        "ppid": 7656,
+        "start_ticks": 40300,
+        "exe": "/opt/openai-codex/bin/codex",
+        "tty_nr": 34819,
+        "standard_fds": {
+          "0": "/dev/pts/3",
+          "1": "/dev/pts/3",
+          "2": "/dev/pts/3"
+        },
+        "no_daemon_flag": false,
+        "managed_daemon_flag": false,
+        "app_server_marker": false
+      },
+      {
+        "provider": "codex",
+        "pid": 32149,
+        "ppid": 31386,
+        "start_ticks": 154168,
+        "exe": "/opt/openai-codex/bin/codex",
+        "tty_nr": 34826,
+        "standard_fds": {
+          "0": "/dev/pts/10",
+          "1": "/dev/pts/10",
+          "2": "/dev/pts/10"
+        },
+        "no_daemon_flag": false,
+        "managed_daemon_flag": false,
+        "app_server_marker": false
+      },
+      {
+        "provider": "codex",
+        "pid": 258308,
+        "ppid": 257991,
+        "start_ticks": 1263066,
+        "exe": "/opt/openai-codex/bin/codex",
+        "tty_nr": 34830,
+        "standard_fds": {
+          "0": "/dev/pts/14",
+          "1": "/dev/pts/14",
+          "2": "/dev/pts/14"
+        },
+        "no_daemon_flag": false,
+        "managed_daemon_flag": false,
+        "app_server_marker": false
+      },
+      {
+        "provider": "codex",
+        "pid": 432506,
+        "ppid": 432191,
+        "start_ticks": 1934794,
+        "exe": "/opt/openai-codex/bin/codex",
+        "tty_nr": 34832,
+        "standard_fds": {
+          "0": "/dev/pts/16",
+          "1": "/dev/pts/16",
+          "2": "/dev/pts/16"
+        },
+        "no_daemon_flag": false,
+        "managed_daemon_flag": false,
+        "app_server_marker": false
+      }
+    ],
+    "native_logical_session_count": null,
+    "work_state": "unknown",
+    "interpretation": "Five terminal-attached Codex processes; no owning app-server/managed-daemon detected by inspected signatures. Terminal attachment is not native session identity or work-state proof.",
+    "same_uid_visibility": {
+      "captured_at": "2026-10-02T22:27:21Z",
+      "uid": 1000,
+      "same_uid_process_dirs": 170,
+      "same_uid_executable_readable": 168,
+      "same_uid_executable_unreadable": [
+        {
+          "pid": 965,
+          "status_name": "systemd"
+        },
+        {
+          "pid": 974,
+          "status_name": "(sd-pam)"
+        }
+      ],
+      "other_uid_process_dirs": 476,
+      "disappeared_or_stat_unavailable": 0
+    },
+    "kernel_daemon_sockets_before": [],
+    "kernel_daemon_sockets_after": [],
+    "stale_pid_records": [
+      {
+        "file": "/home/bryan/.codex/app-server-daemon/daemon.pid",
+        "recorded_pid": 635317,
+        "pid_exists": false
+      },
+      {
+        "file": "/home/bryan/.codex/app-server-daemon/daemon-updater.pid",
+        "recorded_pid": 81201,
+        "pid_exists": false
+      }
+    ],
+    "filesystem_updater_socket_exists": true,
+    "updater_socket_in_kernel_table": false,
+    "named_user_unit_file_scan": {
+      "directories": [
+        "/home/bryan/.config/systemd/user",
+        "/etc/systemd/user",
+        "/usr/lib/systemd/user"
+      ],
+      "matched_files": [],
+      "service_manager_queried": false
+    }
+  },
+  "coverage": [
+    {
+      "provider": "codex",
+      "topology": "foreground",
+      "version": "0.160.0",
+      "installed_capabilities": "passed",
+      "host_topology_evidence": "passed",
+      "native_observation": "not_run",
+      "reason_codes": [
+        "no_native_hook_or_state_capture",
+        "identity_unbound"
+      ],
+      "procedure": "REPORT.md#codex-foreground"
+    },
+    {
+      "provider": "codex",
+      "topology": "daemon-backed",
+      "version": "0.160.0",
+      "installed_capabilities": "passed",
+      "host_topology_evidence": "unavailable",
+      "native_observation": "not_run",
+      "reason_codes": [
+        "no_owning_daemon_detected",
+        "managed_daemon_isolation_not_proven"
+      ],
+      "procedure": "REPORT.md#codex-managed-daemon"
+    },
+    {
+      "provider": "claude",
+      "topology": "foreground",
+      "version": null,
+      "installed_capabilities": "unavailable",
+      "host_topology_evidence": "unavailable",
+      "native_observation": "not_run",
+      "reason_codes": [
+        "executable_not_found_in_bounded_search",
+        "target_runtime_not_identified"
+      ],
+      "procedure": "REPORT.md#claude"
+    },
+    {
+      "provider": "claude",
+      "topology": "supervised",
+      "version": null,
+      "installed_capabilities": "unavailable",
+      "host_topology_evidence": "unavailable",
+      "native_observation": "not_run",
+      "reason_codes": [
+        "executable_not_found_in_bounded_search",
+        "supervisor_isolation_not_proven"
+      ],
+      "procedure": "REPORT.md#claude"
+    }
+  ],
+  "native_transition_and_recovery_cases": {
+    "start_completion": "not_run",
+    "approve_long_tool": "not_run",
+    "deny_tool": "not_run",
+    "blocking_user_input": "not_run",
+    "cancellation": "not_run",
+    "foreground_exit": "not_run",
+    "observation_failure": "not_run",
+    "concurrent_same_directory": "not_run",
+    "native_clear_new_resume_fork": "not_run",
+    "collector_restart": "not_run",
+    "client_detach_reattach": "not_run",
+    "multiple_clients": "not_run",
+    "worker_restart": "not_run",
+    "old_saved_session_live": "not_run",
+    "late_conflicting_evidence": "not_run"
+  },
+  "preservation": {
+    "before_at": "2026-10-02T22:26:06Z",
+    "after_at": "2026-10-02T22:38:09Z",
+    "selected_config_hashes_unchanged": true,
+    "ordinary_process_identities_unchanged": true,
+    "no_kernel_daemon_sockets_before_or_after": true,
+    "boot_id_unchanged": true,
+    "monitored_config_hashes": [
+      {
+        "path": "/home/bryan/.codex/config.toml",
+        "exists": true,
+        "sha256": "f1c6b2d7f775d1ddabf16da77bbea352f827359704c2d118c35c48384797a556"
+      },
+      {
+        "path": "/home/bryan/.codex/hooks.json",
+        "exists": true,
+        "sha256": "9ec0aa0c8fabc9f4873c823f33ba4be1465f27c83f9ad0873b5ff29f60f4e02d"
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon.pid",
+        "exists": true,
+        "sha256": "0839745805f359bd8832d47d67fe45af70356b8d90ab9550a7d99e865918da90"
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon-updater.pid",
+        "exists": true,
+        "sha256": "3d2999e752d22668fca7e32b4be5e926f7ea5798135c10ffa55b6b4c3b70b7ce"
+      },
+      {
+        "path": "/home/bryan/.claude/settings.json",
+        "exists": true,
+        "sha256": "0fe84d03b8ed583db473f6815d63b80fc7dba01fe4fb064344bb2b731d3dee62"
+      },
+      {
+        "path": "/home/bryan/.claude/settings.local.json",
+        "exists": false,
+        "sha256": null
+      }
+    ],
+    "binary_identity_verified_for_pids": [
+      7657,
+      8274,
+      32149,
+      258308,
+      432506
+    ],
+    "profile_and_template_hashes": "late_static_reads_only; not included in before/after comparison",
+    "provider_session_or_server_launches": 0,
+    "native_roster_or_runtime_reads": 0,
+    "ordinary_configuration_or_service_mutations": 0,
+    "raw_payload_or_content_artifacts": 0
+  },
+  "references": [
+    {
+      "url": "https://learn.chatgpt.com/docs/app-server",
+      "role": "current_documentation_reference_only",
+      "selected_facts": [
+        "thread/read does not load or subscribe",
+        "thread/loaded/list reports owning-server in-memory IDs",
+        "custom Unix WebSocket listener documented"
+      ]
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/config-file/config-advanced#config-and-state-locations",
+      "role": "current_documentation_reference_only",
+      "selected_facts": [
+        "CODEX_HOME selects config/state location"
+      ]
+    },
+    {
+      "url": "https://code.claude.com/docs/en/agent-view",
+      "role": "current_documentation_reference_only",
+      "selected_facts": [
+        "agents --json external roster candidate with conditional identifiers/status",
+        "opening agent view starts supervisor",
+        "CLAUDE_CONFIG_DIR documented as separate supervisor instance",
+        "disableAgentView and environment opt-out documented"
+      ]
+    },
+    {
+      "url": "https://github.com/openai/codex/blob/rust-v0.160.0/codex-rs/cli/src/main.rs#L1328",
+      "role": "matching_release_source_reference_not_binary_attestation",
+      "selected_facts": [
+        "JSON-schema subcommand routes to protocol generation rather than server launch"
+      ]
+    }
+  ],
+  "remaining_gates": [
+    "Native passive-read and hook behavior under installed version",
+    "Codex controlled-server isolation and native TUI comparison",
+    "Managed-daemon namespace/lifetime proof, separately from controlled server",
+    "Inspect Claude executable/version and effective opt-out on Snap; sole-host assignment is user-reported",
+    "Native identity mapping and source-kind inclusion policy",
+    "Transient authentication validity and account/feature availability"
+  ],
+  "commands_checked": [
+    {
+      "command": "/usr/bin/codex --version",
+      "evidence_type": "installed_cli",
+      "outcome": "passed"
+    },
+    {
+      "command": "/usr/bin/codex --help; agents/app-server/daemon subcommand help only",
+      "evidence_type": "installed_cli_help",
+      "outcome": "passed",
+      "runtime_operations_executed": false
+    },
+    {
+      "command": "/usr/bin/codex features list",
+      "evidence_type": "current_config",
+      "outcome": "passed",
+      "retained_output": "hooks and daemon_auto_start only"
+    },
+    {
+      "command": "/usr/bin/codex features list with disposable CODEX_HOME/cwd",
+      "evidence_type": "static_config_probe",
+      "outcome": "passed"
+    },
+    {
+      "command": "/usr/bin/codex app-server generate-json-schema --out TEMP_DIR/schema",
+      "evidence_type": "static_schema",
+      "outcome": "passed",
+      "experimental": false,
+      "passes": 2
+    },
+    {
+      "command": "allowlisted /proc identity, terminal-FD and Unix-socket inspection",
+      "evidence_type": "host_process_socket_metadata",
+      "outcome": "passed"
+    },
+    {
+      "command": "Claude version/help/roster/diagnostics",
+      "evidence_type": "native_provider",
+      "outcome": "not_run",
+      "reason": "executable_not_found_in_bounded_search"
+    }
+  ],
+  "follow_up_target_context": {
+    "source": "user_report",
+    "claude_available_only_on": "snap",
+    "snap_runtime_verification": "not_run",
+    "starship_snapshot_results_rewritten": false,
+    "continuation_host": "snap",
+    "scope": "Both-provider P1 and subsequent spike work moves to Snap by user decision; fresh runtime evidence required",
+    "checkout": "~/code/agent-observer",
+    "snap_checkout_connectivity_verified": true
+  }
+}

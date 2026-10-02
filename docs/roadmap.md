@@ -6,7 +6,7 @@ procedures and acceptance; this document records checkpoint status.
 | Checkpoint | Status | Exit |
 | --- | --- | --- |
 | B0: repository bootstrap | Complete | Separate repository, migrated study/plan, scope/ownership boundaries and documentation check |
-| P1: capability/topology preflight | Next; not run | Target runtime versions, effective opt-outs, actual topology, safe observation/isolation procedures and capability table |
+| P1: capability/topology preflight | Starship read-only report complete; native passivity/isolation and Claude preflight on Snap pending | Target runtime versions, effective opt-outs, actual topology, safe observation/isolation procedures and capability table |
 | P2: minimal source comparison | Planned | Study-only adapters and bounded JSON compared with observed native sessions |
 | P3: transition proof | Planned | Working/settled, approvals/denials, blocking input, cancellation and observation failure outcomes per topology |
 | P4: identity/recovery proof | Planned | Concurrent sessions, native switches, restart/gap recovery and applicable client/worker lifetime cases |
@@ -14,15 +14,24 @@ procedures and acceptance; this document records checkpoint status.
 
 ## Next task
 
-Begin P1 with fresh read-only inspection on the actual target host. Identify
-Claude's executable/version and effective agent-view opt-out, establish Codex's
-actual foreground/daemon topology, and check candidate interfaces against those
-versions. Determine observation side effects and isolation before invoking a
-command that may start a supervisor or launch a live experiment.
+Continue P1 on Snap for both Codex and Claude. The user chose Snap as the work
+host because Claude is available only there. Start with the
+[Snap handoff](handoff-snap.md) and fresh host inspection.
+
+Use the [Starship preflight report](evidence/2026-10-02-p1-starship/REPORT.md)
+and [capability evidence](evidence/2026-10-02-p1-starship/capabilities.json)
+as dated Starship evidence. Codex 0.160.0 installed capabilities and terminal
+process topology were inspected; native work state and managed-daemon behavior
+were not tested. The user identifies Snap as the sole Claude host; inspect its
+executable/version and effective agent-view opt-out there. Close native
+observation side-effect and isolation gates before invoking a command that may
+start a supervisor or launch an experiment. Reinspect Codex on Snap as well;
+Starship results do not establish its version, settings or topology there.
 
 Previous local/static observations are recorded in the
-[study](agent-session-study.md); they do not satisfy this checkpoint's live
-coverage or establish that the target environment has remained unchanged.
+[study](agent-session-study.md). Neither the study nor the new static/host
+report satisfies native live coverage or establishes unchanged state on a
+later run or another host.
 
 ## Later adoption
 

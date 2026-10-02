@@ -13,13 +13,20 @@ simplified.
 
 ## Status
 
-The repository bootstrap contains the source study, spike plan, architecture
-boundaries and a documentation check. Provider capability checks, adapters,
-live transition proof and consumer integration remain pending.
+The repository contains the source study, spike plan, architecture boundaries,
+a documentation check, and a
+[Starship read-only preflight report](docs/evidence/2026-10-02-p1-starship/REPORT.md).
+Installed Codex capabilities and bounded host topology have been inspected;
+native passivity/isolation proof, Claude preflight on Snap, adapters,
+live transitions and consumer integration remain pending.
 
-The active next checkpoint is **P1: capability and topology preflight**.
+The active checkpoint is **P1: capability and topology preflight**.
 See [the roadmap](docs/roadmap.md). Implementation language, the public schema,
 and any background collector will be chosen from the proof results.
+
+Continue execution on Snap at `~/code/agent-observer`, where the user reports
+Claude is available. Read the [Snap handoff](docs/handoff-snap.md) for retained
+context, evidence boundaries, open decisions and the first task there.
 
 ## Scope
 

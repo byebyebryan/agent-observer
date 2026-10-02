@@ -6,6 +6,9 @@
   and `docs/roadmap.md` before implementation.
 - The active checkpoint is capability/topology preflight. Source selection and
   the public observation contract are provisional until the spike proves them.
+- Continue preflight and spike work on Snap in `~/code/agent-observer`. Claude
+  is available only there according to the user. Reinspect both providers on
+  Snap; Starship evidence does not establish Snap versions or runtime behavior.
 - RLCD and Agent Plus drive the initial requirements. WSNav is historical
   evidence and a possible future consumer; its integration is not a gate.
 - Codex and Claude Code are the initial providers. Keep OpenCode deferred.
