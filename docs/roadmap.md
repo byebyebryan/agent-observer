@@ -29,6 +29,10 @@ closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
 against the frozen producer artifact. G3 networking remains deferred. Both
 candidates are installed unselected on Snap and Starship; see the [handoff](contract-clients-handoff.md)
 for exact versions/hashes, independent commands and compatible managed rollout.
+The [next overnight operational plan](overnight-operational-acceptance-plan.md)
+targets repeatable installation, actual Tmux/SSH entry and a scoped provisional
+pilot selection before expanding monitoring coverage. It includes all five
+managed entrypoints and keeps desktop/release/coordinator gates separate.
 
 Checkpoint order is C0 capture/review, C1 model/source decisions, C2 schema and
 fixtures, C3 read client, C4 write client, C5 optional networking, followed by
