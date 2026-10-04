@@ -13,6 +13,13 @@ simplified.
 
 ## Status
 
+The regular contract/client execution loop has implemented the new
+[public v2 observation/read candidate](docs/public-contract-v2.md), including
+strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
+watch. The [execution record](docs/contract-clients-execution-status.md) separates
+source checks from independent packaged/native acceptance. The installed v1
+pilot described below remains selected during development.
+
 The next development track is [contract and first-party clients](docs/contract-and-clients-plan.md):
 a passive host-local core, read and New/Resume write clients, and an optional
 separate networking component in this repository. Contract/core work and

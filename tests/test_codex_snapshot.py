@@ -200,16 +200,16 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertEqual(result["errors"], [{"code": "loaded_identity_ambiguous"}])
         self.assertEqual(result["sourceHealth"], "unavailable")
 
-    def test_history_failure_invalidates_prior_live_facts_without_renewing_age(self):
+    def test_history_failure_preserves_independent_live_facts(self):
         client = FakeClient({"data": [FIRST], "nextCursor": None}, {"data": "malformed"})
         result = self.collect(client)
         row = result["sessions"][0]
-        self.assertEqual(row["presence"]["value"], "unknown")
-        self.assertEqual(row["presence"]["lastKnownValue"], "present")
+        self.assertEqual(row["presence"]["value"], "present")
         self.assertIsInstance(row["presence"]["observedAt"], int)
-        self.assertEqual(row["presence"]["health"], "stale")
-        self.assertEqual(result["sourceHealth"], "stale")
-        self.assertFalse(result["coverage"]["loaded"]["complete"])
+        self.assertEqual(row["presence"]["health"], "current")
+        self.assertEqual(result["sourceHealth"], "partial")
+        self.assertTrue(result["coverage"]["loaded"]["complete"])
+        self.assertFalse(result["coverage"]["saved"]["complete"])
 
     def test_conflicting_session_mapping_is_not_first_match(self):
         conflicting = {**native(FIRST), "sessionId": SECOND}
