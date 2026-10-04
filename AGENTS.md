@@ -4,10 +4,20 @@
 
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
-- The active checkpoint is the native-runtime migration pilot and consumer
-  integration. Exact-artifact native evidence accepts only the documented
-  subset; new versions, topologies and capabilities require independent proof.
-  The schema-v1 command remains a prerelease contract.
+- The active development track is `docs/contract-and-clients-plan.md` and its
+  review. Keep observation/core/read-client passes separate from frontend work.
+  The proposed first-party New/Resume write client and optional networking
+  component may share this repository, but are separate from passive core and
+  have independent implementation/native gates. Design documentation alone
+  does not accept proposed states/fields/commands or authorize deployment.
+- `docs/contract-and-clients-execution-plan.md` defines the unattended sequence.
+  G2 independently accepts the Observer artifact/read/write/native subset
+  before any Agent Plus implementation; optional networking has its own gate.
+  Producer defects found by a consumer reopen a separate Observer checkpoint,
+  not a simultaneous producer/frontend edit cycle.
+- The existing native-runtime migration pilot accepts only its documented
+  exact-artifact subset; new versions, topologies and capabilities require
+  independent proof. The schema-v1 command remains a prerelease contract.
 - Continue preflight and spike work on Snap in `~/code/agent-observer`. Claude
   is available only there according to the user. Reinspect both providers on
   Snap; Starship evidence does not establish Snap versions or runtime behavior.

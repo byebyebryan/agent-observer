@@ -4,6 +4,13 @@ Date: 2026-10-03. The unattended implementation/pilot is complete for the
 bounded subset in [execution status](execution-status.md). Source is
 checkpointed in local commits; candidates are installed, with no published release.
 
+The user's next focus is the [contract and first-party clients plan](contract-and-clients-plan.md),
+with [reviewed source gaps](contract-and-clients-review.md). Start that track
+with host-local contract/read-client work; provider actions and networking have
+separate later gates, and frontend changes are independent passes. The installed
+pilot and remaining acceptance/reopen instructions below remain unchanged by
+this documentation decision.
+
 ## Installed state
 
 | Host | Observer | Agent Plus | Provider policy |

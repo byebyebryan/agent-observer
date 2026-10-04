@@ -1,5 +1,10 @@
 # Session mesh design and roadmap review
 
+This is the dated migration-planning review. The next independent contract/client
+track is in [the new plan](contract-and-clients-plan.md) and
+[review](contract-and-clients-review.md); those govern future component/client
+ownership while this document retains its original evidence scope.
+
 Date: 2026-10-02. Scope: planning, source and documentation validation.
 This review covers the [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),

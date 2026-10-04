@@ -1,5 +1,10 @@
 # Host-local snapshot contract candidate, version 1
 
+This document describes the current wire contract. The next
+[contract/client plan](contract-and-clients-plan.md) proposes independent read
+and write clients, phase/age/project semantics and optional networking. None
+of those proposals changes v1 field values, identity or accepted coverage.
+
 This is the current installable candidate, `agent-observer 0.1.0a5`. It is
 supported only for the exact provider artifacts and topologies listed below.
 The migration may revise this prerelease contract; consumers reject unknown
