@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import os
-import re
 import selectors
 import stat
 import subprocess
@@ -15,6 +14,7 @@ from pathlib import Path
 
 from .bounded_json import WireError, decode_document
 from .contract import ContractError, canonical, store_namespace
+from .native_cues import background_job, trust_required
 from .read_client import select as select_session
 from .write_contract import schema_document, validate_plan, validate_request, validate_result
 
@@ -319,8 +319,9 @@ def execute(plan, *, timeout=30):
         return result(fresh, "rejected", "launcher_unavailable")
     except KeyboardInterrupt:
         return result(fresh, "uncertain", "launcher_interrupted", effect="uncertain", pending=True)
-    cues = set(re.findall(rb"\bclaude attach ([0-9a-f]{8})\b", output))
-    if failure or code != 0 or len(cues) != 1:
+    if failure is None and code == 1 and trust_required(output, fresh["request"]["cwd"]):
+        return result(fresh, "rejected", "trust_required")
+    if failure or code != 0:
         return result(
             fresh,
             "uncertain",
@@ -328,7 +329,10 @@ def execute(plan, *, timeout=30):
             effect="uncertain",
             pending=True,
         )
-    job = next(iter(cues)).decode("ascii")
+    try:
+        job = background_job(output)
+    except ContractError as exc:
+        return result(fresh, "uncertain", str(exc), effect="uncertain", pending=True)
     deadline = time.monotonic() + min(timeout, 15)
     while time.monotonic() < deadline:
         try:

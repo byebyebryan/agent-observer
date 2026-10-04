@@ -193,7 +193,11 @@ class WriteClientTest(unittest.TestCase):
     def test_background_timeout_or_post_launch_failure_is_uncertain_and_never_retried(self):
         plan = prepare(self.request("claude"))
         for outcome in (
-            (0, b"claude attach abcd1234", "launcher_timeout"),
+            (
+                0,
+                "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
+                "launcher_timeout",
+            ),
             (1, b"", None),
             (0, b"ambiguous", None),
         ):
@@ -205,7 +209,11 @@ class WriteClientTest(unittest.TestCase):
         with (
             patch(
                 "agent_observer.write_client._launch",
-                return_value=(0, b"claude attach abcd1234", None),
+                return_value=(
+                    0,
+                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
+                    None,
+                ),
             ) as launch,
             patch(
                 "agent_observer.write_client._collect",
@@ -231,7 +239,11 @@ class WriteClientTest(unittest.TestCase):
             patch("agent_observer.write_client.revalidate", return_value=plan),
             patch(
                 "agent_observer.write_client._launch",
-                return_value=(0, b"claude attach abcd1234", None),
+                return_value=(
+                    0,
+                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
+                    None,
+                ),
             ) as launch,
             patch("agent_observer.write_client._collect", return_value=created),
             patch(
@@ -256,3 +268,30 @@ class WriteClientTest(unittest.TestCase):
             os.kill(child, 0)
         finally:
             os.kill(child, signal.SIGKILL)
+
+    def test_handoff_failure_after_verified_creation_keeps_confirmed_effect(self):
+        request = self.request("claude")
+        plan = prepare(request)
+        created = self.snapshot(request)
+        with (
+            patch("agent_observer.write_client.revalidate", return_value=plan),
+            patch(
+                "agent_observer.write_client._launch",
+                return_value=(
+                    0,
+                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
+                    None,
+                ),
+            ) as launch,
+            patch("agent_observer.write_client._collect", return_value=created),
+            patch(
+                "agent_observer.write_client.prepare", side_effect=ContractError("artifact_changed")
+            ),
+        ):
+            output = execute(plan, timeout=1)
+        self.assertEqual(output["effect"], "confirmed")
+        self.assertEqual(output["reason"], "handoff_unavailable")
+        self.assertEqual(output["resultingIdentity"], created["sessions"][0]["identity"])
+        self.assertIsNone(output["handoff"])
+        self.assertFalse(output["identityPending"])
+        launch.assert_called_once()
