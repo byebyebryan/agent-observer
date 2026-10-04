@@ -1,0 +1,15 @@
+{
+  "status": "accepted",
+  "prefix": "/tmp/agent-observer-operational-7d1284ze/fresh-core",
+  "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f",
+  "sourceRevision": "222c5bfab3c9740292a98ea6a7adc28ce8a7d8f1",
+  "profile": "core",
+  "version": "0.2.0a3",
+  "sdk": null,
+  "bundledExecutable": false,
+  "installedWheelBytesVerified": true,
+  "entrypointsVerified": true,
+  "schemaVersionsVerified": true,
+  "providerInvocations": 0,
+  "selectedLinksChanged": false
+}

@@ -1,0 +1,200 @@
+#!/usr/bin/env python3
+"""Install/verify an exact local wheel without selecting links or invoking providers."""
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import zipfile
+from pathlib import Path, PurePosixPath
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def document(path):
+    if path.stat().st_size > 32768:
+        raise ValueError("manifest_limit")
+    value = json.loads(path.read_text())
+    if (
+        value.get("manifestVersion") != 1
+        or value.get("package") != "agent-observer"
+        or not re.fullmatch(r"[0-9a-f]{64}", value.get("wheelSha256", ""))
+        or not re.fullmatch(r"[0-9a-f]{40}", value.get("sourceRevision", ""))
+        or value.get("entrypoints") != ["agent-observer", "agent-observer-write"]
+        or value.get("schemas") != {"snapshot": 2, "watch": 2, "write": 1}
+    ):
+        raise ValueError("manifest_invalid")
+    return value
+
+
+def wheel_check(wheel, manifest):
+    if wheel.name != manifest["wheel"] or digest(wheel) != manifest["wheelSha256"]:
+        raise ValueError("wheel_mismatch")
+    with zipfile.ZipFile(wheel) as archive:
+        names = archive.namelist()
+        if len(names) != len(set(names)) or len(names) > 4096:
+            raise ValueError("wheel_entries_invalid")
+        for name in names:
+            path = PurePosixPath(name)
+            if path.is_absolute() or ".." in path.parts or ".data" in name:
+                raise ValueError("wheel_path_invalid")
+    return manifest
+
+
+def run(argv, timeout=30):
+    output = subprocess.run(argv, capture_output=True, timeout=timeout, check=False)
+    if output.returncode or len(output.stdout) > 1024 * 1024:
+        raise ValueError("candidate_command_failed")
+    return output.stdout
+
+
+def verify(prefix, wheel, manifest, profile):
+    wheel_check(wheel, manifest)
+    if prefix.resolve(strict=True) != prefix or prefix.stat().st_uid != os.geteuid():
+        raise ValueError("prefix_ownership_invalid")
+    code = """import importlib.metadata,json,sysconfig
+from pathlib import Path
+import agent_observer.contract as contract
+try:
+ sdk=importlib.metadata.distribution('claude-agent-sdk')
+ sdk_version=sdk.version
+ bundled=Path(sdk.locate_file('claude_agent_sdk/_bundled'))
+ bundled_executable=any(p.name!='.gitignore' for p in bundled.rglob('*')) if bundled.exists() else False
+except importlib.metadata.PackageNotFoundError:
+ sdk_version=None;bundled_executable=False
+print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':sysconfig.get_path('purelib'),'module':contract.__file__,'sdk':sdk_version,'bundledExecutable':bundled_executable}))"""
+    metadata = json.loads(run([str(prefix / "bin/python"), "-I", "-B", "-c", code]))
+    site = Path(metadata.pop("site"))
+    if (
+        metadata["version"] != manifest["version"]
+        or not site.is_relative_to(prefix)
+        or not Path(metadata.pop("module")).is_relative_to(site)
+        or metadata["bundledExecutable"]
+        or metadata["sdk"]
+        != (manifest["claudeHistorySdk"] if profile == "claude-history" else None)
+    ):
+        raise ValueError("candidate_profile_mismatch")
+    with zipfile.ZipFile(wheel) as archive:
+        for entry in archive.infolist():
+            if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
+                continue
+            target = site / entry.filename
+            if (
+                not target.is_file()
+                or target.is_symlink()
+                or target.read_bytes() != archive.read(entry)
+            ):
+                raise ValueError("installed_wheel_bytes_mismatch")
+    for name in manifest["entrypoints"]:
+        target = prefix / "bin" / name
+        if not target.is_file() or not os.access(target, os.X_OK):
+            raise ValueError("entrypoint_missing")
+        first = target.read_bytes().splitlines()[0].decode()
+        interpreter = Path(first[2:]) if first.startswith("#!") else Path("/")
+        if (
+            interpreter.parent != prefix / "bin"
+            or not re.fullmatch(r"python(?:3(?:\.\d+)?)?", interpreter.name)
+            or not interpreter.samefile(prefix / "bin/python")
+        ):
+            raise ValueError("entrypoint_prefix_mismatch")
+    for name in ("snapshot", "watch"):
+        schema = json.loads(run([str(prefix / "bin/agent-observer"), "schema", "--kind", name]))
+        if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"][name]}:
+            raise ValueError("schema_mismatch")
+    for name in ("request", "plan", "result"):
+        schema = json.loads(
+            run([str(prefix / "bin/agent-observer-write"), "schema", "--kind", name])
+        )
+        if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"]["write"]}:
+            raise ValueError("schema_mismatch")
+    return {
+        "status": "accepted",
+        "prefix": str(prefix),
+        "wheelSha256": manifest["wheelSha256"],
+        "sourceRevision": manifest["sourceRevision"],
+        "profile": profile,
+        **metadata,
+        "installedWheelBytesVerified": True,
+        "entrypointsVerified": True,
+        "schemaVersionsVerified": True,
+        "providerInvocations": 0,
+        "selectedLinksChanged": False,
+    }
+
+
+def install(prefix, wheel, manifest, profile):
+    wheel_check(wheel, manifest)
+    if prefix.exists():
+        return verify(prefix, wheel, manifest, profile)
+    parent = prefix.parent
+    if (
+        not prefix.is_absolute()
+        or parent.resolve(strict=True) != parent
+        or parent.stat().st_uid != os.geteuid()
+        or prefix.is_symlink()
+    ):
+        raise ValueError("prefix_parent_invalid")
+    prefix.mkdir(mode=0o700)
+    identity = prefix.stat().st_dev, prefix.stat().st_ino
+    try:
+        run([sys.executable, "-m", "venv", str(prefix)], timeout=120)
+        run(
+            [
+                str(prefix / "bin/pip"),
+                "install",
+                "--disable-pip-version-check",
+                "--no-index",
+                "--no-deps",
+                str(wheel),
+            ],
+            timeout=120,
+        )
+        if profile == "claude-history":
+            run(
+                [
+                    str(prefix / "bin/pip"),
+                    "install",
+                    "--disable-pip-version-check",
+                    "--no-binary=claude-agent-sdk",
+                    "claude-agent-sdk==" + manifest["claudeHistorySdk"],
+                ],
+                timeout=180,
+            )
+        result = verify(prefix, wheel, manifest, profile)
+        (prefix / "candidate-receipt.json").write_text(json.dumps(result, indent=2) + "\n")
+        return result
+    except BaseException:
+        if not prefix.is_symlink() and (prefix.stat().st_dev, prefix.stat().st_ino) == identity:
+            shutil.rmtree(prefix)
+        raise
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("command", choices=("install", "verify"))
+    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--wheel", type=Path, required=True)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--profile", choices=("core", "claude-history"), default="core")
+    args = parser.parse_args()
+    try:
+        manifest = document(args.manifest)
+        operation = install if args.command == "install" else verify
+        print(json.dumps(operation(args.prefix, args.wheel, manifest, args.profile)))
+        return 0
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError, zipfile.BadZipFile):
+        print(
+            json.dumps({"status": "rejected", "reason": "candidate_artifact_invalid"}),
+            file=sys.stderr,
+        )
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
