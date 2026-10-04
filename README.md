@@ -21,13 +21,16 @@ source checks from [independent packaged/native acceptance](docs/evidence/2026-1
 The separate [write client](docs/write-client-contract.md) supports validated
 New/Resume and native TTY entry. The v2 candidate is installed unselected on
 Snap and Starship; the installed v1 pilot described below remains selected.
+Agent Plus subsequently passed its own bounded public-contract/native-entry
+consumer gate against this unchanged Observer artifact. The [current handoff](docs/contract-clients-handoff.md)
+records the compatible candidates and remaining managed/desktop rollout gates.
 
-The next development track is [contract and first-party clients](docs/contract-and-clients-plan.md):
+The [contract and first-party clients track](docs/contract-and-clients-plan.md) provides
 a passive host-local core, read and New/Resume write clients, and an optional
 separate networking component in this repository. Contract/core work and
 frontend migrations have independent gates. The [design review](docs/contract-and-clients-review.md)
-distinguishes this direction from the installed pilot below; proposed commands,
-state terminology and metadata do not change its current API.
+distinguishes this direction from the installed pilot below. The public v2
+contract does not change the currently selected v1 API.
 
 The currently selected pilot is `agent-observer 0.1.0a5`, written in Python
 with no runtime dependencies. Its host-local JSON
@@ -94,7 +97,7 @@ WSNav's current private-tmux and workstream model does not constrain this
 component. Resume, launch, focus, approval, interruption and session deletion
 are outside the initial observation API.
 
-The next plan extracts reusable New/Resume behavior into a first-party write
+The v2 candidate extracts reusable New/Resume behavior into a first-party write
 client rather than adding actions to observation. The read client consumes the
 same public model as other consumers. Optional networking wraps local interfaces
 and reuses existing Host Mesh routing; it is not required by the core/read gate.
