@@ -1,0 +1,10 @@
+{
+  "ordinaryFilesUnchanged": {
+    ".codex/auth.json": true,
+    ".codex/config.toml": true
+  },
+  "privateNativeNamespaceExited": true,
+  "ownedPrivateStoreRemoved": true,
+  "borrowedCredentialCopiesRemoved": true,
+  "selectedObserverLink": "/home/bryan/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58/bin/agent-observer"
+}

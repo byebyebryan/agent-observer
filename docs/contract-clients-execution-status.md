@@ -1,6 +1,6 @@
 # Contract and clients execution status
 
-Date: 2026-10-03. Regular goal loop authorized by the user. The primary works
+Date: 2026-10-04. Regular goal loop authorized by the user. The primary works
 directly; no worker-loop workflow is used. The [execution plan](contract-and-clients-execution-plan.md)
 defines the Observer-first gates. Existing pilot installations stay selected
 until a separately reviewed compatible consumer tuple is available.
@@ -26,11 +26,11 @@ until a separately reviewed compatible consumer tuple is available.
 | --- | --- | --- |
 | E0 | Accepted | Planning checkpoint committed as `0f3cf09`; Starship read-only refresh confirms Codex 0.160.0 and retained v1 Observer link |
 | E1 | Bounded source decisions accepted | Stable store/native reference; source comparison and finite capability limits in public v2 contract |
-| G1 | Source implementation/checks accepted; packaged check next | Versioned contract, pure read CLI, project enrichment and sampled watch |
-| E5 | Source candidate implemented | Separate write CLI/contracts; controlled guards, uncertainty and launcher ownership tests |
-| G2 | In progress | Independent installed read/write artifact and isolated native routes |
+| G1 | Accepted | Versioned contract, pure read CLI, project enrichment, sampled watch and independent installed conformance |
+| E5 | Accepted for bounded native matrix | Separate write CLI/contracts; controlled guards, uncertainty and launcher ownership tests |
+| G2 | Accepted | Final `0.2.0a3` installed read/write artifact and isolated native routes on required hosts |
 | G3 | Deferred | Optional networking independent of local usability |
-| E8 | Not started | Requires G2; frontend remains untouched |
+| E8 | Next | Consume accepted `0.2.0a3`; frontend remains untouched at G2 closure |
 
 Native source claims retain their prior exact-artifact bounds. New dimensions
 and actions need their own proof. Graphical focus/UX, physical suspend and the
@@ -125,3 +125,21 @@ Coverage now explicitly names loaded_threads (Codex) and registered_workers
 (Claude); complete inventory coverage is not promoted to complete execution-context
 coverage. Unloaded Codex work remains an explicit collection limitation. Public
 write fixtures and semantic effect/identity constraints are added. 153 tests pass.
+
+## Independent G1/G2 closure
+
+Final source `222c5bf`, version `0.2.0a3`, wheel SHA-256
+`6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f` is
+installed unselected on Snap and Starship. Public read/watch/write fixture
+consumption and independent JSON Schema validation pass outside the checkout.
+Final public write CLI/native TTY proofs accept Codex New/exact Resume on both
+hosts and Claude New/live attach/saved Resume on Snap. The bounded completed
+background/current-worker waiting projection passes natively.
+
+The [independent report](evidence/2026-10-04-contract-clients/REPORT.md) records
+the source/package/native matrix and limits. Private stores and credential
+copies were removed after namespace exit. Ordinary auth/provider settings remain
+unchanged; global Claude preferences drift observed during the window is
+explicit and left intact. Old pilot links stay selected; no coordinator reopen
+or Agent Plus implementation occurred before G2 acceptance. Next is E8 against
+this pinned artifact, retaining existing external Host Mesh composition.

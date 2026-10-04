@@ -1,0 +1,67 @@
+{
+  "hostScope": "snap",
+  "isolation": {
+    "uid": 0,
+    "pid": 1,
+    "privateTmp": true,
+    "privateUserPidMountNamespaces": true,
+    "ordinaryConfigPathsMasked": true
+  },
+  "packageOutsideCheckout": true,
+  "cases": {
+    "codexNew": {
+      "status": "accepted",
+      "identityPendingBeforeEntry": true,
+      "fullIdentityResolved": true,
+      "nativeIdKind": "thread",
+      "nativeIdsSeparate": true,
+      "phase": "waiting",
+      "trustAcceptedInPrivateTui": false,
+      "loginCue": false,
+      "remainingCues": {
+        "theme": false,
+        "trust": false,
+        "permission": false,
+        "security": false,
+        "error": false,
+        "root": false,
+        "welcome": false,
+        "project": false,
+        "select": false,
+        "continue": false
+      }
+    },
+    "codexResume": {
+      "status": "accepted",
+      "sameFullIdentity": true,
+      "actualNativeSessionIdUsed": true,
+      "phase": "waiting"
+    },
+    "claudeNew": {
+      "status": "ready",
+      "reason": "native_identity_verified",
+      "effect": "confirmed",
+      "identityPending": false,
+      "nativeIdKind": "session",
+      "fullIdentityResolved": true
+    },
+    "claudeAttach": {
+      "status": "accepted",
+      "typedNativeJobUsed": true,
+      "sameFullIdentity": true,
+      "worker": "present"
+    },
+    "claudeCompletedWaiting": {
+      "phase": "waiting",
+      "worker": "present",
+      "outcome": "completed",
+      "phaseClock": "native",
+      "workerClock": "sample"
+    }
+  },
+  "claudePrivateTrustSetup": {
+    "kind": "operator_created_private_fixture",
+    "nativeUiTrustAcceptanceClaimed": false
+  },
+  "status": "accepted"
+}

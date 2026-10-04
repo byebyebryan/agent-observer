@@ -13,12 +13,14 @@ simplified.
 
 ## Status
 
-The regular contract/client execution loop has implemented the new
-[public v2 observation/read candidate](docs/public-contract-v2.md), including
+The regular contract/client execution loop has independently accepted
+`agent-observer 0.2.0a3`: the [public v2 observation/read contract](docs/public-contract-v2.md), including
 strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
 watch. The [execution record](docs/contract-clients-execution-status.md) separates
-source checks from independent packaged/native acceptance. The installed v1
-pilot described below remains selected during development.
+source checks from [independent packaged/native acceptance](docs/evidence/2026-10-04-contract-clients/REPORT.md).
+The separate [write client](docs/write-client-contract.md) supports validated
+New/Resume and native TTY entry. The v2 candidate is installed unselected on
+Snap and Starship; the installed v1 pilot described below remains selected.
 
 The next development track is [contract and first-party clients](docs/contract-and-clients-plan.md):
 a passive host-local core, read and New/Resume write clients, and an optional
@@ -27,7 +29,7 @@ frontend migrations have independent gates. The [design review](docs/contract-an
 distinguishes this direction from the installed pilot below; proposed commands,
 state terminology and metadata do not change its current API.
 
-The current installable candidate is `agent-observer 0.1.0a5`, written in Python
+The currently selected pilot is `agent-observer 0.1.0a5`, written in Python
 with no runtime dependencies. Its host-local JSON
 [contract candidate](docs/snapshot-contract.md) separates logical identity,
 work, presence, attachment, source health and coverage.

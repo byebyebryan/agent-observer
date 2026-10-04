@@ -1,0 +1,68 @@
+{
+  "hostScope": "snap",
+  "isolation": {
+    "uid": 0,
+    "pid": 1,
+    "privateTmp": true,
+    "privateUserPidMountNamespaces": true,
+    "ordinaryConfigPathsMasked": true
+  },
+  "packageOutsideCheckout": true,
+  "cases": {
+    "claudeSavedResume": {
+      "status": "ready",
+      "reason": "native_identity_verified",
+      "effect": "confirmed",
+      "identityPending": false,
+      "requestedIdentityPreserved": true,
+      "resultingIdentityResolved": true,
+      "copiedIdentity": false
+    }
+  },
+  "privateRuntimeMetadataResetAfterNamespaceExit": true,
+  "preflight": {
+    "sources": [
+      {
+        "health": "current",
+        "coverage": {
+          "saved": {
+            "status": "partial",
+            "reason": "metadata_scan"
+          },
+          "runtime": {
+            "status": "complete",
+            "reason": "native_snapshot",
+            "scope": "registered_workers"
+          }
+        },
+        "errors": []
+      }
+    ],
+    "rows": [
+      {
+        "issues": [],
+        "runtime": {
+          "value": "unknown",
+          "observedAt": null,
+          "source": null,
+          "health": "unavailable",
+          "reason": "unobserved",
+          "clock": null
+        },
+        "worker": {
+          "value": "unknown",
+          "observedAt": null,
+          "source": null,
+          "health": "unavailable",
+          "reason": "unobserved",
+          "clock": null
+        },
+        "inventory": "saved",
+        "historyPresent": true,
+        "jobState": null
+      }
+    ]
+  },
+  "selectedRoute": "claude_saved_resume",
+  "status": "accepted"
+}

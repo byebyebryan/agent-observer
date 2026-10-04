@@ -1,0 +1,14 @@
+{
+  "ordinaryFilesUnchanged": {
+    ".codex/auth.json": true,
+    ".claude/.credentials.json": true,
+    ".claude.json": false,
+    ".codex/config.toml": true,
+    ".claude/settings.json": true
+  },
+  "privateNativeNamespaceExited": true,
+  "ownedPrivateStoreRemoved": true,
+  "borrowedCredentialCopiesRemoved": true,
+  "selectedObserverLink": "/home/bryan/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58/bin/agent-observer",
+  "currentCoordinatorReopened": false
+}
