@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""Explicit write/native recovery proof, only inside an operator-owned private namespace."""
+
+import fcntl
+import json
+import os
+import pty
+import select
+import signal
+import struct
+import subprocess
+import sys
+import termios
+import time
+from pathlib import Path
+
+
+def main():
+    root = Path(sys.argv[1])
+    ready = json.loads((root / "ready.json").read_text())
+    if os.geteuid() != 0 or not ready["ordinaryProviderPathsMasked"] or not ready["privateTmp"]:
+        raise RuntimeError("isolation_required")
+    base = root / ("native-" + os.environ["NATIVE_PROOF_HOST"])
+    os.chdir(base / "workspace")
+    observer = "agent-observer"
+    writer = "agent-observer-write"
+    clients = []
+
+    def command(argv):
+        result = subprocess.run(argv, capture_output=True, timeout=40)
+        if result.returncode:
+            raise RuntimeError("public_command_failed")
+        return json.loads(result.stdout)
+
+    def snapshot():
+        return command(
+            [
+                observer,
+                "snapshot",
+                "--host-scope",
+                os.environ["NATIVE_PROOF_HOST"],
+                "--provider",
+                "codex",
+            ]
+        )
+
+    def plan(reference=None):
+        request = {
+            "schemaVersion": 1,
+            "operation": "resume" if reference else "new",
+            "hostScope": os.environ["NATIVE_PROOF_HOST"],
+            "provider": "codex",
+            "configHome": str(base / "codex"),
+            "configHomeKind": "explicit",
+            "cwd": str(base / "workspace"),
+            "reference": reference,
+        }
+        value = command([writer, "prepare", "--request-json", json.dumps(request)])
+        return command([writer, "execute", "--plan-json", json.dumps(value)])["handoff"]
+
+    def spawn(value):
+        pid, fd = pty.fork()
+        if pid == 0:
+            os.execvp(writer, [writer, "enter", "--plan-json", json.dumps(value)])
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+        os.set_blocking(fd, False)
+        clients.append((pid, fd))
+        return pid, fd
+
+    def drain(fd):
+        if select.select([fd], [], [], 0)[0]:
+            try:
+                data = os.read(fd, 65536)
+                if b"\x1b[6n" in data:
+                    os.write(fd, b"\x1b[1;1R")
+            except OSError:
+                pass
+
+    def wait(fd, duration):
+        deadline = time.monotonic() + duration
+        while time.monotonic() < deadline:
+            drain(fd)
+            time.sleep(0.1)
+
+    def stop(client):
+        pid, fd = client
+        try:
+            os.kill(pid, signal.SIGHUP)
+            os.waitpid(pid, 0)
+        except ProcessLookupError:
+            pass
+        os.close(fd)
+        clients.remove(client)
+
+    output = {
+        "hostScope": os.environ["NATIVE_PROOF_HOST"],
+        "observerVersion": "0.2.0a3",
+        "independentOfFrontend": True,
+        "isolation": ready,
+    }
+    watch = None
+    try:
+        before = {json.dumps(row["identity"], sort_keys=True) for row in snapshot()["sessions"]}
+        client = spawn(plan())
+        wait(client[1], 5)
+        value = snapshot()
+        row = next(
+            row
+            for row in value["sessions"]
+            if row["runtime"]["value"] == "running"
+            and json.dumps(row["identity"], sort_keys=True) not in before
+        )
+        reference = row["identity"]
+        phase_clock = row["phase"]["observedAt"]
+        wait(client[1], 1)
+        same = next(row for row in snapshot()["sessions"] if row["identity"] == reference)
+        phase_kind = row["phase"]["clock"]
+        if phase_kind == "native":
+            assert same["phase"]["observedAt"] == phase_clock
+        else:
+            assert phase_kind == "sample" and same["phase"]["value"] == row["phase"]["value"]
+        os.write(client[1], b"Reply with OK.\r")
+        wait(client[1], 1)
+        os.write(client[1], b"\r")
+        deadline = time.monotonic() + 35
+        while time.monotonic() < deadline:
+            drain(client[1])
+            if any((base / "codex/sessions").glob("**/*.jsonl")):
+                break
+            time.sleep(0.2)
+        assert any((base / "codex/sessions").glob("**/*.jsonl"))
+        stop(client)
+        old_plan = plan(reference)
+        watch = subprocess.Popen(
+            [
+                observer,
+                "watch",
+                "--host-scope",
+                output["hostScope"],
+                "--provider",
+                "codex",
+                "--interval",
+                "1",
+                "--count",
+                "12",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        from agent_observer.contract import validate_watch
+
+        initial = validate_watch(json.loads(watch.stdout.readline()))
+        source = initial["snapshot"]["sources"][0]
+        daemon_pid = source["runtime"]["pid"]
+        executable = Path(os.readlink(f"/proc/{daemon_pid}/exe"))
+        assert executable.is_relative_to(base / "codex/packages/app-server-daemon")
+        stat = Path(f"/proc/{daemon_pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+        assert int(stat) == source["runtime"]["startTicks"]
+        os.kill(daemon_pid, signal.SIGKILL)
+        time.sleep(1.5)
+        unavailable = snapshot()
+        assert unavailable["sources"][0]["sourceHealth"] == "unavailable"
+        stale = subprocess.run(
+            [writer, "execute", "--plan-json", json.dumps(old_plan)],
+            capture_output=True,
+            timeout=20,
+        )
+        assert stale.returncode == 2
+        rejection = json.loads(stale.stderr)["error"]
+        new_client = spawn(plan())
+        wait(new_client[1], 5)
+        recovered = snapshot()
+        assert recovered["sources"][0]["sourceHealth"] == "current"
+        assert any(row["identity"] == reference for row in recovered["sessions"])
+        exact_client = spawn(plan(reference))
+        wait(exact_client[1], 4)
+        assert any(row["identity"] == reference for row in snapshot()["sessions"])
+        stop(exact_client)
+        stop(new_client)
+        remaining, _ = watch.communicate(timeout=30)
+        frames = [initial, *[validate_watch(json.loads(line)) for line in remaining.splitlines()]]
+        assert watch.returncode == 0
+        assert any(frame["kind"] == "gap" for frame in frames)
+        retained = [
+            row
+            for frame in frames
+            if frame["snapshot"] and frame["snapshot"]["sourceHealth"] != "current"
+            for row in frame["snapshot"]["sessions"]
+            if row["identity"] == reference
+        ]
+        assert retained and all(row["runtime"]["value"] == "unknown" for row in retained)
+        assert all(frame["revision"] == index + 1 for index, frame in enumerate(frames))
+        output.update(
+            status="accepted",
+            phaseClockKind=phase_kind,
+            nativePhaseClockRenewalClaimed=False,
+            sampledStateEvidenceExplicit=True,
+            offlineObservationDidNotStartDaemon=True,
+            oldHandoffRejected=True,
+            oldHandoffReason=rejection,
+            stableStoreReferenceRecovered=True,
+            exactResumeAfterRestart=True,
+            watchFrameKinds=[frame["kind"] for frame in frames],
+            partialMissingRowRetainedUnknown=True,
+            ownedDaemonOnly=True,
+        )
+    finally:
+        for client in list(clients):
+            stop(client)
+        if watch and watch.poll() is None:
+            watch.send_signal(signal.SIGINT)
+            watch.wait(timeout=5)
+    (root / "independent-native-recovery.json").write_text(json.dumps(output, indent=2) + "\n")
+    print(json.dumps(output))
+
+
+if __name__ == "__main__":
+    main()

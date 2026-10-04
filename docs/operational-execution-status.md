@@ -57,3 +57,27 @@ Evidence: [Snap fresh core](evidence/2026-10-04-operational/fresh-core-snap.json
 Operational tools/install/read checks are accepted; owned native gap/restart
 recovery remains pending before full O1 closure and consumer entry acceptance.
 Pilot selection has not started. Observer source/wheel remains frozen.
+
+## Independent native recovery closure
+
+`scripts/check-native-recovery` ran with the installed public read/write CLI in
+private user/PID/mount namespaces on both hosts. It has no frontend imports.
+The exact owned daemon executable path/PID/start ticks were checked before
+stopping it. Offline observation stayed unavailable without starting a daemon;
+old handoff execution rejected before native entry. A separate explicit native
+entry established a fresh runtime, retained the original storage-scoped reference
+and accepted exact Resume. Actual watch emitted gap/resync and retained missing
+rows unknown through incomplete coverage. [Snap](evidence/2026-10-04-operational/native-recovery-snap.json)
+and [Starship](evidence/2026-10-04-operational/native-recovery-starship.json) record
+bounded results; provider/native output was never persisted.
+
+The initial proof incorrectly assumed Codex supplied a native phase timestamp.
+The accepted contract correctly labels each fresh RPC state read `clock=sample`;
+that timestamp can advance while the phase stays waiting. The harness now checks
+the actual clock kind and reports sampled evidence explicitly. No producer
+defect or contract change was required. Claude native phase-clock stability is
+checked separately by its own source-specific predicate.
+
+O1 is accepted independently. Upcoming O2 may consume this unchanged artifact;
+the old selected pilot remains intact. Private fixture namespaces are retained
+only for owned consumer proofs and will be removed in final cleanup.

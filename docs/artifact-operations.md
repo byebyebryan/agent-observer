@@ -42,3 +42,9 @@ partial sources and unsupported activity remain explicit.
 Source CI checks are prepared in `.github/workflows/ci.yml`; no hosted result is
 claimed before publication/push and an actual run. The [operational execution record](operational-execution-status.md)
 tracks installed/native acceptance separately from tooling source checks.
+
+`scripts/check-native-recovery` is a separate **write/native** proof, not a passive
+read command. It requires an operator-established private namespace and masked
+ordinary provider paths. It launches disposable contexts and stops only the
+verified owned daemon. Do not run it against an ordinary provider home. See the
+execution record for the exact isolation/proof matrix.

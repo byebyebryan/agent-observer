@@ -1,0 +1,37 @@
+{
+  "hostScope": "starship",
+  "observerVersion": "0.2.0a3",
+  "independentOfFrontend": true,
+  "isolation": {
+    "uid": 0,
+    "pid": 1,
+    "ordinaryProviderPathsMasked": true,
+    "privateTmp": true
+  },
+  "status": "accepted",
+  "phaseClockKind": "sample",
+  "nativePhaseClockRenewalClaimed": false,
+  "sampledStateEvidenceExplicit": true,
+  "offlineObservationDidNotStartDaemon": true,
+  "oldHandoffRejected": true,
+  "oldHandoffReason": "session_unavailable",
+  "stableStoreReferenceRecovered": true,
+  "exactResumeAfterRestart": true,
+  "watchFrameKinds": [
+    "snapshot",
+    "gap",
+    "resync",
+    "heartbeat",
+    "change",
+    "change",
+    "change",
+    "change",
+    "change",
+    "change",
+    "change",
+    "change",
+    "change"
+  ],
+  "partialMissingRowRetainedUnknown": true,
+  "ownedDaemonOnly": true
+}
