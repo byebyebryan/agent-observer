@@ -27,7 +27,8 @@ until a separately reviewed compatible consumer tuple is available.
 | E0 | Accepted | Planning checkpoint committed as `0f3cf09`; Starship read-only refresh confirms Codex 0.160.0 and retained v1 Observer link |
 | E1 | Bounded source decisions accepted | Stable store/native reference; source comparison and finite capability limits in public v2 contract |
 | G1 | Source implementation/checks accepted; packaged check next | Versioned contract, pure read CLI, project enrichment and sampled watch |
-| G2 | Pending | Independent installed read/write artifact and isolated native routes |
+| E5 | Source candidate implemented | Separate write CLI/contracts; controlled guards, uncertainty and launcher ownership tests |
+| G2 | In progress | Independent installed read/write artifact and isolated native routes |
 | G3 | Deferred | Optional networking independent of local usability |
 | E8 | Not started | Requires G2; frontend remains untouched |
 
@@ -57,3 +58,18 @@ Source tests: 138 pass. Ruff passes for the implementation and new tests.
 The public schemas are bundled package data and fixture/schema synchronization
 is checked. Native proof and independent installed artifact acceptance remain
 separate from these source tests. Agent Plus has not been modified.
+
+## Write-client checkpoint
+
+Added passive preparation, structured execution and separately revalidated native
+TTY entry. New requires no row; Resume uses the public full reference and actual
+native session/job fields. Fixed executable fingerprints and directory/settings/
+runtime guards reject changed plans. Claude background launch dispatches once,
+correlates the native cue to a public identity, preserves copied UUID distinctions
+and reports uncertain effects without retry. Cleanup owns only the launcher;
+controlled descendant tests preserve provider-owned work. The [write contract](write-client-contract.md)
+documents machine results and native TTY handoff separately.
+
+146 source tests pass. New write source is not yet native accepted; isolated
+user/PID/mount namespace support was verified before preparing native proofs.
+The ordinary stores, pilot links and Agent Plus remain unchanged.

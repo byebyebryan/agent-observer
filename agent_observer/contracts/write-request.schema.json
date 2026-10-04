@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-observer:write-request:1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "operation": {
+      "enum": [
+        "new",
+        "resume"
+      ]
+    },
+    "hostScope": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
+    },
+    "provider": {
+      "enum": [
+        "codex",
+        "claude"
+      ]
+    },
+    "configHome": {
+      "type": "string",
+      "maxLength": 4096,
+      "minLength": 1
+    },
+    "configHomeKind": {
+      "enum": [
+        "default",
+        "explicit"
+      ]
+    },
+    "cwd": {
+      "type": "string",
+      "maxLength": 4096,
+      "minLength": 1
+    },
+    "reference": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "hostScope": {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
+            },
+            "provider": {
+              "enum": [
+                "codex",
+                "claude"
+              ]
+            },
+            "namespace": {
+              "type": "string",
+              "maxLength": 71,
+              "minLength": 1,
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "nativeIdKind": {
+              "enum": [
+                "thread",
+                "session"
+              ]
+            },
+            "nativeId": {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "hostScope",
+            "provider",
+            "namespace",
+            "nativeIdKind",
+            "nativeId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "operation",
+    "hostScope",
+    "provider",
+    "configHome",
+    "configHomeKind",
+    "cwd",
+    "reference"
+  ],
+  "additionalProperties": false
+}
