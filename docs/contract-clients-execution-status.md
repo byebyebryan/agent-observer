@@ -73,3 +73,21 @@ documents machine results and native TTY handoff separately.
 146 source tests pass. New write source is not yet native accepted; isolated
 user/PID/mount namespace support was verified before preparing native proofs.
 The ordinary stores, pilot links and Agent Plus remain unchanged.
+
+## Independent package/native validation in progress
+
+Built and installed unselected `0.2.0a1` from `8fbc141`, wheel SHA-256
+`fe5a9c66940de4b8be414917da045ba87806f0be45e522cfc8fb854d02552e27`,
+in its own prefix outside the checkout. An independent Draft 2020-12 validator
+accepted bundled schemas and both-provider/partial fixtures. Installed fixture
+list/watch and ordinary passive Snap reads passed from `/tmp` with PYTHONPATH
+removed. The optional SDK was built from source; its `_bundled` directory has
+only `.gitignore`, no executable.
+
+Isolated installed Codex New and exact saved Resume passed. Claude background
+creation did not pass; the result was uncertain and was not redispatched.
+Inspection found no persisted trust acceptance from the disposable onboarding
+setup. Source review also tightened native cues to the pinned matching unique
+background/attach lines and added the exact trust-required rejection predicate.
+149 tests now pass. These source changes require a new `0.2.0a2` artifact and
+native revalidation before G2 can close. Agent Plus remains untouched.
