@@ -1,0 +1,45 @@
+{
+  "hostScope": "snap",
+  "isolation": {
+    "uid": 0,
+    "pid": 1,
+    "privateTmp": true,
+    "privateUserPidMountNamespaces": true,
+    "ordinaryConfigPathsMasked": true
+  },
+  "packageOutsideCheckout": true,
+  "cases": {
+    "claudeNew": {
+      "status": "ready",
+      "reason": "native_identity_verified",
+      "effect": "confirmed",
+      "identityPending": false,
+      "nativeIdKind": "session",
+      "fullIdentityResolved": true
+    },
+    "claudeAttach": {
+      "status": "accepted",
+      "typedNativeJobUsed": true,
+      "sameFullIdentity": true,
+      "worker": "present"
+    },
+    "claudeCompletedReadiness": {
+      "beforeWorker": "present",
+      "beforeOutcome": "completed",
+      "liveAttachRoute": true,
+      "sameIdentityWorkedAgain": false,
+      "newNativeCompletionClock": true,
+      "exactRequestedUuidHistory": true,
+      "matchingSecondUserRecord": true,
+      "matchingSecondAssistantRecord": true,
+      "rawRetained": false,
+      "status": "accepted"
+    }
+  },
+  "claudePrivateTrustSetup": {
+    "kind": "operator_created_private_fixture",
+    "ordinaryPreferencesChanged": false,
+    "nativeUiTrustAcceptanceClaimed": false
+  },
+  "status": "accepted"
+}

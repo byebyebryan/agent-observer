@@ -1,0 +1,42 @@
+{
+  "hostScope": "starship",
+  "isolation": {
+    "uid": 0,
+    "pid": 1,
+    "privateTmp": true,
+    "privateUserPidMountNamespaces": true,
+    "ordinaryConfigPathsMasked": true
+  },
+  "packageOutsideCheckout": true,
+  "cases": {
+    "codexNew": {
+      "status": "accepted",
+      "identityPendingBeforeEntry": true,
+      "fullIdentityResolved": true,
+      "nativeIdKind": "thread",
+      "nativeIdsSeparate": true,
+      "phase": "waiting",
+      "trustAcceptedInPrivateTui": false,
+      "loginCue": false,
+      "remainingCues": {
+        "theme": false,
+        "trust": false,
+        "permission": false,
+        "security": false,
+        "error": false,
+        "root": false,
+        "welcome": false,
+        "project": false,
+        "select": false,
+        "continue": false
+      }
+    },
+    "codexResume": {
+      "status": "accepted",
+      "sameFullIdentity": true,
+      "actualNativeSessionIdUsed": true,
+      "phase": "waiting"
+    }
+  },
+  "status": "accepted"
+}

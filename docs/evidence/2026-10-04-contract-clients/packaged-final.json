@@ -1,0 +1,54 @@
+{
+  "version": "0.2.0a3",
+  "sourceRevision": "222c5bf",
+  "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3",
+  "moduleOutsideCheckout": true,
+  "independentJsonSchemaValidation": true,
+  "fixtureListRows": 4,
+  "watchKinds": [
+    "snapshot",
+    "heartbeat"
+  ],
+  "publicWriteFixtures": true,
+  "sdkVersion": "0.2.163",
+  "sdkHasNoBundledExecutable": true,
+  "nativeRead": {
+    "hostScope": "snap",
+    "sessionCount": 75,
+    "sources": [
+      {
+        "provider": "codex",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "loaded_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "errors": []
+      },
+      {
+        "provider": "claude",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "registered_workers",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "metadata_scan",
+            "status": "partial"
+          }
+        },
+        "errors": []
+      }
+    ]
+  }
+}
