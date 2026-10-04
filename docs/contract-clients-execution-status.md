@@ -24,9 +24,9 @@ until a separately reviewed compatible consumer tuple is available.
 
 | Gate | Status | Next acceptance |
 | --- | --- | --- |
-| E0 | Local baseline accepted; remote refresh pending | Checkpoint reviewed planning documents |
-| E1 | In progress | Finite model/source decisions and capability limits |
-| G1 | Pending | Versioned contract, read CLI, project enrichment and sampled watch |
+| E0 | Accepted | Planning checkpoint committed as `0f3cf09`; Starship read-only refresh confirms Codex 0.160.0 and retained v1 Observer link |
+| E1 | Bounded source decisions accepted | Stable store/native reference; source comparison and finite capability limits in public v2 contract |
+| G1 | Source implementation/checks accepted; packaged check next | Versioned contract, pure read CLI, project enrichment and sampled watch |
 | G2 | Pending | Independent installed read/write artifact and isolated native routes |
 | G3 | Deferred | Optional networking independent of local usability |
 | E8 | Not started | Requires G2; frontend remains untouched |
@@ -35,3 +35,25 @@ Native source claims retain their prior exact-artifact bounds. New dimensions
 and actions need their own proof. Graphical focus/UX, physical suspend and the
 current coordinator reopen remain separate gates. No public release or pilot
 cutover has occurred in this loop.
+
+## Observation/read checkpoint
+
+Implemented schema-v2 store-scoped identity, independent phase/runtime/worker/
+outcome/evidence clocks, metadata-only fixture conformance and schema export.
+Pure public fixture list/show/doctor paths do not import provider collectors.
+Local collection adds Git/root/path context with explicit project mappings.
+Watch pushes sampled semantic changes, heartbeats, gaps and full resynchronization;
+partial rosters retain missing stale evidence with original clocks.
+
+The bounded source decision reuses only the accepted native reads. Codex idle
+maps to waiting; approval maps to blocked for both. Claude terminal completion
+does not become interactive waiting. Activity, parked absence, general questions,
+offline Codex history and native event replay are explicit unsupported limits.
+No new hooks, daemon ownership, private frontend imports or legacy discovery
+fallbacks were introduced. Codex history failure now preserves independently
+verified live facts; mapping/incarnation conflicts still invalidate them.
+
+Source tests: 138 pass. Ruff passes for the implementation and new tests.
+The public schemas are bundled package data and fixture/schema synchronization
+is checked. Native proof and independent installed artifact acceptance remain
+separate from these source tests. Agent Plus has not been modified.

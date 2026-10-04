@@ -142,6 +142,7 @@ def collect_codex(
         "sourceHealth": "unavailable",
     }
     rows = {}
+    runtime_rows_read = False
 
     def remaining():
         value = deadline - time.monotonic()
@@ -243,6 +244,7 @@ def collect_codex(
                     }
                     row["waitReason"] = "unknown"
                 rows[identifier] = row
+            runtime_rows_read = True
             cursor = None
             cursors = set()
             saved_count = 0
@@ -289,18 +291,34 @@ def collect_codex(
             result["sourceHealth"] = "current"
     except (EndpointError, TransportError, MetadataError, SnapshotError) as error:
         result["errors"].append({"code": str(error)})
-        # No partially read current facts survive an incarnation/read gap as fresh.
-        for row in rows.values():
-            for dimension in ("work", "presence", "attachment"):
-                evidence = row[dimension]
-                if evidence["value"] != "unknown":
-                    evidence["lastKnownValue"] = evidence["value"]
-                evidence["value"] = "unknown"
-                evidence["health"] = "stale"
-                evidence["reason"] = "observation_gap"
-        result["sourceHealth"] = "stale" if rows else "unavailable"
-        for stage in ("saved", "loaded"):
-            result["coverage"][stage] = {"complete": False, "reason": "source_failed"}
+        # History is an independent dimension. A malformed/capped/failed
+        # history read cannot erase successfully read live facts while the
+        # owning runtime incarnation is still verified. Identity conflicts
+        # and failed incarnation checks invalidate them.
+        preserve_runtime = runtime_rows_read and str(error) not in {
+            "native_identity_mapping_conflict",
+            "saved_identity_ambiguous",
+            "runtime_incarnation_changed",
+            "runtime_incarnation_unavailable",
+            "endpoint_incarnation_changed",
+        }
+        if preserve_runtime:
+            try:
+                validate_incarnation(identity)
+            except EndpointError:
+                preserve_runtime = False
+        if not preserve_runtime:
+            for row in rows.values():
+                for dimension in ("work", "presence", "attachment"):
+                    evidence = row[dimension]
+                    if evidence["value"] != "unknown":
+                        evidence["lastKnownValue"] = evidence["value"]
+                    evidence.update(value="unknown", health="stale", reason="observation_gap")
+            result["coverage"]["loaded"] = {"complete": False, "reason": "source_failed"}
+        result["sourceHealth"] = (
+            "partial" if preserve_runtime else "stale" if rows else "unavailable"
+        )
+        result["coverage"]["saved"] = {"complete": False, "reason": "source_failed"}
     result["sessions"] = list(rows.values())
     result["collectedAt"] = _clock()
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
