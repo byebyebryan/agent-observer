@@ -14,6 +14,11 @@ agent-observer-write enter --plan handoff.json
 agent-observer-write schema --kind request
 ```
 
+Each input also accepts bounded literal `--request-json` or `--plan-json`.
+This lets terminal clients pass a public handoff as one argv element without
+creating another file or owning a provider-specific launch command. The literal
+uses the same strict parser, guards and execution-time revalidation as files.
+
 Prepare consumes an exact request, checks current local context and returns a
 plan without dispatching a provider action. Execute revalidates the plan. Codex
 New/Resume and Claude live attach return a prepared TTY handoff with effect none.

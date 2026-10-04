@@ -31,9 +31,9 @@ GUARD = obj(
     cwd=STAMP,
     config=STAMP,
     binary=STAMP,
-    binarySha256=text(64),
-    settingsSha256=text(64, nullable=True),
-    runtimeToken=text(64, nullable=True),
+    binarySha256=text(64, pattern=r"^[0-9a-f]{64}$"),
+    settingsSha256=text(64, pattern=r"^[0-9a-f]{64}$", nullable=True),
+    runtimeToken=text(64, pattern=r"^[0-9a-f]{64}$", nullable=True),
 )
 PLAN = obj(
     schemaVersion={"const": 1},
@@ -77,7 +77,21 @@ def validate_plan(value):
 
 
 def validate_result(value):
+    from .contract import ContractError
+
     validate_shape(value, RESULT)
+    if value["effect"] == "confirmed" and (
+        value["resultingIdentity"] is None or value["identityPending"]
+    ):
+        raise ContractError("missing_result_identity")
+    if value["status"] == "prepared" and (value["effect"] != "none" or value["handoff"] is None):
+        raise ContractError("invalid_prepared_result")
+    if value["status"] == "ready" and (value["effect"] != "confirmed" or value["handoff"] is None):
+        raise ContractError("invalid_ready_result")
+    if value["effect"] == "uncertain" and (
+        value["status"] != "uncertain" or value["handoff"] is not None
+    ):
+        raise ContractError("invalid_uncertain_result")
     if value["handoff"] is not None:
         validate_plan(value["handoff"])
     return value

@@ -1,6 +1,8 @@
 """Controlled write-client effects, guards and provider-owned lifetime tests."""
 
+import copy
 import hashlib
+import io
 import json
 import os
 import signal
@@ -11,8 +13,13 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agent_observer.contract import ContractError, store_namespace
-from agent_observer.write_client import _launch, execute, invocation, prepare, revalidate
-from agent_observer.write_contract import schema_document, validate_request, validate_result
+from agent_observer.write_client import _launch, execute, invocation, main, prepare, revalidate
+from agent_observer.write_contract import (
+    schema_document,
+    validate_plan,
+    validate_request,
+    validate_result,
+)
 
 
 class WriteClientTest(unittest.TestCase):
@@ -122,6 +129,24 @@ class WriteClientTest(unittest.TestCase):
         request["reference"] = self.request(operation="resume")["reference"]
         with self.assertRaises(ContractError):
             validate_request(request)
+
+    def test_public_write_fixtures_and_false_effect_claims(self):
+        root = Path(__file__).parent / "fixtures/write-v1"
+        request = json.loads((root / "request.json").read_text())
+        plan = json.loads((root / "plan.json").read_text())
+        output = json.loads((root / "result.json").read_text())
+        validate_request(request)
+        validate_plan(plan)
+        validate_result(output)
+        for mutate in (
+            lambda v: v.update(effect="confirmed"),
+            lambda v: v.update(effect="uncertain"),
+            lambda v: v.update(status="ready"),
+        ):
+            value = copy.deepcopy(output)
+            mutate(value)
+            with self.assertRaises(ContractError):
+                validate_result(value)
 
     def test_new_without_any_rows_is_passive_until_native_tty_entry(self):
         with (
@@ -295,3 +320,35 @@ class WriteClientTest(unittest.TestCase):
         self.assertIsNone(output["handoff"])
         self.assertFalse(output["identityPending"])
         launch.assert_called_once()
+
+    def test_io_failure_after_possible_dispatch_cannot_claim_no_effect(self):
+        plan = prepare(self.request("claude"))
+        with patch(
+            "agent_observer.write_client._launch",
+            side_effect=OSError("private output must not leak"),
+        ) as launch:
+            output = execute(plan, timeout=1)
+        self.assertEqual(output["effect"], "uncertain")
+        self.assertEqual(output["reason"], "launcher_io_failed")
+        launch.assert_called_once()
+
+    def test_literal_json_public_prepare_execute_and_non_tty_entry(self):
+        request = self.request()
+        output = io.StringIO()
+        with patch("sys.stdout", output):
+            self.assertEqual(main(["prepare", "--request-json", json.dumps(request)]), 0)
+        plan = json.loads(output.getvalue())
+        output = io.StringIO()
+        with patch("sys.stdout", output), patch("agent_observer.write_client._launch") as launch:
+            self.assertEqual(main(["execute", "--plan-json", json.dumps(plan)]), 0)
+            launch.assert_not_called()
+        self.assertEqual(json.loads(output.getvalue())["effect"], "none")
+        output = io.StringIO()
+        with (
+            patch("sys.stdin.isatty", return_value=False),
+            patch("sys.stderr", output),
+            patch("os.execve") as native,
+        ):
+            self.assertEqual(main(["enter", "--plan-json", json.dumps(plan)]), 2)
+            native.assert_not_called()
+        self.assertEqual(json.loads(output.getvalue())["error"], "tty_required")

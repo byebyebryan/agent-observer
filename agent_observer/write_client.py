@@ -220,15 +220,18 @@ def invocation(plan, *, background=False):
 
 def _launch(argv, env, cwd, timeout):
     """Own the launcher only. Never kill a group containing provider jobs."""
-    process = subprocess.Popen(
-        argv,
-        env=env,
-        cwd=cwd,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        start_new_session=True,
-    )
+    try:
+        process = subprocess.Popen(
+            argv,
+            env=env,
+            cwd=cwd,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+        )
+    except OSError:
+        raise ContractError("launcher_unavailable") from None
     buffers = [bytearray(), bytearray()]
     deadline = time.monotonic() + timeout
     reason = None
@@ -315,8 +318,10 @@ def execute(plan, *, timeout=30):
     argv, env = invocation(fresh, background=True)
     try:
         code, output, failure = _launch(argv, env, fresh["request"]["cwd"], timeout)
-    except OSError:
+    except ContractError:
         return result(fresh, "rejected", "launcher_unavailable")
+    except OSError:
+        return result(fresh, "uncertain", "launcher_io_failed", effect="uncertain", pending=True)
     except KeyboardInterrupt:
         return result(fresh, "uncertain", "launcher_interrupted", effect="uncertain", pending=True)
     if failure is None and code == 1 and trust_required(output, fresh["request"]["cwd"]):
@@ -396,7 +401,11 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     for command, flag in (("prepare", "--request"), ("execute", "--plan"), ("enter", "--plan")):
         item = commands.add_parser(command)
-        item.add_argument(flag, type=Path, required=True, help="public JSON file, or - for stdin")
+        inputs = item.add_mutually_exclusive_group(required=True)
+        inputs.add_argument(flag, type=Path, help="public JSON file, or - for stdin")
+        inputs.add_argument(
+            flag + "-json", help="bounded literal public JSON; no shell interpretation"
+        )
         if command == "execute":
             item.add_argument("--timeout", type=float, default=30)
     schema = commands.add_parser("schema")
@@ -406,8 +415,11 @@ def main(argv=None):
         if args.command == "schema":
             print(canonical(schema_document(args.kind)))
             return 0
+        literal = args.request_json if args.command == "prepare" else args.plan_json
         path = args.request if args.command == "prepare" else args.plan
-        if str(path) == "-":
+        if literal is not None:
+            data = literal.encode("utf-8")
+        elif str(path) == "-":
             data = sys.stdin.buffer.read(32769)
         else:
             with path.open("rb") as stream:

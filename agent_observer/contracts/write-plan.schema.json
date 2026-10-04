@@ -180,21 +180,24 @@
         "binarySha256": {
           "type": "string",
           "maxLength": 64,
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
         },
         "settingsSha256": {
           "type": [
             "string",
             "null"
           ],
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
         },
         "runtimeToken": {
           "type": [
             "string",
             "null"
           ],
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [

@@ -8,7 +8,7 @@
     "nativeHostname": "fixture-host",
     "uid": 1000
   },
-  "sourceHealth": "partial",
+  "sourceHealth": "current",
   "sources": [
     {
       "provider": "codex",
@@ -77,15 +77,15 @@
         "startTicks": 123,
         "endpoint": "/fixture/socket"
       },
-      "sourceHealth": "unavailable",
+      "sourceHealth": "current",
       "coverage": {
         "saved": {
-          "status": "unavailable",
-          "reason": "source_failed"
+          "status": "complete",
+          "reason": "native_snapshot"
         },
         "runtime": {
-          "status": "unavailable",
-          "reason": "source_failed",
+          "status": "complete",
+          "reason": "native_snapshot",
           "scope": "registered_workers"
         }
       },
@@ -330,6 +330,172 @@
       "sessionKind": "unknown",
       "job": null,
       "history": null,
+      "metadataIssues": []
+    },
+    {
+      "identity": {
+        "hostScope": "fixture",
+        "provider": "claude",
+        "namespace": "sha256:9a437845594bdb34dd26451be43c068143f83601c03d7d62718d6f90a637fd5d",
+        "nativeIdKind": "session",
+        "nativeId": "00000000-0000-0000-0000-000000000005"
+      },
+      "nativeIds": {
+        "threadId": null,
+        "sessionId": "00000000-0000-0000-0000-000000000005",
+        "jobId": "00000005"
+      },
+      "title": "Fixture Claude 5",
+      "kind": "unknown",
+      "cwd": "/fixture/project",
+      "cwdSource": "claude_registry",
+      "inventory": "live",
+      "phase": {
+        "value": "working",
+        "observedAt": 1700000020000,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "native"
+      },
+      "runtime": {
+        "value": "running",
+        "observedAt": 1700000020000,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "sample"
+      },
+      "worker": {
+        "value": "present",
+        "observedAt": 1700000020000,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "sample"
+      },
+      "attachment": {
+        "value": "unknown",
+        "observedAt": null,
+        "source": null,
+        "health": "unsupported",
+        "reason": "unsupported",
+        "clock": null
+      },
+      "outcome": {
+        "value": "unknown",
+        "observedAt": null,
+        "source": null,
+        "health": "unsupported",
+        "reason": "outcome_source_unproved",
+        "clock": null
+      },
+      "blockedReason": "unknown",
+      "createdAt": 1700000000000,
+      "activity": {
+        "at": null,
+        "source": null,
+        "health": "unsupported",
+        "reason": "activity_source_unproved"
+      },
+      "workspace": null,
+      "sessionKind": "bg",
+      "job": {
+        "id": "00000005",
+        "retained": true,
+        "state": "working",
+        "tempo": "active",
+        "terminalObservedAt": null
+      },
+      "history": {
+        "source": "claude_sdk",
+        "sdkVersion": "0.2.163",
+        "createdAt": 1700000000000,
+        "fileModifiedAt": 1700000050000
+      },
+      "metadataIssues": []
+    },
+    {
+      "identity": {
+        "hostScope": "fixture",
+        "provider": "claude",
+        "namespace": "sha256:9a437845594bdb34dd26451be43c068143f83601c03d7d62718d6f90a637fd5d",
+        "nativeIdKind": "session",
+        "nativeId": "00000000-0000-0000-0000-000000000006"
+      },
+      "nativeIds": {
+        "threadId": null,
+        "sessionId": "00000000-0000-0000-0000-000000000006",
+        "jobId": "00000006"
+      },
+      "title": "Fixture Claude 6",
+      "kind": "unknown",
+      "cwd": "/fixture/project",
+      "cwdSource": "claude_registry",
+      "inventory": "live",
+      "phase": {
+        "value": "waiting",
+        "observedAt": 1700000020000,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "native"
+      },
+      "runtime": {
+        "value": "running",
+        "observedAt": 1700000030000,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "sample"
+      },
+      "worker": {
+        "value": "present",
+        "observedAt": 1700000030000,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "sample"
+      },
+      "attachment": {
+        "value": "unknown",
+        "observedAt": null,
+        "source": null,
+        "health": "unsupported",
+        "reason": "unsupported",
+        "clock": null
+      },
+      "outcome": {
+        "value": "completed",
+        "observedAt": 1700000020000,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot",
+        "clock": "native"
+      },
+      "blockedReason": "unknown",
+      "createdAt": 1700000000000,
+      "activity": {
+        "at": null,
+        "source": null,
+        "health": "unsupported",
+        "reason": "activity_source_unproved"
+      },
+      "workspace": null,
+      "sessionKind": "bg",
+      "job": {
+        "id": "00000006",
+        "retained": true,
+        "state": "done",
+        "tempo": "idle",
+        "terminalObservedAt": 1700000020000
+      },
+      "history": {
+        "source": "claude_sdk",
+        "sdkVersion": "0.2.163",
+        "createdAt": 1700000000000,
+        "fileModifiedAt": 1700000050000
+      },
       "metadataIssues": []
     }
   ],

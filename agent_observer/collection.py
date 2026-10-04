@@ -23,7 +23,7 @@ def unknown(reason="unobserved", health="unavailable"):
     }
 
 
-def fact(original, values):
+def fact(original, values, *, sampled=False):
     if not isinstance(original, dict):
         return unknown()
     current = original.get("health") == "current"
@@ -36,7 +36,7 @@ def fact(original, values):
         "health": original.get("health", "unavailable"),
         "reason": original.get("reason", "unobserved"),
         "clock": "sample"
-        if original.get("source") == "codex_rpc"
+        if (sampled and original.get("source")) or original.get("source") == "codex_rpc"
         else "native"
         if original.get("source")
         else None,
@@ -104,9 +104,7 @@ def project_source(native):
             ),
         },
         "capabilities": {
-            "phase": ["working", "blocked", "waiting"]
-            if provider == "codex"
-            else ["working", "blocked"],
+            "phase": ["working", "blocked", "waiting"],
             "blockedReasons": ["approval"],
             "runtime": ["running"],
             "activity": False,
@@ -128,8 +126,13 @@ def project_source(native):
     }
     if provider == "codex":
         result["limitations"].append("offline_history_unavailable")
+        result["limitations"].append("unloaded_work_state_unavailable")
     else:
         result["limitations"].append("interactive_readiness_unproved")
+        result["limitations"].append("waiting_requires_completed_background_context")
+    result["coverage"]["runtime"]["scope"] = (
+        "loaded_threads" if provider == "codex" else "registered_workers"
+    )
     validate_shape(result, SOURCE)
     return result
 
@@ -140,23 +143,36 @@ def project_session(native, source):
     provider = identity["provider"]
     ids = native["nativeIds"]
     native_presence = native.get("presence", {})
-    runtime = fact(native_presence, {"present": "running"})
+    runtime = fact(native_presence, {"present": "running"}, sampled=True)
     # Absence of a worker or absence from capped history is not absence of all
     # runtime context. Parked remains unsupported in this source milestone.
     if runtime["value"] == "unknown" and runtime["health"] == "current":
         runtime = unknown("parked_predicate_unproved", "unsupported")
     worker = (
-        fact(native_presence, {"present": "present", "absent": "absent"})
+        fact(native_presence, {"present": "present", "absent": "absent"}, sampled=True)
         if provider == "claude"
         else unknown("worker_presence_unproved", "unsupported")
     )
     mapping = {"working": "working", "needs_input": "blocked"}
     if provider == "codex" and runtime["value"] == "running":
         mapping["settled"] = "waiting"
+    claude_ready = (
+        provider == "claude"
+        and native.get("sessionKind") == "bg"
+        and worker["value"] == "present"
+        and (native.get("job") or {}).get("state") == "done"
+        and native.get("work", {}).get("source") == "claude_job_store"
+    )
+    if claude_ready:
+        mapping["settled"] = "waiting"
     phase = fact(native.get("work"), mapping)
     if phase["value"] == "blocked" and native.get("waitReason") != "approval":
         phase = unknown("questions_unproved", "unsupported")
-    if native.get("work", {}).get("value") == "settled" and provider == "claude":
+    if (
+        native.get("work", {}).get("value") == "settled"
+        and provider == "claude"
+        and not claude_ready
+    ):
         phase = unknown("interactive_readiness_unproved", "unsupported")
     outcome = unknown("outcome_source_unproved", "unsupported")
     if (

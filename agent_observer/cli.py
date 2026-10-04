@@ -16,7 +16,7 @@ from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
 from .watch import MIN_INTERVAL, SampledWatch
 
-VERSION = "0.2.0a2"
+VERSION = "0.2.0a3"
 
 
 def _input(path, limit=MAX_BYTES):
