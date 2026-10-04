@@ -1,12 +1,12 @@
 # Agent Observer roadmap
 
-Date: 2026-10-03. This document records status and delivery dependencies.
+Date: 2026-10-04. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
 [design review](design-review.md) define the associated scope and acceptance.
 
-## Next track: contract and first-party clients
+## Current track: contract and first-party clients
 
 The [contract/client plan](contract-and-clients-plan.md) and its
 [review](contract-and-clients-review.md) govern the next development work. The
@@ -23,22 +23,31 @@ implementation begins. Networking and new push source proof have separate gates.
 The [current execution record](contract-clients-execution-status.md) tracks the
 regular goal loop independently from the earlier migration pilot.
 
+G1/G2 now accept the independent `0.2.0a3` Observer candidate: public v2
+read/watch, Git/workspace enrichment and separate New/Resume client. After that
+closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
+against the frozen producer artifact. G3 networking remains deferred. Both
+candidates are installed unselected on Snap and Starship; see the [handoff](contract-clients-handoff.md)
+for exact versions/hashes, independent commands and compatible managed rollout.
+
 Checkpoint order is C0 capture/review, C1 model/source decisions, C2 schema and
 fixtures, C3 read client, C4 write client, C5 optional networking, followed by
 separate consumer migrations. C4 requires C2 and operation-specific proof;
 read-only C5 does not require C4. A read-only/device consumer does not depend on
-write-client delivery. Names, exact fields and packaging are provisional.
+write-client delivery. The accepted candidate's exact fields and semantics are
+in the [public v2 contract](public-contract-v2.md) and [write contract](write-client-contract.md).
 
 C2 defines snapshots and a local watch stream together. C3 may initially push
 sampled changes from polling; native notifications and passive hook wakeups have
 separate source/passivity gates. Push to consumers does not imply lossless native
 events or introduce cross-host networking into the core.
 
-Working/blocked/waiting phases, derived parked display, last conversation
-activity ordering and Git/workspace context are target requirements, not newly
-accepted native capabilities. Multi-profile UX remains deferred. Preserve v1
-identity/guards until a reviewed schema cutover. The gaps and acceptance cases
-are in the new plan/review.
+Working/blocked/waiting phases and Git/workspace context are accepted within the
+candidate's source-specific bounds. Parked inference and last conversation
+activity remain unavailable; creation is a separately labeled ordering option.
+Multi-profile UX remains deferred. Preserve the selected v1 tuple until a reviewed
+managed cutover. The gaps and acceptance cases are in the public contract and
+execution record.
 
 The M/R records below describe the existing migration pilot and its remaining
 acceptance gates. They do not authorize combined core/frontend work in this

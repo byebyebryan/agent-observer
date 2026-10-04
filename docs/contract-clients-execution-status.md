@@ -30,7 +30,7 @@ until a separately reviewed compatible consumer tuple is available.
 | E5 | Accepted for bounded native matrix | Separate write CLI/contracts; controlled guards, uncertainty and launcher ownership tests |
 | G2 | Accepted | Final `0.2.0a3` installed read/write artifact and isolated native routes on required hosts |
 | G3 | Deferred | Optional networking independent of local usability |
-| E8 | Next | Consume accepted `0.2.0a3`; frontend remains untouched at G2 closure |
+| E8 | Accepted for bounded source/package/native matrix | Plus `90e5b4f` consumes unchanged `0.2.0a3`; candidates remain unselected |
 
 Native source claims retain their prior exact-artifact bounds. New dimensions
 and actions need their own proof. Graphical focus/UX, physical suspend and the
@@ -143,3 +143,43 @@ unchanged; global Claude preferences drift observed during the window is
 explicit and left intact. Old pilot links stay selected; no coordinator reopen
 or Agent Plus implementation occurred before G2 acceptance. Next is E8 against
 this pinned artifact, retaining existing external Host Mesh composition.
+
+## Separate E8 consumer closure
+
+After independent G2 acceptance was committed at `ca98337`, Plus moved from
+`536851b` to source `90e5b4f`, version `0.14.0a1`. It pins the core-only public
+Observer library and delegates discovery/New/Resume to independent host-local
+commands. Private provider parsing/launch logic was removed from Plus. Observer
+source `222c5bf` and its accepted wheel stayed frozen throughout E8.
+
+Plus's 309-test/full local gate passes. Its wheel SHA-256 is
+`8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b`; unselected
+installation on both hosts is
+`/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a`.
+Public fixture conformance passes outside the checkout under isolated installed
+interpreters. Ordinary passive reads pass on both hosts and a real Snap-to-Starship
+SSH read passes using the explicit candidate executable with controlled Mesh
+authority. Unknown conversation age and partial Claude saved coverage remain
+explicit.
+
+Installed Plus/public Observer/native TTY entry accepts Codex New/exact Resume
+on Snap and Starship and Claude New/live attach/saved Resume on Snap. Tmux
+responses and Host Mesh authority are controlled in these entry proofs; they do
+not establish graphical windows or ordinary remote write routing. Missing owned
+Claude registry directories correctly rejected before dispatch; restoring empty
+directories made the separate saved-history fixture complete and accepted.
+No producer change was needed. Native copied UUID behavior remains unforced.
+
+Detailed E8 evidence is in the Plus checkout's
+`docs/evidence/2026-10-04-observer-v2/REPORT.md`, with its independent execution
+record at `docs/observer-v2-execution.md`. E8 cleanup removed owned private stores
+and borrowed credentials after namespace exit. Ordinary auth/config/settings
+hashes, including Snap global Claude preferences, stayed unchanged in that
+window. This does not erase the earlier G2 preference-drift observation.
+
+Old pilot links remain selected and no global write-client link was added.
+Managed selection, graphical/native Tmux acceptance, remote-write/transport-loss
+and suspend cases, coordinator reopen and publication remain separate gates.
+Hosted Plus CI awaits the unpublished pinned Observer prerelease dependency.
+No push or public release occurred. The [handoff](contract-clients-handoff.md)
+records exact candidates, runnable independent reads and the rollout boundary.
