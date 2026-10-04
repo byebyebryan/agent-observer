@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check bootstrap documentation without invoking providers or services."""
+"""Check documentation and synthetic spike tests without invoking providers."""
 
 from pathlib import Path
 import re
@@ -47,6 +47,14 @@ def main() -> int:
         return 1
     for arguments in (["git", "diff", "--check"], ["git", "diff", "--cached", "--check"]):
         result = subprocess.run(arguments, cwd=root, check=False)
+        if result.returncode:
+            return result.returncode
+    if (root / "tests").is_dir():
+        result = subprocess.run(
+            [sys.executable, "-B", "-m", "unittest", "discover", "-s", "tests", "-v"],
+            cwd=root,
+            check=False,
+        )
         if result.returncode:
             return result.returncode
     print(f"PASS: {len(files)} Markdown files, local links, whitespace, fences and Git diff checks")

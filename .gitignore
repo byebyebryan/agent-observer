@@ -12,3 +12,4 @@ __pycache__/
 /target/
 /build/
 /dist/
+/*.egg-info/
