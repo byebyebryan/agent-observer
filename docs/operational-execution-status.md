@@ -16,6 +16,8 @@ authority supplies Snap/Starship and the configured `starship` SSH route.
 Old pilot links are still selected; no global write entry exists. No display
 environment is available to the coordinator.
 
+This is the O0 baseline. O4 below records the completed selection.
+
 ## O1 tooling
 
 The accepted producer code/contract is unchanged. Repository-owned
@@ -81,3 +83,92 @@ checked separately by its own source-specific predicate.
 O1 is accepted independently. Upcoming O2 may consume this unchanged artifact;
 the old selected pilot remains intact. Private fixture namespaces are retained
 only for owned consumer proofs and will be removed in final cleanup.
+
+## O2 separate consumer acceptance
+
+The unchanged installed Plus wheel passed actual installed Host Mesh/Tmux CLIs,
+real configured SSH transport and native deferred entry. Owned namespace wrappers
+and a PTY/user-scope adapter supplied isolation and terminal presentation; no
+Tmux responses/provider results were fabricated. Codex New/exact Resume passed
+on Snap and Starship; Claude New/live/saved Resume passed on Snap. Every case
+required one public prepare/execute pair. Saved Resume retained private history
+after stopping the owned namespace and clearing only its runtime registries.
+Claude native phase evidence retained its clock. A real read-only SSH disconnect
+and reconnect preserved the remote namespace; native uncertainty after a possible
+write remains controlled coverage. Consumer evidence/tooling is committed in
+Plus `a2dcf65`, with 312 tests and its full source gate passing. Bootstrap/CI
+requires supplied exact Observer wheel bytes; hosted CI/publication is pending.
+
+This closes the real Tmux/SSH path, not graphical placement/focus, ordinary trust
+dialogs or current-client binding. Existing controlled expired-plan/failure/no
+redispatch cases remain labeled separately. No Observer producer code changed.
+
+## O3 managed preparation and O4 provisional selection
+
+Chezmoi `ac0f420` records the exact unpublished pilot manifest, candidate/live
+gates, five coordinated selectors, host exclusion and guarded rollback tooling.
+Targeted render checks pass for Snap/Starship and preserved Carbon/unknown-host
+branches. New-tool lint, legacy gate self-tests, strict identity cases and a
+rollback round trip/replaced-selector rejection pass. The broad chezmoi source
+gate remains blocked by an unrelated external SSH Plus archive checksum mismatch.
+Its expected `0ecbd01e…` and supplied `37a8202b…` hashes are not changed here.
+
+Even scoped chezmoi apply evaluates that unrelated archive. The reviewed helper
+uses an owned source projection containing only the five byte-identical managed
+templates and machine map. It invokes chezmoi for those exact links with no
+externals, removal list or deployment scripts. Both reviewed dry runs and applies
+passed. The selected tuple is now Observer `0.2.0a3-6aa793e6a0ba5ae3` and Plus
+`0.14.0a1-8ba19a0eba87944a` on **Snap and Starship**. All five links, including
+`~/.local/bin/agent-observer-write` and the separately pinned Rofi script link,
+match their immutable prefixes. Old prefixes remain installed.
+
+Selected-live gates pass on both hosts through normal configured routes with
+private cache/UI state: cache v7, full store-scoped identities, zero provider-stage
+errors and headless peer/page/action callbacks. Snap's gate additionally covered
+actual generic Tmux lifecycle on both advertised hosts with exact-reference
+cleanup and SSH usage-history preservation. The first live check exposed a gate
+resolver assumption about the released extension directory; the explicit pilot
+mode now validates the manifest's exact wheel prefix. No package defect or
+artifact change was required.
+
+Evidence: [Snap candidate](evidence/2026-10-04-operational/pilot-candidate-snap.json),
+[Starship candidate](evidence/2026-10-04-operational/pilot-candidate-starship.json),
+[managed preflight](evidence/2026-10-04-operational/managed-preflight.json),
+[Snap live](evidence/2026-10-04-operational/pilot-live-snap.json) and
+[Starship live](evidence/2026-10-04-operational/pilot-live-starship.json).
+Selected [Snap](evidence/2026-10-04-operational/selected-cli-launcher-snap.json)
+and [Starship](evidence/2026-10-04-operational/selected-cli-launcher-starship.json)
+read/write schema and launcher checks also pass. The launch-owned Rofi adapter
+verifies the actual initial frame, native Rofi arguments and matching sibling CLI;
+it supplies no graphical appearance/focus evidence.
+
+## O5 cleanup, rollback and remaining gates
+
+Both exact owned namespace incarnations stopped and both private provider stores,
+borrowed auth copies, terminal ledgers and private native histories were removed.
+No ordinary saved provider sessions were created or deleted. Ordinary provider
+auth/config/settings/Claude preference hashes match each host's pre-run baseline.
+The [cleanup report](evidence/2026-10-04-operational/native-cleanup.json) and
+preservation checks for [Snap](evidence/2026-10-04-operational/ordinary-preservation-snap.json)
+and [Starship](evidence/2026-10-04-operational/ordinary-preservation-starship.json)
+record only counts/booleans and paths, never provider values.
+The coordinator remains available and was never restarted. Starship's existing
+uncommitted managed migration work is preserved; only scoped selector/gate files
+were copied from the committed Snap managed checkpoint. Nothing was pushed.
+
+Private rollback snapshots are armed at
+`~/.local/share/agent-observer/rollback-20261004-snap` and
+`~/.local/share/agent-observer/rollback-20261004-starship` on their respective hosts.
+The managed `docs/agent-observer-pilot-operations.md` explains the rollback command
+and guards. Default rollback restores selectors/managed sources; optional consumer
+state restoration rejects later user changes. It never restores provider stores,
+auth/settings or stops native work. Tests used private consumer state, so ordinary
+cache/UI state remains available for its normal v7 migration on next launch.
+
+Morning checks remain: open the normal picker, inspect names/pages/order, use
+New/Resume locally and across hosts, and verify terminal placement/focus and
+native trust handling. Physical suspend and deliberate coordinator reopen remain
+manual. Public push/release, supplied hosted-CI artifact input and the unrelated
+external archive maintenance remain open. Monitoring expansion stays an independent
+Observer batch: last conversation activity, parked/offline predicates, broader
+input/questions, foreground Claude readiness, native events and optional networking.

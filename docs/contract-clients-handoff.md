@@ -6,9 +6,16 @@ Plus retains existing Host Mesh composition. The [execution record](contract-cli
 and [independent Observer report](evidence/2026-10-04-contract-clients/REPORT.md)
 define the actual source/package/native acceptance and remaining capabilities.
 
+The subsequent [operational pass](operational-execution-status.md) has selected
+this exact unchanged tuple on Snap and Starship, including the new global write
+entry. It independently accepted installation/watch/recovery before consumer
+proofs, then real Tmux/SSH New/Resume and selected passive/headless gates. The
+baseline rollout section below is historical; use the operational record for
+current selection, rollback and morning acceptance.
+
 ## Delivered tuple
 
-| Component | Source | Version | Installed unselected prefix on Snap and Starship |
+| Component | Source | Version | Selected prefix on Snap and Starship |
 | --- | --- | --- | --- |
 | Observer | `222c5bf` | `0.2.0a3` | `/home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3` |
 | Plus | `90e5b4f` | `0.14.0a1` | `/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a` |
@@ -30,8 +37,9 @@ make the consumer pass. No public push, dependency publication or release occurr
 
 ## Use the Observer candidate independently
 
-These calls address the unselected candidate directly and do not start missing
-provider daemons or change the pilot links:
+These calls address the immutable artifact directly and do not start missing
+provider daemons or change the pilot links. The ordinary read/write commands
+now resolve to this same artifact on the pilot hosts:
 
 ```sh
 observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3
@@ -59,7 +67,7 @@ authority. General question/input detection, parked inference, offline Codex
 discovery, foreground Claude readiness and current-client binding remain explicit
 unsupported/pending capabilities.
 
-## Next rollout checkpoint
+## Prior rollout baseline
 
 The ordinary selected tuple remains Observer `0.1.0a5-b68ebf4cefbd8b58` and Plus
 `0.13.0a3-76f8a951e2975283`. Managed chezmoi templates select the old read/Plus

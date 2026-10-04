@@ -27,12 +27,14 @@ G1/G2 now accept the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
 against the frozen producer artifact. G3 networking remains deferred. Both
-candidates are installed unselected on Snap and Starship; see the [handoff](contract-clients-handoff.md)
-for exact versions/hashes, independent commands and compatible managed rollout.
-The [next overnight operational plan](overnight-operational-acceptance-plan.md)
-targets repeatable installation, actual Tmux/SSH entry and a scoped provisional
-pilot selection before expanding monitoring coverage. It includes all five
-managed entrypoints and keeps desktop/release/coordinator gates separate.
+candidates are selected as the provisional pilot on Snap and Starship; see the
+[operational record](operational-execution-status.md) for independent installation,
+bounded watch/recovery and real Tmux/SSH entry acceptance. The
+[operational plan](overnight-operational-acceptance-plan.md) closed its unattended
+O0-O5 work with all five managed entrypoints and private rollback snapshots.
+Desktop/release/coordinator acceptance remains separate. The
+[handoff](contract-clients-handoff.md) records the immutable package tuple and
+remaining monitoring/networking work.
 
 Checkpoint order is C0 capture/review, C1 model/source decisions, C2 schema and
 fixtures, C3 read client, C4 write client, C5 optional networking, followed by
@@ -49,8 +51,8 @@ events or introduce cross-host networking into the core.
 Working/blocked/waiting phases and Git/workspace context are accepted within the
 candidate's source-specific bounds. Parked inference and last conversation
 activity remain unavailable; creation is a separately labeled ordering option.
-Multi-profile UX remains deferred. Preserve the selected v1 tuple until a reviewed
-managed cutover. The gaps and acceptance cases are in the public contract and
+Multi-profile UX remains deferred. The reviewed managed cutover selects v2 on
+Snap and Starship and retains the old artifacts for rollback. The gaps and acceptance cases are in the public contract and
 execution record.
 
 The M/R records below describe the existing migration pilot and its remaining
