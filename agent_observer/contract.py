@@ -81,6 +81,14 @@ COVERAGE = obj(
     status=choice("complete", "partial", "unavailable", "unsupported"),
     reason=text(128, pattern=CODE),
 )
+RUNTIME_COVERAGE = {
+    **COVERAGE,
+    "properties": {
+        **COVERAGE["properties"],
+        "scope": choice("loaded_threads", "registered_workers"),
+    },
+    "required": [*COVERAGE["required"], "scope"],
+}
 ACTIVITY = obj(
     at=TIME,
     source=text(128, pattern=CODE, nullable=True),
@@ -147,7 +155,7 @@ SOURCE = obj(
     configHomeKind=choice("default", "explicit"),
     runtime=RUNTIME_INFO,
     sourceHealth=choice("current", "partial", "stale", "unavailable"),
-    coverage=obj(saved=COVERAGE, runtime=COVERAGE),
+    coverage=obj(saved=COVERAGE, runtime=RUNTIME_COVERAGE),
     capabilities=obj(
         phase=array(choice("working", "blocked", "waiting"), 3),
         blockedReasons=array(choice("approval", "question"), 2),

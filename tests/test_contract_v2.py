@@ -8,6 +8,7 @@ import sys
 import unittest
 from pathlib import Path
 
+from agent_observer.collection import project_session
 from agent_observer.contract import (
     ContractError,
     canonical,
@@ -36,7 +37,7 @@ class ContractV2Test(unittest.TestCase):
             )
 
     def test_both_provider_and_partial_fixtures_conform(self):
-        for name in ("snapshot", "partial"):
+        for name in ("snapshot", "partial", "claude-ready"):
             validate_snapshot(fixture(name))
         validate_watch(fixture("gap"))
         rows = fixture()["sessions"]
@@ -45,6 +46,38 @@ class ContractV2Test(unittest.TestCase):
         self.assertEqual(completed["phase"]["value"], "unknown")
         self.assertEqual(completed["runtime"]["value"], "unknown")
         self.assertTrue(all(row["activity"]["at"] is None for row in rows))
+
+    def test_claude_waiting_requires_proved_bg_completion_and_current_worker(self):
+        value = fixture("claude-ready")
+        ready = value["sessions"][-1]
+        source = value["sources"][-1]
+        native = {
+            "identity": ready["identity"],
+            "nativeIds": ready["nativeIds"],
+            "title": ready["title"],
+            "sessionKind": "bg",
+            "job": ready["job"],
+            "inventory": "live",
+            "history": ready["history"],
+            "presence": {k: v for k, v in ready["worker"].items() if k != "clock"},
+            "work": {
+                **{k: v for k, v in ready["outcome"].items() if k != "clock"},
+                "value": "settled",
+            },
+        }
+        row = project_session(native, source)
+        self.assertEqual(row["phase"]["value"], "waiting")
+        self.assertEqual(row["phase"]["clock"], "native")
+        self.assertEqual(row["worker"]["clock"], "sample")
+        self.assertEqual(row["phase"]["observedAt"], ready["outcome"]["observedAt"])
+        for change in (
+            lambda n: n["presence"].update(value="absent"),
+            lambda n: n.update(sessionKind="interactive"),
+            lambda n: n["job"].update(state="working"),
+        ):
+            changed = copy.deepcopy(native)
+            change(changed)
+            self.assertEqual(project_session(changed, source)["phase"]["value"], "unknown")
 
     def test_rejects_private_payloads_schema_and_identity_conflicts(self):
         mutations = [

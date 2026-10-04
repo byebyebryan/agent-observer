@@ -33,7 +33,8 @@
         },
         "runtime": {
           "status": "complete",
-          "reason": "native_snapshot"
+          "reason": "native_snapshot",
+          "scope": "loaded_threads"
         }
       },
       "capabilities": {
@@ -57,7 +58,8 @@
         "parked_predicate_unproved",
         "questions_unproved",
         "client_binding_unproved",
-        "offline_history_unavailable"
+        "offline_history_unavailable",
+        "unloaded_work_state_unavailable"
       ]
     },
     {
@@ -83,13 +85,15 @@
         },
         "runtime": {
           "status": "complete",
-          "reason": "native_snapshot"
+          "reason": "native_snapshot",
+          "scope": "registered_workers"
         }
       },
       "capabilities": {
         "phase": [
           "working",
-          "blocked"
+          "blocked",
+          "waiting"
         ],
         "blockedReasons": [
           "approval"
@@ -106,7 +110,8 @@
         "parked_predicate_unproved",
         "questions_unproved",
         "client_binding_unproved",
-        "interactive_readiness_unproved"
+        "interactive_readiness_unproved",
+        "waiting_requires_completed_background_context"
       ]
     }
   ],
@@ -359,7 +364,7 @@
         "source": "claude_registry",
         "health": "current",
         "reason": "native_snapshot",
-        "clock": "native"
+        "clock": "sample"
       },
       "worker": {
         "value": "present",
@@ -367,7 +372,7 @@
         "source": "claude_registry",
         "health": "current",
         "reason": "native_snapshot",
-        "clock": "native"
+        "clock": "sample"
       },
       "attachment": {
         "value": "unknown",

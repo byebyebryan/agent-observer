@@ -214,11 +214,18 @@
                     "maxLength": 128,
                     "minLength": 1,
                     "pattern": "^[a-z][a-z0-9_]{0,127}$"
+                  },
+                  "scope": {
+                    "enum": [
+                      "loaded_threads",
+                      "registered_workers"
+                    ]
                   }
                 },
                 "required": [
                   "status",
-                  "reason"
+                  "reason",
+                  "scope"
                 ],
                 "additionalProperties": false
               }

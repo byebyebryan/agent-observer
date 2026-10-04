@@ -1,6 +1,6 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a1`. This is a semantic cutover from the
+Version: 2; package candidate `0.2.0a3`. This is a semantic cutover from the
 [v1 pilot](snapshot-contract.md), with no v1 option on the new CLI. The installed
 v1 pilot remains pinned while this independent candidate is developed.
 
@@ -18,8 +18,11 @@ session UUID/job short IDs remain distinct.
 Phase is working, blocked, waiting or unknown. Approval waits map to blocked.
 The proved Codex loaded idle state maps to waiting, with a sampled evidence
 clock. Claude work/approval maps to working/blocked; completed background jobs
-have a separate completed outcome. Neither job completion nor a missing worker
-establishes interactive readiness. Claude waiting, questions, cancellation and
+have a separate completed outcome. A completed background job with its current
+verified worker maps to waiting: an isolated native proof accepted a subsequent
+prompt under the same UUID and completed it. Completion with a missing/unknown
+worker does not establish readiness. Background idle while a job is working and
+foreground interactive readiness remain unknown. Questions, cancellation and
 failure outcomes remain unproved in this candidate.
 
 Runtime is running, parked or unknown. Current loaded Codex context or verified
@@ -28,6 +31,11 @@ unknown: the sources do not prove absence of every relevant runtime context.
 Parked is part of the vocabulary but is not enabled by these adapters yet.
 Worker and attachment evidence are separate. Codex does not claim worker presence
 from a loaded server thread; current client binding remains unsupported.
+Runtime coverage explicitly names its scope: loaded_threads for Codex and
+registered_workers for Claude. Complete coverage of those inventories does not
+claim an exhaustive list of all provider execution contexts. In particular,
+Codex work can survive viewer exit outside loaded-thread inventory; the current
+collector leaves saved-only work unknown rather than claiming it stopped.
 
 The bounded source comparison retains existing accepted native reads. Codex
 `updatedAt` and Claude file modification time do not prove conversation activity;

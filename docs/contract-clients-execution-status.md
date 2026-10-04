@@ -91,3 +91,37 @@ setup. Source review also tightened native cues to the pinned matching unique
 background/attach lines and added the exact trust-required rejection predicate.
 149 tests now pass. These source changes require a new `0.2.0a2` artifact and
 native revalidation before G2 can close. Agent Plus remains untouched.
+
+## Native routes and final candidate preparation
+
+`0.2.0a2` installed native Codex New/exact Resume passed on Snap and Starship.
+Claude New/live attach passed on Snap in an operator-created, isolated trusted
+workspace fixture. Trust-dialog UX is not claimed. Completion retained a live
+worker after viewer exit; selecting live attach there is correct, not a saved
+history activation. A new private namespace with only the retained native history
+and cleared owned runtime records accepted exact saved UUID resume and attachment.
+The returned UUID was unchanged in this case; copied-result handling has controlled
+fixtures and remains unforced in the native matrix. Ambiguous retained-worker
+provenance stays rejected.
+
+Review found that a pipe I/O error after a possible dispatch must report an
+uncertain effect, rather than launcher-unavailable/no effect. Source now makes
+that distinction and adds bounded literal-JSON handoff inputs for independent
+terminal clients. 151 tests pass. These changes will be packaged as `0.2.0a3`;
+the final independent/native artifact gate remains open until that candidate
+is checked. No Agent Plus source or pilot selection changes have occurred.
+
+The focused Claude readiness proof found a completed background context with a
+current worker accepted another prompt and completed it under the same exact
+UUID. In-memory native history checks confirmed matching user/assistant records;
+only booleans are retained. Working was shorter than the sample interval and was
+not captured in that second turn, illustrating the sampled-watch limit. The new
+mapping enables waiting only for this completed background/current-worker case;
+background idle with a working job and foreground interactive readiness remain
+unknown. Worker/runtime liveness clocks are correctly marked sampled, independently
+from native phase/completion clocks.
+
+Coverage now explicitly names loaded_threads (Codex) and registered_workers
+(Claude); complete inventory coverage is not promoted to complete execution-context
+coverage. Unloaded Codex work remains an explicit collection limitation. Public
+write fixtures and semantic effect/identity constraints are added. 153 tests pass.
