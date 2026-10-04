@@ -19,8 +19,9 @@ strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
 watch. The [execution record](docs/contract-clients-execution-status.md) separates
 source checks from [independent packaged/native acceptance](docs/evidence/2026-10-04-contract-clients/REPORT.md).
 The separate [write client](docs/write-client-contract.md) supports validated
-New/Resume and native TTY entry. The v2 candidate is installed unselected on
-Snap and Starship; the installed v1 pilot described below remains selected.
+New/Resume and native TTY entry. The v2 provisional pilot is selected on
+Snap and Starship after independent operational acceptance and real Tmux/SSH
+consumer proofs; see the [operational record](docs/operational-execution-status.md).
 Agent Plus subsequently passed its own bounded public-contract/native-entry
 consumer gate against this unchanged Observer artifact. The [current handoff](docs/contract-clients-handoff.md)
 records the compatible candidates and remaining managed/desktop rollout gates.
@@ -29,10 +30,10 @@ The [contract and first-party clients track](docs/contract-and-clients-plan.md) 
 a passive host-local core, read and New/Resume write clients, and an optional
 separate networking component in this repository. Contract/core work and
 frontend migrations have independent gates. The [design review](docs/contract-and-clients-review.md)
-distinguishes this direction from the installed pilot below. The public v2
-contract does not change the currently selected v1 API.
+distinguishes this direction from the preceding pilot below. The public v2
+contract is now selected on the two pilot hosts; other consumers migrate separately.
 
-The currently selected pilot is `agent-observer 0.1.0a5`, written in Python
+The preceding pilot was `agent-observer 0.1.0a5`, written in Python
 with no runtime dependencies. Its host-local JSON
 [contract candidate](docs/snapshot-contract.md) separates logical identity,
 work, presence, attachment, source health and coverage.
