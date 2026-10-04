@@ -1,0 +1,336 @@
+"""Executable, provisional host-local Codex snapshot study.
+
+No provider is invoked or started. The output reports source facts and pending
+semantic coverage explicitly; it is not the stable consumer API or an accepted
+ordinary-runtime adapter. Native work-state proof gates remain enforced below.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import socket
+import time
+import unicodedata
+import uuid
+from pathlib import Path
+
+from .codex_endpoint import (
+    EndpointError,
+    inspect_managed_endpoint,
+    validate_incarnation,
+)
+from .codex_metadata import MetadataError, live_thread_metadata, saved_thread_metadata
+from .codex_transport import PassiveClient, TransportError
+
+VERSION = "0.160.0"
+RELEASE = "0.160.0-x86_64-unknown-linux-musl"
+BINARY_SHA256 = "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad"
+# Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
+# verified running disposable tool; all were active with an empty flags list.
+# The same native series supplied idle before/after successful completion.
+# A separate native on-request/workspace-write client held an approval with
+# waitingOnApproval; operator denial returned it to idle without a write.
+# Other waiting/error semantics have separate gates below.
+WORK_STATE_ACCEPTED = True
+ACCEPTED_WORK_VALUES = frozenset({"working", "settled", "needs_input"})
+ACCEPTED_WAIT_FLAGS = frozenset({"waitingOnApproval"})
+_UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
+_SCOPE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,255}\Z", re.ASCII)
+
+
+class SnapshotError(ValueError):
+    """Finite source/coverage error, never raw native data."""
+
+
+def _page(value, *, loaded=False):
+    if not isinstance(value, dict) or not isinstance(value.get("data"), list):
+        raise SnapshotError("invalid_inventory_page")
+    cursor = value.get("nextCursor")
+    if cursor is not None and (not isinstance(cursor, str) or not 0 < len(cursor) <= 4096):
+        raise SnapshotError("invalid_inventory_cursor")
+    if len(value["data"]) > 10000:
+        raise SnapshotError("inventory_page_limit")
+    if loaded and any(
+        not isinstance(item, str) or not _UUID.fullmatch(item) for item in value["data"]
+    ):
+        raise SnapshotError("invalid_loaded_identity")
+    return value["data"], cursor
+
+
+def _clock():
+    return int(time.time() * 1000)
+
+
+def _namespace(config_home, pid):
+    values = [str(config_home)]
+    try:
+        for name in ("user", "mnt", "pid"):
+            values.append(os.readlink(Path("/proc") / str(pid) / "ns" / name))
+        boot_id = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+    except OSError:
+        raise SnapshotError("namespace_provenance_unavailable") from None
+    if not _UUID.fullmatch(boot_id):
+        raise SnapshotError("namespace_provenance_unavailable")
+    return "sha256:" + hashlib.sha256("\x00".join(values).encode()).hexdigest(), boot_id
+
+
+def collect_codex(
+    config_home: Path,
+    *,
+    host_scope: str,
+    history_limit: int = 100,
+    live_limit: int = 512,
+    timeout: float = 10.0,
+):
+    if (
+        not isinstance(config_home, Path)
+        or not config_home.is_absolute()
+        or len(str(config_home)) > 4096
+        or any(unicodedata.category(char).startswith("C") for char in str(config_home))
+        or not isinstance(host_scope, str)
+        or not _SCOPE.fullmatch(host_scope)
+        or type(history_limit) is not int
+        or not 1 <= history_limit <= 1000
+        or type(live_limit) is not int
+        or not 1 <= live_limit <= 2048
+        or type(timeout) not in (int, float)
+        or not 1 <= timeout <= 30
+    ):
+        raise SnapshotError("invalid_collection_scope")
+    started = time.monotonic()
+    deadline = started + timeout
+    result = {
+        "schemaVersion": 1,
+        "collectionId": str(uuid.uuid4()),
+        "collectedAt": _clock(),
+        "host": {
+            "authority": host_scope,
+            "authoritySource": "caller",
+            "nativeHostname": socket.gethostname(),
+            "uid": os.geteuid(),
+        },
+        "provider": "codex",
+        "configHome": str(config_home),
+        "sessions": [],
+        "coverage": {
+            "saved": {"complete": False, "reason": "not_observed"},
+            "loaded": {"complete": False, "reason": "not_observed"},
+            "work": {
+                "supported": WORK_STATE_ACCEPTED,
+                "reason": "native_proof"
+                if WORK_STATE_ACCEPTED
+                else "native_transition_proof_pending",
+                "supportedValues": sorted(ACCEPTED_WORK_VALUES) if WORK_STATE_ACCEPTED else [],
+                "supportedWaitFlags": sorted(ACCEPTED_WAIT_FLAGS) if WORK_STATE_ACCEPTED else [],
+                "pendingValues": ["interrupted", "error"],
+                "pendingWaitFlags": ["waitingOnUserInput"],
+            },
+            "workerPresence": {"supported": False, "reason": "not_observed"},
+            "clientBinding": {"supported": False, "reason": "source_not_established"},
+        },
+        "limitations": [
+            "study_contract",
+            "one_configured_namespace",
+            "no_watch",
+            "loaded_thread_is_not_worker_or_client_presence",
+        ],
+        "errors": [],
+        "sourceHealth": "unavailable",
+    }
+    rows = {}
+
+    def remaining():
+        value = deadline - time.monotonic()
+        if value <= 0:
+            raise SnapshotError("collection_timeout")
+        return min(5.0, value)
+
+    try:
+        identity = inspect_managed_endpoint(
+            config_home,
+            release=RELEASE,
+            binary_sha256=BINARY_SHA256,
+            version=VERSION,
+            timeout=min(3.0, remaining()),
+        )
+        namespace, boot_id = _namespace(config_home, identity.pid)
+        result["namespace"] = namespace
+        result["runtime"] = {
+            "version": VERSION,
+            "versionEvidence": "verified_executable_sha256",
+            "binarySha256": BINARY_SHA256,
+            "pid": identity.pid,
+            "startTicks": identity.start_ticks,
+            "bootId": boot_id,
+            "topology": "native_managed_endpoint",
+            "endpoint": identity.endpoint,
+        }
+        scope = {
+            "host_scope": host_scope,
+            "namespace": namespace,
+            "runtime_version": VERSION,
+        }
+        with PassiveClient.connect(
+            identity.endpoint,
+            expected_uid=identity.uid,
+            expected_pid=identity.pid,
+            timeout=remaining(),
+        ) as client:
+            initialized = client.initialize()
+            if not isinstance(initialized, dict) or initialized.get("codexHome") != str(
+                config_home
+            ):
+                raise SnapshotError("runtime_namespace_mismatch")
+            # Read loaded inventory independently and before display-limited history.
+            loaded = []
+            cursor = None
+            cursors = set()
+            for _ in range(64):
+                client.timeout = remaining()
+                data, following = _page(client.loaded_threads(cursor=cursor), loaded=True)
+                loaded.extend(item.lower() for item in data)
+                if len(set(loaded)) != len(loaded):
+                    raise SnapshotError("loaded_identity_ambiguous")
+                if len(loaded) > live_limit:
+                    loaded = loaded[:live_limit]
+                    result["coverage"]["loaded"] = {
+                        "complete": False,
+                        "reason": "live_limit",
+                    }
+                    break
+                if following is None:
+                    result["coverage"]["loaded"] = {
+                        "complete": True,
+                        "reason": "native_snapshot",
+                    }
+                    break
+                if following in cursors:
+                    raise SnapshotError("inventory_cursor_cycle")
+                cursors.add(following)
+                cursor = following
+            else:
+                raise SnapshotError("inventory_page_limit")
+            for identifier in loaded:
+                client.timeout = remaining()
+                response = client.read_thread(identifier)
+                if (
+                    not isinstance(response, dict)
+                    or not isinstance(response.get("thread"), dict)
+                    or not isinstance(response["thread"].get("id"), str)
+                    or response["thread"]["id"].lower() != identifier
+                ):
+                    raise SnapshotError("loaded_read_identity_conflict")
+                row = live_thread_metadata(response["thread"], **scope, observed_at=_clock())
+                row["presenceKind"] = "server_thread_loaded"
+                if (
+                    not WORK_STATE_ACCEPTED
+                    or row["work"]["value"] not in ACCEPTED_WORK_VALUES
+                    or (
+                        row["work"]["value"] == "needs_input"
+                        and not set(row["nativeState"]["activeFlags"]).issubset(ACCEPTED_WAIT_FLAGS)
+                    )
+                ):
+                    row["work"] = {
+                        "value": "unknown",
+                        "observedAt": None,
+                        "source": None,
+                        "health": "unsupported",
+                        "reason": "unsupported",
+                    }
+                    row["waitReason"] = "unknown"
+                rows[identifier] = row
+            cursor = None
+            cursors = set()
+            saved_count = 0
+            saved_ids = set()
+            for _ in range(64):
+                client.timeout = remaining()
+                data, following = _page(
+                    client.list_threads(cursor=cursor, limit=min(100, history_limit - saved_count))
+                )
+                if len(data) > history_limit - saved_count:
+                    data = data[: history_limit - saved_count]
+                    following = following or "display_limit"
+                for payload in data:
+                    row = saved_thread_metadata(payload, **scope)
+                    identifier = row["identity"]["nativeId"]
+                    if identifier in saved_ids:
+                        raise SnapshotError("saved_identity_ambiguous")
+                    saved_ids.add(identifier)
+                    existing = rows.get(identifier)
+                    if existing and existing["nativeIds"] != row["nativeIds"]:
+                        raise SnapshotError("native_identity_mapping_conflict")
+                    rows.setdefault(identifier, row)
+                saved_count += len(data)
+                if following is None:
+                    result["coverage"]["saved"] = {
+                        "complete": True,
+                        "reason": "native_snapshot",
+                    }
+                    break
+                if saved_count >= history_limit:
+                    result["coverage"]["saved"] = {
+                        "complete": False,
+                        "reason": "history_limit",
+                    }
+                    break
+                if following in cursors:
+                    raise SnapshotError("inventory_cursor_cycle")
+                cursors.add(following)
+                cursor = following
+            else:
+                raise SnapshotError("inventory_page_limit")
+            validate_incarnation(identity)
+            result["ignoredMessages"] = client.ignored_messages
+            result["sourceHealth"] = "current"
+    except (EndpointError, TransportError, MetadataError, SnapshotError) as error:
+        result["errors"].append({"code": str(error)})
+        # No partially read current facts survive an incarnation/read gap as fresh.
+        for row in rows.values():
+            for dimension in ("work", "presence", "attachment"):
+                evidence = row[dimension]
+                if evidence["value"] != "unknown":
+                    evidence["lastKnownValue"] = evidence["value"]
+                evidence["value"] = "unknown"
+                evidence["health"] = "stale"
+                evidence["reason"] = "observation_gap"
+        result["sourceHealth"] = "stale" if rows else "unavailable"
+        for stage in ("saved", "loaded"):
+            result["coverage"][stage] = {"complete": False, "reason": "source_failed"}
+    result["sessions"] = list(rows.values())
+    result["collectedAt"] = _clock()
+    result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument(
+        "--codex-home",
+        type=Path,
+        default=Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))),
+    )
+    parser.add_argument("--history-limit", type=int, default=100)
+    parser.add_argument("--live-limit", type=int, default=512)
+    arguments = parser.parse_args()
+    try:
+        value = collect_codex(
+            arguments.codex_home,
+            host_scope=arguments.host_scope,
+            history_limit=arguments.history_limit,
+            live_limit=arguments.live_limit,
+        )
+    except SnapshotError:
+        print('{"schemaVersion":1,"error":"invalid_collection_scope"}')
+        return 2
+    print(json.dumps(value, ensure_ascii=True, separators=(",", ":"), allow_nan=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
