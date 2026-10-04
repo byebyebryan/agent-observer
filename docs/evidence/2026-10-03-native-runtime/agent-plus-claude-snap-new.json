@@ -1,0 +1,492 @@
+{
+  "action": "claude-snap-new",
+  "accepted": true,
+  "evidenceKind": "installed_action_with_disposable_terminal_client",
+  "graphicalAcceptance": false,
+  "host": "snap",
+  "createdGenericReference": {
+    "host": "snap",
+    "meshRevision": "sha256:decab8fc6d7070b36736392e15feb5900732ce251f8b473fe08341139a6a995c",
+    "serverGeneration": "tmux-v1:1790960394:10120:/tmp/tmux-1000/default",
+    "sessionId": "$23",
+    "createdAt": 1791011458,
+    "observedName": "Claude-ff8a5f7f-891a-406d-88b1-e1f112fa0819"
+  },
+  "viewerStatus": "unsupported",
+  "viewerCount": 0,
+  "closeSafe": true,
+  "identity": {
+    "hostId": "snap",
+    "kind": "claude",
+    "id": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+    "namespace": "sha256:b34fbe2d3ff21a7a356f0320df27c3eba653c4fdbc7e985b1c2dc4e1e6f2294f",
+    "nativeIdKind": "session"
+  },
+  "currentClientBindingAccepted": false,
+  "createdJobId": "ff8a5f7f",
+  "beforeTurn": {
+    "textUserRecords": 0,
+    "assistantRecords": 0,
+    "exactMarkerCount": 0
+  },
+  "samples": [
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011566697,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011567381,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011568054,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011568728,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011569398,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "working",
+        "observedAt": 1791011566582,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011570074,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011570748,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011571418,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011572088,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011572762,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011573432,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011574104,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011574766,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011575435,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011576104,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011576768,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011577448,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011578116,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011578782,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011579455,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011580126,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011580792,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011581461,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011582127,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    },
+    {
+      "sourceHealth": "current",
+      "work": {
+        "value": "settled",
+        "observedAt": 1791011570654,
+        "source": "claude_job_store",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791011582793,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      }
+    }
+  ],
+  "afterTurn": {
+    "textUserRecords": 1,
+    "assistantRecords": 1,
+    "exactMarkerCount": 1
+  },
+  "nativeWorkTransitionAccepted": true,
+  "exactAssistantMarkerAccepted": true,
+  "beforeTurnTranscriptAbsent": true,
+  "operatorTranscriptExactUUIDFileCount": 1,
+  "afterViewerClosed": {
+    "sourceHealth": "current",
+    "work": {
+      "value": "settled",
+      "observedAt": 1791011570654,
+      "source": "claude_job_store",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "presence": {
+      "value": "present",
+      "observedAt": 1791011781600,
+      "source": "claude_registry",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "jobId": "ff8a5f7f"
+  },
+  "cleanup": {
+    "ownedNewWrapperKilled": true,
+    "ownedPrivateViewerAbsentOrClosed": true,
+    "newProviderJobPreservedForResumeProof": true,
+    "otherSessionsOperated": false
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "isolatedRuntimeNamespacesExited": true,
+  "ownedJobsExplicitlyStopped": true,
+  "borrowedCredentialCopiesRemoved": true,
+  "privateRawProofHomeRemoved": true,
+  "privateRawWorkspaceRemoved": true,
+  "ordinaryNativePreferencesUnchanged": true,
+  "ordinarySettingsAndHookConfigurationUnchanged": true,
+  "ordinaryCredentialFilesRestoredOrEditedByOperator": false,
+  "ordinaryCredentialDigestStableDuringInstalledProof": true,
+  "ordinaryFilesRemoved": 0,
+  "graphicalAcceptance": false,
+  "currentCoordinatorPreserved": true,
+  "privateAuxiliaryProofRootRemoved": true,
+  "privateLocalHashNotesRemoved": true
+}

@@ -1,0 +1,50 @@
+{
+  "studySnapshotVersion": 1,
+  "schemaStatus": "provisional",
+  "collectionId": "93d7a670-d86d-4e4e-9d42-9b30ea99083a",
+  "collectedAt": 1791001152140,
+  "host": {
+    "authority": "snap",
+    "authoritySource": "caller",
+    "nativeHostname": "80H1VV3",
+    "uid": 1000
+  },
+  "provider": "codex",
+  "configHome": "/home/bryan/.codex",
+  "sessions": [],
+  "coverage": {
+    "saved": {
+      "complete": false,
+      "reason": "source_failed"
+    },
+    "loaded": {
+      "complete": false,
+      "reason": "source_failed"
+    },
+    "work": {
+      "supported": false,
+      "reason": "native_transition_proof_pending"
+    },
+    "workerPresence": {
+      "supported": false,
+      "reason": "not_observed"
+    },
+    "clientBinding": {
+      "supported": false,
+      "reason": "source_not_established"
+    }
+  },
+  "limitations": [
+    "study_contract",
+    "one_configured_namespace",
+    "no_watch",
+    "loaded_thread_is_not_worker_or_client_presence"
+  ],
+  "errors": [
+    {
+      "code": "endpoint_unavailable"
+    }
+  ],
+  "sourceHealth": "unavailable",
+  "durationMs": 0.17
+}

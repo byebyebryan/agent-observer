@@ -1,0 +1,22 @@
+{
+  "scope": "installed_saved_claude_resume_isolated",
+  "graphicalAcceptance": false,
+  "ordinarySessionsAccessible": false,
+  "rawProviderPayloadRetained": false,
+  "terminalCapturesRetained": false,
+  "savedRowObserved": true,
+  "preResumeInventory": "retained_job",
+  "preResumePresence": "unknown",
+  "preResumeHealth": "unavailable",
+  "sourceSessionId": "813309c2-121d-48ea-aa73-2dfc3aacaf7c",
+  "actualSessionId": "fb65a8a4-5a65-4f47-8724-5afbcee97518",
+  "jobId": "fb65a8a4",
+  "sameSessionId": false,
+  "nativeSessionKind": "bg",
+  "nativePresence": "present",
+  "genericWrapperCreated": true,
+  "nativeViewerCommandObserved": true,
+  "workerPresentAfterViewerExit": true,
+  "outcome": "passed",
+  "ownedJobStopExit": 0
+}

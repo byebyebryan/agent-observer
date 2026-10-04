@@ -1,0 +1,76 @@
+{
+  "snap": {
+    "exit": 0,
+    "hosts": {
+      "snap": {
+        "providerCounts": {
+          "codex": 48,
+          "claude": 31
+        },
+        "claudeHistoryRows": 31,
+        "claudeSavedOnlyRows": 26,
+        "claudeHistoryNames": 29,
+        "oldestClaudeCreationUtc": "2026-07-13T17:07:17.505000+00:00",
+        "confirmedCodexChildren": 0,
+        "savedPresenceRemainsUnknown": true,
+        "errors": []
+      },
+      "starship": {
+        "providerCounts": {
+          "codex": 90
+        },
+        "claudeHistoryRows": 0,
+        "claudeSavedOnlyRows": 0,
+        "claudeHistoryNames": 0,
+        "oldestClaudeCreationUtc": null,
+        "confirmedCodexChildren": 0,
+        "savedPresenceRemainsUnknown": true,
+        "errors": []
+      }
+    },
+    "errors": [],
+    "lastRefresh": {
+      "attemptedAt": 1791073956,
+      "completedAt": 1791073956,
+      "outcome": "complete"
+    },
+    "defaultHistoryPoolClaudeSavedRows": 10
+  },
+  "starship": {
+    "exit": 0,
+    "hosts": {
+      "starship": {
+        "providerCounts": {
+          "codex": 90
+        },
+        "claudeHistoryRows": 0,
+        "claudeSavedOnlyRows": 0,
+        "claudeHistoryNames": 0,
+        "oldestClaudeCreationUtc": null,
+        "confirmedCodexChildren": 0,
+        "savedPresenceRemainsUnknown": true,
+        "errors": []
+      },
+      "snap": {
+        "providerCounts": {
+          "codex": 48,
+          "claude": 31
+        },
+        "claudeHistoryRows": 31,
+        "claudeSavedOnlyRows": 26,
+        "claudeHistoryNames": 29,
+        "oldestClaudeCreationUtc": "2026-07-13T17:07:17.505000+00:00",
+        "confirmedCodexChildren": 0,
+        "savedPresenceRemainsUnknown": true,
+        "errors": []
+      }
+    },
+    "errors": [],
+    "lastRefresh": {
+      "attemptedAt": 1791073959,
+      "completedAt": 1791073959,
+      "outcome": "complete"
+    },
+    "defaultHistoryPoolClaudeSavedRows": 10
+  }
+}

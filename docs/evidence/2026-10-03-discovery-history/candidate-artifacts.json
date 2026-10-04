@@ -1,0 +1,68 @@
+{
+  "observer": {
+    "name": "agent-observer",
+    "version": "0.1.0a5",
+    "wheel": "/tmp/agent-discovery-candidates-p384tply/observer/agent_observer-0.1.0a5-py3-none-any.whl",
+    "wheelSha256": "b68ebf4cefbd8b58fbfabf32cdbc2c2c3a4017a4c210e00d849cf1b75e99f163",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58",
+    "moduleHashes": {
+      "agent_observer/__init__.py": "f603ee92a0c98dc8164dff075c8b7727e08b4feafa1516f3942a5c806993f391",
+      "agent_observer/_claude_history_worker.py": "46cca6827f3911ce1d1f52a42fbadfb9c27108b2bc149ce6ec83b5ac93c9dc3d",
+      "agent_observer/bounded_json.py": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6",
+      "agent_observer/claude_history.py": "cb5845cfb608fdd008268389752d56288dcd5b0bc82c4f835eb2ae24ebc7d585",
+      "agent_observer/claude_metadata.py": "f7d4dc4f74aa790dd8bc05a9d92800d38852e3787551a290e6e23772b2df2ce6",
+      "agent_observer/claude_snapshot.py": "55cfccf8bd5ccf8969c4ad72af659ae4c9d2c236625af3ab1fdb2218a8fca356",
+      "agent_observer/cli.py": "9de487391e7e78fa029c6807b106974b13bcc0114ab8909953d701aa47799cba",
+      "agent_observer/codex_endpoint.py": "690b5c2303878d7dfbb27fb907a88ca85de5b9c098db656da34ae1aca471af8a",
+      "agent_observer/codex_metadata.py": "0964fc4de620db87e8692047073cdbda0bf247ff9acaf78a2b78f73042004556",
+      "agent_observer/codex_snapshot.py": "327d309bcfff1c17214077c75f80094667cde9ab5e061faaa16b6fa6a99b7507",
+      "agent_observer/codex_transport.py": "9bf5d06c2c391d6ea3b9f1f24cb52852eff0d6dcfd07b08cc83fac7331c7b7ec",
+      "agent_observer/host_snapshot.py": "78fa06acab858f27c3464f26ae34393a43f2f47f871df4e501677eb60b268e63",
+      "agent_observer/observation_model.py": "6d95800cec03924b9f7101e1936a67bdf67af0a51863919c5efbd8863a1893ab"
+    },
+    "moduleCount": 13
+  },
+  "plus": {
+    "name": "rofi-agent-plus",
+    "version": "0.13.0a3",
+    "wheel": "/tmp/agent-discovery-candidates-p384tply/plus-final/rofi_agent_plus-0.13.0a3-py3-none-any.whl",
+    "wheelSha256": "76f8a951e29752838e992ffdb36256db32378da136b087e4196e83a9d738bc50",
+    "prefix": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283",
+    "moduleHashes": {
+      "rofi_agent_plus/__init__.py": "60a15443ffbe21dc24cd076c079b165a5649a34e269c7b227e73f52c4ce5313a",
+      "rofi_agent_plus/__main__.py": "a67c172046323b0efcafe92cb83abc266d5dd4bc931d9312cde1b7bed50643db",
+      "rofi_agent_plus/app.py": "584403a475d550a920206995dc613583e87bc363d540263eacf44267507d4a21",
+      "rofi_agent_plus/batch.py": "433b9c5fb993b5b9f9e68fa4593ad08aeccef6b8a23665f6e8990d49ab6a779a",
+      "rofi_agent_plus/cache.py": "f95693021ce9fb1b69d74d2cbd7c5b05182726ef98d787745748ac0fa170589a",
+      "rofi_agent_plus/claude_actions.py": "2d776c7beee9a96542eb1cf035e9cfdb7e4d1d2387feeaa9e376a1c693f6451e",
+      "rofi_agent_plus/config.py": "90ee8a4fd07d492979d11a08b7b46a06199f7651694293a219adc4a5882d4feb",
+      "rofi_agent_plus/contract_backend.py": "b41102f30e99d47bd9444f15b6304d4e1bbc57fef01212ec5c706a06f2143c0f",
+      "rofi_agent_plus/contract_lifecycle.py": "9c370b4c6238b398befde51a4d1192524e442f2094a439c4f5217285147829c3",
+      "rofi_agent_plus/contract_viewers.py": "919bce5ab2c03c7d6b7d24b3057ca4b40632de7a408682e08df3ed324580f6bb",
+      "rofi_agent_plus/engine.py": "a537bdb29158b744f3f7dbcd27c039aaa1fc12b47633410dc826bd50524e78de",
+      "rofi_agent_plus/launcher.py": "d7b30f5fe244062302cdc6bff23c564087660439f1941abeaeb6a6f16534b5a6",
+      "rofi_agent_plus/observer_contract.py": "1154bafd8e8b3c407861dcbc5ed8892c58481f0573ae633ae2c7a523d164c732",
+      "rofi_agent_plus/rofi.py": "25ea6f8936e88ef7e37cc4a47b1ebd817b5c70980430044f18c268253429bb9e",
+      "rofi_agent_plus/session_identity.py": "cfa592584e4c0fc5ef6bfc324bed7346ba01e9f2a2f9f60168a283349b3f359b",
+      "rofi_agent_plus/view_preferences.py": "dd1f2f325f99b7ad77352417a1aa178a2d6197577ca4735c8e89451af07772be",
+      "rofi_agent_plus/viewer_state.py": "59368773cb7aa72f58a4854c01a48c6f6fd3eee79de8b66882866a88443343dc",
+      "rofi_agent_plus/wire.py": "6dccd45c0954af520adfda1c2e1b9ca7419f787889ef410e09c6302ff8b3e358",
+      "rofi_agent_plus/assets/providers/claude.svg": "6397fcc1401244c4c9f3f89bedafb9b0f813103eedd8096ef3175ac6d43f0990",
+      "rofi_agent_plus/assets/providers/codex.svg": "28adaac0107b9a7749a954cb73bc842c263dff71786cf26da204bea62ad14208",
+      "rofi_agent_plus/assets/providers/generic.svg": "375b6cfde48c0cdf9d05c597ade3d3ef27c9e2e308024b504957bcad30b20c69"
+    },
+    "moduleCount": 21
+  },
+  "sourceChecks": {
+    "observer": {
+      "exit": 0,
+      "tests": 127,
+      "version": "0.1.0a5"
+    },
+    "plus": {
+      "exit": 0,
+      "tests": 367,
+      "version": "0.13.0a3"
+    }
+  }
+}

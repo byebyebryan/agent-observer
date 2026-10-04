@@ -1,0 +1,77 @@
+{
+  "study_date": "2026-10-02",
+  "host": "Snap",
+  "evidence_type": "installed_help_and_embedded_static",
+  "native_populated_ui_acceptance": "not_run",
+  "agent_plus": {
+    "source_version": "0.12.1",
+    "source_commit": "6d30f8c71a9e44ba1da19f4102292f6811df50d8",
+    "source_clean_at_inspection": true,
+    "installed_fleet_parity": "not_checked"
+  },
+  "codex": {
+    "cli_version": "0.160.0",
+    "package": "openai-codex-bin 0.160.0-1",
+    "binary": "/opt/openai-codex/bin/codex",
+    "sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+    "selected_user_setting": {"daemon_auto_start": false},
+    "installed_help_facts": [
+      "--no-daemon bypasses the shared background server even when running",
+      "agents browses sessions on a shared local App Server",
+      "--remote selects an explicit App Server endpoint",
+      "daemon start/status are not recognized subcommands in the inspected CLI"
+    ],
+    "bounded_static_offsets": {
+      "no_daemon_remote_agents_validation": "0xe0535f5",
+      "agent_command_center_labels": "0xe56ebbf",
+      "embedded_mode_fallback_messages": "0xded1a19"
+    },
+    "native_daemon_routing_and_lifetime": "not_run"
+  },
+  "claude": {
+    "cli_version": "2.1.287",
+    "package": "claude-code 2.1.287-1",
+    "binary": "/opt/claude-code/bin/claude",
+    "sha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+    "selected_user_setting": {"disableAgentView": true},
+    "selected_global_preferences_present": [],
+    "selected_global_preferences_absent": ["defaultToAgentsView", "leftArrowOpensAgents", "tui"],
+    "effective_existing_session_preferences": "not_established",
+    "bounded_static_offsets": {
+      "default_entry_reads_global_preference": "0xbd13377",
+      "ui_preference_controls_and_fallbacks": "0xd1374f8",
+      "arrow_dispatch_reads_preference": "0xd9243ff",
+      "agent_view_setting_gate": "0xc47dd9a",
+      "live_background_resume_invokes_attach": "0xcd7646d"
+    },
+    "static_facts": [
+      "defaultToAgentsView and leftArrowOpensAgents are separately handled UI preferences",
+      "local preference control fallbacks are false for default entry and true for the Left shortcut",
+      "installed live-background resume path invokes attach"
+    ],
+    "native_foreground_roster_background_resume_and_ui": "not_run"
+  },
+  "help_probe": {
+    "query_count": 11,
+    "isolation": ["bubblewrap", "private home", "private tmp", "private PID namespace", "private network namespace", "read-only provider installations"],
+    "ordinary_configuration_and_endpoints_excluded": true,
+    "credentials_copied": false,
+    "prompts_submitted": 0,
+    "native_sessions_intentionally_started": 0,
+    "temporary_directory_removed": true,
+    "results": {
+      "codex_version_help_agents_help": "exit_0",
+      "codex_daemon_help": "general_cli_help_exit_0_not_a_daemon_command_proof",
+      "codex_daemon_start_status_help": "parser_errors_exit_2",
+      "claude_version_help_agents_help": "exit_0",
+      "claude_attach_daemon_help_with_optout": "disabled_gate_exit_1"
+    }
+  },
+  "retention": {
+    "raw_provider_payloads": false,
+    "conversation_content": false,
+    "terminal_captures": false,
+    "embedded_source_fragments": false,
+    "credential_content": false
+  }
+}

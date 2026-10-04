@@ -1,0 +1,997 @@
+{
+  "evidence_format_version": 1,
+  "scope": "Bounded Snap P1 capability/topology and empty-state evidence; not the public observation contract",
+  "host": "snap",
+  "uid": 1000,
+  "capture_window": {
+    "baseline_at": "2026-10-02T23:05:28.680252+00:00",
+    "final_census_at": "2026-10-02T23:27:32.885676+00:00"
+  },
+  "checkpoint": {
+    "bounded_snap_slice": "complete",
+    "P1": "active_remaining_native_loaded_state_and_managed_topology_gates",
+    "P2_through_P5": "not_run"
+  },
+  "evidence_labels": [
+    "static_schema",
+    "embedded-static",
+    "controlled-empty",
+    "isolated-native-empty",
+    "not_run"
+  ],
+  "providers": {
+    "codex": {
+      "package": "openai-codex-bin 0.160.0-1",
+      "executable": "/usr/bin/codex",
+      "resolved_executable": "/opt/openai-codex/bin/codex",
+      "cli_version": "codex-cli 0.160.0",
+      "selected_configuration": {
+        "user_config": "/home/bryan/.codex/config.toml",
+        "CODEX_HOME_override_in_inspection_shell": null,
+        "CODEX_PROFILE_override_in_inspection_shell": null,
+        "profile_free_features_exit_code": 0,
+        "features": {
+          "hooks": true,
+          "daemon_auto_start": false
+        },
+        "hooks": {
+          "root_hooks_key_present": true,
+          "direct_root_event_counts": {},
+          "legacy_notify_configured": true,
+          "ordinary_hooks_json_present": false,
+          "cached_reference_keys": {
+            "total": 10,
+            "user_hooks_file_references": 5,
+            "plugin_references": 5
+          },
+          "delivery": "not_run",
+          "limits": "Presence only; plugin source loading was not inspected. No hook commands retained."
+        }
+      },
+      "static_schema": {
+        "evidence_type": "static_schema",
+        "generator_exit_code": 0,
+        "isolated_home_sqlite_cwd": true,
+        "credentials_copied": false,
+        "selected_types": {
+          "ThreadReadParams": {
+            "properties": [
+              "includeTurns",
+              "threadId"
+            ],
+            "required": [
+              "threadId"
+            ]
+          },
+          "ThreadListParams": {
+            "properties": [
+              "archived",
+              "cursor",
+              "cwd",
+              "limit",
+              "modelProviders",
+              "originators",
+              "searchTerm",
+              "sectionId",
+              "sortDirection",
+              "sortKey",
+              "sourceKinds",
+              "useStateDbOnly"
+            ],
+            "required": []
+          },
+          "ThreadLoadedListParams": {
+            "properties": [
+              "cursor",
+              "limit"
+            ],
+            "required": []
+          },
+          "ThreadLoadedListResponse": {
+            "properties": [
+              "data",
+              "nextCursor"
+            ],
+            "required": [
+              "data"
+            ]
+          },
+          "ThreadStatusChangedNotification": {
+            "properties": [
+              "status",
+              "threadId"
+            ],
+            "required": [
+              "status",
+              "threadId"
+            ]
+          },
+          "ThreadReadResponse": {
+            "properties": [
+              "thread"
+            ],
+            "required": [
+              "thread"
+            ]
+          },
+          "InitializeParams": {
+            "properties": [
+              "capabilities",
+              "clientInfo"
+            ],
+            "required": [
+              "clientInfo"
+            ]
+          }
+        },
+        "status_values": [
+          "notLoaded",
+          "idle",
+          "systemError",
+          "active"
+        ],
+        "active_flags": [
+          "waitingOnApproval",
+          "waitingOnUserInput"
+        ],
+        "response_filter_boundary_required": true,
+        "live_identity_or_state_semantics": "not_established",
+        "experimental_fields": false,
+        "selected_definitions": {
+          "ThreadSourceKind": {
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "appServer",
+              "cli",
+              "exec",
+              "subAgent",
+              "subAgentCompact",
+              "subAgentOther",
+              "subAgentReview",
+              "subAgentThreadSpawn",
+              "unknown",
+              "vscode"
+            ]
+          },
+          "ThreadActiveFlag": {
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "waitingOnApproval",
+              "waitingOnUserInput"
+            ]
+          },
+          "ThreadStatus": {
+            "properties": [],
+            "required": [],
+            "enum_values": [
+              "active",
+              "idle",
+              "notLoaded",
+              "systemError"
+            ]
+          },
+          "Thread": {
+            "properties": [
+              "agentNickname",
+              "agentRole",
+              "cliVersion",
+              "createdAt",
+              "cwd",
+              "ephemeral",
+              "forkedFromId",
+              "gitInfo",
+              "historyMode",
+              "id",
+              "model",
+              "modelProvider",
+              "name",
+              "originator",
+              "parentThreadId",
+              "path",
+              "preview",
+              "projectId",
+              "reasoningEffort",
+              "recencyAt",
+              "section",
+              "sectionEnteredAt",
+              "sessionId",
+              "source",
+              "status",
+              "threadSource",
+              "turns",
+              "updatedAt"
+            ],
+            "required": [
+              "cliVersion",
+              "createdAt",
+              "cwd",
+              "ephemeral",
+              "id",
+              "modelProvider",
+              "preview",
+              "projectId",
+              "sessionId",
+              "source",
+              "status",
+              "turns",
+              "updatedAt"
+            ],
+            "enum_values": []
+          }
+        },
+        "identity_mapping_and_source_inclusion_policy": "not_established"
+      },
+      "topologies": {
+        "foreground": {
+          "installed_capabilities": "passed",
+          "host_process_census": "passed",
+          "terminal_attached_processes": 4,
+          "native_session_identity": "unbound",
+          "native_work_state": "unknown",
+          "native_roster_and_state_read": "not_run"
+        },
+        "controlled_app_server": {
+          "evidence_type": "controlled-empty",
+          "version": "0.160.0",
+          "outcome": "passed",
+          "requests": [
+            {
+              "method": "initialize",
+              "id": 10,
+              "elapsed_ms": 22.37,
+              "outcome": "passed",
+              "result_keys": [
+                "codexHome",
+                "platformFamily",
+                "platformOs",
+                "userAgent"
+              ]
+            },
+            {
+              "method": "thread/loaded/list",
+              "id": 11,
+              "elapsed_ms": 0.2,
+              "outcome": "passed",
+              "record_count": 0,
+              "next_cursor_present": false
+            },
+            {
+              "method": "thread/list",
+              "id": 12,
+              "elapsed_ms": 0.77,
+              "outcome": "passed",
+              "record_count": 0,
+              "next_cursor_present": false
+            },
+            {
+              "method": "thread/read",
+              "id": 13,
+              "elapsed_ms": 0.73,
+              "outcome": "error",
+              "error_code": -32600
+            },
+            {
+              "method": "thread/loaded/list",
+              "id": 14,
+              "elapsed_ms": 0.09,
+              "outcome": "passed",
+              "record_count": 0,
+              "next_cursor_present": false
+            },
+            {
+              "method": "initialize",
+              "id": 20,
+              "elapsed_ms": 0.31,
+              "outcome": "passed",
+              "result_keys": [
+                "codexHome",
+                "platformFamily",
+                "platformOs",
+                "userAgent"
+              ]
+            },
+            {
+              "method": "thread/loaded/list",
+              "id": 21,
+              "elapsed_ms": 0.17,
+              "outcome": "passed",
+              "record_count": 0,
+              "next_cursor_present": false
+            }
+          ],
+          "connections": 2,
+          "credentials_copied": false,
+          "ordinary_server_connections": 0,
+          "session_or_turn_creation_calls": 0,
+          "session_files": 0,
+          "endpoint": {
+            "requested_path_is_symlink": true,
+            "resolves_to_hashed_codex_daemon_path": true,
+            "owned_fd_matches_kernel_socket_inode": true,
+            "mode": "0600",
+            "run_owned_socket_symlink_and_exact_locks_removed": true,
+            "shared_parent_preserved": true,
+            "requested_path": "/tmp/agent-observer-p1-19sgxu8s/codex-controlled-4/control.sock",
+            "resolved_path": "/tmp/codex-daemon-1000/4883d36054ced46ca3ac1a7b5f1945bb86a41f5f1617c0d01e5ced64bcbf6e09",
+            "observed_resolved_path_rule": "/tmp/codex-daemon-<uid>/<SHA256(requested endpoint path string)>",
+            "lock_path_rule": "<resolved_path>.lock",
+            "resolved_entries_preexisting": false,
+            "kernel_inodes": [
+              "2414435"
+            ]
+          },
+          "startup_only_attempts_before_pass": 3,
+          "startup_attempts_interpretation": "Ownership checker compared lexical path and stopped before handshake; instrumentation failures, not provider failures.",
+          "managed_daemon_support": "not_established",
+          "loaded_session_worker_and_native_ui_comparison": "not_run",
+          "scope": "empty_store_only; missing-ID read only; no native session or worker",
+          "started_at": "2026-10-02T23:13:16.420836+00:00",
+          "finished_at": "2026-10-02T23:13:16.806274+00:00",
+          "connection_results": [
+            {
+              "number": 1,
+              "handshake": "passed",
+              "server_survived_disconnect": true
+            },
+            {
+              "number": 2,
+              "handshake": "passed",
+              "server_survived_disconnect": true
+            }
+          ],
+          "server_birth_before": {
+            "pid": 775765,
+            "start_ticks": 2267085,
+            "exe": "/opt/openai-codex/bin/codex"
+          },
+          "server_birth_after": {
+            "pid": 775765,
+            "start_ticks": 2267085,
+            "exe": "/opt/openai-codex/bin/codex"
+          },
+          "transport": "WebSocket over AF_UNIX using HTTP Upgrade"
+        },
+        "managed_daemon": {
+          "observation": "not_run",
+          "user_unit": {
+            "path": "/home/bryan/.config/systemd/user/codex-app-server.service",
+            "unit_kind": "plain_app_server",
+            "managed_by_chezmoi": false,
+            "owned_by_pacman": false,
+            "active_state": "inactive",
+            "sub_state": "dead",
+            "unit_file_state": "disabled",
+            "main_pid": 0
+          },
+          "managed_daemon_acceptance": "not_established"
+        }
+      }
+    },
+    "claude": {
+      "package": "claude-code 2.1.287-1",
+      "executable": "/usr/bin/claude",
+      "resolved_executable": "/opt/claude-code/bin/claude",
+      "entrypoint": "POSIX shell wrapper execs target with original arguments",
+      "wrapper_environment": {
+        "DISABLE_UPDATES": "1",
+        "DISABLE_INSTALLATION_CHECKS": "1"
+      },
+      "cli_version": "2.1.287",
+      "selected_configuration": {
+        "settings_path": "/home/bryan/.claude/settings.json",
+        "settings_disableAgentView": true,
+        "CLAUDE_CONFIG_DIR_in_inspection_shell": null,
+        "CLAUDE_CODE_DISABLE_AGENT_VIEW_in_inspection_shell": null,
+        "hook_event_counts": {
+          "PreToolUse": 1
+        },
+        "hook_delivery": "not_run",
+        "project_settings_found": false,
+        "managed_settings_found": false
+      },
+      "embedded_static": {
+        "evidence_type": "embedded-static",
+        "agents_help_exit_code": 0,
+        "binary_sha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+        "bounded_offsets": {
+          "agent_view_gate_and_initializer": "0xc47dd00",
+          "agents_json_dispatch": "0xd42d79f",
+          "print_agents_json_helper": "0xdf2a995",
+          "process_record_scan_and_cleanup": "0xc3fc122",
+          "job_scan": "0xc474c05",
+          "control_socket_client": "0xc96b16a"
+        },
+        "dispatch_facts": {
+          "opt_out_checks": [
+            "CLAUDE_CODE_DISABLE_AGENT_VIEW",
+            "settings.disableAgentView"
+          ],
+          "enabled_path": "Scans process/job state and connects to the selected supervisor control socket; no explicit start/ensure call found in the bounded JSON route.",
+          "stale_record_cleanup": "Fire-and-forget stale process-record cleanup branch exists; roster command is not strictly filesystem-read-only.",
+          "cleanup_scope": "No provider logical-session deletion or work-state mutation established."
+        },
+        "roots": {
+          "config_root": "CLAUDE_CONFIG_DIR selected before startup; otherwise normalized $HOME/.claude",
+          "sessions": "<config-root>/sessions",
+          "jobs_fallback": "<config-root>/jobs",
+          "daemon_roster_fallback": "<config-root>/daemon/roster.json",
+          "preferences_fallback": "Selected config root or home",
+          "control_socket": "/tmp/cc-daemon-<uid>/<8-hex-SHA256(absolute-config-root)>/control.sock",
+          "injected_job_storage_handle": "not_fully_traced"
+        },
+        "pre_optout_initializer": "Settings/feature initializer occurs before opt-out; not fully traced. Namespace probes disabled nonessential traffic."
+      },
+      "isolated_cli": {
+        "evidence_type": "isolated-native-empty",
+        "isolation": {
+          "tool": "/usr/bin/bwrap",
+          "private_home_tmp_pid_and_network_namespaces": true,
+          "ordinary_home_and_runtime_mounted": false,
+          "usr_and_provider_installation_readonly": true,
+          "credentials_copied": false,
+          "nonessential_traffic_disabled": true,
+          "launcher_options": [
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session"
+          ],
+          "nonessential_traffic_environment": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1"
+        },
+        "probes": [
+          {
+            "case": "enabled_empty",
+            "exit_code": 0,
+            "record_count": 0,
+            "outcome": "passed"
+          },
+          {
+            "case": "settings_optout",
+            "exit_code": 1,
+            "reason_code": "agent_view_disabled",
+            "outcome": "passed"
+          },
+          {
+            "case": "environment_optout",
+            "exit_code": 1,
+            "reason_code": "agent_view_disabled",
+            "outcome": "passed"
+          }
+        ],
+        "initial_optout_classifier_attempts": "Both returned exit 1/non-JSON; only these two cases were repeated with corrected classifier.",
+        "private_preferences_and_backup_created_in_each_final_case": true,
+        "ordinary_roster_calls": 0,
+        "sessions_or_turns_created": 0,
+        "child_process_observation": "No child provider process or control socket observed after calls; 20 ms sampling cannot rule out shorter-lived child.",
+        "cli_queries_total": 5,
+        "namespace_setup_check": {
+          "uid": 1000,
+          "visible_pids": [
+            "1",
+            "2"
+          ],
+          "original_claude_settings_visible": false,
+          "root_writable": true
+        },
+        "case_observations": [
+          {
+            "scenario": "enabled-empty",
+            "captured_at": "2026-10-02T23:25:53.262288+00:00",
+            "exit_code": 0,
+            "elapsed_ms": 81.85,
+            "settings_disableAgentView": false,
+            "environment_optout": false,
+            "json_array": true,
+            "record_count": 0,
+            "outcome": "passed",
+            "native_processes_before": [],
+            "native_processes_after": [],
+            "child_native_process_observed": false,
+            "temporary_socket_paths": []
+          },
+          {
+            "scenario": "settings-optout",
+            "captured_at": "2026-10-02T23:26:37.335934+00:00",
+            "exit_code": 1,
+            "elapsed_ms": 82.54,
+            "settings_disableAgentView": true,
+            "environment_optout": false,
+            "json_array": false,
+            "record_count": null,
+            "outcome": "passed",
+            "native_processes_before": [],
+            "native_processes_after": [],
+            "child_native_process_observed": false,
+            "temporary_socket_paths": []
+          },
+          {
+            "scenario": "environment-optout",
+            "captured_at": "2026-10-02T23:26:37.465224+00:00",
+            "exit_code": 1,
+            "elapsed_ms": 102.78,
+            "settings_disableAgentView": false,
+            "environment_optout": true,
+            "json_array": false,
+            "record_count": null,
+            "outcome": "passed",
+            "native_processes_before": [],
+            "native_processes_after": [],
+            "child_native_process_observed": false,
+            "temporary_socket_paths": []
+          }
+        ],
+        "elapsed_time_scope": "CLI startup and query in empty namespace; not native state-transition latency or observer-overhead acceptance"
+      },
+      "topologies": {
+        "ordinary_foreground": {
+          "current_user_optout": true,
+          "ordinary_roster": "not_run",
+          "native_work_state": "not_run"
+        },
+        "isolated_empty_namespace": {
+          "outcome": "passed",
+          "populated_sessions_jobs_or_workers": "not_run",
+          "scope": "empty roster and opt-out gating only"
+        },
+        "supervised_worker": {
+          "embedded_static_dispatch": "inspected",
+          "native_supervisor_or_worker_state": "not_run"
+        }
+      }
+    }
+  },
+  "host_census": {
+    "baseline_at": "2026-10-02T23:05:28Z",
+    "final_at": "2026-10-02T23:27:32Z",
+    "terminal_attached_processes": {
+      "codex": 4,
+      "claude": 2
+    },
+    "codex_code_mode_helpers": 4,
+    "logical_session_count": "unbound",
+    "work_state": "unknown",
+    "provider_namespace_named_socket_rows": 0,
+    "socket_visibility_limit": "Bounded census; absence does not rule out every launcher or endpoint.",
+    "hostname": "80H1VV3",
+    "boot_id": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+    "ordinary_process_births_before": [
+      {
+        "pid": 13497,
+        "comm": "claude",
+        "exe": "/opt/claude-code/bin/claude",
+        "ppid": 10120,
+        "start_ticks": 33832,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/2"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/2"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/2"
+          }
+        ]
+      },
+      {
+        "pid": 23351,
+        "comm": "claude",
+        "exe": "/opt/claude-code/bin/claude",
+        "ppid": 10120,
+        "start_ticks": 51280,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/4"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/4"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/4"
+          }
+        ]
+      },
+      {
+        "pid": 72388,
+        "comm": "codex",
+        "exe": "/opt/openai-codex/bin/codex",
+        "ppid": 10120,
+        "start_ticks": 179859,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/0"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/0"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/0"
+          }
+        ]
+      },
+      {
+        "pid": 73326,
+        "comm": "codex",
+        "exe": "/opt/openai-codex/bin/codex",
+        "ppid": 10120,
+        "start_ticks": 180766,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/7"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/7"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/7"
+          }
+        ]
+      },
+      {
+        "pid": 80831,
+        "comm": "codex-code-mode",
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "ppid": 72388,
+        "start_ticks": 208582,
+        "terminal_descriptors": []
+      },
+      {
+        "pid": 190877,
+        "comm": "codex",
+        "exe": "/opt/openai-codex/bin/codex",
+        "ppid": 10120,
+        "start_ticks": 639927,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/9"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/9"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/9"
+          }
+        ]
+      },
+      {
+        "pid": 192831,
+        "comm": "codex-code-mode",
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "ppid": 190877,
+        "start_ticks": 647193,
+        "terminal_descriptors": []
+      },
+      {
+        "pid": 225692,
+        "comm": "codex-code-mode",
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "ppid": 73326,
+        "start_ticks": 755035,
+        "terminal_descriptors": []
+      },
+      {
+        "pid": 701968,
+        "comm": "codex",
+        "exe": "/opt/openai-codex/bin/codex",
+        "ppid": 701523,
+        "start_ticks": 2118092,
+        "terminal_descriptors": [
+          {
+            "fd": 0,
+            "terminal": "/dev/pts/12"
+          },
+          {
+            "fd": 1,
+            "terminal": "/dev/pts/12"
+          },
+          {
+            "fd": 2,
+            "terminal": "/dev/pts/12"
+          }
+        ]
+      },
+      {
+        "pid": 715206,
+        "comm": "codex-code-mode",
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "ppid": 701968,
+        "start_ticks": 2176769,
+        "terminal_descriptors": []
+      }
+    ],
+    "ordinary_process_births_after": [
+      {
+        "pid": 13497,
+        "exe": "/opt/claude-code/bin/claude",
+        "start_ticks": 33832
+      },
+      {
+        "pid": 23351,
+        "exe": "/opt/claude-code/bin/claude",
+        "start_ticks": 51280
+      },
+      {
+        "pid": 72388,
+        "exe": "/opt/openai-codex/bin/codex",
+        "start_ticks": 179859
+      },
+      {
+        "pid": 73326,
+        "exe": "/opt/openai-codex/bin/codex",
+        "start_ticks": 180766
+      },
+      {
+        "pid": 80831,
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "start_ticks": 208582
+      },
+      {
+        "pid": 190877,
+        "exe": "/opt/openai-codex/bin/codex",
+        "start_ticks": 639927
+      },
+      {
+        "pid": 192831,
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "start_ticks": 647193
+      },
+      {
+        "pid": 225692,
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "start_ticks": 755035
+      },
+      {
+        "pid": 701968,
+        "exe": "/opt/openai-codex/bin/codex",
+        "start_ticks": 2118092
+      },
+      {
+        "pid": 715206,
+        "exe": "/opt/openai-codex/bin/codex-code-mode-host",
+        "start_ticks": 2176769
+      }
+    ],
+    "same_uid_visibility": {
+      "process_directories_seen": 126,
+      "executable_unreadable_count": 10,
+      "scope": "same UID executable-name census; conditional topology flags and provider fd ownership; no native identities established"
+    }
+  },
+  "preservation": {
+    "ordinary_provider_and_helper_birth_identities_unchanged": true,
+    "added_or_removed_ordinary_process_identities": 0,
+    "selected_configuration_hashes_unchanged": true,
+    "global_claude_preferences_unchanged": true,
+    "codex_unit_state_unchanged": true,
+    "run_owned_codex_endpoint_and_exact_locks_removed": true,
+    "shared_socket_parent_preserved": true,
+    "config_hashes_before": [
+      {
+        "path": "/home/bryan/.codex/config.toml",
+        "exists": true,
+        "sha256": "954e5d159defa80f20c98d70e537ee2e98a2e5eb607ac87e7e9d4f2fb12981fc"
+      },
+      {
+        "path": "/home/bryan/.codex/hooks.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon.pid",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon-updater.pid",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.claude/settings.json",
+        "exists": true,
+        "sha256": "19a9662fd14fd07c50873f8203f22b373eacc69582b417bf838d0c5948592c3d"
+      },
+      {
+        "path": "/home/bryan/.claude/settings.local.json",
+        "exists": true,
+        "sha256": "9b3849b2221729c2fbe3f17f2fc63c1c482abf89c1619ce7de089531b36791a6"
+      },
+      {
+        "path": "/etc/codex/config.toml",
+        "exists": false
+      },
+      {
+        "path": "/etc/claude-code/managed-settings.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.codex/config.toml",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.claude/settings.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.claude/settings.local.json",
+        "exists": false
+      }
+    ],
+    "config_hashes_after": [
+      {
+        "path": "/home/bryan/.codex/config.toml",
+        "exists": true,
+        "sha256": "954e5d159defa80f20c98d70e537ee2e98a2e5eb607ac87e7e9d4f2fb12981fc"
+      },
+      {
+        "path": "/home/bryan/.codex/hooks.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon.pid",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.codex/app-server-daemon/daemon-updater.pid",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/.claude/settings.json",
+        "exists": true,
+        "sha256": "19a9662fd14fd07c50873f8203f22b373eacc69582b417bf838d0c5948592c3d"
+      },
+      {
+        "path": "/home/bryan/.claude/settings.local.json",
+        "exists": true,
+        "sha256": "9b3849b2221729c2fbe3f17f2fc63c1c482abf89c1619ce7de089531b36791a6"
+      },
+      {
+        "path": "/etc/codex/config.toml",
+        "exists": false
+      },
+      {
+        "path": "/etc/claude-code/managed-settings.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.codex/config.toml",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.claude/settings.json",
+        "exists": false
+      },
+      {
+        "path": "/home/bryan/code/agent-observer/.claude/settings.local.json",
+        "exists": false
+      }
+    ],
+    "global_claude_preferences_comparison": {
+      "captured_at": "2026-10-02T23:20:16.818172+00:00",
+      "path": "/home/bryan/.claude.json",
+      "exists": true,
+      "sha256": "5dd5f796e7b406d72af9d38e78ce82c94bd3f5cd188bc2469a323d8a0351c09b",
+      "scope": "Separate opaque preference-file hash window; baseline 23:20:16 UTC, final comparison collected with the 23:27:32 UTC census, not a separate timestamp measurement.",
+      "final_sha256": "5dd5f796e7b406d72af9d38e78ce82c94bd3f5cd188bc2469a323d8a0351c09b",
+      "unchanged": true,
+      "checked_after_namespaced_probes": true,
+      "final_collected_alongside_census_at": "2026-10-02T23:27:32.885676+00:00"
+    },
+    "codex_unit_hash_comparison": {
+      "path": "/home/bryan/.config/systemd/user/codex-app-server.service",
+      "baseline_sha256": "1c675cac4b59c783566f9ea32983b410f1002207a92e86dfdb6660fed14b442d",
+      "current_sha256": "1c675cac4b59c783566f9ea32983b410f1002207a92e86dfdb6660fed14b442d",
+      "hash_unchanged": true,
+      "initial_hash_and_state_collected_before_controlled_launches": true
+    }
+  },
+  "native_coverage": {
+    "codex_foreground_state_and_hook_delivery": "not_run",
+    "codex_loaded_session_or_worker": "not_run",
+    "codex_managed_daemon": "not_run",
+    "claude_ordinary_roster": "not_run",
+    "claude_populated_roster_and_worker_job_state": "not_run",
+    "transitions_identity_and_recovery": "not_run",
+    "authentication_or_account_gated_behavior": "not_run",
+    "p2_through_p5": "not_run"
+  },
+  "retention": {
+    "credentials": "No credential files inspected/copied and no credential values retained; child launch environments were allowlisted.",
+    "prompts_responses_tool_content_terminal_captures": "not retained",
+    "raw_provider_payloads": "not retained",
+    "hook_commands": "not retained",
+    "claude_roster_filesystem_read_only": false,
+    "codex_receiver_filter_boundary": "still required before any future retention or emission"
+  },
+  "references": [
+    {
+      "url": "https://learn.chatgpt.com/docs/app-server",
+      "role": "documentation_reference_only"
+    },
+    {
+      "url": "https://learn.chatgpt.com/docs/config-file/environment-variables",
+      "role": "documentation_reference_only"
+    },
+    {
+      "url": "https://code.claude.com/docs/en/agent-view",
+      "role": "documentation_reference_only"
+    }
+  ],
+  "hostname": "80H1VV3",
+  "binary_identity": {
+    "codex": {
+      "path": "/opt/openai-codex/bin/codex",
+      "sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+      "device": 36,
+      "inode": 55357051
+    },
+    "claude": {
+      "path": "/opt/claude-code/bin/claude",
+      "sha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+      "device": 36,
+      "inode": 55357119
+    }
+  },
+  "running_binary_comparisons": [
+    {
+      "pid": 13497,
+      "provider": "claude",
+      "running_matches_installed_inode": true
+    },
+    {
+      "pid": 23351,
+      "provider": "claude",
+      "running_matches_installed_inode": true
+    },
+    {
+      "pid": 72388,
+      "provider": "codex",
+      "running_matches_installed_inode": true
+    },
+    {
+      "pid": 73326,
+      "provider": "codex",
+      "running_matches_installed_inode": true
+    },
+    {
+      "pid": 190877,
+      "provider": "codex",
+      "running_matches_installed_inode": true
+    },
+    {
+      "pid": 701968,
+      "provider": "codex",
+      "running_matches_installed_inode": true
+    }
+  ],
+  "native_transition_and_recovery_cases": {
+    "start_completion": "not_run",
+    "approve_long_tool": "not_run",
+    "deny_tool": "not_run",
+    "blocking_user_input": "not_run",
+    "cancellation": "not_run",
+    "foreground_exit": "not_run",
+    "observation_failure": "not_run",
+    "concurrent_same_directory": "not_run",
+    "native_clear_new_resume_fork": "not_run",
+    "collector_restart": "not_run",
+    "client_detach_reattach": "not_run",
+    "multiple_clients": "not_run",
+    "worker_restart": "not_run",
+    "old_saved_session_live": "not_run",
+    "late_conflicting_evidence": "not_run"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "codex": {
+    "snap": {
+      "targetIdsRemoved": [
+        "01a10048-a63b-7a51-8086-65d7f84e4aba"
+      ],
+      "nonTargetThreadsRemoved": 0,
+      "daemonBirthUnchanged": true,
+      "previousLoadedSessionsPreserved": true,
+      "targetRolloutFilesRemoved": true
+    },
+    "starship": {
+      "targetIdsRemoved": [
+        "01a10056-0cb5-7370-9696-9361ad332f2b"
+      ],
+      "nonTargetThreadsRemoved": 0,
+      "daemonBirthUnchanged": true,
+      "previousLoadedSessionsPreserved": true,
+      "targetRolloutFilesRemoved": true
+    }
+  },
+  "claude": {
+    "targetIdsRemoved": [
+      "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+      "907da473-a508-4066-829d-f2fa486088f6",
+      "ac026152-3de7-4c0c-abe9-a4116453f330"
+    ],
+    "ownedJobDirectoriesRemoved": true,
+    "exactTranscriptsRemoved": 3,
+    "nonTargetRootTranscriptsRemoved": 0,
+    "ordinaryLiveRegistryUnchanged": true,
+    "ordinaryLiveRegistryCount": 2,
+    "remainingExactUuidAuxiliaries": {
+      "ff8a5f7f-891a-406d-88b1-e1f112fa0819": [],
+      "907da473-a508-4066-829d-f2fa486088f6": [],
+      "ac026152-3de7-4c0c-abe9-a4116453f330": []
+    },
+    "sessionEnvironmentRemovals": [
+      {
+        "nativeId": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+        "exactSessionEnvironmentRemoved": true,
+        "ownedEntriesRemoved": 1
+      },
+      {
+        "nativeId": "907da473-a508-4066-829d-f2fa486088f6",
+        "exactSessionEnvironmentRemoved": true,
+        "ownedEntriesRemoved": 1
+      },
+      {
+        "nativeId": "ac026152-3de7-4c0c-abe9-a4116453f330",
+        "exactSessionEnvironmentRemoved": true,
+        "ownedEntriesRemoved": 1
+      }
+    ]
+  },
+  "configurationHashesUnchanged": false,
+  "nativeCodexRemovalResults": {
+    "snap": {
+      "host": "snap",
+      "id": "01a10048-a63b-7a51-8086-65d7f84e4aba",
+      "nativeDeleteExit": 0,
+      "stdoutBytes": 54,
+      "stderrBytes": 0,
+      "rolloutFileRemoved": true
+    },
+    "starship": {
+      "host": "starship",
+      "id": "01a10056-0cb5-7370-9696-9361ad332f2b",
+      "nativeDeleteExit": 0,
+      "stdoutBytes": 54,
+      "stderrBytes": 0,
+      "rolloutFileRemoved": true
+    }
+  },
+  "nativeClaudeRemovalResults": [
+    {
+      "provider": "claude",
+      "id": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+      "nativeRemovalExit": 0,
+      "stdoutBytes": 17,
+      "stderrBytes": 0,
+      "jobDirectoryRemoved": true,
+      "rootTranscriptRemoved": true
+    },
+    {
+      "provider": "claude",
+      "id": "907da473-a508-4066-829d-f2fa486088f6",
+      "nativeRemovalExit": 0,
+      "stdoutBytes": 17,
+      "stderrBytes": 0,
+      "jobDirectoryRemoved": true,
+      "rootTranscriptRemoved": true
+    },
+    {
+      "provider": "claude",
+      "id": "ac026152-3de7-4c0c-abe9-a4116453f330",
+      "nativeRemovalExit": 0,
+      "stdoutBytes": 17,
+      "stderrBytes": 0,
+      "jobDirectoryRemoved": true,
+      "rootTranscriptRemoved": true
+    }
+  ],
+  "coordinatorIdentityPreserved": true,
+  "configurationPreservation": [
+    {
+      "path": "/home/bryan/.claude.json",
+      "fileHashUnchanged": false,
+      "managedDiffBytes": 0
+    },
+    {
+      "path": "/home/bryan/.claude/settings.json",
+      "fileHashUnchanged": true,
+      "managedDiffBytes": 0
+    },
+    {
+      "path": "/home/bryan/.codex/config.toml",
+      "fileHashUnchanged": true,
+      "managedDiffBytes": 0
+    }
+  ],
+  "discoveryAfterCleanup": {
+    "snap": {
+      "callbackTarget": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+      "cliExit": 0,
+      "providerCounts": {
+        "snap": {
+          "codex": 47,
+          "claude": 28
+        },
+        "starship": {
+          "codex": 89
+        }
+      },
+      "removedTestsStillPresent": [],
+      "errors": [],
+      "lastRefresh": {
+        "attemptedAt": 1791081832,
+        "completedAt": 1791081832,
+        "outcome": "complete"
+      },
+      "globalDisplayRowCount": 40,
+      "namedClaudeRows": 26
+    },
+    "starship": {
+      "callbackTarget": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+      "cliExit": 0,
+      "providerCounts": {
+        "starship": {
+          "codex": 89
+        },
+        "snap": {
+          "codex": 47,
+          "claude": 28
+        }
+      },
+      "removedTestsStillPresent": [],
+      "errors": [],
+      "lastRefresh": {
+        "attemptedAt": 1791081835,
+        "completedAt": 1791081835,
+        "outcome": "complete"
+      },
+      "globalDisplayRowCount": 40,
+      "namedClaudeRows": 26
+    }
+  },
+  "operatorOnly": true,
+  "targets": [
+    {
+      "host": "starship",
+      "provider": "codex",
+      "nativeId": "01a10056-0cb5-7370-9696-9361ad332f2b",
+      "nativeTitle": "Run sleep 20",
+      "creationEvidence": "../2026-10-03-native-runtime/codex-starship-pilot-task-proof.json"
+    },
+    {
+      "host": "snap",
+      "provider": "codex",
+      "nativeId": "01a10048-a63b-7a51-8086-65d7f84e4aba",
+      "nativeTitle": "Run harmless marker command",
+      "creationEvidence": "../2026-10-03-native-runtime/codex-snap-native-pilot.json"
+    },
+    {
+      "host": "snap",
+      "provider": "claude",
+      "nativeId": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+      "nativeTitle": "Agent plus Claude entry accepted",
+      "creationEvidence": "../2026-10-03-native-runtime/agent-plus-claude-snap-new.json"
+    },
+    {
+      "host": "snap",
+      "provider": "claude",
+      "nativeId": "907da473-a508-4066-829d-f2fa486088f6",
+      "nativeTitle": "Observer Claude empty pilot complete",
+      "creationEvidence": "../2026-10-03-native-runtime/claude-snap-native-pilot.json"
+    },
+    {
+      "host": "snap",
+      "provider": "claude",
+      "nativeId": "ac026152-3de7-4c0c-abe9-a4116453f330",
+      "nativeTitle": "claude job runner setup",
+      "creationEvidence": {
+        "coordinatorThreadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "nativeCreationCallRecordedAtUtc": "2026-10-03T06:35:04.675Z",
+        "exactCreationJobIdMatchedInMemory": true,
+        "sameDirectoryIsolationOverride": true
+      }
+    }
+  ],
+  "alreadyAbsentIsolatedProofsAndUnsavedNewTargets": {
+    "snap": [
+      "01a0ffd5-f843-7960-aad4-05d77dfc6068",
+      "01a10019-ae77-7550-b953-30555b0195b1",
+      "01a1001e-138f-7c23-9e22-6b84fb2fce41",
+      "01a100a7-6aa6-7e63-b188-4fe1ff82a9b0"
+    ],
+    "starship": [
+      "01a100a9-b5d7-7f90-a6f1-8724b8e28180"
+    ]
+  },
+  "privateOperatorBaselineRemoved": true
+}

@@ -1,0 +1,21 @@
+{
+  "artifactVersion": "0.1.0a1",
+  "wheelSha256": "b6563c12c11cb0cb4bc8054630e89c986f9bd23f1720aa8cf5447f01e36fdd71",
+  "installedPrefix": "/home/bryan/.local/share/agent-observer/0.1.0a1-b6563c12c11cb0cb",
+  "moduleSha256": {
+    "__init__.py": "f603ee92a0c98dc8164dff075c8b7727e08b4feafa1516f3942a5c806993f391",
+    "observation_model.py": "6d95800cec03924b9f7101e1936a67bdf67af0a51863919c5efbd8863a1893ab",
+    "bounded_json.py": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6",
+    "codex_transport.py": "9bf5d06c2c391d6ea3b9f1f24cb52852eff0d6dcfd07b08cc83fac7331c7b7ec",
+    "codex_metadata.py": "30bf73f64e1d9b500e524c7a52a4841e4a74a393fa42534cabbfbadab5069c12",
+    "codex_endpoint.py": "690b5c2303878d7dfbb27fb907a88ca85de5b9c098db656da34ae1aca471af8a",
+    "codex_snapshot.py": "327d309bcfff1c17214077c75f80094667cde9ab5e061faaa16b6fa6a99b7507",
+    "claude_metadata.py": "fcb5676dfdfe965970cb6aadda6a2ae8ead6e29a4389bc6d3c9cd90a01597475",
+    "claude_snapshot.py": "659894e0fe01e4b5915cb35d99a2366f140e517b9b5f79c2ff7cfad755529392",
+    "host_snapshot.py": "78fa06acab858f27c3464f26ae34393a43f2f47f871df4e501677eb60b268e63",
+    "cli.py": "f7963ad8232c6216a4c56d0a0b077b3c9d5f58694627ec3f8df748b40245ddc9"
+  },
+  "sourceMatchesInstalledModules": true,
+  "managedCommandVerified": true,
+  "nativeAcceptance": "separate"
+}

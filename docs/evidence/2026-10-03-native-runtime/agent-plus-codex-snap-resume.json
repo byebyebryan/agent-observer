@@ -1,0 +1,41 @@
+{
+  "action": "codex-snap-resume",
+  "accepted": true,
+  "evidenceKind": "installed_action_with_disposable_terminal_client",
+  "graphicalAcceptance": false,
+  "host": "snap",
+  "createdGenericReference": {
+    "host": "snap",
+    "meshRevision": "sha256:decab8fc6d7070b36736392e15feb5900732ce251f8b473fe08341139a6a995c",
+    "serverGeneration": "tmux-v1:1790960394:10120:/tmp/tmux-1000/default",
+    "sessionId": "$22",
+    "createdAt": 1791011377,
+    "observedName": "Run-harmless-marker-command"
+  },
+  "viewerStatus": "unsupported",
+  "viewerCount": 0,
+  "closeSafe": true,
+  "identity": {
+    "hostId": "snap",
+    "kind": "codex",
+    "id": "01a10048-a63b-7a51-8086-65d7f84e4aba",
+    "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+    "nativeIdKind": "thread"
+  },
+  "currentClientBindingAccepted": false,
+  "operatorNativeStatusExactUUID": true,
+  "rawCaptureRetained": false,
+  "whileAttached": {
+    "sourceHealth": "current",
+    "inventory": "live",
+    "presenceKind": "server_thread_loaded",
+    "work": "settled",
+    "runtimeBirth": 4599726
+  },
+  "cleanup": {
+    "ownedGenericWrapperKillExit": 0,
+    "ownedPrivateViewerAbsentOrClosed": true,
+    "providerDaemonStopped": false,
+    "otherWrappersOperated": false
+  }
+}

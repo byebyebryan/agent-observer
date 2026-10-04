@@ -1,0 +1,14 @@
+{
+  "managedPilotLinksSnapVerified": true,
+  "managedPilotLinksStarshipVerified": true,
+  "oldPublishedArchivePinsPreserved": true,
+  "candidateVersion": "0.13.0a1",
+  "graphicalAcceptance": false,
+  "ownedActionProofsCopied": 6,
+  "ownedStalePrivateViewerSocketsRemoved": 6,
+  "temporaryFullClaudePreferencesBackupRemoved": true,
+  "currentCoordinatorResumedOrClosed": false,
+  "pilotLinksLimitedToSnapAndStarship": true,
+  "otherManagedHostsKeepOriginalPlusTargets": true,
+  "observerLinkIgnoredOutsidePilot": true
+}

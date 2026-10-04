@@ -1,0 +1,91 @@
+{
+  "case": "ordinary_foreground_passive_read",
+  "provider": "claude",
+  "sourceHealth": "current",
+  "coverage": {
+    "saved": {
+      "complete": false,
+      "reason": "not_observed"
+    },
+    "sessionRegistry": "complete",
+    "jobStore": "complete",
+    "workerPresence": "complete",
+    "attachment": "unsupported"
+  },
+  "errors": [],
+  "durationMs": 121.131,
+  "sessionCount": 2,
+  "rows": [
+    {
+      "nativeIds": {
+        "sessionId": "d4cbd3c0-45d7-4680-a993-9898c81317c7",
+        "jobId": null
+      },
+      "sessionKind": "interactive",
+      "work": {
+        "value": "settled",
+        "observedAt": 1790995690649,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791003169712,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "nativeStatus": {
+        "value": "idle",
+        "observedAt": 1790995690649
+      },
+      "job": {
+        "id": null,
+        "retained": false,
+        "state": "unknown",
+        "tempo": "unknown",
+        "terminalObservedAt": null
+      },
+      "waitReason": "unknown",
+      "metadataIssues": []
+    },
+    {
+      "nativeIds": {
+        "sessionId": "bbe9d846-6f6d-4946-803d-fcfaef0a8656",
+        "jobId": null
+      },
+      "sessionKind": "interactive",
+      "work": {
+        "value": "settled",
+        "observedAt": 1790996511541,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "presence": {
+        "value": "present",
+        "observedAt": 1791003169712,
+        "source": "claude_registry",
+        "health": "current",
+        "reason": "native_snapshot"
+      },
+      "nativeStatus": {
+        "value": "idle",
+        "observedAt": 1790996511541
+      },
+      "job": {
+        "id": null,
+        "retained": false,
+        "state": "unknown",
+        "tempo": "unknown",
+        "terminalObservedAt": null
+      },
+      "waitReason": "unknown",
+      "metadataIssues": []
+    }
+  ],
+  "provider_entry_invoked": false,
+  "observer_action_performed": false,
+  "config_compatibility_changed": false
+}

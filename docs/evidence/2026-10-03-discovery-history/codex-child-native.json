@@ -1,0 +1,26 @@
+{
+  "scope": "installed_native_child_metadata_read",
+  "providerVersion": "0.160.0",
+  "loadedInventoryUnchanged": true,
+  "daemonIncarnationUnchanged": true,
+  "samples": [
+    {
+      "nativeVariant": "thread_spawn",
+      "threadKind": "child",
+      "sourceKind": "subagent",
+      "threadLoaded": false,
+      "nativeThreadSource": null,
+      "metadataIssues": []
+    },
+    {
+      "nativeVariant": "review",
+      "threadKind": "child",
+      "sourceKind": "subagent",
+      "threadLoaded": false,
+      "nativeThreadSource": null,
+      "metadataIssues": []
+    }
+  ],
+  "ordinaryLoadedChildWorkflowAccepted": false,
+  "providerActions": 0
+}

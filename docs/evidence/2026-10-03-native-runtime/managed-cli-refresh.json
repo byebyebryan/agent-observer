@@ -1,0 +1,26 @@
+{
+  "command": "managed_cli_refresh",
+  "normalUserConfigurationCache": true,
+  "exit": 0,
+  "stderrBytes": 0,
+  "hostCount": 2,
+  "displayRows": 40,
+  "hostRows": [
+    {
+      "hostId": "snap",
+      "rows": 53
+    },
+    {
+      "hostId": "starship",
+      "rows": 90
+    }
+  ],
+  "errors": [
+    {
+      "host": "starship",
+      "stage": "claude",
+      "message": "Observer source unavailable (runtime_artifact_unavailable)"
+    }
+  ],
+  "nativeRowsUnbound": true
+}

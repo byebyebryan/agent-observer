@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-03",
+  "observerVersion": "0.1.0a4",
+  "wheelSha256": "d5e65f10eb1bc61e288c5970d822bf713684e03a0029599ad269e90a4912dc03",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.1.0a4-d5e65f10eb1bc61e",
+  "installedModulesVerifiedPerHost": 11,
+  "snapSourceMatchesWheel": true,
+  "sourceCheck": {
+    "tests": 111,
+    "exit": 0,
+    "ruffFiles": 41
+  },
+  "managedObserverLinkVerifiedPerHost": true,
+  "agentPlusVersion": "0.13.0a2",
+  "claudeVersion": "2.1.287",
+  "claudeBinarySha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+  "sourceIdentitySetUnchanged": true,
+  "projectedNameSource": "user",
+  "registryNamePrecedence": true,
+  "namesPromptsAndPayloadsRetained": false,
+  "providerActionsIssued": false,
+  "refreshes": [
+    {
+      "origin": "snap",
+      "observerPrefix": "/home/bryan/.local/share/agent-observer/0.1.0a4-d5e65f10eb1bc61e",
+      "agentPlusVersion": "0.13.0a2",
+      "claudeRows": 5,
+      "userAssignedNamesMatched": 2,
+      "renderedFrameNamesMatched": 2,
+      "remainingIdFallbackRows": 3,
+      "errors": [],
+      "refreshOutcome": "complete",
+      "nativeNamesRetained": false
+    },
+    {
+      "origin": "starship",
+      "observerPrefix": "/home/bryan/.local/share/agent-observer/0.1.0a4-d5e65f10eb1bc61e",
+      "agentPlusVersion": "0.13.0a2",
+      "claudeRows": 5,
+      "userAssignedNamesMatched": 2,
+      "renderedFrameNamesMatched": 2,
+      "remainingIdFallbackRows": 3,
+      "errors": [],
+      "refreshOutcome": "complete",
+      "nativeNamesRetained": false
+    }
+  ],
+  "graphicalAcceptanceRepeated": false
+}
