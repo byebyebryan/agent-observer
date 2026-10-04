@@ -13,6 +13,13 @@ simplified.
 
 ## Status
 
+The next development track is [contract and first-party clients](docs/contract-and-clients-plan.md):
+a passive host-local core, read and New/Resume write clients, and an optional
+separate networking component in this repository. Contract/core work and
+frontend migrations have independent gates. The [design review](docs/contract-and-clients-review.md)
+distinguishes this direction from the installed pilot below; proposed commands,
+state terminology and metadata do not change its current API.
+
 The current installable candidate is `agent-observer 0.1.0a5`, written in Python
 with no runtime dependencies. Its host-local JSON
 [contract candidate](docs/snapshot-contract.md) separates logical identity,
@@ -78,6 +85,11 @@ WSNav's current private-tmux and workstream model does not constrain this
 component. Resume, launch, focus, approval, interruption and session deletion
 are outside the initial observation API.
 
+The next plan extracts reusable New/Resume behavior into a first-party write
+client rather than adding actions to observation. The read client consumes the
+same public model as other consumers. Optional networking wraps local interfaces
+and reuses existing Host Mesh routing; it is not required by the core/read gate.
+
 Codex is the primary provider: it leads the first complete implementation and
 validation across the user's machines. Claude Code is the secondary provider,
 with strong support targeted at the user's single work machine. Priority sets
@@ -98,6 +110,14 @@ Agent Plus uses existing host routing to compose host-local observations.
 
 ## Starting points
 
+- [Implementation/execution plan](docs/contract-and-clients-execution-plan.md):
+  unattended work packages, independent Observer read/write/artifact acceptance
+  and a later separately validated Agent Plus integration pass.
+- [Contract and clients plan](docs/contract-and-clients-plan.md): captured
+  decisions, phase/age/project semantics, core/read/write/network boundaries
+  and independently scoped implementation gates.
+- [Contract and clients review](docs/contract-and-clients-review.md): current
+  source gaps, independent findings, acceptance cases and documentation validation.
 - [Native runtime migration plan](docs/native-runtime-migration-plan.md):
   accepted product direction, native TUI/action design, implementation ownership,
   delivery dependencies, rollout and acceptance gates.

@@ -1,5 +1,11 @@
 # Observer consumer fit review
 
+This review retains the dated migration-pilot evidence below, including earlier
+artifact tuples. The next contract/client track is in
+[the plan](contract-and-clients-plan.md) and [review](contract-and-clients-review.md).
+Use [the handoff](execution-handoff.md) for the latest pilot tuple; do not treat
+the earlier candidate versions/test counts below as current installed state.
+
 Status reviewed 2026-10-03 against the current Agent Observer, Agent Plus and
 RLCD candidates, plus the finite native evidence in the
 [runtime report](evidence/2026-10-03-native-runtime/REPORT.md). Bounded installed

@@ -1,5 +1,12 @@
 # Agent Observer architecture boundaries
 
+The [contract and clients plan](contract-and-clients-plan.md), captured
+2026-10-03, defines the next development track: a passive host-local core,
+first-party read/write clients and optional networking in the same repository.
+It takes precedence for future extraction/ownership; the sections below record
+the current migration-pilot boundary. No proposed terminology changes schema v1.
+See the [new review](contract-and-clients-review.md) for source gaps and gates.
+
 Date: 2026-10-02. Status: accepted ownership and product direction; source,
 source coverage remains version/topology gated. Python and the host-local JSON
 [contract candidate](snapshot-contract.md) are selected from native evidence;
