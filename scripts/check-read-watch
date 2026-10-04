@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""Bounded installed watch measurements; retain aggregate metadata only."""
+
+import argparse
+import json
+import os
+import selectors
+import signal
+import subprocess
+import time
+from collections import Counter
+from pathlib import Path
+
+from agent_observer.contract import MAX_BYTES, validate_watch
+
+
+def measure(prefix, host, providers, samples, interval, readers):
+    selector = selectors.DefaultSelector()
+    children = []
+    states = []
+    start = time.monotonic()
+    deadline = start + samples * (interval + 30) + 10
+    try:
+        for _ in range(readers):
+            argv = [
+                str(prefix / "bin/agent-observer"),
+                "watch",
+                "--host-scope",
+                host,
+                "--interval",
+                str(interval),
+                "--count",
+                str(samples),
+            ]
+            for provider in providers:
+                argv += ["--provider", provider]
+            child = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            children.append(child)
+            state = {
+                "buffer": b"",
+                "revision": 0,
+                "stream": None,
+                "counts": Counter(),
+                "times": [],
+                "rss": [],
+                "fds": [],
+                "partial": 0,
+                "rows": [],
+                "clocks": {},
+                "samePhaseClockUpdates": 0,
+            }
+            states.append(state)
+            selector.register(child.stdout, selectors.EVENT_READ, (child, state))
+        while selector.get_map():
+            if time.monotonic() > deadline:
+                raise ValueError("watch_deadline")
+            for child, state in zip(children, states, strict=True):
+                try:
+                    status = Path(f"/proc/{child.pid}/status").read_text()
+                    rss = next(
+                        int(line.split()[1])
+                        for line in status.splitlines()
+                        if line.startswith("VmRSS:")
+                    )
+                    state["rss"].append(rss)
+                    state["fds"].append(len(list(Path(f"/proc/{child.pid}/fd").iterdir())))
+                except (OSError, StopIteration):
+                    pass
+            for key, _ in selector.select(0.2):
+                child, state = key.data
+                chunk = os.read(key.fileobj.fileno(), 65536)
+                if not chunk:
+                    selector.unregister(key.fileobj)
+                    if state["buffer"]:
+                        raise ValueError("watch_unterminated_frame")
+                    continue
+                state["buffer"] += chunk
+                while b"\n" in state["buffer"]:
+                    line, state["buffer"] = state["buffer"].split(b"\n", 1)
+                    if len(line) > MAX_BYTES:
+                        raise ValueError("watch_frame_limit")
+                    frame = validate_watch(json.loads(line))
+                    if frame["revision"] != state["revision"] + 1 or (
+                        state["stream"] and frame["streamId"] != state["stream"]
+                    ):
+                        raise ValueError("watch_revision_invalid")
+                    state.update(revision=frame["revision"], stream=frame["streamId"])
+                    state["counts"][frame["kind"]] += 1
+                    state["times"].append(round(time.monotonic() - start, 3))
+                    value = frame["snapshot"]
+                    if value:
+                        if value["host"]["authority"] != host:
+                            raise ValueError("watch_scope_changed")
+                        state["partial"] += value["sourceHealth"] != "current"
+                        state["rows"].append(len(value["sessions"]))
+                        for row in value["sessions"]:
+                            key_id = json.dumps(row["identity"], sort_keys=True)
+                            phase = row["phase"]
+                            current = (phase["value"], phase["observedAt"])
+                            old = state["clocks"].get(key_id)
+                            if (
+                                phase["clock"] == "native"
+                                and old
+                                and current[0] == old[0]
+                                and current[1] != old[1]
+                            ):
+                                state["samePhaseClockUpdates"] += 1
+                            state["clocks"][key_id] = current
+                if len(state["buffer"]) > MAX_BYTES:
+                    raise ValueError("watch_frame_limit")
+        reports = []
+        for child, state in zip(children, states, strict=True):
+            if child.wait(timeout=5) != 0 or not state["counts"]["snapshot"]:
+                raise ValueError("watch_failed")
+            deltas = [
+                round(b - a, 3) for a, b in zip(state["times"], state["times"][1:], strict=False)
+            ]
+            reports.append(
+                {
+                    "frameCounts": dict(state["counts"]),
+                    "frames": state["revision"],
+                    "sampleSpacingSeconds": deltas,
+                    "maxRssKiB": max(state["rss"], default=0),
+                    "maxFdCount": max(state["fds"], default=0),
+                    "rssStartEndKiB": [state["rss"][0], state["rss"][-1]] if state["rss"] else [],
+                    "fdStartEnd": [state["fds"][0], state["fds"][-1]] if state["fds"] else [],
+                    "partialSnapshots": state["partial"],
+                    "sessionCountRange": [
+                        min(state["rows"], default=0),
+                        max(state["rows"], default=0),
+                    ],
+                    "sameValueNativePhaseClockUpdates": state["samePhaseClockUpdates"],
+                }
+            )
+        return {
+            "status": "accepted",
+            "hostScope": host,
+            "providers": providers,
+            "samplesPerReader": samples,
+            "readers": readers,
+            "requestedIntervalSeconds": interval,
+            "elapsedSeconds": round(time.monotonic() - start, 3),
+            "revisionAndSchemaChecks": True,
+            "providerActions": 0,
+            "measurements": reports,
+        }
+    finally:
+        selector.close()
+        for child in children:
+            if child.poll() is None:
+                child.send_signal(signal.SIGINT)
+                try:
+                    child.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    child.kill()
+                    child.wait(timeout=5)
+            if child.stdout:
+                child.stdout.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    parser.add_argument("--samples", type=int, default=10)
+    parser.add_argument("--interval", type=float, default=2)
+    parser.add_argument("--readers", type=int, default=1)
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    if not 2 <= args.samples <= 100 or not 1 <= args.readers <= 4 or not 1 <= args.interval <= 30:
+        parser.error("invalid measurement bounds")
+    result = measure(
+        args.prefix, args.host_scope, args.provider, args.samples, args.interval, args.readers
+    )
+    data = json.dumps(result, indent=2) + "\n"
+    if args.output:
+        args.output.write_text(data)
+    print(data, end="")
+
+
+if __name__ == "__main__":
+    main()

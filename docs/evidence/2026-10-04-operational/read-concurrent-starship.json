@@ -1,0 +1,83 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "providers": [
+    "codex"
+  ],
+  "samplesPerReader": 10,
+  "readers": 2,
+  "requestedIntervalSeconds": 2,
+  "elapsedSeconds": 19.677,
+  "revisionAndSchemaChecks": true,
+  "providerActions": 0,
+  "measurements": [
+    {
+      "frameCounts": {
+        "snapshot": 1,
+        "heartbeat": 9
+      },
+      "frames": 10,
+      "sampleSpacingSeconds": [
+        1.921,
+        2.011,
+        2.023,
+        2.017,
+        1.999,
+        1.947,
+        1.973,
+        2.047,
+        1.974
+      ],
+      "maxRssKiB": 26536,
+      "maxFdCount": 4,
+      "rssStartEndKiB": [
+        740,
+        24924
+      ],
+      "fdStartEnd": [
+        4,
+        3
+      ],
+      "partialSnapshots": 0,
+      "sessionCountRange": [
+        90,
+        90
+      ],
+      "sameValueNativePhaseClockUpdates": 0
+    },
+    {
+      "frameCounts": {
+        "snapshot": 1,
+        "heartbeat": 9
+      },
+      "frames": 10,
+      "sampleSpacingSeconds": [
+        1.941,
+        2.007,
+        2.027,
+        2.021,
+        1.993,
+        1.945,
+        1.975,
+        2.052,
+        1.969
+      ],
+      "maxRssKiB": 26488,
+      "maxFdCount": 4,
+      "rssStartEndKiB": [
+        488,
+        24872
+      ],
+      "fdStartEnd": [
+        4,
+        3
+      ],
+      "partialSnapshots": 0,
+      "sessionCountRange": [
+        90,
+        90
+      ],
+      "sameValueNativePhaseClockUpdates": 0
+    }
+  ]
+}
