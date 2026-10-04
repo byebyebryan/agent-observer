@@ -1,0 +1,77 @@
+{
+  "provider": "claude",
+  "installedVersion": "2.1.287",
+  "hostAuthority": "snap",
+  "evidenceType": "native-isolated-authenticated",
+  "capturedAt": "2026-10-03T03:52:27.348525+00:00",
+  "namespaceIsolation": {
+    "user": true,
+    "mount": true,
+    "pid": true,
+    "network": "shared_for_provider_auth",
+    "ordinary_home_absent": true,
+    "ordinary_runtime_absent": true,
+    "selected_cwd": "/proof/workspace",
+    "ordinary_hooks_plugins_absent": true
+  },
+  "nativeConfiguration": {
+    "disableAgentView": false,
+    "worktree.bgIsolation": "none",
+    "settingSources": [
+      "project"
+    ],
+    "operatorSafeMode": "first_trial_only; absent_in_recorded_successful_attached_trial"
+  },
+  "cases": {
+    "native_workspace_trust": "passed",
+    "supervised_job_creation_in_selected_cwd": "passed",
+    "short_job_to_native_session_uuid": "passed",
+    "populated_roster_read": "passed",
+    "selected_private_preferences_unchanged_during_reads": "passed",
+    "assured_passive_roster_source": "failed_static_orphan_adoption_can_write_job_records",
+    "attached_tiny_model_turn": "passed",
+    "model_turn_completion": {
+      "case": "disposable_transcript_metadata_check",
+      "files_seen": 1,
+      "matched_files": 1,
+      "user_records": 1,
+      "assistant_records": 1,
+      "assistant_exact_proof_marker": true,
+      "native_session_ids_match": true,
+      "bounded_input": true,
+      "raw_payload_retained": false
+    },
+    "terminal_state_working_to_done": "passed",
+    "short_id_attach": "passed_entry; current-client-conversation_binding_not_proved",
+    "empty_prompt_detach": "operator_sent; client_exit_and_no_cancellation_not_proved",
+    "approval_denial_blocking_input_cancellation": "not_run",
+    "ordinary_runtime_config_migration": "not_run"
+  },
+  "sourceDecision": {
+    "nativeRoster": "rejected_for_assured_passivity",
+    "privateMetadata": "provisional_version_gated_candidate",
+    "hooks": "coverage_gap_candidate; not_installed_or_proved"
+  },
+  "preservation": {
+    "ordinary_auth_unchanged": true,
+    "ordinary_preferences_unchanged": true,
+    "borrowed_credential_removed": true,
+    "provider_workers": "isolated_PID_namespace_ends_with_keeper",
+    "ordinary_hooks_plugins_settings": "not_mounted_or_changed_by_test"
+  },
+  "retention": {
+    "providerEnv_values": false,
+    "raw_payloads": false,
+    "transcript_content": false,
+    "terminal_captures": false,
+    "credentials": false,
+    "prompts_responses": false
+  },
+  "limitations": [
+    "The first background task remained unconfirmed until native attachment and a second prompt; automatic work from bare --bg is not accepted.",
+    "The completion marker check uses only the disposable assistant record in memory; no transcript or response text is retained.",
+    "Native state is separate from runtime status; idle alone is never normalized as settled.",
+    "Roster derives some state and can adopt orphans; successful reads do not establish production passivity.",
+    "Terminal byte/cue diagnostics are instrumentation metadata and do not prove UI acceptance."
+  ]
+}

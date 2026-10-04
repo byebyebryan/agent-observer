@@ -8,6 +8,12 @@ on 2026-10-02. Earlier inspected versions and reference revisions below remain
 dated evidence. The shared component's boundaries are in
 [architecture.md](architecture.md).
 
+Later [Snap preflight](evidence/2026-10-02-p1-snap/REPORT.md) and the
+[runtime UX study](provider-runtime-ux-study.md) supersede the earlier provider
+availability and command assumptions below. The
+[migration plan](native-runtime-migration-plan.md) records the current product
+direction; earlier inspected versions/checkouts remain dated reference evidence.
+
 ## Purpose and scope
 
 Agent Observer is a shared host-side component for coding-agent discovery
@@ -49,7 +55,7 @@ The inspected checkouts were clean at these revisions:
 | `wsnav` | `74662365b23ce331398d52b0680cd32d36a749d5` | Managed-runtime lifecycle and identity reference |
 | `rofi-agent-plus` | `42ac16da09627988253bf12d635868bf25998fdf` | Inventory, process and tmux correlation reference |
 
-Local inspection on 2026-10-02 established:
+The initial Starship inspection on 2026-10-02 established:
 
 - `/usr/bin/codex` reports `codex-cli 0.160.0`.
 - `codex features list` reports `hooks stable true` and
@@ -58,9 +64,11 @@ Local inspection on 2026-10-02 established:
 - The live `~/.codex/config.toml` and chezmoi's
   `.chezmoitemplates/codex-portable-config.toml.tmpl` both set
   `features.daemon_auto_start = false`.
-- Installed help exposes `codex agents`, daemon management, and
-  `--no-daemon`. The latter explicitly runs without the shared server even
-  when one exists. Configuration alone does not establish the live topology.
+- Installed help exposes `codex agents` and `--no-daemon`. The latter
+  explicitly runs without the shared server even when one exists.
+  Configuration alone does not establish the live topology. Later Snap help
+  probes found no `codex daemon start` or `codex daemon status` subcommand;
+  general help output does not establish a daemon-management command.
 - Generated schemas from the installed Codex binary expose runtime states
   `notLoaded`, `idle`, `systemError`, and `active`; active flags include
   `waitingOnApproval` and `waitingOnUserInput`. Schema presence is static

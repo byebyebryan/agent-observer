@@ -1,0 +1,57 @@
+{
+  "boundedCensus": {
+    "bytes": 744868112,
+    "duplicateUuidFilenameKinds": 2,
+    "limits": {
+      "aggregateBytes": 2147483648,
+      "censusSeconds": 5,
+      "directoryEntries": 8192,
+      "files": 2048,
+      "perFileBytes": 268435456,
+      "projects": 256
+    },
+    "malformedFilenames": 0,
+    "projects": 11,
+    "rootJsonlCandidates": 34,
+    "uniqueUuidFilenames": 32
+  },
+  "coverage": {
+    "complete": false,
+    "reason": "metadata_scan"
+  },
+  "errors": [],
+  "invocation": {
+    "api": "claude_agent_sdk.list_sessions()",
+    "arguments": [],
+    "daemonLaunched": false,
+    "providerCliLaunched": false
+  },
+  "package": {
+    "bundledCliPresent": false,
+    "dependencySnapshot": "/tmp/agent-observer-sdk-sdist-0.2.163/requirements-installed.txt",
+    "installedDistributionCount": 32,
+    "name": "claude-agent-sdk",
+    "python": "3.12.8",
+    "sitePackagesBytes": 51347239,
+    "sourceArchive": "/tmp/claude_agent_sdk-0.2.163.tar.gz",
+    "sourceArchiveBytes": 365180,
+    "sourceArchiveSha256": "269821ad5acff5967522ff15f444b0598840fd9bdc45c645de569a5478061a53",
+    "sourceBuiltWheel": "/tmp/agent-observer-sdk-sdist-0.2.163/wheels/claude_agent_sdk-0.2.163-py3-none-any.whl",
+    "sourceBuiltWheelBytes": 157890,
+    "sourceBuiltWheelSha256": "bbc60e32d9ae3278e947933bfa9cd886903ab2b95fcf30ab3e6b60352a58bb47",
+    "version": "0.2.163"
+  },
+  "passivity": {
+    "auditGuard": "SDK import and listing deny subprocess, network, and filesystem mutation events",
+    "blockedSideEffectEventCount": 0,
+    "sdkListSucceeded": true
+  },
+  "projectionCounts": {
+    "createdAt": 31,
+    "customTitles": 29,
+    "cwd": 31,
+    "fileModifiedAt": 31,
+    "rows": 31
+  },
+  "rawTitlesPromptsPathsOrSessionIdsIncluded": false
+}

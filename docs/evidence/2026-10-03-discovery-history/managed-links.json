@@ -1,0 +1,12 @@
+{
+  "snap": {
+    "commandCount": 3,
+    "exactManagedLinkTargetsVerified": true,
+    "chezmoiVerifyExit": 0
+  },
+  "starship": {
+    "commandCount": 3,
+    "exactManagedLinkTargetsVerified": true,
+    "chezmoiVerifyExit": 0
+  }
+}

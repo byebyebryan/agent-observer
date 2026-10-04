@@ -1,0 +1,17 @@
+{
+  "evidenceKind": "installed_picker_process_smoke_via_verified_waypipe_proxy",
+  "managedLauncherUsed": true,
+  "managedScriptUsed": true,
+  "ownedProcessAliveAfterThreeSeconds": true,
+  "exit": -15,
+  "stderrBytes": 0,
+  "stdoutBytes": 0,
+  "reasonCodes": [
+    "owned_picker_process_alive"
+  ],
+  "ownedProcessGroupClosed": true,
+  "existingWaypipeBirthPreserved": true,
+  "graphicalSurfaceOrFocusVerified": false,
+  "visualAcceptance": false,
+  "rawOutputRetained": false
+}

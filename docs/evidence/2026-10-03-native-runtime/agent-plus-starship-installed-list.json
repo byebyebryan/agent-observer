@@ -1,0 +1,25 @@
+{
+  "version": "0.13.0a1",
+  "exit": 0,
+  "stderrBytes": 0,
+  "stdoutBytes": 562574,
+  "isolatedCache": true,
+  "rows": 100,
+  "hosts": [
+    {
+      "hostId": "starship",
+      "rows": 90
+    },
+    {
+      "hostId": "snap",
+      "rows": 52
+    }
+  ],
+  "errors": [
+    {
+      "host": "starship",
+      "stage": "claude",
+      "message": "Observer source unavailable (runtime_artifact_unavailable)"
+    }
+  ]
+}

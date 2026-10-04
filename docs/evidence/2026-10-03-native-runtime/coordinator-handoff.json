@@ -1,0 +1,29 @@
+{
+  "coordinatorIdentity": {
+    "hostScope": "snap",
+    "provider": "codex",
+    "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+    "nativeIdKind": "thread",
+    "nativeId": "01a0fece-0176-7a33-abb3-e99fdb38417a"
+  },
+  "nativeIds": {
+    "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+    "sessionId": "01a0fece-0176-7a33-abb3-e99fdb38417a"
+  },
+  "inventory": "saved",
+  "sourceHealth": "current",
+  "configHome": "/home/bryan/.codex",
+  "candidateReopenArgv": [
+    "env",
+    "CODEX_HOME=/home/bryan/.codex",
+    "codex",
+    "resume",
+    "--all",
+    "01a0fece-0176-7a33-abb3-e99fdb38417a"
+  ],
+  "sameRouteProvedOnDisposableSavedIDs": true,
+  "coordinatorActuallyResumed": false,
+  "currentClientBinding": "unsupported",
+  "oldOwnerMustQuiesceFirst": true,
+  "otherSessionsOperated": false
+}

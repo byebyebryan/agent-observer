@@ -1,0 +1,59 @@
+{
+  "action": "codex-snap-new",
+  "accepted": true,
+  "evidenceKind": "installed_action_with_disposable_terminal_client",
+  "graphicalAcceptance": false,
+  "host": "snap",
+  "createdGenericReference": {
+    "host": "snap",
+    "meshRevision": "sha256:decab8fc6d7070b36736392e15feb5900732ce251f8b473fe08341139a6a995c",
+    "serverGeneration": "tmux-v1:1790960394:10120:/tmp/tmux-1000/default",
+    "sessionId": "$25",
+    "createdAt": 1791012333,
+    "observedName": "agent-observer-codex"
+  },
+  "viewerStatus": "unsupported",
+  "viewerCount": 0,
+  "closeSafe": true,
+  "identity": {
+    "hostScope": "snap",
+    "provider": "codex",
+    "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+    "nativeIdKind": "thread",
+    "nativeId": "01a100a7-6aa6-7e63-b188-4fe1ff82a9b0"
+  },
+  "currentClientBindingAccepted": false,
+  "operatorNativeStatusExactUUID": true,
+  "rawCaptureRetained": false,
+  "nativeIds": {
+    "threadId": "01a100a7-6aa6-7e63-b188-4fe1ff82a9b0",
+    "sessionId": "01a100a7-6aa6-7e63-b188-4fe1ff82a9b0"
+  },
+  "newIdentityDiffersFromSelected": true,
+  "noOperatorTaskSubmitted": true,
+  "whileAttached": {
+    "sourceHealth": "current",
+    "inventory": "live",
+    "work": {
+      "value": "settled",
+      "observedAt": 1791012563271,
+      "source": "codex_rpc",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "presence": {
+      "value": "present",
+      "observedAt": 1791012563271,
+      "source": "codex_rpc",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "runtimeBirth": 4599726
+  },
+  "cleanup": {
+    "ownedGenericWrapperKilled": true,
+    "ownedPrivateViewerAbsentOrClosed": true,
+    "otherSessionsOperated": false,
+    "providerDaemonStopped": false
+  }
+}

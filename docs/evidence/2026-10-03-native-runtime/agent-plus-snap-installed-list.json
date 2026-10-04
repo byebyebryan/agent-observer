@@ -1,0 +1,52 @@
+{
+  "command": "installed_cli_list",
+  "exit": 0,
+  "stderrBytes": 0,
+  "stdoutBytes": 562304,
+  "wheelSha256": "a17884c5fd85792ddd88ff35defcdf2650aa635596d0f8df0cd46c5cfa3bcbdc",
+  "hosts": [
+    {
+      "hostId": "snap",
+      "rows": 52,
+      "stageErrors": {},
+      "status": null
+    },
+    {
+      "hostId": "starship",
+      "rows": 90,
+      "stageErrors": {},
+      "status": null
+    }
+  ],
+  "rows": 100,
+  "catalogCount": 2,
+  "errors": [
+    {
+      "host": "starship",
+      "stage": "claude",
+      "message": "Observer source unavailable (runtime_artifact_unavailable)"
+    }
+  ],
+  "targetRows": [
+    {
+      "kind": "codex",
+      "id": "01a10048-a63b-7a51-8086-65d7f84e4aba",
+      "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+      "nativeIdKind": "thread",
+      "sourceObservation": "current",
+      "active": null,
+      "contractMode": true,
+      "hostId": "snap"
+    },
+    {
+      "kind": "codex",
+      "id": "01a10056-0cb5-7370-9696-9361ad332f2b",
+      "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+      "nativeIdKind": "thread",
+      "sourceObservation": "current",
+      "active": null,
+      "contractMode": true,
+      "hostId": "starship"
+    }
+  ]
+}

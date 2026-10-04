@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-03",
+  "host": "snap",
+  "providerVersion": "2.1.287",
+  "officialSourceCommit": "9c69ce7aced5cdf2aa1ac86fe62e877b4962de8b",
+  "probeMode": "unmodified_official_metadata_modules_only_not_full_sdk_install",
+  "sdkMainProjectVersion": "0.2.163",
+  "isolatedDependencyVersion": {
+    "anyio": "4.15.1"
+  },
+  "sessionCount": 31,
+  "uniqueSessionCount": 31,
+  "nativeTitleCount": 29,
+  "cwdCount": 31,
+  "createdAtCount": 31,
+  "earliestCreatedAtMs": 1783962437505,
+  "latestCreatedAtMs": 1791011457193,
+  "activeRegistryOverlap": 2,
+  "rootTranscriptFilenameCount": 34,
+  "nestedSubagentTranscriptFilenameCount": 182,
+  "projectDirectoryCount": 11,
+  "transcriptReadCount": 34,
+  "subagentTranscriptReadCount": 0,
+  "elapsedMs": 9,
+  "mutationsSubprocessNetworkDeniedDuringListing": true,
+  "sourceFileSha256": {
+    "sdk-types.py": "b1054473280782ab57b2b0690a49a820a2f97dbd2eb6b2ff1bbd3e6205b71bdb",
+    "sessions.py": "d5323963daf711c8bcc684057fd48d0cb786ee04d8329be6dec82444ec505662",
+    "session_store_validation.py": "191b169b65e9116b6ffdcc215dfc2644db2ab9c3854b88b23206ee4f27580ba4"
+  },
+  "limitations": [
+    "not_full_sdk_packaging_acceptance",
+    "not_production_observer_or_consumer_integration",
+    "not_saved_history_resume_acceptance",
+    "sdk_skips_some_unreadable_or_metadata_only_files",
+    "native_title_field_does_not_prove_user_naming_provenance",
+    "sdk_summary_and_first_prompt_not_projected_or_retained",
+    "filesystem_mtime_not_native_work_or_identity_evidence"
+  ]
+}

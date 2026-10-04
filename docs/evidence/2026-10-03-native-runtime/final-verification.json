@@ -1,0 +1,28 @@
+{
+  "observerSourceGate": {
+    "command": "./scripts/check",
+    "exit": 0,
+    "tests": 106,
+    "documentationLinksWhitespaceFencesPassed": true
+  },
+  "observerRuffLintFormatPassed": true,
+  "agentPlusSourceGate": {
+    "command": "./scripts/check",
+    "exit": 0,
+    "tests": 338,
+    "ruffLintFormatPassed": true
+  },
+  "releasedHostMeshTmuxBundleSyncPassed": true,
+  "managedPilotVerifySnapPassed": true,
+  "managedPilotVerifyStarshipPassed": true,
+  "nativeActionRoutes": [
+    "codex_new_snap",
+    "codex_resume_snap",
+    "codex_new_starship",
+    "codex_resume_starship",
+    "claude_new_snap",
+    "claude_resume_snap"
+  ],
+  "physicalDesktopAcceptance": false,
+  "sourceCommittedOrPublished": false
+}

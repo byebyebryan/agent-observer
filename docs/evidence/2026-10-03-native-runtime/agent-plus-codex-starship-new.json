@@ -1,0 +1,59 @@
+{
+  "action": "codex-starship-new",
+  "accepted": true,
+  "evidenceKind": "installed_action_with_disposable_terminal_client",
+  "graphicalAcceptance": false,
+  "host": "starship",
+  "createdGenericReference": {
+    "host": "starship",
+    "meshRevision": "sha256:decab8fc6d7070b36736392e15feb5900732ce251f8b473fe08341139a6a995c",
+    "serverGeneration": "tmux-v1:1790960111:7656:/tmp/tmux-1000/default",
+    "sessionId": "$31",
+    "createdAt": 1791012482,
+    "observedName": "agent-observer-codex"
+  },
+  "viewerStatus": "unsupported",
+  "viewerCount": 0,
+  "closeSafe": true,
+  "identity": {
+    "hostScope": "starship",
+    "provider": "codex",
+    "namespace": "sha256:cf971cf9393cf9719046ccc9b5e1b61d82c9836df3bbee5182375c6164015186",
+    "nativeIdKind": "thread",
+    "nativeId": "01a100a9-b5d7-7f90-a6f1-8724b8e28180"
+  },
+  "currentClientBindingAccepted": false,
+  "operatorNativeStatusExactUUID": true,
+  "rawCaptureRetained": false,
+  "nativeIds": {
+    "threadId": "01a100a9-b5d7-7f90-a6f1-8724b8e28180",
+    "sessionId": "01a100a9-b5d7-7f90-a6f1-8724b8e28180"
+  },
+  "newIdentityDiffersFromSelected": true,
+  "noOperatorTaskSubmitted": true,
+  "whileAttached": {
+    "sourceHealth": "current",
+    "inventory": "live",
+    "work": {
+      "value": "settled",
+      "observedAt": 1791012638066,
+      "source": "codex_rpc",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "presence": {
+      "value": "present",
+      "observedAt": 1791012638066,
+      "source": "codex_rpc",
+      "health": "current",
+      "reason": "native_snapshot"
+    },
+    "runtimeBirth": 4759555
+  },
+  "cleanup": {
+    "ownedGenericWrapperKilled": true,
+    "ownedPrivateViewerAbsentOrClosed": true,
+    "otherSessionsOperated": false,
+    "providerDaemonStopped": false
+  }
+}

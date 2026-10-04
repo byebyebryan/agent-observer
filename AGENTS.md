@@ -4,14 +4,22 @@
 
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
-- The active checkpoint is capability/topology preflight. Source selection and
-  the public observation contract are provisional until the spike proves them.
+- The active checkpoint is the native-runtime migration pilot and consumer
+  integration. Exact-artifact native evidence accepts only the documented
+  subset; new versions, topologies and capabilities require independent proof.
+  The schema-v1 command remains a prerelease contract.
 - Continue preflight and spike work on Snap in `~/code/agent-observer`. Claude
   is available only there according to the user. Reinspect both providers on
   Snap; Starship evidence does not establish Snap versions or runtime behavior.
 - RLCD and Agent Plus drive the initial requirements. WSNav is historical
   evidence and a possible future consumer; its integration is not a gate.
-- Codex and Claude Code are the initial providers. Keep OpenCode deferred.
+- Agent Plus meshes sessions across providers and hosts. Codex leads delivery;
+  Claude Code remains a required second provider for the completed migration.
+  Preserve provider-independent contracts and separate usage context from
+  provider/host identity. See `docs/native-runtime-migration-plan.md` for the
+  delivery boundaries and `docs/design-review.md` for pending proof decisions.
+- OpenCode integration is deprecated and removed from Agent Plus at migration
+  cutover. Do not add an OpenCode adapter or compatibility fallback to this work.
 - Inspect actual installed versions and runtime topology. Existing projects,
   old spikes, and newer online docs are references, not current runtime proof.
 
@@ -43,5 +51,5 @@
 - Run `./scripts/check` before committing or publishing documentation changes.
   Add appropriate runtime checks when code is introduced.
 - Preserve unrelated changes in this and consumer repositories. Consumer
-  migrations, production deployment and provider policy changes are separate
-  work from this bootstrap and spike.
+  migrations, installation and provider policy changes use their own scoped
+  delivery gates and must not be inferred from passive source acceptance.

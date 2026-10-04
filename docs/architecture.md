@@ -1,85 +1,213 @@
 # Agent Observer architecture boundaries
 
-Date: 2026-10-02. Status: initial boundaries; data-source and interface proof
-pending. [Roadmap](roadmap.md) and [spike plan](agent-session-spike-plan.md).
+Date: 2026-10-02. Status: accepted ownership and product direction; source,
+source coverage remains version/topology gated. Python and the host-local JSON
+[contract candidate](snapshot-contract.md) are selected from native evidence;
+release stability and ordinary runtime/consumer acceptance remain pending.
+The [migration plan](native-runtime-migration-plan.md) defines delivery and
+acceptance; the [roadmap](roadmap.md) records current status.
 
-## Purpose
+## Purpose and product boundaries
 
-Provide one reusable implementation of provider session discovery and
-observation for the active RLCD and Agent Plus projects. Keep provider version
-and topology behavior in adapters so each consumer does not have to maintain
-its own interpretation of the same runtime.
+Agent Observer provides reusable host-side provider discovery and observation
+for Agent Plus and RLCD. Agent Plus meshes sessions across providers and hosts;
+RLCD needs a reliable live roster. Provider independence is an architectural
+requirement. Codex leads delivery because it is used most frequently and across
+machines. Claude Code remains a required second provider, initially on the
+user's single work machine.
 
-WSNav's lifecycle work is useful historical evidence. It is currently inactive,
-may be simplified, and does not set the component's runtime ownership model,
-implementation language or acceptance criteria.
+The target is provider-managed execution with individual native TUI entry.
+Codex's shared server and Claude's supervised background jobs have different
+models. Their adapters preserve those differences behind common observations
+and explicit capabilities. Native behavior must be proved before choosing a
+source or claiming a supported topology.
 
-## Shared and consumer responsibilities
+OpenCode support in Agent Plus is deprecated and removed at migration cutover.
+Its observation/action adapters are outside this migration. WSNav supplies
+historical evidence and may be a future consumer; its runtime model, language
+and integration are not gates.
+
+## Ownership
 
 | Owner | Responsibility |
 | --- | --- |
-| Agent Observer | Provider adapters, inventory, native identity, bounded metadata, runtime/work observations, capabilities, provenance, freshness and reconciliation |
+| Native provider | Conversation history and IDs, work execution, jobs/workers, native runtime lifecycle and native UI semantics |
+| Agent Observer | Provider observation adapters, saved/live inventory, exact identity mappings, bounded metadata, work/presence evidence, capabilities, freshness and reconciliation |
+| Agent Plus | Cross-host/provider composition, picker presentation, optional context organization, host routing, viewer association, provider action adapters and action validation |
+| SSH Plus / Tmux Plus | Host authority/routes and public terminal/window lifecycle with exact references and viewer handles |
+| Managed host configuration | Provider runtime policy, compatible artifact installation/pins, hooks/plugins and per-host rollout |
 | RLCD host bridge | Session selection/prioritization, dashboard representation and device transport |
-| Agent Plus | Picker UI, host routing, terminal association, launch/resume/focus decisions and action validation |
-| Possible future WSNav consumer | Workstream persistence, runtime ownership, workflow decisions and action validation |
 
-Agent Observer reports observations; it does not confer ownership or permission
-to act on a session. Consumers must revalidate actions under their own rules.
-The initial component is host-local. Existing host routing can invoke it on a
-target host later; a new network control plane is outside this proof.
+Observer observations are evidence, not permission or an operation handle.
+Observer cannot start, resume, background, interrupt, approve, deny, rename,
+archive or delete provider sessions. Consumer actions remain separate from the
+observation interface and revalidate their exact targets.
 
-## Observation model
+The reuse boundary is host-local JSON. Agent Plus reaches the owning host using
+existing Host Mesh routing, validates its Observer result, and composes the mesh.
+Observer neither chooses SSH routes nor introduces a network control plane.
+Tmux retains terminal clients; it is not the source of provider job ownership.
 
-Separate saved-session inventory from live runtime observations. A saved
-conversation can be inactive, a job can survive a worker exit, and a session
-can have zero or multiple attached clients. A metadata helper can read history
-without knowing another runtime's live state.
+## Identity and session meshing
 
-The provisional model records logical/native IDs, optional provider job and
-runtime incarnation IDs, bounded project/title metadata, provider version and
-topology, work state and wait reason, and source/observation health. State and
-liveness have separate observation timestamps. Conditional or missing fields
-remain explicit; unresolved records must not acquire guessed native identity.
+Separate logical conversations, saved history, retained jobs, runtime workers
+and client attachments. A conversation can have no running worker; a retained
+job can survive worker retirement; one conversation can have several clients.
+Client or worker exit alone cannot establish logical-session end.
 
-Candidate work states are working, needs input, settled, interrupted, error
-and unknown. Settled does not establish task success. Preserve bounded native
-state codes and capability coverage when normalization would lose a useful
-distinction. Keep unavailable/stale observations distinguishable from idle.
+Scope native identity to its owning host, provider and applicable configuration
+or runtime namespace. Preserve distinct native IDs, job IDs and runtime
+incarnations until their mapping is proved. Codex thread and session IDs must
+not be collapsed from schema names alone. Claude short job IDs must not replace
+conversation UUIDs. Different namespaces can require separate records even on
+the same machine.
 
-## Interface candidates
+Host Mesh owns logical host authority and routing. The consumer validates
+returned machine/source provenance against its selected host; a display hostname
+is not sufficient identity. Native ID equality on different hosts is not a
+cross-host conversation link. Cwd, title, launch arguments, PID and file mtime
+cannot resolve ambiguous identity by themselves.
 
-The initial reuse boundary is language-neutral JSON. The implementation may
-offer a library internally, but the active consumers do not require a particular
-library language. These operations are proposals, not implemented commands:
+Provider-specific reads and actions belong in separate adapter boundaries.
+Shared consumer logic works with normalized observations and capabilities;
+adding a future provider should not require interpreting its private runtime
+data throughout the UI or rebuilding the host mesh. A host offering only Claude
+must work without a Codex dependency in generic startup or routing.
 
-| Operation | Purpose |
+The user currently uses Claude exclusively for work and Codex mostly for other
+activity, with occasional work use. Preserve those context distinctions in
+presentation. Any context grouping is explicit consumer policy, independent of
+provider/host identity and native source interpretation. Context tagging and a
+persistent session rail are optional later presentation work.
+
+## Observation contract proposal
+
+The following are semantic requirements, not a stable wire schema or implemented
+CLI. Consumers may prototype against clearly labeled bounded fixtures. Choose
+exact fields and representation from native proof.
+
+| Information | Required distinction |
 | --- | --- |
-| Snapshot | Read inventory and current observations with coverage and freshness |
-| Watch | Emit an initial snapshot and subsequent changes, with explicit gap/recovery behavior |
-| Capabilities | Report supported interfaces, versions/topologies and pending or unsupported state coverage |
+| Envelope | Schema version, collection identity/revision, host/source provenance and per-provider/namespace coverage/errors |
+| Saved inventory | Logical/native IDs, bounded native title/cwd metadata, available history and pagination; independent of live work |
+| Native job/runtime | Optional retained job ID, owning endpoint/namespace, actual provider/runtime version, topology and incarnation |
+| Current observations | Work state/reason, runtime presence, job retention and attachment evidence, each independently unknown when unproved |
+| Freshness | State and presence observation times, source provenance, observation health and recovery/gap information |
+| Capabilities | Supported/pending/unsupported versions, topologies, observation dimensions and known side effects; separate from action permission |
 
-Keep a schema version and bounded source diagnostics. Exact wire fields,
-revision/ordering rules, lifecycle storage and API stability follow the spike.
-Choose between a one-shot CLI, foreground watcher and shared local collector
-based on measured source behavior and consumer needs; do not require a new
-background service merely to share code.
+Bound native title metadata and use an ID-based display fallback. Do not derive
+previews from prompts or parse conversation content for a name. Retain neither
+credentials, prompt/response text, tool arguments/output, terminal captures nor
+raw provider payloads. Filter source payloads in memory before emitting,
+logging or persisting allowlisted metadata. Bound input sizes and diagnostics;
+oversized or malformed responses produce explicit failed/incomplete coverage.
 
-## Provider strategy
+Saved inventory may be paginated or display-limited. Live coverage must remain
+explicit and independent: old live sessions cannot disappear because history
+was capped. A partial or failed roster cannot prove that missing rows are
+inactive or deleted. Keep uncertainty per provider/namespace so one failure
+does not erase healthy observations elsewhere.
 
-Evaluate supported native state feeds first: Claude's documented JSON roster
-and Codex reads from the server that owns the runtime. Use passive hooks for
-proven gaps or foreground sessions where no native state feed is available.
-Process evidence supports identity/liveness reconciliation.
+Candidate work states are working, needs input, settled, interrupted, error and
+unknown. Settled does not establish task success. Keep bounded native state and
+reason codes when normalization loses useful distinctions. Runtime presence,
+job retention, client attachment and local viewer-window presence are separate
+dimensions. Native approval/input waits are distinct from deferred TUI launch.
 
-The [source study](agent-session-study.md) records candidates and limitations.
-Actual installed versions, compatibility opt-outs, observation side effects,
-and waiting/cancellation/recovery coverage must be established by the
-[spike](agent-session-spike-plan.md). No source choice is yet accepted.
+## Freshness ordering and recovery
 
-## Deferred work
+A liveness refresh updates presence evidence, not the age of previous work
+state. Do not expire a long running turn merely because hooks are silent. After
+an observation gap, recover from an authoritative source or expose uncertainty;
+absence of events does not establish settled/idle.
 
-Consumer migrations, session actions, OpenCode, multi-host aggregation,
-production hook installation, service deployment, provider policy changes,
-transcript archives and search remain outside the initial proof. The component
-will retain minimal observation metadata; historical evidence systems have
-different storage and content responsibilities.
+Define collection epochs/revisions and per-source ordering at P5. Reject late
+callbacks from a previous identity binding or runtime incarnation. Do not use
+wall-clock timestamps to order unrelated hosts or invent a total provider event
+order. Watch reconnect must report a gap and resynchronize; when the source
+cannot reconstruct a state, it remains unknown until new authoritative evidence.
+
+Worker/PID reuse, daemon restart and client churn require fresh incarnation and
+binding checks. Retained metadata may remain visible with its original age and
+health. It cannot authorize an action merely because a new process is alive.
+
+## Observation operations and process lifetime
+
+| Proposed operation | Purpose |
+| --- | --- |
+| Snapshot | Return saved/live observations, provenance, coverage and freshness |
+| Watch | Initial snapshot plus changes, with explicit revisions, gaps and recovery |
+| Capabilities | Report version/topology/source support and bounded limitation reasons |
+
+Start with the smallest passive host-local implementation that serves consumer
+needs. Snapshot is the initial candidate; watch or a shared collector follows
+measured source behavior, latency and concurrent-consumer cost. No background
+service is required solely to share code. A collector's lifetime is separate
+from a provider's daemon and must not turn Observer into its runtime owner.
+
+An absent runtime produces unavailable/capability evidence. Observer must not
+invoke an entry point that auto-starts a provider daemon, loads/resumes work or
+changes settings to make discovery succeed. Subscription/disconnect effects,
+including loaded-thread or worker lifetime, are part of passivity proof.
+Claude's CLI roster has observed initialization/housekeeping writes in isolated
+empty cases; its populated ordinary path is not yet accepted as passive.
+
+Native state feeds are the first source candidates: Codex reads from the actual
+owning server and Claude's documented roster where it meets the invariants.
+A separate metadata helper cannot prove another runtime's live status. Hooks
+are added only for demonstrated coverage gaps, with bounded event-specific
+passive output and failure behavior. Process evidence supports reconciliation;
+it does not confer action authority or solve an ambiguous native mapping.
+
+## Consumer actions and viewer bindings
+
+Agent Plus selects among focus of an existing viewer, attachment to existing
+native work, explicit history resume and creation of new work. Its provider
+action adapters use proved native routes; Tmux Plus creates/opens the terminal
+client under current Host Mesh authority. Observer supplies observations, not
+launch commands. Creation/worktree policy belongs to consumer/provider setup.
+
+Revalidate logical host authority, provider namespace, selected native identity,
+current runtime disposition and the applicable Tmux/viewer reference before an
+action. Observation capabilities do not imply permission or safe support for
+every action. Schema mismatch, stale scope, missing evidence or ambiguity must
+produce a bounded rejection or exclusion.
+
+Require evidence relevant to the selected operation. Missing work-state coverage
+alone does not prohibit a window-only action whose current conversation binding
+and exact viewer handle are independently verified. An unknown current binding
+still prevents session-specific focus/close. Keep these guards distinct from
+the presentation of monitoring uncertainty.
+
+A tmux option records launch association. After native new/resume/fork or a
+return to the provider manager, it may no longer describe the current view.
+Prove a current client/conversation binding or invalidate it. Preserve native
+navigation; do not call an old launch marker a current binding. Session-specific
+focus/close needs that binding plus exact terminal/window validation. Generic
+terminal management retains the separate Tmux Plus authority.
+
+Viewer Close keeps its window-only meaning. Native detach, TUI exit, cancellation
+and native Stop must be tested separately. Batch attachment to live jobs without
+wrappers is a separate action-contract change with frozen previews and exact
+per-target revalidation; it never silently activates saved history or new jobs.
+
+## Contract decisions and delivery scope
+
+Codex leads the complete native-runtime/Observer/Agent Plus integration. Check
+Claude's job/session/client distinctions early. A Codex milestone may proceed
+with Claude explicitly pending; stabilize the shared contract only after native
+evidence demonstrates both providers' identity/lifecycle models. The completed
+Agent Plus migration includes both-provider acceptance and cross-host Codex
+acceptance. RLCD reviews the common observation requirements before contract
+stabilization and has an independent bridge/firmware delivery track.
+
+Source choices, implementation language, exact schema/ordering, limits, polling
+intervals and collector deployment follow P1-P5 evidence and measurements.
+Foreground results are comparative/transition evidence; full foreground feature
+parity is not a prerequisite for the managed-runtime target. Keep unsupported
+topologies explicit, without silently restoring the retired discovery stack.
+
+Production runtime changes, hook installation, packaging, consumer migration and
+deployment are later delivery checkpoints in the migration plan. This design
+pass does not execute them. OpenCode adapters, WSNav integration, transcript
+archives/search and a new Observer network control plane remain outside scope.

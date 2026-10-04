@@ -1,11 +1,15 @@
 # Coding-agent session-state spike plan
 
-Date: 2026-10-02. Status: planned; no spike implementation or live runs yet.
+Date: 2026-10-02. Status: P1 active; bounded empty-state evidence recorded.
+Populated native-session proof and adapter implementation remain pending.
 Context: [agent-session-study.md](agent-session-study.md).
 
 This plan moved from the RLCD repository into Agent Observer on 2026-10-02.
 [Architecture](architecture.md) defines the shared boundary and
-[roadmap](roadmap.md) records checkpoint status.
+[roadmap](roadmap.md) records checkpoint status. The
+[migration plan](native-runtime-migration-plan.md) defines later runtime and
+consumer delivery; the [Snap report](evidence/2026-10-02-p1-snap/REPORT.md)
+records the completed bounded P1 slice.
 
 ## Objective
 
@@ -27,6 +31,13 @@ distinct. This does not add consumer integration or session actions to the
 spike. WSNav supplies historical design evidence and may become a consumer
 later; its integration, language, and current runtime model do not set the
 scope or acceptance criteria.
+
+The migration target is provider-managed execution with individual native TUI
+entry, Codex first and Claude second. Evaluate foreground modes as comparative
+or transition evidence; full foreground feature parity is not required for
+managed-runtime delivery. Keep each topology's coverage explicit. Early Claude
+identity/lifecycle evidence checks the shared model before schema stabilization.
+Consumer migration and provider runtime policy changes remain separate work.
 
 ## Execution boundaries
 
@@ -165,7 +176,7 @@ the older foreground-only correlation model:
 | Two concurrent sessions in the same directory | Different native IDs; no cwd/title-based merge or cross-session state |
 | Native clear/new/resume/fork | Current conversation is rebound correctly; delayed old events cannot update the new binding |
 | Collector starts/restarts mid-turn or mid-wait | Recover from an authoritative snapshot, or expose unknown until new evidence; never infer settled from silence |
-| Client detach/reattach | Daemon/supervised work persists independently of the client; no false session exit |
+| Viewer close, native detach/reattach and TUI exit | Distinguish each native operation and its cancellation/lifetime effects; no false logical-session exit or assumed work persistence |
 | Multiple clients for one logical session | One session row with separate attachment evidence |
 | Disposable worker exit/restart | PID loss is not automatically logical-session completion; new incarnation is reconciled |
 | Saved old session remains live | Catalog pagination/recency cap does not silently remove it |

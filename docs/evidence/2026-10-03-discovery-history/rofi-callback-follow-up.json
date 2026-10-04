@@ -1,0 +1,110 @@
+{
+  "snap": {
+    "callbackTarget": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+    "providerCounts": {
+      "snap": {
+        "codex": 48,
+        "claude": 31
+      },
+      "starship": {
+        "codex": 90
+      }
+    },
+    "confirmedChildren": [],
+    "proofRows": [
+      {
+        "host": "snap",
+        "kind": "claude",
+        "id": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+        "name": "Agent plus Claude entry accepted",
+        "sourceKind": null,
+        "threadKind": null
+      },
+      {
+        "host": "starship",
+        "kind": "codex",
+        "id": "01a10056-0cb5-7370-9696-9361ad332f2b",
+        "name": "Run sleep 20",
+        "sourceKind": "vscode",
+        "threadKind": "unknown"
+      }
+    ],
+    "errors": [],
+    "cliExit": 0
+  },
+  "starship": {
+    "callbackTarget": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+    "providerCounts": {
+      "starship": {
+        "codex": 90
+      },
+      "snap": {
+        "codex": 48,
+        "claude": 31
+      }
+    },
+    "confirmedChildren": [],
+    "proofRows": [
+      {
+        "host": "starship",
+        "kind": "codex",
+        "id": "01a10056-0cb5-7370-9696-9361ad332f2b",
+        "name": "Run sleep 20",
+        "sourceKind": "vscode",
+        "threadKind": "unknown"
+      },
+      {
+        "host": "snap",
+        "kind": "claude",
+        "id": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+        "name": "Agent plus Claude entry accepted",
+        "sourceKind": null,
+        "threadKind": null
+      }
+    ],
+    "errors": [],
+    "cliExit": 0
+  },
+  "managedLinks": {
+    "exactTargets": {
+      "snap": {
+        ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58/bin/agent-observer",
+        ".local/bin/rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+        ".local/bin/rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus-rofi",
+        ".config/rofi/scripts/agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus"
+      },
+      "starship": {
+        ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58/bin/agent-observer",
+        ".local/bin/rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus",
+        ".local/bin/rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus-rofi",
+        ".config/rofi/scripts/agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a3-76f8a951e2975283/bin/rofi-agent-plus"
+      }
+    },
+    "verifyExit": {
+      "snap": 0,
+      "starship": 0
+    },
+    "changedTarget": ".config/rofi/scripts/agent-plus",
+    "previousPlusCandidate": "0.13.0a2-b977504f2f778350"
+  },
+  "operatorNativeMetadataChecks": [
+    {
+      "host": "starship",
+      "provider": "codex",
+      "nativeId": "01a10056-0cb5-7370-9696-9361ad332f2b",
+      "nativeOrigin": "vscode",
+      "ownedTopLevelProof": "../2026-10-03-native-runtime/codex-starship-pilot-task-proof.json"
+    },
+    {
+      "host": "snap",
+      "provider": "claude",
+      "nativeId": "ff8a5f7f-891a-406d-88b1-e1f112fa0819",
+      "rootTranscript": true,
+      "isSidechain": false,
+      "ownedTopLevelProof": "../2026-10-03-native-runtime/agent-plus-claude-snap-new.json"
+    }
+  ],
+  "providerActionsPerformed": 0,
+  "historyFilesRemoved": 0,
+  "graphicalAcceptance": false
+}

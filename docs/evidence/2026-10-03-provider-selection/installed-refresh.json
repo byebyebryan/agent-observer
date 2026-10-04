@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-03",
+  "agentPlusVersion": "0.13.0a2",
+  "wheelSha256": "b977504f2f778350713ff85a2babb7f55cdbbe6d32a084202312b89cfbe5d434",
+  "prefix": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a2-b977504f2f778350",
+  "installedFilesVerifiedPerHost": 21,
+  "snapSourceMatchesWheel": true,
+  "sourceCheck": {
+    "tests": 347,
+    "exit": 0,
+    "ruffFiles": 55
+  },
+  "managedTargetsVerifiedPerHost": 4,
+  "observerLinkVerifiedPerHost": true,
+  "hostProviders": {
+    "starship": [
+      "codex"
+    ]
+  },
+  "defaultProviders": [
+    "codex",
+    "claude"
+  ],
+  "legacyCarbonConfigRender": "original_settings_only",
+  "refreshes": [
+    {
+      "origin": "snap",
+      "cli": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a2-b977504f2f778350/bin/rofi-agent-plus",
+      "exit": 0,
+      "hosts": {
+        "snap": {
+          "sessionsByProvider": {
+            "codex": 48,
+            "claude": 5
+          },
+          "sourceHealthByProvider": {
+            "codex": {
+              "current": 48
+            },
+            "claude": {
+              "current": 5
+            }
+          },
+          "errors": []
+        },
+        "starship": {
+          "sessionsByProvider": {
+            "codex": 90
+          },
+          "sourceHealthByProvider": {
+            "codex": {
+              "current": 90
+            }
+          },
+          "errors": []
+        }
+      },
+      "errors": [],
+      "lastRefresh": {
+        "attemptedAt": 1791046942,
+        "completedAt": 1791046942,
+        "outcome": "complete"
+      }
+    },
+    {
+      "origin": "starship",
+      "cli": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a2-b977504f2f778350/bin/rofi-agent-plus",
+      "exit": 0,
+      "hosts": {
+        "starship": {
+          "sessionsByProvider": {
+            "codex": 90
+          },
+          "sourceHealthByProvider": {
+            "codex": {
+              "current": 90
+            }
+          },
+          "errors": []
+        },
+        "snap": {
+          "sessionsByProvider": {
+            "codex": 48,
+            "claude": 5
+          },
+          "sourceHealthByProvider": {
+            "claude": {
+              "current": 5
+            },
+            "codex": {
+              "current": 48
+            }
+          },
+          "errors": []
+        }
+      },
+      "errors": [],
+      "lastRefresh": {
+        "attemptedAt": 1791046977,
+        "completedAt": 1791046977,
+        "outcome": "complete"
+      }
+    }
+  ],
+  "providerActionsRepeated": false,
+  "visualAcceptance": "pending"
+}

@@ -13,26 +13,59 @@ simplified.
 
 ## Status
 
-The repository contains the source study, spike plan, architecture boundaries,
-a documentation check, and a
-[Starship read-only preflight report](docs/evidence/2026-10-02-p1-starship/REPORT.md).
-Installed Codex capabilities and bounded host topology have been inspected;
-native passivity/isolation proof, Claude preflight on Snap, adapters,
-live transitions and consumer integration remain pending.
+The current installable candidate is `agent-observer 0.1.0a5`, written in Python
+with no runtime dependencies. Its host-local JSON
+[contract candidate](docs/snapshot-contract.md) separates logical identity,
+work, presence, attachment, source health and coverage.
 
-The active checkpoint is **P1: capability and topology preflight**.
-See [the roadmap](docs/roadmap.md). Implementation language, the public schema,
-and any background collector will be chosen from the proof results.
+Native isolated proofs on Snap accept Codex 0.160.0 managed-runtime inventories,
+working/settled/approval observations, exact saved resume, work after viewer
+exit and daemon recovery. Claude Code 2.1.287 accepts direct metadata discovery,
+verified workers, background work/completion/approval and work after viewer
+exit. General input, interrupted/error transitions and current conversation
+binding remain explicitly unsupported. Observer and Agent Plus candidates are
+installed on Snap and Starship; ordinary runtime and bounded routed native
+action pilots are accepted. Graphical UI, sleep/wake and published release
+acceptance remain separate gates.
 
-Continue execution on Snap at `~/code/agent-observer`, where the user reports
-Claude is available. Read the [Snap handoff](docs/handoff-snap.md) for retained
-context, evidence boundaries, open decisions and the first task there.
+The [native report](docs/evidence/2026-10-03-native-runtime/REPORT.md),
+[execution status](docs/execution-status.md) and
+[roadmap](docs/roadmap.md) distinguish those gates from source and fixture tests.
+The [reviewed migration plan](docs/native-runtime-migration-plan.md) defines
+rollout. The [execution handoff](docs/execution-handoff.md) records the current
+coordinator's final deliberate reopen route and remaining checks.
+
+Claude saved history uses the optional pinned `claude-history` extra. The pilot
+builds `claude-agent-sdk==0.2.163` from its official source distribution with
+`--no-binary=claude-agent-sdk` to avoid the wheel's bundled Claude executable.
+The SDK and its Python dependencies belong in Observer's own environment;
+Codex-only hosts need no SDK. Observer projects explicit saved titles, UUIDs,
+cwd and creation metadata through a bounded passive helper. It does not export
+SDK summaries or conversation contents.
+
+## Command candidate
+
+```sh
+python -m pip install .
+agent-observer snapshot --host-scope snap
+agent-observer snapshot --host-scope starship --provider codex
+```
+
+Run Observer on the selected host. `--host-scope` is supplied by the consumer's
+Host Mesh authority. It does not authenticate a host. Provider configuration
+roots can be supplied explicitly. Observation reads existing endpoints/files;
+it never starts a missing daemon or invokes a provider action.
 
 ## Scope
 
 Agent Observer owns provider discovery, bounded metadata, runtime observations,
 source/version capability handling, and reconciliation of stale or conflicting
 evidence. Its interface should work across consumer languages.
+
+Agent Plus uses these observations to mesh sessions across providers and hosts.
+Provider independence is an architectural requirement. Codex's delivery priority
+reflects usage frequency; the completed migration includes strong support for
+both Codex and Claude Code.
 
 Saved conversations, logical sessions, runtime workers, and attached terminal
 clients have separate identities and lifetimes. Session inventory is separate
@@ -45,19 +78,42 @@ WSNav's current private-tmux and workstream model does not constrain this
 component. Resume, launch, focus, approval, interruption and session deletion
 are outside the initial observation API.
 
-The first proof covers Codex and Claude Code, including foreground and
-daemon/supervisor topologies where they can be isolated. Existing compatibility
-opt-outs remain intact on ordinary sessions. OpenCode and multi-host aggregation
-are deferred.
+Codex is the primary provider: it leads the first complete implementation and
+validation across the user's machines. Claude Code is the secondary provider,
+with strong support targeted at the user's single work machine. Priority sets
+delivery order; both providers require passive observation, exact identity,
+reliable recovery and explicit capability limits.
+
+The user's current workflows naturally separate Claude Code for work from
+Codex for mostly other activity, with occasional work use. Work context is a
+consumer organization concern, separate from provider and host identity.
+
+The proof covers Codex and Claude Code, including foreground and
+daemon/supervisor topologies where they can be isolated. Scoped policy changes
+apply to fresh launches; existing ordinary sessions remain intact. Codex and Claude Code are the only
+providers in the Agent Plus migration. OpenCode integration in Agent Plus is
+removed from the migrated candidate; an OpenCode adapter is
+outside this migration. Observer multi-host aggregation remains deferred;
+Agent Plus uses existing host routing to compose host-local observations.
 
 ## Starting points
 
+- [Native runtime migration plan](docs/native-runtime-migration-plan.md):
+  accepted product direction, native TUI/action design, implementation ownership,
+  delivery dependencies, rollout and acceptance gates.
+- [Design review](docs/design-review.md): source/evidence checks, resolved
+  planning issues, coverage and remaining proof decisions.
+- [Provider runtime and UX study](docs/provider-runtime-ux-study.md): Codex
+  daemon and Claude Agent View mode comparisons, everyday workflow changes,
+  Agent Plus impact and migration proof requirements.
 - [Session-state source study](docs/agent-session-study.md): origins, inspected
   revisions, current interface candidates, evidence boundaries and open questions.
 - [Spike plan](docs/agent-session-spike-plan.md): capability preflight, source
   comparison, native transition proof, identity/recovery checks and decision gates.
 - [Architecture boundaries](docs/architecture.md): shared responsibilities and
   proposed snapshot/watch/capability interfaces.
+- [Consumer fit review](docs/observer-consumer-review.md): Agent Plus routing and
+  action boundaries, RLCD model fit and partial-feed handling still to resolve.
 - [Roadmap](docs/roadmap.md): checkpoint status and the next bounded task.
 
 The study and spike plan originated in the RLCD repository on 2026-10-02 and
@@ -77,10 +133,10 @@ From a clone, run:
 ./scripts/check
 ```
 
-The bootstrap check requires Python 3 and Git. It checks repository Markdown
+The check requires Python 3.11 or newer and Git. It checks repository Markdown
 links, whitespace, code fences and Git whitespace errors. It does not invoke
-providers, install hooks or start services. Runtime checks will be introduced
-with the implementation they validate.
+providers, install hooks or start services. It also runs the observation invariant, collector and controlled transport tests. These are
+synthetic/controlled checks; native runtime acceptance is recorded separately in evidence.
 
 See [AGENTS.md](AGENTS.md) for development boundaries. The project uses the
 [MIT license](LICENSE).

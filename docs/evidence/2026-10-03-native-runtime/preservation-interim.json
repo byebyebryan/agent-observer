@@ -1,0 +1,69 @@
+{
+  "capturedAt": "2026-10-03T03:54:29.613022+00:00",
+  "selected_ordinary_settings_unchanged": {
+    "/home/bryan/.codex/config.toml": true,
+    "/home/bryan/.claude/settings.json": true,
+    "/home/bryan/.claude.json": false
+  },
+  "baseline_helpers": [
+    {
+      "pid": 80831,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 192831,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 225692,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 715206,
+      "baseline_birth_still_present": true
+    }
+  ],
+  "helper_interpretation": "Natural helper churn is separate from native TUI preservation. Exact isolated PID namespaces are excluded from this baseline.",
+  "known_ordinary_terminal_clients": [
+    {
+      "pid": 13497,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 23351,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 72388,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 73326,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 190877,
+      "baseline_birth_still_present": true
+    },
+    {
+      "pid": 701968,
+      "baseline_birth_still_present": true
+    }
+  ],
+  "baseline_unclassified_provider_processes": [
+    {
+      "pid": 1220140,
+      "baseline_birth_still_present": false
+    },
+    {
+      "pid": 1220142,
+      "baseline_birth_still_present": false
+    }
+  ],
+  "interpretation": {
+    "ordinary_terminal_client_scope": "Six native terminal clients previously established by FD/birth metadata; all exact births remain present.",
+    "unclassified_missing_processes": "Two baseline executable-name matches disappeared; no prior attachment/logical binding proof exists. Their exit is not attributed to the isolated tests or treated as logical-session end.",
+    "ordinary_preferences": "The global preference hash differs from the goal-start baseline. Each authenticated test compared the original immediately before/after and found equality; test namespaces did not mount ordinary home/preferences. The broader drift is unattributed, not claimed unchanged.",
+    "settings": "Selected Codex and Claude runtime opt-out settings remain unchanged."
+  }
+}

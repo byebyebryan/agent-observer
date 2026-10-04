@@ -1,42 +1,129 @@
 # Agent Observer roadmap
 
-Date: 2026-10-02. The [spike plan](agent-session-spike-plan.md) defines detailed
-procedures and acceptance; this document records checkpoint status.
+Date: 2026-10-03. This document records status and delivery dependencies.
+The [architecture](architecture.md),
+[migration plan](native-runtime-migration-plan.md),
+[spike procedures](agent-session-spike-plan.md) and
+[design review](design-review.md) define the associated scope and acceptance.
+
+## Product and provider priorities
+
+Agent Plus meshes sessions across providers and hosts. Agent Observer owns its
+provider discovery/monitoring boundary; Agent Plus retains UI, host composition,
+viewer association and validated actions. Providers own work; tmux carries
+individual native TUI clients.
+
+Codex is primary and leads the first complete integration and validation across
+machines. Claude Code is secondary, with strong support on the user's single
+work machine. Priority changes delivery order, not support quality or the
+provider-neutral architecture. Check Claude's native model before stabilizing
+the shared contract; the completed migration includes both providers.
+
+The user's work/general distinction is consumer presentation policy, separate
+from provider and host identity. Context views/tags and a persistent session
+rail are optional later UI work. OpenCode support in Agent Plus is deprecated
+and removed at migration cutover. Temporary Agent Plus breakage is acceptable;
+a parallel legacy discovery implementation is not a migration requirement.
+
+## Observation proof status
+
+P1-P5 are evaluated per provider, version, namespace and topology. A completed
+Codex checkpoint does not assert Claude support. Source decisions and a
+provisional Codex interface can precede completion of Claude proof; shared
+contract stabilization requires both models' native evidence and consumer fit.
 
 | Checkpoint | Status | Exit |
 | --- | --- | --- |
-| B0: repository bootstrap | Complete | Separate repository, migrated study/plan, scope/ownership boundaries and documentation check |
-| P1: capability/topology preflight | Starship read-only report complete; native passivity/isolation and Claude preflight on Snap pending | Target runtime versions, effective opt-outs, actual topology, safe observation/isolation procedures and capability table |
-| P2: minimal source comparison | Planned | Study-only adapters and bounded JSON compared with observed native sessions |
-| P3: transition proof | Planned | Working/settled, approvals/denials, blocking input, cancellation and observation failure outcomes per topology |
-| P4: identity/recovery proof | Planned | Concurrent sessions, native switches, restart/gap recovery and applicable client/worker lifetime cases |
-| P5: source and interface decision | Planned | Chosen adapter paths, explicit gaps/configuration requirements, proposed contract and measured overhead |
+| B0: bootstrap | Complete | Separate repository, migrated study/plan, ownership boundaries and documentation check |
+| P1: capability/topology preflight | Exact installed artifacts and native runtime subsets proved on Snap and Starship | Exact target versions/topologies, isolation/passivity procedure and capability coverage with gaps explicit |
+| P2: minimal source comparison | Native Codex endpoint and passive Claude files selected; mutable Claude roster CLI rejected | Bounded study adapters compared with populated native work on the intended topology |
+| P3: transition proof | Working, settled and approval subset accepted for both; other transitions unsupported | Working/settled, approvals/denials, blocking input, cancellation and observation failure outcomes |
+| P4: identity/recovery proof | Codex exact resume/new/lifetime/recovery accepted; Claude worker/client lifetime accepted; current-client binding unsupported | Native switches, concurrent sessions, gaps/restarts, job/worker/client lifetime and exact mappings |
+| P5: source/interface decision | Python/JSON candidate selected and consumer fit reviewed; release gates pending | Per-provider source choices and explicit gaps; schema/ordering/lifetime/overhead proposal reviewed against both consumers |
 
-## Next task
+The [Snap report](evidence/2026-10-02-p1-snap/REPORT.md) and
+[capabilities](evidence/2026-10-02-p1-snap/capabilities.json) establish installed
+Codex 0.160.0 and Claude 2.1.287, selected settings/static interfaces, controlled
+Codex empty reads and isolated Claude empty-roster/opt-out behavior. The
+[runtime UX study](provider-runtime-ux-study.md) adds installed entry/navigation
+interfaces and Agent Plus source implications. Later [native runtime evidence](evidence/2026-10-03-native-runtime/REPORT.md)
+supersedes those empty-state limits for the accepted subset. Client binding and
+additional transition semantics remain unsupported rather than inferred.
 
-Continue P1 on Snap for both Codex and Claude. The user chose Snap as the work
-host because Claude is available only there. Start with the
-[Snap handoff](handoff-snap.md) and fresh host inspection.
+The [Starship preflight](evidence/2026-10-02-p1-starship/REPORT.md) is dated
+Starship evidence; it does not establish Snap or current fleet behavior. A
+custom App Server is not managed-daemon proof. Foreground comparisons remain
+useful, but full standalone parity is not required for the migration target.
 
-Use the [Starship preflight report](evidence/2026-10-02-p1-starship/REPORT.md)
-and [capability evidence](evidence/2026-10-02-p1-starship/capabilities.json)
-as dated Starship evidence. Codex 0.160.0 installed capabilities and terminal
-process topology were inspected; native work state and managed-daemon behavior
-were not tested. The user identifies Snap as the sole Claude host; inspect its
-executable/version and effective agent-view opt-out there. Close native
-observation side-effect and isolation gates before invoking a command that may
-start a supervisor or launch an experiment. Reinspect Codex on Snap as well;
-Starship results do not establish its version, settings or topology there.
+## Delivery checkpoints
 
-Previous local/static observations are recorded in the
-[study](agent-session-study.md). Neither the study nor the new static/host
-report satisfies native live coverage or establishes unchanged state on a
-later run or another host.
+The unattended execution loop has installed Observer and Agent Plus candidates
+on Snap and Starship and accepted bounded native action routes; see
+[execution status](execution-status.md). This is a prerelease pilot. Desktop
+acceptance, full recovery/batch coverage and published release closure remain
+separate gates. Detailed exits, implementation areas and acceptance cases remain in the
+migration plan.
 
-## Later adoption
+| Checkpoint | Dependencies | Exit focus |
+| --- | --- | --- |
+| M0: native workflow proof | Relevant P1 gates | Codex managed entry, owning runtime, exact IDs and client binding; early Claude model comparison |
+| M1: Codex Observer | Codex P2-P4/source decision | Passive saved/live discovery, provisional JSON, recovery, coverage, limits and measured cost |
+| M2: runtime/package pilot | M0/M1 | Scoped Snap managed Codex configuration, native individual entry, installed Observer and hooks/plugins acceptance |
+| M3: Codex Agent Plus | M1; M2 for ordinary runtime trials | Observer-backed discovery/UI and validated single actions; OpenCode removed at cutover |
+| M4: Codex across machines | M3; preflight each target | Correct host routing/identity, reconnect/sleep/restart, jobs without wrappers and accepted batch attachment |
+| M5: Claude mesh completion | Early M0 model review, Claude P1-P5 and M1/M3 boundary | Single-machine supervised UX/actions, Claude-only host case and both-provider contract validation |
+| M6: Agent Plus release closure | M4/M5 | Both-provider migration acceptance, schema/artifact bookkeeping, legacy removal and maintenance procedure |
+| R1: RLCD host bridge | Proved M1 observations and common contract review; M5 for stable schema | Live roster/health/waiting consumed through Observer; bridge recovery and device transport accepted in RLCD |
 
-RLCD and Agent Plus are the active consumer targets. Check the proposed
-contract against RLCD's live roster and Agent Plus's inventory/identity needs
-before stabilizing it. Integrate consumers incrementally after the source
-proof; migration and production deployment are not spike acceptance gates.
-WSNav is an optional future consumer and may use a simpler architecture.
+The primary path is M0 → M1 → M2 → M3 → M4. M5 can proceed alongside M4,
+and M6 closes the Agent Plus migration after both are accepted. R1 can develop
+against the provisional boundary from M1 with explicit version/coverage limits;
+its stable integration follows contract stabilization. RLCD firmware/physical
+acceptance is a separate track and does not block an Agent Plus milestone.
+
+Observer installation is required on each selected target host. Existing Host
+Mesh transport supplies cross-host composition; Observer multi-host aggregation
+and a new network control plane are outside this program. Re-establish the
+target host list at rollout; Snap/Starship references are not an exhaustive
+fleet inventory. Claude's initial target is its one work machine. WSNav remains
+an optional future consumer.
+
+The migration plan records the [selected configuration changes](native-runtime-migration-plan.md#runtime-policy-and-individual-tui-entry)
+and [execution continuity procedure](native-runtime-migration-plan.md#execution-continuity-and-handoff).
+Keep the executing Codex session available while building and testing separate
+clients. A final move of that conversation may require a deliberate reopen;
+prepare its exact identity, validated route and handoff before any such exit.
+
+## Remaining acceptance and release work
+
+Use a graphical desktop to check the managed picker, individual TUI launches,
+selection preservation and focus behavior. The unattended coordinator has no
+display connection; disposable attached clients prove native entry routes but
+do not establish those visual outcomes. The exact coordinator reopen procedure
+is recorded in the [execution handoff](execution-handoff.md) and remains last.
+
+Keep current-client conversation binding unsupported. Native rows cannot gain
+focus, session-specific close or batch authority from historical Tmux options.
+Cross-host sleep/wake and transport-loss recovery still need their native cases;
+controlled failure tests do not establish physical suspend behavior.
+
+The same candidate wheels and scoped managed links are installed on both hosts.
+The old owned extension archive and published external pins remain available;
+the independent candidate override is not a published release tuple. Review and
+publish source/artifact bookkeeping after desktop acceptance and contract
+stabilization. Hook capture remains unproved: preserved historical trusted
+references do not establish live callback execution.
+
+The RLCD bridge candidate consumes public schema 1 and has synthetic and
+installed-native-input projection evidence. Firmware transport, bridge recovery
+and physical display acceptance remain in the separate RLCD track. Preserve
+the existing user changes in that repository.
+
+## Planning review outcome
+
+The [review](design-review.md) separates documentation/source validation from
+runtime acceptance and records the resolved design gaps. The migration plan
+guided the bounded execution pilot. Existing-only Codex endpoint discovery,
+explicit native ID mapping, passive Claude metadata and supervised empty Claude
+creation now have native evidence for the pinned versions. Current viewer
+binding and additional transition/recovery cases remain unsupported or pending.

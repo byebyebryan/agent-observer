@@ -1,0 +1,17 @@
+{
+  "evidenceKind": "installed_native_input_projection",
+  "observerVersion": "0.1.0a3",
+  "bridgeVersion": null,
+  "feedHealth": "partial",
+  "rowCount": 52,
+  "visibleRowCount": 6,
+  "status": null,
+  "liveVisibleCount": 2,
+  "filteredPrivateFields": true,
+  "providersVisible": [
+    "claude",
+    "codex"
+  ],
+  "originalWorkClocksKept": true,
+  "physicalDeviceAcceptance": false
+}

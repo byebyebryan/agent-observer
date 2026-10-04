@@ -1,0 +1,9 @@
+{
+  "version": "0.13.0a1",
+  "wheelSha256": "a17884c5fd85792ddd88ff35defcdf2650aa635596d0f8df0cd46c5cfa3bcbdc",
+  "prefix": "/home/bryan/.local/share/rofi-agent-plus/0.13.0a1-a17884c5fd85792d",
+  "installedSourceFileCount": 21,
+  "allInstalledSourceHashesMatch": true,
+  "launcherInOwnPrefix": true,
+  "independentRuntime": true
+}
