@@ -50,6 +50,16 @@ producer checkpoint, followed by held Claude phase/child and completion-only
 clock cases. The report records context, topology and artifact-bookkeeping gaps
 separately. No adapter or selection change was made during evaluation.
 
+The subsequent [repair checkpoint](evaluation-repair-execution.md) accepts and
+selects `0.2.0a9` on both hosts. Exact current-daemon capability proof, independent
+saved discovery, actual-image diagnostics, completion-only clocks and Claude
+conversation classification close the proved subset. Recorded context and older
+TUI limits are settled explicitly. Installed CLI/native comparison, read/write,
+concurrent watch, isolated recovery and frozen-reader compatibility precede
+selection. The [report](evidence/2026-10-05-evaluation-repair/REPORT.md) records
+all nine resolutions and remaining capabilities. No frontend implementation,
+ordinary provider configuration/restart or public release accompanies it.
+
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate

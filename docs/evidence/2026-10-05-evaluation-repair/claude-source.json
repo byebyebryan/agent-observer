@@ -759,7 +759,8 @@
     "heldChildObserved": true,
     "hookAgentIds": [],
     "childHasSeparateSessionUUID": false,
-    "childInventoriedSeparately": false
+    "childInventoriedSeparately": false,
+    "baselineHooksDisabled": true
   },
   "blankBackgroundLimit": {
     "nativeShape": "idle registry; working job; blocked tempo; inFlight absent",
@@ -776,6 +777,6 @@
     "nativeChildIdentity": "agent ID under exact parent UUID",
     "separateRuntimeSessionUUID": "not supplied in held case",
     "ephemeralUUIDOnlyRuntimeKind": "unknown",
-    "hooks": "SubagentStart/Stop proof did not supply events in this background topology; no hook capability accepted"
+    "hooks": "Baseline private fixture disabled hooks; declarations did not enable them. Child storage/identity is proved, hook delivery is not evaluated."
   }
 }
