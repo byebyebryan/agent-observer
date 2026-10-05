@@ -159,7 +159,10 @@ def main():
         os.kill(daemon_pid, signal.SIGKILL)
         time.sleep(1.5)
         unavailable = snapshot()
-        assert unavailable["sources"][0]["sourceHealth"] == "unavailable"
+        assert unavailable["sources"][0]["sourceHealth"] == "partial"
+        assert unavailable["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
+        retained_saved = next(row for row in unavailable["sessions"] if row["identity"] == reference)
+        assert retained_saved["runtime"]["value"] == retained_saved["phase"]["value"] == "unknown"
         stale = subprocess.run(
             [writer, "execute", "--plan-json", json.dumps(old_plan)],
             capture_output=True,
