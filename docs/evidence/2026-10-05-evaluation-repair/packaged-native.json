@@ -229,6 +229,85 @@
       ],
       "partialMissingRowRetainedUnknown": true,
       "ownedDaemonOnly": true
+    },
+    "native-claude-foreground-approval-acceptance": {
+      "hostScope": "snap",
+      "provider": "claude",
+      "version": "2.1.289",
+      "observerVersion": "0.2.0a9",
+      "scenario": "foreground-held-permission",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "terminalOutputPersisted": false,
+      "samples": [
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "busy",
+          "waitingFor": null,
+          "jobLinked": false,
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791240662837
+        },
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "busy",
+          "waitingFor": null,
+          "jobLinked": false,
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791240662837
+        },
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "busy",
+          "waitingFor": null,
+          "jobLinked": false,
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791240665541
+        },
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "waiting",
+          "waitingFor": "permission prompt",
+          "jobLinked": false,
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791240665541
+        },
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "waiting",
+          "waitingFor": "permission prompt",
+          "jobLinked": false,
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791240665541
+        },
+        {
+          "id": "1f7f8372-5f2c-4453-8d2f-c4ea3db4be28",
+          "registryKind": "interactive",
+          "status": "waiting",
+          "waitingFor": "permission prompt",
+          "jobLinked": false,
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791240665541
+        }
+      ],
+      "status": "accepted",
+      "heldSamples": 3,
+      "toolNotExecuted": true,
+      "nativeJobAbsent": true
     }
   },
   "starship": {
@@ -464,5 +543,6 @@
     "selectedLinksChanged": false,
     "selectedVersionAtGate": "0.2.0a8",
     "generalQuestionsForegroundParkedHelpersPushNetworkingPhysicalSleep": "not accepted by this subset"
-  }
+  },
+  "additionalProofAfterG2": "Current foreground permission prompt with no job; validates existing collector predicate and reference-reader repair, not foreground readiness."
 }

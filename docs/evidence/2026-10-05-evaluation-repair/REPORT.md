@@ -1,6 +1,6 @@
 # Evaluation repair acceptance
 
-Date: 2026-10-05. Status: frozen G2 producer subset accepted; selection pending.
+Date: 2026-10-05. Status: frozen G2 producer subset accepted and selected.
 See the [execution record](../../evaluation-repair-execution.md) and preceding
 [evaluation](../2026-10-05-cli-native-evaluation/REPORT.md).
 
@@ -76,8 +76,9 @@ A held native Agent child supplies three overlapping samples. Its transcript
 contains `isSidechain: true`, an agent ID, and the **parent** session UUID; it
 does not supply a separate session UUID. It is stored below the parent's
 transcript directory and never becomes a separate saved row. The attempted
-SubagentStart/Stop hook route supplied no events in this background topology;
-no hook-delivery capability is accepted. Production classification uses the
+SubagentStart/Stop declarations supplied no events because the baseline private
+fixture still disabled hooks. This is not native hook-delivery evidence, and no
+hook capability is accepted. Production classification uses the
 already identity-checked non-sidechain conversation-envelope activity source
 to mark ordinary Claude rows as user conversations. It neither promotes
 UUID-only helper rows nor guesses ancestry from worker PIDs, names or cwd.
@@ -172,3 +173,37 @@ General questions/outcomes, parked inference, attachment/focus, native push/hook
 lossless replay, optional networking and physical sleep/wake remain separate
 capability gates. No notification sender, frontend implementation, ordinary
 session Resume or release publication is accepted by these proofs.
+
+## Scoped selection and final validation
+
+After producer checkpoint `1986d5d`, the managed unpublished tuple selects a9
+on both hosts. Reviewed dry runs/apply changed only Observer's two links; Plus,
+its frozen reader, other pilot links and provider policy remain unchanged.
+The broad chezmoi status/apply still hits the pre-existing SSH Plus external
+archive mismatch; the existing reviewed source projection avoids evaluating
+externals. It copies canonical managed templates and changes only their reviewed
+targets. [Selection metadata](selection.json) records the scoped result and
+guarded live-source rollback directories. Starship's unrelated pending source
+migration edits remain intact; its provider source/configuration was not applied.
+
+Selected ordinary CLI/reference comparisons agree on
+[Snap](snap-selected-evaluation.json) and
+[Starship](starship-selected-evaluation.json): 51 Codex plus 29 Claude rows on
+Snap, 95 Codex on Starship in the final sample, with three and five known Codex
+children filtered. Both configured read-route/headless gates report 167 meshed
+sessions and zero provider-stage errors in private consumer cache/UI state.
+They perform no provider action and do not establish graphical/native consumer
+Resume acceptance. Sample counts can change with ordinary work.
+
+The final read exposed a reference-reader omission for foreground Claude
+permission waits with no job. A held isolated native `2.1.289` foreground case
+independently confirms `interactive + waiting + permission prompt`, three blocked
+samples and an absent requested file. The reference now recognizes this already
+supported collector predicate. Foreground **readiness**, general questions and
+native job state `blocked` retain their separate unknown semantics. No producer
+package change was needed. All 196 source tests and the documentation gate pass.
+
+Both private runtime namespaces are stopped and borrowed authentication/history
+are removed. The ordinary coordinator and provider services remain available.
+Public push/release, notification implementation and physical/graphical gates
+remain outside this completed repair subset.

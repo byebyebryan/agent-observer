@@ -1,0 +1,59 @@
+{
+  "selectedVersion": "0.2.0a9",
+  "wheelSha256": "b4563dc2a09df0e198d6df8047b12b1355da66505a31714f19b01e237a552697",
+  "gateBeforeSelection": "1986d5d",
+  "managedChangedLinkCountPerHost": 2,
+  "otherPilotLinksChanged": false,
+  "providerConfigurationsHooksChanged": false,
+  "plusArtifactChanged": false,
+  "plusFrozenReaderVersion": "0.2.0a3",
+  "hosts": {
+    "snap": {
+      "candidateByteProfileSchemaGate": "accepted",
+      "selectedConfiguredReadRouteGate": "accepted",
+      "providerStageErrors": 0,
+      "sessionsAtConfiguredRouteSample": 167,
+      "cacheVersion": 7,
+      "headlessCallbacks": true,
+      "privateCacheAndUiState": true,
+      "graphicalAcceptance": false,
+      "rollbackDirectory": "/home/bryan/.local/share/agent-observer/rollback-20261005-evaluation-live-snap"
+    },
+    "starship": {
+      "candidateByteProfileSchemaGate": "accepted",
+      "selectedConfiguredReadRouteGate": "accepted",
+      "providerStageErrors": 0,
+      "sessionsAtConfiguredRouteSample": 167,
+      "cacheVersion": 7,
+      "headlessCallbacks": true,
+      "privateCacheAndUiState": true,
+      "graphicalAcceptance": false,
+      "rollbackDirectory": "/home/bryan/.local/share/agent-observer/rollback-20261005-evaluation-live-starship"
+    }
+  },
+  "selectedCliNativeComparison": {
+    "snap": "snap-selected-evaluation.json",
+    "starship": "starship-selected-evaluation.json"
+  },
+  "privateCleanup": {
+    "snap": {
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true,
+      "borrowedCredentialFilesAbsent": true
+    },
+    "starship": {
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    }
+  },
+  "publicPushRelease": false,
+  "graphicalNativeConsumerResumeAcceptance": false,
+  "managedSourceCommit": "3afe42e",
+  "snapOrdinaryGuardUnchangedAfterCleanup": {
+    ".codex/config.toml": true,
+    ".codex/auth.json": true,
+    ".claude/settings.json": true,
+    ".claude/.credentials.json": true,
+    ".claude.json": false
+  }
+}

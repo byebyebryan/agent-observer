@@ -355,6 +355,8 @@ def claude_reference(home, image_cache):
                     phase = "waiting"
                 elif job is None and r.get("kind") == "interactive" and status in ("busy", "shell"):
                     phase = "working"
+                elif job is None and r.get("kind") == "interactive" and status == "waiting" and r.get("waitingFor") == "permission prompt":
+                    phase = "blocked"
                 elif native_state == "working" and tempo == "active" and status in ("busy", "shell"):
                     phase = "working"
                 elif native_state == "working" and tempo in ("active", "blocked") and status == "waiting" and r.get("waitingFor") == "permission prompt":

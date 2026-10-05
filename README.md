@@ -13,24 +13,26 @@ simplified.
 
 ## Status
 
-The [operational resilience pass](docs/evidence/2026-10-05-operational-resilience/REPORT.md)
-independently accepted `agent-observer 0.2.0a8`, now selected on Snap and Starship.
-It preserves fresh saved history through live-source failures, verifies current
-and surviving Claude executable images, and recovers metadata-companion histories.
-CLI rows show readable conversation age, and doctor reports explicit errors and
-verified runtime versions. Native New/Resume, held approval, mixed-version attach
-and runtime recovery are accepted within the report's exact artifact bounds.
+The [evaluation repair pass](docs/evidence/2026-10-05-evaluation-repair/REPORT.md)
+independently accepted `agent-observer 0.2.0a9`, now selected on Snap and Starship.
+It supports the exact current Codex `0.160.1` managed image separately from the
+installed `0.160.0` CLI, preserves independently proved saved metadata through
+runtime failures, and accepts current completion-only activity clocks. Ordinary
+Claude conversations classify from explicit non-sidechain evidence. CLI age,
+ordering, actual runtime diagnostics and finite unsupported phase reasons are
+validated against independent native references. Installed New/Resume, held
+approval, partial discovery and watch/recovery pass within exact artifact bounds.
 Agent Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader dependency; its
 reported silent Resume and graphical acceptance require a separate consumer pass.
 No provider configuration change or session restart is required by this update.
 
-The latest [CLI/native evaluation](docs/evidence/2026-10-05-cli-native-evaluation/REPORT.md)
-finds that both running Codex daemons now use the unaccepted `0.160.1` release
-image while installed Codex remains `0.160.0`. The selected Observer currently
-rejects their sources and returns no Codex rows. Claude persistent inventory and
-stable age/metadata checks pass, with phase and child-classification gaps still
-open. The evaluation records a separate Observer repair checkpoint before
-further frontend acceptance.
+The preceding [CLI/native evaluation](docs/evidence/2026-10-05-cli-native-evaluation/REPORT.md)
+found nine producer gaps. The [repair execution](docs/evaluation-repair-execution.md)
+records a fix or bounded unsupported outcome for each before compatible selection.
+Blank Claude background/native blocked-job semantics, ephemeral helper ancestry,
+foreground readiness, questions and older Codex TUI binding remain explicit
+limits. Recorded cwd and project/worktree context are preserved with provenance.
+Further frontend acceptance remains a separate development checkpoint.
 
 The initial regular contract/client execution loop independently accepted
 `agent-observer 0.2.0a3`: the [public v2 observation/read contract](docs/public-contract-v2.md), including

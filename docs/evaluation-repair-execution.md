@@ -1,6 +1,6 @@
 # CLI/native evaluation repair execution
 
-Date: 2026-10-05. Status: active regular goal loop, Observer only.
+Date: 2026-10-05. Status: completed regular goal loop, Observer repair subset.
 The user requested review/commit of the notification handoff, then resolution
 of the [evaluation findings](evidence/2026-10-05-cli-native-evaluation/REPORT.md).
 The reviewed [handoff](notification-handoff.md) is committed as `243bd89`.
@@ -56,7 +56,13 @@ physical suspend or release publication is part of this loop.
   independent native read/write/watch/recovery proofs pass. Ordinary installed
   comparisons cover both hosts; the unchanged frozen a3 reader accepts complete
   candidate rows/schema shapes. See the report for exact coverage and remaining
-  capability gates. Selection pending; source acceptance alone never selected it.
+  capability gates. Producer checkpoint `1986d5d` precedes scoped selection.
+- Scoped selection accepted on both hosts: only two Observer links change;
+  unchanged Plus/frozen-reader configured passive routes pass with zero provider
+  stage errors. Selected CLI/native comparison passes; all nine findings have
+  fixes or justified unsupported outcomes. Private namespaces/auth/history are
+  cleaned. Notification/frontend implementation, ordinary provider policy/restart,
+  unproved capabilities and publication remain separate gates.
 
 Record native evidence as bounded identity/state/time/count/version/reason
 metadata only. Never retain authentication, prompts/responses, tool output,

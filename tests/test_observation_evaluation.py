@@ -2,8 +2,12 @@
 
 import importlib.machinery
 import importlib.util
+import json
+import os
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 loader = importlib.machinery.SourceFileLoader(
     "independent_observation_evaluation",
@@ -61,3 +65,27 @@ class ObservationEvaluationTest(unittest.TestCase):
         result = evaluation.compare(native, public, native, "claude")
         self.assertEqual(result["issues"], [{"id": SID, "field": "kind", "result": "mismatch",
                                             "native": "user", "cli": "unknown"}])
+
+    def test_native_foreground_permission_wait_has_independent_phase_reference(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            (home / "sessions").mkdir()
+            pid = os.getpid()
+            record = {
+                "sessionId": SID, "pid": pid, "procStart": evaluation.birth(pid)[0],
+                "pidDomain": "linux:" + Path("/etc/machine-id").read_text().strip()
+                + ":" + os.readlink("/proc/self/ns/pid"),
+                "kind": "interactive", "status": "waiting",
+                "waitingFor": "permission prompt", "jobId": None,
+            }
+            registry = home / "sessions" / f"{pid}.json"
+            with patch.object(evaluation, "image", return_value={"provider": "claude",
+                                                                "version": "2.1.289"}):
+                for changes, expected in (
+                    ({}, "blocked"), ({"kind": "bg"}, None),
+                    ({"waitingFor": "input needed"}, None),
+                    ({"status": "idle"}, None),
+                ):
+                    registry.write_text(json.dumps({**record, **changes}))
+                    native = evaluation.claude_reference(home, {})
+                    self.assertEqual(native["rows"][SID]["phase"], expected)
