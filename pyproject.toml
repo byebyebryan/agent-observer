@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-observer"
-version = "0.2.0a4"
+version = "0.2.0a5"
 description = "Passive host-local Codex and Claude Code session observations"
 readme = "README.md"
 requires-python = ">=3.11"

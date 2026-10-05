@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+"""Operator-invoked private provider stores and user/mount/PID namespaces.
+
+No frontend dependency. Preparing borrows authentication into disposable stores;
+cleanup removes it. Enter checks the exact owned namespace incarnation. Native
+provider output belongs to the explicitly invoked proof, never this helper.
+"""
+
+import argparse
+import json
+import os
+import shutil
+import signal
+import subprocess
+import time
+from pathlib import Path
+
+ORDINARY = Path("/home/bryan")
+RELEASE = "0.160.0-x86_64-unknown-linux-musl"
+
+
+def save(path, value):
+    path.write_text(json.dumps(value) + "\n")
+    path.chmod(0o600)
+
+
+def ticks(pid):
+    return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+
+
+def owned(root):
+    if root.resolve(strict=True) != root or root.stat().st_uid != os.getuid():
+        raise ValueError("fixture_ownership_changed")
+
+
+def prepare(root, host, prefix):
+    owned(root)
+    if prefix.resolve(strict=True) != prefix or not (prefix / "bin/agent-observer-write").is_file():
+        raise ValueError("candidate_prefix_unavailable")
+    base = root / ("native-" + host)
+    base.mkdir(mode=0o700)
+    for name in ("codex", "claude", "home", "workspace", "config", "cache", "state", "runtime"):
+        (base / name).mkdir(mode=0o700)
+    shutil.copyfile(ORDINARY / ".codex/auth.json", base / "codex/auth.json")
+    (base / "codex/auth.json").chmod(0o600)
+    (base / "codex/config.toml").write_text(
+        'model = "gpt-6.1-sol"\napproval_policy = "never"\nsandbox_mode = "danger-full-access"\n'
+        "[features]\ndaemon_auto_start = true\n[projects."
+        + json.dumps(str(base / "workspace"))
+        + ']\ntrust_level = "trusted"\n'
+    )
+    cache = base / "codex/packages/app-server-daemon"
+    cache.mkdir(parents=True)
+    shutil.copytree(
+        ORDINARY / ".codex/packages/app-server-daemon/releases" / RELEASE,
+        cache / "releases" / RELEASE,
+    )
+    (cache / "current").symlink_to("releases/" + RELEASE)
+    if host == "snap":
+        shutil.copyfile(ORDINARY / ".claude/.credentials.json", base / "claude/.credentials.json")
+        (base / "claude/.credentials.json").chmod(0o600)
+        original = json.loads((ORDINARY / ".claude.json").read_text())
+        private = {
+            key: original[key]
+            for key in (
+                "oauthAccount",
+                "hasCompletedOnboarding",
+                "lastOnboardingVersion",
+                "theme",
+                "userID",
+                "numStartups",
+            )
+            if key in original
+        }
+        private["projects"] = {
+            str(base / "workspace"): {
+                "hasTrustDialogAccepted": True,
+                "hasCompletedProjectOnboarding": True,
+            }
+        }
+        save(base / "home/.claude.json", private)
+        save(base / "claude/.claude.json", private)
+        save(
+            base / "claude/settings.json",
+            {
+                "disableAgentView": False,
+                "disableAllHooks": True,
+                "enabledPlugins": {},
+            },
+        )
+        for name in ("sessions", "jobs", "daemon", "projects"):
+            (base / "claude" / name).mkdir(mode=0o700)
+    subprocess.run(["git", "init", "-q", str(base / "workspace")], check=True)
+    save(root / "fixture.json", {"host": host, "prefix": str(prefix)})
+
+
+def init(root):
+    owned(root)
+    fixture = json.loads((root / "fixture.json").read_text())
+    host = fixture["host"]
+    anchor = os.open(root, os.O_RDONLY | os.O_DIRECTORY)
+    subprocess.run(["mount", "--make-rprivate", "/"], check=True)
+    subprocess.run(["mount", "-t", "tmpfs", "-o", "mode=1777,size=1G", "tmpfs", "/tmp"], check=True)
+    root.mkdir(parents=True)
+    subprocess.run(
+        [
+            "mount",
+            "--no-canonicalize",
+            "--bind",
+            f"/proc/{os.getpid()}/fd/{anchor}",
+            str(root),
+        ],
+        check=True,
+    )
+    os.close(anchor)
+    base = root / ("native-" + host)
+    mounts = [(base / "codex", ORDINARY / ".codex")]
+    if host == "snap":
+        mounts += [
+            (base / "claude", ORDINARY / ".claude"),
+            (base / "home/.claude.json", ORDINARY / ".claude.json"),
+        ]
+    for source, target in mounts:
+        subprocess.run(["mount", "--bind", str(source), str(target)], check=True)
+    save(
+        root / "ready.json",
+        {
+            "privateTmp": True,
+            "ordinaryProviderPathsMasked": True,
+            "privateUserMountPidNamespaces": True,
+        },
+    )
+    while True:
+        time.sleep(1)
+
+
+def start(root):
+    owned(root)
+    if (root / "runtime.json").exists():
+        raise ValueError("fixture_already_started")
+    process = subprocess.Popen(
+        [
+            "unshare",
+            "--user",
+            "--map-root-user",
+            "--mount",
+            "--pid",
+            "--fork",
+            "--mount-proc",
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(Path(__file__).resolve()),
+            "init",
+            "--root",
+            str(root),
+        ],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    child = None
+    deadline = time.monotonic() + 10
+    try:
+        while time.monotonic() < deadline:
+            children = Path(f"/proc/{process.pid}/task/{process.pid}/children").read_text().split()
+            if len(children) > 1:
+                raise ValueError("fixture_owner_ambiguous")
+            if children and child is None:
+                child = {"pid": int(children[0]), "ticks": ticks(int(children[0]))}
+            if (root / "ready.json").exists() and child:
+                pid = child["pid"]
+                if ticks(pid) != child["ticks"]:
+                    raise ValueError("fixture_incarnation_changed")
+                child["namespaces"] = {
+                    name: os.readlink(f"/proc/{pid}/ns/{name}") for name in ("user", "mnt", "pid")
+                }
+                save(root / "runtime.json", child)
+                print(json.dumps({"isolationEstablished": True}))
+                return
+            if process.poll() is not None:
+                raise ValueError("namespace_failed")
+            time.sleep(0.1)
+        raise ValueError("namespace_timeout")
+    except BaseException:
+        if child:
+            try:
+                if ticks(child["pid"]) == child["ticks"]:
+                    os.kill(child["pid"], signal.SIGKILL)
+            except (OSError, ValueError):
+                pass
+        if process.poll() is None:
+            process.kill()
+        process.wait(timeout=5)
+        raise
+
+
+def current(root):
+    owned(root)
+    value = json.loads((root / "runtime.json").read_text())
+    pid = value["pid"]
+    if (
+        value.get("stopped")
+        or ticks(pid) != value["ticks"]
+        or any(
+            os.readlink(f"/proc/{pid}/ns/{name}") != token
+            for name, token in value["namespaces"].items()
+        )
+    ):
+        raise ValueError("fixture_incarnation_changed")
+    return value
+
+
+def enter(root, argv):
+    state = current(root)
+    fixture = json.loads((root / "fixture.json").read_text())
+    base = root / ("native-" + fixture["host"])
+    values = {
+        "HOME": str(base / "home"),
+        "CODEX_HOME": str(base / "codex"),
+        "CLAUDE_CONFIG_DIR": str(base / "claude"),
+        "TERM": "xterm-256color",
+        "COLORTERM": "truecolor",
+        "PATH": fixture["prefix"] + "/bin:/usr/bin:/bin",
+        "XDG_CONFIG_HOME": str(base / "config"),
+        "XDG_CACHE_HOME": str(base / "cache"),
+        "XDG_STATE_HOME": str(base / "state"),
+        "XDG_RUNTIME_DIR": str(base / "runtime"),
+        "NATIVE_PROOF_ROOT": str(root),
+        "NATIVE_PROOF_HOST": fixture["host"],
+    }
+    env = ["env"]
+    for key in ("PYTHONPATH", "TMUX", "DBUS_SESSION_BUS_ADDRESS", "DISPLAY", "WAYLAND_DISPLAY"):
+        env += ["-u", key]
+    env += [key + "=" + value for key, value in values.items()]
+    os.execv(
+        "/usr/bin/nsenter",
+        [
+            "nsenter",
+            "--preserve-credentials",
+            "-t",
+            str(state["pid"]),
+            "-U",
+            "-m",
+            "-p",
+            "--",
+            *env,
+            *argv,
+        ],
+    )
+
+
+def cleanup(root):
+    owned(root)
+    if (root / "runtime.json").exists():
+        state = current(root)
+        os.kill(state["pid"], signal.SIGKILL)
+        deadline = time.monotonic() + 10
+        while Path(f"/proc/{state['pid']}/ns/pid").exists():
+            if time.monotonic() >= deadline:
+                raise ValueError("namespace_stop_timeout")
+            time.sleep(0.05)
+        state["stopped"] = True
+        save(root / "runtime.json", state)
+    fixture = json.loads((root / "fixture.json").read_text())
+    shutil.rmtree(root / ("native-" + fixture["host"]))
+    print(json.dumps({"ownedNamespaceStopped": True, "borrowedAuthAndHistoryRemoved": True}))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("operation", choices=("prepare", "init", "start", "enter", "cleanup"))
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--host", choices=("snap", "starship"))
+    parser.add_argument("--prefix", type=Path)
+    args, command = parser.parse_known_args()
+    if args.operation == "prepare":
+        if args.host is None or args.prefix is None:
+            parser.error("prepare requires --host and --prefix")
+        prepare(args.root, args.host, args.prefix)
+    elif args.operation == "enter":
+        enter(args.root, command[1:] if command[:1] == ["--"] else command)
+    else:
+        {"init": init, "start": start, "cleanup": cleanup}[args.operation](args.root)
+
+
+if __name__ == "__main__":
+    main()

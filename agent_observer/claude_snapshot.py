@@ -368,6 +368,8 @@ def collect_claude(
             )
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
     result["activitySupported"] = True
+    for row in result["sessions"]:
+        row.setdefault("activity", unavailable("conversation_metadata_not_persisted"))
     return result
 
 

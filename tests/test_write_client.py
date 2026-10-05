@@ -387,6 +387,72 @@ class WriteClientTest(unittest.TestCase):
         self.assertEqual(output["reason"], "launcher_io_failed")
         launch.assert_called_once()
 
+    def test_transient_native_handoff_reobserves_without_a_second_launch(self):
+        request = self.request("claude")
+        plan = prepare(request)
+        created = self.snapshot(request)
+        created["sessions"][0]["phase"]["health"] = "ambiguous"
+        attached = {
+            **plan,
+            "route": "claude_attach",
+            "request": {
+                **request,
+                "operation": "resume",
+                "reference": created["sessions"][0]["identity"],
+            },
+        }
+        with (
+            patch("agent_observer.write_client.revalidate", return_value=plan),
+            patch(
+                "agent_observer.write_client._launch",
+                return_value=(
+                    0,
+                    b"backgrounded \xc2\xb7 abcd1234\n  claude attach abcd1234  open in this terminal\n",
+                    None,
+                ),
+            ) as launch,
+            patch("agent_observer.write_client._collect", return_value=created) as collect,
+            patch(
+                "agent_observer.write_client.prepare",
+                side_effect=[ContractError("resume_evidence_unavailable"), attached],
+            ),
+            patch("agent_observer.write_client.time.sleep"),
+        ):
+            output = execute(plan, timeout=1)
+        self.assertEqual(output["status"], "ready")
+        self.assertEqual(output["effect"], "confirmed")
+        self.assertEqual(collect.call_count, 2)
+        launch.assert_called_once()
+
+    def test_transient_handoff_deadline_preserves_confirmed_native_effect(self):
+        request = self.request("claude")
+        plan = prepare(request)
+        created = self.snapshot(request)
+        created["sessions"][0]["phase"]["health"] = "ambiguous"
+        with (
+            patch("agent_observer.write_client.revalidate", return_value=plan),
+            patch(
+                "agent_observer.write_client._launch",
+                return_value=(
+                    0,
+                    b"backgrounded \xc2\xb7 abcd1234\n  claude attach abcd1234  open in this terminal\n",
+                    None,
+                ),
+            ) as launch,
+            patch("agent_observer.write_client._collect", return_value=created),
+            patch(
+                "agent_observer.write_client.prepare",
+                side_effect=ContractError("resume_evidence_unavailable"),
+            ),
+            patch("agent_observer.write_client.time.monotonic", side_effect=[0, 0, 2]),
+            patch("agent_observer.write_client.time.sleep"),
+        ):
+            output = execute(plan, timeout=1)
+        self.assertEqual(output["effect"], "confirmed")
+        self.assertEqual(output["resultingIdentity"], created["sessions"][0]["identity"])
+        self.assertIsNone(output["handoff"])
+        launch.assert_called_once()
+
     def test_literal_json_public_prepare_execute_and_non_tty_entry(self):
         request = self.request()
         output = io.StringIO()

@@ -1,0 +1,368 @@
+#!/usr/bin/env python3
+"""Explicit operator proof inside native-isolation; discards all terminal output."""
+
+import argparse
+import fcntl
+import json
+import os
+import pty
+import select
+import signal
+import struct
+import subprocess
+import termios
+import time
+from pathlib import Path
+
+from agent_observer import codex_transport
+from agent_observer.codex_endpoint import inspect_managed_endpoint, validate_incarnation
+from agent_observer.codex_snapshot import BINARY_SHA256, RELEASE, VERSION
+from agent_observer.codex_transport import PassiveClient
+
+
+class Proof:
+    def __init__(self, provider):
+        self.root = Path(os.environ["NATIVE_PROOF_ROOT"])
+        self.host = os.environ["NATIVE_PROOF_HOST"]
+        self.base = self.root / ("native-" + self.host)
+        self.provider = provider
+        self.clients = []
+        self.ready = json.loads((self.root / "ready.json").read_text())
+        assert os.getuid() == 0 and all(self.ready.values())
+        assert Path(os.environ["HOME"]) == self.base / "home"
+        assert Path(os.environ["CODEX_HOME"]) == self.base / "codex"
+        assert Path(os.environ["CLAUDE_CONFIG_DIR"]) == self.base / "claude"
+        os.chdir(self.base / "workspace")
+
+    def command(self, argv):
+        process = subprocess.run(argv, capture_output=True, timeout=40)
+        if process.returncode:
+            try:
+                code = json.loads(process.stderr)["error"]
+                if isinstance(code, str) and len(code) <= 128 and code.replace("_", "").isalnum():
+                    raise RuntimeError(code)
+            except (ValueError, KeyError, TypeError):
+                pass
+            raise RuntimeError("public_command_failed")
+        return json.loads(process.stdout)
+
+    def snapshot(self):
+        return self.command(
+            ["agent-observer", "snapshot", "--host-scope", self.host, "--provider", self.provider]
+        )
+
+    def row(self, ref):
+        return next(row for row in self.snapshot()["sessions"] if row["identity"] == ref)
+
+    def handoff(self, ref=None):
+        request = {
+            "schemaVersion": 1,
+            "operation": "resume" if ref else "new",
+            "hostScope": self.host,
+            "provider": self.provider,
+            "configHome": str(self.base / self.provider),
+            "configHomeKind": "explicit",
+            "cwd": str(self.base / "workspace"),
+            "reference": ref,
+        }
+        plan = self.command(
+            ["agent-observer-write", "prepare", "--request-json", json.dumps(request)]
+        )
+        result = self.command(["agent-observer-write", "execute", "--plan-json", json.dumps(plan)])
+        assert result["handoff"] is not None
+        return result
+
+    def spawn(self, result):
+        pid, fd = pty.fork()
+        if pid == 0:
+            os.execvp(
+                "agent-observer-write",
+                ["agent-observer-write", "enter", "--plan-json", json.dumps(result["handoff"])],
+            )
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+        os.set_blocking(fd, False)
+        client = (pid, fd)
+        self.clients.append(client)
+        return client
+
+    def pause(self, client, seconds):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            fd = client[1]
+            for _ in range(16):
+                if not select.select([fd], [], [], 0)[0]:
+                    break
+                try:
+                    data = os.read(fd, 65536)
+                except OSError:
+                    break
+                if not data:
+                    break
+                if b"\x1b[6n" in data:
+                    os.write(fd, b"\x1b[1;1R")
+                if b"\x1b[c" in data:
+                    os.write(fd, b"\x1b[?1;2c")
+            time.sleep(0.1)
+
+    def stop(self, client):
+        try:
+            os.kill(client[0], signal.SIGHUP)
+        except ProcessLookupError:
+            pass
+        os.waitpid(client[0], 0)
+        os.close(client[1])
+        self.clients.remove(client)
+
+    def assert_native_client(self, client):
+        state = Path(f"/proc/{client[0]}/stat").read_text().rsplit(")", 1)[1].split()[0]
+        expected = (
+            Path("/opt/openai-codex/bin/codex")
+            if self.provider == "codex"
+            else Path("/opt/claude-code/bin/claude")
+        )
+        assert state != "Z" and Path(f"/proc/{client[0]}/exe").resolve() == expected.resolve()
+
+    def codex_metadata(self, ref, *, rename=False, touch=False):
+        owner = inspect_managed_endpoint(
+            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+        )
+        assert Path(os.readlink(f"/proc/{owner.pid}/exe")).is_relative_to(
+            self.base / "codex/packages"
+        )
+        with PassiveClient.connect(
+            owner.endpoint, expected_uid=owner.uid, expected_pid=owner.pid
+        ) as client:
+            assert client.initialize()["codexHome"] == str(self.base / "codex")
+            before = client.loaded_threads()["data"]
+            if rename:
+                allowed = codex_transport._READ_METHODS
+                codex_transport._READ_METHODS = allowed | {"thread/name/set"}
+                try:
+                    client._request(
+                        "thread/name/set",
+                        {"threadId": ref["nativeId"], "name": "Activity proof renamed"},
+                    )
+                finally:
+                    codex_transport._READ_METHODS = allowed
+            metadata = client.latest_turn(ref["nativeId"])
+            if touch:
+                path = Path(client.read_thread(ref["nativeId"])["thread"]["path"])
+                assert path.is_relative_to(self.base / "codex")
+                if path.exists():
+                    os.utime(path, None)
+            assert before == client.loaded_threads()["data"]
+        validate_incarnation(owner)
+        return metadata
+
+    def run(self):
+        prior = {row["identity"]["nativeId"] for row in self.snapshot()["sessions"]}
+        created = self.handoff()
+        client = self.spawn(created)
+        self.pause(client, 5)
+        self.assert_native_client(client)
+        rows = self.snapshot()["sessions"]
+        ref = (
+            created["resultingIdentity"]
+            if self.provider == "claude"
+            else next(row["identity"] for row in rows if row["identity"]["nativeId"] not in prior)
+        )
+        empty = self.row(ref)
+        assert empty["activity"]["at"] is None and empty["runtime"]["value"] == "running"
+        os.write(client[1], b"Reply only with OK.\r")
+        if self.provider == "codex":
+            self.pause(client, 1)
+            os.write(client[1], b"\r")
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            self.pause(client, 0.3)
+            row = self.row(ref)
+            if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:
+                break
+        else:
+            raise RuntimeError("native_turn_pending")
+        at = row["activity"]["at"]
+        if self.provider == "codex":
+            turn = self.codex_metadata(ref)["data"][0]
+            assert turn["items"] == [] and turn["itemsView"] == "notLoaded"
+            assert turn["completedAt"] * 1000 == at
+            self.codex_metadata(ref, rename=True, touch=True)
+        else:
+            os.write(client[1], b"/rename Activity proof renamed\r")
+            self.pause(client, 3)
+            for path in (self.base / "claude/projects").glob("*/*.jsonl"):
+                if path.stem == ref["nativeId"]:
+                    os.utime(path, None)
+        renamed = self.row(ref)
+        assert renamed["activity"]["at"] == at
+        assert renamed["title"] == "Activity proof renamed"
+        self.stop(client)
+        resumed = self.spawn(self.handoff(ref))
+        self.pause(resumed, 4)
+        assert self.row(ref)["activity"]["at"] == at
+        self.assert_native_client(resumed)
+        repeated = self.spawn(self.handoff(ref))
+        self.pause(repeated, 3)
+        self.assert_native_client(repeated)
+        assert self.row(ref)["activity"]["at"] == at
+        self.stop(repeated)
+        self.stop(resumed)
+        return {
+            "status": "accepted",
+            "hostScope": self.host,
+            "provider": self.provider,
+            "isolation": self.ready,
+            "independentOfFrontend": True,
+            "emptyActivityUnknown": True,
+            "nativeConversationActivity": True,
+            "readsRenameHousekeepingPreserveAge": True,
+            "savedOrLiveResumeExactIdentity": True,
+            "resumePreservesAge": True,
+            "repeatedNativeEntry": True,
+            "terminalOutputPersisted": False,
+        }
+
+    def recovery(self):
+        assert self.provider == "codex"
+        ref = next(
+            row["identity"]
+            for row in self.snapshot()["sessions"]
+            if row["activity"]["at"] is not None
+        )
+        at = self.row(ref)["activity"]["at"]
+        owner = inspect_managed_endpoint(
+            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+        )
+        assert Path(os.readlink(f"/proc/{owner.pid}/exe")).is_relative_to(
+            self.base / "codex/packages"
+        )
+        validate_incarnation(owner)
+        os.kill(owner.pid, signal.SIGKILL)
+        time.sleep(1)
+        failed = self.snapshot()
+        assert failed["sourceHealth"] == "unavailable" and failed["sessions"] == []
+        created = self.spawn(self.handoff())
+        self.pause(created, 5)
+        self.assert_native_client(created)
+        recovered = inspect_managed_endpoint(
+            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+        )
+        assert (recovered.pid, recovered.start_ticks) != (owner.pid, owner.start_ticks)
+        resumed = self.spawn(self.handoff(ref))
+        self.pause(resumed, 4)
+        self.assert_native_client(resumed)
+        assert self.row(ref)["activity"]["at"] == at
+        self.stop(resumed)
+        self.stop(created)
+        return {
+            "status": "accepted",
+            "hostScope": self.host,
+            "provider": "codex",
+            "independentOfFrontend": True,
+            "ownedDaemonFailureVisible": True,
+            "publicNewRestartsRuntime": True,
+            "exactSavedResumeAfterRecovery": True,
+            "recoveryPreservesConversationAge": True,
+            "offlineSavedResumeDirectly": "unsupported",
+            "terminalOutputPersisted": False,
+        }
+
+    def claude_partial(self):
+        assert self.provider == "claude"
+        source = next(
+            row
+            for row in self.snapshot()["sessions"]
+            if row["job"]
+            and row["job"]["state"] == "done"
+            and row["worker"]["value"] == "present"
+            and row["activity"]["at"] is not None
+        )
+        ref, at = source["identity"], source["activity"]["at"]
+        sibling = self.handoff()
+        sibling_ref = sibling["resultingIdentity"]
+        job_path = next(
+            path
+            for path in (self.base / "claude/jobs").glob("*/state.json")
+            if json.loads(path.read_text()).get("sessionId") == sibling_ref["nativeId"]
+        )
+        job_path.unlink()
+        snapshot = self.snapshot()
+        assert snapshot["sourceHealth"] == "partial"
+        healthy = self.spawn(self.handoff(ref))
+        self.pause(healthy, 3)
+        self.assert_native_client(healthy)
+        self.stop(healthy)
+        for path in (self.base / "claude/sessions").glob("*.json"):
+            registry = json.loads(path.read_text())
+            if registry.get("sessionId") != ref["nativeId"]:
+                continue
+            pid = registry["pid"]
+            assert (
+                Path(f"/proc/{pid}/exe").resolve() == Path("/opt/claude-code/bin/claude").resolve()
+            )
+            assert ("CLAUDE_CONFIG_DIR=" + str(self.base / "claude")).encode() in Path(
+                f"/proc/{pid}/environ"
+            ).read_bytes().split(b"\0")
+            os.kill(pid, signal.SIGKILL)
+            break
+        else:
+            raise RuntimeError("owned_worker_unavailable")
+        time.sleep(1)
+        copied = self.handoff(ref)
+        new_ref = copied["resultingIdentity"]
+        assert new_ref is not None and new_ref != ref
+        assert copied["requestedIdentity"] == ref
+        new_row = self.row(new_ref)
+        # Claude hydrates history in memory before persisting the copied store.
+        # Native resumeSessionId already names the new ID, not its origin. Do
+        # not infer an inherited clock or collapse the two native identities.
+        assert new_row["activity"]["at"] is None or new_row["activity"]["at"] == at
+        resumed = self.spawn(copied)
+        self.pause(resumed, 3)
+        self.assert_native_client(resumed)
+        os.write(resumed[1], b"Reply only with OK.\r")
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            self.pause(resumed, 0.3)
+            advanced = self.row(new_ref)
+            if advanced["activity"]["at"] is not None and advanced["activity"]["at"] > at:
+                break
+        else:
+            raise RuntimeError("copied_activity_pending")
+        assert advanced["history"] is not None
+        self.stop(resumed)
+        return {
+            "status": "accepted",
+            "hostScope": self.host,
+            "provider": "claude",
+            "independentOfFrontend": True,
+            "fixture": "native_worker_missing_job_metadata",
+            "healthyLiveAttachThroughPartialFeed": True,
+            "savedResumeThroughPartialFeed": True,
+            "nativeCopiedIdentityExplicit": True,
+            "savedResumeClockUnknownUntilNativePersistence": True,
+            "firstNewPromptAdvancesCopiedActivity": True,
+            "terminalOutputPersisted": False,
+        }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--provider", choices=("codex", "claude"), required=True)
+    parser.add_argument("--scenario", choices=("entry", "recovery", "partial"), default="entry")
+    arguments = parser.parse_args()
+    proof = Proof(arguments.provider)
+    try:
+        result = {"entry": proof.run, "recovery": proof.recovery, "partial": proof.claude_partial}[
+            arguments.scenario
+        ]()
+    finally:
+        for client in list(proof.clients):
+            proof.stop(client)
+    (
+        proof.root / ("native-" + proof.provider + "-" + arguments.scenario + "-acceptance.json")
+    ).write_text(json.dumps(result, indent=2) + "\n")
+    print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main()

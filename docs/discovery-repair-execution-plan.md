@@ -100,3 +100,25 @@ job `state=blocked` remains unknown with a recognized capability reason; no
 urgency semantics are inferred. Source validation passes 167 tests; a passive
 ordinary source read returns 34 Codex and 25 Claude activity clocks. Candidate
 byte verification, public CLI native invariance and selected rollout remain R4/R5.
+
+R4 initially installed the unselected `0.2.0a4` wheel on both hosts. Its read
+chronology and native New/Resume/rename/housekeeping subset passed for Codex on
+Snap/Starship and Claude on Snap. Codex failure is visible; public New starts a
+fresh private daemon, after which exact saved Resume preserves identity and age.
+Direct saved Resume with no observable daemon remains unsupported.
+
+The Claude partial-feed saved Resume probe reopened the writer checkpoint:
+an early attach could be unavailable even though one native copied identity
+was created. The source now reobserves transient phase ambiguity without another
+launch and preserves a confirmed identity on deadline. Copied Claude history
+is initially held in memory: the job's resume ID names the new session, so it
+cannot safely supply the origin activity clock. Activity remains explicitly
+unknown until native persistence; no identity/legacy inference is introduced.
+The next independent frozen artifact is `0.2.0a5`.
+
+`scripts/native-isolation` prepares private stores and proves user/mount/PID
+isolation before provider entry. It never depends on Plus. Explicit
+`scripts/native-acceptance --provider PROVIDER [--scenario entry|recovery|partial]`
+uses installed public CLIs under real PTYs inside that fixture, discards terminal
+output and emits only bounded acceptance metadata. These are operator-invoked
+native actions, not part of passive collection or the ordinary source check.
