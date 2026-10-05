@@ -1,0 +1,28 @@
+{
+  "manifestVersion": 1,
+  "package": "agent-observer",
+  "version": "0.2.0a7",
+  "sourceRevision": "05261066478abd2c7947a5486cfbb8c77c76ded7",
+  "wheel": "agent_observer-0.2.0a7-py3-none-any.whl",
+  "wheelSha256": "1d42506cf2b5cc7c75a3d8df4ee3279493b132d7b87cb8cd79b1f5b360e4ebc2",
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-write"
+  ],
+  "schemas": {
+    "snapshot": 2,
+    "watch": 2,
+    "write": 1
+  },
+  "claudeHistorySdk": "0.2.163",
+  "providers": {
+    "codex": {
+      "version": "0.160.0",
+      "sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad"
+    },
+    "claude": {
+      "version": "2.1.287",
+      "sha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0"
+    }
+  }
+}
