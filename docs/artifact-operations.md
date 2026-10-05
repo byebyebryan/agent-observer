@@ -1,17 +1,20 @@
 # Candidate artifact operations
 
-The accepted candidate manifest is `artifacts/observer-0.2.0a3.json`. It records
+The selected candidate manifest is `artifacts/observer-0.2.0a8.json`. It records
 the frozen producer checkpoint and wheel independently of later operational
 tooling/docs commits. It does not attest a host or authorize provider actions.
+Its Codex support remains bounded to `0.160.0`; the running `0.160.1` daemon
+needs the separate [repair gate](evaluation-repair-execution.md). Earlier
+manifests remain available for artifact verification and rollback.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.2.0a3.json \
-  --wheel /absolute/path/agent_observer-0.2.0a3-py3-none-any.whl \
+  --manifest artifacts/observer-0.2.0a8.json \
+  --wheel /absolute/path/agent_observer-0.2.0a8-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.2.0a3.json \
-  --wheel /absolute/path/agent_observer-0.2.0a3-py3-none-any.whl \
+  --manifest artifacts/observer-0.2.0a8.json \
+  --wheel /absolute/path/agent_observer-0.2.0a8-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 
