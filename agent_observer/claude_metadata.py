@@ -20,6 +20,7 @@ from datetime import datetime
 from typing import Any
 
 from .bounded_json import WireError, decode_document
+from .native_artifacts import CLAUDE, inspect_process, registered, supported_versions
 from .observation_model import (
     Evidence,
     NativeIdentity,
@@ -27,9 +28,9 @@ from .observation_model import (
     bounded_native_title,
 )
 
-SUPPORTED_VERSION = "2.1.287"
-SUPPORTED_SHA256 = "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0"
-SUPPORTED_BINARY_PATH = "/opt/claude-code/bin/claude"
+SUPPORTED_VERSION = CLAUDE.version
+SUPPORTED_SHA256 = CLAUDE.sha256
+SUPPORTED_BINARY_PATH = CLAUDE.path
 
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _PID_NAME = re.compile(r"([1-9][0-9]{0,9})\.json\Z", re.ASCII)
@@ -156,32 +157,17 @@ def _linux_proc_start_token(pid: int) -> tuple[str | None, str]:
     return token, "present"
 
 
-def _linux_process_uses_supported_binary(pid: int) -> tuple[bool | None, str]:
-    """Compare process executable dev/inode with the pinned installed binary."""
-    flags = (
-        os.O_RDONLY
-        | getattr(os, "O_CLOEXEC", 0)
-        | getattr(os, "O_NOFOLLOW", 0)
-        | getattr(os, "O_NONBLOCK", 0)
-    )
+def _linux_process_uses_supported_binary(pid: int, cache=None) -> tuple[bool | None, str]:
+    """Bind a supported image to this process, including upgrade survivors."""
     try:
-        expected_fd = os.open(SUPPORTED_BINARY_PATH, flags)
-    except OSError:
-        return None, "binary_unavailable"
-    try:
-        expected = os.fstat(expected_fd)
-        if not stat.S_ISREG(expected.st_mode):
-            return None, "binary_unavailable"
-    finally:
-        os.close(expected_fd)
-    try:
-        actual = os.stat(f"/proc/{pid}/exe")
+        inspect_process(pid, "claude", cache=cache)
     except FileNotFoundError:
         return None, "process_unavailable"
     except OSError:
         return None, "unavailable"
-    matches = actual.st_dev == expected.st_dev and actual.st_ino == expected.st_ino
-    return matches, "matched" if matches else "different_binary"
+    except ValueError:
+        return False, "different_binary"
+    return True, "matched"
 
 
 def _open_directory_at(parent_fd: int, name: str) -> int:
@@ -401,7 +387,7 @@ def _session_record(filename: str, payload: object) -> dict[str, Any]:
     }
 
 
-def _presence(record: dict[str, Any], pid_domain: str | None, observed_at: int) -> Evidence:
+def _presence(record: dict[str, Any], pid_domain: str | None, observed_at: int, image_cache=None) -> Evidence:
     if pid_domain is None:
         return Evidence("presence", health="unavailable", reason="source_unavailable")
     if record["pidDomain"] != pid_domain:
@@ -429,7 +415,7 @@ def _presence(record: dict[str, Any], pid_domain: str | None, observed_at: int) 
             "current",
             "native_snapshot",
         )
-    image_matches, image_state = _linux_process_uses_supported_binary(record["pid"])
+    image_matches, image_state = _linux_process_uses_supported_binary(record["pid"], image_cache)
     if image_state == "process_unavailable":
         return Evidence(
             "presence",
@@ -581,6 +567,7 @@ def _observation(
     job_store_complete: bool,
     conflicted: bool = False,
     issues: tuple[str, ...] = (),
+    image_cache=None,
 ) -> dict[str, Any]:
     identity = NativeIdentity(host_scope, "claude", namespace, "session", session_id)
     attachment = Evidence("attachment", health="unsupported", reason="unsupported")
@@ -597,7 +584,7 @@ def _observation(
         session_kind = "unknown"
         linked_job_id = job.job_id if job is not None else None
     else:
-        presence = _presence(registry, pid_domain, observed_at)
+        presence = _presence(registry, pid_domain, observed_at, image_cache)
         session_kind = registry["kind"]
         native_status = {
             "value": registry["status"],
@@ -700,7 +687,7 @@ def snapshot(
     """
     result: dict[str, Any] = {
         "source": "claude_private_metadata",
-        "schema": "private-2.1.287",
+        "schema": "private-2.1.287-and-2.1.289",
         "supported": False,
         "runtime": {"version": "unknown", "sha256": "unknown"},
         "coverage": {
@@ -720,13 +707,14 @@ def snapshot(
         ],
     }
     errors: list[dict[str, str]] = result["errors"]
-    if runtime_version != SUPPORTED_VERSION:
+    if runtime_version not in supported_versions("claude"):
         _error(errors, "unsupported_runtime_version")
         return result
     if not isinstance(binary_sha256, str) or not _SHA256.fullmatch(binary_sha256):
         _error(errors, "invalid_runtime_digest")
         return result
-    if binary_sha256 != SUPPORTED_SHA256:
+    artifact = registered("claude", binary_sha256)
+    if artifact is None or artifact.version != runtime_version:
         _error(errors, "unsupported_runtime_digest")
         return result
     if not sys.platform.startswith("linux"):
@@ -940,6 +928,7 @@ def snapshot(
     conflicted_jobs.update(duplicate_jobs)
 
     observations: list[dict[str, Any]] = []
+    image_cache = {}
     paired_jobs: set[str] = set()
     for record in registry_rows:
         job_id = record["jobId"]
@@ -969,6 +958,7 @@ def snapshot(
                 job_store_complete=job_complete,
                 conflicted=conflicted,
                 issues=tuple(row_issues),
+                image_cache=image_cache,
             )
         )
 
@@ -996,7 +986,7 @@ def snapshot(
         )
 
     result["supported"] = True
-    result["runtime"] = {"version": SUPPORTED_VERSION, "sha256": SUPPORTED_SHA256}
+    result["runtime"] = {"version": runtime_version, "sha256": binary_sha256}
     result["observations"] = observations
     result["coverage"]["sessionRegistry"] = (
         "complete" if session_complete else "partial" if sessions_fd is not None else "unavailable"

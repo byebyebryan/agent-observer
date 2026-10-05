@@ -21,7 +21,8 @@ from pathlib import Path
 from .activity import unavailable
 from .claude_history import SDK_VERSION as CLAUDE_HISTORY_SDK_VERSION
 from .claude_history import collect_saved_history
-from .claude_metadata import SUPPORTED_SHA256, SUPPORTED_VERSION, snapshot
+from .claude_metadata import snapshot
+from .native_artifacts import inspect_installed
 from .observation_model import bounded_native_title
 
 _SCOPE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,255}\Z", re.ASCII)
@@ -37,50 +38,10 @@ class CollectionError(ValueError):
 
 
 def _verify_artifact(path: Path, *, timeout: float = 3.0):
-    deadline = time.monotonic() + timeout
-    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW
     try:
-        fd = os.open(path, flags)
-    except OSError:
-        raise CollectionError("runtime_artifact_unavailable") from None
-    try:
-        before = os.fstat(fd)
-        if (
-            not stat.S_ISREG(before.st_mode)
-            or before.st_mode & 0o022
-            or not 0 < before.st_size <= 512 * 1024 * 1024
-        ):
-            raise CollectionError("runtime_artifact_not_accepted")
-        digest = hashlib.sha256()
-        total = 0
-        while chunk := os.read(fd, 1024 * 1024):
-            total += len(chunk)
-            if total > 512 * 1024 * 1024 or time.monotonic() > deadline:
-                raise CollectionError("runtime_artifact_inspection_limit")
-            digest.update(chunk)
-        after = os.fstat(fd)
-        if (
-            (
-                before.st_dev,
-                before.st_ino,
-                before.st_size,
-                before.st_mtime_ns,
-                before.st_ctime_ns,
-            )
-            != (
-                after.st_dev,
-                after.st_ino,
-                after.st_size,
-                after.st_mtime_ns,
-                after.st_ctime_ns,
-            )
-            or total != before.st_size
-            or digest.hexdigest() != SUPPORTED_SHA256
-        ):
-            raise CollectionError("runtime_artifact_not_accepted")
-        return before.st_dev, before.st_ino
-    finally:
-        os.close(fd)
+        return inspect_installed(path, "claude", timeout=timeout)
+    except ValueError as exc:
+        raise CollectionError(str(exc)) from None
 
 
 def _namespace(config_home: Path, config_home_kind: str = "explicit"):
@@ -155,9 +116,9 @@ def collect_claude(
         result["namespace"] = namespace
         artifact_identity = _verify_artifact(executable)
         result["runtime"] = {
-            "version": SUPPORTED_VERSION,
+            "version": artifact_identity.artifact.version,
             "versionEvidence": "verified_installed_executable_sha256",
-            "binarySha256": SUPPORTED_SHA256,
+            "binarySha256": artifact_identity.artifact.sha256,
             "bootId": boot_id,
             "topology": "private_session_registry_and_job_store",
         }
@@ -165,8 +126,8 @@ def collect_claude(
             config_home,
             host_scope=host_scope,
             namespace=namespace,
-            runtime_version=SUPPORTED_VERSION,
-            binary_sha256=SUPPORTED_SHA256,
+            runtime_version=artifact_identity.artifact.version,
+            binary_sha256=artifact_identity.artifact.sha256,
         )
         result["sessions"] = native["observations"]
         for row in result["sessions"]:
@@ -206,7 +167,7 @@ def collect_claude(
         current_artifact = executable.lstat()
         if (
             not stat.S_ISREG(current_artifact.st_mode)
-            or (current_artifact.st_dev, current_artifact.st_ino) != artifact_identity
+            or (current_artifact.st_dev, current_artifact.st_ino) != artifact_identity.stamp
         ):
             raise CollectionError("runtime_artifact_changed")
         complete = native["supported"] and all(

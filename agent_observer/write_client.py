@@ -14,18 +14,19 @@ from pathlib import Path
 
 from .bounded_json import WireError, decode_document
 from .contract import ContractError, canonical, store_namespace
+from .native_artifacts import CLAUDE, CODEX, registered
 from .native_cues import background_receipt, trust_required
 from .read_client import select as select_session
 from .write_contract import schema_document, validate_plan, validate_request, validate_result
 
 ARTIFACTS = {
     "codex": (
-        "/opt/openai-codex/bin/codex",
-        "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+        CODEX.path,
+        CODEX.sha256,
     ),
     "claude": (
-        "/opt/claude-code/bin/claude",
-        "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+        CLAUDE.path,
+        CLAUDE.sha256,
     ),
 }
 BG_SETTINGS = '{"worktree":{"bgIsolation":"none"}}'
@@ -134,7 +135,7 @@ def prepare(request):
         raise ContractError("unsupported_config_selector")
     executable, accepted_hash = ARTIFACTS[provider]
     binary_hash, binary = _digest(Path(executable), 512 * 1024 * 1024)
-    if binary_hash != accepted_hash:
+    if binary_hash != accepted_hash and registered(provider, binary_hash) is None:
         raise ContractError("runtime_artifact_not_accepted")
     settings = Path(request["configHome"]) / (
         "config.toml" if provider == "codex" else "settings.json"

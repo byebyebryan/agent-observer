@@ -88,3 +88,13 @@ partial health and unavailable runtime coverage. CLI text reports finite errors
 and package `0.2.0a8`; package version now has one source and candidate verification
 requires the executable's version to match wheel metadata. No selector changed.
 Current Claude artifact and metadata companions remain the S2 native gate.
+
+S2 candidate source checks pass 176 tests. A passive source read of ordinary
+Snap metadata returns 27 histories with native activity clocks, including the
+two worktree companion cases. Five verified resident workers are visible;
+unknown phases remain explicit. The exact current installed image and resident
+images are inspected separately. The history worker uses the pinned SDK's lite
+parser on the single UUID-bound conversation file after companion classification;
+conflicting transcripts remain ambiguous. This source evidence does not accept
+New/Resume or select the candidate. Claude `2.1.289` action and mixed-version
+support still require the isolated S2/S3 gate before artifact delivery.

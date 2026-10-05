@@ -12,6 +12,7 @@ from agent_observer._claude_history_worker import (
     _bounded_cwd,
     _WorkerFailure,
     census_projects,
+    duplicate_file_kind,
     transcript_activity,
 )
 from agent_observer.claude_history import SDK_VERSION, _run_worker, collect_saved_history
@@ -68,6 +69,34 @@ class ClaudeHistoryTest(unittest.TestCase):
             ),
         ):
             return collect_saved_history(self.config, history_limit=history_limit)
+
+    def test_metadata_companion_does_not_compete_with_exact_conversation_source(self):
+        projects = self.config / "projects"
+        original = projects / "original"
+        worktree = projects / "worktree"
+        original.mkdir(parents=True)
+        worktree.mkdir()
+        full = original / (FIRST + ".jsonl")
+        companion = worktree / full.name
+        full.write_text(json.dumps({"type": "file-history-snapshot", "snapshot": {}}) + "\n" + json.dumps({"type": "user", "sessionId": FIRST, "timestamp": "2026-10-05T00:00:00Z", "message": {"content": "synthetic"}}) + "\n")
+        companion.write_text(json.dumps({"type": "custom-title", "sessionId": FIRST, "customTitle": "Companion title"}) + "\n")
+        self.assertEqual(duplicate_file_kind(full, FIRST), "conversation")
+        self.assertEqual(duplicate_file_kind(companion, FIRST), "companion")
+        census = census_projects(projects)
+        self.assertIn(FIRST, census["resolved_duplicates"])
+        self.assertEqual(census["transcript_paths"][FIRST], full)
+        # A second conversation, mismatched UUID, unknown metadata, duplicate
+        # keys and a partial record cannot be resolved by mtime/size preference.
+        for content in (
+            full.read_text(),
+            json.dumps({"type": "custom-title", "sessionId": SECOND}) + "\n",
+            json.dumps({"type": "future-metadata", "sessionId": FIRST}) + "\n",
+            '{"type":"custom-title","sessionId":"' + FIRST + '","sessionId":"' + SECOND + '"}\n',
+            json.dumps({"type": "custom-title", "sessionId": FIRST}),
+        ):
+            with self.subTest(content=content[:24]):
+                companion.write_text(content)
+                self.assertNotIn(FIRST, census_projects(projects)["resolved_duplicates"])
 
     def test_activity_order_precedes_display_cap_and_ignores_creation_and_mtime(self):
         payload = worker_payload(

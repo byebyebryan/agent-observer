@@ -29,6 +29,23 @@ MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 MAX_TIME_MS = 4_000_000_000_000
 MAX_ACTIVITY_BYTES = 512 * 1024
 MAX_ACTIVITY_TOTAL_BYTES = 64 * 1024 * 1024
+MAX_COMPANION_BYTES = 64 * 1024
+_COMPANION_KEYS = {
+    "last-prompt": {"lastPrompt", "leafUuid"},
+    "custom-title": {"customTitle"},
+    "agent-name": {"agentName"},
+    "agent-color": {"agentColor"},
+    "mode": {"mode"},
+    "permission-mode": {"permissionMode"},
+    "atis-latch": {"atis"},
+    "worktree-state": {"worktreeSession"},
+    "pr-link": {"prNumber", "prRepository", "prUrl", "timestamp"},
+    "cost-state": {
+        "hasUnknownModelCost", "modelUsage", "startTime", "totalAPIDuration",
+        "totalAPIDurationWithoutRetries", "totalCostUSD", "totalDuration",
+        "totalLinesAdded", "totalLinesRemoved", "totalToolDuration",
+    },
+}
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _WRITE_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_APPEND | os.O_CREAT | os.O_TRUNC
 _FORBIDDEN_EVENTS = frozenset(
@@ -72,6 +89,88 @@ def _check_deadline(deadline: float) -> None:
 
 def _owner_is_current(st: os.stat_result) -> bool:
     return st.st_uid == os.geteuid()
+
+
+def _unique_pairs(items):
+    result = {}
+    for key, value in items:
+        if key in result:
+            raise ValueError("duplicate_metadata_key")
+        result[key] = value
+    return result
+
+
+def _file_stamp(info):
+    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+
+
+def duplicate_file_kind(path: Path, session_id: str) -> str:
+    """Classify exact UUID-bound native envelopes, never by size or recency."""
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+        try:
+            before = os.fstat(fd)
+            if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+                return "unproved"
+            data = os.read(fd, MAX_COMPANION_BYTES + 1)
+            after = os.fstat(fd)
+            current = path.lstat()
+            if _file_stamp(before) != _file_stamp(after) or _file_stamp(before) != _file_stamp(current):
+                return "unproved"
+        finally:
+            os.close(fd)
+        complete = len(data) == before.st_size and data.endswith(b"\n")
+        lines = data.splitlines() if complete else data.splitlines()[:-1]
+        if not lines:
+            return "unproved"
+        companion = complete and before.st_size <= MAX_COMPANION_BYTES
+        conversation = False
+        for line in lines:
+            value = json.loads(line, object_pairs_hook=_unique_pairs)
+            if not isinstance(value, dict):
+                return "unproved"
+            native_id = value.get("sessionId")
+            if native_id is not None and (
+                not isinstance(native_id, str) or native_id.lower() != session_id
+            ):
+                return "unproved"
+            kind = value.get("type")
+            if kind in {"user", "assistant"} and value.get("isSidechain") is not True:
+                if native_id is None:
+                    return "unproved"
+                conversation = True
+            if native_id is None or kind not in _COMPANION_KEYS or not set(value) <= (
+                _COMPANION_KEYS.get(kind, set()) | {"type", "sessionId"}
+            ):
+                companion = False
+        return "conversation" if conversation else "companion" if companion else "unproved"
+    except (OSError, ValueError, TypeError, AttributeError, RecursionError):
+        return "unproved"
+
+
+def exact_sdk_metadata(path: Path, session_id: str):
+    """Pinned SDK parser applied to the single proved conversation file.
+
+    Its global catalog deduplicates by mtime and can choose a companion. Keep
+    title/cwd extraction in the pinned SDK, binding its lite parser to an owned
+    open descriptor instead of accepting that catalog preference.
+    """
+    from claude_agent_sdk._internal.sessions import (
+        _parse_session_info_from_lite,
+        _read_session_lite,
+    )
+
+    fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+    try:
+        before = os.fstat(fd)
+        lite = _read_session_lite(Path(f"/proc/self/fd/{fd}"))
+        after = os.fstat(fd)
+        current = path.lstat()
+        if lite is None or _file_stamp(before) != _file_stamp(after) or _file_stamp(before) != _file_stamp(current):
+            return None
+        return _parse_session_info_from_lite(session_id, lite)
+    finally:
+        os.close(fd)
 
 
 def census_projects(projects_dir: Path) -> dict[str, object]:
@@ -137,6 +236,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
     id_counts: dict[str, int] = {}
     malformed_ids = 0
     transcript_paths = {}
+    candidates = {}
 
     for project_dir in project_dirs:
         _check_deadline(deadline)
@@ -205,6 +305,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
                         continue
                     normalized_id = session_id.lower()
                     transcript_paths[normalized_id] = Path(entry.path)
+                    candidates.setdefault(normalized_id, []).append(Path(entry.path))
                     valid_ids.add(normalized_id)
                     id_counts[normalized_id] = id_counts.get(normalized_id, 0) + 1
         except _WorkerFailure:
@@ -213,6 +314,16 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
             raise _WorkerFailure("history_source_failed") from None
 
     duplicates = {session_id for session_id, count in id_counts.items() if count > 1}
+    resolved_duplicates = set()
+    for session_id in duplicates:
+        _check_deadline(deadline)
+        kinds = [(path, duplicate_file_kind(path, session_id)) for path in candidates[session_id]]
+        conversations = [path for path, kind in kinds if kind == "conversation"]
+        if len(conversations) == 1 and all(
+            kind in {"conversation", "companion"} for _path, kind in kinds
+        ):
+            transcript_paths[session_id] = conversations[0]
+            resolved_duplicates.add(session_id)
     signature = hashlib.sha256()
     for part in sorted(signature_parts):
         signature.update(
@@ -226,6 +337,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
         "total_bytes": total_bytes,
         "valid_ids": valid_ids,
         "duplicate_ids": duplicates,
+        "resolved_duplicates": resolved_duplicates,
         "malformed_ids": malformed_ids,
         "signature": signature.digest(),
         "transcript_paths": transcript_paths,
@@ -464,8 +576,20 @@ def main() -> int:
         seen_ids.add(session_id)
         path = after_census["transcript_paths"].get(session_id)
         if session_id in census["duplicate_ids"] or session_id in after_census["duplicate_ids"]:
-            errors.add("history_ambiguous")
-            continue
+            if not (
+                session_id in census["resolved_duplicates"]
+                and session_id in after_census["resolved_duplicates"]
+                and census["transcript_paths"][session_id] == path
+            ):
+                errors.add("history_ambiguous")
+                continue
+            try:
+                session = exact_sdk_metadata(path, session_id)
+            except Exception:
+                session = None
+            if session is None:
+                errors.add("history_ambiguous")
+                continue
         try:
             activity_bytes += min(path.stat().st_size, MAX_ACTIVITY_BYTES)
         except OSError:
