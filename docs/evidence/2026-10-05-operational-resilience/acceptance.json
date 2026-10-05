@@ -1,0 +1,346 @@
+{
+  "artifact": {
+    "manifestVersion": 1,
+    "package": "agent-observer",
+    "version": "0.2.0a8",
+    "sourceRevision": "ece20e23b9a4a7d17291bebb6d8dabfa1f6044f6",
+    "wheel": "agent_observer-0.2.0a8-py3-none-any.whl",
+    "wheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c",
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write"
+    ],
+    "schemas": {
+      "snapshot": 2,
+      "watch": 2,
+      "write": 1
+    },
+    "claudeHistorySdk": "0.2.163",
+    "providers": {
+      "codex": {
+        "version": "0.160.0",
+        "sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad"
+      },
+      "claude": {
+        "version": "2.1.289",
+        "sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348"
+      }
+    }
+  },
+  "sourceTests": 176,
+  "staticLint": "passed",
+  "frontendImplementationEdits": 0,
+  "hosts": {
+    "snap": {
+      "installedCandidate": {
+        "status": "accepted",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051",
+        "wheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c",
+        "sourceRevision": "ece20e23b9a4a7d17291bebb6d8dabfa1f6044f6",
+        "profile": "claude-history",
+        "version": "0.2.0a8",
+        "sdk": "0.2.163",
+        "bundledExecutable": false,
+        "installedWheelBytesVerified": true,
+        "entrypointsVerified": true,
+        "schemaVersionsVerified": true,
+        "providerInvocations": 0,
+        "selectedLinksChanged": false
+      },
+      "native": {
+        "codexEntry": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "codex",
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "independentOfFrontend": true,
+          "emptyActivityUnknown": true,
+          "nativeConversationActivity": true,
+          "readsRenameHousekeepingPreserveAge": true,
+          "savedOrLiveResumeExactIdentity": true,
+          "resumePreservesAge": true,
+          "repeatedNativeEntry": true,
+          "terminalOutputPersisted": false
+        },
+        "codexRecovery": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "codex",
+          "independentOfFrontend": true,
+          "ownedDaemonFailureVisible": true,
+          "publicNewRestartsRuntime": true,
+          "exactSavedResumeAfterRecovery": true,
+          "recoveryPreservesConversationAge": true,
+          "offlineSavedResumeDirectly": "unsupported",
+          "terminalOutputPersisted": false
+        },
+        "codexTTYRejection": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "codex",
+          "realPTY": true,
+          "rejectionVisible": true,
+          "reason": "handoff_context_changed",
+          "nativeProviderNotExecuted": true,
+          "terminalOutputPersisted": false
+        },
+        "claudeEntry": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "independentOfFrontend": true,
+          "emptyActivityUnknown": true,
+          "nativeConversationActivity": true,
+          "readsRenameHousekeepingPreserveAge": true,
+          "savedOrLiveResumeExactIdentity": true,
+          "resumePreservesAge": true,
+          "repeatedNativeEntry": true,
+          "terminalOutputPersisted": false
+        },
+        "claudePartialFeed": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "independentOfFrontend": true,
+          "fixture": "native_worker_missing_job_metadata",
+          "healthyLiveAttachThroughPartialFeed": true,
+          "savedResumeThroughPartialFeed": true,
+          "nativeCopiedIdentityExplicit": true,
+          "savedResumeClockUnknownUntilNativePersistence": true,
+          "firstNewPromptAdvancesCopiedActivity": true,
+          "terminalOutputPersisted": false
+        },
+        "claudeCompanion": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "fixture": "native_transcript_with_controlled_metadata_companion",
+          "singleConversationRetained": true,
+          "companionRecencyIgnored": true,
+          "titleAndNativeActivityPreserved": true,
+          "conflictingConversationsExplicit": true,
+          "restorationPreservesAge": true,
+          "terminalOutputPersisted": false
+        },
+        "claudeMixedVersions": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "workerVersion": "2.1.287",
+          "viewerVersion": "2.1.289",
+          "differentVerifiedImages": true,
+          "oldWorkerObservedRunning": true,
+          "currentViewerAttachesOldWorker": true,
+          "sameNativeIdentity": true,
+          "workingObserved": true,
+          "completedTurnWaiting": true,
+          "terminalOutputPersisted": false
+        },
+        "claudeHeldApproval": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "version": "2.1.289",
+          "workingObserved": true,
+          "nativePermissionPromptObserved": true,
+          "nativeJobState": "working",
+          "nativeJobTempo": "blocked",
+          "observedPhase": "blocked",
+          "heldApprovalPreservesAge": true,
+          "toolNotExecuted": true,
+          "approvalAutomaticallyAnswered": false,
+          "terminalOutputPersisted": false
+        }
+      },
+      "ordinaryPassiveRead": {
+        "artifact": "0.2.0a8",
+        "host": "snap",
+        "sessions": 74,
+        "providers": {
+          "codex": {
+            "sessions": 47,
+            "activityClocks": 34,
+            "running": 2
+          },
+          "claude": {
+            "sessions": 27,
+            "activityClocks": 27,
+            "running": 4
+          }
+        },
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "errors": [],
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "runtime": {
+              "binarySha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+              "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+              "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+              "pid": 1560912,
+              "startTicks": 4599726,
+              "topology": "native_managed_endpoint",
+              "version": "0.160.0"
+            }
+          },
+          {
+            "provider": "claude",
+            "sourceHealth": "current",
+            "errors": [],
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "registered_workers",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "metadata_scan",
+                "status": "partial"
+              }
+            },
+            "runtime": {
+              "binarySha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
+              "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+              "endpoint": null,
+              "pid": null,
+              "startTicks": null,
+              "topology": "private_session_registry_and_job_store",
+              "version": "2.1.289"
+            }
+          }
+        ],
+        "passive": true
+      }
+    },
+    "starship": {
+      "native": {
+        "codexEntry": {
+          "status": "accepted",
+          "hostScope": "starship",
+          "provider": "codex",
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "independentOfFrontend": true,
+          "emptyActivityUnknown": true,
+          "nativeConversationActivity": true,
+          "readsRenameHousekeepingPreserveAge": true,
+          "savedOrLiveResumeExactIdentity": true,
+          "resumePreservesAge": true,
+          "repeatedNativeEntry": true,
+          "terminalOutputPersisted": false
+        },
+        "codexRecovery": {
+          "status": "accepted",
+          "hostScope": "starship",
+          "provider": "codex",
+          "independentOfFrontend": true,
+          "ownedDaemonFailureVisible": true,
+          "publicNewRestartsRuntime": true,
+          "exactSavedResumeAfterRecovery": true,
+          "recoveryPreservesConversationAge": true,
+          "offlineSavedResumeDirectly": "unsupported",
+          "terminalOutputPersisted": false
+        },
+        "codexTTYRejection": {
+          "status": "accepted",
+          "hostScope": "starship",
+          "provider": "codex",
+          "realPTY": true,
+          "rejectionVisible": true,
+          "reason": "handoff_context_changed",
+          "nativeProviderNotExecuted": true,
+          "terminalOutputPersisted": false
+        }
+      },
+      "ordinaryPassiveRead": {
+        "artifact": "0.2.0a8",
+        "host": "starship",
+        "sessions": 90,
+        "activityClocks": 85,
+        "running": 0,
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "errors": [],
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "runtime": {
+              "binarySha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+              "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+              "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+              "pid": 1126045,
+              "startTicks": 4759555,
+              "topology": "native_managed_endpoint",
+              "version": "0.160.0"
+            }
+          }
+        ],
+        "passive": true
+      },
+      "installedCandidate": {
+        "status": "accepted",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051",
+        "wheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c",
+        "sourceRevision": "ece20e23b9a4a7d17291bebb6d8dabfa1f6044f6",
+        "profile": "core",
+        "version": "0.2.0a8",
+        "sdk": null,
+        "bundledExecutable": false,
+        "installedWheelBytesVerified": true,
+        "entrypointsVerified": true,
+        "schemaVersionsVerified": true,
+        "providerInvocations": 0,
+        "selectedLinksChanged": false
+      }
+    }
+  },
+  "compatibility": {
+    "producer": "0.2.0a8",
+    "consumer": "0.14.0a1",
+    "consumerReaderDependency": "0.2.0a3",
+    "schemasMatch": {
+      "agent-observer:snapshot": true,
+      "agent-observer:watch": true,
+      "agent-observer-write:request": true,
+      "agent-observer-write:plan": true,
+      "agent-observer-write:result": true
+    },
+    "frontendEdits": 0
+  },
+  "independentProducerGate": "accepted_for_documented_subset",
+  "selection": "pending_scoped_selection",
+  "cleanup": "pending"
+}
