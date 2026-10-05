@@ -20,6 +20,10 @@ class NativeCueTest(unittest.TestCase):
         self.assertEqual(
             (receipt.job_id, receipt.session_id, receipt.origin_id), ("22222222", ACTUAL, ORIGIN)
         )
+        short = background_receipt(cue(origin=ORIGIN[:8], actual=ACTUAL[:8]))
+        self.assertEqual(short.job_id, "22222222")
+        self.assertIsNone(short.session_id)
+        self.assertEqual(short.origin_id, "11111111")
 
     def test_conflicting_copy_ids_and_ambiguous_or_unrecognized_notes_reject(self):
         for value in (

@@ -350,7 +350,8 @@ def execute(plan, *, timeout=30):
         receipt = background_receipt(output)
         if receipt.origin_id is not None and (
             fresh["request"]["operation"] != "resume"
-            or receipt.origin_id != fresh["request"]["reference"]["nativeId"]
+            or receipt.origin_id
+            != fresh["request"]["reference"]["nativeId"][: len(receipt.origin_id)]
         ):
             raise ContractError("native_cue_identity_conflict")
         job = receipt.job_id

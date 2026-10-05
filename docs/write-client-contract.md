@@ -81,9 +81,11 @@ identity failures retain their ordinary rejection behavior.
 
 Claude 2.1.287 can append a fixed note that an already-backgrounded session was
 copied and that an inline attach command opens the original. This is not the
-new viewer receipt. The parser validates the note's full original/copied UUIDs,
-checks the original against the requested identity and the copy against exact
-post-launch native metadata. It still requires one matching new background/attach
+new viewer receipt. The parser validates the fixed note's original/copied job
+IDs or UUIDs and consistency with the requested reference and launch receipt.
+Short IDs never become full identity: exact post-launch provider metadata must
+supply one verified worker/session/job mapping. When a note supplies a full copied
+UUID, it must also match that metadata. The parser requires one new background/attach
 receipt and rejects conflicting notes or arbitrary embedded attach mentions.
 
 Native background launch output is bounded in memory and never exposed or
