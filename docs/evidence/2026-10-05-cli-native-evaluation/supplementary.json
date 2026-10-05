@@ -1,0 +1,361 @@
+{
+  "watch": {
+    "status": "accepted",
+    "hostScope": "snap",
+    "providers": [
+      "codex",
+      "claude"
+    ],
+    "samplesPerReader": 5,
+    "readers": 1,
+    "requestedIntervalSeconds": 2,
+    "elapsedSeconds": 9.289,
+    "revisionAndSchemaChecks": true,
+    "providerActions": 0,
+    "measurements": [
+      {
+        "frameCounts": {
+          "snapshot": 1,
+          "change": 2,
+          "heartbeat": 2
+        },
+        "frames": 5,
+        "sampleSpacingSeconds": [
+          2.013,
+          2.017,
+          2.07,
+          1.895
+        ],
+        "maxRssKiB": 25464,
+        "maxFdCount": 5,
+        "rssStartEndKiB": [
+          488,
+          23472
+        ],
+        "fdStartEnd": [
+          4,
+          3
+        ],
+        "partialSnapshots": 3,
+        "sessionCountRange": [
+          29,
+          29
+        ],
+        "sameValueNativePhaseClockUpdates": 0
+      }
+    ]
+  },
+  "workspace": {
+    "sampleAt": 1791234258341,
+    "contexts": [
+      {
+        "cwd": "/home/bryan",
+        "nativeGit": null,
+        "cliGit": null,
+        "matches": true,
+        "rows": 2,
+        "nativeGitAvailable": false
+      },
+      {
+        "cwd": "/home/bryan/code",
+        "nativeGit": null,
+        "cliGit": null,
+        "matches": true,
+        "rows": 2,
+        "nativeGitAvailable": false
+      },
+      {
+        "cwd": "/home/bryan/code/caos",
+        "nativeGit": {
+          "root": "/home/bryan/code/caos",
+          "commonDir": "/home/bryan/code/caos/.git",
+          "relativePath": "."
+        },
+        "cliGit": {
+          "commonDir": "/home/bryan/code/caos/.git",
+          "relativePath": ".",
+          "root": "/home/bryan/code/caos"
+        },
+        "matches": true,
+        "rows": 23,
+        "nativeGitAvailable": true
+      },
+      {
+        "cwd": "/home/bryan/code/ctb-ops",
+        "nativeGit": {
+          "root": "/home/bryan/code/ctb-ops",
+          "commonDir": "/home/bryan/code/ctb-ops/.git",
+          "relativePath": "."
+        },
+        "cliGit": {
+          "commonDir": "/home/bryan/code/ctb-ops/.git",
+          "relativePath": ".",
+          "root": "/home/bryan/code/ctb-ops"
+        },
+        "matches": true,
+        "rows": 1,
+        "nativeGitAvailable": true
+      }
+    ]
+  },
+  "transientMonitor": {
+    "startedAt": 1791234338603,
+    "endedAt": 1791234388681,
+    "newRegistryWorkers": [],
+    "observationOnly": true,
+    "classificationAccepted": false
+  },
+  "claudeChildHistory": {
+    "subagentFilesCount": 161,
+    "boundedSample": [
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      },
+      {
+        "parentStorageId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+        "recordEvidence": [
+          {
+            "type": "user",
+            "sessionId": "486889ae-273b-4b15-9ba3-4368be0088c5",
+            "isSidechain": true,
+            "hasAgentId": true,
+            "hasParentSessionId": false
+          }
+        ]
+      }
+    ],
+    "storageAssociationIsNotRuntimeBinding": true
+  },
+  "codexClockShape": {
+    "snap": {
+      "provider": "codex",
+      "runtimeRelease": "0.160.1",
+      "scope": "savedInventory",
+      "counts": {
+        "acceptedClockShape": 35,
+        "unacceptedClockShape": 13
+      },
+      "examples": [
+        {
+          "id": "019f8b71-67f9-7ce1-a13e-a468c04c914d",
+          "startedAt": null,
+          "completedAt": 1784751020,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        },
+        {
+          "id": "019f8735-3adb-79a3-950a-f9894c1e9393",
+          "startedAt": null,
+          "completedAt": 1784693327,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        },
+        {
+          "id": "019f85fe-c7e6-7752-bbef-5eb10a9fe710",
+          "startedAt": null,
+          "completedAt": 1784679082,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        },
+        {
+          "id": "019f85f1-c90d-7d21-93e3-af463e349b61",
+          "startedAt": null,
+          "completedAt": 1784679851,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        }
+      ],
+      "noRuntimeSupportAccepted": true
+    },
+    "starship": {
+      "provider": "codex",
+      "runtimeRelease": "0.160.1",
+      "scope": "savedInventory",
+      "counts": {
+        "acceptedClockShape": 85,
+        "unacceptedClockShape": 5
+      },
+      "examples": [
+        {
+          "id": "019f6c7e-cf15-7203-84fc-e92b6f3c2c64",
+          "startedAt": null,
+          "completedAt": 1784243208,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        },
+        {
+          "id": "019f6838-1cb9-7240-864d-034f906a7aaa",
+          "startedAt": null,
+          "completedAt": 1784161050,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        },
+        {
+          "id": "019f1626-bb87-7f91-8851-5f86264e140e",
+          "startedAt": null,
+          "completedAt": 1784121303,
+          "itemsEmpty": true,
+          "itemsView": "notLoaded"
+        }
+      ],
+      "noRuntimeSupportAccepted": true
+    }
+  },
+  "artifactBookkeeping": {
+    "trackedManifestsEndAt": "0.2.0a7",
+    "selectedVersion": "0.2.0a8",
+    "acceptedManifestExistsInPrivateScratch": true,
+    "providerSupportChanged": false
+  },
+  "identityScopeChecks": {
+    "snap": {
+      "host": "snap",
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 29
+      },
+      "sampleAt": 1791234985878
+    },
+    "starship": {
+      "host": "starship",
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 0
+      },
+      "sampleAt": 1791234984989
+    }
+  }
+}

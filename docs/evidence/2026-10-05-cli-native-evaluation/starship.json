@@ -1,0 +1,1169 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.2.0a8",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791234473105
+      },
+      "cliCollectedAt": 1791234473271,
+      "nativeAfterAt": {
+        "codex": 1791234474843
+      },
+      "sourceHealth": "unavailable",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "unavailable",
+          "coverage": {
+            "runtime": {
+              "reason": "source_failed",
+              "scope": "loaded_threads",
+              "status": "unavailable"
+            },
+            "saved": {
+              "reason": "source_failed",
+              "status": "unavailable"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "questions_unproved",
+            "client_binding_unproved",
+            "offline_history_unavailable",
+            "unloaded_work_state_unavailable"
+          ],
+          "errors": [
+            "runtime_peer_identity_mismatch"
+          ]
+        }
+      ],
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 92,
+          "nativeAfterRows": 92,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 92,
+            "classification": {
+              "unknown": 88,
+              "user": 2,
+              "child": 2
+            }
+          },
+          "checks": {},
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791234287000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791234466000
+            },
+            {
+              "id": "01a10dcf-e0f2-7f13-9122-0dd2730d0f11",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791233908000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791234440000
+            }
+          ],
+          "active": [],
+          "contextDifferences": [],
+          "issues": [
+            {
+              "id": "019d9c5d-cc3a-78e1-a435-9b170f45c13c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019d9f22-f28b-7630-b123-f30f9c574912",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019e74b0-8b7b-7c33-a9be-38613cad3ab6",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ebfdf-240f-7963-8b4b-329359a60cc3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ed278-d742-7490-a6ea-51199bad5fa3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f1626-bb87-7f91-8851-5f86264e140e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6838-1cb9-7240-864d-034f906a7aaa",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6a67-a897-7661-97c5-41ca255d1284",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6c7e-cf15-7203-84fc-e92b6f3c2c64",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8a7d-f4a3-7870-991e-8c73cd8b1c43",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d3e-f49d-7921-b3f1-55b314c4e52a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-2136-7902-a5f4-6db30908f067",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-8f0e-75d3-86e9-04d4478b6729",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d45-2995-7b73-8574-ad7a00f444a1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d50-54d4-7ab2-861b-e628b2bc5ba7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-1fff-7b41-baf0-aca88535f465",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-8655-7f50-9ebd-1af0f929e6f3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8dd8-cde9-7fa3-8866-2443f58c49c9",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8de1-5839-7b61-ad09-000946629f5b",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e02-8c3d-7710-aff1-4a6684f5aaa5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e03-017b-7a52-92c2-6f61b992118d",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e0b-d4e7-7831-80c0-3180f3a17c51",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e11-8151-77f0-9292-cb79c220ae19",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e14-3446-7e23-93b1-6a5df791faa2",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1a-d395-76d2-9914-bbad38fa144c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1b-d237-7b31-8b7d-e3fa70a6f5b5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f9021-14fe-7661-9224-f3df77797d4a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f91bc-b253-71b2-8fc0-f7237146192e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f9d52-6735-7501-89b3-f66b7a5636d0",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa57c-4be6-7a02-903f-0e8ba3357b89",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa587-0b8a-7651-a77d-b838a6715822",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa695-bb0c-75f3-a99a-73e98931da7a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019faee0-f135-7023-aaa0-8090f3bd7099",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019faf13-03b0-70d3-89f4-c109535492aa",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fafd0-8831-71a2-89e6-8a01eab48f11",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fafe3-8784-7d62-b7a8-063dfd7f47da",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb00a-2871-7a43-af02-4fbf35cf9728",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb00a-7fe9-7b82-b00f-af1825053605",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb062-42fe-78c0-ba60-d29eed85290e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb19f-78ca-7952-8a8c-a478e84c7386",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb1a0-4487-74e2-b869-7a6930c0bf98",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb55f-737c-73c3-a2e4-75c34b5d6099",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb672-98b4-7100-a780-ecf8a0ea7a57",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb67e-349c-7d42-bc30-fa09b630fa67",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb687-a43e-73a2-ac3d-40fc4392ea53",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb6bb-7f89-73a0-ad3d-38259adc8d77",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb6bc-8025-7123-848c-53d6b8cb3a64",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fc42b-ff4f-7a80-9162-93b9ca0ca2d1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe01b-9ebd-7c11-8fa4-b852adb42c19",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe097-fe69-7a42-9e9c-92626aa4e3f8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe449-c849-7470-afa0-4eec902af5a5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe451-b403-7543-a5d9-64d7935343d1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ff705-4377-7d20-a1a0-c226e20b7676",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ffc14-8c82-73d1-b778-864d2507218f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00147-f784-7072-b2fc-2f3c944ac665",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00148-0e65-7082-99f1-f537ff04cd1f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0041e-a6fa-7b22-96f1-d4c5d449f1ab",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00431-46ee-7390-9f15-e2e62e82156e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a010b8-cf21-7890-81d5-de39929330ce",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a01232-5b0e-7390-b084-11231a2da895",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a01690-5371-71a0-9e47-417dab28479c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a016a4-19de-7362-b4f2-b8c835660496",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a016a4-73f2-7853-b5cd-d8bd2314f835",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0184b-6d54-7010-bbf8-b1c50ab7a0c4",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a020ef-21fa-7612-b954-8ffe8fac3dd8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a02546-6737-7011-adb9-af753fc7ae04",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0500b-abb3-7ce1-95d5-03af17384279",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a058e0-2e4a-7930-8224-1b83fe830d8f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a05a49-f9f8-7e90-b20d-779363c678b1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a05adc-3842-7e23-803c-432a21583a05",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a06e7e-f6ed-7412-b540-8fb36302aae4",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a074a4-decf-7841-8dad-217de707008d",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0997e-9651-7f33-a806-04bf3930b83b",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0ccb7-809e-7701-8584-50eb5609f2cc",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0d756-7619-78d1-9131-8646b0fc2447",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e48b-c079-7ce1-b621-f143e3c9b41c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e493-1847-7e00-aa8e-4b99dda6fe00",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e52b-c735-7df0-a2c7-b0f44fc3df80",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e94e-a9bf-7e33-9852-6b10e20b0be7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10586-9881-7463-904d-dd4af6f512d8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10dcf-e0f2-7f13-9122-0dd2730d0f11",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 1072865,
+        "startTicks": "26754140",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "referenceOnly": true,
+        "versionEvidence": "exact_sha256_and_release_path"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791234476426
+      },
+      "cliCollectedAt": 1791234476590,
+      "nativeAfterAt": {
+        "codex": 1791234478106
+      },
+      "sourceHealth": "unavailable",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "unavailable",
+          "coverage": {
+            "runtime": {
+              "reason": "source_failed",
+              "scope": "loaded_threads",
+              "status": "unavailable"
+            },
+            "saved": {
+              "reason": "source_failed",
+              "status": "unavailable"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "questions_unproved",
+            "client_binding_unproved",
+            "offline_history_unavailable",
+            "unloaded_work_state_unavailable"
+          ],
+          "errors": [
+            "runtime_peer_identity_mismatch"
+          ]
+        }
+      ],
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 92,
+          "nativeAfterRows": 92,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 92,
+            "classification": {
+              "unknown": 88,
+              "user": 2,
+              "child": 2
+            }
+          },
+          "checks": {},
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791234287000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791234466000
+            },
+            {
+              "id": "01a10dcf-e0f2-7f13-9122-0dd2730d0f11",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791233908000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791234440000
+            }
+          ],
+          "active": [],
+          "contextDifferences": [],
+          "issues": [
+            {
+              "id": "019d9c5d-cc3a-78e1-a435-9b170f45c13c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019d9f22-f28b-7630-b123-f30f9c574912",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019e74b0-8b7b-7c33-a9be-38613cad3ab6",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ebfdf-240f-7963-8b4b-329359a60cc3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ed278-d742-7490-a6ea-51199bad5fa3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f1626-bb87-7f91-8851-5f86264e140e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6838-1cb9-7240-864d-034f906a7aaa",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6a67-a897-7661-97c5-41ca255d1284",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f6c7e-cf15-7203-84fc-e92b6f3c2c64",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8a7d-f4a3-7870-991e-8c73cd8b1c43",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d3e-f49d-7921-b3f1-55b314c4e52a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-2136-7902-a5f4-6db30908f067",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-8f0e-75d3-86e9-04d4478b6729",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d45-2995-7b73-8574-ad7a00f444a1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d50-54d4-7ab2-861b-e628b2bc5ba7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-1fff-7b41-baf0-aca88535f465",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-8655-7f50-9ebd-1af0f929e6f3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8dd8-cde9-7fa3-8866-2443f58c49c9",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8de1-5839-7b61-ad09-000946629f5b",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e02-8c3d-7710-aff1-4a6684f5aaa5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e03-017b-7a52-92c2-6f61b992118d",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e0b-d4e7-7831-80c0-3180f3a17c51",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e11-8151-77f0-9292-cb79c220ae19",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e14-3446-7e23-93b1-6a5df791faa2",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1a-d395-76d2-9914-bbad38fa144c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1b-d237-7b31-8b7d-e3fa70a6f5b5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f9021-14fe-7661-9224-f3df77797d4a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f91bc-b253-71b2-8fc0-f7237146192e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f9d52-6735-7501-89b3-f66b7a5636d0",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa57c-4be6-7a02-903f-0e8ba3357b89",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa587-0b8a-7651-a77d-b838a6715822",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fa695-bb0c-75f3-a99a-73e98931da7a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019faee0-f135-7023-aaa0-8090f3bd7099",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019faf13-03b0-70d3-89f4-c109535492aa",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fafd0-8831-71a2-89e6-8a01eab48f11",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fafe3-8784-7d62-b7a8-063dfd7f47da",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb00a-2871-7a43-af02-4fbf35cf9728",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb00a-7fe9-7b82-b00f-af1825053605",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb062-42fe-78c0-ba60-d29eed85290e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb19f-78ca-7952-8a8c-a478e84c7386",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb1a0-4487-74e2-b869-7a6930c0bf98",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb55f-737c-73c3-a2e4-75c34b5d6099",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb672-98b4-7100-a780-ecf8a0ea7a57",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb67e-349c-7d42-bc30-fa09b630fa67",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb687-a43e-73a2-ac3d-40fc4392ea53",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb6bb-7f89-73a0-ad3d-38259adc8d77",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb6bc-8025-7123-848c-53d6b8cb3a64",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fc42b-ff4f-7a80-9162-93b9ca0ca2d1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe01b-9ebd-7c11-8fa4-b852adb42c19",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe097-fe69-7a42-9e9c-92626aa4e3f8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe449-c849-7470-afa0-4eec902af5a5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fe451-b403-7543-a5d9-64d7935343d1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ff705-4377-7d20-a1a0-c226e20b7676",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ffc14-8c82-73d1-b778-864d2507218f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00147-f784-7072-b2fc-2f3c944ac665",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00148-0e65-7082-99f1-f537ff04cd1f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0041e-a6fa-7b22-96f1-d4c5d449f1ab",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a00431-46ee-7390-9f15-e2e62e82156e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a010b8-cf21-7890-81d5-de39929330ce",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a01232-5b0e-7390-b084-11231a2da895",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a01690-5371-71a0-9e47-417dab28479c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a016a4-19de-7362-b4f2-b8c835660496",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a016a4-73f2-7853-b5cd-d8bd2314f835",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0184b-6d54-7010-bbf8-b1c50ab7a0c4",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a020ef-21fa-7612-b954-8ffe8fac3dd8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a02546-6737-7011-adb9-af753fc7ae04",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0500b-abb3-7ce1-95d5-03af17384279",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a058e0-2e4a-7930-8224-1b83fe830d8f",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a05a49-f9f8-7e90-b20d-779363c678b1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a05adc-3842-7e23-803c-432a21583a05",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a06e7e-f6ed-7412-b540-8fb36302aae4",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a074a4-decf-7841-8dad-217de707008d",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0997e-9651-7f33-a806-04bf3930b83b",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0ccb7-809e-7701-8584-50eb5609f2cc",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0d756-7619-78d1-9131-8646b0fc2447",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e48b-c079-7ce1-b621-f143e3c9b41c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e493-1847-7e00-aa8e-4b99dda6fe00",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e52b-c735-7df0-a2c7-b0f44fc3df80",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e94e-a9bf-7e33-9852-6b10e20b0be7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10586-9881-7463-904d-dd4af6f512d8",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10dcf-e0f2-7f13-9122-0dd2730d0f11",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 1072865,
+        "startTicks": "26754140",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "referenceOnly": true,
+        "versionEvidence": "exact_sha256_and_release_path"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    }
+  ]
+}

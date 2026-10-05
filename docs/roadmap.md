@@ -42,6 +42,14 @@ transient Claude child classification and an older Codex TUI's runtime coverage
 unresolved. These are separate producer investigations; the accepted artifact's
 bounded capabilities are unchanged.
 
+The subsequent [independent evaluation](evidence/2026-10-05-cli-native-evaluation/REPORT.md)
+reopens Observer work: both managed Codex peers now use the `0.160.1` release
+image and the selected collector returns zero Codex rows. Current daemon
+capability acceptance, discovery resilience and diagnostics lead the next
+producer checkpoint, followed by held Claude phase/child and completion-only
+clock cases. The report records context, topology and artifact-bookkeeping gaps
+separately. No adapter or selection change was made during evaluation.
+
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate

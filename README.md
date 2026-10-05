@@ -24,6 +24,14 @@ Agent Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader dependency; its
 reported silent Resume and graphical acceptance require a separate consumer pass.
 No provider configuration change or session restart is required by this update.
 
+The latest [CLI/native evaluation](docs/evidence/2026-10-05-cli-native-evaluation/REPORT.md)
+finds that both running Codex daemons now use the unaccepted `0.160.1` release
+image while installed Codex remains `0.160.0`. The selected Observer currently
+rejects their sources and returns no Codex rows. Claude persistent inventory and
+stable age/metadata checks pass, with phase and child-classification gaps still
+open. The evaluation records a separate Observer repair checkpoint before
+further frontend acceptance.
+
 The initial regular contract/client execution loop independently accepted
 `agent-observer 0.2.0a3`: the [public v2 observation/read contract](docs/public-contract-v2.md), including
 strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
