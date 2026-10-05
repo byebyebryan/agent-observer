@@ -1,10 +1,13 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a7`, independently accepted subset recorded
-in the [repair report](evidence/2026-10-04-discovery-repair/REPORT.md). The `0.2.0a7`
+Version: 2; package candidate `0.2.0a8`, independently accepted subset recorded
+in the [resilience report](evidence/2026-10-05-operational-resilience/REPORT.md). The `0.2.0a8`
 producer is selected on Snap and Starship after its independent artifact gate;
 Plus retains its schema-compatible `0.2.0a3` reader dependency. This is a semantic
 cutover from the [v1 pilot](snapshot-contract.md), with no v1 option on the CLI.
+The subsequent [evaluation](evidence/2026-10-05-cli-native-evaluation/REPORT.md)
+finds unsupported Codex `0.160.1` peers; selection does not extend the accepted
+native artifact bounds. See the [repair execution](evaluation-repair-execution.md).
 
 ## Identity, states and source decisions
 
