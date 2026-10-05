@@ -320,7 +320,9 @@ def _job_record(job_id: str, payload: object) -> _Job:
     if session_id is None:
         issues.append("job_session_id_unavailable")
     if state == "unknown":
-        issues.append("unknown_job_state")
+        issues.append(
+            "native_blocked_phase_unproved" if state_value == "blocked" else "unknown_job_state"
+        )
     if tempo == "unknown":
         issues.append("unknown_job_tempo")
     if state in {"done", "failed", "stopped"} and terminal_at is None:

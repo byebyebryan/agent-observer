@@ -32,6 +32,7 @@ BG_SETTINGS = '{"worktree":{"bgIsolation":"none"}}'
 _OBSERVATION_ONLY_ISSUES = frozenset(
     {
         "unknown_job_state",
+        "native_blocked_phase_unproved",
         "unknown_job_tempo",
         "terminal_clock_unavailable",
         "native_history_time_unavailable",

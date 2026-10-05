@@ -48,7 +48,12 @@ class FakeClient:
 
     def list_threads(self, **kwargs):
         self.calls.append("saved")
+        if kwargs.get("cursor") is not None:
+            return {"data": [], "nextCursor": None}
         return self.saved
+
+    def latest_turn(self, identifier):
+        return {"data": [], "nextCursor": None}
 
     def read_thread(self, identifier):
         self.calls.append(("read", identifier))
@@ -93,9 +98,36 @@ class SnapshotCollectionTest(unittest.TestCase):
             {row["identity"]["nativeId"] for row in result["sessions"]}, {FIRST, SECOND}
         )
         self.assertTrue(result["coverage"]["loaded"]["complete"])
-        self.assertEqual(result["coverage"]["saved"]["reason"], "history_limit")
+        self.assertTrue(result["coverage"]["saved"]["complete"])
         self.assertEqual(client.calls[:2], ["initialize", "loaded"])
         self.assertEqual(result["sourceHealth"], "current")
+
+    def test_activity_ordering_precedes_display_cap_without_dropping_live_rows(self):
+        client = FakeClient(
+            {"data": [FIRST], "nextCursor": None},
+            {"data": [native(FIRST), native(SECOND)], "nextCursor": None},
+        )
+        client.latest_turn = lambda identifier: {
+            "data": [
+                {
+                    "items": [],
+                    "itemsView": "notLoaded",
+                    "startedAt": 100,
+                    "completedAt": 200 if identifier == SECOND else 110,
+                }
+            ]
+        }
+        result = self.collect(client, history_limit=1)
+        self.assertEqual(
+            {row["identity"]["nativeId"] for row in result["sessions"]}, {FIRST, SECOND}
+        )
+        self.assertEqual(result["coverage"]["saved"]["reason"], "history_limit")
+        self.assertEqual(
+            next(row for row in result["sessions"] if row["identity"]["nativeId"] == SECOND)[
+                "activity"
+            ]["at"],
+            200_000,
+        )
 
     def test_public_snapshot_keeps_saved_and_loaded_child_observations(self):
         def child(identifier, status):

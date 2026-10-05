@@ -18,6 +18,7 @@ import unicodedata
 import uuid
 from pathlib import Path
 
+from .activity import codex_activity, ordering, unavailable
 from .codex_endpoint import (
     EndpointError,
     inspect_managed_endpoint,
@@ -114,6 +115,7 @@ def collect_codex(
             "uid": os.geteuid(),
         },
         "provider": "codex",
+        "activitySupported": True,
         "configHome": str(config_home),
         "sessions": [],
         "coverage": {
@@ -249,13 +251,14 @@ def collect_codex(
             cursors = set()
             saved_count = 0
             saved_ids = set()
+            catalog_limit = 1000
             for _ in range(64):
                 client.timeout = remaining()
                 data, following = _page(
-                    client.list_threads(cursor=cursor, limit=min(100, history_limit - saved_count))
+                    client.list_threads(cursor=cursor, limit=min(100, catalog_limit - saved_count))
                 )
-                if len(data) > history_limit - saved_count:
-                    data = data[: history_limit - saved_count]
+                if len(data) > catalog_limit - saved_count:
+                    data = data[: catalog_limit - saved_count]
                     following = following or "display_limit"
                 for payload in data:
                     row = saved_thread_metadata(payload, **scope)
@@ -274,10 +277,10 @@ def collect_codex(
                         "reason": "native_snapshot",
                     }
                     break
-                if saved_count >= history_limit:
+                if saved_count >= catalog_limit:
                     result["coverage"]["saved"] = {
                         "complete": False,
-                        "reason": "history_limit",
+                        "reason": "catalog_limit",
                     }
                     break
                 if following in cursors:
@@ -286,6 +289,24 @@ def collect_codex(
                 cursor = following
             else:
                 raise SnapshotError("inventory_page_limit")
+            # Fetch a bounded metadata-only clock before applying the display
+            # cap. Neither thread recency nor file modification substitutes for
+            # conversation completion. A clock failure cannot erase live facts.
+            for identifier, row in rows.items():
+                try:
+                    client.timeout = remaining()
+                    row["activity"] = codex_activity(client.latest_turn(identifier))
+                except (TransportError, SnapshotError) as error:
+                    row["activity"] = unavailable(str(error))
+            selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[
+                :history_limit
+            ]
+            selected_ids = {row["identity"]["nativeId"] for row in selected} | set(loaded)
+            if len(saved_ids) > history_limit:
+                result["coverage"]["saved"] = {"complete": False, "reason": "history_limit"}
+            rows = {
+                identifier: row for identifier, row in rows.items() if identifier in selected_ids
+            }
             validate_incarnation(identity)
             result["ignoredMessages"] = client.ignored_messages
             result["sourceHealth"] = "current"

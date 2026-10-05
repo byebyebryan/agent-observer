@@ -17,7 +17,9 @@ import time
 
 from .bounded_json import WireError, decode_document
 
-_READ_METHODS = frozenset({"initialize", "thread/list", "thread/loaded/list", "thread/read"})
+_READ_METHODS = frozenset(
+    {"initialize", "thread/list", "thread/loaded/list", "thread/read", "thread/turns/list"}
+)
 _GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
 
@@ -229,6 +231,14 @@ class PassiveClient:
             raise TransportError("not_initialized")
         if method == "thread/read" and params.get("includeTurns") is not False:
             raise TransportError("content_read_rejected")
+        if method == "thread/turns/list" and (
+            set(params) != {"threadId", "limit", "sortDirection", "itemsView"}
+            or params.get("itemsView") != "notLoaded"
+            or type(params.get("limit")) is not int
+            or params["limit"] != 1
+            or params.get("sortDirection") != "desc"
+        ):
+            raise TransportError("content_read_rejected")
         identifier = self.next_id
         self.next_id += 1
         self._send_frame(
@@ -283,3 +293,15 @@ class PassiveClient:
         ):
             raise TransportError("invalid_native_id")
         return self._request("thread/read", {"threadId": native_id, "includeTurns": False})
+
+    def latest_turn(self, native_id: str):
+        if (
+            not isinstance(native_id, str)
+            or not 1 <= len(native_id) <= 256
+            or any(ord(char) < 32 for char in native_id)
+        ):
+            raise TransportError("invalid_native_id")
+        return self._request(
+            "thread/turns/list",
+            {"threadId": native_id, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"},
+        )

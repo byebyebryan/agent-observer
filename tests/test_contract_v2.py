@@ -8,7 +8,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from agent_observer.collection import project_session
+from agent_observer.collection import _coverage, project_session
 from agent_observer.contract import (
     ContractError,
     canonical,
@@ -29,6 +29,16 @@ def fixture(name="snapshot"):
 
 
 class ContractV2Test(unittest.TestCase):
+    def test_failed_saved_dimension_does_not_become_partial_from_healthy_runtime(self):
+        self.assertEqual(
+            _coverage({"complete": False, "reason": "source_failed"}, "current")["status"],
+            "unavailable",
+        )
+        self.assertEqual(
+            _coverage({"complete": False, "reason": "metadata_scan"}, "partial")["status"],
+            "partial",
+        )
+
     def test_bundled_schemas_match_public_spec(self):
         root = Path(__file__).parent.parent / "agent_observer/contracts"
         for name in ("snapshot", "watch"):
