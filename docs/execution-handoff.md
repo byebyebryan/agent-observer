@@ -1,5 +1,10 @@
 # Native runtime migration handoff
 
+Historical migration record: current selection is Observer `0.2.0a7` and Plus
+`0.14.0a1`. The [current contract/client handoff](contract-clients-handoff.md)
+and [discovery repair report](evidence/2026-10-04-discovery-repair/REPORT.md)
+supersede the artifact selection below without changing the earlier proof bounds.
+
 Date: 2026-10-03. The unattended implementation/pilot is complete for the
 bounded subset in [execution status](execution-status.md). Source is
 checkpointed in local commits; candidates are installed, with no published release.

@@ -79,7 +79,8 @@ continues to govern producer/consumer separation. The prior bounded
 this batch reopens chronology, Claude ordinary-state resilience and write-entry
 acceptance without promoting earlier isolated cases into general coverage.
 
-R0 is in progress. The first R2 source checkpoint preserves current per-row
+The following checkpoint notes record progression before final closure. The
+first R2 source checkpoint preserves current per-row
 facts through incomplete sibling jobs with aggregate `partial` health. Resume
 distinguishes observation-only metadata issues from action identity failures;
 native attach still requires a verified retained exact job link. 160 synthetic
@@ -127,3 +128,27 @@ isolation before provider entry. It never depends on Plus. Explicit
 uses installed public CLIs under real PTYs inside that fixture, discards terminal
 output and emits only bounded acceptance metadata. These are operator-invoked
 native actions, not part of passive collection or the ordinary source check.
+
+## Final closure
+
+R0–R5 are complete for the independently accepted bounded subset in the
+[repair report](evidence/2026-10-04-discovery-repair/REPORT.md). Frozen source
+`0526106` produces Observer `0.2.0a7`, now selected on Snap and Starship by managed
+checkpoint `bb99484`. Public snapshot/watch v2 and write v1 schemas exactly match
+the unchanged Plus `0.14.0a1` reader dependency (`0.2.0a3`). Producer and reader
+artifacts are checked independently; no frontend implementation was edited.
+
+172 source tests, installed byte/schema checks, isolated native first-party CLI
+entry/recovery/partial-feed cases and selected routed headless gates pass. Owned
+native namespaces are stopped and borrowed authentication/private history removed.
+Ordinary provider settings/authentication and unrelated Starship managed drift
+are preserved. Snap's native preferences hash drift is recorded without claiming
+an exact baseline comparison or restoring a concurrently used preferences file.
+
+Missing older Codex turn clocks and unpersisted copied Claude histories remain
+unknown. Native Claude `state=blocked` semantics, parked inference, general input,
+offline Codex Resume and graphical acceptance retain separate capability gates.
+The first-party CLI passes real TTY entry; the reported silent Plus Resume is
+unlocalized and its wrapper identity/correlation defect requires the next separate
+consumer checkpoint. Networking/hooks and public publication remain outside this
+batch. No provider policy change or session restart is needed for this selection.

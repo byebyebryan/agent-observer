@@ -1,0 +1,102 @@
+{
+  "status": "accepted_scoped_producer_delivery",
+  "managedSourceCommit": "bb99484",
+  "observerVersion": "0.2.0a7",
+  "observerPackageSource": "05261066478abd2c7947a5486cfbb8c77c76ded7",
+  "observerWheelSha256": "1d42506cf2b5cc7c75a3d8df4ee3279493b132d7b87cb8cd79b1f5b360e4ebc2",
+  "plusVersion": "0.14.0a1",
+  "plusReaderDependency": "0.2.0a3",
+  "frontendImplementationEdits": 0,
+  "providerActionsDuringSelection": 0,
+  "hosts": {
+    "snap": {
+      "preservation": {
+        "hostScope": "snap",
+        "ordinaryFilesUnchanged": {
+          ".codex/config.toml": true,
+          ".codex/auth.json": true,
+          ".claude/settings.json": true,
+          ".claude/.credentials.json": true,
+          ".claude.json": false
+        },
+        "allOrdinaryFilesUnchanged": false,
+        "borrowedAuthAndHistoryRemoved": true,
+        "ownedNamespaceStopped": true,
+        "observerEntry": "/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c/bin/agent-observer",
+        "plusEntry": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+        "allProviderSettingsAndAuthUnchanged": true,
+        "preferenceDrift": {
+          "baselineBackupFound": false,
+          "preferenceHashChanged": true,
+          "comparison": "latest_provider_backup_not_exact_baseline",
+          "changedTopLevelKeys": [
+            "pluginUsage",
+            "projects"
+          ],
+          "privateFixtureProjectInOrdinaryPreferences": false,
+          "projectFieldsChangedAgainstProviderBackup": [
+            "lastAPIDuration",
+            "lastAPIDurationWithoutRetries",
+            "lastCost",
+            "lastDuration",
+            "lastFpsAverage",
+            "lastFpsLow1Pct",
+            "lastLinesAdded",
+            "lastLinesRemoved",
+            "lastModelUsage",
+            "lastSessionId",
+            "lastSessionMetrics",
+            "lastStartTime",
+            "lastToolDuration",
+            "lastTotalCacheCreationInputTokens",
+            "lastTotalCacheReadInputTokens",
+            "lastTotalInputTokens",
+            "lastTotalOutputTokens"
+          ],
+          "ordinaryPreferencesRestored": false
+        }
+      },
+      "selectedLiveGate": {
+        "status": "accepted",
+        "cacheVersion": 7,
+        "sessions": 162,
+        "providerStageWarnings": 2,
+        "headlessCallbacks": true,
+        "actualConfiguredRoutes": true,
+        "isolatedCacheAndUiState": true,
+        "graphicalAcceptance": false,
+        "genericTmuxLifecycleRepeated": false
+      },
+      "rollback": "/home/bryan/.local/share/agent-observer/rollback-20261004-repair-snap"
+    },
+    "starship": {
+      "preservation": {
+        "hostScope": "starship",
+        "unrelatedManagedDriftPreserved": true,
+        "checkedDriftPaths": 15,
+        "borrowedAuthAndHistoryRemoved": true,
+        "ownedNamespaceStopped": true,
+        "observerEntry": "/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c/bin/agent-observer",
+        "plusEntry": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+        "ordinaryFilesUnchanged": {
+          ".codex/config.toml": true,
+          ".codex/auth.json": true,
+          ".claude/settings.json": true
+        },
+        "allProviderSettingsAndAuthUnchanged": true
+      },
+      "selectedLiveGate": {
+        "status": "accepted",
+        "cacheVersion": 7,
+        "sessions": 162,
+        "providerStageWarnings": 2,
+        "headlessCallbacks": true,
+        "actualConfiguredRoutes": true,
+        "isolatedCacheAndUiState": true,
+        "graphicalAcceptance": false,
+        "genericTmuxLifecycleRepeated": false
+      },
+      "rollback": "/home/bryan/.local/share/agent-observer/rollback-20261004-repair-starship"
+    }
+  }
+}
