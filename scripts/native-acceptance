@@ -3,6 +3,7 @@
 
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 import pty
@@ -18,6 +19,7 @@ from agent_observer import codex_transport
 from agent_observer.codex_endpoint import inspect_managed_endpoint, validate_incarnation
 from agent_observer.codex_snapshot import BINARY_SHA256, RELEASE, VERSION
 from agent_observer.codex_transport import PassiveClient
+from agent_observer.native_artifacts import CLAUDE_PREVIOUS, inspect_process
 
 
 class Proof:
@@ -27,6 +29,7 @@ class Proof:
         self.base = self.root / ("native-" + self.host)
         self.provider = provider
         self.clients = []
+        self.output_cues = {}
         self.ready = json.loads((self.root / "ready.json").read_text())
         assert os.getuid() == 0 and all(self.ready.values())
         assert Path(os.environ["HOME"]) == self.base / "home"
@@ -99,6 +102,11 @@ class Proof:
                     break
                 if not data:
                     break
+                cues = self.output_cues.setdefault(client[0], set())
+                lowered = data.lower()
+                for cue in (b"already attached", b"connection refused", b"handoff_context_changed", b"resume_evidence_unavailable", b"unsupported_resume_route", b"native_launch_uncertain", b"do you want to proceed?", b"allow this command?", b"do you want to allow"):
+                    if cue in lowered:
+                        cues.add(cue.decode())
                 if b"\x1b[6n" in data:
                     os.write(fd, b"\x1b[1;1R")
                 if b"\x1b[c" in data:
@@ -115,13 +123,21 @@ class Proof:
         self.clients.remove(client)
 
     def assert_native_client(self, client):
-        state = Path(f"/proc/{client[0]}/stat").read_text().rsplit(")", 1)[1].split()[0]
         expected = (
             Path("/opt/openai-codex/bin/codex")
             if self.provider == "codex"
             else Path("/opt/claude-code/bin/claude")
         )
-        assert state != "Z" and Path(f"/proc/{client[0]}/exe").resolve() == expected.resolve()
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            state = Path(f"/proc/{client[0]}/stat").read_text().rsplit(")", 1)[1].split()[0]
+            if state == "Z":
+                raise RuntimeError("native_client_exited:" + ",".join(sorted(self.output_cues.get(client[0], set()))))
+            if Path(f"/proc/{client[0]}/exe").resolve() == expected.resolve():
+                self.pause(client, 2)
+                return
+            self.pause(client, 0.2)
+        raise RuntimeError("native_client_not_entered")
 
     def codex_metadata(self, ref, *, rename=False, touch=False):
         owner = inspect_managed_endpoint(
@@ -202,7 +218,7 @@ class Proof:
         assert self.row(ref)["activity"]["at"] == at
         self.assert_native_client(resumed)
         repeated = self.spawn(self.handoff(ref))
-        self.pause(repeated, 3)
+        self.pause(repeated, 6)
         self.assert_native_client(repeated)
         assert self.row(ref)["activity"]["at"] == at
         self.stop(repeated)
@@ -345,15 +361,190 @@ class Proof:
             "terminalOutputPersisted": False,
         }
 
+    def claude_mixed(self):
+        assert self.provider == "claude"
+        old = self.root / "claude-2.1.287"
+        assert hashlib.sha256(old.read_bytes()).hexdigest() == CLAUDE_PREVIOUS.sha256
+        # An old launcher connected to a current daemon creates a current worker.
+        # Model the actual upgrade: start an old runtime while its image is the
+        # installed path in this private mount namespace, then reveal the new
+        # installed image. Ordinary package bytes are never written.
+        registries = list((self.base / "claude/sessions").glob("*.json"))
+        if registries:
+            assert len(registries) == 1
+            registry = json.loads(registries[0].read_text())
+            assert inspect_process(registry["pid"], "claude").artifact == CLAUDE_PREVIOUS
+            ref = next(r["identity"] for r in self.snapshot()["sessions"]
+                       if r["identity"]["nativeId"] == registry["sessionId"])
+        else:
+            subprocess.run(["mount", "--bind", str(old), "/opt/claude-code/bin/claude"], check=True)
+            try:
+                created = self.handoff()
+                ref = created["resultingIdentity"]
+                registry = next(
+                    json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")
+                    if json.loads(p.read_text()).get("sessionId") == ref["nativeId"]
+                )
+                assert inspect_process(registry["pid"], "claude").artifact == CLAUDE_PREVIOUS
+            finally:
+                # Detach this private bind while old workers retain their open image.
+                subprocess.run(["umount", "-l", "/opt/claude-code/bin/claude"], check=True)
+        assert not Path(f"/proc/{registry['pid']}/exe").samefile("/opt/claude-code/bin/claude")
+        viewer = self.spawn(self.handoff(ref))
+        self.pause(viewer, 10)
+        self.assert_native_client(viewer)
+        os.write(viewer[1], b"Reply only with OK.\r")
+        working_seen = False
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            self.pause(viewer, 0.2)
+            row = self.row(ref)
+            working_seen |= row["phase"]["value"] == "working"
+            if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:
+                break
+        else:
+            raise RuntimeError("mixed_turn_pending")
+        self.stop(viewer)
+        return {
+            "status": "accepted", "hostScope": self.host, "provider": "claude",
+            "workerVersion": "2.1.287", "viewerVersion": "2.1.289",
+            "differentVerifiedImages": True, "oldWorkerObservedRunning": True,
+            "currentViewerAttachesOldWorker": True, "sameNativeIdentity": True,
+            "workingObserved": working_seen, "completedTurnWaiting": True,
+            "terminalOutputPersisted": False,
+        }
+
+    def claude_approval(self):
+        assert self.provider == "claude"
+        settings = self.base / "claude/settings.json"
+        original = settings.read_bytes()
+        private = json.loads(original)
+        private["permissions"] = {"ask": ["Bash", "Write"]}
+        settings.write_text(json.dumps(private))
+        created = self.handoff()
+        ref = created["resultingIdentity"]
+        viewer = self.spawn(created)
+        self.pause(viewer, 10)
+        self.assert_native_client(viewer)
+        os.write(viewer[1], b"\x1b[200~Use Bash to write OK to approval-proof.txt.\x1b[201~\r")
+        deadline = time.monotonic() + 60
+        working_seen = False
+        while time.monotonic() < deadline:
+            self.pause(viewer, 0.2)
+            row = self.row(ref)
+            working_seen |= row["phase"]["value"] == "working"
+            registry = next(
+                (json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")
+                 if json.loads(p.read_text()).get("sessionId") == ref["nativeId"]), None,
+            )
+            job = row["nativeIds"]["jobId"]
+            state = json.loads((self.base / "claude/jobs" / job / "state.json").read_text())
+            cues = self.output_cues.get(viewer[0], set())
+            permission_cue = bool(cues & {"do you want to proceed?", "allow this command?", "do you want to allow"})
+            if registry and (
+                registry.get("waitingFor") == "permission prompt" or permission_cue
+            ) and row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval":
+                break
+        else:
+            raise RuntimeError("native_approval_pending")
+        assert not (self.base / "workspace/approval-proof.txt").exists()
+        native_state, native_tempo = state.get("state"), state.get("tempo")
+        assert native_state in {"working", "blocked"} and native_tempo in {"active", "blocked"}
+        assert row["runtime"]["value"] == "running"
+        assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval"
+        self.pause(viewer, 0.5)
+        repeated = self.row(ref)
+        assert repeated["activity"]["at"] == row["activity"]["at"]
+        self.stop(viewer)
+        settings.write_bytes(original)
+        return {
+            "status": "accepted", "hostScope": self.host, "provider": "claude",
+            "version": "2.1.289", "workingObserved": working_seen,
+            "nativePermissionPromptObserved": True,
+            "nativeJobState": native_state, "nativeJobTempo": native_tempo,
+            "observedPhase": row["phase"]["value"],
+            "heldApprovalPreservesAge": True, "toolNotExecuted": True,
+            "approvalAutomaticallyAnswered": False, "terminalOutputPersisted": False,
+        }
+
+    def claude_companion(self):
+        assert self.provider == "claude"
+        source = next(r for r in self.snapshot()["sessions"] if r["history"] and r["activity"]["at"])
+        ref, at = source["identity"], source["activity"]["at"]
+        companion_dir = self.base / "claude/projects/controlled-worktree-companion"
+        companion_dir.mkdir(mode=0o700)
+        companion = companion_dir / (ref["nativeId"] + ".jsonl")
+        companion.write_text(json.dumps({
+            "type": "custom-title", "sessionId": ref["nativeId"], "customTitle": "Companion only",
+        }) + "\n")
+        good = self.row(ref)
+        assert good["title"] == source["title"] and good["activity"]["at"] == at
+        assert len([r for r in self.snapshot()["sessions"] if r["identity"] == ref]) == 1
+        companion.write_text(json.dumps({
+            "type": "user", "sessionId": ref["nativeId"], "timestamp": "2026-10-01T00:00:00Z",
+        }) + "\n")
+        conflict = self.snapshot()
+        assert not any(r["identity"] == ref and r["history"] for r in conflict["sessions"])
+        assert "history_ambiguous" in conflict["sources"][0]["errors"]
+        companion.unlink()
+        companion_dir.rmdir()
+        restored = self.row(ref)
+        assert restored["activity"]["at"] == at
+        return {
+            "status": "accepted", "hostScope": self.host, "provider": "claude",
+            "fixture": "native_transcript_with_controlled_metadata_companion",
+            "singleConversationRetained": True, "companionRecencyIgnored": True,
+            "titleAndNativeActivityPreserved": True, "conflictingConversationsExplicit": True,
+            "restorationPreservesAge": True, "terminalOutputPersisted": False,
+        }
+
+    def rejection(self):
+        assert self.provider == "codex"
+        result = self.handoff()
+        config = self.base / "codex/config.toml"
+        original = config.read_bytes()
+        try:
+            config.write_bytes(original + b"\n# Private guard rejection proof\n")
+            viewer = self.spawn(result)
+            output = bytearray()
+            deadline = time.monotonic() + 15
+            status = None
+            while time.monotonic() < deadline:
+                if select.select([viewer[1]], [], [], 0.1)[0]:
+                    try:
+                        output.extend(os.read(viewer[1], 8192))
+                    except OSError:
+                        pass
+                assert len(output) < 16384
+                pid, value = os.waitpid(viewer[0], os.WNOHANG)
+                if pid:
+                    status = os.waitstatus_to_exitcode(value)
+                    self.clients.remove(viewer)
+                    os.close(viewer[1])
+                    break
+            assert status == 2
+            assert json.loads(output.decode().strip()) == {
+                "schemaVersion": 1, "error": "handoff_context_changed",
+            }
+        finally:
+            config.write_bytes(original)
+        return {
+            "status": "accepted", "hostScope": self.host, "provider": "codex",
+            "realPTY": True, "rejectionVisible": True, "reason": "handoff_context_changed",
+            "nativeProviderNotExecuted": True, "terminalOutputPersisted": False,
+        }
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--provider", choices=("codex", "claude"), required=True)
-    parser.add_argument("--scenario", choices=("entry", "recovery", "partial"), default="entry")
+    parser.add_argument("--scenario", choices=("entry", "recovery", "partial", "mixed", "approval", "companion", "rejection"), default="entry")
     arguments = parser.parse_args()
     proof = Proof(arguments.provider)
     try:
-        result = {"entry": proof.run, "recovery": proof.recovery, "partial": proof.claude_partial}[
+        result = {"entry": proof.run, "recovery": proof.recovery, "partial": proof.claude_partial,
+                  "mixed": proof.claude_mixed, "approval": proof.claude_approval,
+                  "companion": proof.claude_companion, "rejection": proof.rejection}[
             arguments.scenario
         ]()
     finally:

@@ -98,3 +98,12 @@ parser on the single UUID-bound conversation file after companion classification
 conflicting transcripts remain ambiguous. This source evidence does not accept
 New/Resume or select the candidate. Claude `2.1.289` action and mixed-version
 support still require the isolated S2/S3 gate before artifact delivery.
+
+S2–S4 independently accept `0.2.0a8`, source `ece20e2`, wheel `8bbbff34…`,
+through exact installed-byte/version/schema checks and eleven isolated native
+cases on Snap/Starship. The [producer report](evidence/2026-10-05-operational-resilience/REPORT.md)
+records current-version entry/approval/Resume, mixed-version turn completion,
+companion/conflict classification and runtime recovery. Existing route guards
+remain intact; no offline Codex reader or generic blocked-state mapping is added.
+All public schemas match the frozen consumer reader. S5 scoped selection and
+cleanup remain pending.
