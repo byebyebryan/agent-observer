@@ -9,6 +9,9 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(codex_activity({"data": [turn]})["at"], 120_000)
         self.assertEqual(codex_activity({"data": [{**turn, "completedAt": None}]})["at"], 100_000)
         self.assertIsNone(codex_activity({"data": []})["at"])
+        completion = {"data": [{**turn, "startedAt": None}]}
+        self.assertEqual(codex_activity(completion, completion_only=True)["at"], 120_000)
+        self.assertIsNone(codex_activity(completion)["at"])
 
     def test_content_and_invalid_clocks_fail_without_fallback(self):
         turn = {"items": [], "itemsView": "notLoaded", "startedAt": 100, "completedAt": 120}
@@ -17,7 +20,7 @@ class ActivityTest(unittest.TestCase):
             {"itemsView": "full"},
             {"startedAt": True},
             {"completedAt": 99},
-            {"startedAt": None},
+            {"startedAt": None, "completedAt": None},
             {"completedAt": 4_000_000_001},
         ):
             self.assertIsNone(codex_activity({"data": [{**turn, **changes}]})["at"])

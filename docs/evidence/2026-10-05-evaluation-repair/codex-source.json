@@ -1,0 +1,170 @@
+{
+  "sourceWorkSubset": {
+    "hostScope": "snap",
+    "runtimeVersion": "0.160.1",
+    "runtimeSha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "ordinarySessionActions": 0,
+    "terminalOutputPersisted": false,
+    "emptyNew": {
+      "id": "01a10e11-4dd3-78e3-97a8-8fe13416da99",
+      "sessionId": "01a10e11-4dd3-78e3-97a8-8fe13416da99",
+      "state": "idle",
+      "threadSource": "user"
+    },
+    "workingCompletion": {
+      "activeSamples": 50,
+      "nativeToolOverlapSamples": 42,
+      "finalState": "idle",
+      "turnId": "01a10e11-5b71-7fc1-8261-c1a3b80e176a",
+      "startedAt": 1791237380,
+      "completedAt": 1791237405,
+      "itemsExcluded": true
+    },
+    "renamePreservesAge": true,
+    "status": "subset_accepted",
+    "subset": "new_idle_working_completion_clock_and_rename"
+  },
+  "empty": {
+    "host": "snap",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "runtimeArtifact": {
+      "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "provider": "codex",
+      "version": "0.160.1",
+      "referenceOnly": true,
+      "versionEvidence": "exact_sha256_and_release_path"
+    },
+    "emptySaved": 0,
+    "emptyLoaded": 0,
+    "pid": 100,
+    "startTicks": "27700316",
+    "nativePayloadPersisted": false
+  },
+  "approval": {
+    "hostScope": "snap",
+    "scenario": "approval",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "runtimeVersion": "0.160.1",
+    "terminalOutputPersisted": false,
+    "status": "accepted",
+    "id": "01a10e16-3374-7a32-9138-4979d856cac2",
+    "heldSamples": 3,
+    "flags": [
+      "waitingOnApproval"
+    ],
+    "writeAbsent": true,
+    "stateSampleCounts": {
+      "('active', [])": 5,
+      "('active', ['waitingOnApproval'])": 3
+    }
+  },
+  "nativeDirectResume": {
+    "hostScope": "snap",
+    "scenario": "entry-resume",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "cliVersion": "0.160.0",
+    "daemonVersion": "0.160.1",
+    "terminalOutputPersisted": false,
+    "status": "accepted",
+    "threadId": "01a10e11-4dd3-78e3-97a8-8fe13416da99",
+    "sessionId": "01a10e11-4dd3-78e3-97a8-8fe13416da99",
+    "completedAt": 1791237405,
+    "resumeSameIdentity": true,
+    "resumePreservesActivity": true,
+    "noCopiedSavedIdentity": true
+  },
+  "storePassivity": {
+    "hostScope": "snap",
+    "scenario": "metadata-store-passivity",
+    "runtimeVersion": "0.160.1",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "samples": 5,
+    "checks": {
+      "identity": 5,
+      "name": 5,
+      "cwd": 5,
+      "creation": 5,
+      "clock": 5
+    },
+    "status": "accepted",
+    "sqlReadsMetadataOnly": true,
+    "blankPlaceholdersExcluded": true,
+    "readReconnectPreservesSavedLoadedAndClocks": true
+  },
+  "ordinaryStore": {
+    "hostScope": "snap",
+    "level": "ordinary_native_vs_source",
+    "savedRows": 48,
+    "matchedRows": 48,
+    "comparisonChecks": {
+      "identity": 48,
+      "cwd": 48,
+      "age": 48
+    },
+    "completionOnlyNativeClocks": 13,
+    "payloadsPersisted": false,
+    "explicitTitleChecks": 41,
+    "titlesWithoutIndependentExplicitValue": 7
+  },
+  "oldClockLimit": {
+    "hostScope": "snap",
+    "runtimeVersion": "0.160.0",
+    "scenario": "historical-completion-only",
+    "threadId": "019f8b71-67f9-7ce1-a13e-a468c04c914d",
+    "originalSessionActions": 0,
+    "isolatedBorrowedHistory": true,
+    "borrowedRolloutBytes": 130216,
+    "status": "unproved",
+    "reason": "no_native_turn_metadata_after_isolated_resume"
+  },
+  "starshipOrdinaryStore": {
+    "hostScope": "starship",
+    "level": "ordinary_independent_native",
+    "runtime": {
+      "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "provider": "codex",
+      "version": "0.160.1",
+      "referenceOnly": true,
+      "versionEvidence": "exact_sha256_and_release_path"
+    },
+    "migrationFingerprints": {
+      "state_5.sqlite": "f1a982077c8c20f6afe736e57896ffbcec1591d1bf52a01a490b0ff393403fa6",
+      "thread_history_1.sqlite": "0e1a801e2a5e36f7f289db4959cc6ffc4a912e38a6ded5070fd2113e541e1664"
+    },
+    "savedRows": 90,
+    "loadedRows": 6,
+    "checks": {
+      "identity": 90,
+      "title": 68,
+      "cwd": 83,
+      "creation": 90,
+      "clock": 90
+    },
+    "explicitTitleCount": 68,
+    "completionOnlyClocks": 5,
+    "payloadsPersisted": false,
+    "catalogCwdDifferences": 7,
+    "allSevenSessionHeadCwdMatchNative": true
+  }
+}

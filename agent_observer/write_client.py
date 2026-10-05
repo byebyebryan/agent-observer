@@ -107,6 +107,11 @@ def _target(request):
         or source["sourceHealth"] not in {"current", "partial"}
     ):
         raise ContractError("resume_evidence_unavailable")
+    if request["provider"] == "codex":
+        if registered("codex", source["runtime"].get("binarySha256"), capability="managed_entry") is None:
+            raise ContractError("runtime_entry_not_accepted")
+        if source["coverage"].get("runtime", {}).get("status") == "unavailable":
+            raise ContractError("resume_evidence_unavailable")
     expected = store_namespace(
         request["provider"], request["configHome"], request["configHomeKind"], os.geteuid()
     )
@@ -135,7 +140,7 @@ def prepare(request):
         raise ContractError("unsupported_config_selector")
     executable, accepted_hash = ARTIFACTS[provider]
     binary_hash, binary = _digest(Path(executable), 512 * 1024 * 1024)
-    if binary_hash != accepted_hash and registered(provider, binary_hash) is None:
+    if binary_hash != accepted_hash and registered(provider, binary_hash, capability="entry") is None:
         raise ContractError("runtime_artifact_not_accepted")
     settings = Path(request["configHome"]) / (
         "config.toml" if provider == "codex" else "settings.json"

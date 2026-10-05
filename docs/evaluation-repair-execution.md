@@ -38,7 +38,14 @@ physical suspend or release publication is part of this loop.
   identify a8 and its unsupported current-daemon limit. No rebuilt bytes or
   selected link change. Snap preflight reconfirms CLI `0.160.0`, daemon images
   `0.160.0`/`0.160.1`, and Claude `2.1.289`; native/Starship preflight continues.
-- R1–R4 pending; no current `0.160.1` capability is accepted by this plan alone.
+- R1 source/native checkpoint: exact `0.160.1` read/work/approval/activity and
+  `0.160.0` CLI direct Resume are proved on Snap; ordinary saved-store identity/
+  clock evidence covers both hosts. Current source restores Codex discovery,
+  separates image rejection from ownership errors, and retains independent
+  saved metadata through live-source failure. Completion-only clocks remain
+  gated per artifact/source. See the [report](evidence/2026-10-05-evaluation-repair/REPORT.md).
+- R2–R4 pending. Selected a8 still rejects current Codex; no source checkpoint
+  by itself selects a package or accepts Starship actions/consumer behavior.
 
 Record native evidence as bounded identity/state/time/count/version/reason
 metadata only. Never retain authentication, prompts/responses, tool output,

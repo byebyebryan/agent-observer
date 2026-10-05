@@ -1,8 +1,9 @@
 """Executable, provisional host-local Codex snapshot study.
 
 No provider is invoked or started. The output reports source facts and pending
-semantic coverage explicitly; it is not the stable consumer API or an accepted
-ordinary-runtime adapter. Native work-state proof gates remain enforced below.
+semantic coverage explicitly; public consumers use the separate v2 projection.
+Exact artifact/capability gates and independently proved saved-store reads remain
+enforced below.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import json
 import os
 import re
 import socket
+import sqlite3
 import time
 import unicodedata
 import uuid
@@ -25,8 +27,9 @@ from .codex_endpoint import (
     validate_incarnation,
 )
 from .codex_metadata import MetadataError, live_thread_metadata, saved_thread_metadata
+from .codex_saved import collect_saved
 from .codex_transport import PassiveClient, TransportError
-from .native_artifacts import CODEX
+from .native_artifacts import CODEX, registered
 
 VERSION = CODEX.version
 RELEASE = VERSION + "-x86_64-unknown-linux-musl"
@@ -116,19 +119,17 @@ def collect_codex(
             "uid": os.geteuid(),
         },
         "provider": "codex",
-        "activitySupported": True,
+        "activitySupported": False,
         "configHome": str(config_home),
         "sessions": [],
         "coverage": {
             "saved": {"complete": False, "reason": "not_observed"},
             "loaded": {"complete": False, "reason": "not_observed"},
             "work": {
-                "supported": WORK_STATE_ACCEPTED,
-                "reason": "native_proof"
-                if WORK_STATE_ACCEPTED
-                else "native_transition_proof_pending",
-                "supportedValues": sorted(ACCEPTED_WORK_VALUES) if WORK_STATE_ACCEPTED else [],
-                "supportedWaitFlags": sorted(ACCEPTED_WAIT_FLAGS) if WORK_STATE_ACCEPTED else [],
+                "supported": False,
+                "reason": "not_observed",
+                "supportedValues": [],
+                "supportedWaitFlags": [],
                 "pendingValues": ["interrupted", "error"],
                 "pendingWaitFlags": ["waitingOnUserInput"],
             },
@@ -153,30 +154,41 @@ def collect_codex(
             raise SnapshotError("collection_timeout")
         return min(5.0, value)
 
-    try:
-        identity = inspect_managed_endpoint(
-            config_home,
-            release=RELEASE,
-            binary_sha256=BINARY_SHA256,
-            version=VERSION,
-            timeout=min(3.0, remaining()),
-        )
+    def runtime_info(identity):
         namespace, boot_id = _namespace(config_home, identity.pid)
         result["namespace"] = namespace
         result["runtime"] = {
-            "version": VERSION,
-            "versionEvidence": "verified_executable_sha256",
-            "binarySha256": BINARY_SHA256,
+            "version": identity.version,
+            "versionEvidence": "verified_executable_sha256"
+            if registered("codex", identity.binary_sha256) else "unaccepted_release_path_and_sha256",
+            "binarySha256": identity.binary_sha256,
             "pid": identity.pid,
             "startTicks": identity.start_ticks,
             "bootId": boot_id,
             "topology": "native_managed_endpoint",
             "endpoint": identity.endpoint,
         }
+
+    try:
+        identity = inspect_managed_endpoint(
+            config_home,
+            timeout=min(3.0, remaining()),
+        )
+        runtime_info(identity)
+        profile = registered("codex", identity.binary_sha256)
+        work_supported = WORK_STATE_ACCEPTED and profile is not None and "managed_work" in profile.capabilities
+        wait_flags = ACCEPTED_WAIT_FLAGS if profile is not None and "managed_approval" in profile.capabilities else frozenset()
+        result["activitySupported"] = profile is not None and "managed_activity" in profile.capabilities
+        result["coverage"]["work"].update(
+            supported=work_supported,
+            reason="native_proof" if work_supported else "native_transition_proof_pending",
+            supportedValues=sorted(ACCEPTED_WORK_VALUES) if work_supported else [],
+            supportedWaitFlags=sorted(wait_flags),
+        )
         scope = {
             "host_scope": host_scope,
-            "namespace": namespace,
-            "runtime_version": VERSION,
+            "namespace": result["namespace"],
+            "runtime_version": identity.version,
         }
         with PassiveClient.connect(
             identity.endpoint,
@@ -231,11 +243,11 @@ def collect_codex(
                 row = live_thread_metadata(response["thread"], **scope, observed_at=_clock())
                 row["presenceKind"] = "server_thread_loaded"
                 if (
-                    not WORK_STATE_ACCEPTED
+                    not work_supported
                     or row["work"]["value"] not in ACCEPTED_WORK_VALUES
                     or (
                         row["work"]["value"] == "needs_input"
-                        and not set(row["nativeState"]["activeFlags"]).issubset(ACCEPTED_WAIT_FLAGS)
+                        and not set(row["nativeState"]["activeFlags"]).issubset(wait_flags)
                     )
                 ):
                     row["work"] = {
@@ -296,7 +308,10 @@ def collect_codex(
             for identifier, row in rows.items():
                 try:
                     client.timeout = remaining()
-                    row["activity"] = codex_activity(client.latest_turn(identifier))
+                    row["activity"] = codex_activity(
+                        client.latest_turn(identifier),
+                        completion_only=profile is not None and "completion_only_activity" in profile.capabilities,
+                    ) if result["activitySupported"] else unavailable("activity_source_unproved", "unsupported")
                 except (TransportError, SnapshotError) as error:
                     row["activity"] = unavailable(str(error))
             selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[
@@ -312,6 +327,11 @@ def collect_codex(
             result["ignoredMessages"] = client.ignored_messages
             result["sourceHealth"] = "current"
     except (EndpointError, TransportError, MetadataError, SnapshotError) as error:
+        if isinstance(error, EndpointError) and error.identity is not None:
+            try:
+                runtime_info(error.identity)
+            except SnapshotError:
+                pass
         result["errors"].append({"code": str(error)})
         # History is an independent dimension. A malformed/capped/failed
         # history read cannot erase successfully read live facts while the
@@ -341,6 +361,32 @@ def collect_codex(
             "partial" if preserve_runtime else "stale" if rows else "unavailable"
         )
         result["coverage"]["saved"] = {"complete": False, "reason": "source_failed"}
+    if result["coverage"]["saved"].get("reason") == "source_failed":
+        # This is the current metadata store, not a spawned legacy backend.
+        # Its exact migration/schema/identity proof is independent of the peer.
+        try:
+            namespace = result.setdefault("namespace", "sha256:" + hashlib.sha256(
+                (str(config_home) + "\0saved_metadata\0" + str(os.geteuid())).encode()
+            ).hexdigest())
+            saved = collect_saved(config_home, host_scope=host_scope, namespace=namespace,
+                                  history_limit=history_limit)
+            for row in saved["sessions"]:
+                identifier = row["identity"]["nativeId"]
+                existing = rows.get(identifier)
+                if existing and existing["nativeIds"] != row["nativeIds"]:
+                    existing["metadataIssues"].append("saved_identity_conflict")
+                    continue
+                if existing:
+                    existing["activity"] = row["activity"]
+                else:
+                    rows[identifier] = row
+            result["coverage"]["saved"] = saved["coverage"]
+            result["activitySupported"] = saved["activitySupported"]
+            result["errors"].extend({"code": issue} for issue in saved["issues"])
+            if rows:
+                result["sourceHealth"] = "partial"
+        except (ValueError, OSError, sqlite3.Error):
+            result["errors"].append({"code": "saved_metadata_unavailable"})
     result["sessions"] = list(rows.values())
     result["collectedAt"] = _clock()
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)

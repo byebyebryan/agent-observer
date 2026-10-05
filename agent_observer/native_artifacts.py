@@ -20,12 +20,22 @@ class Artifact:
     version: str
     sha256: str
     path: str
+    capabilities: frozenset[str] = frozenset({"entry"})
 
 
 CODEX = Artifact(
     "codex", "0.160.0",
     "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
     "/opt/openai-codex/bin/codex",
+    frozenset({"entry", "managed_entry", "managed_read", "managed_work", "managed_approval", "managed_activity"}),
+)
+CODEX_DAEMON = Artifact(
+    "codex", "0.160.1",
+    "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+    "packages/app-server-daemon/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex",
+    # Independent isolated native source and 0.160.0-client/0.160.1-peer proof.
+    # This daemon image is not accepted as a new CLI entry executable.
+    frozenset({"managed_entry", "managed_read", "managed_work", "managed_approval", "managed_activity", "completion_only_activity"}),
 )
 CLAUDE_PREVIOUS = Artifact(
     "claude", "2.1.287",
@@ -37,15 +47,17 @@ CLAUDE = Artifact(
     "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
     "/opt/claude-code/bin/claude",
 )
-ARTIFACTS = (CODEX, CLAUDE_PREVIOUS, CLAUDE)
+ARTIFACTS = (CODEX, CODEX_DAEMON, CLAUDE_PREVIOUS, CLAUDE)
 
 
-def registered(provider, digest):
-    return next((a for a in ARTIFACTS if a.provider == provider and a.sha256 == digest), None)
+def registered(provider, digest, *, capability=None):
+    return next((a for a in ARTIFACTS if a.provider == provider and a.sha256 == digest
+                 and (capability is None or capability in a.capabilities)), None)
 
 
-def supported_versions(provider):
-    return tuple(a.version for a in ARTIFACTS if a.provider == provider)
+def supported_versions(provider, *, capability=None):
+    return tuple(dict.fromkeys(a.version for a in ARTIFACTS if a.provider == provider
+                               and (capability is None or capability in a.capabilities)))
 
 
 @dataclass(frozen=True)

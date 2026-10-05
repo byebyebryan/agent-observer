@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from agent_observer.codex_endpoint import EndpointError, RuntimeIdentity
 from agent_observer.codex_snapshot import collect_codex
+from agent_observer.native_artifacts import CODEX
 
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
@@ -72,7 +73,7 @@ class SnapshotCollectionTest(unittest.TestCase):
             1,
             2,
             "0.160.0",
-            "0" * 64,
+            CODEX.sha256,
             3,
             4,
             5,
@@ -229,7 +230,7 @@ class SnapshotCollectionTest(unittest.TestCase):
                 {"data": [], "nextCursor": None},
             )
         )
-        self.assertEqual(result["errors"], [{"code": "loaded_identity_ambiguous"}])
+        self.assertEqual(result["errors"], [{"code": "loaded_identity_ambiguous"}, {"code": "saved_metadata_unavailable"}])
         self.assertEqual(result["sourceHealth"], "unavailable")
 
     def test_history_failure_preserves_independent_live_facts(self):
@@ -251,7 +252,7 @@ class SnapshotCollectionTest(unittest.TestCase):
                 {"data": [conflicting], "nextCursor": None},
             )
         )
-        self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}])
+        self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}, {"code": "saved_metadata_unavailable"}])
         self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
 
     def test_absent_runtime_reports_failed_coverage_without_connecting(self):
@@ -266,5 +267,5 @@ class SnapshotCollectionTest(unittest.TestCase):
         connect.assert_not_called()
         self.assertEqual(result["sessions"], [])
         self.assertEqual(result["sourceHealth"], "unavailable")
-        self.assertEqual(result["errors"], [{"code": "endpoint_unavailable"}])
+        self.assertEqual(result["errors"], [{"code": "endpoint_unavailable"}, {"code": "saved_metadata_unavailable"}])
         self.assertFalse(result["coverage"]["saved"]["complete"])

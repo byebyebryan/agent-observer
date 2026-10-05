@@ -12,9 +12,15 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
+from .native_artifacts import registered
+
 
 class EndpointError(ValueError):
     """Bounded ownership/availability reason; never includes inspected text."""
+
+    def __init__(self, code, *, identity=None):
+        super().__init__(code)
+        self.identity = identity
 
 
 @dataclass(frozen=True)
@@ -82,13 +88,16 @@ def _endpoint_peer(target: Path, *, deadline: float) -> tuple[int, int]:
 def inspect_managed_endpoint(
     config_home: Path,
     *,
-    release: str,
-    binary_sha256: str,
-    version: str,
+    release: str | None = None,
+    binary_sha256: str | None = None,
+    version: str | None = None,
     proc_root: Path = Path("/proc"),
     timeout: float = 3.0,
 ) -> RuntimeIdentity:
-    """Caller supplies an evidence-backed release fingerprint, never a guess.
+    """Match the actual owning image against exact capability registrations.
+
+    An explicit fingerprint selects an operator proof's exact expected image;
+    the default reads the owning peer instead of assuming the CLI's release.
 
     Kernel socket inode and filesystem inode are distinct. The listener's
     exact kernel inode must be held by the kernel-identified peer process.
@@ -97,12 +106,17 @@ def inspect_managed_endpoint(
     if (
         not isinstance(config_home, Path)
         or not config_home.is_absolute()
-        or not isinstance(release, str)
-        or not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", release)
-        or not isinstance(binary_sha256, str)
-        or not re.fullmatch(r"[0-9a-f]{64}", binary_sha256)
-        or not isinstance(version, str)
-        or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version)
+        or (
+            any(value is not None for value in (release, binary_sha256, version))
+            and (
+                not isinstance(release, str)
+                or not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", release)
+                or not isinstance(binary_sha256, str)
+                or not re.fullmatch(r"[0-9a-f]{64}", binary_sha256)
+                or not isinstance(version, str)
+                or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version)
+            )
+        )
         or type(timeout) not in (int, float)
         or not 0 < timeout <= 10
     ):
@@ -142,27 +156,33 @@ def inspect_managed_endpoint(
         if len(listeners) != 1:
             raise EndpointError("listener_ambiguous")
         listener = next(iter(listeners))
-        executable = config_home / "packages/app-server-daemon/releases" / release / "bin/codex"
-        expected_stat = executable.stat()
-        if (
-            not stat.S_ISREG(expected_stat.st_mode)
-            or expected_stat.st_uid != uid
-            or _fingerprint(executable, deadline=deadline) != binary_sha256
-        ):
-            raise EndpointError("runtime_binary_not_accepted")
         pid, peer_uid = _endpoint_peer(target, deadline=deadline)
         if peer_uid != uid:
             raise EndpointError("runtime_peer_identity_mismatch")
         process = proc_root / str(pid)
-        if process.stat().st_uid != uid or os.readlink(process / "exe") != str(executable):
+        birth = _birth(process)
+        executable = Path(os.readlink(process / "exe"))
+        release_root = config_home / "packages/app-server-daemon/releases"
+        match = re.fullmatch(
+            re.escape(str(release_root)) + r"/(\d+\.\d+\.\d+)-x86_64-unknown-linux-musl/bin/codex",
+            str(executable),
+        )
+        if process.stat().st_uid != uid or match is None:
             raise EndpointError("runtime_peer_identity_mismatch")
+        expected_stat = executable.stat()
+        if (
+            not stat.S_ISREG(expected_stat.st_mode) or expected_stat.st_uid != uid
+            or expected_stat.st_mode & 0o022 or executable.resolve(strict=True) != executable
+        ):
+            raise EndpointError("runtime_image_ownership_mismatch")
         running_stat = (process / "exe").stat()
         if (running_stat.st_dev, running_stat.st_ino) != (
             expected_stat.st_dev,
             expected_stat.st_ino,
         ):
             raise EndpointError("runtime_peer_identity_mismatch")
-        birth = _birth(process)
+        actual_digest = _fingerprint(process / "exe", deadline=deadline)
+        profile = registered("codex", actual_digest, capability="managed_read")
         matches = False
         for index, fd in enumerate((process / "fd").iterdir()):
             if index >= 4096 or time.monotonic() > deadline:
@@ -175,7 +195,7 @@ def inspect_managed_endpoint(
                 continue
         if not matches or birth != _birth(process):
             raise EndpointError("runtime_owner_ambiguous")
-        return RuntimeIdentity(
+        identity = RuntimeIdentity(
             str(config_home),
             str(target),
             pid,
@@ -184,12 +204,24 @@ def inspect_managed_endpoint(
             str(executable),
             expected_stat.st_dev,
             expected_stat.st_ino,
-            version,
-            binary_sha256,
+            profile.version if profile else match.group(1),
+            actual_digest,
             listener,
             socket_stat.st_dev,
             socket_stat.st_ino,
         )
+        validate_incarnation(identity, proc_root=proc_root)
+        if release is not None:
+            expected = release_root / release / "bin/codex"
+            if executable != expected or actual_digest != binary_sha256:
+                raise EndpointError("runtime_binary_not_accepted", identity=identity)
+            if version != match.group(1):
+                raise EndpointError("runtime_version_mismatch", identity=identity)
+        elif profile is None:
+            raise EndpointError("runtime_artifact_not_accepted", identity=identity)
+        if profile is not None and profile.version != match.group(1):
+            raise EndpointError("runtime_version_mismatch", identity=identity)
+        return identity
     except EndpointError:
         raise
     except FileNotFoundError:
