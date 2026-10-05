@@ -255,7 +255,17 @@ class Proof:
         os.kill(owner.pid, signal.SIGKILL)
         time.sleep(1)
         failed = self.snapshot()
-        assert failed["sourceHealth"] == "unavailable" and failed["sessions"] == []
+        saved = next(row for row in failed["sessions"] if row["identity"] == ref)
+        assert failed["sourceHealth"] == "partial"
+        assert failed["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
+        assert saved["runtime"]["value"] == saved["phase"]["value"] == "unknown"
+        assert saved["activity"]["at"] == at
+        try:
+            self.handoff(ref)
+        except RuntimeError as exc:
+            assert str(exc) == "resume_evidence_unavailable"
+        else:
+            raise RuntimeError("offline_saved_resume_not_rejected")
         created = self.spawn(self.handoff())
         self.pause(created, 5)
         self.assert_native_client(created)
@@ -275,6 +285,8 @@ class Proof:
             "provider": "codex",
             "independentOfFrontend": True,
             "ownedDaemonFailureVisible": True,
+            "independentSavedDiscoverySurvivesFailure": True,
+            "offlineSavedResumeRejected": True,
             "publicNewRestartsRuntime": True,
             "exactSavedResumeAfterRecovery": True,
             "recoveryPreservesConversationAge": True,
