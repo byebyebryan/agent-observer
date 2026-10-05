@@ -101,6 +101,35 @@ class ClaudeCollectionTest(unittest.TestCase):
         self.assertEqual(value["sessions"], [])
         self.assertEqual(value["sourceHealth"], "unavailable")
 
+    def test_runtime_failure_keeps_fresh_saved_history_independent(self):
+        from agent_observer.collection import project_source
+
+        self.history["rows"] = [
+            {
+                "session_id": "01234567-0123-4567-89ab-0123456789ab",
+                "custom_title": "Saved native title",
+                "cwd": str(self.config),
+                "created_at": 100,
+                "last_modified": 200,
+                "activity": {
+                    "at": 150,
+                    "source": "claude_transcript_message",
+                    "health": "current",
+                    "reason": "native_conversation_event",
+                },
+            }
+        ]
+        with patch("agent_observer.claude_snapshot.snapshot") as native:
+            value = collect_claude(self.config, host_scope="snap", executable=self.binary)
+        native.assert_not_called()
+        self.assertEqual(value["sourceHealth"], "partial")
+        self.assertEqual(value["sessions"][0]["activity"]["at"], 150)
+        self.assertEqual(value["sessions"][0]["presence"]["value"], "unknown")
+        source = project_source(value)
+        self.assertEqual(source["coverage"]["saved"]["status"], "partial")
+        self.assertEqual(source["coverage"]["runtime"]["status"], "unavailable")
+        self.assertIn("runtime_artifact_not_accepted", source["errors"])
+
     def test_default_configuration_is_distinct_from_explicit_same_directory(self):
         config = self.root / ".claude"
         config.mkdir()

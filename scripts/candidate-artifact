@@ -103,6 +103,9 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
             or not interpreter.samefile(prefix / "bin/python")
         ):
             raise ValueError("entrypoint_prefix_mismatch")
+    cli_version = run([str(prefix / "bin/agent-observer"), "--version"]).decode().strip()
+    if cli_version != "agent-observer " + manifest["version"]:
+        raise ValueError("cli_version_mismatch")
     for name in ("snapshot", "watch"):
         schema = json.loads(run([str(prefix / "bin/agent-observer"), "schema", "--kind", name]))
         if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"][name]}:

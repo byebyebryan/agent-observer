@@ -38,6 +38,10 @@ class ContractV2Test(unittest.TestCase):
             _coverage({"complete": False, "reason": "metadata_scan"}, "partial")["status"],
             "partial",
         )
+        self.assertEqual(
+            _coverage({"complete": False, "reason": "metadata_scan"}, "unavailable")["status"],
+            "partial",
+        )
 
     def test_bundled_schemas_match_public_spec(self):
         root = Path(__file__).parent.parent / "agent_observer/contracts"

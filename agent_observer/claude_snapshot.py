@@ -367,6 +367,11 @@ def collect_claude(
                 }
             )
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
+    # History and runtime are independent observations. A failed runtime
+    # fingerprint cannot stale newly read, identity-checked saved metadata.
+    # Each live fact retains its own failed/stale health and action guard.
+    if history_rows and result["sourceHealth"] in {"unavailable", "stale"}:
+        result["sourceHealth"] = "partial"
     result["activitySupported"] = True
     for row in result["sessions"]:
         row.setdefault("activity", unavailable("conversation_metadata_not_persisted"))

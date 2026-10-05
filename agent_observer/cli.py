@@ -10,13 +10,14 @@ import sys
 import time
 from pathlib import Path
 
+from . import __version__
 from .bounded_json import WireError, decode_document
 from .contract import MAX_BYTES, ContractError, canonical, parse_snapshot, schema_document
 from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
 from .watch import MIN_INTERVAL, SampledWatch
 
-VERSION = "0.2.0a3"
+VERSION = __version__
 
 
 def _input(path, limit=MAX_BYTES):
@@ -171,12 +172,21 @@ def main(argv=None):
                 print(canonical(report))
             else:
                 print(
-                    f"{report['host']['authority']}: {report['sourceHealth']}; {report['sessionCount']} sessions"
+                    f"{report['host']['authority']}: {report['sourceHealth']}; {report['sessionCount']} sessions; Observer {VERSION}"
                 )
                 for source in report["sources"]:
                     print(
                         f"{source['provider']}: {source['sourceHealth']}; saved={source['coverage']['saved']['status']}; runtime={source['coverage']['runtime']['status']}; limits={','.join(source['limitations'])}"
                     )
+                    for code in source["errors"]:
+                        detail = {
+                            "runtime_artifact_not_accepted": "installed runtime artifact is outside accepted support; live state and native actions are unavailable",
+                            "runtime_artifact_unavailable": "installed runtime executable could not be read",
+                            "history_ambiguous": "conflicting saved identity metadata was excluded",
+                            "native_blocked_phase_unproved": "native blocked job phase is unproved; verified identity facts remain usable",
+                            "file_unavailable": "a native metadata file could not be read; check retained target evidence",
+                        }.get(code, "observation requirement unavailable")
+                        print(f"  {code}: {detail}")
         else:
             print(canonical(value))
         return 0

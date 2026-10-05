@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-observer"
-version = "0.2.0a7"
+dynamic = ["version"]
 description = "Passive host-local Codex and Claude Code session observations"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -21,6 +21,9 @@ agent-observer-write = "agent_observer.write_client:main"
 
 [tool.setuptools.packages.find]
 include = ["agent_observer*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "agent_observer.__version__" }
 
 [tool.setuptools.package-data]
 agent_observer = ["contracts/*.json"]

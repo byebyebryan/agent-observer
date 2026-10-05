@@ -54,7 +54,7 @@ def _coverage(value, health):
             "status": "complete"
             if value.get("complete") is True
             else "partial"
-            if health in {"current", "partial"}
+            if (health in {"current", "partial"} or value.get("reason") == "metadata_scan")
             and value.get("reason") not in {"source_failed", "not_observed"}
             else "unavailable",
             "reason": value.get("reason", "not_observed"),
