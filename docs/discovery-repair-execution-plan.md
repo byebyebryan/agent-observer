@@ -79,4 +79,12 @@ continues to govern producer/consumer separation. The prior bounded
 this batch reopens chronology, Claude ordinary-state resilience and write-entry
 acceptance without promoting earlier isolated cases into general coverage.
 
-R0 is in progress. All implementation and candidate/native gates remain pending.
+R0 is in progress. The first R2 source checkpoint preserves current per-row
+facts through incomplete sibling jobs with aggregate `partial` health. Resume
+distinguishes observation-only metadata issues from action identity failures;
+native attach still requires a verified retained exact job link. 160 synthetic
+tests and the documentation gate pass. A passive ordinary Snap source check
+accepts preparation for the verified recap worker and unrelated saved oncall
+identity while rejecting attach for the live job with missing metadata. It
+dispatches no native action. Native `blocked` normalization, chronology,
+candidate installation and independent native acceptance remain pending.

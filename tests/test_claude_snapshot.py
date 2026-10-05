@@ -157,7 +157,7 @@ class ClaudeCollectionTest(unittest.TestCase):
             ),
         ):
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
-        self.assertEqual(value["sourceHealth"], "stale")
+        self.assertEqual(value["sourceHealth"], "partial")
         self.assertEqual(value["sessions"][0]["work"]["value"], "working")
         self.assertEqual(value["coverage"]["jobStore"], "partial")
 

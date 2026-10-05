@@ -105,7 +105,9 @@ class WriteClientTest(unittest.TestCase):
                     "sessionKind": "unknown" if saved else "bg",
                     "inventory": "saved" if saved else "live",
                     "history": {"source": "claude_sdk"} if saved else None,
-                    "job": None,
+                    "job": None
+                    if saved or request["provider"] == "codex"
+                    else {"id": "abcd1234", "retained": True, "state": "working"},
                 }
             ],
         }
@@ -214,6 +216,59 @@ class WriteClientTest(unittest.TestCase):
             self.assertEqual(argv[-2:], ["attach", "abcd1234"])
             self.assertEqual(output["effect"], "none")
             launch.assert_not_called()
+
+    def test_partial_sibling_does_not_block_exact_live_or_saved_resume(self):
+        for provider, saved in (("codex", True), ("claude", True), ("claude", False)):
+            with self.subTest(provider=provider, saved=saved):
+                request = self.request(provider, "resume")
+                snapshot = self.snapshot(request, saved=saved)
+                snapshot["sources"][0]["sourceHealth"] = "partial"
+                snapshot["sources"][0]["coverage"]["saved"]["status"] = "partial"
+                if provider == "claude" and not saved:
+                    snapshot["sessions"][0]["metadataIssues"] = ["unknown_job_state"]
+                    snapshot["sessions"][0]["phase"]["health"] = "unsupported"
+                collect, select = self.targeted(request, snapshot)
+                with collect, select:
+                    value = prepare(request)
+                expected = (
+                    "codex_resume"
+                    if provider == "codex"
+                    else "claude_saved_resume"
+                    if saved
+                    else "claude_attach"
+                )
+                self.assertEqual(value["route"], expected)
+
+    def test_live_attach_requires_matching_retained_job_despite_current_worker(self):
+        request = self.request("claude", "resume")
+        for job in (
+            None,
+            {"id": "abcd1234", "retained": None},
+            {"id": "eeeeeeee", "retained": True},
+        ):
+            with self.subTest(job=job):
+                snapshot = self.snapshot(request)
+                snapshot["sessions"][0]["job"] = job
+                collect, select = self.targeted(request, snapshot)
+                with collect, select:
+                    with self.assertRaisesRegex(ContractError, "unsupported_resume_route"):
+                        prepare(request)
+
+    def test_partial_health_never_overrides_target_identity_or_stale_evidence(self):
+        request = self.request("claude", "resume")
+        for mutate in (
+            lambda row: row.update(metadataIssues=["job_session_conflict"]),
+            lambda row: row.update(metadataIssues=["future_unknown_issue"]),
+            lambda row: row["runtime"].update(health="stale"),
+            lambda row: row["phase"].update(health="ambiguous"),
+        ):
+            snapshot = self.snapshot(request)
+            snapshot["sources"][0]["sourceHealth"] = "partial"
+            mutate(snapshot["sessions"][0])
+            collect, select = self.targeted(request, snapshot)
+            with collect, select:
+                with self.assertRaisesRegex(ContractError, "resume_evidence_unavailable"):
+                    prepare(request)
 
     def test_background_timeout_or_post_launch_failure_is_uncertain_and_never_retried(self):
         plan = prepare(self.request("claude"))
