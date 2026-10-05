@@ -171,6 +171,11 @@ evidence and cross-session continuity.
 
 ## Development
 
+The current [validation workflow](docs/observation-validation-workflow.md)
+compares the installed CLI with independent native evidence from ordinary active
+sessions and isolated test sessions. It checks identity, phase, age and coverage
+before a separate frontend pass; fresh feeds alone do not prove completeness.
+
 From a clone, run:
 
 ```sh

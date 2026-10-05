@@ -34,6 +34,14 @@ Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader. Wrapper association,
 silent Resume, age presentation and graphical acceptance form its next separate
 consumer checkpoint; networking remains deferred.
 
+Routine Observer development follows the
+[CLI/native comparison workflow](observation-validation-workflow.md), using
+ordinary active sessions for inventory and isolated sessions for controlled
+transitions. The 2026-10-05 check leaves Claude idle/background phase semantics,
+transient Claude child classification and an older Codex TUI's runtime coverage
+unresolved. These are separate producer investigations; the accepted artifact's
+bounded capabilities are unchanged.
+
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
