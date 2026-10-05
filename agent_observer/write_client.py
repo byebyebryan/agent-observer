@@ -14,7 +14,7 @@ from pathlib import Path
 
 from .bounded_json import WireError, decode_document
 from .contract import ContractError, canonical, store_namespace
-from .native_cues import background_job, trust_required
+from .native_cues import background_receipt, trust_required
 from .read_client import select as select_session
 from .write_contract import schema_document, validate_plan, validate_request, validate_result
 
@@ -347,7 +347,13 @@ def execute(plan, *, timeout=30):
             pending=True,
         )
     try:
-        job = background_job(output)
+        receipt = background_receipt(output)
+        if receipt.origin_id is not None and (
+            fresh["request"]["operation"] != "resume"
+            or receipt.origin_id != fresh["request"]["reference"]["nativeId"]
+        ):
+            raise ContractError("native_cue_identity_conflict")
+        job = receipt.job_id
     except ContractError as exc:
         return result(fresh, "uncertain", str(exc), effect="uncertain", pending=True)
     deadline = time.monotonic() + min(timeout, 15)
@@ -359,6 +365,10 @@ def execute(plan, *, timeout=30):
                 row
                 for row in snapshot["sessions"]
                 if row["nativeIds"]["jobId"] == job
+                and (
+                    receipt.session_id is None
+                    or row["nativeIds"]["sessionId"] == receipt.session_id
+                )
                 and row["cwd"] == fresh["request"]["cwd"]
                 and row["worker"]["value"] == "present"
                 and not set(row["metadataIssues"]) - _OBSERVATION_ONLY_ISSUES

@@ -38,7 +38,8 @@ class Proof:
         process = subprocess.run(argv, capture_output=True, timeout=40)
         if process.returncode:
             try:
-                code = json.loads(process.stderr)["error"]
+                payload = json.loads(process.stderr or process.stdout)
+                code = payload.get("error", payload.get("reason"))
                 if isinstance(code, str) and len(code) <= 128 and code.replace("_", "").isalnum():
                     raise RuntimeError(code)
             except (ValueError, KeyError, TypeError):

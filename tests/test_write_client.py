@@ -313,7 +313,7 @@ class WriteClientTest(unittest.TestCase):
             self.assertEqual(plan["route"], "claude_saved_resume")
             argv, _ = invocation(plan, background=True)
             self.assertEqual(argv[-3:], ["--resume", request["reference"]["nativeId"], "--bg"])
-        actual = {**request["reference"], "nativeId": "00000000-0000-0000-0000-000000000099"}
+        actual = {**request["reference"], "nativeId": "abcd1234-0000-0000-0000-000000000099"}
         created = self.snapshot(request, actual=actual)
         with (
             patch("agent_observer.write_client.revalidate", return_value=plan),
@@ -321,7 +321,10 @@ class WriteClientTest(unittest.TestCase):
                 "agent_observer.write_client._launch",
                 return_value=(
                     0,
-                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
+                    (
+                        "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n"
+                        f"note: session {request['reference']['nativeId']} is already running in the background, so this started a copy as {actual['nativeId']}. `claude attach 00000000` opens the original.\n"
+                    ).encode(),
                     None,
                 ),
             ) as launch,
@@ -335,6 +338,30 @@ class WriteClientTest(unittest.TestCase):
             self.assertEqual(result["resultingIdentity"], actual)
             self.assertEqual(result["effect"], "confirmed")
             launch.assert_called_once()
+
+    def test_copy_receipt_cannot_verify_a_different_full_identity_with_the_same_job(self):
+        request = self.request("claude", "resume")
+        saved = self.snapshot(request, saved=True)
+        collect, select = self.targeted(request, saved)
+        with collect, select:
+            plan = prepare(request)
+        actual = {**request["reference"], "nativeId": "abcd1234-0000-0000-0000-000000000088"}
+        created = self.snapshot(request, actual=actual)
+        receipt = (
+            "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n"
+            f"note: session {request['reference']['nativeId']} is already running in the background, so this started a copy as abcd1234-0000-0000-0000-000000000099. `claude attach 00000000` opens the original.\n"
+        ).encode()
+        with (
+            patch("agent_observer.write_client.revalidate", return_value=plan),
+            patch("agent_observer.write_client._launch", return_value=(0, receipt, None)) as launch,
+            patch("agent_observer.write_client._collect", return_value=created),
+            patch("agent_observer.write_client.time.monotonic", side_effect=[0, 0, 2]),
+            patch("agent_observer.write_client.time.sleep"),
+        ):
+            output = execute(plan, timeout=1)
+        self.assertEqual(output["effect"], "uncertain")
+        self.assertIsNone(output["resultingIdentity"])
+        launch.assert_called_once()
 
     def test_launcher_timeout_preserves_descendant_outside_launcher_ownership(self):
         marker = self.root / "owned-child.pid"

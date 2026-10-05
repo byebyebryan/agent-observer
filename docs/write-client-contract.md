@@ -79,6 +79,13 @@ it never launches again. A deadline preserves the confirmed native effect and
 resulting identity while reporting unavailable handoff. Artifact, settings and
 identity failures retain their ordinary rejection behavior.
 
+Claude 2.1.287 can append a fixed note that an already-backgrounded session was
+copied and that an inline attach command opens the original. This is not the
+new viewer receipt. The parser validates the note's full original/copied UUIDs,
+checks the original against the requested identity and the copy against exact
+post-launch native metadata. It still requires one matching new background/attach
+receipt and rejects conflicting notes or arbitrary embedded attach mentions.
+
 Native background launch output is bounded in memory and never exposed or
 persisted. An exact native attach cue selects the resulting job; an independent
 public observation resolves its actual full session identity. Claude can copy
