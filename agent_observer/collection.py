@@ -9,6 +9,7 @@ import time
 import uuid
 from pathlib import Path
 
+from .activity import unavailable
 from .contract import SOURCE, identity_key, store_namespace, validate_shape, validate_snapshot
 
 
@@ -54,6 +55,7 @@ def _coverage(value, health):
             if value.get("complete") is True
             else "partial"
             if health in {"current", "partial"}
+            and value.get("reason") not in {"source_failed", "not_observed"}
             else "unavailable",
             "reason": value.get("reason", "not_observed"),
         }
@@ -107,7 +109,7 @@ def project_source(native):
             "phase": ["working", "blocked", "waiting"],
             "blockedReasons": ["approval"],
             "runtime": ["running"],
-            "activity": False,
+            "activity": native.get("activitySupported") is True,
             "clientBinding": False,
         },
         "errors": list(
@@ -118,12 +120,13 @@ def project_source(native):
             )
         ),
         "limitations": [
-            "activity_source_unproved",
             "parked_predicate_unproved",
             "questions_unproved",
             "client_binding_unproved",
         ],
     }
+    if not result["capabilities"]["activity"]:
+        result["limitations"].append("activity_source_unproved")
     if provider == "codex":
         result["limitations"].append("offline_history_unavailable")
         result["limitations"].append("unloaded_work_state_unavailable")
@@ -215,12 +218,9 @@ def project_session(native, source):
         else history.get("createdAt")
         if history
         else None,
-        "activity": {
-            "at": None,
-            "source": None,
-            "health": "unsupported",
-            "reason": "activity_source_unproved",
-        },
+        "activity": copy.deepcopy(
+            native.get("activity", unavailable("activity_source_unproved", "unsupported"))
+        ),
         "workspace": None,
         "sessionKind": native.get("sessionKind")
         if native.get("sessionKind") in {"interactive", "bg"}

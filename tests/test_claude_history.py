@@ -12,6 +12,7 @@ from agent_observer._claude_history_worker import (
     _bounded_cwd,
     _WorkerFailure,
     census_projects,
+    transcript_activity,
 )
 from agent_observer.claude_history import SDK_VERSION, _run_worker, collect_saved_history
 
@@ -20,13 +21,21 @@ SECOND = "11234567-0123-4567-89ab-0123456789ab"
 THIRD = "21234567-0123-4567-89ab-0123456789ab"
 
 
-def worker_row(session_id, *, created_at, last_modified, cwd=None, title=None):
+def worker_row(session_id, *, created_at, last_modified, cwd=None, title=None, activity_at=None):
     return {
         "session_id": session_id,
         "custom_title": title,
         "cwd": cwd,
         "created_at": created_at,
         "last_modified": last_modified,
+        "activity": {
+            "at": activity_at,
+            "source": "claude_transcript_message" if activity_at is not None else None,
+            "health": "current" if activity_at is not None else "unavailable",
+            "reason": "native_conversation_event"
+            if activity_at is not None
+            else "no_conversation_activity",
+        },
     }
 
 
@@ -60,11 +69,11 @@ class ClaudeHistoryTest(unittest.TestCase):
         ):
             return collect_saved_history(self.config, history_limit=history_limit)
 
-    def test_uses_creation_time_and_keeps_display_limit_out_of_errors(self):
+    def test_activity_order_precedes_display_cap_and_ignores_creation_and_mtime(self):
         payload = worker_payload(
             [
-                worker_row(FIRST, created_at=100, last_modified=999_999),
-                worker_row(SECOND, created_at=200, last_modified=1),
+                worker_row(FIRST, created_at=100, last_modified=999_999, activity_at=20),
+                worker_row(SECOND, created_at=200, last_modified=1, activity_at=10),
                 worker_row(THIRD, created_at=None, last_modified=2_000_000),
             ],
             candidates=34,
@@ -72,13 +81,13 @@ class ClaudeHistoryTest(unittest.TestCase):
         result = self.run_collector(payload, history_limit=2)
         self.assertEqual(
             [row["session_id"] for row in result["rows"]],
-            [SECOND, FIRST],
+            [FIRST, SECOND],
         )
         self.assertEqual(result["coverage"], {"complete": False, "reason": "history_limit"})
         self.assertEqual(result["errors"], [])
         self.assertEqual(
             set(result["rows"][0]),
-            {"session_id", "custom_title", "cwd", "created_at", "last_modified"},
+            {"session_id", "custom_title", "cwd", "created_at", "last_modified", "activity"},
         )
 
     def test_preserves_exact_cwd_and_rejects_ambiguous_paths(self):
@@ -185,6 +194,51 @@ class ClaudeHistoryTest(unittest.TestCase):
             with self.assertRaises(_WorkerFailure) as fifo_error:
                 census_projects(projects)
             self.assertEqual(fifo_error.exception.code, "history_unsafe_entry")
+
+    def test_transcript_clock_ignores_rename_housekeeping_sidechains_and_meta_messages(self):
+        path = self.config / "transcript.jsonl"
+        message = {
+            "type": "assistant",
+            "sessionId": FIRST,
+            "isSidechain": False,
+            "timestamp": "2026-10-01T01:02:03.456Z",
+            "message": {"role": "assistant", "content": "private text must be discarded"},
+        }
+        path.write_text(json.dumps(message) + "\n")
+        initial = transcript_activity(path, FIRST)
+        for record in (
+            {"type": "custom-title", "customTitle": "Renamed"},
+            {"type": "system", "timestamp": "2026-10-02T01:02:03Z"},
+            {**message, "isSidechain": True, "timestamp": "2026-10-03T01:02:03Z"},
+            {**message, "isMeta": True, "timestamp": "2026-10-04T01:02:03Z"},
+        ):
+            with path.open("a") as handle:
+                handle.write(json.dumps(record) + "\n")
+        os.utime(path, None)
+        self.assertEqual(transcript_activity(path, FIRST), initial)
+        self.assertEqual(set(initial), {"at", "source", "health", "reason"})
+        self.assertNotIn("private", json.dumps(initial))
+        newer = {**message, "timestamp": "2026-10-05T01:02:03.456Z"}
+        with path.open("a") as handle:
+            handle.write(json.dumps(newer) + "\n")
+        self.assertGreater(transcript_activity(path, FIRST)["at"], initial["at"])
+
+    def test_incomplete_wrong_identity_and_unsafe_activity_fail_per_row(self):
+        path = self.config / "transcript.jsonl"
+        value = {
+            "type": "user",
+            "sessionId": SECOND,
+            "isSidechain": False,
+            "timestamp": "2026-10-01T01:02:03Z",
+            "message": {"role": "user"},
+        }
+        path.write_text(json.dumps(value) + "\n")
+        self.assertEqual(transcript_activity(path, FIRST)["reason"], "activity_identity_conflict")
+        path.write_text(json.dumps(value))
+        self.assertEqual(transcript_activity(path, FIRST)["reason"], "activity_record_incomplete")
+        link = self.config / "link.jsonl"
+        link.symlink_to(path)
+        self.assertIsNone(transcript_activity(link, FIRST)["at"])
 
 
 if __name__ == "__main__":

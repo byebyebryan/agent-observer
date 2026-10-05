@@ -15,6 +15,7 @@ import stat
 import sys
 import time
 import unicodedata
+from datetime import datetime
 from pathlib import Path
 
 SDK_VERSION = "0.2.163"
@@ -26,6 +27,8 @@ MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_CENSUS_SECONDS = 5.0
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 MAX_TIME_MS = 4_000_000_000_000
+MAX_ACTIVITY_BYTES = 512 * 1024
+MAX_ACTIVITY_TOTAL_BYTES = 64 * 1024 * 1024
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _WRITE_FLAGS = os.O_WRONLY | os.O_RDWR | os.O_APPEND | os.O_CREAT | os.O_TRUNC
 _FORBIDDEN_EVENTS = frozenset(
@@ -133,6 +136,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
     valid_ids: set[str] = set()
     id_counts: dict[str, int] = {}
     malformed_ids = 0
+    transcript_paths = {}
 
     for project_dir in project_dirs:
         _check_deadline(deadline)
@@ -191,9 +195,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
                             os.fsencode(entry.name),
                             st.st_dev,
                             st.st_ino,
-                            st.st_size,
-                            st.st_mtime_ns,
-                            st.st_ctime_ns,
+                            st.st_uid,
                         )
                     )
                     if not os.access(entry.path, os.R_OK):
@@ -202,6 +204,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
                         malformed_ids += 1
                         continue
                     normalized_id = session_id.lower()
+                    transcript_paths[normalized_id] = Path(entry.path)
                     valid_ids.add(normalized_id)
                     id_counts[normalized_id] = id_counts.get(normalized_id, 0) + 1
         except _WorkerFailure:
@@ -225,6 +228,89 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
         "duplicate_ids": duplicates,
         "malformed_ids": malformed_ids,
         "signature": signature.digest(),
+        "transcript_paths": transcript_paths,
+    }
+
+
+def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
+    """Read a bounded tail; only timestamp provenance crosses this boundary."""
+
+    def missing(reason):
+        return {"at": None, "source": None, "health": "unavailable", "reason": reason}
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise ValueError("duplicate_metadata_key")
+            result[key] = value
+        return result
+
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        try:
+            before = os.fstat(fd)
+            if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+                return missing("activity_source_unsafe")
+            offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
+            os.lseek(fd, offset, os.SEEK_SET)
+            content = os.read(fd, MAX_ACTIVITY_BYTES)
+            if len(content) != before.st_size - offset:
+                return missing("activity_source_changed")
+            after = os.fstat(fd)
+            bound = os.stat(path, follow_symlinks=False)
+            if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (
+                after.st_size,
+                after.st_mtime_ns,
+                after.st_ctime_ns,
+            ) or (after.st_dev, after.st_ino) != (bound.st_dev, bound.st_ino):
+                return missing("activity_source_changed")
+        finally:
+            os.close(fd)
+    except OSError:
+        return missing("activity_source_unavailable")
+    if content and not content.endswith(b"\n"):
+        return missing("activity_record_incomplete")
+    lines = content.splitlines()
+    if offset:
+        lines = lines[1:]
+    latest = None
+    for line in lines:
+        if not line:
+            continue
+        try:
+            value = json.loads(line, object_pairs_hook=pairs)
+        except (ValueError, UnicodeError, RecursionError):
+            return missing("activity_metadata_invalid")
+        if not isinstance(value, dict) or value.get("type") not in {"user", "assistant"}:
+            continue
+        if value.get("isSidechain") is not False or value.get("isMeta") is True:
+            continue
+        if value.get("sessionId") != session_id:
+            return missing("activity_identity_conflict")
+        message = value.get("message")
+        if not isinstance(message, dict) or message.get("role") != value["type"]:
+            return missing("activity_metadata_invalid")
+        stamp = value.get("timestamp")
+        try:
+            if not isinstance(stamp, str) or len(stamp) > 64:
+                raise ValueError()
+            parsed = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                raise ValueError()
+            at = int(parsed.timestamp() * 1000)
+            if not 0 <= at <= MAX_TIME_MS:
+                raise ValueError()
+        except (ValueError, OverflowError, OSError):
+            return missing("activity_clock_unavailable")
+        latest = max(latest or 0, at)
+    if latest is None:
+        return missing("activity_tail_limit" if offset else "no_conversation_activity")
+    return {
+        "at": latest,
+        "source": "claude_transcript_message",
+        "health": "current",
+        "reason": "native_conversation_event",
     }
 
 
@@ -365,6 +451,7 @@ def main() -> int:
     valid_ids = census["valid_ids"]
     seen_ids: set[str] = set()
     rows: list[dict[str, object]] = []
+    activity_bytes = 0
     for session in sessions:
         session_id = getattr(session, "session_id", None)
         if not isinstance(session_id, str) or not _UUID.fullmatch(session_id):
@@ -375,6 +462,24 @@ def main() -> int:
             errors.add("history_ambiguous")
             continue
         seen_ids.add(session_id)
+        path = after_census["transcript_paths"].get(session_id)
+        if session_id in census["duplicate_ids"] or session_id in after_census["duplicate_ids"]:
+            errors.add("history_ambiguous")
+            continue
+        try:
+            activity_bytes += min(path.stat().st_size, MAX_ACTIVITY_BYTES)
+        except OSError:
+            activity_bytes += MAX_ACTIVITY_BYTES
+        activity = (
+            transcript_activity(path, session_id)
+            if activity_bytes <= MAX_ACTIVITY_TOTAL_BYTES
+            else {
+                "at": None,
+                "source": None,
+                "health": "unavailable",
+                "reason": "activity_scan_limit",
+            }
+        )
         rows.append(
             {
                 "session_id": session_id,
@@ -384,6 +489,7 @@ def main() -> int:
                 "cwd": _bounded_cwd(getattr(session, "cwd", None)),
                 "created_at": _valid_epoch(getattr(session, "created_at", None)),
                 "last_modified": _valid_epoch(getattr(session, "last_modified", None)),
+                "activity": activity,
             }
         )
 

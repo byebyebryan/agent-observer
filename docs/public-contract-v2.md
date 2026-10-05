@@ -1,8 +1,9 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a3`. This is a semantic cutover from the
-[v1 pilot](snapshot-contract.md), with no v1 option on the new CLI. The installed
-v1 pilot remains pinned while this independent candidate is developed.
+Version: 2; package candidate `0.2.0a4`, independently accepted subset recorded
+in the [repair plan](discovery-repair-execution-plan.md). The selected `0.2.0a3`
+artifact remains pinned until the new artifact gate passes. This is a semantic
+cutover from the [v1 pilot](snapshot-contract.md), with no v1 option on the CLI.
 
 ## Identity, states and source decisions
 
@@ -37,13 +38,36 @@ claim an exhaustive list of all provider execution contexts. In particular,
 Codex work can survive viewer exit outside loaded-thread inventory; the current
 collector leaves saved-only work unknown rather than claiming it stopped.
 
-The bounded source comparison retains existing accepted native reads. Codex
-`updatedAt` and Claude file modification time do not prove conversation activity;
-no transcript scan or legacy offline discovery stack is introduced. Activity is
-nullable with an explicit unsupported reason. Default ordering is phase attention
+Activity uses metadata conversation events: Codex's latest turn completion,
+or its start while incomplete, through `thread/turns/list` with `itemsView=notLoaded`
+and a limit of one. No conversation items are requested. Native `recencyAt` only
+advances on input and cannot represent assistant completion. Claude uses matching
+top-level user/assistant message-envelope timestamps in a bounded transcript tail,
+excluding sidechains, injected meta messages, renames and housekeeping. Prompt,
+response and tool content is discarded inside the isolated read-only worker;
+only the timestamp and provenance cross its output boundary. An empty conversation,
+missing native timestamp, incomplete/changing record or exceeded bound remains
+null with a reason. Creation, modification, collection and resume never substitute
+for activity. These sources require the exact pinned provider artifacts.
+
+Default ordering is phase attention
 (blocked, waiting, working, unknown), then last conversation activity, newest
 first, then full identity. Unknown activity stays unknown; `--order created` is
 an explicit alternative. Native history creation metadata remains separate.
+
+Activity ordering precedes saved-history display limits. Codex enumerates at most
+1,000 saved rows, then selects the most recent 100 without dropping loaded rows.
+Catalog/display limits have explicit partial coverage. Claude's existing 2,048-file
+census bounds discovery, then reads at most 512 KiB per transcript and 64 MiB total
+for activity before its 100-row display cap. Concurrent transcript appends no longer
+invalidate the whole SDK catalog; a changed tail loses its own clock. Duplicate
+native transcript identities remain ambiguous, and filesystem replacement still
+invalidates the catalog. Activity is an ordering fact, never action authority.
+
+Claude native job `state=blocked` is recognized as an observation-only unsupported
+phase (`native_blocked_phase_unproved`), with public job state unknown. It does not
+become urgency blocked or waiting without a separate semantic proof. A healthy
+target can still attach through an exact verified retained job/worker link.
 
 Each evidence object retains value, health, reason, source, original observedAt
 and whether that clock is native or sampled. Collection/liveness time cannot

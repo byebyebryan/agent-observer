@@ -75,6 +75,7 @@ class PassiveTransportTest(unittest.TestCase):
                     "initialized",
                     "thread/list",
                     "thread/read",
+                    "thread/turns/list",
                 ):
                     message = client_message(server)
                     received.append(message)
@@ -108,15 +109,25 @@ class PassiveTransportTest(unittest.TestCase):
             client.initialize()
             self.assertEqual(client.list_threads(), {"data": []})
             client.read_thread("synthetic-native-id")
+            client.latest_turn("synthetic-native-id")
             self.assertEqual(client.ignored_messages, 1)
         thread.join(2)
         self.assertFalse(thread.is_alive())
         self.assertEqual(failures, [])
         self.assertEqual(
             [value["method"] for value in received],
-            ["initialize", "initialized", "thread/list", "thread/read"],
+            ["initialize", "initialized", "thread/list", "thread/read", "thread/turns/list"],
         )
-        self.assertIs(received[-1]["params"]["includeTurns"], False)
+        self.assertIs(received[-2]["params"]["includeTurns"], False)
+        self.assertEqual(
+            received[-1]["params"],
+            {
+                "threadId": "synthetic-native-id",
+                "limit": 1,
+                "itemsView": "notLoaded",
+                "sortDirection": "desc",
+            },
+        )
 
     def test_mutations_and_content_reads_rejected_before_io(self):
         connection = Mock()
@@ -132,6 +143,22 @@ class PassiveTransportTest(unittest.TestCase):
                 client._request(method, {})
         with self.assertRaisesRegex(TransportError, "^content_read_rejected$"):
             client._request("thread/read", {"includeTurns": True})
+        for change in (
+            {"itemsView": "full"},
+            {"itemsView": "summary"},
+            {"limit": 2},
+            {"limit": True},
+            {"cursor": "next"},
+        ):
+            params = {
+                "threadId": "synthetic-native-id",
+                "limit": 1,
+                "itemsView": "notLoaded",
+                "sortDirection": "desc",
+                **change,
+            }
+            with self.assertRaisesRegex(TransportError, "^content_read_rejected$"):
+                client._request("thread/turns/list", params)
         connection.sendall.assert_not_called()
 
     def test_fragment_aggregate_limit(self):

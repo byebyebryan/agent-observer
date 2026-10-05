@@ -13,6 +13,8 @@ import time
 import unicodedata
 from pathlib import Path
 
+from .contract import ACTIVITY, validate_shape
+
 SDK_VERSION = "0.2.163"
 DEFAULT_HISTORY_LIMIT = 100
 DEFAULT_TIMEOUT_SECONDS = 10.0
@@ -95,6 +97,7 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
             "cwd",
             "created_at",
             "last_modified",
+            "activity",
         }:
             raise ValueError("invalid_worker_row")
         session_id = value.get("session_id")
@@ -124,6 +127,12 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
             or any(unicodedata.category(char).startswith("C") for char in cwd)
         ):
             raise ValueError("invalid_worker_cwd")
+        validate_shape(value["activity"], ACTIVITY)
+        if value["activity"]["at"] is not None and (
+            value["activity"]["health"] != "current"
+            or value["activity"]["source"] != "claude_transcript_message"
+        ):
+            raise ValueError("invalid_worker_activity")
         rows.append(
             {
                 "session_id": session_id,
@@ -131,6 +140,7 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
                 "cwd": cwd,
                 "created_at": _valid_time(value.get("created_at")),
                 "last_modified": _valid_time(value.get("last_modified")),
+                "activity": value["activity"],
             }
         )
     return rows, list(dict.fromkeys(raw_errors))
@@ -258,8 +268,8 @@ def collect_saved_history(
         return _error(errors[0])
     rows.sort(
         key=lambda row: (
-            row["created_at"] is None,
-            -(row["created_at"] or 0),
+            row["activity"]["at"] is None,
+            -(row["activity"]["at"] or 0),
             row["session_id"],
         )
     )

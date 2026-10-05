@@ -88,3 +88,15 @@ accepts preparation for the verified recap worker and unrelated saved oncall
 identity while rejecting attach for the live job with missing metadata. It
 dispatches no native action. Native `blocked` normalization, chronology,
 candidate installation and independent native acceptance remain pending.
+
+The R1 source checkpoint now supplies Codex latest-turn metadata clocks and
+Claude bounded top-level message clocks within the existing v2 shape. Activity
+ordering occurs before saved display caps, with explicit bounded coverage and no
+creation/mtime fallback. Native 0.160.0 investigation proved metadata-only turn
+reads do not load threads; `recencyAt` advances on input but not completion.
+Fresh isolated Claude 2.1.287 tests distinguish blank BG idle/blocked tempo,
+active work, completed readiness and a held permission prompt. The older native
+job `state=blocked` remains unknown with a recognized capability reason; no
+urgency semantics are inferred. Source validation passes 167 tests; a passive
+ordinary source read returns 34 Codex and 25 Claude activity clocks. Candidate
+byte verification, public CLI native invariance and selected rollout remain R4/R5.

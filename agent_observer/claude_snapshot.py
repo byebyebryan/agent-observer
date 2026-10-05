@@ -18,6 +18,7 @@ import unicodedata
 import uuid
 from pathlib import Path
 
+from .activity import unavailable
 from .claude_history import SDK_VERSION as CLAUDE_HISTORY_SDK_VERSION
 from .claude_history import collect_saved_history
 from .claude_metadata import SUPPORTED_SHA256, SUPPORTED_VERSION, snapshot
@@ -307,6 +308,9 @@ def collect_claude(
             }
             if native is not None:
                 native["history"] = history_metadata
+                native["activity"] = history_row.get(
+                    "activity", unavailable("activity_clock_unavailable")
+                )
                 fallback_title = "Claude " + session_id
                 custom_title = history_row.get("custom_title")
                 if native.get("title") == fallback_title and isinstance(custom_title, str):
@@ -356,10 +360,14 @@ def collect_claude(
                     "cwdSource": "claude_history" if isinstance(cwd, str) else None,
                     "metadataIssues": [],
                     "history": history_metadata,
+                    "activity": history_row.get(
+                        "activity", unavailable("activity_clock_unavailable")
+                    ),
                     "inventory": "saved",
                 }
             )
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
+    result["activitySupported"] = True
     return result
 
 

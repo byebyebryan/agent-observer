@@ -504,6 +504,14 @@ class ClaudeMetadataTest(unittest.TestCase):
                 item = self.read()["observations"][0]
             self.assertEqual(item["waitReason"], reason_code)
 
+    def test_native_blocked_job_is_recognized_without_inventing_phase(self):
+        self.write_job(state="blocked", tempo="blocked")
+        item = self.read()["observations"][0]
+        self.assertEqual(item["job"]["state"], "unknown")
+        self.assertEqual(item["work"]["value"], "unknown")
+        self.assertIn("native_blocked_phase_unproved", item["metadataIssues"])
+        self.assertNotIn("unknown_job_state", item["metadataIssues"])
+
     def test_different_live_executable_is_unsupported_not_worker_exit(self):
         self.write_session(status="busy", status_updated_at=111)
         with patch(
