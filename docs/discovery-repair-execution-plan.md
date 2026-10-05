@@ -110,15 +110,16 @@ Direct saved Resume with no observable daemon remains unsupported.
 The Claude partial-feed saved Resume probe reopened the writer checkpoint:
 an inline attach command in the native copy note was mistaken for a malformed
 second launch receipt, leaving the effect uncertain despite a created copy.
-The parser now independently validates that fixed note and its full IDs, then
-checks the copied UUID against exact post-launch metadata. Separate controlled
+The parser now independently validates that fixed note and its IDs. The actual
+native variant uses short job IDs; these are consistency checks only. Exact
+post-launch provider metadata still supplies the full resulting UUID. Separate controlled
 coverage reobserves transient phase ambiguity without another launch and
 preserves a confirmed identity on deadline. Copied Claude history
 is initially held in memory: the job's resume ID names the new session, so it
 cannot safely supply the origin activity clock. Activity remains explicitly
 unknown until native persistence; no identity/legacy inference is introduced.
-The final independent frozen artifact is `0.2.0a6`; the unselected `0.2.0a5`
-retains the native copy-note rejection and must not be promoted.
+The final independent frozen artifact is `0.2.0a7`; the unselected earlier
+candidates retain copy-note rejection and must not be promoted.
 
 `scripts/native-isolation` prepares private stores and proves user/mount/PID
 isolation before provider entry. It never depends on Plus. Explicit

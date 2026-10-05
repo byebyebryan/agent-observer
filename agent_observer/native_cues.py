@@ -12,8 +12,9 @@ _SGR = re.compile(r"\x1b\[(?:[0-9]{1,3}(?:;[0-9]{1,3}){0,15})?m")
 _BACKGROUND = re.compile(r"backgrounded · ([0-9a-f]{8})(?: .{0,400})?\Z", re.ASCII)
 _ATTACH = re.compile(r" {2}claude attach ([0-9a-f]{8}) +open in this terminal *\Z", re.ASCII)
 _ID = r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}"
+_NOTE_ID = rf"(?:{_ID}|[0-9a-f]{{8}})"
 _COPY_NOTE = re.compile(
-    rf"note: session ({_ID}) is already running in the background, so this started a copy as ({_ID})\. `claude attach ([0-9a-f]{{8}})` opens the original\.\Z",
+    rf"note: session ({_NOTE_ID}) is already running in the background, so this started a copy as ({_NOTE_ID})\. `claude attach ([0-9a-f]{{8}})` opens the original\.\Z",
     re.ASCII,
 )
 
@@ -67,9 +68,9 @@ def background_receipt(data):
     if len(copies) != 1:
         raise ContractError("native_cue_ambiguous")
     origin, actual, original_job = copies[0]
-    if origin == actual or original_job != origin[:8] or attachments[0] != actual[:8]:
+    if origin[:8] == actual[:8] or original_job != origin[:8] or attachments[0] != actual[:8]:
         raise ContractError("native_cue_identity_conflict")
-    return BackgroundReceipt(attachments[0], actual, origin)
+    return BackgroundReceipt(attachments[0], actual if len(actual) == 36 else None, origin)
 
 
 def background_job(data):

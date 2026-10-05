@@ -1,6 +1,6 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a6`, independently accepted subset recorded
+Version: 2; package candidate `0.2.0a7`, independently accepted subset recorded
 in the [repair plan](discovery-repair-execution-plan.md). The selected `0.2.0a3`
 artifact remains pinned until the new artifact gate passes. This is a semantic
 cutover from the [v1 pilot](snapshot-contract.md), with no v1 option on the CLI.
