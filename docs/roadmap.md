@@ -1,6 +1,6 @@
 # Agent Observer roadmap
 
-Date: 2026-10-04. This document records status and delivery dependencies.
+Date: 2026-10-05. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
@@ -23,13 +23,16 @@ implementation begins. Networking and new push source proof have separate gates.
 The [current execution record](contract-clients-execution-status.md) tracks the
 regular goal loop independently from the earlier migration pilot.
 
-The reopened [discovery repair checkpoint](discovery-repair-execution-plan.md)
-accepts `0.2.0a7` independently through G2 and selects it on Snap and Starship.
-Last-conversation activity, Claude partial-source resilience and native CLI
-entry/recovery are accepted within the [repair report](evidence/2026-10-04-discovery-repair/REPORT.md)'s
-exact artifact/topology bounds. Plus remains `0.14.0a1` with its frozen `0.2.0a3`
-reader library. Its silent Resume investigation and graphical acceptance are the
-next separate consumer checkpoint; networking remains deferred.
+The [operational resilience checkpoint](operational-resilience-execution-plan.md)
+accepts `0.2.0a8` independently through G2 and selects it on Snap and Starship.
+Fresh saved discovery through live failures, exact current/surviving Claude
+image support, metadata companions, CLI age/diagnostics and native routes pass
+within the [producer report](evidence/2026-10-05-operational-resilience/REPORT.md)'s
+artifact/topology bounds. It builds on the prior
+[discovery repair](evidence/2026-10-04-discovery-repair/REPORT.md).
+Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader. Wrapper association,
+silent Resume, age presentation and graphical acceptance form its next separate
+consumer checkpoint; networking remains deferred.
 
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that

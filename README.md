@@ -13,10 +13,13 @@ simplified.
 
 ## Status
 
-The [discovery repair pass](docs/evidence/2026-10-04-discovery-repair/REPORT.md)
-independently accepted `agent-observer 0.2.0a7`, now selected on Snap and Starship.
-It adds bounded last-conversation activity and ordering, preserves healthy Claude
-rows through incomplete sources, and validates native CLI entry and recovery.
+The [operational resilience pass](docs/evidence/2026-10-05-operational-resilience/REPORT.md)
+independently accepted `agent-observer 0.2.0a8`, now selected on Snap and Starship.
+It preserves fresh saved history through live-source failures, verifies current
+and surviving Claude executable images, and recovers metadata-companion histories.
+CLI rows show readable conversation age, and doctor reports explicit errors and
+verified runtime versions. Native New/Resume, held approval, mixed-version attach
+and runtime recovery are accepted within the report's exact artifact bounds.
 Agent Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader dependency; its
 reported silent Resume and graphical acceptance require a separate consumer pass.
 No provider configuration change or session restart is required by this update.

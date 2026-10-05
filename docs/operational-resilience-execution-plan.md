@@ -105,5 +105,11 @@ cases on Snap/Starship. The [producer report](evidence/2026-10-05-operational-re
 records current-version entry/approval/Resume, mixed-version turn completion,
 companion/conflict classification and runtime recovery. Existing route guards
 remain intact; no offline Codex reader or generic blocked-state mapping is added.
-All public schemas match the frozen consumer reader. S5 scoped selection and
-cleanup remain pending.
+All public schemas match the frozen consumer reader. S5 selects the accepted
+artifact on Snap and Starship through managed source `9f4c28e`, retains Plus and
+its reader, and passes both selected headless/configured-route gates with 164
+sessions and zero provider errors in each sample. Owned namespaces and borrowed
+authentication/history are removed. Exact ordinary config/auth hashes match;
+unattributed native preference drift is retained and recorded. The
+[delivery record](evidence/2026-10-05-operational-resilience/delivery.json) captures
+rollback, source-drift preservation and the unrelated broad chezmoi archive gate.

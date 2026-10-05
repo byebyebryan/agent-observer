@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-05",
+  "observerVersion": "0.2.0a8",
+  "observerWheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c",
+  "managedSourceRevision": "9f4c28e64e28f7e9b9a38d45a3c11c1c4c981a87",
+  "plusVersion": "0.14.0a1",
+  "plusObserverReaderVersion": "0.2.0a3",
+  "frontendImplementationEdits": 0,
+  "publicPush": false,
+  "scopedChangedEntries": [
+    "agent-observer",
+    "agent-observer-write"
+  ],
+  "broadSnapChezmoiGate": "unrelated_ssh_plus_external_archive_checksum_mismatch",
+  "scopedSelectorProjection": "accepted",
+  "hosts": {
+    "snap": {
+      "selectedLiveGate": {
+        "hostScope": "snap",
+        "mode": "live",
+        "artifacts": {
+          "observer": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c"
+          },
+          "plus": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b"
+          },
+          "plusObserverDependency": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f"
+          }
+        },
+        "live": {
+          "sessions": 164,
+          "providerStageErrors": 0,
+          "cacheVersion": 7,
+          "headlessCallbacks": true,
+          "privateCacheAndUiState": true,
+          "actualConfiguredRoutes": true,
+          "genericTmuxLifecycle": false,
+          "graphicalAcceptance": false
+        },
+        "status": "accepted"
+      },
+      "preservation": {
+        "host": "snap",
+        "ordinaryFilesMatchBaseline": {
+          ".codex/config.toml": true,
+          ".codex/auth.json": true,
+          ".claude/settings.json": true,
+          ".claude/.credentials.json": true,
+          ".claude.json": false
+        },
+        "ordinaryPreferenceFixtureProjects": false,
+        "nativeFixtures": [
+          {
+            "fixture": "main",
+            "exactNamespaceStillRunning": false,
+            "storeRemoved": true,
+            "cleanupRecorded": true
+          },
+          {
+            "fixture": "mixed-case",
+            "exactNamespaceStillRunning": false,
+            "storeRemoved": true,
+            "cleanupRecorded": true
+          },
+          {
+            "fixture": "mixed-case-2",
+            "exactNamespaceStillRunning": false,
+            "storeRemoved": true,
+            "cleanupRecorded": true
+          },
+          {
+            "fixture": "approval-case",
+            "exactNamespaceStillRunning": false,
+            "storeRemoved": true,
+            "cleanupRecorded": true
+          }
+        ],
+        "selected": {
+          "agent-observer": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer",
+          "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer-write",
+          "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+        },
+        "sourceClean": true
+      },
+      "rollbackDirectory": "/home/bryan/.local/share/agent-observer/rollback-20261005-resilience-snap"
+    },
+    "starship": {
+      "selectedLiveGate": {
+        "hostScope": "starship",
+        "mode": "live",
+        "artifacts": {
+          "observer": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c"
+          },
+          "plus": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b"
+          },
+          "plusObserverDependency": {
+            "installedWheelBytesVerified": true,
+            "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f"
+          }
+        },
+        "live": {
+          "sessions": 164,
+          "providerStageErrors": 0,
+          "cacheVersion": 7,
+          "headlessCallbacks": true,
+          "privateCacheAndUiState": true,
+          "actualConfiguredRoutes": true,
+          "genericTmuxLifecycle": false,
+          "graphicalAcceptance": false
+        },
+        "status": "accepted"
+      },
+      "preservation": {
+        "host": "starship",
+        "ordinaryFilesMatchBaseline": {
+          ".codex/config.toml": true,
+          ".codex/auth.json": true,
+          ".claude/settings.json": true
+        },
+        "baselineManagedDriftPaths": 21,
+        "unownedBaselineFingerprintsPreserved": true,
+        "unownedBaselinePathsChecked": 17,
+        "unownedFingerprintKinds": {
+          "files": 12,
+          "absent": 4,
+          "directory": 1
+        },
+        "newDriftOnlyOwnedPaths": true,
+        "managedCurrentDriftPaths": 21,
+        "nativeFixture": {
+          "exactNamespaceStillRunning": false,
+          "storeRemoved": true,
+          "cleanupRecorded": true
+        },
+        "selected": {
+          "agent-observer": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer",
+          "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer-write",
+          "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+        }
+      },
+      "rollbackDirectory": "/home/bryan/.local/share/agent-observer/rollback-20261005-resilience-starship"
+    }
+  }
+}
