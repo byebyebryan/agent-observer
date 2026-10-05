@@ -30,6 +30,14 @@ worker does not establish readiness. Background idle while a job is working and
 foreground interactive readiness remain unknown. Questions, cancellation and
 failure outcomes remain unproved in this candidate.
 
+Blank live background rows use `background_readiness_unproved`; native job
+state `blocked`, whose meaning is not established by the held approval case,
+uses `native_blocked_phase_unproved`. Neither native label alone authorizes a
+waiting or blocked phase. Claude rows with current, exact-UUID non-sidechain
+conversation-envelope activity are classified as user conversations. A child
+transcript carrying its parent's UUID never classifies that parent as a child;
+UUID-only runtime rows without conversation evidence remain unknown.
+
 Runtime is running, parked or unknown. Current loaded Codex context or verified
 Claude worker establishes running. Saved-only rows and worker absence remain
 unknown: the sources do not prove absence of every relevant runtime context.
@@ -121,6 +129,15 @@ returns host, source health/coverage/capabilities and session count.
 collectors, inspects provider homes, enriches paths or performs actions.
 
 ## Project context
+
+`cwd` is the provider's recorded context, with `cwdSource` identifying its source.
+For live Claude rows the registry wins; saved Claude rows retain the SDK's
+recorded context. A later message's cwd can differ, but is not promoted to the
+session's launch/resume context. Codex RPC context and the fallback's explicit
+session header are independently compared; stale catalog cwd is not substituted.
+Workspace enrichment describes that selected recorded context. It does not
+claim the latest tool cwd or establish action authority. A separate recent
+context field would require a versioned contract and native Resume proof.
 
 Local collection inspects bounded Git directory/gitfile and commondir metadata,
 without invoking Git, hooks, status, fetch or network operations. Linked worktrees

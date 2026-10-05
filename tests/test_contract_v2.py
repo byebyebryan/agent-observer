@@ -112,6 +112,46 @@ class ContractV2Test(unittest.TestCase):
             with self.assertRaises(ContractError):
                 parse_snapshot(canonical(value).encode())
 
+    def test_claude_user_kind_requires_exact_non_sidechain_activity_evidence(self):
+        ready = fixture("claude-ready")["sessions"][-1]
+        source = fixture("claude-ready")["sources"][-1]
+        native = {
+            "identity": ready["identity"], "nativeIds": ready["nativeIds"],
+            "title": ready["title"], "sessionKind": "bg",
+            "activity": {"at": 123, "health": "current",
+                         "source": "claude_transcript_message",
+                         "reason": "native_conversation_event"},
+        }
+        self.assertEqual(project_session(native, source)["kind"], "user")
+        for change in (
+            {"at": None}, {"health": "stale"}, {"source": "file_mtime"},
+            {"reason": "unobserved"},
+        ):
+            changed = copy.deepcopy(native)
+            changed["activity"].update(change)
+            self.assertEqual(project_session(changed, source)["kind"], "unknown")
+        # A child transcript carries its parent's UUID. Runtime kind or that
+        # UUID alone must not classify the parent as a child.
+        native.update(sessionKind="subagent", activity={})
+        self.assertEqual(project_session(native, source)["kind"], "unknown")
+
+    def test_claude_unknown_phases_explain_bounded_native_source_limits(self):
+        value = fixture("claude-ready")
+        ready, source = value["sessions"][-1], value["sources"][-1]
+        native = {"identity": ready["identity"], "nativeIds": ready["nativeIds"],
+                  "title": ready["title"], "sessionKind": "bg",
+                  "nativeStatus": {"value": "idle"},
+                  "job": {"state": "working"}, "work": {"value": "unknown"},
+                  "presence": {"value": "present", "health": "current",
+                               "observedAt": 123, "source": "claude_registry",
+                               "reason": "native_snapshot"}}
+        phase = project_session(native, source)["phase"]
+        self.assertEqual(phase["reason"], "background_readiness_unproved")
+        self.assertEqual(phase["health"], "unsupported")
+        native["metadataIssues"] = ["native_blocked_phase_unproved"]
+        self.assertEqual(project_session(native, source)["phase"]["reason"],
+                         "native_blocked_phase_unproved")
+
     def test_default_order_attention_unknown_activity_and_child_filter(self):
         value = fixture()
         rows = ordered_rows(value)

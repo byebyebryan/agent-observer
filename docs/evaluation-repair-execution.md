@@ -44,7 +44,15 @@ physical suspend or release publication is part of this loop.
   separates image rejection from ownership errors, and retains independent
   saved metadata through live-source failure. Completion-only clocks remain
   gated per artifact/source. See the [report](evidence/2026-10-05-evaluation-repair/REPORT.md).
-- R2–R4 pending. Selected a8 still rejects current Codex; no source checkpoint
+- R2 source/native checkpoint: held current Claude working/approval/completed
+  readiness and child-storage cases are recorded. Ordinary conversations use
+  explicit non-sidechain activity evidence for user classification. Blank
+  background and native blocked-job meanings retain finite unsupported reasons;
+  helper ancestry and foreground/questions remain independent gates.
+- R3 context/topology checkpoint: recorded cwd semantics are explicit; disposable
+  native Git/worktree/root mappings agree. The older Snap TUI remains outside
+  accepted live binding, with discoverable history and an explicit limitation.
+- R4 pending. Selected a8 still rejects current Codex; no source checkpoint
   by itself selects a package or accepts Starship actions/consumer behavior.
 
 Record native evidence as bounded identity/state/time/count/version/reason

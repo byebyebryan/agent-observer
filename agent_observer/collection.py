@@ -131,8 +131,11 @@ def project_source(native):
     if not result["capabilities"]["activity"]:
         result["limitations"].append("activity_source_unproved")
     if provider == "codex":
-        result["limitations"].append("offline_history_unavailable")
+        if result["coverage"]["saved"]["status"] == "unavailable":
+            result["limitations"].append("saved_metadata_unavailable")
+        result["limitations"].append("offline_runtime_state_unavailable")
         result["limitations"].append("unloaded_work_state_unavailable")
+        result["limitations"].append("unbound_tui_contexts_unobserved")
     else:
         result["limitations"].append("interactive_readiness_unproved")
         result["limitations"].append("waiting_requires_completed_background_context")
@@ -180,6 +183,16 @@ def project_session(native, source):
         and not claude_ready
     ):
         phase = unknown("interactive_readiness_unproved", "unsupported")
+    if provider == "claude" and phase["value"] == "unknown":
+        if "native_blocked_phase_unproved" in native.get("metadataIssues", []):
+            phase = unknown("native_blocked_phase_unproved", "unsupported")
+        elif (
+            native.get("sessionKind") == "bg"
+            and runtime["value"] == "running"
+            and (native.get("nativeStatus") or {}).get("value") == "idle"
+            and (native.get("job") or {}).get("state") == "working"
+        ):
+            phase = unknown("background_readiness_unproved", "unsupported")
     outcome = unknown("outcome_source_unproved", "unsupported")
     if (
         provider == "claude"
@@ -192,8 +205,13 @@ def project_session(native, source):
     kind = (
         native.get("threadKind", "unknown")
         if provider == "codex"
-        else "child"
-        if native.get("sessionKind") == "subagent"
+        else "user"
+        if (
+            native.get("activity", {}).get("health") == "current"
+            and native.get("activity", {}).get("source") == "claude_transcript_message"
+            and native.get("activity", {}).get("reason") == "native_conversation_event"
+            and native.get("activity", {}).get("at") is not None
+        )
         else "unknown"
     )
     return {

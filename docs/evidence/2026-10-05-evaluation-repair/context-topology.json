@@ -1,0 +1,73 @@
+{
+  "workspace": {
+    "status": "accepted",
+    "scenario": "configured-roots-linked-worktree",
+    "samples": [
+      {
+        "context": {
+          "health": "current",
+          "reason": "local_metadata",
+          "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code",
+          "rootKey": "code",
+          "relativePath": "project/nested",
+          "projectKey": "shared-project",
+          "repo": {
+            "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project",
+            "commonDir": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project/.git",
+            "relativePath": "nested"
+          }
+        },
+        "native": {
+          "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project",
+          "commonDir": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project/.git",
+          "relativePath": "nested"
+        }
+      },
+      {
+        "context": {
+          "health": "current",
+          "reason": "local_metadata",
+          "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-b/projects",
+          "rootKey": "code",
+          "relativePath": "project/nested",
+          "projectKey": "shared-project",
+          "repo": {
+            "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-b/projects/project",
+            "commonDir": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project/.git",
+            "relativePath": "nested"
+          }
+        },
+        "native": {
+          "root": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-b/projects/project",
+          "commonDir": "/tmp/agent-observer-eval-repair-95w984wg/context-proof/host-a/code/project/.git",
+          "relativePath": "nested"
+        }
+      }
+    ],
+    "independentReference": "git rev-parse on disposable native repositories",
+    "conversationIdentityMerged": false
+  },
+  "olderTui": {
+    "hostScope": "snap",
+    "pid": 72388,
+    "exists": true,
+    "startTicks": "179859",
+    "parentPid": 10120,
+    "exe": "/opt/openai-codex/bin/codex",
+    "hasResumeArg": true,
+    "hasDaemonArg": false,
+    "socketCount": 6,
+    "explicitIdentityArgs": [
+      "01a0ee10-6625-7f61-9873-6150d279af66"
+    ],
+    "daemonPid": 129007,
+    "daemonStartTicks": 26593010,
+    "predatesDaemon": true,
+    "savedIdentityMatchCount": 1,
+    "nativeRuntimeValues": [
+      "unknown"
+    ],
+    "liveBindingAccepted": false
+  },
+  "olderTuiAcceptance": "requested UUID is argv evidence only; no accepted live-session binding or automatic restart"
+}

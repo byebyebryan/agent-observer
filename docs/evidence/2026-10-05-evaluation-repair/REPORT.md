@@ -1,6 +1,6 @@
 # Evaluation repair acceptance
 
-Date: 2026-10-05. Status: R1 source checkpoint; frozen package/selection pending.
+Date: 2026-10-05. Status: R1–R3 source checkpoints; frozen package/selection pending.
 See the [execution record](../../evaluation-repair-execution.md) and preceding
 [evaluation](../2026-10-05-cli-native-evaluation/REPORT.md).
 
@@ -56,3 +56,51 @@ Terminal output, prompts and provider response/tool bodies are never retained.
 R1 passes 192 synthetic/controlled tests and scoped Ruff. These checks do not
 accept the not-yet-built package or replace R2–R4 native gates. Selected Observer
 remains `0.2.0a8`, Plus and managed provider settings remain unchanged.
+
+## Claude semantics and identity
+
+The isolated `2.1.289` native background case supplies three blank samples,
+20 working samples, three completed-idle samples and a second accepted prompt
+under the same UUID. Current blank state is registry `idle`, job `working`,
+tempo `blocked`, with no `inFlight` counters. That shape is incomplete evidence,
+not a proved waiting predicate. The source now explains it with
+`background_readiness_unproved`. Held permission samples independently establish
+registry `waiting`, `permission prompt`, job `working` and tempo `blocked`;
+the requested file remains absent. Native job state `blocked` was not supplied
+by this accepted approval case and remains explicitly unsupported with
+`native_blocked_phase_unproved`. This resolves E04's unexplained result while
+retaining the unproved capability. Foreground readiness and general questions
+retain their separate gates. See [bounded Claude evidence](claude-source.json).
+
+A held native Agent child supplies three overlapping samples. Its transcript
+contains `isSidechain: true`, an agent ID, and the **parent** session UUID; it
+does not supply a separate session UUID. It is stored below the parent's
+transcript directory and never becomes a separate saved row. The attempted
+SubagentStart/Stop hook route supplied no events in this background topology;
+no hook-delivery capability is accepted. Production classification uses the
+already identity-checked non-sidechain conversation-envelope activity source
+to mark ordinary Claude rows as user conversations. It neither promotes
+UUID-only helper rows nor guesses ancestry from worker PIDs, names or cwd.
+E05's persistent unknown classifications are repaired within the bounded
+activity scan; ephemeral helper ancestry remains explicitly unproved.
+
+## Recorded context and older TUI topology
+
+E07 is settled as a contract decision: `cwd` describes the provider's recorded
+context with source provenance. Live Claude registry context wins over saved
+SDK context. Recent message context is not an implicit launch/resume directory.
+An additional recent-context field needs its own versioned contract/action
+proof, rather than changing v2 meaning. Disposable native Git repositories and
+a linked worktree independently agree with enrichment on checkout root, common
+directory, nested relative path and explicit logical-root/project mapping.
+Distinct checkout roots retain their identities despite the shared Git common
+directory. See [context/topology evidence](context-topology.json).
+
+E08's Snap PID `72388` still predates the managed daemon. Its native resume argv
+requests a UUID matching one saved row, but neither argv nor six open sockets
+establish a successful current logical-session binding. That saved row remains
+discoverable with unknown runtime. Codex diagnostics expose
+`unbound_tui_contexts_unobserved`; complete loaded-thread coverage is not a
+claim to observe all older TUI contexts. No process restart, automatic standalone
+adapter or ordinary Resume is introduced. Native migration of an older TUI is a
+separate operator action; saved discovery does not require it.
