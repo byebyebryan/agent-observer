@@ -77,3 +77,14 @@ endpoints and authentication copies before any provider launch. Native output
 and conversation bodies are discarded. Evidence contains bounded metadata,
 counts, hashes, finite reasons and acceptance booleans only. No fixture enters
 ordinary history; no current session is resumed concurrently or restarted.
+
+## Execution record
+
+S0 captures the ordinary provider/authentication hashes and selected tuple on
+both hosts. Starship has 21 pre-existing managed source drift paths, recorded
+privately for preservation. S1 source checks pass 173 tests and scoped Ruff.
+A passive source read on Snap retains 25 fresh Claude histories with aggregate
+partial health and unavailable runtime coverage. CLI text reports finite errors
+and package `0.2.0a8`; package version now has one source and candidate verification
+requires the executable's version to match wheel metadata. No selector changed.
+Current Claude artifact and metadata companions remain the S2 native gate.

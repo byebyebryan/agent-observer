@@ -63,10 +63,21 @@ def diagnostic(snapshot):
 
 
 def human_rows(snapshot, **options):
-    lines = ["HOST  PROVIDER  PHASE  RUNTIME  ACTIVITY  ID  TITLE"]
+    lines = ["HOST  PROVIDER  PHASE  RUNTIME  AGE  ID  TITLE"]
     for row in ordered_rows(snapshot, **options):
         identity = row["identity"]
-        activity = str(row["activity"]["at"]) if row["activity"]["at"] is not None else "unknown"
+        at = row["activity"]["at"]
+        if at is None:
+            activity = "unknown"
+        elif at > snapshot["collectedAt"]:
+            activity = "clock-ahead"
+        else:
+            seconds = (snapshot["collectedAt"] - at) // 1000
+            activity = next(
+                f"{seconds // unit}{label}"
+                for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s"))
+                if seconds >= unit or unit == 1
+            )
         lines.append(
             f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value']}  {row['runtime']['value']}  {activity}  {identity['nativeId']}  {row['title']}"
         )
