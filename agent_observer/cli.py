@@ -13,6 +13,7 @@ from pathlib import Path
 from . import __version__
 from .bounded_json import WireError, decode_document
 from .contract import MAX_BYTES, ContractError, canonical, parse_snapshot, schema_document
+from .native_artifacts import supported_versions
 from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
 from .watch import MIN_INTERVAL, SampledWatch
@@ -175,8 +176,9 @@ def main(argv=None):
                     f"{report['host']['authority']}: {report['sourceHealth']}; {report['sessionCount']} sessions; Observer {VERSION}"
                 )
                 for source in report["sources"]:
+                    runtime_version = source["runtime"]["version"] if source["runtime"] else "unavailable"
                     print(
-                        f"{source['provider']}: {source['sourceHealth']}; saved={source['coverage']['saved']['status']}; runtime={source['coverage']['runtime']['status']}; limits={','.join(source['limitations'])}"
+                        f"{source['provider']}: {source['sourceHealth']}; saved={source['coverage']['saved']['status']}; runtime={source['coverage']['runtime']['status']}; version={runtime_version}; accepted={','.join(supported_versions(source['provider']))}; limits={','.join(source['limitations'])}"
                     )
                     for code in source["errors"]:
                         detail = {

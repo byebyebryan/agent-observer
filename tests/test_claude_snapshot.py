@@ -1,6 +1,5 @@
 """Artifact and collection failure fixtures; no provider process is invoked."""
 
-import hashlib
 import os
 import tempfile
 import unittest
@@ -13,6 +12,7 @@ from agent_observer.claude_snapshot import (
     _verify_artifact,
     collect_claude,
 )
+from agent_observer.native_artifacts import CLAUDE, Inspection
 
 
 class ClaudeCollectionTest(unittest.TestCase):
@@ -133,7 +133,7 @@ class ClaudeCollectionTest(unittest.TestCase):
     def test_default_configuration_is_distinct_from_explicit_same_directory(self):
         config = self.root / ".claude"
         config.mkdir()
-        artifact = (self.binary.stat().st_dev, self.binary.stat().st_ino)
+        artifact = Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)
         with (
             patch("agent_observer.claude_snapshot.Path.home", return_value=self.root),
             patch("agent_observer.claude_snapshot._verify_artifact", return_value=artifact),
@@ -158,9 +158,8 @@ class ClaudeCollectionTest(unittest.TestCase):
             _verify_artifact(self.binary)
 
     def test_configured_namespace_is_not_inferred_from_rows(self):
-        digest = hashlib.sha256(self.binary.read_bytes()).hexdigest()
         with (
-            patch("agent_observer.claude_snapshot.SUPPORTED_SHA256", digest),
+            patch("agent_observer.claude_snapshot._verify_artifact", return_value=Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)),
             patch(
                 "agent_observer.claude_snapshot._namespace",
                 return_value=("exact-namespace", "boot"),
@@ -178,7 +177,7 @@ class ClaudeCollectionTest(unittest.TestCase):
         with (
             patch(
                 "agent_observer.claude_snapshot._verify_artifact",
-                return_value=(self.binary.stat().st_dev, self.binary.stat().st_ino),
+                return_value=Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE),
             ),
             patch("agent_observer.claude_snapshot._namespace", return_value=("namespace", "boot")),
             patch(
@@ -196,7 +195,7 @@ class ClaudeCollectionTest(unittest.TestCase):
         with (
             patch(
                 "agent_observer.claude_snapshot._verify_artifact",
-                return_value=(self.binary.stat().st_dev, self.binary.stat().st_ino),
+                return_value=Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE),
             ),
             patch("agent_observer.claude_snapshot._namespace", return_value=("namespace", "boot")),
             patch("agent_observer.claude_snapshot.snapshot", return_value=native),
@@ -207,7 +206,7 @@ class ClaudeCollectionTest(unittest.TestCase):
         self.assertFalse(value["coverage"]["clientBinding"]["supported"])
 
     def test_artifact_replacement_invalidates_facts_without_renewing_clocks(self):
-        expected = (self.binary.stat().st_dev, self.binary.stat().st_ino)
+        expected = Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)
 
         def source(*_args, **_kwargs):
             replacement = self.root / "replacement"
@@ -249,7 +248,7 @@ class ClaudeCollectionTest(unittest.TestCase):
         ]
         self.history["coverage"] = {"complete": False, "reason": "metadata_scan"}
         native = self.native()
-        expected = (self.binary.stat().st_dev, self.binary.stat().st_ino)
+        expected = Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)
         with (
             patch("agent_observer.claude_snapshot._verify_artifact", return_value=expected),
             patch("agent_observer.claude_snapshot._namespace", return_value=("namespace", "boot")),
@@ -291,7 +290,7 @@ class ClaudeCollectionTest(unittest.TestCase):
     def test_history_failure_does_not_stale_healthy_native_evidence(self):
         self.history["errors"] = [{"code": "history_source_failed"}]
         self.history["coverage"] = {"complete": False, "reason": "source_failed"}
-        expected = (self.binary.stat().st_dev, self.binary.stat().st_ino)
+        expected = Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)
         with (
             patch("agent_observer.claude_snapshot._verify_artifact", return_value=expected),
             patch("agent_observer.claude_snapshot._namespace", return_value=("namespace", "boot")),

@@ -26,10 +26,11 @@ from .codex_endpoint import (
 )
 from .codex_metadata import MetadataError, live_thread_metadata, saved_thread_metadata
 from .codex_transport import PassiveClient, TransportError
+from .native_artifacts import CODEX
 
-VERSION = "0.160.0"
-RELEASE = "0.160.0-x86_64-unknown-linux-musl"
-BINARY_SHA256 = "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad"
+VERSION = CODEX.version
+RELEASE = VERSION + "-x86_64-unknown-linux-musl"
+BINARY_SHA256 = CODEX.sha256
 # Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
 # verified running disposable tool; all were active with an empty flags list.
 # The same native series supplied idle before/after successful completion.
