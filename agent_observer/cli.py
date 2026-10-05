@@ -182,8 +182,13 @@ def main(argv=None):
                     )
                     for code in source["errors"]:
                         detail = {
-                            "runtime_artifact_not_accepted": "installed runtime artifact is outside accepted support; live state and native actions are unavailable",
+                            "runtime_artifact_not_accepted": "actual runtime image is outside accepted support; inspect its reported version/hash separately from the installed CLI",
                             "runtime_artifact_unavailable": "installed runtime executable could not be read",
+                            "runtime_peer_identity_mismatch": "kernel peer does not match the configured managed endpoint owner",
+                            "runtime_binary_not_accepted": "owning runtime image differs from the explicitly requested artifact",
+                            "runtime_version_mismatch": "runtime release path conflicts with its verified artifact version",
+                            "runtime_image_ownership_mismatch": "owning runtime executable path or permissions are unsafe",
+                            "saved_metadata_unavailable": "independent saved metadata is unavailable or outside its accepted store schema",
                             "history_ambiguous": "conflicting saved identity metadata was excluded",
                             "native_blocked_phase_unproved": "native blocked job phase is unproved; verified identity facts remain usable",
                             "file_unavailable": "a native metadata file could not be read; check retained target evidence",

@@ -106,9 +106,12 @@ def project_source(native):
             ),
         },
         "capabilities": {
-            "phase": ["working", "blocked", "waiting"],
-            "blockedReasons": ["approval"],
-            "runtime": ["running"],
+            "phase": ["working", "blocked", "waiting"]
+            if provider != "codex" or coverage.get("work", {}).get("supported") else [],
+            "blockedReasons": ["approval"]
+            if provider != "codex" or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", []) else [],
+            "runtime": ["running"]
+            if provider != "codex" or coverage.get("loaded", {}).get("complete") else [],
             "activity": native.get("activitySupported") is True,
             "clientBinding": False,
         },

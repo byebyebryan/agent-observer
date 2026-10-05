@@ -47,3 +47,8 @@ class NativeArtifactTest(unittest.TestCase):
             self.assertEqual(native_artifacts.registered(profile.provider, profile.sha256), profile)
             self.assertIsNone(native_artifacts.registered("other", profile.sha256))
         self.assertIsNone(native_artifacts.registered("claude", "f" * 64))
+
+    def test_managed_read_proof_does_not_authorize_a_new_cli_executable(self):
+        daemon = native_artifacts.CODEX_DAEMON
+        self.assertIsNotNone(native_artifacts.registered("codex", daemon.sha256, capability="managed_read"))
+        self.assertIsNone(native_artifacts.registered("codex", daemon.sha256, capability="entry"))

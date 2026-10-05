@@ -7,7 +7,7 @@ def unavailable(reason, health="unavailable"):
     return {"at": None, "source": None, "health": health, "reason": reason}
 
 
-def codex_activity(payload):
+def codex_activity(payload, *, completion_only=False):
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
         return unavailable("activity_metadata_invalid")
     turns = payload["data"]
@@ -19,10 +19,14 @@ def codex_activity(payload):
     if turn.get("itemsView") != "notLoaded" or turn.get("items") != []:
         return unavailable("activity_content_rejected")
     start, end = turn.get("startedAt"), turn.get("completedAt")
+    def valid(value):
+        return type(value) is int and 0 <= value <= MAX_TIME_MS // 1000
     if (
-        type(start) is not int
-        or not 0 <= start <= MAX_TIME_MS // 1000
-        or (end is not None and (type(end) is not int or not start <= end <= MAX_TIME_MS // 1000))
+        (start is not None and not valid(start))
+        or (end is not None and not valid(end))
+        or (start is None and end is None)
+        or (start is None and not completion_only)
+        or (start is not None and end is not None and end < start)
     ):
         return unavailable("activity_clock_unavailable")
     return {

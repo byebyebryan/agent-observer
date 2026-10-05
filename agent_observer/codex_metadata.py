@@ -1,4 +1,4 @@
-"""Provisional 0.160.0 metadata projection, never provider action authority.
+"""Registered native metadata projection, never provider action authority.
 
 The native managed proof established thread/read(includeTurns=false), UUID
 fields, name, and idle status. Active/wait mappings are schema candidates until
@@ -11,6 +11,7 @@ from __future__ import annotations
 import re
 import unicodedata
 
+from .native_artifacts import supported_versions
 from .observation_model import (
     Evidence,
     NativeIdentity,
@@ -104,7 +105,7 @@ def _thread_classification(source, thread_source):
 
 
 def _projection(payload, *, host_scope, namespace, runtime_version):
-    if runtime_version != "0.160.0":
+    if runtime_version not in supported_versions("codex", capability="managed_read"):
         raise MetadataError("unsupported_runtime_version")
     if not isinstance(payload, dict):
         raise MetadataError("invalid_thread_metadata")

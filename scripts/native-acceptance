@@ -17,7 +17,6 @@ from pathlib import Path
 
 from agent_observer import codex_transport
 from agent_observer.codex_endpoint import inspect_managed_endpoint, validate_incarnation
-from agent_observer.codex_snapshot import BINARY_SHA256, RELEASE, VERSION
 from agent_observer.codex_transport import PassiveClient
 from agent_observer.native_artifacts import CLAUDE_PREVIOUS, inspect_process
 
@@ -141,7 +140,7 @@ class Proof:
 
     def codex_metadata(self, ref, *, rename=False, touch=False):
         owner = inspect_managed_endpoint(
-            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+            self.base / "codex"
         )
         assert Path(os.readlink(f"/proc/{owner.pid}/exe")).is_relative_to(
             self.base / "codex/packages"
@@ -247,7 +246,7 @@ class Proof:
         )
         at = self.row(ref)["activity"]["at"]
         owner = inspect_managed_endpoint(
-            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+            self.base / "codex"
         )
         assert Path(os.readlink(f"/proc/{owner.pid}/exe")).is_relative_to(
             self.base / "codex/packages"
@@ -261,7 +260,7 @@ class Proof:
         self.pause(created, 5)
         self.assert_native_client(created)
         recovered = inspect_managed_endpoint(
-            self.base / "codex", release=RELEASE, binary_sha256=BINARY_SHA256, version=VERSION
+            self.base / "codex"
         )
         assert (recovered.pid, recovered.start_ticks) != (owner.pid, owner.start_ticks)
         resumed = self.spawn(self.handoff(ref))

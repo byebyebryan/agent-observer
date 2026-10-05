@@ -13,6 +13,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agent_observer.contract import ContractError, store_namespace
+from agent_observer.native_artifacts import CODEX
 from agent_observer.write_client import _launch, execute, invocation, main, prepare, revalidate
 from agent_observer.write_contract import (
     schema_document,
@@ -82,7 +83,7 @@ class WriteClientTest(unittest.TestCase):
                     "configHome": str(self.home),
                     "configHomeKind": "explicit",
                     "sourceHealth": "current",
-                    "runtime": {"bootId": "fixture-boot"},
+                    "runtime": {"bootId": "fixture-boot", "binarySha256": CODEX.sha256},
                     "coverage": {"saved": {"status": "complete"}},
                 }
             ],
