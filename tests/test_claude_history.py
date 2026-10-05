@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agent_observer._claude_history_worker import (
+    MAX_COMPANION_BYTES,
     _bounded_cwd,
     _WorkerFailure,
     census_projects,
@@ -97,6 +98,26 @@ class ClaudeHistoryTest(unittest.TestCase):
             with self.subTest(content=content[:24]):
                 companion.write_text(content)
                 self.assertNotIn(FIRST, census_projects(projects)["resolved_duplicates"])
+
+    def test_companion_resolution_refuses_oversize_and_inflight_growth(self):
+        companion = self.config / (FIRST + ".jsonl")
+        record = {"type": "custom-title", "sessionId": FIRST, "customTitle": "x" * MAX_COMPANION_BYTES}
+        companion.write_text(json.dumps(record) + "\n")
+        self.assertEqual(duplicate_file_kind(companion, FIRST), "unproved")
+
+        record["customTitle"] = "Stable title"
+        companion.write_text(json.dumps(record) + "\n")
+        real_read = os.read
+
+        def read_while_provider_appends(fd, count):
+            data = real_read(fd, count)
+            with companion.open("ab") as stream:
+                stream.write((json.dumps({"type": "mode", "sessionId": FIRST, "mode": "normal"}) + "\n").encode())
+            return data
+
+        with patch("agent_observer._claude_history_worker.os.read", side_effect=read_while_provider_appends):
+            self.assertEqual(duplicate_file_kind(companion, FIRST), "unproved")
+        self.assertEqual(duplicate_file_kind(companion, FIRST), "companion")
 
     def test_activity_order_precedes_display_cap_and_ignores_creation_and_mtime(self):
         payload = worker_payload(
