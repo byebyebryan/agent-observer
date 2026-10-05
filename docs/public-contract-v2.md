@@ -1,6 +1,6 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a4`, independently accepted subset recorded
+Version: 2; package candidate `0.2.0a5`, independently accepted subset recorded
 in the [repair plan](discovery-repair-execution-plan.md). The selected `0.2.0a3`
 artifact remains pinned until the new artifact gate passes. This is a semantic
 cutover from the [v1 pilot](snapshot-contract.md), with no v1 option on the CLI.
@@ -63,6 +63,13 @@ for activity before its 100-row display cap. Concurrent transcript appends no lo
 invalidate the whole SDK catalog; a changed tail loses its own clock. Duplicate
 native transcript identities remain ambiguous, and filesystem replacement still
 invalidates the catalog. Activity is an ordering fact, never action authority.
+
+Claude saved Resume creates a new UUID and initially hydrates the copied history
+in memory. Its `resumeSessionId` already names the new UUID, so it supplies no
+safe origin relation for activity inheritance. Until native transcript metadata
+appears, that new row's activity remains unknown (`conversation_metadata_not_persisted`).
+The first new prompt materializes the copied store and advances its activity.
+The requested and resulting identities remain explicit in the write result.
 
 Claude native job `state=blocked` is recognized as an observation-only unsupported
 phase (`native_blocked_phase_unproved`), with public job state unknown. It does not

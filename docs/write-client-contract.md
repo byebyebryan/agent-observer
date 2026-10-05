@@ -73,6 +73,12 @@ These selectors have distinct provenance and are not silently substituted.
 
 ## Results, uncertainty and cancellation
 
+After one verified Claude launch, a transient ambiguous native phase can delay
+attach. The client reobserves that exact identity within its existing deadline;
+it never launches again. A deadline preserves the confirmed native effect and
+resulting identity while reporting unavailable handoff. Artifact, settings and
+identity failures retain their ordinary rejection behavior.
+
 Native background launch output is bounded in memory and never exposed or
 persisted. An exact native attach cue selects the resulting job; an independent
 public observation resolves its actual full session identity. Claude can copy

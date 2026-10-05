@@ -351,6 +351,7 @@ def execute(plan, *, timeout=30):
     except ContractError as exc:
         return result(fresh, "uncertain", str(exc), effect="uncertain", pending=True)
     deadline = time.monotonic() + min(timeout, 15)
+    confirmed = None
     while time.monotonic() < deadline:
         try:
             snapshot = _collect(fresh["request"])
@@ -364,10 +365,21 @@ def execute(plan, *, timeout=30):
             ]
             if len(rows) == 1:
                 actual = rows[0]["identity"]
+                confirmed = actual
                 request = {**fresh["request"], "operation": "resume", "reference": actual}
                 try:
                     handoff = prepare(request)
-                except (ContractError, ValueError, OSError):
+                except (ContractError, ValueError, OSError) as error:
+                    if (
+                        isinstance(error, ContractError)
+                        and str(error) == "resume_evidence_unavailable"
+                        and rows[0]["phase"]["health"] == "ambiguous"
+                    ):
+                        # A native resumed worker can briefly retain the prior
+                        # terminal state during startup. Reobserve and validate
+                        # this one launched identity; never launch again.
+                        time.sleep(0.2)
+                        continue
                     return result(
                         fresh,
                         "uncertain",
@@ -394,6 +406,10 @@ def execute(plan, *, timeout=30):
         except (ContractError, ValueError, OSError):
             break
         time.sleep(0.2)
+    if confirmed is not None:
+        return result(
+            fresh, "uncertain", "handoff_unavailable", effect="confirmed", resulting=confirmed
+        )
     return result(
         fresh, "uncertain", "post_launch_identity_unavailable", effect="uncertain", pending=True
     )
