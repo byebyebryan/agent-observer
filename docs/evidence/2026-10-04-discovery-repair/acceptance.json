@@ -270,6 +270,6 @@
     },
     "frontendEdits": 0
   },
-  "selection": "pending_scoped_producer_delivery",
-  "cleanup": "pending"
+  "selection": "observer_0.2.0a7_selected_on_snap_and_starship_plus_unchanged",
+  "cleanup": "owned_namespaces_stopped_auth_and_history_removed_ordinary_preferences_drift_recorded"
 }

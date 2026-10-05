@@ -6,32 +6,40 @@ Plus retains existing Host Mesh composition. The [execution record](contract-cli
 and [independent Observer report](evidence/2026-10-04-contract-clients/REPORT.md)
 define the actual source/package/native acceptance and remaining capabilities.
 
-The subsequent [operational pass](operational-execution-status.md) has selected
-this exact unchanged tuple on Snap and Starship, including the new global write
+The initial [operational pass](operational-execution-status.md) selected
+the unchanged `0.2.0a3` producer tuple on Snap and Starship, including the global write
 entry. It independently accepted installation/watch/recovery before consumer
 proofs, then real Tmux/SSH New/Resume and selected passive/headless gates. The
-baseline rollout section below is historical; use the operational record for
-current selection, rollback and morning acceptance.
+baseline rollout section below is historical. The subsequent independent
+[discovery repair pass](evidence/2026-10-04-discovery-repair/REPORT.md) selects
+Observer `0.2.0a7` on both hosts while preserving the Plus artifact and reader
+dependency. Use that report and its delivery record for current selection and
+rollback; graphical acceptance and the silent Plus Resume investigation remain
+a separate consumer checkpoint.
 
 ## Delivered tuple
 
 | Component | Source | Version | Selected prefix on Snap and Starship |
 | --- | --- | --- | --- |
-| Observer | `222c5bf` | `0.2.0a3` | `/home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3` |
+| Observer | `0526106` | `0.2.0a7` | `/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c` |
 | Plus | `90e5b4f` | `0.14.0a1` | `/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a` |
 
 Observer wheel SHA-256:
-`6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f`.
+`1d42506cf2b5cc7c75a3d8df4ee3279493b132d7b87cb8cd79b1f5b360e4ebc2`.
 Plus wheel SHA-256:
 `8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b`.
 Persistent wheels are under each project's `artifacts` directory beneath
 `~/.local/share`. Observation/watch wire version is 2; write request/plan/result
 version is 1. Snap's independent Observer environment has the source-built
 Claude history SDK. Starship and both Plus environments are core-only.
+Plus's own reader library remains Observer `0.2.0a3`, source `222c5bf`, wheel
+SHA-256 `6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f`.
+The managed gate checks this dependency independently of the selected producer
+and verifies their unchanged public schemas before selecting the new producer.
 
-Observer passes 153 tests and its documentation gate; Plus passes 309 tests and
-its full local source gate. Independent installed fixture conformance and native
-entry proofs pass. Plus E8 evidence lives in its own checkout at
+Observer passes 172 tests and its documentation gate; Plus previously passed
+309 tests and its full local source gate. Independent installed fixture conformance,
+native entry/recovery and selected headless gates pass. Plus E8 evidence lives in its own checkout at
 `docs/evidence/2026-10-04-observer-v2/REPORT.md`; no Observer code was changed to
 make the consumer pass. No public push, dependency publication or release occurred.
 
@@ -42,20 +50,21 @@ provider daemons or change the pilot links. The ordinary read/write commands
 now resolve to this same artifact on the pilot hosts:
 
 ```sh
-observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3
+observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c
 "$observer_candidate/bin/agent-observer" --version
 "$observer_candidate/bin/agent-observer" list --host-scope snap
 "$observer_candidate/bin/agent-observer" doctor --host-scope snap --json
 "$observer_candidate/bin/agent-observer" watch --host-scope snap --interval 2 --count 3
-ssh starship /home/bryan/.local/share/agent-observer/0.2.0a3-6aa793e6a0ba5ae3/bin/agent-observer list --host-scope starship --provider codex
+ssh starship /home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c/bin/agent-observer list --host-scope starship --provider codex
 ```
 
 For saved public fixtures, use `list/show/doctor/watch --input FILE|-` with no
 provider stores. [The public contract](public-contract-v2.md) documents optional
 `--workspace-config` roots and project mappings; these are explicit local inputs,
-not inferred cross-host project identity. Last conversation activity remains
-unavailable with the accepted native sources. Creation ordering is an explicitly
-labeled alternative. Sampled watch provides push updates, gap/resync and
+not inferred cross-host project identity. Last-conversation activity uses bounded
+native turn/message metadata and orders before saved display caps. Missing clocks
+stay unknown; creation ordering is an explicitly labeled alternative.
+Sampled watch provides push updates, gap/resync and
 heartbeats; brief native transitions can be missed. No hooks were added.
 
 The [write client](write-client-contract.md) is separately available at
@@ -69,10 +78,10 @@ unsupported/pending capabilities.
 
 ## Prior rollout baseline
 
-The ordinary selected tuple remains Observer `0.1.0a5-b68ebf4cefbd8b58` and Plus
-`0.13.0a3-76f8a951e2975283`. Managed chezmoi templates select the old read/Plus
-entrypoints; there is no global `agent-observer-write` link. Candidate installation
-does not perform the rollout.
+Before the contract/client rollout, the selected tuple was Observer `0.1.0a5-b68ebf4cefbd8b58` and Plus
+`0.13.0a3-76f8a951e2975283`. Managed chezmoi templates selected the old read/Plus
+entrypoints without a global `agent-observer-write` link. Candidate installation
+alone did not perform that rollout.
 
 Review a compatible managed tuple update for every selected target: Observer
 read and write entries and both Plus entries, preserving the prior artifacts.

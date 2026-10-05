@@ -13,18 +13,26 @@ simplified.
 
 ## Status
 
-The regular contract/client execution loop has independently accepted
+The [discovery repair pass](docs/evidence/2026-10-04-discovery-repair/REPORT.md)
+independently accepted `agent-observer 0.2.0a7`, now selected on Snap and Starship.
+It adds bounded last-conversation activity and ordering, preserves healthy Claude
+rows through incomplete sources, and validates native CLI entry and recovery.
+Agent Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader dependency; its
+reported silent Resume and graphical acceptance require a separate consumer pass.
+No provider configuration change or session restart is required by this update.
+
+The initial regular contract/client execution loop independently accepted
 `agent-observer 0.2.0a3`: the [public v2 observation/read contract](docs/public-contract-v2.md), including
 strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
 watch. The [execution record](docs/contract-clients-execution-status.md) separates
 source checks from [independent packaged/native acceptance](docs/evidence/2026-10-04-contract-clients/REPORT.md).
 The separate [write client](docs/write-client-contract.md) supports validated
-New/Resume and native TTY entry. The v2 provisional pilot is selected on
+New/Resume and native TTY entry. That v2 provisional pilot was selected on
 Snap and Starship after independent operational acceptance and real Tmux/SSH
 consumer proofs; see the [operational record](docs/operational-execution-status.md).
 Agent Plus subsequently passed its own bounded public-contract/native-entry
-consumer gate against this unchanged Observer artifact. The [current handoff](docs/contract-clients-handoff.md)
-records the compatible candidates and remaining managed/desktop rollout gates.
+consumer gate against that unchanged Observer artifact. The [current handoff](docs/contract-clients-handoff.md)
+records the selected producer, compatible consumer and remaining acceptance gates.
 
 The [contract and first-party clients track](docs/contract-and-clients-plan.md) provides
 a passive host-local core, read and New/Resume write clients, and an optional

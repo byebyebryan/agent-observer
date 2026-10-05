@@ -23,11 +23,19 @@ implementation begins. Networking and new push source proof have separate gates.
 The [current execution record](contract-clients-execution-status.md) tracks the
 regular goal loop independently from the earlier migration pilot.
 
-G1/G2 now accept the independent `0.2.0a3` Observer candidate: public v2
+The reopened [discovery repair checkpoint](discovery-repair-execution-plan.md)
+accepts `0.2.0a7` independently through G2 and selects it on Snap and Starship.
+Last-conversation activity, Claude partial-source resilience and native CLI
+entry/recovery are accepted within the [repair report](evidence/2026-10-04-discovery-repair/REPORT.md)'s
+exact artifact/topology bounds. Plus remains `0.14.0a1` with its frozen `0.2.0a3`
+reader library. Its silent Resume investigation and graphical acceptance are the
+next separate consumer checkpoint; networking remains deferred.
+
+The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
 against the frozen producer artifact. G3 networking remains deferred. Both
-candidates are selected as the provisional pilot on Snap and Starship; see the
+candidates were selected as the provisional pilot on Snap and Starship; see the
 [operational record](operational-execution-status.md) for independent installation,
 bounded watch/recovery and real Tmux/SSH entry acceptance. The
 [operational plan](overnight-operational-acceptance-plan.md) closed its unattended
@@ -49,8 +57,10 @@ separate source/passivity gates. Push to consumers does not imply lossless nativ
 events or introduce cross-host networking into the core.
 
 Working/blocked/waiting phases and Git/workspace context are accepted within the
-candidate's source-specific bounds. Parked inference and last conversation
-activity remain unavailable; creation is a separately labeled ordering option.
+candidate's source-specific bounds. Parked inference remains unavailable.
+Last-conversation activity is accepted for bounded native metadata; missing
+older Codex clocks and unpersisted copied Claude histories stay explicitly
+unknown. Creation is a separately labeled ordering option.
 Multi-profile UX remains deferred. The reviewed managed cutover selects v2 on
 Snap and Starship and retains the old artifacts for rollback. The gaps and acceptance cases are in the public contract and
 execution record.

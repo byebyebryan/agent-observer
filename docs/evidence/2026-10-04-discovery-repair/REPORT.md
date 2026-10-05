@@ -59,6 +59,25 @@ operation remain consumer acceptance gates.
 
 ## Delivery
 
-R0–R4 are accepted for the subset above. Scoped producer selection, exact managed
-verification and owned native cleanup remain R5 at this checkpoint. Ordinary
-provider configuration and native sessions remain outside the deployment scope.
+R0–R5 are complete for the subset above. The [delivery record](delivery.json)
+records managed source `bb99484`, selecting the accepted `0.2.0a7` read/write
+entries on Snap and Starship. Plus `0.14.0a1` and its frozen `0.2.0a3` reader
+library remain unchanged; the managed gate verifies producer and reader artifacts
+separately and checks their exact public schema compatibility. Private rollback
+snapshots retain the prior selection on both hosts. No public push occurred.
+
+Selected live headless gates pass on both hosts through their actual configured
+routes, with isolated cache/UI state. Each sample contains 162 sessions and two
+explicit provider warnings; a passing aggregate does not remove partial-source
+warnings or establish graphical acceptance. The unchanged generic Tmux lifecycle
+proof was not repeated. Only the two Observer selectors changed.
+
+Both owned native namespaces are stopped and borrowed authentication/history
+copies removed. Ordinary provider settings and authentication hashes are unchanged;
+Starship's 15 unrelated managed drift paths are preserved. Snap's `.claude.json`
+preference hash changed during the batch. A comparison with a provider backup
+finds runtime metrics/plugin usage changes, but that backup is not the exact
+baseline and does not establish attribution. No private fixture project appears
+in ordinary preferences; that drift is recorded and left untouched rather than
+restoring a concurrently used preferences file. Ordinary native sessions remain
+outside the deployment scope. No session restart is required for this update.
