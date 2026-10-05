@@ -415,9 +415,9 @@ def compare(before, snapshot, after, provider):
             issues.append({"id": sid, "field": "membership", "result": "missing_cli_row"})
             continue
         checks["membership"] += 1
-        comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"], "activity": c["activity"]["at"]}
+        comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"], "activity": c["activity"]["at"], "kind": c["kind"]}
         if provider == "codex":
-            comparisons.update(kind=c["kind"], sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"])
+            comparisons.update(sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"])
         for field, observed in comparisons.items():
             expected = b.get(field)
             if a.get(field) != expected:

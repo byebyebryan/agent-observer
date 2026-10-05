@@ -1,6 +1,6 @@
 # Evaluation repair acceptance
 
-Date: 2026-10-05. Status: R1–R3 source checkpoints; frozen package/selection pending.
+Date: 2026-10-05. Status: frozen G2 producer subset accepted; selection pending.
 See the [execution record](../../evaluation-repair-execution.md) and preceding
 [evaluation](../2026-10-05-cli-native-evaluation/REPORT.md).
 
@@ -104,3 +104,71 @@ discoverable with unknown runtime. Codex diagnostics expose
 claim to observe all older TUI contexts. No process restart, automatic standalone
 adapter or ordinary Resume is introduced. Native migration of an older TUI is a
 separate operator action; saved discovery does not require it.
+
+## Frozen installed producer acceptance
+
+Manifest [a9](../../../artifacts/observer-0.2.0a9.json) freezes source `f5067ba`,
+wheel `b4563dc2…`. All 29 packaged source/schema files match the freeze. Candidate
+installation verifies wheel bytes, interpreter/entrypoint ownership, schema v2
+read/watch and v1 write, and the SDK profile. Snap has source-only SDK 0.2.163;
+Starship uses the core profile. Neither installer selects launchers or invokes
+providers. See [packaged native acceptance](packaged-native.json).
+
+Public installed New/Resume, repeated native entry, rename/housekeeping and age
+checks pass for Codex on both hosts and Claude on Snap. Both current Codex
+daemons pass held approval and isolated failure/recovery; saved discovery and
+conversation age survive, while offline Resume rejects unavailable runtime
+evidence. Explicit New restarts only the private runtime, after which exact
+Resume works. Independent watch recovery accepts gap/resync framing, revisions,
+unknown retained runtime and a stable logical reference on both hosts. Claude
+also passes held approval, partial-feed healthy Attach, native copied identity
+on saved Resume, first-prompt activity advancement, and companion/conflict
+restoration. The native copied UUID remains distinct from its requested origin.
+
+The recovery harness previously stopped draining stdout during provider actions,
+which legitimately hit bounded watch backpressure on the larger Snap fixture.
+Its consumer now drains continuously. It also waits for the **exact** newly
+created conversation to persist, rather than accepting another transcript file
+in the same store, and reports its actual installed Observer version. These
+are validation-client repairs; the frozen producer bytes did not change.
+
+The [Snap installed comparison](snap-installed-evaluation.json) independently
+matches 50 Codex and 29 Claude rows in two bracketing rounds. The
+[Starship comparison](starship-installed-evaluation.json) matches 95 Codex rows.
+All sampled identities, cwd and stable conversation clocks agree; available
+explicit titles agree. A changing phase/clock between bracketing reads is
+reported as a sampling race. Native unavailable phases remain unknown. All 29
+Claude classifications agree independently. Snap filters two known Codex
+children and Starship five; default list ordering, age rendering, exact-reference
+show, doctor counts and full identity scope pass. Counts describe this sample,
+not a permanent inventory or exhaustive absence proof.
+
+Two ordinary passive readers pass ten samples each on
+[Snap](snap-installed-watch.json) and [Starship](starship-installed-watch.json),
+with schema/revision checks, bounded memory/descriptors and no provider actions.
+The frozen Plus environment's Observer a3 reader consumes complete candidate
+rows unchanged and has identical public read/watch/write schema shapes.
+This accepts compatibility at the producer boundary, not graphical behavior.
+
+Ordinary Codex config/auth and Claude settings/credentials hashes remain
+unchanged. Snap's ordinary `.claude.json` differs while independent ordinary
+sessions are active; it was masked in every native action namespace and is not
+restored or attributed to this loop. No ordinary provider restart or policy/hook
+change occurred. Package acceptance precedes any managed selection.
+
+| Finding | Resolution in accepted subset | Remaining capability |
+| --- | --- | --- |
+| E01 | Exact current daemon supported; installed/native proof on both hosts | New daemon/CLI images need independent registration |
+| E02 | Independent current-store saved metadata survives live failure | Legacy/exhaustive offline stores are outside scope |
+| E03 | Actual owner/image diagnostics distinguish support from ownership | Unknown artifacts remain rejected |
+| E04 | Current working, approval and completed readiness proved; finite unknown reasons | Blank background/native blocked-job/foreground/question semantics |
+| E05 | Ordinary Claude user classification and held child storage proved | Ephemeral UUID-only helper ancestry |
+| E06 | Current completion-only clocks and age/order comparisons pass | Old 0.160.0 completion-only RPC shape remains unproved |
+| E07 | Recorded context semantics settled; native Git/worktree/root mapping passes | Recent context field and its action policy need a versioned gate |
+| E08 | Older TUI diagnosed; saved identity remains visible with explicit live limitation | Successful native binding or operator migration of that TUI |
+| E09 | Accepted a8 record restored; exact a9 freeze/profile records added | Hosted release/publication remains separate |
+
+General questions/outcomes, parked inference, attachment/focus, native push/hooks,
+lossless replay, optional networking and physical sleep/wake remain separate
+capability gates. No notification sender, frontend implementation, ordinary
+session Resume or release publication is accepted by these proofs.
