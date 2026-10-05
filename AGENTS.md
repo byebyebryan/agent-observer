@@ -54,6 +54,11 @@
 
 ## Validation and delivery
 
+- Follow `docs/observation-validation-workflow.md`: compare the installed public
+  CLI with independent native evidence from ordinary active sessions or isolated
+  test sessions. Report exact identity/state/age comparisons, coverage limits
+  and unresolved classifications; another Observer result is not independent
+  native proof. Keep producer acceptance separate from frontend validation.
 - Use the linked spike plan and report coverage per provider, version and
   topology. Standalone success does not establish daemon support.
 - Distinguish static/schema, synthetic, controlled-server and native live
