@@ -214,8 +214,12 @@ def collect_claude(
         result["sourceHealth"] = (
             "current"
             if complete and not native["errors"]
-            else "stale"
-            if result["sessions"]
+            else "partial"
+            if native["supported"]
+            and any(
+                native["coverage"][name] in {"complete", "partial"}
+                for name in ("sessionRegistry", "jobStore")
+            )
             else "unavailable"
         )
     except (CollectionError, OSError) as exc:

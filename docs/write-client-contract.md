@@ -51,6 +51,14 @@ identity, child, unsupported selector or mismatched cwd is a bounded rejection.
 Plans contain no credentials or inherited environment; native argv is derived
 locally rather than supplied by the caller.
 
+Partial aggregate source coverage does not invalidate a healthy selected target.
+Unsupported work/tempo/terminal-clock metadata does not by itself prevent native
+entry. Identity, directory, artifact and runtime ambiguity still reject. Claude
+live attach additionally requires a current verified worker and a retained job
+record linked to its exact full session and native job ID; a registry-only row
+whose job metadata is missing cannot use this route. Observation health never
+becomes blanket action authority.
+
 Codex native resume uses the separate native sessionId, not an inferred equality
 with threadId. New leaves identity pending until native entry creates context.
 Native trust/login handling remains in the TUI; this client does not approve it.

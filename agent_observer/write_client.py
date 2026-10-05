@@ -29,6 +29,14 @@ ARTIFACTS = {
     ),
 }
 BG_SETTINGS = '{"worktree":{"bgIsolation":"none"}}'
+_OBSERVATION_ONLY_ISSUES = frozenset(
+    {
+        "unknown_job_state",
+        "unknown_job_tempo",
+        "terminal_clock_unavailable",
+        "native_history_time_unavailable",
+    }
+)
 
 
 def _digest(path, limit, timeout=3):
@@ -90,7 +98,7 @@ def _target(request):
     )
     if (
         row["kind"] == "child"
-        or row["metadataIssues"]
+        or set(row["metadataIssues"]) - _OBSERVATION_ONLY_ISSUES
         or source["configHome"] != request["configHome"]
         or source["configHomeKind"] != request["configHomeKind"]
         or source["runtime"] is None
@@ -146,6 +154,9 @@ def prepare(request):
             and row["worker"]["value"] == "present"
             and row["worker"]["health"] == "current"
             and row["nativeIds"]["jobId"]
+            and row["job"] is not None
+            and row["job"]["retained"] is True
+            and row["job"]["id"] == row["nativeIds"]["jobId"]
         ):
             route = "claude_attach"
         elif (
@@ -348,7 +359,7 @@ def execute(plan, *, timeout=30):
                 if row["nativeIds"]["jobId"] == job
                 and row["cwd"] == fresh["request"]["cwd"]
                 and row["worker"]["value"] == "present"
-                and not row["metadataIssues"]
+                and not set(row["metadataIssues"]) - _OBSERVATION_ONLY_ISSUES
             ]
             if len(rows) == 1:
                 actual = rows[0]["identity"]
