@@ -11,7 +11,9 @@ Observer `0.2.0a8`, source `ece20e2`, wheel SHA-256
 passes the producer gate independently of a frontend. Installed wheel bytes,
 entrypoints, public schemas and executable version match on Snap and Starship.
 Snap uses source-built Claude SDK `0.2.163` without a bundled executable;
-Starship uses the core-only profile. Source checks pass 176 tests and scoped Ruff.
+Starship uses the core-only profile. The source freeze passes 176 tests and scoped
+Ruff. The final completion audit adds an oversized/growing-companion regression;
+177 tests pass against the unchanged production bytes.
 
 | Provider and topology | Exact native artifact | Accepted cases |
 | --- | --- | --- |
@@ -44,7 +46,7 @@ observation and the separate writer; resident process images are inspected
 independently of the replacement installed inode. Unregistered images and
 version/digest mismatches remain unsupported. This is not version-range support.
 
-The CLI version now comes from package metadata's single version source;
+The CLI and wheel metadata now share a single version source;
 candidate verification checks the executable label too. Human rows show readable
 conversation age, and text doctor reports finite errors and verified/accepted
 runtime versions. Wire shapes remain snapshot/watch v2 and write v1, matching
@@ -72,6 +74,32 @@ picker focus and graphical acceptance remain a separate consumer checkpoint.
 
 ## Delivery
 
-The independent S2–S4 gate is closed for the subset above. Scoped producer
-selection and exact owned-fixture cleanup are pending S5. The frozen Plus
-package and reader are unchanged. No public push occurred.
+S0–S5 are closed for the subset above. The [delivery record](delivery.json)
+records managed source `9f4c28e`, selecting Observer read/write `0.2.0a8` on Snap
+and Starship. Exact installed/profile/schema checks and selected live configured
+route/headless gates pass on both hosts. Each sample has 164 sessions and zero
+provider-stage errors; this does not establish graphical acceptance or guarantee
+future sources are complete. The unchanged generic Tmux lifecycle was not rerun.
+Only the two Observer links changed. Plus and its reader remain frozen.
+
+Private rollback snapshots retain the prior selection on both hosts. Snap's
+broad chezmoi status/diff still rejects an unrelated SSH Plus external archive
+checksum. The previously reviewed selector-only source projection independently
+renders and applies the exact managed templates, without external definitions or
+provider actions. No external pin, provider policy or session restart is part of
+this update. No public push occurred.
+
+All five owned native namespaces, including the failed early mixed-version
+fixture, are stopped; exact PID/incarnation checks confirm none remains running.
+Borrowed authentication/history stores and private old executable copies are
+removed. Ordinary Codex/Claude configuration and authentication hashes match
+their baselines. Starship retains all 21 pre-existing managed drift paths:
+outside the four owned source updates, 12 file hashes, four absent paths and one
+directory sentinel match the captured baseline. This does not claim a recursive
+baseline for the untracked directory.
+
+Snap's `.claude.json` preference hash changed during the batch. No fixture project
+appears in its project-key surface; the hash-only baseline cannot attribute the
+other drift. The file is left intact rather than overwriting concurrent native
+preferences. Ordinary provider sessions remained outside all native action and
+cleanup scopes. Further Plus work starts from this frozen producer acceptance.

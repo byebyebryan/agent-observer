@@ -341,6 +341,7 @@
     "frontendEdits": 0
   },
   "independentProducerGate": "accepted_for_documented_subset",
-  "selection": "pending_scoped_selection",
-  "cleanup": "pending"
+  "selection": "observer_0.2.0a8_selected_on_snap_and_starship_plus_unchanged",
+  "cleanup": "owned_namespaces_stopped_borrowed_auth_history_and_private_old_images_removed_preference_drift_recorded",
+  "finalCompletionAuditTests": 177
 }

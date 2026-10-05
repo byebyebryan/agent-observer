@@ -1,6 +1,6 @@
 # Contract and clients handoff
 
-Date: 2026-10-04. The regular primary-owned goal loop closed independent G1/G2
+Date: 2026-10-05. The regular primary-owned goal loop closed independent G1/G2
 and the subsequent bounded Plus E8 consumer pass. Networking G3 remains deferred;
 Plus retains existing Host Mesh composition. The [execution record](contract-clients-execution-status.md)
 and [independent Observer report](evidence/2026-10-04-contract-clients/REPORT.md)
@@ -11,21 +11,22 @@ the unchanged `0.2.0a3` producer tuple on Snap and Starship, including the globa
 entry. It independently accepted installation/watch/recovery before consumer
 proofs, then real Tmux/SSH New/Resume and selected passive/headless gates. The
 baseline rollout section below is historical. The subsequent independent
-[discovery repair pass](evidence/2026-10-04-discovery-repair/REPORT.md) selects
-Observer `0.2.0a7` on both hosts while preserving the Plus artifact and reader
-dependency. Use that report and its delivery record for current selection and
-rollback; graphical acceptance and the silent Plus Resume investigation remain
-a separate consumer checkpoint.
+[discovery repair pass](evidence/2026-10-04-discovery-repair/REPORT.md) was followed
+by the [operational resilience pass](evidence/2026-10-05-operational-resilience/REPORT.md),
+which selects Observer `0.2.0a8` on both hosts while preserving the Plus artifact
+and reader dependency. Use that report and its delivery record for current
+selection and rollback. Wrapper association, silent Plus Resume, age presentation
+and graphical acceptance remain a separate consumer checkpoint.
 
 ## Delivered tuple
 
 | Component | Source | Version | Selected prefix on Snap and Starship |
 | --- | --- | --- | --- |
-| Observer | `0526106` | `0.2.0a7` | `/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c` |
+| Observer | `ece20e2` | `0.2.0a8` | `/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051` |
 | Plus | `90e5b4f` | `0.14.0a1` | `/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a` |
 
 Observer wheel SHA-256:
-`1d42506cf2b5cc7c75a3d8df4ee3279493b132d7b87cb8cd79b1f5b360e4ebc2`.
+`8bbbff345b58c0517e2ca69bc9caa2157d01c59c82c087af7b06dc17c4d90a8c`.
 Plus wheel SHA-256:
 `8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b`.
 Persistent wheels are under each project's `artifacts` directory beneath
@@ -37,7 +38,7 @@ SHA-256 `6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f`.
 The managed gate checks this dependency independently of the selected producer
 and verifies their unchanged public schemas before selecting the new producer.
 
-Observer passes 172 tests and its documentation gate; Plus previously passed
+Observer passes 177 tests and its documentation gate; Plus previously passed
 309 tests and its full local source gate. Independent installed fixture conformance,
 native entry/recovery and selected headless gates pass. Plus E8 evidence lives in its own checkout at
 `docs/evidence/2026-10-04-observer-v2/REPORT.md`; no Observer code was changed to
@@ -50,12 +51,12 @@ provider daemons or change the pilot links. The ordinary read/write commands
 now resolve to this same artifact on the pilot hosts:
 
 ```sh
-observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c
+observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051
 "$observer_candidate/bin/agent-observer" --version
 "$observer_candidate/bin/agent-observer" list --host-scope snap
 "$observer_candidate/bin/agent-observer" doctor --host-scope snap --json
 "$observer_candidate/bin/agent-observer" watch --host-scope snap --interval 2 --count 3
-ssh starship /home/bryan/.local/share/agent-observer/0.2.0a7-1d42506cf2b5cc7c/bin/agent-observer list --host-scope starship --provider codex
+ssh starship /home/bryan/.local/share/agent-observer/0.2.0a8-8bbbff345b58c051/bin/agent-observer list --host-scope starship --provider codex
 ```
 
 For saved public fixtures, use `list/show/doctor/watch --input FILE|-` with no
