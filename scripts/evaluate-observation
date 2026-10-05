@@ -1,0 +1,520 @@
+#!/usr/bin/env python3
+"""Read-only installed-CLI/native comparison; no Observer imports or actions.
+
+This is an operator evaluation tool, not another discovery implementation for
+consumers. Native payloads stay in memory; stdout contains bounded metadata.
+"""
+
+import argparse
+import base64
+import collections
+import datetime
+import hashlib
+import json
+import os
+import re
+import socket
+import stat
+import struct
+import subprocess
+import time
+from pathlib import Path
+
+UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z")
+ARTIFACTS = {
+    "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad": ("codex", "0.160.0"),
+    "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0": ("claude", "2.1.287"),
+    "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348": ("claude", "2.1.289"),
+}
+MAX_FILE = 4 * 1024 * 1024
+
+
+def clock():
+    return time.time_ns() // 1_000_000
+
+
+def bounded_text(value, limit=256):
+    if not isinstance(value, str):
+        return None
+    return " ".join("".join(c if c.isprintable() else " " for c in value).split())[:limit] or None
+
+
+def read_json(path):
+    fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_size > MAX_FILE:
+            raise ValueError("native_file_rejected")
+        data = os.read(fd, MAX_FILE + 1)
+        if len(data) > MAX_FILE:
+            raise ValueError("native_file_limit")
+        return json.loads(data)
+    finally:
+        os.close(fd)
+
+
+def birth(pid):
+    fields = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+    return fields[19], fields[0], int(fields[1])
+
+
+def image(path):
+    with open(path, "rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    accepted = ARTIFACTS.get(digest)
+    return {"sha256": digest, "provider": accepted[0] if accepted else None,
+            "version": accepted[1] if accepted else None}
+
+
+class NativeRPC:
+    """Independent stdlib Unix WebSocket client for the inspected read subset."""
+
+    def __init__(self, home, reference_sha256=None):
+        control = home / "app-server-control/app-server-control.sock"
+        if not control.is_symlink() or control.lstat().st_uid != os.getuid():
+            raise ValueError("native_endpoint_unavailable")
+        endpoint = Path(os.readlink(control))
+        expected = Path(f"/tmp/codex-daemon-{os.getuid()}") / hashlib.sha256(str(control).encode()).hexdigest()
+        info = endpoint.stat()
+        if endpoint != expected or not stat.S_ISSOCK(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) != 0o600:
+            raise ValueError("native_endpoint_rejected")
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.settimeout(5)
+        try:
+            self.sock.connect(str(endpoint))
+            pid, uid, _ = struct.unpack("3i", self.sock.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
+            if uid != os.getuid():
+                raise ValueError("native_peer_rejected")
+            self.pid = pid
+            self.start = birth(pid)[0]
+            self.artifact = image(f"/proc/{pid}/exe")
+            if self.artifact["provider"] != "codex":
+                executable = os.readlink(f"/proc/{pid}/exe")
+                match = re.fullmatch(re.escape(str(home)) + r"/packages/app-server-daemon/releases/(\d+\.\d+\.\d+)-x86_64-unknown-linux-musl/bin/codex", executable)
+                if reference_sha256 != self.artifact["sha256"] or match is None:
+                    raise ValueError("native_image_unregistered")
+                self.artifact.update(provider="codex", version=match.group(1), referenceOnly=True, versionEvidence="exact_sha256_and_release_path")
+            self.buffer = bytearray()
+            key = base64.b64encode(os.urandom(16)).decode()
+            self.sock.sendall(("GET / HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " + key + "\r\nSec-WebSocket-Version: 13\r\nOrigin: http://localhost\r\n\r\n").encode())
+            header = bytearray()
+            while not header.endswith(b"\r\n\r\n"):
+                if len(header) >= 16384:
+                    raise ValueError("native_upgrade_limit")
+                header.extend(self.recv(1))
+            lines = header.decode().split("\r\n")
+            fields = {name.lower(): value.strip() for name, value in (line.split(":", 1) for line in lines[1:] if ":" in line)}
+            accept = base64.b64encode(hashlib.sha1((key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest()).decode()
+            if " 101 " not in lines[0] or fields.get("sec-websocket-accept", "").strip() != accept:
+                raise ValueError("native_upgrade_rejected")
+            self.sequence = 0
+            init = self.call("initialize", {"clientInfo": {"name": "observer-independent-eval", "version": "1"}})
+            if init.get("codexHome") != str(home):
+                raise ValueError("native_store_mismatch")
+            self.send({"method": "initialized", "params": {}})
+        except BaseException:
+            self.sock.close()
+            raise
+
+    def recv(self, count):
+        while len(self.buffer) < count:
+            data = self.sock.recv(count - len(self.buffer))
+            if not data:
+                raise ValueError("native_peer_closed")
+            self.buffer.extend(data)
+        value = bytes(self.buffer[:count])
+        del self.buffer[:count]
+        return value
+
+    def frame(self, payload, opcode=1):
+        mask = os.urandom(4)
+        size = len(payload)
+        header = bytes((0x80 | opcode, 0x80 | size)) if size < 126 else bytes((0x80 | opcode, 0xfe)) + struct.pack("!H", size) if size < 65536 else bytes((0x80 | opcode, 0xff)) + struct.pack("!Q", size)
+        self.sock.sendall(header + mask + bytes(v ^ mask[i % 4] for i, v in enumerate(payload)))
+
+    def send(self, value):
+        self.frame(json.dumps(value, separators=(",", ":")).encode())
+
+    def message(self):
+        result = bytearray()
+        for _ in range(256):
+            first, second = self.recv(2)
+            opcode = first & 15
+            size = second & 127
+            if first & 0x70 or second & 0x80:
+                raise ValueError("native_frame_rejected")
+            if size == 126:
+                size = struct.unpack("!H", self.recv(2))[0]
+            elif size == 127:
+                size = struct.unpack("!Q", self.recv(8))[0]
+            if size + len(result) > 8 * 1024 * 1024:
+                raise ValueError("native_message_limit")
+            body = self.recv(size)
+            if opcode == 8:
+                raise ValueError("native_peer_closed")
+            if opcode == 9:
+                self.frame(body, 10)
+                continue
+            if opcode == 10:
+                continue
+            if opcode not in (0, 1):
+                raise ValueError("native_opcode_rejected")
+            result.extend(body)
+            if first & 0x80:
+                return json.loads(result)
+        raise ValueError("native_frame_limit")
+
+    def call(self, method, params):
+        if method not in {"initialize", "thread/list", "thread/loaded/list", "thread/read", "thread/turns/list"}:
+            raise ValueError("non_read_method_rejected")
+        if method == "thread/read" and params.get("includeTurns") is not False:
+            raise ValueError("content_read_rejected")
+        if method == "thread/turns/list" and params != {"threadId": params.get("threadId"), "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"}:
+            raise ValueError("content_read_rejected")
+        self.sequence += 1
+        self.send({"id": self.sequence, "method": method, "params": params})
+        deadline = time.monotonic() + 8
+        for _ in range(256):
+            if time.monotonic() > deadline:
+                raise ValueError("native_rpc_timeout")
+            value = self.message()
+            if value.get("id") != self.sequence or "method" in value:
+                continue
+            if "error" in value:
+                raise ValueError("native_rpc_error")
+            return value["result"]
+        raise ValueError("native_notification_limit")
+
+    def pages(self, method):
+        rows, cursors, cursor = [], set(), None
+        for _ in range(32):
+            params = {"cursor": cursor}
+            if method == "thread/list":
+                params["limit"] = 100
+            response = self.call(method, params)
+            rows.extend(response["data"])
+            if len(rows) > 2048:
+                raise ValueError("native_inventory_limit")
+            cursor = response.get("nextCursor")
+            if cursor is None:
+                return rows
+            if cursor in cursors:
+                raise ValueError("native_cursor_cycle")
+            cursors.add(cursor)
+        raise ValueError("native_page_limit")
+
+    def close(self):
+        self.sock.close()
+
+
+def codex_reference(client):
+    loaded = set(client.pages("thread/loaded/list"))
+    saved = client.pages("thread/list")
+    records = {r["id"]: r for r in saved}
+    for sid in loaded:
+        records[sid] = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
+    rows = {}
+    for sid, r in records.items():
+        if not UUID.fullmatch(sid):
+            raise ValueError("native_id_invalid")
+        source = r.get("source")
+        child = r.get("threadSource") == "subagent" or isinstance(source, dict) and "subAgent" in source
+        kind = "child" if child else "user" if r.get("threadSource") == "user" else "unknown"
+        status = r.get("status", {}).get("type") if sid in loaded else None
+        flags = r.get("status", {}).get("activeFlags", []) if sid in loaded else []
+        phase = "waiting" if status == "idle" else "blocked" if status == "active" and flags == ["waitingOnApproval"] else "working" if status == "active" and flags == [] else None
+        at, reason = None, None
+        try:
+            turns = client.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
+            if turns:
+                turn = turns[0]
+                if turn.get("items") != [] or turn.get("itemsView") != "notLoaded":
+                    raise ValueError("native_items_not_excluded")
+                stamp = turn.get("completedAt") if turn.get("completedAt") is not None else turn.get("startedAt")
+                at = stamp * 1000 if type(stamp) is int else None
+            reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
+        except (ValueError, OSError, KeyError):
+            reason = "native_turn_read_unavailable"
+        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": "running" if sid in loaded else None, "phase": phase, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags}
+    if birth(client.pid)[0] != client.start:
+        raise ValueError("native_runtime_changed")
+    return {"sampleAt": clock(), "rows": rows, "loaded": sorted(loaded), "saved": sorted(r["id"] for r in saved), "runtime": {"pid": client.pid, "startTicks": client.start, **client.artifact}}
+
+
+def native_history(home):
+    rows, gaps, total_bytes = {}, [], 0
+    for path in sorted((home / "projects").glob("*/*.jsonl")):
+        if not UUID.fullmatch(path.stem):
+            continue
+        try:
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK)
+            with os.fdopen(fd, "rb") as stream:
+                before = os.fstat(stream.fileno())
+                if not stat.S_ISREG(before.st_mode) or before.st_uid != os.getuid():
+                    raise ValueError("native_transcript_rejected")
+                # Independently inspect up to a 2 MiB tail, larger than Observer's
+                # 512 KiB window. No content or summaries cross this boundary.
+                offset = max(0, before.st_size - 2 * 1024 * 1024)
+                head = stream.read(min(before.st_size, 64 * 1024)) if offset else b""
+                stream.seek(offset)
+                data = stream.read(2 * 1024 * 1024)
+                total_bytes += len(data)
+                if total_bytes > 128 * 1024 * 1024:
+                    gaps.append("native_history_total_limit")
+                    break
+                after = os.fstat(stream.fileno())
+            if (before.st_dev, before.st_ino) != (after.st_dev, after.st_ino):
+                raise ValueError("native_transcript_changed")
+            lines = data.split(b"\n")
+            if offset:
+                lines = lines[1:]
+            lines = lines[:-1]
+            metadata = {"title": None, "cwd": None, "latestConversationCwd": None, "activity": None, "kind": "unknown", "paths": 1, "scanBounded": bool(offset), "growing": before.st_size != after.st_size}
+            for line in (head.split(b"\n")[:-1] if head else lines):
+                try:
+                    record = json.loads(line)
+                except (ValueError, UnicodeError):
+                    continue
+                if isinstance(record, dict) and record.get("sessionId") == path.stem:
+                    metadata["cwd"] = metadata["cwd"] or bounded_text(record.get("cwd"), 4096)
+            conversation = False
+            for line in lines:
+                if not line:
+                    continue
+                record = json.loads(line)
+                if not isinstance(record, dict) or record.get("sessionId") != path.stem:
+                    continue
+                if record.get("type") == "custom-title":
+                    metadata["title"] = bounded_text(record.get("customTitle")) or metadata["title"]
+                if record.get("type") not in ("user", "assistant") or record.get("isMeta") is True:
+                    continue
+                if record.get("isSidechain") is True:
+                    metadata["kind"] = "child"
+                    continue
+                if record.get("isSidechain") is not False:
+                    continue
+                conversation = True
+                metadata["kind"] = "user"
+                metadata["latestConversationCwd"] = bounded_text(record.get("cwd"), 4096) or metadata["latestConversationCwd"]
+                message = record.get("message", {})
+                if not isinstance(message, dict) or message.get("role") != record.get("type"):
+                    continue
+                stamp = record.get("timestamp")
+                if isinstance(stamp, str):
+                    parsed = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+                    if parsed.tzinfo is not None:
+                        at = int(parsed.timestamp() * 1000)
+                        metadata["activity"] = max(metadata["activity"] or 0, at)
+            if not conversation:
+                gaps.append("non_conversation_or_outside_tail:" + path.stem)
+                continue
+            old = rows.get(path.stem)
+            if old:
+                metadata["paths"] += old["paths"]
+                metadata["conflictingConversation"] = True
+            rows[path.stem] = metadata
+        except (OSError, ValueError, TypeError):
+            gaps.append("native_history_scan_unavailable:" + path.stem)
+    return rows, sorted(set(gaps)), total_bytes
+
+
+def claude_reference(home, image_cache):
+    domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
+    history, history_gaps, scanned = native_history(home)
+    rows = {sid: {**r, "runtime": None, "phase": None} for sid, r in history.items()}
+    registry = []
+    for path in sorted((home / "sessions").glob("*.json")):
+        try:
+            r = read_json(path)
+            sid, pid = r.get("sessionId"), r.get("pid")
+            if not isinstance(sid, str) or not UUID.fullmatch(sid) or type(pid) is not int:
+                continue
+            start, state, parent = birth(pid)
+            if start != r.get("procStart") or r.get("pidDomain") != domain or state == "Z":
+                continue
+            info = Path(f"/proc/{pid}/exe").stat()
+            key = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
+            artifact = image_cache.setdefault(key, None)
+            if artifact is None:
+                artifact = image(f"/proc/{pid}/exe")
+                image_cache[key] = artifact
+            if artifact["provider"] != "claude" or birth(pid)[0] != start:
+                continue
+            job_id = r.get("jobId")
+            try:
+                job = read_json(home / "jobs" / job_id / "state.json") if isinstance(job_id, str) and re.fullmatch("[0-9a-f]{8}", job_id) else None
+            except (OSError, ValueError):
+                job = None
+            linked = job is None and job_id is None or job is not None and job.get("sessionId") == sid
+            status = r.get("status")
+            native_state = job.get("state") if job else None
+            tempo = job.get("tempo") if job else None
+            phase = None
+            if linked:
+                if job is not None and native_state == "done" and tempo in ("idle", "blocked") and status == "idle":
+                    phase = "waiting"
+                elif job is None and r.get("kind") == "interactive" and status in ("busy", "shell"):
+                    phase = "working"
+                elif native_state == "working" and tempo == "active" and status in ("busy", "shell"):
+                    phase = "working"
+                elif native_state == "working" and tempo in ("active", "blocked") and status == "waiting" and r.get("waitingFor") == "permission prompt":
+                    phase = "blocked"
+            original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
+            row = {**original, "cwd": bounded_text(r.get("cwd"), 4096) or original["cwd"], "runtime": "running", "phase": phase, "pid": pid, "parentPid": parent, "startTicks": start, "workerVersion": artifact["version"], "registryKind": r.get("kind") if r.get("kind") in ("interactive", "bg", "daemon", "daemon-worker") else "unknown", "nativeStatus": status if status in ("busy", "shell", "idle", "waiting") else "unknown", "nativeJobState": native_state if native_state in ("working", "done", "blocked", "failed", "stopped") else None, "nativeTempo": tempo if tempo in ("active", "idle", "blocked") else None, "statusUpdatedAt": r.get("statusUpdatedAt"), "jobLinked": linked}
+            rows[sid] = row
+            registry.append(sid)
+        except (OSError, ValueError, TypeError):
+            continue
+    return {"sampleAt": clock(), "rows": rows, "registered": sorted(registry), "historyGaps": history_gaps, "historyBytesScanned": scanned}
+
+
+def cli_call(cli, argv, snapshot=None):
+    process = subprocess.run([str(cli), *argv], input=snapshot, capture_output=True, cwd="/tmp", timeout=40)
+    if process.returncode:
+        raise ValueError("installed_cli_failed")
+    if len(process.stdout) > 8 * 1024 * 1024:
+        raise ValueError("installed_cli_output_limit")
+    return process.stdout
+
+
+def identity_scope(snapshot, host, providers):
+    sources = {source["provider"]: source for source in snapshot["sources"]}
+    expected = {}
+    checks = []
+    for provider in providers:
+        home = str(Path.home() / (".codex" if provider == "codex" else ".claude"))
+        selector = "explicit" if provider == "codex" or "CLAUDE_CONFIG_DIR" in os.environ else "default"
+        namespace = "sha256:" + hashlib.sha256(json.dumps([provider, home, selector, os.getuid()], separators=(",", ":")).encode()).hexdigest()
+        expected[provider] = namespace
+        source = sources.get(provider, {})
+        checks.append(source.get("configHome") == home and source.get("configHomeKind") == selector and source.get("namespace") == namespace)
+    host_ok = snapshot["host"]["authority"] == host and snapshot["host"]["nativeHostname"] == socket.gethostname() and snapshot["host"]["uid"] == os.getuid()
+    refs = []
+    rows_ok = True
+    for row in snapshot["sessions"]:
+        reference = row["identity"]
+        provider = reference["provider"]
+        refs.append(tuple(sorted(reference.items())))
+        rows_ok &= provider in providers and reference["hostScope"] == host and reference["namespace"] == expected.get(provider) and reference["nativeIdKind"] == ("thread" if provider == "codex" else "session") and bool(UUID.fullmatch(reference["nativeId"]))
+    return {"hostProvenance": host_ok, "storeScopes": all(checks), "fullRowReferences": rows_ok and len(refs) == len(set(refs)), "rowsChecked": len(refs)}
+
+
+def compare(before, snapshot, after, provider):
+    actual = {r["identity"]["nativeId"]: r for r in snapshot["sessions"] if r["identity"]["provider"] == provider}
+    pre, post = before["rows"], after["rows"]
+    stable_ids = set(pre) & set(post)
+    checks, issues, rows = collections.Counter(), [], []
+    for sid in sorted(set(pre) | set(post) | set(actual)):
+        a, b, c = pre.get(sid), post.get(sid), actual.get(sid)
+        if a is None and b is None:
+            continue
+        if sid not in stable_ids:
+            issues.append({"id": sid, "field": "membership", "result": "sampling_race"})
+            continue
+        if c is None:
+            issues.append({"id": sid, "field": "membership", "result": "missing_cli_row"})
+            continue
+        checks["membership"] += 1
+        comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"], "activity": c["activity"]["at"]}
+        if provider == "codex":
+            comparisons.update(kind=c["kind"], sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"])
+        for field, observed in comparisons.items():
+            expected = b.get(field)
+            if a.get(field) != expected:
+                issues.append({"id": sid, "field": field, "result": "sampling_race"})
+            elif expected is None or field == "kind" and expected == "unknown":
+                checks[field + "_unproved"] += 1
+                if field == "phase" and (b.get("runtime") == "running" or observed != "unknown") or field == "activity" and (b.get("runtime") == "running" or observed is not None):
+                    issues.append({"id": sid, "field": field, "result": "native_reference_unproved", "cli": observed})
+            elif expected != observed:
+                issues.append({"id": sid, "field": field, "result": "mismatch", "native": expected, "cli": observed})
+            else:
+                checks[field] += 1
+        if c["runtime"]["value"] == "running":
+            rows.append({"id": sid, "title": c["title"], "cwd": c["cwd"], "cliPhase": c["phase"]["value"], "cliKind": c["kind"], "nativeKind": b.get("kind"), "nativePhase": b.get("phase"), "nativeStatus": b.get("nativeStatus", b.get("status")), "nativeJobState": b.get("nativeJobState"), "nativeTempo": b.get("nativeTempo"), "workerVersion": b.get("workerVersion"), "activityAt": c["activity"]["at"]})
+    # A stable public-only row is unresolved, not automatically a false positive:
+    # the independently bounded history scan may not establish its membership.
+    for sid in sorted(set(actual) - set(pre) - set(post)):
+        issues.append({"id": sid, "field": "membership", "result": "cli_only_unproved", "runtime": actual[sid]["runtime"]["value"]})
+    native_active = [{"id": sid, "title": b.get("title"), "cwd": b.get("cwd"), "nativeKind": b.get("kind"), "nativePhaseCandidate": b.get("phase"), "nativeStatus": b.get("nativeStatus", b.get("status")), "activityAt": b.get("activity")} for sid, b in sorted(post.items()) if b.get("runtime") == "running"]
+    context_differences = [{"id": sid, "recordedCwd": actual[sid]["cwd"], "latestConversationCwd": b["latestConversationCwd"]} for sid, b in sorted(post.items()) if sid in actual and b.get("latestConversationCwd") and b["latestConversationCwd"] != actual[sid]["cwd"]]
+    return {"nativeBeforeRows": len(pre), "nativeAfterRows": len(post), "cliRows": len(actual), "nativeCounts": {"running": len(native_active), "activityKnown": sum(r.get("activity") is not None for r in post.values()), "classification": dict(collections.Counter(r.get("kind", "unknown") for r in post.values()))}, "checks": dict(checks), "nativeActive": native_active, "active": rows, "contextDifferences": context_differences, "issues": issues}
+
+
+def read_client_checks(cli, payload):
+    snapshot = json.loads(payload)
+    listed = json.loads(cli_call(cli, ["list", "--input", "-", "--json"], payload))
+    with_children = json.loads(cli_call(cli, ["list", "--input", "-", "--include-children", "--json"], payload))
+    expected = [r for r in snapshot["sessions"] if r["kind"] != "child"]
+    def identity(row):
+        return json.dumps(row["identity"], sort_keys=True)
+    attention = {"blocked": 0, "waiting": 1, "working": 2, "unknown": 3}
+    def order(row):
+        at = row["activity"]["at"]
+        r = row["identity"]
+        return (attention[row["phase"]["value"]], at is None, -(at or 0), r["hostScope"], r["provider"], r["namespace"], r["nativeIdKind"], r["nativeId"])
+    human = cli_call(cli, ["list", "--input", "-"], payload).decode().splitlines()
+    age_ok = True
+    for line, row in zip(human[1:], listed["sessions"], strict=True):
+        at = row["activity"]["at"]
+        seconds = None if at is None else (snapshot["collectedAt"] - at) // 1000
+        age = "unknown" if seconds is None else "clock-ahead" if seconds < 0 else next(str(seconds // unit) + label for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
+        age_ok &= line.split("  ")[4] == age
+    shown = 0
+    for row in listed["sessions"]:
+        if row["runtime"]["value"] != "running":
+            continue
+        result = json.loads(cli_call(cli, ["show", "--input", "-", "--ref", json.dumps(row["identity"]), "--json"], payload))
+        if result != row:
+            raise ValueError("installed_show_mismatch")
+        shown += 1
+    doctor = json.loads(cli_call(cli, ["doctor", "--input", "-", "--json"], payload))
+    return {"defaultChildFiltering": {identity(r) for r in listed["sessions"]} == {identity(r) for r in expected}, "includeChildrenInventory": {identity(r) for r in with_children["sessions"]} == {identity(r) for r in snapshot["sessions"]}, "attentionActivityOrdering": listed["sessions"] == sorted(expected, key=order), "humanAgeRendering": age_ok and len(human) == len(listed["sessions"]) + 1, "exactReferenceShowRows": shown, "doctorSessionCount": doctor["sessionCount"] == len(snapshot["sessions"]), "cliRows": len(listed["sessions"]), "filteredChildren": len(snapshot["sessions"]) - len(listed["sessions"])}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
+    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--rounds", type=int, choices=range(1, 5), default=2)
+    parser.add_argument("--codex-reference-sha256", help="explicit study-only pin for an unregistered running daemon; does not change Observer support")
+    args = parser.parse_args()
+    for variable, suffix in (("CODEX_HOME", ".codex"), ("CLAUDE_CONFIG_DIR", ".claude")):
+        if variable in os.environ and Path(os.environ[variable]) != Path.home() / suffix:
+            raise ValueError("reference_default_home_required")
+    cache, samples = {}, []
+    if args.codex_reference_sha256 is not None and re.fullmatch("[0-9a-f]{64}", args.codex_reference_sha256) is None:
+        raise ValueError("reference_digest_invalid")
+    client = NativeRPC(Path.home() / ".codex", args.codex_reference_sha256) if "codex" in args.provider else None
+    def native():
+        result = {}
+        if client is not None:
+            result["codex"] = codex_reference(client)
+        if "claude" in args.provider:
+            result["claude"] = claude_reference(Path.home() / ".claude", cache)
+        return result
+    try:
+        for _ in range(args.rounds):
+            before = native()
+            argv = ["snapshot", "--host-scope", args.host_scope]
+            for provider in args.provider:
+                argv += ["--provider", provider]
+            payload = cli_call(args.cli, argv)
+            snapshot = json.loads(payload)
+            after = native()
+            samples.append({"nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned") if k in v} for p, v in after.items()}})
+    finally:
+        if client is not None:
+            client.close()
+    print(json.dumps({"evaluationVersion": 1, "hostScope": args.host_scope, "cliVersion": cli_call(args.cli, ["--version"]).decode().strip(), "selectedCli": str(args.cli.resolve()), "referenceImportsObserver": False, "ordinaryProviderActions": False, "controlledNativeCasesRun": False, "samples": samples}, indent=2))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+        # Never print native error payloads or command output.
+        code = str(exc) if isinstance(exc, ValueError) and re.fullmatch("[a-z_]{1,96}", str(exc)) else "evaluation_unavailable"
+        print(json.dumps({"error": code, "exceptionClass": type(exc).__name__}))
+        raise SystemExit(2) from None
