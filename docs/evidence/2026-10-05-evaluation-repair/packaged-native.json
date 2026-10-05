@@ -1,0 +1,468 @@
+{
+  "snap": {
+    "native-claude-approval-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "version": "2.1.289",
+      "workingObserved": true,
+      "nativePermissionPromptObserved": true,
+      "nativeJobState": "working",
+      "nativeJobTempo": "blocked",
+      "observedPhase": "blocked",
+      "heldApprovalPreservesAge": true,
+      "toolNotExecuted": true,
+      "approvalAutomaticallyAnswered": false,
+      "terminalOutputPersisted": false
+    },
+    "native-claude-companion-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "fixture": "native_transcript_with_controlled_metadata_companion",
+      "singleConversationRetained": true,
+      "companionRecencyIgnored": true,
+      "titleAndNativeActivityPreserved": true,
+      "conflictingConversationsExplicit": true,
+      "restorationPreservesAge": true,
+      "terminalOutputPersisted": false
+    },
+    "native-codex-approval-acceptance": {
+      "hostScope": "snap",
+      "provider": "codex",
+      "scenario": "packaged-held-approval",
+      "runtimeVersion": "0.160.1",
+      "observerVersion": "0.2.0a9",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "terminalOutputPersisted": false,
+      "samples": [
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239894000
+        },
+        {
+          "id": "01a10e37-9b7c-7c63-a02d-2660acbc75bc",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239894000
+        }
+      ],
+      "status": "accepted",
+      "heldSamples": 3,
+      "toolNotExecuted": true
+    },
+    "native-claude-partial-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "independentOfFrontend": true,
+      "fixture": "native_worker_missing_job_metadata",
+      "healthyLiveAttachThroughPartialFeed": true,
+      "savedResumeThroughPartialFeed": true,
+      "nativeCopiedIdentityExplicit": true,
+      "savedResumeClockUnknownUntilNativePersistence": true,
+      "firstNewPromptAdvancesCopiedActivity": true,
+      "terminalOutputPersisted": false
+    },
+    "native-codex-recovery-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "independentOfFrontend": true,
+      "ownedDaemonFailureVisible": true,
+      "independentSavedDiscoverySurvivesFailure": true,
+      "offlineSavedResumeRejected": true,
+      "publicNewRestartsRuntime": true,
+      "exactSavedResumeAfterRecovery": true,
+      "recoveryPreservesConversationAge": true,
+      "offlineSavedResumeDirectly": "unsupported",
+      "terminalOutputPersisted": false
+    },
+    "native-claude-entry-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false
+    },
+    "native-codex-entry-acceptance": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false
+    },
+    "independent-native-recovery": {
+      "hostScope": "snap",
+      "observerVersion": "0.2.0a9",
+      "independentOfFrontend": true,
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "status": "accepted",
+      "phaseClockKind": "sample",
+      "nativePhaseClockRenewalClaimed": false,
+      "sampledStateEvidenceExplicit": true,
+      "offlineObservationDidNotStartDaemon": true,
+      "oldHandoffRejected": true,
+      "oldHandoffReason": "resume_evidence_unavailable",
+      "stableStoreReferenceRecovered": true,
+      "exactResumeAfterRestart": true,
+      "watchFrameKinds": [
+        "snapshot",
+        "gap",
+        "resync",
+        "heartbeat",
+        "heartbeat",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change"
+      ],
+      "partialMissingRowRetainedUnknown": true,
+      "ownedDaemonOnly": true
+    }
+  },
+  "starship": {
+    "native-codex-approval-acceptance": {
+      "hostScope": "starship",
+      "provider": "codex",
+      "scenario": "packaged-held-approval",
+      "runtimeVersion": "0.160.1",
+      "observerVersion": "0.2.0a9",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "terminalOutputPersisted": false,
+      "samples": [
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [],
+          "phase": "working",
+          "blockedReason": "unknown",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239896000
+        },
+        {
+          "id": "01a10e37-9f09-70f0-9b1b-4a6360d1e335",
+          "nativeStatus": "active",
+          "flags": [
+            "waitingOnApproval"
+          ],
+          "phase": "blocked",
+          "blockedReason": "approval",
+          "activityAt": 1791239896000
+        }
+      ],
+      "status": "accepted",
+      "heldSamples": 3,
+      "toolNotExecuted": true
+    },
+    "native-codex-recovery-acceptance": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "independentOfFrontend": true,
+      "ownedDaemonFailureVisible": true,
+      "independentSavedDiscoverySurvivesFailure": true,
+      "offlineSavedResumeRejected": true,
+      "publicNewRestartsRuntime": true,
+      "exactSavedResumeAfterRecovery": true,
+      "recoveryPreservesConversationAge": true,
+      "offlineSavedResumeDirectly": "unsupported",
+      "terminalOutputPersisted": false
+    },
+    "native-codex-entry-acceptance": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false
+    },
+    "independent-native-recovery": {
+      "hostScope": "starship",
+      "observerVersion": "0.2.0a9",
+      "independentOfFrontend": true,
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "status": "accepted",
+      "phaseClockKind": "sample",
+      "nativePhaseClockRenewalClaimed": false,
+      "sampledStateEvidenceExplicit": true,
+      "offlineObservationDidNotStartDaemon": true,
+      "oldHandoffRejected": true,
+      "oldHandoffReason": "resume_evidence_unavailable",
+      "stableStoreReferenceRecovered": true,
+      "exactResumeAfterRestart": true,
+      "watchFrameKinds": [
+        "snapshot",
+        "gap",
+        "resync",
+        "heartbeat",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change",
+        "change"
+      ],
+      "partialMissingRowRetainedUnknown": true,
+      "ownedDaemonOnly": true
+    }
+  },
+  "frozenArtifact": {
+    "manifestVersion": 1,
+    "package": "agent-observer",
+    "version": "0.2.0a9",
+    "sourceRevision": "f5067ba9ef75bff20d7f97712b73215ac51c021f",
+    "wheel": "agent_observer-0.2.0a9-py3-none-any.whl",
+    "wheelSha256": "b4563dc2a09df0e198d6df8047b12b1355da66505a31714f19b01e237a552697",
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write"
+    ],
+    "schemas": {
+      "snapshot": 2,
+      "watch": 2,
+      "write": 1
+    },
+    "claudeHistorySdk": "0.2.163",
+    "providers": {
+      "codex": {
+        "version": "0.160.0",
+        "sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+        "managedRuntime": {
+          "version": "0.160.1",
+          "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "capabilities": [
+            "managed_read",
+            "managed_work",
+            "managed_approval",
+            "managed_activity",
+            "managed_entry",
+            "completion_only_activity"
+          ]
+        }
+      },
+      "claude": {
+        "version": "2.1.289",
+        "sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348"
+      }
+    }
+  },
+  "frozenReader": {
+    "status": "accepted",
+    "producerVersion": "0.2.0a9",
+    "frozenReaderVersion": "0.2.0a3",
+    "clientImplementationChanged": false,
+    "schemasUnchanged": true,
+    "nativeSnapshotRows": 79,
+    "readerRows": 77,
+    "knownChildrenFiltered": 2,
+    "identityActivityPhasePreserved": true,
+    "writeSchemasUnchanged": true,
+    "completeNativeRowsPreserved": true
+  },
+  "ordinaryGuards": [
+    {
+      "hostScope": "snap",
+      "ordinaryGuardUnchanged": {
+        ".codex/config.toml": true,
+        ".codex/auth.json": true,
+        ".claude/settings.json": true,
+        ".claude/.credentials.json": true,
+        ".claude.json": false
+      },
+      "ordinaryProviderActions": false,
+      "ordinaryServicesRestarted": false,
+      "isolatedNamespaceMasksEstablished": true
+    },
+    {
+      "hostScope": "starship",
+      "ordinaryGuardUnchanged": {
+        ".codex/config.toml": true,
+        ".codex/auth.json": true
+      },
+      "ordinaryProviderActions": false,
+      "ordinaryServicesRestarted": false,
+      "isolatedNamespaceMasksEstablished": true
+    }
+  ],
+  "gate": {
+    "G2": "accepted_exact_read_write_native_subset",
+    "selectedLinksChanged": false,
+    "selectedVersionAtGate": "0.2.0a8",
+    "generalQuestionsForegroundParkedHelpersPushNetworkingPhysicalSleep": "not accepted by this subset"
+  }
+}

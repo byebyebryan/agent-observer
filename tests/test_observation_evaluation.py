@@ -52,3 +52,12 @@ class ObservationEvaluationTest(unittest.TestCase):
         for method, params in (("thread/resume", {}), ("thread/start", {}), ("thread/read", {"includeTurns": True}), ("thread/turns/list", {"itemsView": "loaded"})):
             with self.subTest(method=method), self.assertRaises(ValueError):
                 client.call(method, params)
+
+    def test_claude_classification_is_compared_independently(self):
+        native = self.native()
+        public = self.public(identity={"provider": "claude", "nativeId": SID})
+        self.assertEqual(evaluation.compare(native, public, native, "claude")["issues"], [])
+        public["sessions"][0]["kind"] = "unknown"
+        result = evaluation.compare(native, public, native, "claude")
+        self.assertEqual(result["issues"], [{"id": SID, "field": "kind", "result": "mismatch",
+                                            "native": "user", "cli": "unknown"}])

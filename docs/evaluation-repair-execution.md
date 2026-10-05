@@ -52,8 +52,11 @@ physical suspend or release publication is part of this loop.
 - R3 context/topology checkpoint: recorded cwd semantics are explicit; disposable
   native Git/worktree/root mappings agree. The older Snap TUI remains outside
   accepted live binding, with discoverable history and an explicit limitation.
-- R4 pending. Selected a8 still rejects current Codex; no source checkpoint
-  by itself selects a package or accepts Starship actions/consumer behavior.
+- R4 G2 subset accepted: a9 wheel/source/installed byte/profile checks and
+  independent native read/write/watch/recovery proofs pass. Ordinary installed
+  comparisons cover both hosts; the unchanged frozen a3 reader accepts complete
+  candidate rows/schema shapes. See the report for exact coverage and remaining
+  capability gates. Selection pending; source acceptance alone never selected it.
 
 Record native evidence as bounded identity/state/time/count/version/reason
 metadata only. Never retain authentication, prompts/responses, tool output,

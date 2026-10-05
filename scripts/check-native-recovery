@@ -11,7 +11,9 @@ import struct
 import subprocess
 import sys
 import termios
+import threading
 import time
+from importlib.metadata import version
 from pathlib import Path
 
 
@@ -94,11 +96,12 @@ def main():
 
     output = {
         "hostScope": os.environ["NATIVE_PROOF_HOST"],
-        "observerVersion": "0.2.0a3",
+        "observerVersion": version("agent-observer"),
         "independentOfFrontend": True,
         "isolation": ready,
     }
     watch = None
+    reader = None
     try:
         before = {json.dumps(row["identity"], sort_keys=True) for row in snapshot()["sessions"]}
         client = spawn(plan())
@@ -122,13 +125,18 @@ def main():
         os.write(client[1], b"Reply with OK.\r")
         wait(client[1], 1)
         os.write(client[1], b"\r")
-        deadline = time.monotonic() + 35
+        deadline = time.monotonic() + 60
         while time.monotonic() < deadline:
             drain(client[1])
-            if any((base / "codex/sessions").glob("**/*.jsonl")):
+            persisted = next(
+                (row for row in snapshot()["sessions"] if row["identity"] == reference), None
+            )
+            if persisted and persisted["phase"]["value"] == "waiting" and persisted["activity"]["at"] is not None:
                 break
             time.sleep(0.2)
-        assert any((base / "codex/sessions").glob("**/*.jsonl"))
+        else:
+            raise RuntimeError("exact_native_conversation_not_persisted")
+        activity_at = persisted["activity"]["at"]
         stop(client)
         old_plan = plan(reference)
         watch = subprocess.Popen(
@@ -146,10 +154,33 @@ def main():
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
+            # The initial readline and later communicate must share an
+            # unbuffered pipe; BufferedReader prefetch can hide part of a frame.
+            bufsize=0,
         )
         from agent_observer.contract import validate_watch
 
-        initial = validate_watch(json.loads(watch.stdout.readline()))
+        frames, frame_errors = [], []
+        first_ready = threading.Event()
+
+        def consume():
+            try:
+                for line in watch.stdout:
+                    if len(frames) >= 32 or len(line) > 16 * 1024 * 1024:
+                        raise RuntimeError("watch_proof_limit")
+                    frames.append(validate_watch(json.loads(line)))
+                    first_ready.set()
+            except Exception:
+                frame_errors.append("watch_frame_unavailable")
+            finally:
+                first_ready.set()
+
+        # Drain throughout the native actions. Otherwise a large resync frame
+        # can legitimately hit the producer's bounded backpressure timeout.
+        reader = threading.Thread(target=consume, daemon=True)
+        reader.start()
+        assert first_ready.wait(30) and frames and not frame_errors
+        initial = frames[0]
         source = initial["snapshot"]["sources"][0]
         daemon_pid = source["runtime"]["pid"]
         executable = Path(os.readlink(f"/proc/{daemon_pid}/exe"))
@@ -163,6 +194,7 @@ def main():
         assert unavailable["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
         retained_saved = next(row for row in unavailable["sessions"] if row["identity"] == reference)
         assert retained_saved["runtime"]["value"] == retained_saved["phase"]["value"] == "unknown"
+        assert retained_saved["activity"]["at"] == activity_at
         stale = subprocess.run(
             [writer, "execute", "--plan-json", json.dumps(old_plan)],
             capture_output=True,
@@ -180,8 +212,9 @@ def main():
         assert any(row["identity"] == reference for row in snapshot()["sessions"])
         stop(exact_client)
         stop(new_client)
-        remaining, _ = watch.communicate(timeout=30)
-        frames = [initial, *[validate_watch(json.loads(line)) for line in remaining.splitlines()]]
+        watch.wait(timeout=30)
+        reader.join(timeout=3)
+        assert not reader.is_alive() and not frame_errors
         assert watch.returncode == 0
         assert any(frame["kind"] == "gap" for frame in frames)
         retained = [
@@ -213,6 +246,8 @@ def main():
         if watch and watch.poll() is None:
             watch.send_signal(signal.SIGINT)
             watch.wait(timeout=5)
+        if reader:
+            reader.join(timeout=3)
     (root / "independent-native-recovery.json").write_text(json.dumps(output, indent=2) + "\n")
     print(json.dumps(output))
 
