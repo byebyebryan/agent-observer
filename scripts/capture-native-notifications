@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Metadata-only callback sink for an explicitly owned native-isolation proof."""
+
+import json
+import os
+import stat
+import subprocess
+import sys
+from pathlib import Path
+
+from agent_observer.bounded_json import decode_document
+from agent_observer.notification_source import MAX_HOOK_BYTES, normalize
+from agent_observer.public import parse_snapshot, store_namespace
+
+AUTHORIZED_ROOT = None
+
+
+def capture():
+    global AUTHORIZED_ROOT
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    fixture = json.loads((root / "fixture.json").read_text())
+    runtime = json.loads((root / "runtime.json").read_text())
+    ready = json.loads((root / "ready.json").read_text())
+    assert os.getuid() == 0 and root.stat().st_uid == 0 and all(ready.values())
+    assert not runtime.get("stopped")
+    assert all(
+        os.readlink("/proc/self/ns/" + key) == token for key, token in runtime["namespaces"].items()
+    )
+    provider = sys.argv[1]
+    assert provider in {"codex", "claude"}
+    base = root / ("native-" + fixture["host"])
+    assert Path(os.environ["HOME"]) == base / "home"
+    assert Path(os.environ["CODEX_HOME"]) == base / "codex"
+    assert Path(os.environ["CLAUDE_CONFIG_DIR"]) == base / "claude"
+    assert root.resolve(strict=True) == root
+    AUTHORIZED_ROOT = root
+    raw = sys.argv[2].encode() if provider == "codex" else sys.stdin.buffer.read(MAX_HOOK_BYTES + 1)
+    payload = decode_document(raw, max_bytes=MAX_HOOK_BYTES)
+    identity = {
+        "hostScope": fixture["host"],
+        "provider": provider,
+        "namespace": store_namespace(provider, str(base / provider), "explicit", os.geteuid()),
+        "nativeIdKind": "thread" if provider == "codex" else "session",
+        "nativeId": payload.get("thread-id" if provider == "codex" else "session_id"),
+    }
+    snapshot = None
+    try:
+        result = subprocess.run(
+            [
+                fixture["prefix"] + "/bin/agent-observer",
+                "snapshot",
+                "--host-scope",
+                fixture["host"],
+                "--provider",
+                provider,
+            ],
+            capture_output=True,
+            timeout=8,
+        )
+        if result.returncode == 0:
+            snapshot = parse_snapshot(result.stdout)
+    except (subprocess.TimeoutExpired, ValueError):
+        pass
+    event = normalize(raw, identity, snapshot=snapshot)
+    record = {
+        "event": event,
+        "stopHookActive": payload.get("stop_hook_active")
+        if type(payload.get("stop_hook_active")) is bool
+        else None,
+        "nativeChildFieldPresent": isinstance(payload.get("agent_id"), str),
+    }
+    fd = os.open(
+        root / "notification-events.jsonl",
+        os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW,
+        0o600,
+    )
+    try:
+        st = os.fstat(fd)
+        assert stat.S_ISREG(st.st_mode) and st.st_uid == os.geteuid() and st.st_size <= 512 * 1024
+        encoded = (json.dumps(record) + "\n").encode()
+        assert os.write(fd, encoded) == len(encoded)
+    finally:
+        os.close(fd)
+
+
+try:
+    capture()
+except Exception:
+    # A test failure cannot approve/deny/continue work or echo callback payloads.
+    if AUTHORIZED_ROOT is not None:
+        try:
+            fd = os.open(
+                AUTHORIZED_ROOT / "notification-capture-gap",
+                os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+                0o600,
+            )
+            os.close(fd)
+        except OSError:
+            pass
+if sys.argv[1:2] == ["claude"]:
+    print("{}")

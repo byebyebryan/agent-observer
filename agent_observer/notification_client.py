@@ -32,7 +32,9 @@ class RecentEvents:
 
     def accept(self, event):
         validate_event(event)
-        key = event["correlation"]["dedupeKey"] or "receipt:" + event["receiptId"]
+        # Policy-suppressed callbacks must not consume a later visible signal.
+        native_key = event["correlation"]["dedupeKey"] if event["disposition"] == "notify" else None
+        key = native_key or "receipt:" + event["receiptId"]
         if key in self.keys:
             self.keys.move_to_end(key)
             return False
