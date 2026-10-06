@@ -3,8 +3,10 @@
 import base64
 import copy
 import json
+import os
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -139,6 +141,15 @@ class NotificationTest(unittest.TestCase):
             received_at=100,
         )
         self.assertTrue(seen.accept(event))
+        other["namespace"] = "sha256:" + "f" * 64
+        scoped = normalize(
+            json.dumps(
+                {"type": "agent-turn-complete", "thread-id": other["nativeId"], "turn-id": TURN}
+            ).encode(),
+            other,
+            received_at=100,
+        )
+        self.assertTrue(seen.accept(scoped))
         self.assertTrue(seen.accept(self.claude(notification_type="permission_prompt")))
         self.assertEqual(len(seen.keys), 2)
         self.assertTrue(seen.accept(first))  # Eviction deliberately loses prior suppression.
@@ -151,6 +162,21 @@ class NotificationTest(unittest.TestCase):
         self.assertIsNone(a["correlation"]["dedupeKey"])
         self.assertTrue(seen.accept(a))
         self.assertTrue(seen.accept(b))
+
+    def test_ignored_exec_callback_does_not_consume_visible_completion_key(self):
+        seen = RecentEvents()
+        ignored = self.event(
+            {
+                "type": "agent-turn-complete",
+                "thread-id": self.ref["nativeId"],
+                "turn-id": TURN,
+                "client": "codex_exec",
+            }
+        )
+        self.assertEqual(ignored["disposition"], "ignore")
+        self.assertTrue(seen.accept(ignored))
+        self.assertTrue(seen.accept(self.event()))
+        self.assertFalse(seen.accept(self.event()))
 
     def test_kitty_protocol_separates_sender_title_body_and_keeps_native_focus_policy(self):
         sequence = render(self.event())
@@ -214,3 +240,18 @@ class NotificationTest(unittest.TestCase):
         )
         self.assertEqual(proc.returncode, 0)
         self.assertEqual(proc.stdout, line)
+
+    def test_native_capture_failure_outside_isolation_is_quiet_and_writes_nothing(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            env = dict(os.environ)
+            env["NATIVE_PROOF_ROOT"] = scratch
+            env["PYTHONPATH"] = str(Path(__file__).parent.parent)
+            script = Path(__file__).parent.parent / "scripts/capture-native-notifications"
+            proc = subprocess.run(
+                [sys.executable, "-B", str(script), "claude"],
+                input=b'{"message":"PRIVATE_CALLBACK"}',
+                env=env,
+                capture_output=True,
+            )
+            self.assertEqual((proc.returncode, proc.stdout, proc.stderr), (0, b"{}\n", b""))
+            self.assertEqual(list(Path(scratch).iterdir()), [])
