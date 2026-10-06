@@ -131,6 +131,9 @@ def collect_claude(
         )
         result["sessions"] = native["observations"]
         for row in result["sessions"]:
+            accepted_wait_reasons = ACCEPTED_WAIT_REASONS | (
+                {"question", "user_input"} if "input_wait" in row.get("phaseCapabilities", []) else set()
+            )
             row["presenceKind"] = "os_worker"
             row["inventory"] = (
                 "live"
@@ -141,7 +144,7 @@ def collect_claude(
             )
             if row["work"].get("value") not in ACCEPTED_WORK_VALUES | {"unknown"} or (
                 row["work"].get("value") == "needs_input"
-                and row.get("waitReason") not in ACCEPTED_WAIT_REASONS
+                and row.get("waitReason") not in accepted_wait_reasons
             ):
                 row["work"] = {
                     "value": "unknown",
@@ -154,7 +157,10 @@ def collect_claude(
         result["coverage"].update(native["coverage"])
         result["coverage"]["work"] = {
             "supportedValues": sorted(ACCEPTED_WORK_VALUES),
-            "supportedWaitReasons": sorted(ACCEPTED_WAIT_REASONS),
+            "supportedWaitReasons": sorted(ACCEPTED_WAIT_REASONS | (
+                {"question", "user_input"} if any("input_wait" in row.get("phaseCapabilities", [])
+                                    for row in result["sessions"]) else set()
+            )),
             "pendingValues": ["error", "interrupted"],
             "pendingWaitReasons": ["user_input", "worker_request", "sandbox_request"],
         }
@@ -220,6 +226,13 @@ def collect_claude(
     saved_coverage = history.get("coverage")
     if isinstance(saved_coverage, dict):
         result["coverage"]["saved"] = saved_coverage
+    census = history.get("census") or {}
+    for key, reason in (("sdk_omitted_ids", "history_sdk_candidates_omitted"),
+                        ("unresolved_ids", "history_candidates_unresolved"),
+                        ("resolved_companion_ids", "history_duplicate_companions"),
+                        ("malformed_filename_ids", "history_invalid_filename_candidates")):
+        if census.get(key, 0):
+            result["limitations"].append(reason)
     for history_error in history.get("errors", []):
         if isinstance(history_error, dict) and isinstance(history_error.get("code"), str):
             if history_error not in result["errors"]:

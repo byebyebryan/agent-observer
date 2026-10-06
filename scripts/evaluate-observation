@@ -223,7 +223,7 @@ def codex_reference(client):
         status = r.get("status", {}).get("type") if sid in loaded else None
         flags = r.get("status", {}).get("activeFlags", []) if sid in loaded else []
         phase = "waiting" if status == "idle" else "blocked" if status == "active" and flags == ["waitingOnApproval"] else "working" if status == "active" and flags == [] else None
-        at, reason = None, None
+        at, reason, outcome, outcome_at = None, None, None, None
         try:
             turns = client.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
             if turns:
@@ -232,10 +232,15 @@ def codex_reference(client):
                     raise ValueError("native_items_not_excluded")
                 stamp = turn.get("completedAt") if turn.get("completedAt") is not None else turn.get("startedAt")
                 at = stamp * 1000 if type(stamp) is int else None
+                if client.artifact["version"] == "0.160.1" and type(turn.get("completedAt")) is int:
+                    outcome = {"completed": "completed", "failed": "failed", "interrupted": "cancelled"}.get(turn.get("status"))
+                    outcome_at = turn["completedAt"] * 1000 if outcome else None
+                elif turn.get("status") == "inProgress":
+                    outcome = "unknown"
             reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
         except (ValueError, OSError, KeyError):
             reason = "native_turn_read_unavailable"
-        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": "running" if sid in loaded else None, "phase": phase, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags}
+        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": "running" if sid in loaded else None, "phase": phase, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
     return {"sampleAt": clock(), "rows": rows, "loaded": sorted(loaded), "saved": sorted(r["id"] for r in saved), "runtime": {"pid": client.pid, "startTicks": client.start, **client.artifact}}
@@ -351,7 +356,19 @@ def claude_reference(home, image_cache):
             tempo = job.get("tempo") if job else None
             phase = None
             if linked:
-                if job is not None and native_state == "done" and tempo in ("idle", "blocked") and status == "idle":
+                current_image = artifact["version"] == "2.1.289"
+                counts = (job or {}).get("inFlight") or {}
+                current_job = job is None and r.get("kind") == "interactive" or native_state in ("working", "done")
+                if current_image and current_job and status == "waiting" and r.get("waitingFor") in ("permission prompt", "input needed"):
+                    phase = "blocked"
+                elif current_image and job is None and r.get("kind") == "interactive" and status == "idle":
+                    phase = "waiting"
+                elif current_image and current_job and status in ("busy", "shell"):
+                    phase = "working"
+                elif job is not None and native_state == "done" and tempo in ("idle", "blocked") and status == "idle" and (
+                    not current_image or tempo == "idle" and job.get("lastTerminalAt") is not None
+                    and all(type(counts.get(k)) is int and counts[k] == 0 for k in ("tasks", "queued", "drainableMonitors"))
+                ):
                     phase = "waiting"
                 elif job is None and r.get("kind") == "interactive" and status in ("busy", "shell"):
                     phase = "working"
@@ -419,7 +436,8 @@ def compare(before, snapshot, after, provider):
         checks["membership"] += 1
         comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"], "activity": c["activity"]["at"], "kind": c["kind"]}
         if provider == "codex":
-            comparisons.update(sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"])
+            comparisons.update(sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"],
+                               outcome=c["outcome"]["value"], outcomeAt=c["outcome"]["observedAt"])
         for field, observed in comparisons.items():
             expected = b.get(field)
             if a.get(field) != expected:

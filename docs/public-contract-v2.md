@@ -24,11 +24,25 @@ Phase is working, blocked, waiting or unknown. Approval waits map to blocked.
 The proved Codex loaded idle state maps to waiting, with a sampled evidence
 clock. Claude work/approval maps to working/blocked; completed background jobs
 have a separate completed outcome. A completed background job with its current
-verified worker maps to waiting: an isolated native proof accepted a subsequent
+verified worker maps to waiting within its exact image gate: an isolated native proof accepted a subsequent
 prompt under the same UUID and completed it. Completion with a missing/unknown
-worker does not establish readiness. Background idle while a job is working and
-foreground interactive readiness remain unknown. Questions, cancellation and
-failure outcomes remain unproved in this candidate.
+worker does not establish readiness. The monitoring source checkpoint additionally
+accepts Claude 2.1.289 foreground first-prompt/completed readiness and held
+held input as blocked. A foreground registry input label is shared with other
+dialogs, so its blocked reason stays unknown; exact linked background job
+question structure additionally accepts blocked/question. New predicates require that exact
+worker image, independently of the installed CLI; surviving 2.1.287 workers keep
+their previous limits. Current background completion requires explicit latest
+terminal metadata and zero tasks, queued work and drainable monitors. Idle with
+pending work or a blank background context remains unknown. Old terminal job
+state cannot override current working/input-wait registry evidence.
+
+Codex 0.160.1 explicit latest-turn completed/failed/interrupted metadata maps to
+completed/failed/cancelled outcome, with its terminal clock. A new in-progress
+turn clears the preceding outcome. Outcome does not settle runtime phase;
+systemError remains unknown with `native_runtime_error`. Codex questions and
+Claude failure/cancellation outcome predicates remain unproved. These source
+changes await independent package acceptance and do not change selected a9.
 
 Blank live background rows use `background_readiness_unproved`; native job
 state `blocked`, whose meaning is not established by the held approval case,
@@ -125,6 +139,11 @@ agent-observer watch --host-scope snap --interval 2
 model with ordered/filtered rows; human list output labels unavailable activity
 as unknown. `show` requires the complete exact JSON reference. `doctor --json`
 returns host, source health/coverage/capabilities and session count.
+`doctor --history-census` performs a separately timestamped bounded Claude SDK
+scan and reports candidate files/UUIDs, returned/projected/omitted/unresolved
+UUIDs, companion duplicates and display counts. SDK omission does not prove
+invalid history. Coverage stays partial; limits or unsafe stores remain errors.
+This optional diagnostic is outside the snapshot schema and requires live scope.
 `--input FILE` (or `-` for stdin) parses only a public snapshot and never imports
 collectors, inspects provider homes, enriches paths or performs actions.
 

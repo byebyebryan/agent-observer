@@ -28,6 +28,9 @@ _REASONS = frozenset(
         "observation_gap",
         "unsupported",
         "identity_ambiguous",
+        "native_pending_work",
+        "native_readiness_unproved",
+        "native_state_conflict",
         "synthetic",
     }
 )

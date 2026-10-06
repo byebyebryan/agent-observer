@@ -78,6 +78,9 @@ class _Job:
     cwd: str | None = None
     issues: tuple[str, ...] = ()
     title: str | None = field(default=None, compare=False)
+    in_flight: tuple[int, int, int] | None = None
+    last_terminal_at: int | None = None
+    question_wait: bool = False
 
 
 class _ReadFailure(Exception):
@@ -168,6 +171,20 @@ def _linux_process_uses_supported_binary(pid: int, cache=None) -> tuple[bool | N
     except ValueError:
         return False, "different_binary"
     return True, "matched"
+
+
+def _phase_capabilities(record, presence, cache):
+    """New predicates are gated by the worker image, not the installed CLI."""
+    if presence.effective_value != "present":
+        return []
+    try:
+        image = inspect_process(record["pid"], "claude", cache=cache)
+        start, state = _linux_proc_start_token(record["pid"])
+        if state != "present" or start != record["procStart"]:
+            return []
+        return sorted(image.artifact.capabilities - {"entry"})
+    except (OSError, ValueError):
+        return []
 
 
 def _open_directory_at(parent_fd: int, name: str) -> int:
@@ -322,7 +339,24 @@ def _job_record(job_id: str, payload: object) -> _Job:
         _cwd(payload.get("cwd")),
         tuple(issues),
         _user_title(payload),
+        _in_flight(payload.get("inFlight")),
+        _terminal_time(payload.get("lastTerminalAt")),
+        _question_wait(payload.get("block")),
     )
+
+
+def _question_wait(value):
+    if not isinstance(value, dict):
+        return False
+    questions = value.get("questions")
+    return isinstance(questions, list) and 1 <= len(questions) <= 32 and all(isinstance(q, dict) for q in questions)
+
+
+def _in_flight(value):
+    if not isinstance(value, dict):
+        return None
+    counts = tuple(value.get(k) for k in ("tasks", "queued", "drainableMonitors"))
+    return counts if all(type(n) is int and 0 <= n <= 100000 for n in counts) else None
 
 
 def _session_record(filename: str, payload: object) -> dict[str, Any]:
@@ -381,6 +415,7 @@ def _session_record(filename: str, payload: object) -> dict[str, Any]:
         "statusUpdatedAt": status_updated_at,
         "jobId": job_id,
         "waitReason": wait_reason,
+        "questionWait": status == "waiting" and payload.get("waitingFor") == "input needed",
         "cwd": _cwd(payload.get("cwd")),
         "title": _user_title(payload),
         "issues": tuple(issues),
@@ -490,7 +525,7 @@ def _status_work(
         if job.state == "unknown" or job.tempo == "unknown":
             return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
         if job.state in {"done", "failed", "stopped"}:
-            return Evidence("work", health="ambiguous", reason="identity_ambiguous"), "unknown"
+            return Evidence("work", health="ambiguous", reason="native_state_conflict"), "unknown"
         if status == "idle":
             # Native background roster idle is activity/status, not job completion.
             return Evidence("work"), "unknown"
@@ -519,7 +554,7 @@ def _status_work(
                     ),
                     "working",
                 )
-            return Evidence("work", health="ambiguous", reason="identity_ambiguous"), "unknown"
+            return Evidence("work", health="ambiguous", reason="native_state_conflict"), "unknown"
         return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
     elif record["jobId"] is not None or record["kind"] != "interactive":
         return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
@@ -572,6 +607,7 @@ def _observation(
     identity = NativeIdentity(host_scope, "claude", namespace, "session", session_id)
     attachment = Evidence("attachment", health="unsupported", reason="unsupported")
     metadata_issues = list(issues)
+    phase_capabilities = []
     if job is not None:
         metadata_issues.extend(job.issues)
     if registry is not None:
@@ -585,6 +621,7 @@ def _observation(
         linked_job_id = job.job_id if job is not None else None
     else:
         presence = _presence(registry, pid_domain, observed_at, image_cache)
+        phase_capabilities = _phase_capabilities(registry, presence, image_cache)
         session_kind = registry["kind"]
         native_status = {
             "value": registry["status"],
@@ -596,6 +633,27 @@ def _observation(
         elif job is not None and job.job_id != linked_job_id:
             work = Evidence("work", health="ambiguous", reason="identity_ambiguous")
             metadata_issues.append("job_session_conflict")
+        elif "registry_phase" in phase_capabilities and registry["statusUpdatedAt"] is not None and (
+            job is None and linked_job_id is None and registry["kind"] == "interactive"
+            or job is not None and job.state in {"working", "done"}
+        ):
+            # Current-image registry activity overrides an older retained turn.
+            # Idle alone cannot settle queued or background work.
+            status = registry["status"]
+            if status in {"busy", "shell", "waiting"}:
+                work = Evidence("work", "needs_input" if status == "waiting" else "working",
+                                registry["statusUpdatedAt"], "claude_registry", "current", "native_snapshot")
+            elif job is None and "interactive_readiness" in phase_capabilities:
+                work = Evidence("work", "settled", registry["statusUpdatedAt"],
+                                "claude_registry", "current", "native_snapshot")
+            elif (job is not None and job.state == "done" and job.tempo == "idle"
+                  and job.in_flight == (0, 0, 0) and job.last_terminal_at is not None):
+                work = Evidence("work", "settled", job.last_terminal_at,
+                                "claude_job_store", "current", "native_snapshot")
+            elif job is not None and job.in_flight is not None and any(job.in_flight):
+                work = Evidence("work", health="unsupported", reason="native_pending_work")
+            else:
+                work = Evidence("work", health="unsupported", reason="native_readiness_unproved")
         elif job is not None and job.state in {"done", "failed", "stopped"}:
             if (
                 registry["status"] in {"busy", "shell", "waiting"}
@@ -617,6 +675,9 @@ def _observation(
         if not retained and not job_store_complete:
             retained = None
     wait_reason = registry["waitReason"] if registry is not None else "unknown"
+    if (registry is not None and registry.get("questionWait")
+            and job is not None and job.question_wait and "job_question" in phase_capabilities):
+        wait_reason = "question"
     title = registry["title"] if registry is not None else None
     if (
         title is None
@@ -658,6 +719,7 @@ def _observation(
             if registry is None and job is not None and job.cwd is not None
             else None,
             "metadataIssues": list(dict.fromkeys(metadata_issues)),
+            "phaseCapabilities": phase_capabilities,
         }
     )
     return item

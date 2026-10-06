@@ -37,6 +37,31 @@ def codex_activity(payload, *, completion_only=False):
     }
 
 
+def codex_outcome(payload, *, completion_only=False):
+    """Latest turn's explicit result, independent of current runtime phase.
+
+    In-progress work clears the previous turn result. Neither systemError nor
+    presence of an error payload substitutes for a terminal native status.
+    """
+    result = {"value": "unknown", "observedAt": None, "source": None,
+              "health": "unavailable", "reason": "outcome_metadata_invalid"}
+    activity = codex_activity(payload, completion_only=completion_only)
+    if activity["health"] != "current":
+        result["reason"] = activity["reason"]
+        return result
+    turn = payload["data"][0]
+    status = turn.get("status")
+    if status == "inProgress":
+        result["reason"] = "turn_in_progress"
+        return result
+    value = {"completed": "completed", "failed": "failed", "interrupted": "cancelled"}.get(status)
+    if value is None or turn.get("completedAt") is None:
+        return result
+    return {"value": value, "observedAt": turn["completedAt"] * 1000,
+            "source": "codex_turn_metadata", "health": "current",
+            "reason": "latest_terminal_turn"}
+
+
 def ordering(row):
     activity = row.get("activity", {})
     at = activity.get("at") if activity.get("health") == "current" else None
