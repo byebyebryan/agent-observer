@@ -65,9 +65,20 @@ The [monitoring checkpoint](monitoring-execution.md) independently accepts the
 Claude foreground readiness and typed background questions, and bounded history
 diagnostics pass the [packaged/native gate](evidence/2026-10-05-monitoring/REPORT.md).
 The strict v2 contract and frozen consumer reader remain compatible. Normal
-entrypoints remain on a9; candidate selection and frontend acceptance are separate.
+entrypoints remained on a9 at that gate; candidate selection and frontend acceptance are separate.
 Foreground Claude questions, older worker semantics, blank background readiness
 and event-source installation remain explicit limits.
+
+The subsequent [stopped-runtime checkpoint](stopped-runtime-execution.md)
+independently accepts and selects `0.2.0a11` on Snap and Starship. Exact current
+Claude retained done/stopped idle jobs with complete stable inventories and no
+live bound worker report parked. Native detach/stop/attach/saved-Resume, ordinary
+CLI/native comparisons and frozen-reader compatibility pass the
+[producer gate](evidence/2026-10-05-stopped-runtime/REPORT.md) before the two
+managed Observer entrypoints change. The two recap jobs now report parked with
+their ages preserved; other ordinary workers remain running. Saved-only runtime
+absence, failed/unsupported contexts and Codex parked inference retain their
+limits. No frontend implementation or ordinary provider restart is included.
 
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
@@ -95,7 +106,8 @@ separate source/passivity gates. Push to consumers does not imply lossless nativ
 events or introduce cross-host networking into the core.
 
 Working/blocked/waiting phases and Git/workspace context are accepted within the
-candidate's source-specific bounds. Parked inference remains unavailable.
+candidate's source-specific bounds. Parked is accepted only for the bounded
+exact-image Claude terminal-job predicate; other absence remains unknown.
 Last-conversation activity is accepted for bounded native metadata; missing
 older Codex clocks and unpersisted copied Claude histories stay explicitly
 unknown. Creation is a separately labeled ordering option.

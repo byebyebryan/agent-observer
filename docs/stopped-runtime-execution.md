@@ -1,7 +1,7 @@
 # Stopped runtime checkpoint
 
-Date: 2026-10-05. Status: source and independent a11 G2 accepted; scoped
-selection pending. This Observer-only regular goal loop
+Date: 2026-10-05. Status: source, independent a11 G2 and scoped two-host selection
+accepted. This Observer-only regular goal loop
 follows the [validation workflow](observation-validation-workflow.md) after the
 [monitoring checkpoint](monitoring-execution.md).
 
@@ -50,4 +50,7 @@ ordinary CLI/native comparisons and frozen-reader watch compatibility. Both
 ordinary recap jobs report parked in that candidate with their conversation
 clocks preserved. Owned namespace cleanup removed borrowed credentials and
 history; ordinary settings remain unchanged. Selection follows this accepted
-producer checkpoint, without frontend implementation.
+producer checkpoint, without frontend implementation. The managed source commit
+`66fbdd3` selects only the two Observer entrypoints on both pilot hosts and retains
+older artifacts and private rollback snapshots. Normal CLI verification confirms
+the same parked target rows; no ordinary provider restart is required.

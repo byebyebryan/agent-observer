@@ -13,17 +13,27 @@ simplified.
 
 ## Status
 
+The [stopped-runtime checkpoint](docs/evidence/2026-10-05-stopped-runtime/REPORT.md)
+accepts and selects `0.2.0a11` on Snap and Starship. Exact-image Claude retained
+done/stopped idle jobs report parked when complete stable inventories prove no
+live bound worker. Both ordinary recap sessions now report parked with their
+conversation ages preserved. Installed native stop/resume, independent ordinary
+CLI comparisons and the frozen reader's watch/schema checks pass. Only managed
+Observer read/write entrypoints change; no frontend work or session restart is
+required. Saved-only absence and unsupported contexts remain unknown.
+
 The [monitoring checkpoint](docs/evidence/2026-10-05-monitoring/REPORT.md)
 independently accepts the `0.2.0a10` candidate on Snap and Starship. It adds
 exact-image Codex question waits and explicit turn outcomes, proved current
 Claude readiness and background question predicates, and an optional bounded
 Claude history census. Installed CLI/native comparisons, isolated New/Resume,
 held input, recovery and the frozen consumer reader pass within the recorded
-artifact bounds. The candidate is installed separately; ordinary entrypoints
-remain on `0.2.0a9`. Frontend work and production selection have separate gates.
+artifact bounds. That gate installed the candidate separately while ordinary
+entrypoints remained on `0.2.0a9`; a11 includes those accepted predicates.
+Frontend work and production selection have separate gates.
 
 The [evaluation repair pass](docs/evidence/2026-10-05-evaluation-repair/REPORT.md)
-independently accepted `agent-observer 0.2.0a9`, now selected on Snap and Starship.
+independently accepted and selected `agent-observer 0.2.0a9` before this update.
 It supports the exact current Codex `0.160.1` managed image separately from the
 installed `0.160.0` CLI, preserves independently proved saved metadata through
 runtime failures, and accepts current completion-only activity clocks. Ordinary

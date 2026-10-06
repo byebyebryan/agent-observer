@@ -1,0 +1,434 @@
+{
+  "status": "accepted",
+  "managedSourceCommit": "66fbdd384cf20b896c914fadea9b721e89d5c6e9",
+  "producerAcceptanceCommit": "a0e8282e83236832aa73d55af376bd9f535f8745",
+  "scope": "observer_read_write_only",
+  "snap": {
+    "status": "accepted",
+    "host": "snap",
+    "version": "agent-observer 0.2.0a11",
+    "linksChanged": [
+      ".local/bin/agent-observer",
+      ".local/bin/agent-observer-write"
+    ],
+    "selectedLinks": {
+      ".local/bin/agent-observer": {
+        "link": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer"
+      },
+      ".local/bin/agent-observer-write": {
+        "link": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write"
+      },
+      ".local/bin/rofi-agent-plus": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+      },
+      ".local/bin/rofi-agent-plus-rofi": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+      },
+      ".config/rofi/scripts/agent-plus": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+      }
+    },
+    "consumerStateUnchanged": true,
+    "providerSettingsUnchanged": true,
+    "sourceHealth": "current",
+    "recapRows": [
+      {
+        "identity": {
+          "hostScope": "snap",
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "nativeId": "04ea305e-178c-470f-b3ab-97ab055fd1b4",
+          "nativeIdKind": "session",
+          "provider": "claude"
+        },
+        "title": "recap-2026-report",
+        "runtime": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823713,
+          "reason": "native_snapshot",
+          "source": "claude_job_store",
+          "value": "parked"
+        },
+        "worker": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823713,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "absent"
+        },
+        "phase": {
+          "clock": null,
+          "health": "unsupported",
+          "observedAt": null,
+          "reason": "runtime_parked",
+          "source": null,
+          "value": "unknown"
+        },
+        "activity": {
+          "at": 1791166782261,
+          "health": "current",
+          "reason": "native_conversation_event",
+          "source": "claude_transcript_message"
+        }
+      },
+      {
+        "identity": {
+          "hostScope": "snap",
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "nativeId": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+          "nativeIdKind": "session",
+          "provider": "claude"
+        },
+        "title": "recap-2026-f2",
+        "runtime": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823713,
+          "reason": "native_snapshot",
+          "source": "claude_job_store",
+          "value": "parked"
+        },
+        "worker": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823713,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "absent"
+        },
+        "phase": {
+          "clock": null,
+          "health": "unsupported",
+          "observedAt": null,
+          "reason": "runtime_parked",
+          "source": null,
+          "value": "unknown"
+        },
+        "activity": {
+          "at": 1791166751911,
+          "health": "current",
+          "reason": "native_conversation_event",
+          "source": "claude_transcript_message"
+        }
+      }
+    ],
+    "activeClaude": [
+      {
+        "identity": {
+          "hostScope": "snap",
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "nativeId": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+          "nativeIdKind": "session",
+          "provider": "claude"
+        },
+        "title": "caos-models",
+        "runtime": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823579,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "running"
+        },
+        "phase": {
+          "clock": "native",
+          "health": "current",
+          "observedAt": 1791254586521,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "waiting"
+        }
+      },
+      {
+        "identity": {
+          "hostScope": "snap",
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "nativeId": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+          "nativeIdKind": "session",
+          "provider": "claude"
+        },
+        "title": "embeddings-bf",
+        "runtime": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823579,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "running"
+        },
+        "phase": {
+          "clock": "native",
+          "health": "current",
+          "observedAt": 1791254097247,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "waiting"
+        }
+      },
+      {
+        "identity": {
+          "hostScope": "snap",
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "nativeId": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+          "nativeIdKind": "session",
+          "provider": "claude"
+        },
+        "title": "recap-2026-spare-a100",
+        "runtime": {
+          "clock": "sample",
+          "health": "current",
+          "observedAt": 1791254823579,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "running"
+        },
+        "phase": {
+          "clock": "native",
+          "health": "current",
+          "observedAt": 1791240202285,
+          "reason": "native_snapshot",
+          "source": "claude_registry",
+          "value": "waiting"
+        }
+      }
+    ],
+    "managedSourceCommit": "66fbdd384cf20b896c914fadea9b721e89d5c6e9",
+    "managedSourceStatus": "",
+    "ordinaryProviderActions": 0
+  },
+  "starship": {
+    "status": "accepted",
+    "host": "starship",
+    "version": "agent-observer 0.2.0a11",
+    "linksChanged": [
+      ".local/bin/agent-observer",
+      ".local/bin/agent-observer-write"
+    ],
+    "selectedLinks": {
+      ".local/bin/agent-observer": {
+        "link": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer"
+      },
+      ".local/bin/agent-observer-write": {
+        "link": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write"
+      },
+      ".local/bin/rofi-agent-plus": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+      },
+      ".local/bin/rofi-agent-plus-rofi": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+      },
+      ".config/rofi/scripts/agent-plus": {
+        "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+      }
+    },
+    "consumerStateUnchanged": true,
+    "sourceHealth": "current",
+    "rows": 96,
+    "managedSourceCommit": "517d7bbcb910bcd332f345f5b6f593b277227bd0",
+    "preExistingManagedChangesPreserved": true,
+    "ordinaryProviderActions": 0,
+    "sourceHashes": {
+      "docs/agent-observer-pilot-tuple.json": "2bf6ec484c7f0b6161504457cff107e1835a1f465043c0a7e6ca961605c8e77d",
+      "dot_local/bin/symlink_agent-observer.tmpl": "4d66126ed9527708d4f3cc2683bfe094705717d272effef17c9e4c6723d844bd",
+      "dot_local/bin/symlink_agent-observer-write.tmpl": "b26a87b4e45093fb970869e2669d5344a698afed4989f303c58ed627a19301bc"
+    },
+    "preExistingCapturedManagedInputsPreserved": true,
+    "changedManagedInputs": [
+      "docs/agent-observer-pilot-tuple.json",
+      "dot_local/bin/symlink_agent-observer.tmpl",
+      "dot_local/bin/symlink_agent-observer-write.tmpl"
+    ]
+  },
+  "managedCandidateChecks": {
+    "snap": {
+      "hostScope": "snap",
+      "mode": "candidate",
+      "artifacts": {
+        "observer": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65"
+        },
+        "plus": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b"
+        },
+        "plusObserverDependency": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f"
+        }
+      },
+      "status": "accepted"
+    },
+    "starship": {
+      "hostScope": "starship",
+      "mode": "candidate",
+      "artifacts": {
+        "observer": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65"
+        },
+        "plus": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b"
+        },
+        "plusObserverDependency": {
+          "installedWheelBytesVerified": true,
+          "wheelSha256": "6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f"
+        }
+      },
+      "status": "accepted"
+    }
+  },
+  "rollbackSnapshots": [
+    "~/.local/share/agent-observer/rollback-20261005-stopped-live-snap",
+    "~/.local/share/agent-observer/rollback-20261005-stopped-live-starship"
+  ],
+  "broadSnapChezmoiGate": "blocked_by_preexisting_ssh_plus_archive_checksum",
+  "scopedDiffDryRunAndApply": "accepted",
+  "ordinaryProviderActions": 0,
+  "publicPush": false,
+  "selectedEvaluations": {
+    "snap": {
+      "cliVersion": "agent-observer 0.2.0a11",
+      "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+      "sourceHealth": "current",
+      "errors": [],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 81
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 78,
+        "filteredChildren": 3
+      },
+      "providers": {
+        "codex": {
+          "cliRows": 51,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 51,
+            "classification": {
+              "user": 3,
+              "unknown": 45,
+              "child": 3
+            }
+          },
+          "checks": {
+            "membership": 51,
+            "title": 41,
+            "cwd": 51,
+            "runtime_unproved": 45,
+            "phase_unproved": 46,
+            "activity": 51,
+            "kind_unproved": 45,
+            "sessionId": 51,
+            "createdAt": 51,
+            "outcome": 51,
+            "outcomeAt": 50,
+            "title_unproved": 10,
+            "runtime": 6,
+            "phase": 5,
+            "kind": 6,
+            "outcomeAt_unproved": 1
+          },
+          "issues": [
+            {
+              "id": "01a10e1c-6ffd-7b51-b5ac-9e960142315b",
+              "field": "phase",
+              "result": "native_reference_unproved",
+              "cli": "unknown"
+            }
+          ]
+        },
+        "claude": {
+          "cliRows": 30,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 30,
+            "classification": {
+              "user": 30
+            }
+          },
+          "checks": {
+            "membership": 30,
+            "title": 27,
+            "cwd": 30,
+            "runtime": 6,
+            "phase_unproved": 27,
+            "activity": 30,
+            "kind": 30,
+            "runtime_unproved": 24,
+            "title_unproved": 3,
+            "phase": 3
+          },
+          "issues": []
+        }
+      }
+    },
+    "starship": {
+      "cliVersion": "agent-observer 0.2.0a11",
+      "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+      "sourceHealth": "current",
+      "errors": [],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 96
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 2,
+        "doctorSessionCount": true,
+        "cliRows": 90,
+        "filteredChildren": 6
+      },
+      "providers": {
+        "codex": {
+          "cliRows": 96,
+          "nativeCounts": {
+            "running": 8,
+            "activityKnown": 96,
+            "classification": {
+              "unknown": 88,
+              "user": 2,
+              "child": 6
+            }
+          },
+          "checks": {
+            "membership": 96,
+            "title": 68,
+            "cwd": 96,
+            "runtime_unproved": 88,
+            "phase_unproved": 88,
+            "activity": 96,
+            "kind_unproved": 88,
+            "sessionId": 96,
+            "createdAt": 96,
+            "outcome": 95,
+            "outcomeAt": 95,
+            "title_unproved": 28,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 1,
+            "runtime": 8,
+            "phase": 8,
+            "kind": 8
+          },
+          "issues": []
+        }
+      }
+    }
+  }
+}
