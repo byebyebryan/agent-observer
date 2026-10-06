@@ -234,16 +234,21 @@ def collect_codex(
             else:
                 raise SnapshotError("inventory_page_limit")
             for identifier in loaded:
-                client.timeout = remaining()
-                response = client.read_thread(identifier)
-                if (
-                    not isinstance(response, dict)
-                    or not isinstance(response.get("thread"), dict)
-                    or not isinstance(response["thread"].get("id"), str)
-                    or response["thread"]["id"].lower() != identifier
-                ):
-                    raise SnapshotError("loaded_read_identity_conflict")
-                row = live_thread_metadata(response["thread"], **scope, observed_at=_clock())
+                try:
+                    client.timeout = remaining()
+                    response = client.read_thread(identifier)
+                    if not isinstance(response, dict) or not isinstance(response.get("thread"), dict):
+                        raise MetadataError("loaded_row_metadata_unavailable")
+                    returned_id = response["thread"].get("id")
+                    if isinstance(returned_id, str) and _UUID.fullmatch(returned_id) and returned_id.lower() != identifier:
+                        raise SnapshotError("loaded_read_identity_conflict")
+                    row = live_thread_metadata(response["thread"], **scope, observed_at=_clock())
+                except (TransportError, MetadataError) as error:
+                    issue = {"code": str(error)}
+                    if issue not in result["errors"]:
+                        result["errors"].append(issue)
+                    result["coverage"]["loaded"] = {"complete": False, "reason": "loaded_row_unavailable"}
+                    continue
                 row["presenceKind"] = "server_thread_loaded"
                 if (
                     not work_supported
@@ -333,7 +338,7 @@ def collect_codex(
             }
             validate_incarnation(identity)
             result["ignoredMessages"] = client.ignored_messages
-            result["sourceHealth"] = "current"
+            result["sourceHealth"] = "partial" if result["errors"] else "current"
     except (EndpointError, TransportError, MetadataError, SnapshotError) as error:
         if isinstance(error, EndpointError) and error.identity is not None:
             try:
@@ -348,6 +353,7 @@ def collect_codex(
         preserve_runtime = runtime_rows_read and str(error) not in {
             "native_identity_mapping_conflict",
             "saved_identity_ambiguous",
+            "loaded_read_identity_conflict",
             "runtime_incarnation_changed",
             "runtime_incarnation_unavailable",
             "endpoint_incarnation_changed",

@@ -57,5 +57,9 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   Full source check passes 220 tests, including 4,096-row snapshot/watch round
   trips, repeated maximum-row churn and serialized-byte eviction. Candidate
   packaging/selection remains pending.
-- S2-S6: pending. Update this record at reviewed checkpoints with concrete
+- S2 source: a row-local Codex loaded-read/metadata fault now preserves healthy
+  siblings on an unchanged verified runtime and reports partial loaded coverage.
+  Cross-row identity conflicts still invalidate prior live evidence. Full source
+  check passes 222 tests. Contract compatibility/reference repairs remain pending.
+- S3-S6: pending. Update this record at reviewed checkpoints with concrete
   source, packaged and native results and any remaining capabilities.
