@@ -47,7 +47,7 @@ Claude local-command age case; do not select its artifact.
 | Input | Rule |
 | --- | --- |
 | Identity | Preserve the full host/provider/store-namespace/native-kind/native-ID tuple. Validate reached host authority; never merge by UUID alone, title, PID, cwd or project key. |
-| Kind/title | Exclude only confirmed children; unknown stays visible. Reconcile fresh classification before retention. Title is bounded native user title or UUID fallback, not an AI preview or identity. |
+| Kind/title | Exclude only confirmed children; unknown stays visible. Reconcile fresh classification before retention. Title is bounded native provider metadata or UUID fallback, not an Observer-generated preview or identity. Codex can settle its name after a completion callback. |
 | Runtime/phase | Running, parked and unknown are distinct. Phase is blocked/waiting/working/unknown. Blocked is approval or question. A completed turn can still be running; a missing worker or partial row cannot prove parked. |
 | Health/coverage | Preserve each source and dimension. Failed hosts/providers retain healthy siblings. Capability predicates are context-scoped and are not permission or a known fact for every row. |
 | Activity/order | Use current `activity.at` or explicitly stale `lastKnownAt`, never refresh/create/mtime. Default attention: blocked, waiting, working, unknown, then descending activity and full identity. Missing/clock-ahead values stay explicit. |

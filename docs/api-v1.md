@@ -48,10 +48,12 @@ distinct. Runtime, worker, phase, attachment and latest outcome retain separate
 health and clocks. Worker/TUI exit does not end a conversation. A current
 completed outcome does not imply runtime readiness or present task success.
 
-Title is bounded native metadata: explicit Codex name, accepted user-set Claude
+Title is bounded native metadata: Codex native `name`, accepted user-set Claude
 registry/job name or SDK custom title, then `Codex <UUID>`/`Claude <UUID>` fallback.
-It is display text, not an identity or uniqueness claim. AI-generated titles and
-agent nicknames are not promised; no prompt/response preview is generated.
+It is display text, not an identity or uniqueness claim. Codex can populate its
+native name asynchronously after a completion callback; a callback snapshot may
+still have the UUID fallback. Observer does not generate prompt/response previews
+or read separate Claude AI-title/agent-nickname fields.
 
 Current conversation activity uses explicit native turn/message event time.
 Claude's reserved local-command envelopes and meta records are housekeeping;
@@ -77,6 +79,10 @@ Clients reject unsupported versions/fields. Package patch releases may repair
 implementation defects while retaining the documented semantics. New finite
 reason/error codes may be added: an unrecognized code remains diagnostic and
 must not become idle, successful, stopped or action authority.
+
+API 1's descriptor and existing pure parsers keep read wire 3/write wire 1.
+Replacing their accepted wire or changing public symbols/semantics incompatibly
+requires a new API major version as well as the affected wire/conformance corpus.
 
 Provider releases are diagnostic. Required native contracts select capabilities;
 compatible daily updates require no hash/version registration. Own dependency

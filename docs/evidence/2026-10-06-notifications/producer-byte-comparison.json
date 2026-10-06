@@ -1,0 +1,8 @@
+{
+  "unchangedProducerFiles": 30,
+  "changedProducerFiles": [],
+  "newNotificationModules": [
+    "agent_observer/notification_client.py",
+    "agent_observer/notification_source.py"
+  ]
+}

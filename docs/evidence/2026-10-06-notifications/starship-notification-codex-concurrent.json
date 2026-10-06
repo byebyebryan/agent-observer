@@ -1,0 +1,13 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "provider": "codex",
+  "concurrentTargets": 2,
+  "duplicateNativeTitles": true,
+  "renamedTitleMatches": true,
+  "nativeTurnIdsMatch": true,
+  "terminalOutputPersisted": false,
+  "graphicalDeliveryProved": false,
+  "candidateSource": "196226300658ab07760aff1cc396df26c908d12f",
+  "candidateWheelSha256": "68f656483b8a7e23b366e4ad870367cf689a67c464f12920b62d23983c61afc3"
+}

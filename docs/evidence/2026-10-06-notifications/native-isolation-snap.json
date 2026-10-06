@@ -1,0 +1,20 @@
+{
+  "fixture": {
+    "host": "snap",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.3.0a4-68f656483b8a7e23",
+    "codexRelease": "0.160.1-x86_64-unknown-linux-musl",
+    "daemonSha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+    "installedCliSha256": {
+      "codex": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "claude": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb"
+    }
+  },
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "captureGap": false,
+  "sameTitleDistinctCodexIds": 3,
+  "samePromptClaudeStopCorrelation": true
+}

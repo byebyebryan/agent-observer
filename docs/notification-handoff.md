@@ -1,5 +1,11 @@
 # Agent notification handoff
 
+The subsequent [experimental source/client contract](notification-client-contract.md)
+and [a4 native report](evidence/2026-10-06-notifications/REPORT.md) implement the
+bounded source/formatting checkpoint. Normal hook selection, originating terminal
+routing, graphical Open and 349 physical mirroring remain separate. The original
+request and managed ownership below are retained.
+
 Date: 2026-10-05. Status: user-requested follow-up for later implementation;
 this note does not implement or select a new notification client.
 
