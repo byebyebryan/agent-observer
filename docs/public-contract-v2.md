@@ -26,9 +26,9 @@ clock. Claude work/approval maps to working/blocked; completed background jobs
 have a separate completed outcome. A completed background job with its current
 verified worker maps to waiting within its exact image gate: an isolated native proof accepted a subsequent
 prompt under the same UUID and completed it. Completion with a missing/unknown
-worker does not establish readiness. The monitoring source checkpoint additionally
+worker does not establish readiness. The accepted a10 monitoring checkpoint additionally
 accepts Claude 2.1.289 foreground first-prompt/completed readiness and held
-held background input as blocked/question. Foreground registry input labels are
+background input as blocked/question. Foreground registry input labels are
 shared with other dialogs and cannot establish the reason required by v2;
 foreground questions remain unknown. Exact linked background job question
 structure, working/blocked job state and current registry input wait accept
@@ -45,11 +45,12 @@ turn clears the preceding outcome. Outcome does not settle runtime phase;
 systemError remains unknown with `native_runtime_error`. Codex 0.160.1 native
 Plan mode held `waitingOnUserInput` additionally accepts blocked/question within
 that exact daemon image. Older Codex question predicates and
-Claude failure/cancellation outcome predicates remain unproved. These source
-changes await independent package acceptance and do not change selected a9.
+Claude failure/cancellation outcome predicates remain unproved. The
+[independent package acceptance](evidence/2026-10-05-monitoring/REPORT.md)
+accepts this exact a10 candidate and leaves selected a9 unchanged.
 
 Blank live background rows use `background_readiness_unproved`; native job
-state `blocked`, whose meaning is not established by the held approval case,
+state `blocked` without a proved typed input discriminator,
 uses `native_blocked_phase_unproved`. Neither native label alone authorizes a
 waiting or blocked phase. Claude rows with current, exact-UUID non-sidechain
 conversation-envelope activity are classified as user conversations. A child

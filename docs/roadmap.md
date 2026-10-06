@@ -60,6 +60,15 @@ selection. The [report](evidence/2026-10-05-evaluation-repair/REPORT.md) records
 all nine resolutions and remaining capabilities. No frontend implementation,
 ordinary provider configuration/restart or public release accompanies it.
 
+The [monitoring checkpoint](monitoring-execution.md) independently accepts the
+`0.2.0a10` candidate on both hosts. Exact current-image Codex questions/outcomes,
+Claude foreground readiness and typed background questions, and bounded history
+diagnostics pass the [packaged/native gate](evidence/2026-10-05-monitoring/REPORT.md).
+The strict v2 contract and frozen consumer reader remain compatible. Normal
+entrypoints remain on a9; candidate selection and frontend acceptance are separate.
+Foreground Claude questions, older worker semantics, blank background readiness
+and event-source installation remain explicit limits.
+
 The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
 read/watch, Git/workspace enrichment and separate New/Resume client. After that
 closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
