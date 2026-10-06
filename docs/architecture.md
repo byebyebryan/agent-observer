@@ -1,5 +1,10 @@
 # Agent Observer architecture boundaries
 
+The [shared observation service proposal](shared-observation-service-plan.md)
+adds a separately reviewed local runtime for collection, pull and push fan-out.
+It preserves pure core, provider ownership and external networking boundaries;
+service implementation and native lifetime acceptance remain future gates.
+
 The [2026-10-06 provider compatibility policy](provider-contract-compatibility-plan.md)
 governs future native support: required contracts and observed capabilities
 determine compatibility. Release versions and hashes record provenance and

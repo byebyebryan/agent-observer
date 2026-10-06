@@ -13,6 +13,11 @@ simplified.
 
 ## Status
 
+The [shared observation service design](docs/shared-observation-service-plan.md)
+captures first-class pull/push and one local collector for multiple clients.
+Its research/review pass is design-only; no service or downstream rollout is
+accepted by that document.
+
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
 [packaged/native report](docs/evidence/2026-10-06-stable-api/REPORT.md) records

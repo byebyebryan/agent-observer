@@ -8,6 +8,12 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
+The next design/research checkpoint is the
+[shared observation service](shared-observation-service-plan.md): warm local
+reads and bounded push for Plus/dashboard clients, with one collection loop.
+The user requested context capture followed by deep review and validation,
+not implementation, hook selection or downstream migration.
+
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
 wire 3 and write wire 1, strict pure consumer conformance and native Snap/Starship
