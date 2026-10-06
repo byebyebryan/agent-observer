@@ -8,11 +8,14 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
-The next design/research checkpoint is the
+The reviewed design/research checkpoint is the
 [shared observation service](shared-observation-service-plan.md): warm local
 reads and bounded push for Plus/dashboard clients, with one collection loop.
-The user requested context capture followed by deep review and validation,
-not implementation, hook selection or downstream migration.
+The [review](shared-observation-service-review.md) records current cost,
+source freshness, fan-out/recovery and consumer timing findings. The
+[execution plan](shared-observation-service-execution-plan.md) sequences S0–S5
+producer work before managed selection or separate client passes. No shared
+service, hook selection or downstream migration is implemented by this checkpoint.
 
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch

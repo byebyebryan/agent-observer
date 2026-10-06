@@ -1,0 +1,109 @@
+{
+  "host": "starship",
+  "candidatePrefix": "/home/bryan/.local/share/agent-observer/0.3.0a2-98ce1f9203f97c13",
+  "measurement": "existing direct CLI; separate process each call; OS cache state uncontrolled",
+  "passiveReadsOnly": true,
+  "serviceImplemented": false,
+  "independentNativeInventoryAudit": false,
+  "samples": [
+    {
+      "providers": [
+        "codex"
+      ],
+      "sample": 1,
+      "elapsedSeconds": 1.8465,
+      "childCpuSeconds": 0.3375,
+      "serializedBytes": 150985,
+      "rows": 96,
+      "observedRuntimeCounts": {
+        "running": 8,
+        "unknown": 88
+      },
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "errors": [],
+          "runtimeBinarySha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35"
+        }
+      ]
+    },
+    {
+      "providers": [
+        "codex"
+      ],
+      "sample": 2,
+      "elapsedSeconds": 1.7487,
+      "childCpuSeconds": 0.3261,
+      "serializedBytes": 150985,
+      "rows": 96,
+      "observedRuntimeCounts": {
+        "running": 8,
+        "unknown": 88
+      },
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "errors": [],
+          "runtimeBinarySha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35"
+        }
+      ]
+    },
+    {
+      "providers": [
+        "codex"
+      ],
+      "sample": 3,
+      "elapsedSeconds": 1.7304,
+      "childCpuSeconds": 0.3248,
+      "serializedBytes": 150985,
+      "rows": 96,
+      "observedRuntimeCounts": {
+        "running": 8,
+        "unknown": 88
+      },
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "errors": [],
+          "runtimeBinarySha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35"
+        }
+      ]
+    }
+  ]
+}

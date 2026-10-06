@@ -1,0 +1,402 @@
+[
+  {
+    "provider": "codex",
+    "elapsedSeconds": 1.5172,
+    "rows": 52,
+    "profile": "existing CLI main under cProfile; not future service benchmark",
+    "topFunctions": [
+      {
+        "module": "cli.py",
+        "line": 99,
+        "function": "main",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 1.5143
+      },
+      {
+        "module": "cli.py",
+        "line": 54,
+        "function": "_snapshot",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 1.5031
+      },
+      {
+        "module": "collection.py",
+        "line": 369,
+        "function": "collect",
+        "calls": 1,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 1.4999
+      },
+      {
+        "module": "codex_snapshot.py",
+        "line": 82,
+        "function": "collect_codex",
+        "calls": 1,
+        "selfSeconds": 0.0006,
+        "cumulativeSeconds": 1.1586
+      },
+      {
+        "module": "codex_transport.py",
+        "line": 225,
+        "function": "_request",
+        "calls": 62,
+        "selfSeconds": 0.0006,
+        "cumulativeSeconds": 0.9915
+      },
+      {
+        "module": "codex_transport.py",
+        "line": 186,
+        "function": "_message",
+        "calls": 65,
+        "selfSeconds": 0.0006,
+        "cumulativeSeconds": 0.9865
+      },
+      {
+        "module": "codex_transport.py",
+        "line": 105,
+        "function": "_receive",
+        "calls": 383,
+        "selfSeconds": 0.0016,
+        "cumulativeSeconds": 0.9782
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<method 'recv' of '_socket.socket' objects>",
+        "calls": 383,
+        "selfSeconds": 0.9759,
+        "cumulativeSeconds": 0.9759
+      },
+      {
+        "module": "codex_transport.py",
+        "line": 276,
+        "function": "list_threads",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.891
+      },
+      {
+        "module": "contract.py",
+        "line": 250,
+        "function": "validate_shape",
+        "calls": 24349,
+        "selfSeconds": 0.0896,
+        "cumulativeSeconds": 0.308
+      },
+      {
+        "module": "collection.py",
+        "line": 303,
+        "function": "compose_snapshot",
+        "calls": 1,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.2793
+      },
+      {
+        "module": "contract.py",
+        "line": 296,
+        "function": "identity_key",
+        "calls": 2756,
+        "selfSeconds": 0.0035,
+        "cumulativeSeconds": 0.2483
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<built-in method builtins.next>",
+        "calls": 53,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.2397
+      },
+      {
+        "module": "collection.py",
+        "line": 338,
+        "function": "<genexpr>",
+        "calls": 52,
+        "selfSeconds": 0.0007,
+        "cumulativeSeconds": 0.2396
+      },
+      {
+        "module": "contract.py",
+        "line": 285,
+        "function": "<genexpr>",
+        "calls": 412819,
+        "selfSeconds": 0.099,
+        "cumulativeSeconds": 0.1563
+      },
+      {
+        "module": "codex_endpoint.py",
+        "line": 87,
+        "function": "inspect_managed_endpoint",
+        "calls": 1,
+        "selfSeconds": 0.0005,
+        "cumulativeSeconds": 0.1545
+      },
+      {
+        "module": "codex_endpoint.py",
+        "line": 62,
+        "function": "_fingerprint",
+        "calls": 1,
+        "selfSeconds": 0.0005,
+        "cumulativeSeconds": 0.152
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<method 'update' of '_hashlib.HASH' objects>",
+        "calls": 276,
+        "selfSeconds": 0.1233,
+        "cumulativeSeconds": 0.1233
+      },
+      {
+        "module": "codex_transport.py",
+        "line": 297,
+        "function": "latest_turn",
+        "calls": 52,
+        "selfSeconds": 0.0005,
+        "cumulativeSeconds": 0.0912
+      },
+      {
+        "module": "contract.py",
+        "line": 301,
+        "function": "validate_snapshot",
+        "calls": 2,
+        "selfSeconds": 0.0004,
+        "cumulativeSeconds": 0.0745
+      },
+      {
+        "module": "<frozen importlib._bootstrap>",
+        "line": 1360,
+        "function": "_find_and_load",
+        "calls": 54,
+        "selfSeconds": 0.0002,
+        "cumulativeSeconds": 0.031
+      },
+      {
+        "module": "<frozen importlib._bootstrap>",
+        "line": 1308,
+        "function": "_find_and_load_unlocked",
+        "calls": 54,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.0308
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<method 'startswith' of 'str' objects>",
+        "calls": 409280,
+        "selfSeconds": 0.0305,
+        "cumulativeSeconds": 0.0305
+      },
+      {
+        "module": "<frozen importlib._bootstrap>",
+        "line": 914,
+        "function": "_load_unlocked",
+        "calls": 53,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.0305
+      }
+    ]
+  },
+  {
+    "provider": "claude",
+    "elapsedSeconds": 1.1623,
+    "rows": 31,
+    "profile": "existing CLI main under cProfile; not future service benchmark",
+    "topFunctions": [
+      {
+        "module": "cli.py",
+        "line": 99,
+        "function": "main",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 1.1603
+      },
+      {
+        "module": "cli.py",
+        "line": 54,
+        "function": "_snapshot",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 1.1574
+      },
+      {
+        "module": "collection.py",
+        "line": 369,
+        "function": "collect",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 1.1574
+      },
+      {
+        "module": "claude_snapshot.py",
+        "line": 60,
+        "function": "collect_claude",
+        "calls": 1,
+        "selfSeconds": 0.0002,
+        "cumulativeSeconds": 1.0256
+      },
+      {
+        "module": "claude_history.py",
+        "line": 241,
+        "function": "collect_saved_history",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.6461
+      },
+      {
+        "module": "claude_history.py",
+        "line": 176,
+        "function": "_run_worker",
+        "calls": 1,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.6436
+      },
+      {
+        "module": "selectors.py",
+        "line": 435,
+        "function": "select",
+        "calls": 2,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.6429
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<method 'poll' of 'select.epoll' objects>",
+        "calls": 2,
+        "selfSeconds": 0.6429,
+        "cumulativeSeconds": 0.6429
+      },
+      {
+        "module": "native_artifacts.py",
+        "line": 66,
+        "function": "_inspect_fd",
+        "calls": 9,
+        "selfSeconds": 0.0013,
+        "cumulativeSeconds": 0.3736
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<method 'update' of '_hashlib.HASH' objects>",
+        "calls": 713,
+        "selfSeconds": 0.313,
+        "cumulativeSeconds": 0.313
+      },
+      {
+        "module": "claude_metadata.py",
+        "line": 741,
+        "function": "snapshot",
+        "calls": 1,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.254
+      },
+      {
+        "module": "claude_metadata.py",
+        "line": 596,
+        "function": "_observation",
+        "calls": 7,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.2511
+      },
+      {
+        "module": "native_artifacts.py",
+        "line": 113,
+        "function": "inspect_process",
+        "calls": 8,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.2501
+      },
+      {
+        "module": "claude_metadata.py",
+        "line": 428,
+        "function": "_presence",
+        "calls": 4,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.25
+      },
+      {
+        "module": "claude_metadata.py",
+        "line": 165,
+        "function": "_linux_process_uses_supported_binary",
+        "calls": 4,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.2498
+      },
+      {
+        "module": "contract.py",
+        "line": 250,
+        "function": "validate_shape",
+        "calls": 11103,
+        "selfSeconds": 0.0385,
+        "cumulativeSeconds": 0.1274
+      },
+      {
+        "module": "claude_snapshot.py",
+        "line": 40,
+        "function": "_verify_artifact",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.1242
+      },
+      {
+        "module": "native_artifacts.py",
+        "line": 99,
+        "function": "inspect_installed",
+        "calls": 1,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.1242
+      },
+      {
+        "module": "collection.py",
+        "line": 303,
+        "function": "compose_snapshot",
+        "calls": 1,
+        "selfSeconds": 0.0001,
+        "cumulativeSeconds": 0.1065
+      },
+      {
+        "module": "contract.py",
+        "line": 296,
+        "function": "identity_key",
+        "calls": 992,
+        "selfSeconds": 0.0012,
+        "cumulativeSeconds": 0.0884
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<built-in method builtins.next>",
+        "calls": 36,
+        "selfSeconds": 0.0,
+        "cumulativeSeconds": 0.083
+      },
+      {
+        "module": "collection.py",
+        "line": 338,
+        "function": "<genexpr>",
+        "calls": 31,
+        "selfSeconds": 0.0003,
+        "cumulativeSeconds": 0.0829
+      },
+      {
+        "module": "contract.py",
+        "line": 285,
+        "function": "<genexpr>",
+        "calls": 166213,
+        "selfSeconds": 0.0391,
+        "cumulativeSeconds": 0.0619
+      },
+      {
+        "module": "~",
+        "line": 0,
+        "function": "<built-in method posix.read>",
+        "calls": 774,
+        "selfSeconds": 0.0592,
+        "cumulativeSeconds": 0.0592
+      }
+    ]
+  }
+]

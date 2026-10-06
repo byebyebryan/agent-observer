@@ -1,9 +1,11 @@
 # Shared observation service and first-class pull/push
 
-Date: 2026-10-06. Status: design/context capture for a research and validation
-goal loop. This document authorizes no service implementation, installation,
-provider subscription, hook change or downstream migration. Review findings and
-the implementation/native gates will be recorded separately.
+Date: 2026-10-06. Status: reviewed design proposal. The
+[deep review](shared-observation-service-review.md) records source inspection,
+primary research, passive measurements and controlled exercises. The
+[execution plan](shared-observation-service-execution-plan.md) defines subsequent
+implementation and independent acceptance gates. This checkpoint implements or
+installs no service, subscription, hook or downstream migration.
 
 ## Context and intended outcome
 
@@ -50,10 +52,13 @@ hold, stop or approve provider work. Pure parsing and explicit direct collection
 remain available without it. Native providers and terminal clients retain their
 existing workflows.
 
-Initial transport should be host-local and per user, with a private Unix socket
-and an explicitly selected supervised user service. TCP, HTTP, device transport,
-SSH route selection and cross-host aggregation are separate. Socket activation,
-service startup and command names remain review decisions, not installed behavior.
+Initial transport is host-local and per user: a private pathname Unix stream
+socket, one fixed owning-host/store configuration and a manually launched service
+before an explicitly selected systemd user unit. TCP, HTTP, device transport,
+SSH route selection and cross-host aggregation remain separate. Defer socket
+activation; a continuously warm view is the initial purpose, and activation adds
+listener-ownership and cold-start semantics. Exact CLI names are settled with
+the service schema/fixtures, without changing existing direct-read defaults.
 
 ## Pull and push model
 
@@ -68,6 +73,34 @@ A service read does not imply a fresh provider scan. Sending a cached view must
 not rewrite `collectedAt`, conversation activity or evidence clocks. A freshness
 requirement must be honored, rejected or timed out explicitly; it cannot silently
 bless old data. Client outage caches remain presentation/networking concerns.
+
+The first protocol exposes cached snapshot, subscription and service/source
+status, with no client-selectable provider paths, polling intervals or forced
+refresh operation. Direct reads remain the explicit fresh-collection diagnostic.
+Service access is explicit and fails explicitly if unavailable; it neither
+starts a provider nor silently falls back to a costly direct scan.
+
+Use a separately versioned service envelope around unchanged observation
+documents. Required concepts are service incarnation, view version, configured
+host/source scope, per-source accepted-sample age and expiry, last-attempt status
+and gap/recovery information. Service readiness and source/data health are
+independent. Exact field names/enums and finite errors require S0 schema and
+independent reader fixtures before implementation.
+
+The initial envelope embeds snapshot 3, rather than redefining direct watch 3.
+Each accepted source read may publish a replacement view even when phase values
+are unchanged; only actual new read receipts renew confirmation. Pure service
+heartbeats carry no renewal. Timer expiry publishes a new view. This preserves
+confirmation without inventing a native transition or requiring a patch format.
+
+Initially a complete provider sample is one freshness unit. On expiry, conservatively
+project its current facts to unknown/stale with original last-known evidence,
+invalidate its current coverage and expose stale metadata through the envelope.
+Expiry itself produces an update, including when no provider or hook is active.
+Separate runtime/history cadences later require internal field provenance and
+independent expiry rules; recomposing cached pieces cannot make every field fresh.
+An old native state-change time can remain valid after a successful confirmation,
+so it cannot double as the latest successful-read clock.
 
 State delivery can coalesce observations when only the newest view matters.
 Reliable completion/attention events have different correlation and loss rules;
@@ -98,6 +131,16 @@ one failed provider from delaying healthy delivery indefinitely. Subscriber
 preferences do not grant unbounded polling frequency or a hook installation.
 Measure actual cost and latency before selecting default intervals.
 
+Use bounded Observer-owned worker processes and publish each provider's result
+independently through one local publisher. Permit one running read per provider,
+with a dirty generation to request one follow-up for hints received during that
+read. Validate the captured source-context generation before accepting results.
+Deadlines may terminate only Observer-owned collection workers, never providers.
+The first shared full-scan stage is a validation checkpoint; efficient monitoring
+requires the adapter cadence split and measured CPU/latency acceptance before
+ordinary always-on selection. It must not inherit the current two-second watch
+interval as a full-history polling default.
+
 Codex's current transport ignores unsolicited messages and the accepted reads
 do not establish a passive subscription. Native subscription lifetime effects
 need focused proof. Claude Stop continuation and Agent View-dependent background
@@ -123,6 +166,31 @@ S6 callback proof remains its own bounded subset.
 - Revalidate source context for collection and preserve provider-specific
   capability predicates; supported release lists must not return.
 
+One publisher transaction captures the initial view and registers the client;
+socket writes happen outside that transaction. Keep an immutable in-flight
+frame and at most one pending latest view per client. Replacing a pending view
+marks delivery loss; finish the in-flight frame, then send bounded gap/resync
+information with the newest view. Never splice revisions into a partial frame.
+Exhausting the write deadline disconnects only that reader; reconnect starts
+with a full view. View versions and transport sequence numbers are distinct.
+
+Initial proposed limits are 16 connections, 16 KiB requests, a five-second
+incomplete-request/write deadline and 64 MiB global encoded-view retention.
+An observation remains within its existing 8 MiB wire limit; the separately
+bounded service frame may add at most 16 KiB of envelope overhead. These are
+implementation targets requiring worst-case fixtures and aggregate-memory proof,
+not measured capacity guarantees. Share immutable frames, bound decoding/object
+memory separately, avoid per-client filter caches and apply fair byte/time budgets
+to the IPC loop. Filter/order projections remain read-client policy after shared
+reconciliation; confirmed children remain available in the raw canonical view.
+
+Use Linux suspend-aware `CLOCK_BOOTTIME` for source expiry. A resumed machine must
+invalidate expired facts before serving them and reconcile sources independently.
+Heartbeats and newly connected readers do not reset source age. Export source age
+with explicit clock/epoch scope; remote clients cannot subtract host-local clocks
+or renew freshness merely by receiving a forwarded frame. Physical suspend and
+remote freshness accounting remain independent implementation/native gates.
+
 ## Local service safety and lifecycle
 
 Socket authority must include ownership/permissions and kernel peer identity,
@@ -140,6 +208,14 @@ Runtime selection, managed service installation and hook registration have
 separate scoped rollout gates. Observer shutdown must affect only Observer-owned
 processes and IPC, leaving native providers, workers and clients intact.
 
+Place IPC beneath a private 0700 directory in the user's runtime directory, with
+a 0600 socket and kernel peer-UID verification. A singleton ownership lock and
+inode-aware cleanup must not unlink a live or foreign endpoint. Preserve the
+configured user's ordinary home, provider selector and mount/PID context. Generic
+`PrivateTmp`, `ProtectHome` or `/proc` hiding can break accepted native reads;
+hardening must be proved against required capabilities. Start with no persisted
+cache, no automatic login-lingering change and no callback installation.
+
 ## Consumer effects
 
 Agent Plus can open from a warm owning-host view and maintain updates through
@@ -151,6 +227,13 @@ A dashboard bridge subscribes to normalized observations and projects the latest
 view into its device protocol. It owns display throttling, frame sizing, transport
 and device reconnect; it should not own provider polling or classification.
 Fixture/host-input acceptance does not establish physical device acceptance.
+
+The current dashboard also requires oldest **state episode** first within urgency
+groups. API v1 conversation activity and evidence `observedAt` do not establish
+state entry or a distinct same-phase episode. Initial service/bridge work must
+show unknown state age where native timing is unproved. Neither a sampled change
+nor a reconnect fabricates that clock. The historical schema-v1 bridge example
+also needs a separate API v1 wire-3 migration; it is not the current device feed.
 
 The notification client can reuse accepted source identity/context, but state
 updates and publishable native events remain distinct. Kitty/tmux origin routing,
@@ -186,8 +269,10 @@ not establish passivity. This loop implements no service or downstream client.
 
 ## Implementation direction after review
 
-Provisional order: contract/controlled scheduler and fan-out; shared accepted
-collection; independent packaged/native service proof; optional source signals;
-then separate client migrations and managed selection. A passive shared-polling
-service is a useful milestone without an all-provider native event feed.
-Review will refine this order and the actual acceptance matrix.
+Follow the [execution plan](shared-observation-service-execution-plan.md): service
+contract/independent reader, controlled scheduling and delivery, bounded shared
+collection, efficient monitoring/history separation, packaged local runtime and
+independent native/operational acceptance. Only then evaluate managed selection
+and separate consumer migrations. Optional source signals and state-episode timing
+have their own gates. Shared polling already supplies local push; an all-provider
+native event feed is not a prerequisite for this first milestone.
