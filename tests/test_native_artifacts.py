@@ -1,4 +1,4 @@
-"""Process-image support must survive upgrades without trusting unknown images."""
+"""Image identity survives upgrades; required contracts govern capabilities."""
 
 import hashlib
 import shutil
@@ -29,26 +29,28 @@ class NativeArtifactTest(unittest.TestCase):
                 replacement.write_bytes(after)
                 replacement.chmod(0o700)
                 replacement.replace(path)
-                with patch.object(native_artifacts, "ARTIFACTS", (old, new)):
+                with patch.object(native_artifacts, "HISTORICAL_IMAGES", (old, new)):
                     cache = {}
                     self.assertEqual(inspect_installed(path, "claude").artifact, new)
-                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache).artifact, old)
-                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache).artifact, old)
+                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache, expected_path=path).artifact, old)
+                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache, expected_path=path).artifact, old)
                     self.assertEqual(len(cache), 1)
-                    with patch.object(native_artifacts, "ARTIFACTS", (new,)):
-                        with self.assertRaisesRegex(ValueError, "runtime_artifact_not_accepted"):
-                            inspect_process(process.pid, "claude")
+                    with patch.object(native_artifacts, "HISTORICAL_IMAGES", (new,)):
+                        resident = inspect_process(process.pid, "claude", expected_path=path).artifact
+                        self.assertEqual(resident.sha256, old.sha256)
+                        self.assertEqual(resident.version, "unknown")
+                        self.assertFalse(hasattr(resident, "capabilities"))
+                    with self.assertRaisesRegex(ValueError, "runtime_image_ownership_mismatch"):
+                        inspect_process(process.pid, "claude")
             finally:
                 process.terminate()
                 process.wait(timeout=5)
 
     def test_digest_registration_cannot_substitute_provider_or_version_family(self):
-        for profile in native_artifacts.ARTIFACTS:
-            self.assertEqual(native_artifacts.registered(profile.provider, profile.sha256), profile)
-            self.assertIsNone(native_artifacts.registered("other", profile.sha256))
-        self.assertIsNone(native_artifacts.registered("claude", "f" * 64))
+        for profile in native_artifacts.HISTORICAL_IMAGES:
+            self.assertEqual(native_artifacts.historical_image(profile.provider, profile.sha256), profile)
+            self.assertIsNone(native_artifacts.historical_image("other", profile.sha256))
+        self.assertIsNone(native_artifacts.historical_image("claude", "f" * 64))
 
-    def test_managed_read_proof_does_not_authorize_a_new_cli_executable(self):
-        daemon = native_artifacts.CODEX_DAEMON
-        self.assertIsNotNone(native_artifacts.registered("codex", daemon.sha256, capability="managed_read"))
-        self.assertIsNone(native_artifacts.registered("codex", daemon.sha256, capability="entry"))
+    def test_image_diagnostics_never_advertise_contract_capabilities(self):
+        self.assertTrue(all(not hasattr(image, "capabilities") for image in native_artifacts.HISTORICAL_IMAGES))

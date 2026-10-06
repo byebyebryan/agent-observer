@@ -89,13 +89,13 @@ class SnapshotCollectionTest(unittest.TestCase):
                 validate.assert_called_once_with(identity)
         return result
 
-    def test_question_flags_are_accepted_only_for_the_proved_daemon_image(self):
+    def test_known_question_flags_do_not_depend_on_daemon_hash(self):
         class QuestionClient(FakeClient):
             def read_thread(self, identifier):
                 row = native(identifier)
                 row["status"] = {"type": "active", "activeFlags": ["waitingOnUserInput"]}
                 return {"thread": row}
-        for artifact, expected in ((CODEX, "unknown"), (CODEX_DAEMON, "needs_input")):
+        for artifact, expected in ((CODEX, "needs_input"), (CODEX_DAEMON, "needs_input")):
             client = QuestionClient({"data": [FIRST], "nextCursor": None},
                                     {"data": [native(FIRST)], "nextCursor": None})
             result = self.collect(client, artifact=artifact)
@@ -196,7 +196,7 @@ class SnapshotCollectionTest(unittest.TestCase):
 
     def test_unproved_wait_and_error_states_remain_unknown(self):
         for status in (
-            {"type": "active", "activeFlags": ["waitingOnUserInput"]},
+            {"type": "active", "activeFlags": ["futureFlag"]},
             {"type": "systemError"},
         ):
             client = FakeClient(
@@ -222,7 +222,7 @@ class SnapshotCollectionTest(unittest.TestCase):
         row = result["sessions"][0]
         self.assertEqual(row["work"]["value"], "needs_input")
         self.assertEqual(row["waitReason"], "approval")
-        self.assertEqual(result["coverage"]["work"]["supportedWaitFlags"], ["waitingOnApproval"])
+        self.assertEqual(result["coverage"]["work"]["supportedWaitFlags"], ["waitingOnApproval", "waitingOnUserInput"])
 
     def test_live_limit_is_incomplete_and_never_silently_empty(self):
         result = self.collect(
@@ -256,19 +256,29 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertTrue(result["coverage"]["loaded"]["complete"])
         self.assertFalse(result["coverage"]["saved"]["complete"])
 
-    def test_one_unsupported_loaded_row_keeps_healthy_sibling_evidence(self):
+    def test_one_malformed_loaded_identity_keeps_healthy_sibling_evidence(self):
         client = FakeClient({"data": [FIRST, SECOND], "nextCursor": None}, {"data": [], "nextCursor": None})
         def read(identifier):
-            return {"thread": {**native(identifier), "status": {"type": "idle" if identifier == FIRST else "newState"}}}
+            return {"thread": {**native(identifier), "sessionId": FIRST if identifier == FIRST else "malformed"}}
         client.read_thread = read
         result = self.collect(client)
         self.assertEqual(result["sourceHealth"], "partial")
         self.assertEqual(result["coverage"]["loaded"], {"complete": False, "reason": "loaded_row_unavailable"})
-        self.assertEqual(result["errors"], [{"code": "unsupported_status_schema"}])
+        self.assertEqual(result["errors"], [{"code": "invalid_native_identity"}])
         self.assertEqual(result["sessions"][0]["identity"]["nativeId"], FIRST)
         self.assertEqual(result["sessions"][0]["presence"]["value"], "present")
         self.assertEqual(result["sessions"][0]["presence"]["health"], "current")
         self.assertEqual(result["sessions"][0]["work"]["value"], "settled")
+
+    def test_new_state_variant_preserves_logical_identity_with_unknown_facts(self):
+        client = FakeClient({"data": [FIRST], "nextCursor": None}, {"data": [], "nextCursor": None})
+        client.read_thread = lambda identifier: {"thread": {**native(identifier), "status": {"type": "futureState"}}}
+        result = self.collect(client)
+        row = result["sessions"][0]
+        self.assertEqual(row["identity"]["nativeId"], FIRST)
+        self.assertEqual(row["presence"]["value"], "unknown")
+        self.assertEqual(row["work"]["value"], "unknown")
+        self.assertIn("unsupported_status_schema", row["metadataIssues"])
 
     def test_loaded_identity_conflict_invalidates_prior_sibling_evidence(self):
         client = FakeClient({"data": [FIRST, SECOND], "nextCursor": None}, {"data": [], "nextCursor": None})

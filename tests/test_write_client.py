@@ -34,11 +34,12 @@ class WriteClientTest(unittest.TestCase):
         self.home.mkdir()
         self.binary = self.root / "native"
         self.binary.write_bytes(b"fixture binary")
+        self.binary.chmod(0o700)
         self.artifacts = {
             p: (str(self.binary), hashlib.sha256(self.binary.read_bytes()).hexdigest())
             for p in ("codex", "claude")
         }
-        self.patch = patch("agent_observer.write_client.ARTIFACTS", self.artifacts)
+        self.patch = patch("agent_observer.write_client.EXECUTABLES", {p: a[0] for p, a in self.artifacts.items()})
         self.patch.start()
         self.addCleanup(self.patch.stop)
 

@@ -97,7 +97,7 @@ def collect_claude(
         "coverage": {"saved": {"complete": False, "reason": "not_observed"}},
         "limitations": [
             "study_contract",
-            "private_schema_version_gated",
+            "private_required_contract",
             "one_configured_namespace",
             "no_watch",
             "saved_history_metadata_only",
@@ -114,20 +114,25 @@ def collect_claude(
             raise CollectionError("config_ownership_mismatch")
         namespace, boot_id = _namespace(config_home, config_home_kind)
         result["namespace"] = namespace
-        artifact_identity = _verify_artifact(executable)
+        installed_issue = None
+        try:
+            artifact_identity = _verify_artifact(executable)
+        except (CollectionError, OSError) as error:
+            artifact_identity = None
+            installed_issue = str(error) if isinstance(error, CollectionError) else "runtime_artifact_unavailable"
         result["runtime"] = {
             "version": artifact_identity.artifact.version,
             "versionEvidence": "verified_installed_executable_sha256",
             "binarySha256": artifact_identity.artifact.sha256,
             "bootId": boot_id,
             "topology": "private_session_registry_and_job_store",
-        }
+        } if artifact_identity is not None else None
         native = snapshot(
             config_home,
             host_scope=host_scope,
             namespace=namespace,
-            runtime_version=artifact_identity.artifact.version,
-            binary_sha256=artifact_identity.artifact.sha256,
+            runtime_version=artifact_identity.artifact.version if artifact_identity is not None else "unknown",
+            binary_sha256=artifact_identity.artifact.sha256 if artifact_identity is not None else None,
         )
         result["sessions"] = native["observations"]
         result["parkedSupported"] = native.get("parkedSupported") is True
@@ -170,19 +175,28 @@ def collect_claude(
             "reason": "source_not_established",
         }
         result["errors"] = native["errors"]
+        if installed_issue is not None:
+            result["errors"].append({"code": installed_issue})
         result["limitations"] = list(dict.fromkeys(result["limitations"] + native["limitations"]))
-        current_artifact = executable.lstat()
-        if (
-            not stat.S_ISREG(current_artifact.st_mode)
-            or (current_artifact.st_dev, current_artifact.st_ino) != artifact_identity.stamp
-        ):
-            raise CollectionError("runtime_artifact_changed")
+        if artifact_identity is not None:
+            try:
+                current_artifact = executable.lstat()
+                unchanged = stat.S_ISREG(current_artifact.st_mode) and (
+                    current_artifact.st_dev, current_artifact.st_ino
+                ) == artifact_identity.stamp
+            except OSError:
+                unchanged = False
+            if not unchanged:
+                # The installed CLI is not the executable of surviving workers.
+                # Each worker was checked against its own kernel image/birth.
+                result["runtime"] = None
+                result["errors"].append({"code": "installed_image_changed"})
         complete = native["supported"] and all(
             native["coverage"][name] == "complete" for name in ("sessionRegistry", "jobStore")
         )
         result["sourceHealth"] = (
             "current"
-            if complete and not native["errors"]
+            if complete and not result["errors"]
             else "partial"
             if native["supported"]
             and any(

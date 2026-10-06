@@ -11,7 +11,6 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from .native_artifacts import supported_versions
 from .observation_model import (
     Evidence,
     NativeIdentity,
@@ -105,8 +104,10 @@ def _thread_classification(source, thread_source):
 
 
 def _projection(payload, *, host_scope, namespace, runtime_version):
-    if runtime_version not in supported_versions("codex", capability="managed_read"):
-        raise MetadataError("unsupported_runtime_version")
+    if not isinstance(runtime_version, str) or not 0 < len(runtime_version) <= 64 or any(
+        unicodedata.category(char).startswith("C") for char in runtime_version
+    ):
+        raise MetadataError("invalid_runtime_version_metadata")
     if not isinstance(payload, dict):
         raise MetadataError("invalid_thread_metadata")
     thread_id = _uuid(payload.get("id"))
@@ -171,7 +172,14 @@ def live_thread_metadata(payload, *, host_scope, namespace, runtime_version, obs
         or not isinstance(status.get("type"), str)
         or status["type"] not in _STATUS
     ):
-        raise MetadataError("unsupported_status_schema")
+        # A new state variant does not erase validated logical identity or
+        # acquire the meaning of a known runtime/work state.
+        metadata["metadataIssues"].append("unsupported_status_schema")
+        return {
+            **observation.metadata(), **metadata, "inventory": "live",
+            "nativeState": {"type": "unknown", "activeFlags": []},
+            "waitReason": "unknown",
+        }
     kind = status["type"]
     flags = status.get("activeFlags") if kind == "active" else []
     known_flags = (

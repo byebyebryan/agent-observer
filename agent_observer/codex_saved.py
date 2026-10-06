@@ -1,14 +1,12 @@
 """Bounded current-store metadata fallback, independent of a live Codex peer.
 
-Only the proved migration fingerprints and explicit thread/session/turn fields
-are accepted. No legacy importer, provider invocation or conversation SQL is
+Only the required typed thread/session/turn projections are accepted. Unrelated
+additions do not change compatibility. No provider invocation or conversation SQL is
 used. Missing/changing metadata remains partial and never establishes presence.
 """
 
 from __future__ import annotations
 
-import hashlib
-import json
 import os
 import sqlite3
 import stat
@@ -20,11 +18,16 @@ from pathlib import Path
 from .activity import codex_activity, ordering
 from .bounded_json import decode_document
 from .codex_metadata import saved_thread_metadata
-from .native_artifacts import CODEX
-
-MIGRATIONS = {
-    "state_5.sqlite": "f1a982077c8c20f6afe736e57896ffbcec1591d1bf52a01a490b0ff393403fa6",
-    "thread_history_1.sqlite": "0e1a801e2a5e36f7f289db4959cc6ffc4a912e38a6ded5070fd2113e541e1664",
+PROJECTIONS = {
+    "state_5.sqlite": ("threads", {
+        "id": "TEXT", "rollout_path": "TEXT", "source": "TEXT",
+        "thread_source": "TEXT", "name": "TEXT", "created_at": "INTEGER",
+        "updated_at": "INTEGER", "archived": "INTEGER",
+    }),
+    "thread_history_1.sqlite": ("thread_turns", {
+        "thread_id": "TEXT", "started_at": "INTEGER", "completed_at": "INTEGER",
+        "rollout_ordinal": "INTEGER",
+    }),
 }
 
 
@@ -74,15 +77,15 @@ def database(path, *, deadline):
         connection.execute("PRAGMA trusted_schema=OFF")
         connection.set_progress_handler(lambda: int(time.monotonic() > deadline), 1000)
         connection.execute("BEGIN")
-        rows = connection.execute(
-            "SELECT version, checksum, success FROM _sqlx_migrations ORDER BY version LIMIT 129"
-        ).fetchall()
-        if len(rows) > 128 or any(type(v) is not int or not isinstance(c, bytes) or s != 1 for v, c, s in rows):
-            raise ValueError("saved_store_schema_unsupported")
-        fingerprint = hashlib.sha256(json.dumps(
-            [[v, c.hex(), s] for v, c, s in rows], separators=(",", ":")
-        ).encode()).hexdigest()
-        if fingerprint != MIGRATIONS[path.name]:
+        table, required = PROJECTIONS[path.name]
+        kind = connection.execute(
+            "SELECT type FROM sqlite_schema WHERE name=?", (table,)
+        ).fetchone()
+        columns = connection.execute("PRAGMA table_info(" + table + ")").fetchall()
+        actual = {row[1]: row[2].upper() for row in columns}
+        if kind != ("table",) or len(columns) > 256 or any(
+            actual.get(name) != declared for name, declared in required.items()
+        ):
             raise ValueError("saved_store_schema_unsupported")
         yield connection
         if _regular(path, 16 * 1024 * 1024 * 1024) != stamp:
@@ -152,7 +155,7 @@ def collect_saved(home, *, host_scope, namespace, history_limit=100, timeout=3.0
                     "id": identifier, "sessionId": sid, "name": name, "cwd": recorded_cwd,
                     "source": source if source in {"cli", "vscode", "exec", "appServer"} else "unknown",
                     "threadSource": kind, "createdAt": created, "updatedAt": updated,
-                }, host_scope=host_scope, namespace=namespace, runtime_version=CODEX.version)
+                }, host_scope=host_scope, namespace=namespace, runtime_version="unknown")
                 row["cwdSource"] = "codex_session_metadata"
                 row["activity"] = codex_activity({"data": [{
                     "itemsView": "notLoaded", "items": [], "startedAt": turn[0], "completedAt": turn[1],

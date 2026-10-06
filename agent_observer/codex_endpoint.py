@@ -1,4 +1,4 @@
-"""Inspect an existing, version-pinned managed endpoint without launching it."""
+"""Inspect an existing, contract-bound managed endpoint without launching it."""
 
 from __future__ import annotations
 
@@ -12,7 +12,6 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from .native_artifacts import registered
 
 
 class EndpointError(ValueError):
@@ -94,7 +93,7 @@ def inspect_managed_endpoint(
     proc_root: Path = Path("/proc"),
     timeout: float = 3.0,
 ) -> RuntimeIdentity:
-    """Match the actual owning image against exact capability registrations.
+    """Verify the configured managed endpoint's owning executable incarnation.
 
     An explicit fingerprint selects an operator proof's exact expected image;
     the default reads the owning peer instead of assuming the CLI's release.
@@ -182,7 +181,6 @@ def inspect_managed_endpoint(
         ):
             raise EndpointError("runtime_peer_identity_mismatch")
         actual_digest = _fingerprint(process / "exe", deadline=deadline)
-        profile = registered("codex", actual_digest, capability="managed_read")
         matches = False
         for index, fd in enumerate((process / "fd").iterdir()):
             if index >= 4096 or time.monotonic() > deadline:
@@ -204,7 +202,7 @@ def inspect_managed_endpoint(
             str(executable),
             expected_stat.st_dev,
             expected_stat.st_ino,
-            profile.version if profile else match.group(1),
+            match.group(1),
             actual_digest,
             listener,
             socket_stat.st_dev,
@@ -217,10 +215,6 @@ def inspect_managed_endpoint(
                 raise EndpointError("runtime_binary_not_accepted", identity=identity)
             if version != match.group(1):
                 raise EndpointError("runtime_version_mismatch", identity=identity)
-        elif profile is None:
-            raise EndpointError("runtime_artifact_not_accepted", identity=identity)
-        if profile is not None and profile.version != match.group(1):
-            raise EndpointError("runtime_version_mismatch", identity=identity)
         return identity
     except EndpointError:
         raise

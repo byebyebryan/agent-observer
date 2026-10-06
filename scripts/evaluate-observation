@@ -21,11 +21,6 @@ import time
 from pathlib import Path
 
 UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z")
-ARTIFACTS = {
-    "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad": ("codex", "0.160.0"),
-    "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0": ("claude", "2.1.287"),
-    "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348": ("claude", "2.1.289"),
-}
 MAX_FILE = 4 * 1024 * 1024
 
 
@@ -58,12 +53,19 @@ def birth(pid):
     return fields[19], fields[0], int(fields[1])
 
 
-def image(path):
+def image(path, provider=None):
     with open(path, "rb") as stream:
+        info = os.fstat(stream.fileno())
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid not in (0, os.getuid())
+                or info.st_mode & 0o022 or not 0 < info.st_size <= 512 * 1024 * 1024):
+            raise ValueError("native_image_rejected")
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
-    accepted = ARTIFACTS.get(digest)
-    return {"sha256": digest, "provider": accepted[0] if accepted else None,
-            "version": accepted[1] if accepted else None}
+        after = os.fstat(stream.fileno())
+        if (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns) != (
+            after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns
+        ):
+            raise ValueError("native_image_changed")
+    return {"sha256": digest, "provider": provider, "version": "unknown"}
 
 
 class NativeRPC:
@@ -87,13 +89,14 @@ class NativeRPC:
                 raise ValueError("native_peer_rejected")
             self.pid = pid
             self.start = birth(pid)[0]
-            self.artifact = image(f"/proc/{pid}/exe")
-            if self.artifact["provider"] != "codex":
-                executable = os.readlink(f"/proc/{pid}/exe")
-                match = re.fullmatch(re.escape(str(home)) + r"/packages/app-server-daemon/releases/(\d+\.\d+\.\d+)-x86_64-unknown-linux-musl/bin/codex", executable)
-                if reference_sha256 != self.artifact["sha256"] or match is None:
-                    raise ValueError("native_image_unregistered")
-                self.artifact.update(provider="codex", version=match.group(1), referenceOnly=True, versionEvidence="exact_sha256_and_release_path")
+            executable = os.readlink(f"/proc/{pid}/exe").removesuffix(" (deleted)")
+            match = re.fullmatch(re.escape(str(home)) + r"/packages/app-server-daemon/releases/(\d+\.\d+\.\d+)-x86_64-unknown-linux-musl/bin/codex", executable)
+            if match is None or Path(f"/proc/{pid}").stat().st_uid != os.getuid():
+                raise ValueError("native_provider_locator_rejected")
+            self.artifact = image(f"/proc/{pid}/exe", "codex")
+            if reference_sha256 is not None and reference_sha256 != self.artifact["sha256"]:
+                raise ValueError("native_reference_digest_changed")
+            self.artifact.update(version=match.group(1), versionEvidence="owned_release_path_and_inspected_sha256")
             self.buffer = bytearray()
             key = base64.b64encode(os.urandom(16)).decode()
             self.sock.sendall(("GET / HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: " + key + "\r\nSec-WebSocket-Version: 13\r\nOrigin: http://localhost\r\n\r\n").encode())
@@ -223,7 +226,7 @@ def codex_reference(client):
         status = r.get("status", {}).get("type") if sid in loaded else None
         flags = r.get("status", {}).get("activeFlags", []) if sid in loaded else []
         phase = "waiting" if status == "idle" else "blocked" if status == "active" and (
-            flags == ["waitingOnApproval"] or client.artifact["version"] == "0.160.1" and flags == ["waitingOnUserInput"]
+            flags in (["waitingOnApproval"], ["waitingOnUserInput"])
         ) else "working" if status == "active" and flags == [] else None
         at, reason, outcome, outcome_at = None, None, None, None
         try:
@@ -234,7 +237,7 @@ def codex_reference(client):
                     raise ValueError("native_items_not_excluded")
                 stamp = turn.get("completedAt") if turn.get("completedAt") is not None else turn.get("startedAt")
                 at = stamp * 1000 if type(stamp) is int else None
-                if client.artifact["version"] == "0.160.1" and type(turn.get("completedAt")) is int:
+                if type(turn.get("completedAt")) is int:
                     outcome = {"completed": "completed", "failed": "failed", "interrupted": "cancelled"}.get(turn.get("status"))
                     outcome_at = turn["completedAt"] * 1000 if outcome else None
                 elif turn.get("status") == "inProgress":
@@ -325,6 +328,17 @@ def native_history(home):
     return rows, sorted(set(gaps)), total_bytes
 
 
+def worker_image(pid, cache):
+    if (Path(f"/proc/{pid}").stat().st_uid != os.getuid()
+            or os.readlink(f"/proc/{pid}/exe").removesuffix(" (deleted)") != "/opt/claude-code/bin/claude"):
+        raise ValueError("native_worker_locator_unproved")
+    info = Path(f"/proc/{pid}/exe").stat()
+    key = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+    if key not in cache:
+        cache[key] = image(f"/proc/{pid}/exe", "claude")
+    return cache[key]
+
+
 def claude_reference(home, image_cache):
     domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
     history, history_gaps, scanned = native_history(home)
@@ -332,6 +346,7 @@ def claude_reference(home, image_cache):
     registry = []
     registry_seen = set()
     registry_complete = True
+    runtime_gaps, workers = [], []
     for path in sorted((home / "sessions").glob("*.json")):
         try:
             r = read_json(path)
@@ -343,67 +358,64 @@ def claude_reference(home, image_cache):
             start, state, parent = birth(pid)
             if start != r.get("procStart") or r.get("pidDomain") != domain or state == "Z":
                 continue
-            info = Path(f"/proc/{pid}/exe").stat()
-            key = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
-            artifact = image_cache.setdefault(key, None)
-            if artifact is None:
-                artifact = image(f"/proc/{pid}/exe")
-                image_cache[key] = artifact
+            artifact = worker_image(pid, image_cache)
             if artifact["provider"] != "claude" or birth(pid)[0] != start:
+                registry_complete = False
+                runtime_gaps.append("worker_image_unproved:" + sid)
                 continue
             job_id = r.get("jobId")
             try:
                 job = read_json(home / "jobs" / job_id / "state.json") if isinstance(job_id, str) and re.fullmatch("[0-9a-f]{8}", job_id) else None
             except (OSError, ValueError):
                 job = None
+            if job is not None and not isinstance(job, dict):
+                raise ValueError("native_job_shape_unproved")
             linked = job is None and job_id is None or job is not None and job.get("sessionId") == sid
             status = r.get("status")
             native_state = job.get("state") if job else None
             tempo = job.get("tempo") if job else None
             phase = None
-            if linked:
-                current_image = artifact["version"] == "2.1.289"
+            if linked and type(r.get("statusUpdatedAt")) is int and 0 <= r["statusUpdatedAt"] <= 4_000_000_000_000:
                 counts = (job or {}).get("inFlight") or {}
+                if not isinstance(counts, dict):
+                    counts = {}
                 current_job = job is None and r.get("kind") == "interactive" or native_state in ("working", "done")
                 questions = ((job or {}).get("block") or {}).get("questions")
                 question_bound = (job is not None and native_state == "working" and tempo == "blocked"
                                   and isinstance(questions, list) and 1 <= len(questions) <= 32
                                   and all(isinstance(q, dict) for q in questions))
-                if current_image and current_job and status == "waiting" and (
+                if current_job and status == "waiting" and (
                     r.get("waitingFor") == "permission prompt" or r.get("waitingFor") == "input needed" and question_bound
                 ):
                     phase = "blocked"
-                elif current_image and job is None and r.get("kind") == "interactive" and status == "idle":
+                elif job is None and r.get("kind") == "interactive" and status == "idle":
                     phase = "waiting"
-                elif current_image and current_job and status in ("busy", "shell"):
+                elif current_job and status in ("busy", "shell"):
                     phase = "working"
-                elif job is not None and native_state == "done" and tempo in ("idle", "blocked") and status == "idle" and (
-                    not current_image or tempo == "idle" and job.get("lastTerminalAt") is not None
+                elif job is not None and native_state == "done" and tempo == "idle" and status == "idle" and (
+                    job.get("lastTerminalAt") is not None
                     and all(type(counts.get(k)) is int and counts[k] == 0 for k in ("tasks", "queued", "drainableMonitors"))
                 ):
                     phase = "waiting"
-                elif job is None and r.get("kind") == "interactive" and status in ("busy", "shell"):
-                    phase = "working"
-                elif job is None and r.get("kind") == "interactive" and status == "waiting" and r.get("waitingFor") == "permission prompt":
-                    phase = "blocked"
-                elif native_state == "working" and tempo == "active" and status in ("busy", "shell"):
-                    phase = "working"
-                elif native_state == "working" and tempo in ("active", "blocked") and status == "waiting" and r.get("waitingFor") == "permission prompt":
-                    phase = "blocked"
             original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
             row = {**original, "cwd": bounded_text(r.get("cwd"), 4096) or original["cwd"], "runtime": "running", "phase": phase, "pid": pid, "parentPid": parent, "startTicks": start, "workerVersion": artifact["version"], "registryKind": r.get("kind") if r.get("kind") in ("interactive", "bg", "daemon", "daemon-worker") else "unknown", "nativeStatus": status if status in ("busy", "shell", "idle", "waiting") else "unknown", "nativeJobState": native_state if native_state in ("working", "done", "blocked", "failed", "stopped") else None, "nativeTempo": tempo if tempo in ("active", "idle", "blocked") else None, "statusUpdatedAt": r.get("statusUpdatedAt"), "jobLinked": linked}
+            workers.append({"id": sid, "pid": pid, "startTicks": start, "phase": phase,
+                            "binarySha256": artifact["sha256"]})
+            if sid in registry:
+                row["runtime"], row["phase"] = None, None
+                row["ambiguousWorkers"] = True
+                runtime_gaps.append("duplicate_live_workers:" + sid)
             rows[sid] = row
             registry.append(sid)
         except (OSError, ValueError, TypeError):
             registry_complete = False
+            runtime_gaps.append("worker_reference_unavailable")
             continue
     # Independently bound retained terminal jobs. This reference accepts only
     # registry-free UUIDs; an unsupported/stale registry record remains unproved.
     # Provider state is read directly and never supplied by the CLI under test.
     terminal_jobs = {}
-    runtime_gaps = []
     try:
-        current_cli = image("/opt/claude-code/bin/claude")["version"] == "2.1.289"
         job_dirs = list((home / "jobs").iterdir())
         if len(job_dirs) > 128:
             raise ValueError("native_job_limit")
@@ -418,7 +430,7 @@ def claude_reference(home, image_cache):
                 raise ValueError("native_job_identity_unproved")
             terminal_jobs.setdefault(sid, []).append(job)
         for sid, jobs in terminal_jobs.items():
-            if not current_cli or not registry_complete or sid in registry_seen or len(jobs) != 1:
+            if not registry_complete or sid in registry_seen or len(jobs) != 1:
                 continue
             job = jobs[0]
             counts = job.get("inFlight")
@@ -443,7 +455,7 @@ def claude_reference(home, image_cache):
     except (OSError, ValueError, TypeError):
         runtime_gaps.append("terminal_job_reference_incomplete")
     return {"sampleAt": clock(), "rows": rows, "registered": sorted(registry), "historyGaps": history_gaps,
-            "historyBytesScanned": scanned, "runtimeGaps": runtime_gaps}
+            "historyBytesScanned": scanned, "runtimeGaps": sorted(set(runtime_gaps)), "workers": workers}
 
 
 def cli_call(cli, argv, snapshot=None):
@@ -529,15 +541,17 @@ def read_client_checks(cli, payload):
         return json.dumps(row["identity"], sort_keys=True)
     attention = {"blocked": 0, "waiting": 1, "working": 2, "unknown": 3}
     def order(row):
-        at = row["activity"]["at"]
+        at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
         r = row["identity"]
         return (attention[row["phase"]["value"]], at is None, -(at or 0), r["hostScope"], r["provider"], r["namespace"], r["nativeIdKind"], r["nativeId"])
     human = cli_call(cli, ["list", "--input", "-"], payload).decode().splitlines()
     age_ok = True
     for line, row in zip(human[1:], listed["sessions"], strict=True):
-        at = row["activity"]["at"]
+        at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
         seconds = None if at is None else (snapshot["collectedAt"] - at) // 1000
         age = "unknown" if seconds is None else "clock-ahead" if seconds < 0 else next(str(seconds // unit) + label for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
+        if at is not None and row["activity"]["health"] == "stale":
+            age = "stale:" + age
         age_ok &= line.split("  ")[4] == age
     shown = 0
     for row in listed["sessions"]:
@@ -557,7 +571,7 @@ def main():
     parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
     parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
     parser.add_argument("--rounds", type=int, choices=range(1, 5), default=2)
-    parser.add_argument("--codex-reference-sha256", help="explicit study-only pin for an unregistered running daemon; does not change Observer support")
+    parser.add_argument("--codex-reference-sha256", help="optional operator guard for the inspected daemon hash; compatibility is contract based")
     args = parser.parse_args()
     for variable, suffix in (("CODEX_HOME", ".codex"), ("CLAUDE_CONFIG_DIR", ".claude")):
         if variable in os.environ and Path(os.environ[variable]) != Path.home() / suffix:

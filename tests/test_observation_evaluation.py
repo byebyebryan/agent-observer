@@ -76,11 +76,11 @@ class ObservationEvaluationTest(unittest.TestCase):
                 "pidDomain": "linux:" + Path("/etc/machine-id").read_text().strip()
                 + ":" + os.readlink("/proc/self/ns/pid"),
                 "kind": "interactive", "status": "waiting",
-                "waitingFor": "permission prompt", "jobId": None,
+                "waitingFor": "permission prompt", "jobId": None, "statusUpdatedAt": 100,
             }
             registry = home / "sessions" / f"{pid}.json"
-            with patch.object(evaluation, "image", return_value={"provider": "claude",
-                                                                "version": "2.1.289"}):
+            with patch.object(evaluation, "worker_image", return_value={"provider": "claude",
+                                                                       "version": "unknown", "sha256": "f" * 64}):
                 for changes, expected in (
                     ({}, "blocked"), ({"kind": "bg"}, None),
                     ({"waitingFor": "input needed"}, None),
@@ -89,3 +89,23 @@ class ObservationEvaluationTest(unittest.TestCase):
                     registry.write_text(json.dumps({**record, **changes}))
                     native = evaluation.claude_reference(home, {})
                     self.assertEqual(native["rows"][SID]["phase"], expected)
+
+    def test_duplicate_verified_workers_are_not_first_or_last_match(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            (home / "sessions").mkdir()
+            domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
+            for pid, status in ((123, "busy"), (124, "idle")):
+                (home / "sessions" / f"{pid}.json").write_text(json.dumps({
+                    "sessionId": SID, "pid": pid, "procStart": str(pid),
+                    "pidDomain": domain, "kind": "interactive", "status": status,
+                    "statusUpdatedAt": 100, "jobId": None,
+                }))
+            with (patch.object(evaluation, "birth", side_effect=lambda pid: (str(pid), "S", 1)),
+                  patch.object(evaluation, "worker_image", return_value={"provider": "claude", "version": "unknown", "sha256": "f" * 64})):
+                native = evaluation.claude_reference(home, {})
+            self.assertEqual(len(native["workers"]), 2)
+            self.assertTrue(native["rows"][SID]["ambiguousWorkers"])
+            self.assertIsNone(native["rows"][SID]["phase"])
+            self.assertIsNone(native["rows"][SID]["runtime"])
+            self.assertIn("duplicate_live_workers:" + SID, native["runtimeGaps"])

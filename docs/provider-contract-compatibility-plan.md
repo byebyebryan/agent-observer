@@ -3,8 +3,9 @@
 Date: 2026-10-06. Status: user-selected support policy and Observer implementation
 plan. This supersedes the release-registration direction in the
 [discovery/monitoring review](discovery-monitoring-contract-review.md).
-The current a11 implementation still has exact-image allowlists; this document
-does not claim those runtime gates have been replaced or deploy new behavior.
+The selected a11 artifact still has exact-image allowlists. The source candidate
+`0.3.0a1` replaces those runtime gates with required-field/protocol checks; its
+packaged/native acceptance and managed entrypoint selection remain separate.
 
 ## Support policy
 

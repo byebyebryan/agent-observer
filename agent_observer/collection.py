@@ -91,10 +91,28 @@ def project_source(native):
     if health == "current" and native.get("errors"):
         health = "partial"
     coverage = native.get("coverage", {})
+    phase_capabilities = set().union(*(
+        set(row.get("phaseCapabilities", [])) for row in native.get("sessions", [])
+    ))
+    phase_supported = (
+        coverage.get("work", {}).get("supported") is True if provider == "codex"
+        else "registry_phase" in phase_capabilities
+        or any(row.get("work", {}).get("health") == "current" for row in native.get("sessions", []))
+    ) and health in {"current", "partial"}
+    running_supported = (
+        (coverage.get("loaded", {}).get("complete") is True if provider == "codex"
+         else coverage.get("workerPresence") == "complete")
+        or any(row.get("presence", {}).get("value") == "present" for row in native.get("sessions", []))
+    ) and health in {"current", "partial"}
     question_supported = provider == "claude" and any(
         "job_question" in row.get("phaseCapabilities", []) for row in native.get("sessions", [])
     )
     question_supported |= provider == "codex" and "waitingOnUserInput" in coverage.get("work", {}).get("supportedWaitFlags", [])
+    question_supported &= phase_supported
+    approval_supported = phase_supported and (
+        provider == "claude"
+        or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", [])
+    )
     result = {
         "provider": provider,
         "namespace": namespace,
@@ -112,11 +130,11 @@ def project_source(native):
         },
         "capabilities": {
             "phase": ["working", "blocked", "waiting"]
-            if provider != "codex" or coverage.get("work", {}).get("supported") else [],
-            "blockedReasons": ["approval", "question"] if question_supported else ["approval"]
-            if provider != "codex" or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", []) else [],
+            if phase_supported else [],
+            "blockedReasons": (["approval"] if approval_supported else [])
+            + (["question"] if question_supported else []),
             "runtime": ["running", "parked"] if parked_supported else ["running"]
-            if provider != "codex" or coverage.get("loaded", {}).get("complete") else [],
+            if running_supported else [],
             "activity": native.get("activitySupported") is True,
             "clientBinding": False,
         },
@@ -135,15 +153,15 @@ def project_source(native):
     if not result["capabilities"]["activity"]:
         result["limitations"].append("activity_source_unproved")
     if provider == "codex":
-        result["limitations"].append("questions_require_current_daemon_image" if question_supported else "questions_unproved")
+        result["limitations"].append("questions_require_known_wait_flags" if question_supported else "questions_unproved")
         if result["coverage"]["saved"]["status"] == "unavailable":
             result["limitations"].append("saved_metadata_unavailable")
         result["limitations"].append("offline_runtime_state_unavailable")
         result["limitations"].append("unloaded_work_state_unavailable")
         result["limitations"].append("unbound_tui_contexts_unobserved")
     else:
-        result["limitations"].extend(["foreground_questions_unproved", "older_worker_input_unproved"])
-        result["limitations"].append("interactive_readiness_requires_current_worker_image")
+        result["limitations"].append("foreground_questions_unproved")
+        result["limitations"].append("interactive_readiness_requires_verified_worker_contract")
         result["limitations"].append("background_readiness_requires_no_pending_work")
         result["limitations"].extend(reason for reason in native.get("limitations", []) if reason in {
             "history_sdk_candidates_omitted", "history_candidates_unresolved",

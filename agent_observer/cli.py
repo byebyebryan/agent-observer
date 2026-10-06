@@ -13,7 +13,7 @@ from pathlib import Path
 from . import __version__
 from .bounded_json import WireError, decode_document
 from .contract import MAX_BYTES, SCHEMA_VERSION, ContractError, canonical, parse_snapshot, schema_document
-from .native_artifacts import supported_versions
+from .native_contracts import CONTRACTS
 from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
 from .watch import MIN_INTERVAL, SampledWatch
@@ -193,11 +193,11 @@ def main(argv=None):
                 for source in report["sources"]:
                     runtime_version = source["runtime"]["version"] if source["runtime"] else "unavailable"
                     print(
-                        f"{source['provider']}: {source['sourceHealth']}; saved={source['coverage']['saved']['status']}; runtime={source['coverage']['runtime']['status']}; version={runtime_version}; accepted={','.join(supported_versions(source['provider']))}; limits={','.join(source['limitations'])}"
+                        f"{source['provider']}: {source['sourceHealth']}; saved={source['coverage']['saved']['status']}; runtime={source['coverage']['runtime']['status']}; version={runtime_version}; contracts={','.join(c.name for c in CONTRACTS if c.provider == source['provider'])}; limits={','.join(source['limitations'])}"
                     )
                     for code in source["errors"]:
                         detail = {
-                            "runtime_artifact_not_accepted": "actual runtime image is outside accepted support; inspect its reported version/hash separately from the installed CLI",
+                            "runtime_image_ownership_mismatch": "runtime image ownership or provider locator did not match the required context",
                             "runtime_artifact_unavailable": "installed runtime executable could not be read",
                             "runtime_peer_identity_mismatch": "kernel peer does not match the configured managed endpoint owner",
                             "runtime_binary_not_accepted": "owning runtime image differs from the explicitly requested artifact",

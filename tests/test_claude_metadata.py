@@ -52,7 +52,7 @@ class ClaudeMetadataTest(unittest.TestCase):
                    return_value=(None, "absent")):
             self.assertEqual(self.read()["observations"][0]["runtimeDisposition"]["value"], "parked")
 
-    def test_parked_requires_accepted_image_terminal_clock_and_no_pending_work(self):
+    def test_parked_requires_terminal_clock_and_no_pending_work(self):
         job = self.terminal_job()
         path = self.root / "jobs/abcdef01/state.json"
         changes = ({"state": "failed"}, {"state": "working"}, {"tempo": "active"},
@@ -68,8 +68,8 @@ class ClaudeMetadataTest(unittest.TestCase):
         with patch.dict(self.scope, runtime_version=CLAUDE_PREVIOUS.version,
                         binary_sha256=CLAUDE_PREVIOUS.sha256):
             result = self.read()
-            self.assertFalse(result["parkedSupported"])
-            self.assertNotIn("runtimeDisposition", result["observations"][0])
+            self.assertTrue(result["parkedSupported"])
+            self.assertEqual(result["observations"][0]["runtimeDisposition"]["value"], "parked")
 
     def test_duplicate_jobs_or_workers_and_partial_registry_do_not_prove_parked(self):
         job = self.terminal_job()
@@ -281,19 +281,15 @@ class ClaudeMetadataTest(unittest.TestCase):
         ):
             return snapshot(self.root, **self.scope)
 
-    def test_runtime_gate_refuses_unknown_version_or_digest_before_reads(self):
-        result = snapshot(
-            self.root / "does-not-exist",
-            **{**self.scope, "runtime_version": "2.1.288"},
-        )
+    def test_compatibility_depends_on_owned_metadata_not_release_or_hash(self):
+        result = snapshot(self.root, **{**self.scope, "runtime_version": "2.999.0", "binary_sha256": "0" * 64})
+        self.assertTrue(result["supported"])
+        result = snapshot(self.root / "does-not-exist", **self.scope)
         self.assertFalse(result["supported"])
-        self.assertEqual(result["errors"], [{"code": "unsupported_runtime_version"}])
-        result = snapshot(
-            self.root / "does-not-exist",
-            **{**self.scope, "binary_sha256": "0" * 64},
-        )
+        self.assertEqual(result["errors"], [{"code": "config_root_unavailable"}])
+        result = snapshot(self.root, **{**self.scope, "binary_sha256": "invalid"})
         self.assertFalse(result["supported"])
-        self.assertEqual(result["errors"], [{"code": "unsupported_runtime_digest"}])
+        self.assertEqual(result["errors"], [{"code": "invalid_runtime_digest"}])
 
     def test_linux_pid_domain_matches_exact_installed_formula(self):
         self.assertEqual(
