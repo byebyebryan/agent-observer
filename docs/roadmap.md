@@ -12,8 +12,10 @@ The [current discovery/monitoring review](discovery-monitoring-contract-review.m
 keeps this pass Observer-only. Current provider upgrades block Claude runtime
 monitoring and all tested New preparation routes; controlled watch retention,
 wire-bound and semantic-validation findings reopen producer work. The next pass
-repairs independent reference coverage, accepts current images, closes watch and
-contract gaps, then independently accepts a new Observer artifact. The existing
+replaces provider release/hash allowlists with
+[required contract and capability checks](provider-contract-compatibility-plan.md),
+repairs independent reference coverage, closes watch/contract gaps, then
+independently accepts a new Observer artifact. The existing
 identity/state model remains a pinned prerelease baseline; stable freeze is pending.
 The adjacent `../rofi-agent-plus/docs/observer-client-handoff.md` lets a separate
 agent own fixture-based client work and records the producer/native gates

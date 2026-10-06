@@ -1,5 +1,12 @@
 # Agent Observer architecture boundaries
 
+The [2026-10-06 provider compatibility policy](provider-contract-compatibility-plan.md)
+governs future native support: required contracts and observed capabilities
+determine compatibility. Release versions and hashes record provenance and
+incarnation changes; routine provider upgrades do not require allowlist entries.
+The version-gated pilot description below is historical, and a11's runtime
+allowlist replacement remains a separate Observer implementation checkpoint.
+
 The [contract and clients plan](contract-and-clients-plan.md), captured
 2026-10-03, defines the next development track: a passive host-local core,
 first-party read/write clients and optional networking in the same repository.

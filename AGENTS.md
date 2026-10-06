@@ -15,9 +15,14 @@
   before any Agent Plus implementation; optional networking has its own gate.
   Producer defects found by a consumer reopen a separate Observer checkpoint,
   not a simultaneous producer/frontend edit cycle.
-- The existing native-runtime migration pilot accepts only its documented
-  exact-artifact subset; new versions, topologies and capabilities require
-  independent proof. The schema-v1 command remains a prerelease contract.
+- Provider support follows the required protocol/metadata/CLI contracts and
+  observed capabilities, not provider version or executable-hash allowlists.
+  Follow `docs/provider-contract-compatibility-plan.md`. Versions/hashes remain
+  diagnostics, native-test provenance and executable/incarnation-change guards.
+  Routine upgrades preserving required contracts do not require release
+  registration; changed contract semantics, topologies or new capabilities need
+  focused independent proof. Existing pilot evidence retains its historical
+  exact-artifact bounds. The schema-v1 command remains a prerelease contract.
 - Continue preflight and spike work on Snap in `~/code/agent-observer`. Claude
   is available only there according to the user. Reinspect both providers on
   Snap; Starship evidence does not establish Snap versions or runtime behavior.

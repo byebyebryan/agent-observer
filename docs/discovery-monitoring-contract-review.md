@@ -6,6 +6,12 @@ frozen source `06af32dc9f28aa5d356d6da6c0235ccc1056dac2`, wheel SHA-256
 This is an Observer review and consumer handoff, with no producer/frontend
 implementation, provider actions, configuration changes or artifact selection.
 
+The subsequent user decision is to bind native support to required contracts,
+with no daily provider version/hash registration. The
+[provider compatibility plan](provider-contract-compatibility-plan.md) supersedes
+the original image-requalification direction. Sampled failures below remain
+valid evidence of the current a11 implementation's overly restrictive gates.
+
 The model is suitable for a pinned prerelease consumer baseline. A stable
 contract freeze is premature: current provider upgrades have reopened native
 operation acceptance, watch retention has reproducible defects, and transport
@@ -119,12 +125,13 @@ upgrade currently disables all Claude runtime reads even for surviving accepted
 workers, and disables both providers' New/Resume preparation. Peer acceptance
 does not accept the Codex CLI executable.
 
-Close with independent current-image read/write/native gates: Codex 0.160.1
-entry on both hosts and Claude 2.1.291 on Snap, including surviving older workers,
-duplicate worker contexts and the parked predicate. Record a repeatable upgrade
-preflight/capability acceptance procedure and visible unsupported-image outcomes.
-Consider a separately proved surviving-worker read subset if private-store
-provenance permits it. Do not simply widen versions/hashes or bypass the gate.
+Close by replacing provider release/hash allowlists with required-contract
+compatibility checks, independently for discovery, worker presence, phase/age,
+parked and entry. Preserve executable/endpoint/worker provenance and actual
+incarnation revalidation. The observed releases, surviving workers and duplicate
+contexts are test points for the replacement, not new hardcoded allowed versions.
+Routine contract-compatible upgrades must continue without Observer rebuild or
+release registration. See the linked compatibility plan for native acceptance.
 
 ### R2 — P2: watch retention drops last-known conversation age
 
@@ -207,9 +214,10 @@ hash is outside its reference table. It supplies no corresponding runtime-gap
 reason. Known-image duplicate UUIDs can also overwrite rows in its UUID map.
 The separate kernel check exposed a current 2.1.291 record omitted by this path.
 
-Report unsupported records and ambiguity explicitly, bound the reference's
-inventory/phase claims and compare absence only within proved complete scopes.
-Add independent helper tests for unknown images and multiple live worker records.
+Report records and ambiguity explicitly, assess the required native contracts
+without dropping new releases, and compare absence only within proved complete
+scopes. Add independent helper tests for changed images with unchanged contracts,
+incompatible metadata and multiple live worker records.
 The evaluator is an operator tool, not a consumer discovery adapter.
 
 ### R8 — P2: stable compatibility policy is still incomplete
@@ -221,7 +229,7 @@ provider implementation detail to the public accepted domain. The policy also
 needs explicit coverage for Python imports, diagnostic outputs and write errors.
 
 Before publication, distinguish wire versions, producer package versions and
-native capability registrations. Resolve SDK-version extensibility with a
+native contract profiles. Resolve SDK-version extensibility with a
 versioned change if needed. Define which CLI JSON surfaces and pure Python
 symbols are supported, which diagnostics/human formats may evolve, the treatment
 of newly encountered finite reason codes, and the required reader/cache transition
@@ -256,15 +264,16 @@ They do not require speculative compatibility implementations.
 
 ## Observer-only follow-up and client handoff
 
-1. Repair independent reference coverage first, establish the current exact
-   provider/worker matrix and accept current CLI/peer capabilities independently.
+1. Formalize required native contracts and replace release/hash allowlist support
+   selectors. Repair independent reference coverage and validate compatibility
+   across current CLI/peer/worker contexts without daily release registration.
 2. Repair watch age/classification/retention and serialized bounds; preserve
    healthy row evidence through row-local faults. Settle any required new wire
    version before changing strict schemas.
 3. Complete write-result semantic validation and compatibility documentation;
    review pure reference consumers, maximum-size fixtures and failure cases.
 4. Build and independently accept a new Observer artifact on Snap/Starship under
-   G2, including current-image native read/write/recovery and cleanup. Selection
+   G2, including contract-based native read/write/recovery and cleanup. Selection
    is a separate scoped gate. No Plus edit is used to make this producer pass.
 5. A separate Plus agent consumes the accepted pinned interface. It can develop
    fixture-based presentation/cache/error handling against a11 now; repaired
