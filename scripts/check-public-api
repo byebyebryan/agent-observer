@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Independent schema/CLI consumer check; needs jsonschema, no Observer imports."""
+
+import argparse
+import copy
+import importlib.metadata
+import json
+import subprocess
+import uuid
+from pathlib import Path
+
+from jsonschema import Draft202012Validator
+
+
+def run(cli, args, value=None, accepted=True):
+    data = json.dumps(value).encode() if value is not None else None
+    result = subprocess.run([str(cli), *args], input=data, capture_output=True, cwd="/tmp", timeout=40)
+    if accepted:
+        if result.returncode != 0:
+            raise ValueError("public_command_failed")
+        return json.loads(result.stdout)
+    if result.returncode != 2 or result.stdout or b"SYNTHETIC_PRIVATE" in result.stderr:
+        raise ValueError("invalid_input_not_bounded")
+    error = json.loads(result.stderr)
+    if not isinstance(error.get("error"), str):
+        raise ValueError("missing_error_code")
+
+
+def check(prefix, fixtures):
+    cli, writer = prefix / "bin/agent-observer", prefix / "bin/agent-observer-write"
+    interface = run(cli, ["api"])
+    if interface["apiVersion"] != 1 or interface["schemas"] != {"snapshot": 3, "watch": 3, "write": 1}:
+        raise ValueError("interface_mismatch")
+    validators = {}
+    for kind in ("snapshot", "watch"):
+        schema = run(cli, ["schema", "--kind", kind])
+        Draft202012Validator.check_schema(schema)
+        validators[kind] = Draft202012Validator(schema)
+    for kind in ("request", "plan", "result"):
+        schema = run(writer, ["schema", "--kind", kind])
+        Draft202012Validator.check_schema(schema)
+        validators["write-" + kind] = Draft202012Validator(schema)
+        value = json.loads((fixtures / "write-v1" / (kind + ".json")).read_text())
+        validators["write-" + kind].validate(value)
+    counts = {}
+    for path in sorted((fixtures / "contract-v3").glob("*.json")):
+        value = json.loads(path.read_text())
+        if path.stem == "gap":
+            validators["watch"].validate(value)
+            continue
+        validators["snapshot"].validate(value)
+        full = run(cli, ["snapshot", "--input", "-"], value)
+        if full != value:
+            raise ValueError("input_snapshot_changed")
+        listed = run(cli, ["list", "--input", "-", "--json"], value)
+        validators["snapshot"].validate(listed)
+        rows = [row for row in value["sessions"] if row["kind"] != "child"]
+        attention = {"blocked": 0, "waiting": 1, "working": 2, "unknown": 3}
+        def order(row):
+            age = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
+            ref = row["identity"]
+            key = tuple(ref[k] for k in ("hostScope", "provider", "namespace", "nativeIdKind", "nativeId"))
+            return attention[row["phase"]["value"]], age is None, -(age or 0), key
+        if listed["sessions"] != sorted(rows, key=order):
+            raise ValueError("listing_mismatch")
+        for row in value["sessions"]:
+            if run(cli, ["show", "--input", "-", "--ref", json.dumps(row["identity"]), "--json"], value) != row:
+                raise ValueError("exact_reference_mismatch")
+        counts[path.stem] = len(value["sessions"])
+    original = json.loads((fixtures / "contract-v3/snapshot.json").read_text())
+    wrong = copy.deepcopy(original)
+    wrong["schemaVersion"] = 2
+    run(cli, ["list", "--input", "-", "--json"], wrong, accepted=False)
+    wrong = copy.deepcopy(original)
+    wrong["privateField"] = "SYNTHETIC_PRIVATE"
+    run(cli, ["list", "--input", "-", "--json"], wrong, accepted=False)
+    maximum = copy.deepcopy(original)
+    maximum["sessions"] = []
+    for index in range(4096):
+        row = copy.deepcopy(original["sessions"][0])
+        identifier = str(uuid.UUID(int=index + 1))
+        row["identity"]["nativeId"] = identifier
+        row["nativeIds"]["threadId"] = row["nativeIds"]["sessionId"] = identifier
+        maximum["sessions"].append(row)
+    validators["snapshot"].validate(maximum)
+    output = run(cli, ["list", "--input", "-", "--include-children", "--json"], maximum)
+    if len(output["sessions"]) != 4096:
+        raise ValueError("maximum_inventory_failed")
+    validators["snapshot"].validate(output)
+    return {"status": "accepted", "api": interface, "selectedPrefix": str(prefix),
+            "independentReader": "jsonschema", "readerVersion": importlib.metadata.version("jsonschema"),
+            "importsObserver": False, "providerInvocations": 0, "fixtureRows": counts,
+            "strictInputAndExactReference": True, "maximumSerializedCliRows": 4096}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--fixtures", type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(check(args.prefix, args.fixtures)))
+
+
+if __name__ == "__main__":
+    main()

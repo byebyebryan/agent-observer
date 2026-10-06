@@ -470,7 +470,8 @@ class Proof:
         settings.write_bytes(original)
         return {
             "status": "accepted", "hostScope": self.host, "provider": "claude",
-            "version": "2.1.289", "workingObserved": working_seen,
+            "cliSha256": json.loads((self.root / "fixture.json").read_text())["installedCliSha256"]["claude"],
+            "workingObserved": working_seen,
             "nativePermissionPromptObserved": True,
             "nativeJobState": native_state, "nativeJobTempo": native_tempo,
             "observedPhase": row["phase"]["value"],
@@ -545,17 +546,118 @@ class Proof:
             "nativeProviderNotExecuted": True, "terminalOutputPersisted": False,
         }
 
+    def claude_question(self):
+        assert self.provider == "claude"
+        created = self.handoff()
+        ref = created["resultingIdentity"]
+        viewer = self.spawn(created)
+        self.pause(viewer, 10)
+        self.assert_native_client(viewer)
+        os.write(viewer[1], b"\x1b[200~Use AskUserQuestion to ask which colour I prefer with two options Red and Blue. Wait for my answer.\x1b[201~\r")
+        deadline = time.monotonic() + 60
+        held, working = [], False
+        while time.monotonic() < deadline:
+            self.pause(viewer, 0.3)
+            row = self.row(ref)
+            working |= row["phase"]["value"] == "working"
+            job = json.loads((self.base / "claude/jobs" / row["nativeIds"]["jobId"] / "state.json").read_text())
+            registries = [json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")]
+            registry = next(r for r in registries if r.get("sessionId") == ref["nativeId"])
+            questions = (job.get("block") or {}).get("questions")
+            if (registry.get("status") == "waiting" and registry.get("waitingFor") == "input needed"
+                    and job.get("sessionId") == ref["nativeId"] and job.get("state") == "working"
+                    and job.get("tempo") == "blocked" and isinstance(questions, list) and questions):
+                assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "question"
+                held.append({"nativeStatus": "waiting", "nativeJobState": "working", "nativeTempo": "blocked",
+                             "phase": "blocked", "reason": "question", "activityAt": row["activity"]["at"]})
+                if len(held) == 3:
+                    break
+        else:
+            raise RuntimeError("native_question_pending")
+        assert len({r["activityAt"] for r in held}) == 1
+        self.stop(viewer)
+        return {"status": "accepted", "provider": "claude", "hostScope": self.host,
+                "workingObserved": working, "heldQuestionSamples": held,
+                "questionNotAnswered": True, "terminalOutputPersisted": False}
+
+    def claude_parked(self):
+        assert self.provider == "claude"
+        row = next(r for r in self.snapshot()["sessions"] if r["job"] and r["job"]["state"] == "done"
+                   and r["worker"]["value"] == "present" and r["activity"]["at"] is not None)
+        ref, age, job_id = row["identity"], row["activity"]["at"], row["nativeIds"]["jobId"]
+        def native():
+            job = json.loads((self.base / "claude/jobs" / job_id / "state.json").read_text())
+            workers = []
+            for p in (self.base / "claude/sessions").glob("*.json"):
+                r = json.loads(p.read_text())
+                if r.get("sessionId") != ref["nativeId"]:
+                    continue
+                try:
+                    fields = Path(f"/proc/{r['pid']}/stat").read_text().rsplit(")", 1)[1].split()
+                    if fields[0] != "Z" and fields[19] == r.get("procStart"):
+                        workers.append({"pid": r["pid"], "startTicks": fields[19]})
+                except OSError:
+                    pass
+            assert job["sessionId"] == ref["nativeId"]
+            return {"jobState": job["state"], "tempo": job["tempo"], "workers": workers}
+        viewer = self.spawn(self.handoff(ref))
+        self.pause(viewer, 10)
+        self.assert_native_client(viewer)
+        for key in b"/exit":
+            os.write(viewer[1], bytes([key]))
+            self.pause(viewer, 0.05)
+        os.write(viewer[1], b"\r")
+        deadline = time.monotonic() + 15
+        exit_observed = False
+        while time.monotonic() < deadline:
+            self.pause(viewer, 0.2)
+            pid, _status = os.waitpid(viewer[0], os.WNOHANG)
+            if pid:
+                self.clients.remove(viewer)
+                os.close(viewer[1])
+                exit_observed = True
+                break
+        else:
+            # Native UI command recognition is a separate acceptance case;
+            # verify detached/stop state without treating a PTY miss as proof.
+            self.stop(viewer)
+        assert native()["workers"] and self.row(ref)["runtime"]["value"] == "running"
+        stopped = subprocess.run(["/opt/claude-code/bin/claude", "stop", job_id], capture_output=True, timeout=20)
+        assert stopped.returncode == 0
+        held = []
+        for _ in range(3):
+            time.sleep(0.4)
+            expected = native()
+            row = self.row(ref)
+            assert not expected["workers"] and expected["jobState"] in {"done", "stopped"} and expected["tempo"] == "idle"
+            assert row["runtime"]["value"] == "parked" and row["phase"]["value"] == "unknown"
+            assert row["activity"]["at"] == age
+            held.append({**expected, "runtime": "parked", "activityAt": age})
+        copied = self.handoff(ref)
+        assert copied["requestedIdentity"] == ref and copied["effect"] == "confirmed"
+        assert copied["resultingIdentity"] != ref
+        viewer = self.spawn(copied)
+        self.pause(viewer, 3)
+        self.assert_native_client(viewer)
+        self.stop(viewer)
+        return {"status": "accepted", "provider": "claude", "hostScope": self.host,
+                "exitCommandObserved": exit_observed, "viewerDetachPreservesWorker": True,
+                "nativeStopVerified": True,
+                "heldParkedSamples": held, "savedResumeCopiedIdentityExplicit": True,
+                "terminalOutputPersisted": False}
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--provider", choices=("codex", "claude"), required=True)
-    parser.add_argument("--scenario", choices=("entry", "recovery", "partial", "mixed", "approval", "companion", "rejection"), default="entry")
+    parser.add_argument("--scenario", choices=("entry", "recovery", "partial", "mixed", "approval", "companion", "rejection", "question", "parked"), default="entry")
     arguments = parser.parse_args()
     proof = Proof(arguments.provider)
     try:
         result = {"entry": proof.run, "recovery": proof.recovery, "partial": proof.claude_partial,
                   "mixed": proof.claude_mixed, "approval": proof.claude_approval,
-                  "companion": proof.claude_companion, "rejection": proof.rejection}[
+                  "companion": proof.claude_companion, "rejection": proof.rejection,
+                  "question": proof.claude_question, "parked": proof.claude_parked}[
             arguments.scenario
         ]()
     finally:

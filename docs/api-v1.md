@@ -1,7 +1,7 @@
 # Agent Observer API v1
 
-Date: 2026-10-06. Status: source candidate; independent packaged/native acceptance
-is required before this interface is declared stable. This is a compatibility
+Date: 2026-10-06. Status: stable API v1 within the independently accepted
+[a2 packaged/native subset](evidence/2026-10-06-stable-api/REPORT.md). This is a compatibility
 policy for clients, separate from package versions and provider releases.
 
 ## Public surface
@@ -54,6 +54,8 @@ It is display text, not an identity or uniqueness claim. AI-generated titles and
 agent nicknames are not promised; no prompt/response preview is generated.
 
 Current conversation activity uses explicit native turn/message event time.
+Claude's reserved local-command envelopes and meta records are housekeeping;
+ordinary slash-looking prompts remain conversation activity.
 Creation and SDK file modification remain separate. Retained stale activity uses
 `lastKnownAt`, original source and stale health; polling never renews that age.
 Attention ordering is blocked, waiting, working, unknown, then most recent

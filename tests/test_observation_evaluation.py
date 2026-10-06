@@ -109,3 +109,23 @@ class ObservationEvaluationTest(unittest.TestCase):
             self.assertIsNone(native["rows"][SID]["phase"])
             self.assertIsNone(native["rows"][SID]["runtime"])
             self.assertIn("duplicate_live_workers:" + SID, native["runtimeGaps"])
+
+    def test_local_command_only_history_does_not_prove_conversation_kind_or_age(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            project = home / "projects" / "synthetic"
+            project.mkdir(parents=True)
+            path = project / (SID + ".jsonl")
+            command = {"type": "user", "sessionId": SID, "isSidechain": False,
+                       "timestamp": "2026-10-06T00:00:00Z",
+                       "message": {"role": "user", "content": "<command-name>/exit</command-name>"}}
+            path.write_text(json.dumps(command) + "\n")
+            rows, gaps, _ = evaluation.native_history(home)
+            self.assertNotIn(SID, rows)
+            self.assertIn("non_conversation_or_outside_tail:" + SID, gaps)
+            prompt = {**command, "timestamp": "2026-10-05T00:00:00Z",
+                      "message": {"role": "user", "content": "synthetic prompt"}}
+            path.write_text(json.dumps(prompt) + "\n" + json.dumps(command) + "\n")
+            rows, _, _ = evaluation.native_history(home)
+            self.assertEqual(rows[SID]["kind"], "user")
+            self.assertEqual(rows[SID]["activity"], 1791158400000)

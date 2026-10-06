@@ -1,0 +1,35 @@
+{
+  "status": "accepted",
+  "provider": "claude",
+  "hostScope": "snap",
+  "exitCommandObserved": false,
+  "viewerDetachPreservesWorker": true,
+  "nativeStopVerified": true,
+  "heldParkedSamples": [
+    {
+      "jobState": "done",
+      "tempo": "idle",
+      "workers": [],
+      "runtime": "parked",
+      "activityAt": 1791315688286
+    },
+    {
+      "jobState": "done",
+      "tempo": "idle",
+      "workers": [],
+      "runtime": "parked",
+      "activityAt": 1791315688286
+    },
+    {
+      "jobState": "done",
+      "tempo": "idle",
+      "workers": [],
+      "runtime": "parked",
+      "activityAt": 1791315688286
+    }
+  ],
+  "savedResumeCopiedIdentityExplicit": true,
+  "terminalOutputPersisted": false,
+  "candidateSource": "7ffbe246e6bac2c9d320328ce639b833b3a73bfa",
+  "candidateWheelSha256": "98ce1f9203f97c13adc2d19cb11bf8f13a0dc3889fc899debc94da1bf0b1430d"
+}

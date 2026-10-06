@@ -303,9 +303,6 @@ def native_history(home):
                     continue
                 if record.get("isSidechain") is not False:
                     continue
-                conversation = True
-                metadata["kind"] = "user"
-                metadata["latestConversationCwd"] = bounded_text(record.get("cwd"), 4096) or metadata["latestConversationCwd"]
                 message = record.get("message", {})
                 if not isinstance(message, dict) or message.get("role") != record.get("type"):
                     continue
@@ -315,6 +312,9 @@ def native_history(home):
                     ("command-name", "local-command-stdout", "local-command-stderr", "local-command-caveat")
                 ):
                     continue
+                conversation = True
+                metadata["kind"] = "user"
+                metadata["latestConversationCwd"] = bounded_text(record.get("cwd"), 4096) or metadata["latestConversationCwd"]
                 stamp = record.get("timestamp")
                 if isinstance(stamp, str):
                     parsed = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
