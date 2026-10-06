@@ -1,0 +1,43 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "providers": [
+    "codex",
+    "claude"
+  ],
+  "samplesPerReader": 3,
+  "readers": 1,
+  "requestedIntervalSeconds": 2.0,
+  "elapsedSeconds": 5.927,
+  "revisionAndSchemaChecks": true,
+  "providerActions": 0,
+  "measurements": [
+    {
+      "frameCounts": {
+        "snapshot": 1,
+        "heartbeat": 2
+      },
+      "frames": 3,
+      "sampleSpacingSeconds": [
+        2.077,
+        1.961
+      ],
+      "maxRssKiB": 27172,
+      "maxFdCount": 5,
+      "rssStartEndKiB": [
+        484,
+        25252
+      ],
+      "fdStartEnd": [
+        4,
+        3
+      ],
+      "partialSnapshots": 1,
+      "sessionCountRange": [
+        78,
+        78
+      ],
+      "sameValueNativePhaseClockUpdates": 0
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "collectedAt": 1791308360120,
+  "sourceHealth": "partial",
+  "sources": [
+    {
+      "provider": "claude",
+      "runtime": null,
+      "sourceHealth": "partial",
+      "capabilities": {
+        "activity": true,
+        "blockedReasons": [
+          "approval"
+        ],
+        "clientBinding": false,
+        "phase": [
+          "working",
+          "blocked",
+          "waiting"
+        ],
+        "runtime": [
+          "running"
+        ]
+      },
+      "coverage": {
+        "runtime": {
+          "reason": "source_incomplete",
+          "scope": "registered_workers",
+          "status": "unavailable"
+        },
+        "saved": {
+          "reason": "metadata_scan",
+          "status": "partial"
+        }
+      },
+      "errors": [
+        "runtime_artifact_not_accepted"
+      ]
+    }
+  ],
+  "sessionCount": 30,
+  "runtimeCounts": {
+    "running": 0,
+    "parked": 0,
+    "unknown": 30
+  },
+  "ordinaryProviderActions": false
+}

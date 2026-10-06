@@ -1,0 +1,53 @@
+{
+  "evidence": "source_schema_and_documentation_checks",
+  "ordinaryProviderActions": false,
+  "implementationChanges": false,
+  "observer": {
+    "command": "./scripts/check",
+    "exit": 0,
+    "tests": 212,
+    "markdownFiles": 48
+  },
+  "agentPlus": {
+    "command": "./scripts/check",
+    "exit": 0,
+    "tests": 312,
+    "scope": "documentation_handoff_only",
+    "ruffAndFormatPassed": true
+  },
+  "independentJsonSchema": {
+    "validator": "jsonschema",
+    "validatorVersion": "4.26.0",
+    "draft": "2020-12",
+    "installedAndBundledSchemasMatch": true,
+    "schemasChecked": 5,
+    "fixturesChecked": [
+      "snapshot",
+      "partial",
+      "claude-ready",
+      "gap",
+      "write-request",
+      "write-plan",
+      "write-result"
+    ],
+    "ordinaryProviderActions": false
+  },
+  "readerCompatibility": {
+    "selectedProducerVersion": "0.2.0a11",
+    "pureReaderVersion": "0.2.0a3",
+    "schemasEqual": {
+      "snapshot": true,
+      "watch": true,
+      "request": true,
+      "plan": true,
+      "result": true
+    },
+    "providerInvocations": 0
+  },
+  "nativeComparisonRounds": {
+    "snap": 2,
+    "starship": 2
+  },
+  "newNativeCapabilityAcceptance": false,
+  "publicReleaseFreeze": false
+}
