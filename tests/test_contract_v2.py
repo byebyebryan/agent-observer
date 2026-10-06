@@ -29,6 +29,31 @@ def fixture(name="snapshot"):
 
 
 class ContractV2Test(unittest.TestCase):
+    def test_parked_runtime_requires_proved_source_and_preserves_turn_outcome(self):
+        value = fixture("claude-ready")
+        original = value["sessions"][-1]
+        source = copy.deepcopy(value["sources"][-1])
+        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+                  "title": original["title"], "sessionKind": "bg", "job": original["job"],
+                  "work": {"value": "settled", "observedAt": 1000, "source": "claude_job_store",
+                           "health": "current", "reason": "native_snapshot"},
+                  "runtimeDisposition": {"value": "parked", "observedAt": 2000,
+                                         "source": "claude_job_store", "health": "current", "reason": "native_snapshot"}}
+        self.assertEqual(project_session(native, source)["runtime"]["value"], "unknown")
+        source["capabilities"]["runtime"].append("parked")
+        row = project_session(native, source)
+        self.assertEqual(row["runtime"]["value"], "parked")
+        self.assertEqual(row["runtime"]["clock"], "sample")
+        self.assertEqual(row["phase"]["value"], "unknown")
+        self.assertEqual(row["outcome"]["value"], "completed")
+        self.assertEqual(row["outcome"]["observedAt"], 1000)
+        native["runtimeDisposition"]["health"] = "stale"
+        self.assertEqual(project_session(native, source)["runtime"]["value"], "unknown")
+        native["runtimeDisposition"]["health"] = "current"
+        native["presence"] = {"value": "present", "observedAt": 2100, "source": "claude_registry",
+                              "health": "current", "reason": "native_snapshot"}
+        self.assertEqual(project_session(native, source)["runtime"]["value"], "running")
+
     def test_codex_question_requires_a_proved_runtime_source_capability(self):
         value = fixture()
         original = value["sessions"][0]

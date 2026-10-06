@@ -69,6 +69,7 @@ def _coverage(value, health):
 
 def project_source(native):
     provider = native["provider"]
+    parked_supported = provider == "claude" and native.get("parkedSupported") is True
     config_home = native["configHome"]
     selector = native.get("configHomeKind", "explicit")
     namespace = store_namespace(provider, config_home, selector, native["host"]["uid"])
@@ -114,7 +115,7 @@ def project_source(native):
             if provider != "codex" or coverage.get("work", {}).get("supported") else [],
             "blockedReasons": ["approval", "question"] if question_supported else ["approval"]
             if provider != "codex" or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", []) else [],
-            "runtime": ["running"]
+            "runtime": ["running", "parked"] if parked_supported else ["running"]
             if provider != "codex" or coverage.get("loaded", {}).get("complete") else [],
             "activity": native.get("activitySupported") is True,
             "clientBinding": False,
@@ -127,7 +128,7 @@ def project_source(native):
             )
         ),
         "limitations": [
-            "parked_predicate_unproved",
+            "parked_requires_terminal_job_and_complete_inventory" if parked_supported else "parked_predicate_unproved",
             "client_binding_unproved",
         ],
     }
@@ -162,10 +163,14 @@ def project_session(native, source):
     ids = native["nativeIds"]
     native_presence = native.get("presence", {})
     runtime = fact(native_presence, {"present": "running"}, sampled=True)
-    # Absence of a worker or absence from capped history is not absence of all
-    # runtime context. Parked remains unsupported in this source milestone.
+    # Worker absence or capped history alone cannot establish parked runtime.
+    # A supported adapter must supply the independently checked disposition.
     if runtime["value"] == "unknown" and runtime["health"] == "current":
         runtime = unknown("parked_predicate_unproved", "unsupported")
+    if provider == "claude" and runtime["value"] != "running" and "parked" in source["capabilities"]["runtime"]:
+        disposition = native.get("runtimeDisposition")
+        if isinstance(disposition, dict):
+            runtime = fact(disposition, {"parked": "parked"}, sampled=True)
     worker = (
         fact(native_presence, {"present": "present", "absent": "absent"}, sampled=True)
         if provider == "claude"
@@ -212,6 +217,8 @@ def project_session(native, source):
             and (native.get("job") or {}).get("state") == "working"
         ):
             phase = unknown("background_readiness_unproved", "unsupported")
+    if runtime["value"] == "parked":
+        phase = unknown("runtime_parked", "unsupported")
     outcome = unknown("outcome_source_unproved", "unsupported")
     if provider == "codex" and "outcome" in native:
         outcome = fact(native["outcome"], {v: v for v in ("completed", "failed", "cancelled")})
