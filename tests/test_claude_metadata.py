@@ -17,6 +17,145 @@ from agent_observer.claude_metadata import (
 
 
 class ClaudeMetadataTest(unittest.TestCase):
+    def terminal_job(self, *, state="stopped", **extra):
+        return self.write_job(state=state, tempo="idle",
+                              lastTerminalAt="1970-01-01T00:00:01.000Z", **extra)
+
+    def test_terminal_job_and_complete_stable_absence_establish_parked(self):
+        job = self.terminal_job()
+        result = self.read()
+        row = result["observations"][0]
+        self.assertTrue(result["parkedSupported"])
+        self.assertEqual(row["runtimeDisposition"]["value"], "parked")
+        self.assertEqual(row["runtimeDisposition"]["observedAt"], 5000)
+        self.assertEqual(row["presence"]["value"], "absent")
+        self.assertEqual(row["job"]["terminalObservedAt"], 1000)
+        job["state"] = "done"
+        self.write_json(self.root / "jobs/abcdef01/state.json", job)
+        row = self.read()["observations"][0]
+        self.assertEqual(row["runtimeDisposition"]["value"], "parked")
+        self.assertEqual(row["work"]["value"], "settled")
+        self.assertEqual(row["work"]["observedAt"], 1000)
+
+    def test_terminal_job_never_overrides_a_live_or_unproved_worker(self):
+        self.terminal_job()
+        self.write_session(job_id="abcdef01", status="idle")
+        for supported in (True, False):
+            with patch("agent_observer.claude_metadata._linux_proc_start_token",
+                       return_value=("67890", "present")):
+                row = self.read(executable_match=supported)["observations"][0]
+                self.assertNotIn("runtimeDisposition", row)
+        with patch("agent_observer.claude_metadata._linux_proc_start_token",
+                   return_value=(None, "unavailable")):
+            self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
+        with patch("agent_observer.claude_metadata._linux_proc_start_token",
+                   return_value=(None, "absent")):
+            self.assertEqual(self.read()["observations"][0]["runtimeDisposition"]["value"], "parked")
+
+    def test_parked_requires_accepted_image_terminal_clock_and_no_pending_work(self):
+        job = self.terminal_job()
+        path = self.root / "jobs/abcdef01/state.json"
+        changes = ({"state": "failed"}, {"state": "working"}, {"tempo": "active"},
+                   {"lastTerminalAt": None}, {"lastTerminalAt": "2026-10-02T00:00:00.000Z"},
+                   {"inFlight": {"tasks": 0, "queued": 1, "drainableMonitors": 0}},
+                   {"inFlight": {"tasks": True, "queued": 0, "drainableMonitors": 0}})
+        for change in changes:
+            with self.subTest(change=change):
+                self.write_json(path, {**job, **change})
+                self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
+        self.write_json(path, job)
+        from agent_observer.native_artifacts import CLAUDE_PREVIOUS
+        with patch.dict(self.scope, runtime_version=CLAUDE_PREVIOUS.version,
+                        binary_sha256=CLAUDE_PREVIOUS.sha256):
+            result = self.read()
+            self.assertFalse(result["parkedSupported"])
+            self.assertNotIn("runtimeDisposition", result["observations"][0])
+
+    def test_duplicate_jobs_or_workers_and_partial_registry_do_not_prove_parked(self):
+        job = self.terminal_job()
+        self.write_job("abcdef02", **{k: v for k, v in job.items() if k not in
+                       {"sessionId", "state", "tempo"}}, session_id=job["sessionId"],
+                       state="done", tempo="idle")
+        result = self.read()
+        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
+        (self.root / "jobs/abcdef02/state.json").unlink()
+        (self.root / "jobs/abcdef02").rmdir()
+        self.write_session(pid=123, job_id="abcdef01", status="idle")
+        self.write_session(pid=124, job_id="abcdef01", status="idle")
+        with patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=(None, "absent")):
+            self.assertTrue(all("runtimeDisposition" not in r for r in self.read()["observations"]))
+        (self.root / "sessions/123.json").unlink()
+        (self.root / "sessions/124.json").unlink()
+        (self.root / "sessions/125.json").write_text("invalid")
+        self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
+
+    def test_new_registry_membership_after_worker_checks_prevents_parked(self):
+        self.terminal_job()
+        original = claude_metadata._directory_names
+        calls = 0
+
+        def changing(fd):
+            nonlocal calls
+            calls += 1
+            if calls == 3:
+                self.write_session(pid=123, job_id="abcdef01")
+            return original(fd)
+
+        with patch("agent_observer.claude_metadata._directory_names", side_effect=changing):
+            result = self.read()
+        self.assertNotIn("runtimeDisposition", result["observations"][0])
+        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
+
+    def test_resume_during_final_job_recheck_prevents_parked(self):
+        job = self.terminal_job()
+        original = claude_metadata._read_json_at
+        calls = 0
+
+        def changing(fd, name, limit):
+            nonlocal calls
+            if name == "state.json":
+                calls += 1
+                if calls == 3:
+                    self.write_json(self.root / "jobs/abcdef01/state.json",
+                                    {**job, "state": "working", "tempo": "active"})
+            return original(fd, name, limit)
+
+        with patch("agent_observer.claude_metadata._read_json_at", side_effect=changing):
+            result = self.read()
+        self.assertNotIn("runtimeDisposition", result["observations"][0])
+        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
+
+    def test_capped_or_unavailable_inventory_keeps_terminal_runtime_unknown(self):
+        self.terminal_job()
+        self.write_session(job_id="abcdef01", status="idle")
+        with patch("agent_observer.claude_metadata._MAX_REGISTRY_ROWS", 0):
+            result = self.read()
+        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
+        (self.root / "sessions/23145.json").unlink()
+        (self.root / "sessions").rmdir()
+        self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
+
+    def test_registry_identity_change_in_final_recheck_prevents_parked(self):
+        self.terminal_job()
+        registry = self.write_session(pid=123, session_id="21234567-0123-4567-89ab-0123456789ab")
+        original = claude_metadata._read_json_at
+        calls = 0
+
+        def changing(fd, name, limit):
+            nonlocal calls
+            if name == "123.json":
+                calls += 1
+                if calls == 3:
+                    self.write_json(self.root / "sessions/123.json",
+                                    {**registry, "sessionId": "11234567-0123-4567-89ab-0123456789ab"})
+            return original(fd, name, limit)
+
+        with (patch("agent_observer.claude_metadata._read_json_at", side_effect=changing),
+              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
+            result = self.read()
+        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
+        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
+
     def test_current_registry_phase_overrides_old_turn_but_not_pending_idle(self):
         sid = "01234567-0123-4567-89ab-0123456789ab"
         row = self.write_session(pid=123, session_id=sid, status="busy", kind="bg", job_id="abcdef12")

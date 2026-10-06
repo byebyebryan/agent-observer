@@ -81,6 +81,7 @@ class _Job:
     in_flight: tuple[int, int, int] | None = None
     last_terminal_at: int | None = None
     question_wait: bool = False
+    in_flight_invalid: bool = False
 
 
 class _ReadFailure(Exception):
@@ -342,6 +343,7 @@ def _job_record(job_id: str, payload: object) -> _Job:
         _in_flight(payload.get("inFlight")),
         _terminal_time(payload.get("lastTerminalAt")),
         _question_wait(payload.get("block")),
+        payload.get("inFlight") is not None and _in_flight(payload.get("inFlight")) is None,
     )
 
 
@@ -819,13 +821,18 @@ def snapshot(
     job_complete = False
     sessions_fd = None
     jobs_fd = None
+    directory_ids = {"root": (os.fstat(root_fd).st_dev, os.fstat(root_fd).st_ino)}
     try:
         try:
             sessions_fd = _open_directory_at(root_fd, "sessions")
+            info = os.fstat(sessions_fd)
+            directory_ids["sessions"] = (info.st_dev, info.st_ino)
         except OSError:
             _error(errors, "sessions_unavailable")
         try:
             jobs_fd = _open_directory_at(root_fd, "jobs")
+            info = os.fstat(jobs_fd)
+            directory_ids["jobs"] = (info.st_dev, info.st_ino)
         except OSError:
             _error(errors, "jobs_unavailable")
 
@@ -1048,6 +1055,14 @@ def snapshot(
             )
         )
 
+    parked_supported = "parked_runtime" in artifact.capabilities
+    if parked_supported and session_complete and job_complete and pid_domain is not None:
+        try:
+            _parked_runtimes(root_path, directory_ids, registry_rows, jobs, observations,
+                             pid_domain, image_cache)
+        except (OSError, _ReadFailure):
+            _error(errors, "parked_runtime_recheck_unavailable")
+    result["parkedSupported"] = parked_supported
     result["supported"] = True
     result["runtime"] = {"version": runtime_version, "sha256": binary_sha256}
     result["observations"] = observations
@@ -1069,6 +1084,103 @@ def snapshot(
     if pid_domain is None:
         result["limitations"].append("linux_pid_domain_unavailable")
     return result
+
+
+def _parked_runtimes(root_path, directory_ids, registry_rows, jobs, observations,
+                     pid_domain, image_cache):
+    """Prove terminal job inactivity within the complete registered-worker scope.
+
+    Worker absence alone is insufficient. Require one exact-UUID terminal job,
+    no conflicting/unsupported context, and stable inventory/identity after all
+    process checks. Working changes in unrelated sessions do not renew old clocks
+    or invalidate this session's negative runtime evidence.
+    """
+    by_session = {}
+    for row in observations:
+        by_session.setdefault(row["identity"]["nativeId"], []).append(row)
+    job_counts = {}
+    for job in jobs.values():
+        job_counts[job.session_id] = job_counts.get(job.session_id, 0) + 1
+    candidates = {}
+    now = time.time_ns() // 1_000_000
+    for job in jobs.values():
+        rows = by_session.get(job.session_id, [])
+        if (job.state not in {"stopped", "done"} or job.tempo != "idle" or job.issues
+                or job.terminal_at is None or job.terminal_at > now
+                or job.in_flight_invalid or job.in_flight is not None and any(job.in_flight)
+                or job_counts[job.session_id] != 1 or len(rows) != 1):
+            continue
+        row = rows[0]
+        if row["metadataIssues"] or row["job"]["retained"] is not True:
+            continue
+        matching = [r for r in registry_rows if r["sessionId"] == job.session_id]
+        if any(_presence(r, pid_domain, now, image_cache).effective_value != "absent"
+               for r in matching):
+            continue
+        candidates[job.job_id] = row
+    if not candidates:
+        return
+
+    descriptors = {}
+    try:
+        descriptors["root"] = os.open(root_path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        for name in ("sessions", "jobs"):
+            descriptors[name] = _open_directory_at(descriptors["root"], name)
+        for name, fd in descriptors.items():
+            info = os.fstat(fd)
+            if (info.st_dev, info.st_ino) != directory_ids[name]:
+                raise _ReadFailure("directory_changed")
+        expected_names = {
+            "sessions": sorted(f"{r['pid']}.json" for r in registry_rows),
+            "jobs": sorted(jobs),
+        }
+
+        def check_names():
+            for name, pattern in (("sessions", _PID_NAME), ("jobs", _JOB_ID)):
+                names, overflow = _directory_names(descriptors[name])
+                if overflow or sorted(n for n in names if pattern.fullmatch(n)) != expected_names[name]:
+                    raise _ReadFailure("inventory_changed")
+
+        check_names()
+        identity_fields = ("pid", "sessionId", "procStart", "pidDomain", "jobId", "kind")
+        for original in registry_rows:
+            filename = f"{original['pid']}.json"
+            payload, _size = _read_json_at(descriptors["sessions"], filename, _MAX_REGISTRY_FILE_BYTES)
+            current = _session_record(filename, payload)
+            if any(current[k] != original[k] for k in identity_fields):
+                raise _ReadFailure("registry_identity_changed")
+            if current["sessionId"] in {jobs[k].session_id for k in candidates}:
+                if current["issues"] or _presence(current, pid_domain, now, image_cache).effective_value != "absent":
+                    raise _ReadFailure("worker_changed")
+        for job_id, original in jobs.items():
+            fd = _open_directory_at(descriptors["jobs"], job_id)
+            try:
+                payload, _size = _read_json_at(fd, "state.json", _MAX_JOB_FILE_BYTES)
+                current = _job_record(job_id, payload)
+            finally:
+                os.close(fd)
+            if current.session_id != original.session_id or job_id in candidates and current != original:
+                raise _ReadFailure("job_changed")
+        check_names()
+        current_root = os.stat(root_path, follow_symlinks=False)
+        if (current_root.st_dev, current_root.st_ino) != directory_ids["root"]:
+            raise _ReadFailure("directory_changed")
+        for name in ("sessions", "jobs"):
+            info = os.stat(name, dir_fd=descriptors["root"], follow_symlinks=False)
+            if (info.st_dev, info.st_ino) != directory_ids[name]:
+                raise _ReadFailure("directory_changed")
+    finally:
+        for fd in descriptors.values():
+            os.close(fd)
+    observed_at = time.time_ns() // 1_000_000
+    for row in candidates.values():
+        row["runtimeDisposition"] = {
+            "value": "parked", "observedAt": observed_at, "source": "claude_job_store",
+            "health": "current", "reason": "native_snapshot",
+        }
+        row["presence"] = Evidence("presence", "absent", observed_at, "claude_registry",
+                                   "current", "native_snapshot").metadata()
+        row["sessionKind"] = "bg"
 
 
 __all__ = ["SUPPORTED_SHA256", "SUPPORTED_VERSION", "linux_pid_domain", "snapshot"]

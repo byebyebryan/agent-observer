@@ -330,12 +330,16 @@ def claude_reference(home, image_cache):
     history, history_gaps, scanned = native_history(home)
     rows = {sid: {**r, "runtime": None, "phase": None} for sid, r in history.items()}
     registry = []
+    registry_seen = set()
+    registry_complete = True
     for path in sorted((home / "sessions").glob("*.json")):
         try:
             r = read_json(path)
             sid, pid = r.get("sessionId"), r.get("pid")
             if not isinstance(sid, str) or not UUID.fullmatch(sid) or type(pid) is not int:
+                registry_complete = False
                 continue
+            registry_seen.add(sid)
             start, state, parent = birth(pid)
             if start != r.get("procStart") or r.get("pidDomain") != domain or state == "Z":
                 continue
@@ -391,8 +395,55 @@ def claude_reference(home, image_cache):
             rows[sid] = row
             registry.append(sid)
         except (OSError, ValueError, TypeError):
+            registry_complete = False
             continue
-    return {"sampleAt": clock(), "rows": rows, "registered": sorted(registry), "historyGaps": history_gaps, "historyBytesScanned": scanned}
+    # Independently bound retained terminal jobs. This reference accepts only
+    # registry-free UUIDs; an unsupported/stale registry record remains unproved.
+    # Provider state is read directly and never supplied by the CLI under test.
+    terminal_jobs = {}
+    runtime_gaps = []
+    try:
+        current_cli = image("/opt/claude-code/bin/claude")["version"] == "2.1.289"
+        job_dirs = list((home / "jobs").iterdir())
+        if len(job_dirs) > 128:
+            raise ValueError("native_job_limit")
+        for directory in job_dirs:
+            if not re.fullmatch("[0-9a-f]{8}", directory.name):
+                continue
+            if directory.is_symlink() or not directory.is_dir():
+                raise ValueError("native_job_directory_rejected")
+            job = read_json(directory / "state.json")
+            sid = job.get("sessionId")
+            if not isinstance(sid, str) or not UUID.fullmatch(sid):
+                raise ValueError("native_job_identity_unproved")
+            terminal_jobs.setdefault(sid, []).append(job)
+        for sid, jobs in terminal_jobs.items():
+            if not current_cli or not registry_complete or sid in registry_seen or len(jobs) != 1:
+                continue
+            job = jobs[0]
+            counts = job.get("inFlight")
+            if counts is not None and (not isinstance(counts, dict) or any(
+                type(counts.get(k)) is not int or counts[k] != 0 for k in ("tasks", "queued", "drainableMonitors")
+            )):
+                continue
+            terminal = job.get("lastTerminalAt") or job.get("firstTerminalAt")
+            if job.get("state") not in ("done", "stopped") or job.get("tempo") != "idle" or not isinstance(terminal, str):
+                continue
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", terminal):
+                continue
+            try:
+                at = int(datetime.datetime.fromisoformat(terminal.replace("Z", "+00:00")).timestamp() * 1000)
+            except (ValueError, OverflowError):
+                continue
+            if not 0 <= at <= clock():
+                continue
+            original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
+            rows[sid] = {**original, "runtime": "parked", "phase": None,
+                         "nativeJobState": job["state"], "nativeTempo": job["tempo"]}
+    except (OSError, ValueError, TypeError):
+        runtime_gaps.append("terminal_job_reference_incomplete")
+    return {"sampleAt": clock(), "rows": rows, "registered": sorted(registry), "historyGaps": history_gaps,
+            "historyBytesScanned": scanned, "runtimeGaps": runtime_gaps}
 
 
 def cli_call(cli, argv, snapshot=None):
@@ -531,7 +582,7 @@ def main():
             payload = cli_call(args.cli, argv)
             snapshot = json.loads(payload)
             after = native()
-            samples.append({"nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned") if k in v} for p, v in after.items()}})
+            samples.append({"nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned", "runtimeGaps") if k in v} for p, v in after.items()}})
     finally:
         if client is not None:
             client.close()

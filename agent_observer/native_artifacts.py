@@ -48,7 +48,7 @@ CLAUDE = Artifact(
     "/opt/claude-code/bin/claude",
     # Monitoring proof: foreground/Stop continuation/held child and input;
     # background later-turn activity, queued-work exclusion and job questions.
-    frozenset({"entry", "input_wait", "job_question", "registry_phase", "interactive_readiness"}),
+    frozenset({"entry", "input_wait", "job_question", "registry_phase", "interactive_readiness", "parked_runtime"}),
 )
 ARTIFACTS = (CODEX, CODEX_DAEMON, CLAUDE_PREVIOUS, CLAUDE)
 

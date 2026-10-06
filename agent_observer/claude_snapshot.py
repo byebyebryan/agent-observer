@@ -130,6 +130,7 @@ def collect_claude(
             binary_sha256=artifact_identity.artifact.sha256,
         )
         result["sessions"] = native["observations"]
+        result["parkedSupported"] = native.get("parkedSupported") is True
         for row in result["sessions"]:
             accepted_wait_reasons = ACCEPTED_WAIT_REASONS | (
                 {"question", "user_input"} if "input_wait" in row.get("phaseCapabilities", []) else set()
@@ -197,7 +198,7 @@ def collect_claude(
         if result["sessions"]:
             result["sourceHealth"] = "stale"
             for row in result["sessions"]:
-                for dimension in ("work", "presence", "attachment"):
+                for dimension in ("work", "presence", "attachment", "runtimeDisposition"):
                     evidence = row.get(dimension)
                     if isinstance(evidence, dict) and evidence.get("health") == "current":
                         if evidence.get("value") != "unknown":
