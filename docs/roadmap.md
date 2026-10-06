@@ -8,19 +8,21 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
-The [current discovery/monitoring review](discovery-monitoring-contract-review.md)
-keeps this pass Observer-only. Current provider upgrades block Claude runtime
-monitoring and all tested New preparation routes; controlled watch retention,
-wire-bound and semantic-validation findings reopen producer work. The next pass
-replaces provider release/hash allowlists with
-[required contract and capability checks](provider-contract-compatibility-plan.md),
-repairs independent reference coverage, closes watch/contract gaps, then
-independently accepts a new Observer artifact. The existing
-identity/state model remains a pinned prerelease baseline; stable freeze is pending.
-The adjacent `../rofi-agent-plus/docs/observer-client-handoff.md` lets a separate
-agent own fixture-based client work and records the producer/native gates
-required before action acceptance or rollout. Earlier exact-artifact acceptance
-below remains historical proof, not upgraded-image support.
+The [API v1 contract](api-v1.md) is accepted within the independent
+[a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
+wire 3 and write wire 1, strict pure consumer conformance and native Snap/Starship
+cases. Required native contracts replace provider release/hash allowlists while
+retaining executable/endpoint/birth and changed-action-context guards. Watch
+age/classification/bounds, row isolation, write-result semantics and independent
+reference coverage from the [review](discovery-monitoring-contract-review.md)
+are repaired with explicit unsupported capabilities.
+
+The [API v1 client handoff](api-v1-client-handoff.md) is the next consumer boundary.
+A2 is installed separately; normal links remain a11/wire 2 and Plus retains its
+old frozen reader. Client/cache migration and scoped selection have their own
+gates. The separate notification source/client checkpoint follows stable read/write
+acceptance; it cannot turn sampled watch into lossless native events. Older
+exact-image records below remain historical proof.
 
 The [contract/client plan](contract-and-clients-plan.md) and its
 [review](contract-and-clients-review.md) govern the next development work. The

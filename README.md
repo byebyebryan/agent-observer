@@ -13,26 +13,24 @@ simplified.
 
 ## Status
 
-The [first stable API execution](docs/stable-api-execution.md) is active. Source
-candidate `0.3.0a1` introduces the explicit
-[observation wire v3](docs/public-contract-v3.md) prerelease cutover for stale age
-and diagnostic-version representation, with bounded watch reconciliation.
-Installed entrypoints remain on a11 until independent packaged/native acceptance.
+The [API v1 contract](docs/api-v1.md) is independently accepted against
+`0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
+[packaged/native report](docs/evidence/2026-10-06-stable-api/REPORT.md) records
+independent CLI/native comparisons on Snap/Starship, isolated New/Resume,
+blocked/parked/recovery cases, bounded watch and strict consumer conformance.
+Required native contracts replace daily provider release/hash allowlists;
+actual executable identity and changed-context action guards remain enforced.
 
-The [provider compatibility plan](docs/provider-contract-compatibility-plan.md)
-sets the support boundary to required protocol, metadata and CLI contracts.
-Daily Codex/Claude release changes should preserve working capabilities when
-those contracts remain compatible. Versions/hashes are diagnostics and context
-change guards; the current a11 allowlists still need implementation replacement.
+The immutable a2 candidate is installed separately on both hosts. Normal
+Observer links still select a11/wire 2, and Agent Plus still uses its old frozen
+reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
+separate client migration; normal selection, frontend and notification rollout
+have independent gates. No ordinary provider restart is needed to review a2.
 
-The [2026-10-06 discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
-rechecks the installed a11 producer independently of frontend work. Codex reads
-match native evidence on both hosts. New provider upgrades leave Claude runtime
-monitoring unavailable and current New/Resume preparation rejected; watch
-retention, wire limits and contract validation also need a separate Observer
-repair pass. The interface remains a pinned prerelease baseline. The review and
-the adjacent `../rofi-agent-plus/docs/observer-client-handoff.md` separate
-producer closure from the next Agent Plus agent's work.
+The [earlier discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
+records eight producer findings; the stable API execution closes their scoped
+source/package/native gates. Older exact-artifact reports below retain their
+original bounds and do not define daily provider support.
 
 The [stopped-runtime checkpoint](docs/evidence/2026-10-05-stopped-runtime/REPORT.md)
 accepts and selects `0.2.0a11` on Snap and Starship. Exact-image Claude retained
