@@ -280,6 +280,13 @@ class ClaudeHistoryTest(unittest.TestCase):
             {"type": "system", "timestamp": "2026-10-02T01:02:03Z"},
             {**message, "isSidechain": True, "timestamp": "2026-10-03T01:02:03Z"},
             {**message, "isMeta": True, "timestamp": "2026-10-04T01:02:03Z"},
+            *(
+                {**message, "type": "user", "timestamp": "2026-10-04T02:00:00Z",
+                 "message": {"role": "user", "content": envelope}}
+                for envelope in ("<command-name>/exit</command-name><command-message>exit</command-message><command-args></command-args>",
+                                 "<local-command-stdout>private UI output</local-command-stdout>",
+                                 "<local-command-stderr>private UI error</local-command-stderr>")
+            ),
         ):
             with path.open("a") as handle:
                 handle.write(json.dumps(record) + "\n")
@@ -291,6 +298,14 @@ class ClaudeHistoryTest(unittest.TestCase):
         with path.open("a") as handle:
             handle.write(json.dumps(newer) + "\n")
         self.assertGreater(transcript_activity(path, FIRST)["at"], initial["at"])
+        before_prompt = transcript_activity(path, FIRST)["at"]
+
+        # Ordinary slash-looking text is still a conversation prompt.
+        prompt = {**message, "type": "user", "timestamp": "2026-10-06T01:02:03Z",
+                  "message": {"role": "user", "content": "/path is the example I want explained"}}
+        with path.open("a") as handle:
+            handle.write(json.dumps(prompt) + "\n")
+        self.assertGreater(transcript_activity(path, FIRST)["at"], before_prompt)
 
     def test_incomplete_wrong_identity_and_unsafe_activity_fail_per_row(self):
         path = self.config / "transcript.jsonl"

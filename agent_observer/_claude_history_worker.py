@@ -403,6 +403,13 @@ def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
         message = value.get("message")
         if not isinstance(message, dict) or message.get("role") != value["type"]:
             return missing("activity_metadata_invalid")
+        # Native local slash commands/output are user records without isMeta.
+        # Only their reserved envelope is inspected; no text crosses this boundary.
+        body = message.get("content")
+        if value["type"] == "user" and isinstance(body, str) and body.startswith(
+            ("<command-name>", "<local-command-stdout>", "<local-command-stderr>", "<local-command-caveat>")
+        ):
+            continue
         stamp = value.get("timestamp")
         try:
             if not isinstance(stamp, str) or len(stamp) > 64:
