@@ -68,5 +68,10 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   Codex fallback checks required typed table projections rather than whole
   migrations. The independent reference reads new images and reports duplicate
   workers explicitly. Source acceptance is separate from packaged/native S4.
-- S3-S6: pending. Update this record at reviewed checkpoints with concrete
+- S3 source: the [API v1 candidate](api-v1.md) declares the JSON/CLI and pure
+  Python consumer scope, strict wire evolution, finite errors, native title
+  meaning and capability/coverage boundaries. Semantic negatives reject wrong
+  provider scopes/topology/job IDs. Prepared Resume additionally binds its native
+  ID/job mapping. Stable declaration still requires S4.
+- S4-S6: pending. Update this record at reviewed checkpoints with concrete
   source, packaged and native results and any remaining capabilities.

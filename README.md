@@ -125,6 +125,9 @@ Codex-only hosts need no SDK. Observer projects explicit saved titles, UUIDs,
 cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
+The [API v1 candidate](docs/api-v1.md) defines the public JSON/CLI and pure
+Python consumer surface. `agent-observer api` reports its wire versions.
+
 ## Command candidate
 
 ```sh
