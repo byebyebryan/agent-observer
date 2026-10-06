@@ -83,7 +83,7 @@ class ObservationEvaluationTest(unittest.TestCase):
                                                                 "version": "2.1.289"}):
                 for changes, expected in (
                     ({}, "blocked"), ({"kind": "bg"}, None),
-                    ({"waitingFor": "input needed"}, "blocked"),
+                    ({"waitingFor": "input needed"}, None),
                     ({"status": "idle"}, "waiting"),
                 ):
                     registry.write_text(json.dumps({**record, **changes}))

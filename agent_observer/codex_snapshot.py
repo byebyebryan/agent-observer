@@ -178,12 +178,15 @@ def collect_codex(
         profile = registered("codex", identity.binary_sha256)
         work_supported = WORK_STATE_ACCEPTED and profile is not None and "managed_work" in profile.capabilities
         wait_flags = ACCEPTED_WAIT_FLAGS if profile is not None and "managed_approval" in profile.capabilities else frozenset()
+        if profile is not None and "managed_question" in profile.capabilities:
+            wait_flags |= {"waitingOnUserInput"}
         result["activitySupported"] = profile is not None and "managed_activity" in profile.capabilities
         result["coverage"]["work"].update(
             supported=work_supported,
             reason="native_proof" if work_supported else "native_transition_proof_pending",
             supportedValues=sorted(ACCEPTED_WORK_VALUES) if work_supported else [],
             supportedWaitFlags=sorted(wait_flags),
+            pendingWaitFlags=sorted({"waitingOnUserInput"} - wait_flags),
         )
         scope = {
             "host_scope": host_scope,

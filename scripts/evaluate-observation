@@ -222,7 +222,9 @@ def codex_reference(client):
         kind = "child" if child else "user" if r.get("threadSource") == "user" else "unknown"
         status = r.get("status", {}).get("type") if sid in loaded else None
         flags = r.get("status", {}).get("activeFlags", []) if sid in loaded else []
-        phase = "waiting" if status == "idle" else "blocked" if status == "active" and flags == ["waitingOnApproval"] else "working" if status == "active" and flags == [] else None
+        phase = "waiting" if status == "idle" else "blocked" if status == "active" and (
+            flags == ["waitingOnApproval"] or client.artifact["version"] == "0.160.1" and flags == ["waitingOnUserInput"]
+        ) else "working" if status == "active" and flags == [] else None
         at, reason, outcome, outcome_at = None, None, None, None
         try:
             turns = client.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
@@ -359,7 +361,13 @@ def claude_reference(home, image_cache):
                 current_image = artifact["version"] == "2.1.289"
                 counts = (job or {}).get("inFlight") or {}
                 current_job = job is None and r.get("kind") == "interactive" or native_state in ("working", "done")
-                if current_image and current_job and status == "waiting" and r.get("waitingFor") in ("permission prompt", "input needed"):
+                questions = ((job or {}).get("block") or {}).get("questions")
+                question_bound = (job is not None and native_state == "working" and tempo == "blocked"
+                                  and isinstance(questions, list) and 1 <= len(questions) <= 32
+                                  and all(isinstance(q, dict) for q in questions))
+                if current_image and current_job and status == "waiting" and (
+                    r.get("waitingFor") == "permission prompt" or r.get("waitingFor") == "input needed" and question_bound
+                ):
                     phase = "blocked"
                 elif current_image and job is None and r.get("kind") == "interactive" and status == "idle":
                     phase = "waiting"

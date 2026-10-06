@@ -35,7 +35,7 @@ CODEX_DAEMON = Artifact(
     "packages/app-server-daemon/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex",
     # Independent isolated native source and 0.160.0-client/0.160.1-peer proof.
     # This daemon image is not accepted as a new CLI entry executable.
-    frozenset({"managed_entry", "managed_read", "managed_work", "managed_approval", "managed_activity", "completion_only_activity", "managed_outcome"}),
+    frozenset({"managed_entry", "managed_read", "managed_work", "managed_approval", "managed_activity", "completion_only_activity", "managed_outcome", "managed_question"}),
 )
 CLAUDE_PREVIOUS = Artifact(
     "claude", "2.1.287",

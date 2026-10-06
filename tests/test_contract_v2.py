@@ -29,6 +29,20 @@ def fixture(name="snapshot"):
 
 
 class ContractV2Test(unittest.TestCase):
+    def test_codex_question_requires_a_proved_runtime_source_capability(self):
+        value = fixture()
+        original = value["sessions"][0]
+        source = copy.deepcopy(value["sources"][0])
+        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+                  "title": original["title"], "waitReason": "user_input",
+                  "work": {"value": "needs_input", "observedAt": 123,
+                           "source": "codex_rpc", "health": "current", "reason": "native_snapshot"}}
+        self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
+        source["capabilities"]["blockedReasons"].append("question")
+        row = project_session(native, source)
+        self.assertEqual(row["phase"]["value"], "blocked")
+        self.assertEqual(row["blockedReason"], "question")
+
     def test_claude_question_requires_the_verified_current_image_predicate(self):
         value = fixture("claude-ready")
         original = value["sessions"][-1]

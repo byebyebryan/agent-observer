@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from agent_observer.codex_endpoint import EndpointError, RuntimeIdentity
 from agent_observer.codex_snapshot import collect_codex
-from agent_observer.native_artifacts import CODEX
+from agent_observer.native_artifacts import CODEX, CODEX_DAEMON
 
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
@@ -62,7 +62,7 @@ class FakeClient:
 
 
 class SnapshotCollectionTest(unittest.TestCase):
-    def collect(self, client, **changes):
+    def collect(self, client, *, artifact=CODEX, **changes):
         identity = RuntimeIdentity(
             "/config",
             "/endpoint",
@@ -72,8 +72,8 @@ class SnapshotCollectionTest(unittest.TestCase):
             "/binary",
             1,
             2,
-            "0.160.0",
-            CODEX.sha256,
+            artifact.version,
+            artifact.sha256,
             3,
             4,
             5,
@@ -87,7 +87,19 @@ class SnapshotCollectionTest(unittest.TestCase):
             result = collect_codex(Path("/config"), host_scope="host-a", **changes)
             if result["sourceHealth"] == "current":
                 validate.assert_called_once_with(identity)
-            return result
+        return result
+
+    def test_question_flags_are_accepted_only_for_the_proved_daemon_image(self):
+        class QuestionClient(FakeClient):
+            def read_thread(self, identifier):
+                row = native(identifier)
+                row["status"] = {"type": "active", "activeFlags": ["waitingOnUserInput"]}
+                return {"thread": row}
+        for artifact, expected in ((CODEX, "unknown"), (CODEX_DAEMON, "needs_input")):
+            client = QuestionClient({"data": [FIRST], "nextCursor": None},
+                                    {"data": [native(FIRST)], "nextCursor": None})
+            result = self.collect(client, artifact=artifact)
+            self.assertEqual(result["sessions"][0]["work"]["value"], expected)
 
     def test_live_inventory_survives_history_display_limit(self):
         client = FakeClient(
