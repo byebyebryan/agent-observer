@@ -1,0 +1,123 @@
+{
+  "status": "accepted",
+  "ordinaryActions": 0,
+  "guardsUnchanged": true,
+  "privateAuthRemoved": true,
+  "nativeBeforeEqualsAfter": true,
+  "rows": [
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "04ea305e-178c-470f-b3ab-97ab055fd1b4",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-report",
+      "runtime": {
+        "clock": "sample",
+        "health": "current",
+        "observedAt": 1791254530495,
+        "reason": "native_snapshot",
+        "source": "claude_job_store",
+        "value": "parked"
+      },
+      "worker": {
+        "clock": "sample",
+        "health": "current",
+        "observedAt": 1791254530495,
+        "reason": "native_snapshot",
+        "source": "claude_registry",
+        "value": "absent"
+      },
+      "phase": {
+        "clock": null,
+        "health": "unsupported",
+        "observedAt": null,
+        "reason": "runtime_parked",
+        "source": null,
+        "value": "unknown"
+      },
+      "activity": {
+        "at": 1791166782261,
+        "health": "current",
+        "reason": "native_conversation_event",
+        "source": "claude_transcript_message"
+      },
+      "native": {
+        "jobId": "04ea305e",
+        "state": "stopped",
+        "tempo": "idle",
+        "firstTerminalAt": "2026-10-06T02:21:27.843Z",
+        "lastTerminalAt": "2026-10-06T02:21:27.843Z"
+      }
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-f2",
+      "runtime": {
+        "clock": "sample",
+        "health": "current",
+        "observedAt": 1791254530495,
+        "reason": "native_snapshot",
+        "source": "claude_job_store",
+        "value": "parked"
+      },
+      "worker": {
+        "clock": "sample",
+        "health": "current",
+        "observedAt": 1791254530495,
+        "reason": "native_snapshot",
+        "source": "claude_registry",
+        "value": "absent"
+      },
+      "phase": {
+        "clock": null,
+        "health": "unsupported",
+        "observedAt": null,
+        "reason": "runtime_parked",
+        "source": null,
+        "value": "unknown"
+      },
+      "activity": {
+        "at": 1791166751911,
+        "health": "current",
+        "reason": "native_conversation_event",
+        "source": "claude_transcript_message"
+      },
+      "native": {
+        "jobId": "0a6591b8",
+        "state": "stopped",
+        "tempo": "idle",
+        "firstTerminalAt": "2026-10-06T02:21:30.652Z",
+        "lastTerminalAt": "2026-10-06T02:21:30.652Z"
+      }
+    }
+  ],
+  "activeClaude": [
+    {
+      "id": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+      "title": "caos-models",
+      "runtime": "running",
+      "phase": "waiting"
+    },
+    {
+      "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+      "title": "embeddings-bf",
+      "runtime": "running",
+      "phase": "waiting"
+    },
+    {
+      "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+      "title": "recap-2026-spare-a100",
+      "runtime": "running",
+      "phase": "waiting"
+    }
+  ]
+}

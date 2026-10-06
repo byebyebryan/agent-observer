@@ -1,0 +1,84 @@
+{
+  "status": "accepted",
+  "expectedRuntime": "unknown",
+  "provider": "claude",
+  "version": "2.1.289",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "terminalOutputPersisted": false,
+  "id": "28212bd2-4c5e-47b0-aa97-dc36f7c0e7a9",
+  "jobId": "28212bd2",
+  "viewerDetachPreservesWorker": true,
+  "nativeStopVerified": true,
+  "completedStopNativeState": "done",
+  "activeStopNativeState": "stopped",
+  "activeStopRuntime": "unknown",
+  "heldStoppedSamples": [
+    {
+      "native": {
+        "sessionId": "28212bd2-4c5e-47b0-aa97-dc36f7c0e7a9",
+        "jobState": "done",
+        "tempo": "idle",
+        "terminalAt": "2026-10-06T02:31:14.708Z",
+        "workers": []
+      },
+      "runtime": {
+        "clock": null,
+        "health": "unavailable",
+        "observedAt": null,
+        "reason": "unobserved",
+        "source": null,
+        "value": "unknown"
+      },
+      "phase": "unknown",
+      "activityAt": 1791253873896
+    },
+    {
+      "native": {
+        "sessionId": "28212bd2-4c5e-47b0-aa97-dc36f7c0e7a9",
+        "jobState": "done",
+        "tempo": "idle",
+        "terminalAt": "2026-10-06T02:31:14.708Z",
+        "workers": []
+      },
+      "runtime": {
+        "clock": null,
+        "health": "unavailable",
+        "observedAt": null,
+        "reason": "unobserved",
+        "source": null,
+        "value": "unknown"
+      },
+      "phase": "unknown",
+      "activityAt": 1791253873896
+    },
+    {
+      "native": {
+        "sessionId": "28212bd2-4c5e-47b0-aa97-dc36f7c0e7a9",
+        "jobState": "done",
+        "tempo": "idle",
+        "terminalAt": "2026-10-06T02:31:14.708Z",
+        "workers": []
+      },
+      "runtime": {
+        "clock": null,
+        "health": "unavailable",
+        "observedAt": null,
+        "reason": "unobserved",
+        "source": null,
+        "value": "unknown"
+      },
+      "phase": "unknown",
+      "activityAt": 1791253873896
+    }
+  ],
+  "nativeAttachRestartsSameUuid": true,
+  "resumedWorkerHasNewBirth": true,
+  "resumedRuntime": "running",
+  "stopAndResumePreserveAge": true,
+  "publicSavedResumeAccepted": true,
+  "savedResumeResultId": "80205da2-c076-4bbb-a9b3-4335116f915a"
+}

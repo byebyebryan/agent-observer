@@ -1,6 +1,7 @@
 # Stopped runtime checkpoint
 
-Date: 2026-10-05. Status: in progress. This Observer-only regular goal loop
+Date: 2026-10-05. Status: source and independent a11 G2 accepted; scoped
+selection pending. This Observer-only regular goal loop
 follows the [validation workflow](observation-validation-workflow.md) after the
 [monitoring checkpoint](monitoring-execution.md).
 
@@ -42,3 +43,11 @@ The independent baseline additionally established that native stop after a
 completed turn retires its worker while preserving `state=done`. Both that case
 and active-turn stop (`state=stopped`) require inactive runtime reporting; a
 completed outcome remains independent of whether its worker is running.
+
+The [independent report](evidence/2026-10-05-stopped-runtime/REPORT.md) records
+212 passing tests, the exact frozen artifact, installed stop/resume proof,
+ordinary CLI/native comparisons and frozen-reader watch compatibility. Both
+ordinary recap jobs report parked in that candidate with their conversation
+clocks preserved. Owned namespace cleanup removed borrowed credentials and
+history; ordinary settings remain unchanged. Selection follows this accepted
+producer checkpoint, without frontend implementation.
