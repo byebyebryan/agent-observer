@@ -1,5 +1,12 @@
 # Observation contract and first-party clients plan
 
+Current 2026-10-06 status: [API v1](api-v1.md) is accepted within its a2 subset.
+The later [shared-service design](shared-observation-service-plan.md),
+[review](shared-observation-service-review.md) and
+[execution plan](shared-observation-service-execution-plan.md) add a proposed
+local runtime after that baseline. The dated design below retains its original
+scope; it does not imply that the new service or optional sources are implemented.
+
 Date: 2026-10-03. Status: captured design direction; interface details and
 implementation gates remain provisional. The user requested this documentation
 and a deep review, not implementation, provider changes or consumer deployment.

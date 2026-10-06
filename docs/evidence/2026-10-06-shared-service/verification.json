@@ -1,0 +1,21 @@
+{
+  "scope": "documentation and bounded study evidence; no service implementation or rollout",
+  "repositoryCheck": {
+    "command": "./scripts/check",
+    "exitCode": 0,
+    "tests": 239,
+    "testDurationSeconds": 23.602,
+    "markdownFiles": 60
+  },
+  "controlledExercise": {
+    "artifact": "0.3.0a2",
+    "checkCount": 33,
+    "result": "pass"
+  },
+  "retainedScriptSyntax": "pass",
+  "retainedJsonMetadataAudit": "pass",
+  "productionModulesChanged": false,
+  "providerActionsRequested": false,
+  "downstreamEditsRequested": false,
+  "physicalSuspendTested": false
+}

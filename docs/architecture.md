@@ -2,6 +2,9 @@
 
 The [shared observation service proposal](shared-observation-service-plan.md)
 adds a separately reviewed local runtime for collection, pull and push fan-out.
+Its [review](shared-observation-service-review.md) and
+[execution gates](shared-observation-service-execution-plan.md) retain the pure
+API v1 facade and a separately versioned local service envelope.
 It preserves pure core, provider ownership and external networking boundaries;
 service implementation and native lifetime acceptance remain future gates.
 

@@ -15,8 +15,11 @@ simplified.
 
 The [shared observation service design](docs/shared-observation-service-plan.md)
 captures first-class pull/push and one local collector for multiple clients.
-Its research/review pass is design-only; no service or downstream rollout is
-accepted by that document.
+The [deep review](docs/shared-observation-service-review.md) includes passive
+Snap/Starship cost measurements and controlled delivery/freshness exercises.
+The [execution plan](docs/shared-observation-service-execution-plan.md) keeps
+implementation, native service proof and downstream migrations separate.
+This is reviewed design; no shared service or rollout is implemented yet.
 
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
