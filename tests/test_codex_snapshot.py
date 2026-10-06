@@ -256,6 +256,28 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertTrue(result["coverage"]["loaded"]["complete"])
         self.assertFalse(result["coverage"]["saved"]["complete"])
 
+    def test_one_unsupported_loaded_row_keeps_healthy_sibling_evidence(self):
+        client = FakeClient({"data": [FIRST, SECOND], "nextCursor": None}, {"data": [], "nextCursor": None})
+        def read(identifier):
+            return {"thread": {**native(identifier), "status": {"type": "idle" if identifier == FIRST else "newState"}}}
+        client.read_thread = read
+        result = self.collect(client)
+        self.assertEqual(result["sourceHealth"], "partial")
+        self.assertEqual(result["coverage"]["loaded"], {"complete": False, "reason": "loaded_row_unavailable"})
+        self.assertEqual(result["errors"], [{"code": "unsupported_status_schema"}])
+        self.assertEqual(result["sessions"][0]["identity"]["nativeId"], FIRST)
+        self.assertEqual(result["sessions"][0]["presence"]["value"], "present")
+        self.assertEqual(result["sessions"][0]["presence"]["health"], "current")
+        self.assertEqual(result["sessions"][0]["work"]["value"], "settled")
+
+    def test_loaded_identity_conflict_invalidates_prior_sibling_evidence(self):
+        client = FakeClient({"data": [FIRST, SECOND], "nextCursor": None}, {"data": [], "nextCursor": None})
+        client.read_thread = lambda identifier: {"thread": native(FIRST)}
+        result = self.collect(client)
+        self.assertIn({"code": "loaded_read_identity_conflict"}, result["errors"])
+        self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
+        self.assertEqual(result["sessions"][0]["presence"]["health"], "stale")
+
     def test_conflicting_session_mapping_is_not_first_match(self):
         conflicting = {**native(FIRST), "sessionId": SECOND}
         result = self.collect(
