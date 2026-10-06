@@ -1,0 +1,15 @@
+{
+  "status": "accepted",
+  "selectedPrefix": "/home/bryan/.local/share/agent-observer/0.3.0a4-68f656483b8a7e23",
+  "schemaVersion": 1,
+  "referenceImportsObserver": false,
+  "providers": [
+    "codex",
+    "claude"
+  ],
+  "contentDiscarded": true,
+  "exactPublicTitle": true,
+  "controlledOutputOnly": true,
+  "providerInvocations": 0,
+  "graphicalDeliveryProved": false
+}

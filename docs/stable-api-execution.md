@@ -1,6 +1,7 @@
 # First stable API execution
 
-Date: 2026-10-06. Status: active regular goal loop, authorized by the user.
+Date: 2026-10-06. Status: S0-S6 accepted within the gates below; regular goal loop
+authorized by the user. Downstream migration and normal selection remain separate.
 This executes the [contract review](discovery-monitoring-contract-review.md)
 and [provider compatibility policy](provider-contract-compatibility-plan.md).
 Commit independently reviewed checkpoints; do not combine Observer repairs with
@@ -87,4 +88,11 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   handoff now carry the accepted tuple, wire/cache migration, pure public imports,
   age/health/classification/write semantics and independent consumer gates. No
   frontend implementation or managed selection is included.
-- S6: pending, separate notification source/client checkpoint.
+- S6: the separate metadata-only source/module CLI passes 239 source tests,
+  independent packaged schema/CLI conformance and isolated native callback proof.
+  The [notification report](evidence/2026-10-06-notifications/REPORT.md) records
+  exact Codex turn correlation and concurrent duplicate-title cases on both hosts;
+  Claude Stop continuation, child suppression and permission/idle signals pass.
+  Rendering/deduplication are bounded; normal wiring, graphical delivery,
+  background-manager target correlation and origin routing remain separate.
+  S0-S6 are closed within these documented gates; no frontend or rollout occurs.

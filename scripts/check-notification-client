@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Independent packaged notification schema/CLI check; no Observer imports."""
+
+import argparse
+import json
+import subprocess
+import tempfile
+from pathlib import Path
+
+from jsonschema import Draft202012Validator
+
+
+def command(prefix, args, value=None):
+    result = subprocess.run(
+        [str(prefix / "bin/python"), "-I", "-B", "-m", "agent_observer.notification_client", *args],
+        input=None if value is None else json.dumps(value).encode(),
+        capture_output=True,
+        cwd="/tmp",
+        timeout=20,
+    )
+    if result.returncode or b"PRIVATE_SENTINEL" in result.stdout + result.stderr:
+        raise ValueError("notification_conformance_failed")
+    return result.stdout
+
+
+def check(prefix, fixtures):
+    schema = json.loads(command(prefix, ["schema"]))
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema)
+    snapshot = json.loads((fixtures / "contract-v3/snapshot.json").read_text())
+    with tempfile.TemporaryDirectory(prefix="notification-reference-") as scratch:
+        path = Path(scratch) / "snapshot.json"
+        path.write_text(json.dumps(snapshot))
+        for provider in ("codex", "claude"):
+            row = next(
+                r
+                for r in snapshot["sessions"]
+                if r["identity"]["provider"] == provider and r["kind"] != "child"
+            )
+            payload = {
+                "last-assistant-message": "PRIVATE_SENTINEL",
+                "message": "PRIVATE_SENTINEL",
+                "tool_input": "PRIVATE_SENTINEL",
+            }
+            if provider == "codex":
+                payload.update(
+                    type="agent-turn-complete",
+                    **{
+                        "thread-id": row["identity"]["nativeId"],
+                        "turn-id": "99999999-1234-1234-1234-123456789abc",
+                    },
+                )
+            else:
+                payload.update(
+                    session_id=row["identity"]["nativeId"],
+                    hook_event_name="Notification",
+                    notification_type="permission_prompt",
+                )
+            event = json.loads(
+                command(
+                    prefix,
+                    [
+                        "normalize",
+                        "--identity",
+                        json.dumps(row["identity"]),
+                        "--snapshot",
+                        str(path),
+                    ],
+                    payload,
+                )
+            )
+            validator.validate(event)
+            if event["title"] != row["title"] or event["disposition"] != "notify":
+                raise ValueError("notification_public_lookup_failed")
+            if b"\x1b]99;" not in command(prefix, ["render", "--format", "kitty"], event):
+                raise ValueError("notification_frame_failed")
+            if provider == "claude":
+                hook = json.loads(command(prefix, ["render", "--format", "claude-hook"], event))
+                if set(hook) != {"terminalSequence"}:
+                    raise ValueError("notification_hook_control")
+    return {
+        "status": "accepted",
+        "selectedPrefix": str(prefix),
+        "schemaVersion": 1,
+        "referenceImportsObserver": False,
+        "providers": ["codex", "claude"],
+        "contentDiscarded": True,
+        "exactPublicTitle": True,
+        "controlledOutputOnly": True,
+        "providerInvocations": 0,
+        "graphicalDeliveryProved": False,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--fixtures", type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(check(args.prefix, args.fixtures)))
+
+
+if __name__ == "__main__":
+    main()

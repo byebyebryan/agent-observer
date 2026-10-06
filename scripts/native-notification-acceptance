@@ -1,0 +1,359 @@
+#!/usr/bin/env python3
+"""Owned native callback proof; keeps normalized metadata and discards all PTY output."""
+
+import argparse
+import importlib.machinery
+import importlib.util
+import json
+import os
+import shlex
+import time
+from pathlib import Path
+
+loader = importlib.machinery.SourceFileLoader(
+    "native_notification_entry", str(Path(__file__).with_name("native-acceptance"))
+)
+spec = importlib.util.spec_from_loader(loader.name, loader)
+entry = importlib.util.module_from_spec(spec)
+loader.exec_module(entry)
+
+
+def records(proof):
+    path = proof.root / "notification-events.jsonl"
+    if (proof.root / "notification-capture-gap").exists():
+        raise RuntimeError("native_callback_capture_gap")
+    return [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+
+
+def configure(proof):
+    prefix = json.loads((proof.root / "fixture.json").read_text())["prefix"]
+    sink = [
+        prefix + "/bin/python",
+        "-I",
+        "-B",
+        str(Path(__file__).with_name("capture-native-notifications")),
+        proof.provider,
+    ]
+    if proof.provider == "codex":
+        path = proof.base / "codex/config.toml"
+        if "notify = " in path.read_text():
+            return
+        original = path.read_text()
+        path.write_text(
+            "notify = " + json.dumps(sink) + "\n" + original + "\n[tui]\nnotifications = false\n"
+        )
+    else:
+        # Deliberate parallel continuation is a fixture, not Observer output.
+        script = proof.root / "continue-once.py"
+        script.write_text(
+            'import json,os;from pathlib import Path\np=json.load(__import__("sys").stdin);marker=Path(os.environ["NATIVE_PROOF_ROOT"])/"continued-once"\nif not marker.exists() and not p.get("stop_hook_active"):\n marker.touch(mode=0o600);print(json.dumps({"decision":"block","reason":"Continue once and reply only with DONE."}))\nelse: print("{}")\n'
+        )
+        capture = {"type": "command", "command": shlex.join(sink), "timeout": 15}
+        continuation = {
+            "type": "command",
+            "command": shlex.join([prefix + "/bin/python", "-I", "-B", str(script)]),
+            "timeout": 5,
+        }
+        path = proof.base / "claude/settings.json"
+        value = json.loads(path.read_text())
+        value["disableAllHooks"] = False
+        value["hooks"] = {
+            name: [{"hooks": [capture] + ([continuation] if name == "Stop" else [])}]
+            for name in ("Stop", "SubagentStop", "UserPromptSubmit", "Notification")
+        }
+        path.write_text(json.dumps(value) + "\n")
+        for path in (proof.base / "home/.claude.json", proof.base / "claude/.claude.json"):
+            value = json.loads(path.read_text())
+            value["preferredNotifChannel"] = "notifications_disabled"
+            path.write_text(json.dumps(value) + "\n")
+
+
+def run(proof):
+    configure(proof)
+    prior = {r["identity"]["nativeId"] for r in proof.snapshot()["sessions"]}
+    result = proof.handoff()
+    viewer = proof.spawn(result)
+    proof.pause(viewer, 10)
+    proof.assert_native_client(viewer)
+    ref = (
+        result["resultingIdentity"]
+        if proof.provider == "claude"
+        else next(
+            r["identity"]
+            for r in proof.snapshot()["sessions"]
+            if r["identity"]["nativeId"] not in prior
+        )
+    )
+    if proof.provider == "codex":
+        rename_target(proof, ref)
+    os.write(viewer[1], b"\x1b[200~Reply only with OK.\x1b[201~\r")
+    if proof.provider == "codex":
+        proof.pause(viewer, 1)
+        os.write(viewer[1], b"\r")
+    deadline = time.monotonic() + 90
+    while time.monotonic() < deadline:
+        proof.pause(viewer, 0.3)
+        own = [r for r in records(proof) if r["event"]["identity"] == ref]
+        if proof.provider == "codex" and any(r["event"]["signal"] == "turn_complete" for r in own):
+            break
+        if (
+            proof.provider == "claude"
+            and sum(r["event"]["sourceEvent"] == "Stop" for r in own) >= 2
+            and proof.row(ref)["phase"]["value"] == "waiting"
+        ):
+            break
+    else:
+        raise RuntimeError("native_callback_pending")
+    if proof.provider == "codex":
+        native = proof.codex_metadata(ref)["data"][0]["id"]
+        event = next(r["event"] for r in own if r["event"]["signal"] == "turn_complete")
+        assert event["correlation"]["nativeId"] == native and event["disposition"] == "notify"
+        assert event["title"] == proof.row(ref)["title"] and event["titleSource"] == "snapshot"
+        result = {
+            "completionMatchesIndependentTurnId": True,
+            "exactPublicIdentityTitle": True,
+            "nativeTurnIdPresent": True,
+            "callbackCount": len(own),
+        }
+    else:
+        assert (proof.root / "continued-once").exists()
+        stop = [r for r in own if r["event"]["sourceEvent"] == "Stop"]
+        assert all(r["event"]["disposition"] == "wake" for r in stop)
+        prompt_ids = {r["event"]["correlation"]["nativeId"] for r in stop}
+        assert len(prompt_ids) == 1 and None not in prompt_ids
+        result = {
+            "parallelStopContinuationObserved": True,
+            "responseEndNeverPublishedAsCompletion": True,
+            "stopCallbacks": len(stop),
+            "sameNativePromptId": True,
+            "promptIdPresence": [r["event"]["correlation"]["nativeId"] is not None for r in stop],
+            "noManagerCompletionCoverageClaim": True,
+        }
+    proof.stop(viewer)
+    result.update(
+        status="accepted",
+        provider=proof.provider,
+        hostScope=proof.host,
+        ordinaryHooksChanged=False,
+        terminalOutputPersisted=False,
+        graphicalDeliveryProved=False,
+        isolatedNativeCallbacks=True,
+    )
+    (proof.root / ("notification-" + proof.provider + "-acceptance.json")).write_text(
+        json.dumps(result, indent=2) + "\n"
+    )
+    print(json.dumps(result))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--provider", choices=("codex", "claude"), required=True)
+    parser.add_argument(
+        "--scenario", choices=("entry", "concurrent", "attention", "idle"), default="entry"
+    )
+    args = parser.parse_args()
+    proof = entry.Proof(args.provider)
+    try:
+        if args.scenario == "entry":
+            run(proof)
+        elif args.scenario == "concurrent":
+            concurrent(proof)
+        elif args.scenario == "idle":
+            idle(proof)
+        else:
+            attention(proof)
+    finally:
+        for viewer in list(proof.clients):
+            proof.stop(viewer)
+
+
+def rename_target(proof, ref):
+    # A blank native context may not yet have a readable turn catalog.
+    # Rename alone is the deliberate operation; do not require a turn.
+    owner = entry.inspect_managed_endpoint(proof.base / "codex")
+    with entry.PassiveClient.connect(
+        owner.endpoint, expected_uid=owner.uid, expected_pid=owner.pid
+    ) as client:
+        assert client.initialize()["codexHome"] == str(proof.base / "codex")
+        allowed = entry.codex_transport._READ_METHODS
+        entry.codex_transport._READ_METHODS = allowed | {"thread/name/set"}
+        try:
+            client._request(
+                "thread/name/set",
+                {"threadId": ref["nativeId"], "name": "Notification proof renamed"},
+            )
+        finally:
+            entry.codex_transport._READ_METHODS = allowed
+    entry.validate_incarnation(owner)
+
+
+def concurrent(proof):
+    assert proof.provider == "codex"
+    targets = []
+    for _index in range(2):
+        prior = {r["identity"]["nativeId"] for r in proof.snapshot()["sessions"]}
+        viewer = proof.spawn(proof.handoff())
+        proof.pause(viewer, 8)
+        proof.assert_native_client(viewer)
+        ref = next(
+            r["identity"]
+            for r in proof.snapshot()["sessions"]
+            if r["identity"]["nativeId"] not in prior
+        )
+        rename_target(proof, ref)
+        targets.append((ref, viewer))
+    prior_receipts = {r["event"]["receiptId"] for r in records(proof)}
+    for _ref, viewer in targets:
+        os.write(viewer[1], b"\x1b[200~Reply only with OK.\x1b[201~\r")
+        proof.pause(viewer, 0.5)
+        os.write(viewer[1], b"\r")
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        for _ref, viewer in targets:
+            proof.pause(viewer, 0.2)
+        events = [
+            r["event"] for r in records(proof) if r["event"]["receiptId"] not in prior_receipts
+        ]
+        if all(
+            any(e["identity"] == ref and e["signal"] == "turn_complete" for e in events)
+            for ref, _viewer in targets
+        ):
+            break
+    else:
+        raise RuntimeError("concurrent_native_callbacks_pending")
+    completions = []
+    for ref, viewer in targets:
+        event = next(e for e in events if e["identity"] == ref and e["signal"] == "turn_complete")
+        assert (
+            event["title"] == proof.row(ref)["title"]
+            and event["correlation"]["nativeId"] == proof.codex_metadata(ref)["data"][0]["id"]
+        )
+        completions.append(event)
+        proof.stop(viewer)
+    assert len({e["identity"]["nativeId"] for e in completions}) == 2
+    assert len({e["correlation"]["nativeId"] for e in completions}) == 2
+    assert {e["title"] for e in completions} == {"Notification proof renamed"}
+    result = {
+        "status": "accepted",
+        "hostScope": proof.host,
+        "provider": "codex",
+        "concurrentTargets": 2,
+        "duplicateNativeTitles": True,
+        "renamedTitleMatches": True,
+        "nativeTurnIdsMatch": True,
+        "terminalOutputPersisted": False,
+        "graphicalDeliveryProved": False,
+    }
+    (proof.root / "notification-codex-concurrent.json").write_text(
+        json.dumps(result, indent=2) + "\n"
+    )
+    print(json.dumps(result))
+
+
+def attention(proof):
+    assert proof.provider == "claude"
+    settings = proof.base / "claude/settings.json"
+    original = settings.read_bytes()
+    value = json.loads(original)
+    value["permissions"] = {"ask": ["Bash", "Write"]}
+    settings.write_text(json.dumps(value) + "\n")
+    try:
+        result = proof.handoff()
+        ref = result["resultingIdentity"]
+        viewer = proof.spawn(result)
+        proof.pause(viewer, 10)
+        proof.assert_native_client(viewer)
+        os.write(
+            viewer[1],
+            b"\x1b[200~Use Bash to write OK to notification-permission-proof.txt.\x1b[201~\r",
+        )
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            proof.pause(viewer, 0.3)
+            row = proof.row(ref)
+            if row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval":
+                break
+        else:
+            raise RuntimeError("native_notification_permission_pending")
+        proof.pause(viewer, 15)
+        row = proof.row(ref)
+        assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval"
+        assert not (proof.base / "workspace/notification-permission-proof.txt").exists()
+        own = [r["event"] for r in records(proof) if r["event"]["identity"] == ref]
+        notifications = [
+            e for e in own if e["signal"] == "permission" and e["sourceEvent"] == "Notification"
+        ]
+        assert all(
+            e["disposition"] == "notify" and e["title"] == row["title"] for e in notifications
+        )
+        all_records = records(proof)
+        children = [
+            r["event"]
+            for r in all_records
+            if r["event"]["sourceEvent"] == "SubagentStop" and r["nativeChildFieldPresent"]
+        ]
+        assert children and all(
+            e["reason"] == "child_suppressed" and e["disposition"] == "ignore" for e in children
+        )
+        idle = [r["event"] for r in all_records if r["event"]["signal"] == "idle"]
+        result = {
+            "status": "accepted",
+            "hostScope": proof.host,
+            "provider": "claude",
+            "heldApproval": True,
+            "permissionCallbackCount": len(notifications),
+            "permissionCoverage": "native_callback_proved"
+            if notifications
+            else "unavailable_in_background_individual_attach",
+            "nativeChildCallbackSuppressed": True,
+            "idleCallbackWithNativeAlertsDisabled": bool(idle),
+            "approvalNotAnswered": True,
+            "terminalOutputPersisted": False,
+            "graphicalDeliveryProved": False,
+        }
+        proof.stop(viewer)
+        (proof.root / "notification-claude-attention.json").write_text(
+            json.dumps(result, indent=2) + "\n"
+        )
+        print(json.dumps(result))
+    finally:
+        settings.write_bytes(original)
+
+
+def idle(proof):
+    assert proof.provider == "claude"
+    events = [r["event"] for r in records(proof) if r["event"]["signal"] == "idle"]
+    assert events
+    event = events[-1]
+    row = proof.row(event["identity"])
+    job = json.loads(
+        (proof.base / "claude/jobs" / row["nativeIds"]["jobId"] / "state.json").read_text()
+    )
+    assert (
+        job["sessionId"] == event["identity"]["nativeId"]
+        and job["state"] == "done"
+        and job["tempo"] == "idle"
+    )
+    assert row["phase"]["value"] == "waiting" and event["disposition"] == "notify"
+    assert all(
+        json.loads(p.read_text())["preferredNotifChannel"] == "notifications_disabled"
+        for p in (proof.base / "home/.claude.json", proof.base / "claude/.claude.json")
+    )
+    result = {
+        "status": "accepted",
+        "hostScope": proof.host,
+        "provider": "claude",
+        "nativeIdleCallback": True,
+        "independentJobState": "done",
+        "independentJobTempo": "idle",
+        "observedPhase": "waiting",
+        "nativeAlertsDisabled": True,
+        "unattachedOriginRouteProved": False,
+        "graphicalDeliveryProved": False,
+    }
+    (proof.root / "notification-claude-idle.json").write_text(json.dumps(result, indent=2) + "\n")
+    print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main()

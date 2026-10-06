@@ -1,0 +1,362 @@
+[
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "59897398-5df9-423c-819c-b3b4e0e986d4",
+      "receivedAt": 1791318195910,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "codex",
+        "namespace": "sha256:8b4e8e6e7db44ef969e1cbea3837fa078fde8c7221ad30a060df5bd382c0b984",
+        "nativeIdKind": "thread",
+        "nativeId": "01a112e2-4d5f-7561-ade8-c69fc6ba15d1"
+      },
+      "source": "codex_notify",
+      "sourceEvent": "agent-turn-complete",
+      "signal": "turn_complete",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "Codex 01a112e2-4d5f-7561-ade8-c69fc6ba15d1",
+      "titleSource": "snapshot",
+      "body": "Turn complete",
+      "correlation": {
+        "nativeId": "01a112e2-7428-7c30-89d8-0f61c33af13e",
+        "scope": "native_turn",
+        "dedupeKey": "sha256:5ff99a92d8027ce0051fdbf9505f95e22e326df6a245893382f5ceb5d7c49657"
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "6bbe4c49-9ff7-4b62-aa45-9b507486c605",
+      "receivedAt": 1791318196213,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "codex",
+        "namespace": "sha256:8b4e8e6e7db44ef969e1cbea3837fa078fde8c7221ad30a060df5bd382c0b984",
+        "nativeIdKind": "thread",
+        "nativeId": "01a112e2-7560-72b0-8646-1cf894b486e1"
+      },
+      "source": "codex_notify",
+      "sourceEvent": "agent-turn-complete",
+      "signal": "turn_complete",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "unknown",
+      "title": "Codex 01a112e2-7560-72b0-8646-1cf894b486e1",
+      "titleSource": "snapshot",
+      "body": "Turn complete",
+      "correlation": {
+        "nativeId": "01a112e2-757a-7533-9c28-c069854e93b1",
+        "scope": "native_turn",
+        "dedupeKey": "sha256:3402eb2485b2780b51b554147474aad461b92e117b65089ccba64ea3f3fa13de"
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "455b5173-8d47-4b65-840e-ef8b94050b61",
+      "receivedAt": 1791318418680,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "codex",
+        "namespace": "sha256:8b4e8e6e7db44ef969e1cbea3837fa078fde8c7221ad30a060df5bd382c0b984",
+        "nativeIdKind": "thread",
+        "nativeId": "01a112e5-ad1e-7853-ba17-bfbca6c3749d"
+      },
+      "source": "codex_notify",
+      "sourceEvent": "agent-turn-complete",
+      "signal": "turn_complete",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "Notification proof renamed",
+      "titleSource": "snapshot",
+      "body": "Turn complete",
+      "correlation": {
+        "nativeId": "01a112e5-dd05-7bd1-820a-79259473aae2",
+        "scope": "native_turn",
+        "dedupeKey": "sha256:d9c668372396879bd94e04bf5b4db6a2f06f04468bba4338f543c4c199636943"
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "e15db752-934d-4995-800a-7ae5761d17b3",
+      "receivedAt": 1791318446694,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "codex",
+        "namespace": "sha256:8b4e8e6e7db44ef969e1cbea3837fa078fde8c7221ad30a060df5bd382c0b984",
+        "nativeIdKind": "thread",
+        "nativeId": "01a112e6-1ebd-7640-bc1e-6baac0b8d391"
+      },
+      "source": "codex_notify",
+      "sourceEvent": "agent-turn-complete",
+      "signal": "turn_complete",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "Notification proof renamed",
+      "titleSource": "snapshot",
+      "body": "Turn complete",
+      "correlation": {
+        "nativeId": "01a112e6-4a35-7411-9528-edf41dbfcda4",
+        "scope": "native_turn",
+        "dedupeKey": "sha256:4b81cf8da7244925f36d38d96c54e2b124d86d86df4f8a463589baf1c2a56801"
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "c1586e5f-00be-4f39-9960-cf7d62a3d1b2",
+      "receivedAt": 1791318447112,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "codex",
+        "namespace": "sha256:8b4e8e6e7db44ef969e1cbea3837fa078fde8c7221ad30a060df5bd382c0b984",
+        "nativeIdKind": "thread",
+        "nativeId": "01a112e5-ed59-79f2-8023-8218236f1150"
+      },
+      "source": "codex_notify",
+      "sourceEvent": "agent-turn-complete",
+      "signal": "turn_complete",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "Notification proof renamed",
+      "titleSource": "snapshot",
+      "body": "Turn complete",
+      "correlation": {
+        "nativeId": "01a112e6-4840-7341-a4d9-2ad47b023116",
+        "scope": "native_turn",
+        "dedupeKey": "sha256:bce7d6f6a3925a852e8e9bc2e016ce89faafd44c2bae8b497302aedd7c001b2b"
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "7fba7d4e-1791-4a4c-a307-3211225ff27d",
+      "receivedAt": 1791318467135,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "a3448bd3-1971-4f35-877b-a4df05d502bf"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "UserPromptSubmit",
+      "signal": "wake",
+      "disposition": "wake",
+      "reason": "prompt_wakeup",
+      "kind": "unknown",
+      "title": "Claude a3448bd3-1971-4f35-877b-a4df05d502bf",
+      "titleSource": "snapshot",
+      "body": null,
+      "correlation": {
+        "nativeId": "6d7710c6-9a0b-4a11-89c3-4221c110074e",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "84aa29e9-00cd-488e-b17c-3d46835ad10e",
+      "receivedAt": 1791318474418,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "a3448bd3-1971-4f35-877b-a4df05d502bf"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "Stop",
+      "signal": "wake",
+      "disposition": "wake",
+      "reason": "response_end_only",
+      "kind": "user",
+      "title": "Reply confirmation",
+      "titleSource": "snapshot",
+      "body": null,
+      "correlation": {
+        "nativeId": "6d7710c6-9a0b-4a11-89c3-4221c110074e",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": false,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "dd8a6fd6-0887-498c-8815-a4b718fc48e0",
+      "receivedAt": 1791318479337,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "a3448bd3-1971-4f35-877b-a4df05d502bf"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "Stop",
+      "signal": "wake",
+      "disposition": "wake",
+      "reason": "response_end_only",
+      "kind": "user",
+      "title": "Reply confirmation",
+      "titleSource": "snapshot",
+      "body": null,
+      "correlation": {
+        "nativeId": "6d7710c6-9a0b-4a11-89c3-4221c110074e",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": true,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "3cd9af79-3750-41a4-aed2-a5b256bcddce",
+      "receivedAt": 1791318483035,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "a3448bd3-1971-4f35-877b-a4df05d502bf"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "SubagentStop",
+      "signal": "wake",
+      "disposition": "ignore",
+      "reason": "child_suppressed",
+      "kind": "child",
+      "title": "Reply confirmation",
+      "titleSource": "snapshot",
+      "body": null,
+      "correlation": {
+        "nativeId": "6d7710c6-9a0b-4a11-89c3-4221c110074e",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": false,
+    "nativeChildFieldPresent": true
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "41e355d3-48ff-4860-a28a-231cd1508ff5",
+      "receivedAt": 1791318496878,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "ffeea2fe-f1c5-4ce8-b7b0-d69479ab7549"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "UserPromptSubmit",
+      "signal": "wake",
+      "disposition": "wake",
+      "reason": "prompt_wakeup",
+      "kind": "unknown",
+      "title": "Claude ffeea2fe-f1c5-4ce8-b7b0-d69479ab7549",
+      "titleSource": "snapshot",
+      "body": null,
+      "correlation": {
+        "nativeId": "51c611ae-29bb-4bc6-81b0-0f96f4df2c6f",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "19dbf840-2a47-4ca5-b08c-da6ba329b806",
+      "receivedAt": 1791318506825,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "ffeea2fe-f1c5-4ce8-b7b0-d69479ab7549"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "Notification",
+      "signal": "permission",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "write notification permission proof",
+      "titleSource": "snapshot",
+      "body": "Permission needed",
+      "correlation": {
+        "nativeId": "51c611ae-29bb-4bc6-81b0-0f96f4df2c6f",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  },
+  {
+    "event": {
+      "schemaVersion": 1,
+      "receiptId": "599f7181-fee4-4807-b58e-b74d6267dbb0",
+      "receivedAt": 1791318540416,
+      "identity": {
+        "hostScope": "snap",
+        "provider": "claude",
+        "namespace": "sha256:b985c8e6d2b6a3aaf31748b68df27d87fdcdd34b1696828097416a160b9eeb09",
+        "nativeIdKind": "session",
+        "nativeId": "a3448bd3-1971-4f35-877b-a4df05d502bf"
+      },
+      "source": "claude_hook",
+      "sourceEvent": "Notification",
+      "signal": "idle",
+      "disposition": "notify",
+      "reason": "native_signal",
+      "kind": "user",
+      "title": "Reply confirmation",
+      "titleSource": "snapshot",
+      "body": "Waiting for input",
+      "correlation": {
+        "nativeId": "6d7710c6-9a0b-4a11-89c3-4221c110074e",
+        "scope": "native_prompt",
+        "dedupeKey": null
+      }
+    },
+    "stopHookActive": null,
+    "nativeChildFieldPresent": false
+  }
+]
