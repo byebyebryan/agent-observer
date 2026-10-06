@@ -64,15 +64,29 @@ def validate_request(value):
     if (value["operation"] == "new") != (reference is None):
         raise ContractError("invalid_write_reference")
     if reference is not None and (
-        reference["hostScope"] != value["hostScope"] or reference["provider"] != value["provider"]
+        reference["hostScope"] != value["hostScope"]
+        or reference["provider"] != value["provider"]
+        or reference["nativeIdKind"] != ("thread" if value["provider"] == "codex" else "session")
     ):
         raise ContractError("write_provenance_mismatch")
     return value
 
 
 def validate_plan(value):
+    from .contract import ContractError
+
     validate_shape(value, PLAN)
-    validate_request(value["request"])
+    request = validate_request(value["request"])
+    routes = {
+        ("codex", "new"): {"codex_new"},
+        ("codex", "resume"): {"codex_resume"},
+        ("claude", "new"): {"claude_new"},
+        ("claude", "resume"): {"claude_attach", "claude_saved_resume"},
+    }
+    if value["route"] not in routes[request["provider"], request["operation"]]:
+        raise ContractError("write_route_mismatch")
+    if value["createdAt"] is None:
+        raise ContractError("missing_plan_time")
     return value
 
 
@@ -80,6 +94,26 @@ def validate_result(value):
     from .contract import ContractError
 
     validate_shape(value, RESULT)
+    requested, resulting = value["requestedIdentity"], value["resultingIdentity"]
+    if (value["operation"] == "new") != (requested is None):
+        raise ContractError("invalid_write_reference")
+    for reference in (requested, resulting):
+        if reference is not None and reference["nativeIdKind"] != (
+            "thread" if reference["provider"] == "codex" else "session"
+        ):
+            raise ContractError("write_provenance_mismatch")
+    if requested is not None and resulting is not None and any(
+        requested[key] != resulting[key]
+        for key in ("hostScope", "provider", "namespace", "nativeIdKind")
+    ):
+        raise ContractError("write_provenance_mismatch")
+    if (
+        requested is not None and resulting is not None
+        and requested["provider"] == "codex" and requested != resulting
+    ):
+        raise ContractError("invalid_result_identity")
+    if value["effect"] == "none" and resulting is not None:
+        raise ContractError("invalid_result_identity")
     if value["effect"] == "confirmed" and (
         value["resultingIdentity"] is None or value["identityPending"]
     ):
@@ -90,10 +124,33 @@ def validate_result(value):
         raise ContractError("invalid_ready_result")
     if value["effect"] == "uncertain" and (
         value["status"] != "uncertain" or value["handoff"] is not None
+        or resulting is not None or not value["identityPending"]
     ):
         raise ContractError("invalid_uncertain_result")
     if value["handoff"] is not None:
-        validate_plan(value["handoff"])
+        handoff = validate_plan(value["handoff"])
+        if value["status"] == "prepared":
+            if (
+                handoff["request"]["operation"] != value["operation"]
+                or handoff["request"]["reference"] != requested
+                or handoff["route"] not in {"codex_new", "codex_resume", "claude_attach"}
+                or value["identityPending"] != (value["operation"] == "new")
+            ):
+                raise ContractError("write_handoff_mismatch")
+        elif value["status"] == "ready":
+            if (
+                handoff["route"] != "claude_attach"
+                or handoff["request"]["reference"] != resulting
+            ):
+                raise ContractError("write_handoff_mismatch")
+        else:
+            raise ContractError("unexpected_write_handoff")
+    if value["status"] == "rejected" and (
+        value["effect"] != "none" or value["identityPending"]
+    ):
+        raise ContractError("invalid_rejected_result")
+    if value["status"] == "uncertain" and value["effect"] == "none":
+        raise ContractError("invalid_uncertain_result")
     return value
 
 

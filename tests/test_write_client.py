@@ -168,6 +168,55 @@ class WriteClientTest(unittest.TestCase):
         self.assertEqual(argv, [str(self.binary)])
         self.assertEqual(env["CODEX_HOME"], str(self.home))
 
+    def test_ready_result_binds_copied_identity_to_exact_attach_handoff(self):
+        root = Path(__file__).parent / "fixtures/write-v1"
+        handoff = json.loads((root / "plan.json").read_text())
+        requested = self.request("claude", "resume")["reference"]
+        actual = {**requested, "nativeId": "00000000-0000-0000-0000-000000000002"}
+        handoff.update(route="claude_attach")
+        handoff["request"] = self.request("claude", "resume")
+        handoff["request"]["reference"] = actual
+        ready = {
+            "schemaVersion": 1, "operation": "resume", "status": "ready",
+            "reason": "native_identity_verified", "effect": "confirmed",
+            "requestedIdentity": requested, "resultingIdentity": actual,
+            "identityPending": False, "handoff": handoff,
+        }
+        validate_result(ready)
+        for mutate in (
+            lambda v: v["handoff"]["request"].update(reference=requested),
+            lambda v: v["resultingIdentity"].update(hostScope="other"),
+            lambda v: v["resultingIdentity"].update(namespace="sha256:" + "f" * 64),
+            lambda v: v["handoff"].update(route="claude_saved_resume"),
+            lambda v: v.update(operation="new"),
+            lambda v: v.update(identityPending=True),
+        ):
+            changed = copy.deepcopy(ready)
+            mutate(changed)
+            with self.assertRaises(ContractError):
+                validate_result(changed)
+        # Losing the viewer after a confirmed copy must preserve the identity.
+        confirmed = {**ready, "status": "uncertain", "reason": "handoff_unavailable", "handoff": None}
+        validate_result(confirmed)
+        unknown = {**confirmed, "effect": "uncertain", "resultingIdentity": None, "identityPending": True}
+        validate_result(unknown)
+
+    def test_prepared_result_rejects_false_targets_and_inconsistent_routes(self):
+        root = Path(__file__).parent / "fixtures/write-v1"
+        prepared = json.loads((root / "result.json").read_text())
+        for mutate in (
+            lambda v: v.update(resultingIdentity=self.request(operation="resume")["reference"]),
+            lambda v: v.update(requestedIdentity=self.request(operation="resume")["reference"]),
+            lambda v: v.update(identityPending=False),
+            lambda v: v.update(status="rejected"),
+            lambda v: v["handoff"].update(route="claude_new"),
+            lambda v: v["handoff"].update(createdAt=None),
+        ):
+            changed = copy.deepcopy(prepared)
+            mutate(changed)
+            with self.assertRaises(ContractError):
+                validate_result(changed)
+
     def test_changed_binary_cwd_settings_or_injected_route_rejected_before_dispatch(self):
         mutations = [
             lambda: self.binary.write_bytes(b"replacement"),
