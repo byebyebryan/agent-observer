@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "provider": "claude",
+  "cliSha256": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb",
+  "workingObserved": true,
+  "nativePermissionPromptObserved": true,
+  "nativeJobState": "working",
+  "nativeJobTempo": "blocked",
+  "observedPhase": "blocked",
+  "heldApprovalPreservesAge": true,
+  "toolNotExecuted": true,
+  "approvalAutomaticallyAnswered": false,
+  "terminalOutputPersisted": false,
+  "candidateSource": "7ffbe246e6bac2c9d320328ce639b833b3a73bfa",
+  "candidateWheelSha256": "98ce1f9203f97c13adc2d19cb11bf8f13a0dc3889fc899debc94da1bf0b1430d"
+}

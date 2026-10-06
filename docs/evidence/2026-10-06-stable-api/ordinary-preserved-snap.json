@@ -1,0 +1,10 @@
+{
+  "selectedEntrypoints": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write"
+  },
+  "cliSha256": {
+    "codex": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+    "claude": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb"
+  }
+}

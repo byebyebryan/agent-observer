@@ -31,6 +31,7 @@ def document(path):
             {"snapshot": 2, "watch": 2, "write": 1},
             {"snapshot": 3, "watch": 3, "write": 1},
         )
+        or value.get("schemas", {}).get("snapshot") == 3 and value.get("apiVersion") != 1
     ):
         raise ValueError("manifest_invalid")
     return value
@@ -113,6 +114,10 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         schema = json.loads(run([str(prefix / "bin/agent-observer"), "schema", "--kind", name]))
         if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"][name]}:
             raise ValueError("schema_mismatch")
+    if manifest["schemas"]["snapshot"] == 3:
+        interface = json.loads(run([str(prefix / "bin/agent-observer"), "api"]))
+        if interface.get("apiVersion") != manifest["apiVersion"] or interface.get("schemas") != manifest["schemas"]:
+            raise ValueError("api_mismatch")
     for name in ("request", "plan", "result"):
         schema = json.loads(
             run([str(prefix / "bin/agent-observer-write"), "schema", "--kind", name])

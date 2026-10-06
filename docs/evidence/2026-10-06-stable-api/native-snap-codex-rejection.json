@@ -1,0 +1,12 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "provider": "codex",
+  "realPTY": true,
+  "rejectionVisible": true,
+  "reason": "handoff_context_changed",
+  "nativeProviderNotExecuted": true,
+  "terminalOutputPersisted": false,
+  "candidateSource": "7ffbe246e6bac2c9d320328ce639b833b3a73bfa",
+  "candidateWheelSha256": "98ce1f9203f97c13adc2d19cb11bf8f13a0dc3889fc899debc94da1bf0b1430d"
+}

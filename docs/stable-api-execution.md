@@ -73,5 +73,14 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   meaning and capability/coverage boundaries. Semantic negatives reject wrong
   provider scopes/topology/job IDs. Prepared Resume additionally binds its native
   ID/job mapping. Stable declaration still requires S4.
-- S4-S6: pending. Update this record at reviewed checkpoints with concrete
-  source, packaged and native results and any remaining capabilities.
+- S4 native evaluation found that Claude's local `/exit` command/output records
+  can omit `isMeta`. The a1 candidate therefore fails the housekeeping-age gate.
+  The corrected source excludes reserved local-command envelopes, while ordinary
+  slash-looking prompts still count. Rebuild as a2; do not promote a1 acceptance.
+- S4: a2 is independently accepted on Snap/Starship, with API 1 / read wire 3 /
+  write wire 1. The [producer report](evidence/2026-10-06-stable-api/REPORT.md)
+  records independent schema/CLI consumption, ordinary native comparisons,
+  concurrent watch, isolated New/Resume/recovery/blocked/parked/partial cases,
+  housekeeping-age correction and owned cleanup. Normal links remain a11;
+  `/exit` UI recognition and other stated capabilities remain separate limits.
+- S5-S6: pending. Client handoffs and notifications follow this producer gate.

@@ -1,0 +1,72 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "providers": [
+    "codex",
+    "claude"
+  ],
+  "samplesPerReader": 4,
+  "readers": 2,
+  "requestedIntervalSeconds": 2.0,
+  "elapsedSeconds": 9.745,
+  "revisionAndSchemaChecks": true,
+  "providerActions": 0,
+  "measurements": [
+    {
+      "frameCounts": {
+        "snapshot": 1,
+        "heartbeat": 3
+      },
+      "frames": 4,
+      "sampleSpacingSeconds": [
+        2.317,
+        2.502,
+        2.442
+      ],
+      "maxRssKiB": 27552,
+      "maxFdCount": 5,
+      "rssStartEndKiB": [
+        856,
+        25636
+      ],
+      "fdStartEnd": [
+        3,
+        3
+      ],
+      "partialSnapshots": 0,
+      "sessionCountRange": [
+        78,
+        78
+      ],
+      "sameValueNativePhaseClockUpdates": 0
+    },
+    {
+      "frameCounts": {
+        "snapshot": 1,
+        "heartbeat": 3
+      },
+      "frames": 4,
+      "sampleSpacingSeconds": [
+        2.312,
+        2.487,
+        2.436
+      ],
+      "maxRssKiB": 27528,
+      "maxFdCount": 5,
+      "rssStartEndKiB": [
+        736,
+        25736
+      ],
+      "fdStartEnd": [
+        4,
+        3
+      ],
+      "partialSnapshots": 0,
+      "sessionCountRange": [
+        78,
+        78
+      ],
+      "sameValueNativePhaseClockUpdates": 0
+    }
+  ]
+}

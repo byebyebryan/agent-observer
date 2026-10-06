@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -17,11 +18,6 @@ import time
 from pathlib import Path
 
 ORDINARY = Path("/home/bryan")
-RELEASE = "0.160.0-x86_64-unknown-linux-musl"
-RELEASES = {
-    RELEASE: "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
-    "0.160.1-x86_64-unknown-linux-musl": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
-}
 
 
 def save(path, value):
@@ -38,20 +34,47 @@ def owned(root):
         raise ValueError("fixture_ownership_changed")
 
 
-def prepare(root, host, prefix, release=RELEASE):
+def prepare(root, host, prefix, release=None):
     owned(root)
     if prefix.resolve(strict=True) != prefix or not (prefix / "bin/agent-observer-write").is_file():
         raise ValueError("candidate_prefix_unavailable")
-    cached = ORDINARY / ".codex/packages/app-server-daemon/releases" / release
-    if release not in RELEASES or cached.resolve(strict=True) != cached:
+    package = ORDINARY / ".codex/packages/app-server-daemon"
+    if release is None:
+        current = (package / "current").resolve(strict=True)
+        if current.parent != package / "releases":
+            raise ValueError("fixture_release_unavailable")
+        release = current.name
+    if re.fullmatch(r"\d+\.\d+\.\d+-x86_64-unknown-linux-musl", release) is None:
+        raise ValueError("fixture_release_unavailable")
+    cached = package / "releases" / release
+    if cached.resolve(strict=True) != cached:
         raise ValueError("fixture_release_unavailable")
     with (cached / "bin/codex").open("rb") as stream:
-        if hashlib.file_digest(stream, "sha256").hexdigest() != RELEASES[release]:
-            raise ValueError("fixture_release_not_accepted")
+        daemon_hash = hashlib.file_digest(stream, "sha256").hexdigest()
     base = root / ("native-" + host)
     base.mkdir(mode=0o700)
     for name in ("codex", "claude", "home", "workspace", "config", "cache", "state", "runtime"):
         (base / name).mkdir(mode=0o700)
+    # Private copies preserve exact installed bytes and map their ownership to
+    # the proof UID. Host root-owned images have unmapped UIDs inside this user
+    # namespace. Bind only here; no ordinary package bytes/permissions change.
+    cli = base / "native-cli"
+    cli.mkdir(mode=0o700)
+    images = {}
+    for provider, source in (("codex", Path("/opt/openai-codex/bin/codex")),
+                             ("claude", Path("/opt/claude-code/bin/claude"))):
+        if provider == "claude" and host != "snap":
+            continue
+        target = cli / provider
+        shutil.copyfile(source, target)
+        target.chmod(0o700)
+        with source.open("rb") as stream:
+            original = hashlib.file_digest(stream, "sha256").hexdigest()
+        with target.open("rb") as stream:
+            copied = hashlib.file_digest(stream, "sha256").hexdigest()
+        if original != copied:
+            raise ValueError("fixture_cli_changed")
+        images[provider] = original
     shutil.copyfile(ORDINARY / ".codex/auth.json", base / "codex/auth.json")
     (base / "codex/auth.json").chmod(0o600)
     (base / "codex/config.toml").write_text(
@@ -102,7 +125,8 @@ def prepare(root, host, prefix, release=RELEASE):
         for name in ("sessions", "jobs", "daemon", "projects"):
             (base / "claude" / name).mkdir(mode=0o700)
     subprocess.run(["git", "init", "-q", str(base / "workspace")], check=True)
-    save(root / "fixture.json", {"host": host, "prefix": str(prefix), "codexRelease": release})
+    save(root / "fixture.json", {"host": host, "prefix": str(prefix), "codexRelease": release,
+                                "daemonSha256": daemon_hash, "installedCliSha256": images})
 
 
 def init(root):
@@ -125,11 +149,13 @@ def init(root):
     )
     os.close(anchor)
     base = root / ("native-" + host)
-    mounts = [(base / "codex", ORDINARY / ".codex")]
+    mounts = [(base / "codex", ORDINARY / ".codex"),
+              (base / "native-cli/codex", Path("/opt/openai-codex/bin/codex"))]
     if host == "snap":
         mounts += [
             (base / "claude", ORDINARY / ".claude"),
             (base / "home/.claude.json", ORDINARY / ".claude.json"),
+            (base / "native-cli/claude", Path("/opt/claude-code/bin/claude")),
         ]
     for source, target in mounts:
         subprocess.run(["mount", "--bind", str(source), str(target)], check=True)
@@ -285,7 +311,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--host", choices=("snap", "starship"))
     parser.add_argument("--prefix", type=Path)
-    parser.add_argument("--codex-release", choices=tuple(RELEASES), default=RELEASE)
+    parser.add_argument("--codex-release", help="optional explicit cached proof release; default is the current cache target")
     args, command = parser.parse_known_args()
     if args.operation == "prepare":
         if args.host is None or args.prefix is None:

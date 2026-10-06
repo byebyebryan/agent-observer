@@ -56,6 +56,7 @@ class CandidateArtifactTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             path = Path(root) / "manifest.json"
             manifest["schemas"] = {"snapshot": 3, "watch": 3, "write": 1}
+            manifest["apiVersion"] = 1
             path.write_text(json.dumps(manifest))
             self.assertEqual(HELPER["document"](path)["schemas"]["snapshot"], 3)
             manifest["schemas"]["watch"] = 2

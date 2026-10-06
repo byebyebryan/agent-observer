@@ -1,0 +1,853 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.3.0a2",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.3.0a2-98ce1f9203f97c13/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791315767236,
+        "claude": 1791315767816
+      },
+      "cliCollectedAt": 1791315770044,
+      "nativeAfterAt": {
+        "codex": 1791315770963,
+        "claude": 1791315771255
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        },
+        {
+          "provider": "claude",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "registered_workers",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "metadata_scan",
+              "status": "partial"
+            }
+          },
+          "limitations": [
+            "parked_requires_terminal_job_and_complete_inventory",
+            "client_binding_unproved",
+            "foreground_questions_unproved",
+            "interactive_readiness_requires_verified_worker_contract",
+            "background_readiness_requires_no_pending_work",
+            "history_sdk_candidates_omitted",
+            "history_duplicate_companions"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 81
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 51,
+          "nativeAfterRows": 51,
+          "cliRows": 51,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 51,
+            "classification": {
+              "user": 3,
+              "unknown": 45,
+              "child": 3
+            }
+          },
+          "checks": {
+            "membership": 51,
+            "title": 41,
+            "cwd": 51,
+            "runtime_unproved": 45,
+            "phase_unproved": 45,
+            "activity": 51,
+            "kind_unproved": 45,
+            "sessionId": 51,
+            "createdAt": 51,
+            "outcome": 51,
+            "outcomeAt": 49,
+            "title_unproved": 10,
+            "runtime": 6,
+            "phase": 6,
+            "kind": 6,
+            "outcomeAt_unproved": 2
+          },
+          "nativeActive": [
+            {
+              "id": "01a0f87e-3524-7861-946e-e89005f07905",
+              "title": "esp32-349",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791315659000
+            },
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791311630000
+            },
+            {
+              "id": "01a10d42-4dac-7ee1-b846-210742296942",
+              "title": "esp32-rlcd",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791315386000
+            },
+            {
+              "id": "01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791233140000
+            },
+            {
+              "id": "01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791240439000
+            },
+            {
+              "id": "01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791313213000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0f87e-3524-7861-946e-e89005f07905",
+              "title": "esp32-349",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791315659000
+            },
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791311630000
+            },
+            {
+              "id": "01a10d42-4dac-7ee1-b846-210742296942",
+              "title": "esp32-rlcd",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791315386000
+            },
+            {
+              "id": "01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "title": "Codex 01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791233140000
+            },
+            {
+              "id": "01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "title": "Codex 01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791240439000
+            },
+            {
+              "id": "01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "title": "Codex 01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791313213000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        },
+        "claude": {
+          "nativeBeforeRows": 29,
+          "nativeAfterRows": 29,
+          "cliRows": 30,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 29,
+            "classification": {
+              "user": 29
+            }
+          },
+          "checks": {
+            "membership": 29,
+            "title": 27,
+            "cwd": 29,
+            "runtime": 6,
+            "phase_unproved": 26,
+            "activity": 29,
+            "kind": 29,
+            "runtime_unproved": 23,
+            "phase": 3,
+            "title_unproved": 2
+          },
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "recap-2026-spare-a100",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "busy",
+              "activityAt": 1791315599031
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791315492377
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791314528239
+            }
+          ],
+          "active": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "recap-2026-spare-a100",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "busy",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791315599031
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "shell",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791315492377
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "shell",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791314528239
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ],
+          "issues": [
+            {
+              "id": "1f66423b-8c09-460a-951f-f4a22e353fec",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 78,
+        "filteredChildren": 3
+      },
+      "nativeRuntime": {
+        "pid": 129007,
+        "startTicks": "26593010",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {},
+        "claude": {
+          "historyGaps": [
+            "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+            "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+            "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+            "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+          ],
+          "historyBytesScanned": 54043569,
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791315772744,
+        "claude": 1791315773045
+      },
+      "cliCollectedAt": 1791315775248,
+      "nativeAfterAt": {
+        "codex": 1791315776296,
+        "claude": 1791315776605
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        },
+        {
+          "provider": "claude",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "registered_workers",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "metadata_scan",
+              "status": "partial"
+            }
+          },
+          "limitations": [
+            "parked_requires_terminal_job_and_complete_inventory",
+            "client_binding_unproved",
+            "foreground_questions_unproved",
+            "interactive_readiness_requires_verified_worker_contract",
+            "background_readiness_requires_no_pending_work",
+            "history_sdk_candidates_omitted",
+            "history_duplicate_companions"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 81
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 51,
+          "nativeAfterRows": 51,
+          "cliRows": 51,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 51,
+            "classification": {
+              "user": 3,
+              "unknown": 45,
+              "child": 3
+            }
+          },
+          "checks": {
+            "membership": 51,
+            "title": 41,
+            "cwd": 51,
+            "runtime_unproved": 45,
+            "phase_unproved": 45,
+            "activity": 51,
+            "kind_unproved": 45,
+            "sessionId": 51,
+            "createdAt": 51,
+            "outcome": 51,
+            "outcomeAt": 49,
+            "title_unproved": 10,
+            "runtime": 6,
+            "phase": 6,
+            "kind": 6,
+            "outcomeAt_unproved": 2
+          },
+          "nativeActive": [
+            {
+              "id": "01a0f87e-3524-7861-946e-e89005f07905",
+              "title": "esp32-349",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791315659000
+            },
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791311630000
+            },
+            {
+              "id": "01a10d42-4dac-7ee1-b846-210742296942",
+              "title": "esp32-rlcd",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791315386000
+            },
+            {
+              "id": "01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791233140000
+            },
+            {
+              "id": "01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791240439000
+            },
+            {
+              "id": "01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "title": null,
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791313213000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0f87e-3524-7861-946e-e89005f07905",
+              "title": "esp32-349",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791315659000
+            },
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791311630000
+            },
+            {
+              "id": "01a10d42-4dac-7ee1-b846-210742296942",
+              "title": "esp32-rlcd",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791315386000
+            },
+            {
+              "id": "01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "title": "Codex 01a10db9-f12f-7ec1-b257-52f89f82b4e3",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791233140000
+            },
+            {
+              "id": "01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "title": "Codex 01a10e38-d7a6-72b2-b79c-2c36e86e27ca",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791240439000
+            },
+            {
+              "id": "01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "title": "Codex 01a11282-067d-7bc0-b13c-ecf1dc1482d4",
+              "cwd": "/home/bryan/code/esp32-rlcd",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791313213000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        },
+        "claude": {
+          "nativeBeforeRows": 29,
+          "nativeAfterRows": 29,
+          "cliRows": 30,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 29,
+            "classification": {
+              "user": 29
+            }
+          },
+          "checks": {
+            "membership": 29,
+            "title": 27,
+            "cwd": 29,
+            "runtime": 6,
+            "phase_unproved": 26,
+            "activity": 29,
+            "kind": 29,
+            "runtime_unproved": 23,
+            "phase": 3,
+            "title_unproved": 2
+          },
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "recap-2026-spare-a100",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "busy",
+              "activityAt": 1791315599031
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791315492377
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791314528239
+            }
+          ],
+          "active": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "recap-2026-spare-a100",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "busy",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791315599031
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "shell",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791315492377
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "shell",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": "unknown",
+              "activityAt": 1791314528239
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ],
+          "issues": [
+            {
+              "id": "1f66423b-8c09-460a-951f-f4a22e353fec",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 78,
+        "filteredChildren": 3
+      },
+      "nativeRuntime": {
+        "pid": 129007,
+        "startTicks": "26593010",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {},
+        "claude": {
+          "historyGaps": [
+            "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+            "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+            "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+            "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+          ],
+          "historyBytesScanned": 54043569,
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}
