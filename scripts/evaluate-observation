@@ -309,6 +309,12 @@ def native_history(home):
                 message = record.get("message", {})
                 if not isinstance(message, dict) or message.get("role") != record.get("type"):
                     continue
+                text = message.get("content")
+                if record["type"] == "user" and isinstance(text, str) and any(
+                    text.startswith("<" + tag + ">") for tag in
+                    ("command-name", "local-command-stdout", "local-command-stderr", "local-command-caveat")
+                ):
+                    continue
                 stamp = record.get("timestamp")
                 if isinstance(stamp, str):
                     parsed = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
