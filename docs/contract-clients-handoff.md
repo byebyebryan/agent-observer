@@ -1,15 +1,14 @@
 # Contract and clients handoff
 
-For the latest operational state and next producer checkpoint, read the
-[2026-10-06 discovery/monitoring review](discovery-monitoring-contract-review.md).
-The subsequent [provider support policy](provider-contract-compatibility-plan.md)
-replaces daily version/hash registration with required-contract compatibility;
-the current a11 gates still need implementation replacement.
-Provider upgrades have reopened current-image monitoring/write acceptance;
-watch/contract findings also need closure. The selected tuple below remains the
-earlier exact-artifact baseline. The adjacent Agent Plus checkout's
-`docs/observer-client-handoff.md` records client ownership and the renewed
-producer gates.
+For current client work, use the [API v1 handoff](api-v1-client-handoff.md)
+and [a2 packaged/native acceptance](evidence/2026-10-06-stable-api/REPORT.md).
+The independent producer gate is closed; snapshot/watch wire 3 deliberately
+requires a new reader/cache gate. A2 is separately installed on Snap/Starship;
+normal links and the historical selected tuple below remain a11/wire 2. No
+frontend or rollout acceptance is implied. Daily compatible provider upgrades
+no longer require release/hash registration in a2.
+
+The sections below preserve the 2026-10-05 selected baseline and earlier pilot.
 
 Date: 2026-10-05. The regular primary-owned goal loop closed independent G1/G2
 and the subsequent bounded Plus E8 consumer pass. Networking G3 remains deferred;

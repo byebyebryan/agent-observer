@@ -1,5 +1,10 @@
 # Discovery, monitoring and contract readiness review
 
+The subsequent [API v1 execution](stable-api-execution.md) and
+[a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md) close R1-R8 within the
+accepted scopes. This dated a11 review preserves the original findings and proof.
+Use the [client handoff](api-v1-client-handoff.md) for current work.
+
 Date: 2026-10-06. Reviewed source: `7e0cbbe`; installed producer: `0.2.0a11`,
 frozen source `06af32dc9f28aa5d356d6da6c0235ccc1056dac2`, wheel SHA-256
 `999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65`.

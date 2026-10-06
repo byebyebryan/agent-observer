@@ -83,4 +83,8 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   concurrent watch, isolated New/Resume/recovery/blocked/parked/partial cases,
   housekeeping-age correction and owned cleanup. Normal links remain a11;
   `/exit` UI recognition and other stated capabilities remain separate limits.
-- S5-S6: pending. Client handoffs and notifications follow this producer gate.
+- S5: the [API v1 client handoff](api-v1-client-handoff.md) and adjacent Plus
+  handoff now carry the accepted tuple, wire/cache migration, pure public imports,
+  age/health/classification/write semantics and independent consumer gates. No
+  frontend implementation or managed selection is included.
+- S6: pending, separate notification source/client checkpoint.

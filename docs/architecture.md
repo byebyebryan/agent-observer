@@ -4,8 +4,9 @@ The [2026-10-06 provider compatibility policy](provider-contract-compatibility-p
 governs future native support: required contracts and observed capabilities
 determine compatibility. Release versions and hashes record provenance and
 incarnation changes; routine provider upgrades do not require allowlist entries.
-The version-gated pilot description below is historical, and a11's runtime
-allowlist replacement remains a separate Observer implementation checkpoint.
+The [API v1 contract](api-v1.md) and [a2 acceptance](evidence/2026-10-06-stable-api/REPORT.md)
+implement this policy. The version-gated pilot description below is historical;
+normal selected a11 links and consumer migration retain separate rollout gates.
 
 The [contract and clients plan](contract-and-clients-plan.md), captured
 2026-10-03, defines the next development track: a passive host-local core,
