@@ -26,7 +26,7 @@ class ObservationEvaluationTest(unittest.TestCase):
         return {"rows": {SID: {**row, **fields}}}
 
     def public(self, **fields):
-        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionId": SID}, "createdAt": 50}
+        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionId": SID}, "createdAt": 50, "outcome": {"value": "unknown", "observedAt": None}}
         return {"sessions": [{**row, **fields}]}
 
     def test_stable_missing_row_and_native_active_inventory_are_retained(self):
@@ -83,8 +83,8 @@ class ObservationEvaluationTest(unittest.TestCase):
                                                                 "version": "2.1.289"}):
                 for changes, expected in (
                     ({}, "blocked"), ({"kind": "bg"}, None),
-                    ({"waitingFor": "input needed"}, None),
-                    ({"status": "idle"}, None),
+                    ({"waitingFor": "input needed"}, "blocked"),
+                    ({"status": "idle"}, "waiting"),
                 ):
                     registry.write_text(json.dumps({**record, **changes}))
                     native = evaluation.claude_reference(home, {})

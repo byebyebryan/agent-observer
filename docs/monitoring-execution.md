@@ -41,6 +41,7 @@ entrypoints or install hooks. Ordinary sessions remain available throughout.
 
 ## Checkpoints
 
-- M0: preflight and private namespace preparation pending.
-- M1: native predicate proof and source changes pending.
+- M0: exact preflight and private namespace preparation accepted.
+- M1: native predicate proof and source changes accepted within the
+  [monitoring report](evidence/2026-10-05-monitoring/REPORT.md)'s exact-image bounds.
 - M2: frozen package, independent CLI/native acceptance and review pending.

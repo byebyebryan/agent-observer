@@ -76,12 +76,27 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
         raise ValueError("worker_census_limit")
     if census["total_bytes"] > 2 * 1024 * 1024 * 1024:
         raise ValueError("worker_census_limit")
+    count_fields = {"candidate_ids", "sdk_returned_ids", "projected_ids", "sdk_omitted_ids",
+                    "unresolved_ids", "duplicate_ids", "resolved_companion_ids", "malformed_filename_ids"}
+    if set(census) - {"projects", "candidate_files", "total_bytes"} not in (set(), count_fields):
+        raise ValueError("invalid_worker_census")
+    if count_fields <= set(census):
+        if any(type(census[k]) is not int or not 0 <= census[k] <= MAX_HELPER_ROWS for k in count_fields):
+            raise ValueError("invalid_worker_census")
+        if (census["candidate_ids"] > census["candidate_files"]
+                or census["sdk_returned_ids"] + census["sdk_omitted_ids"] != census["candidate_ids"]
+                or census["projected_ids"] + census["unresolved_ids"] != census["sdk_returned_ids"]
+                or census["resolved_companion_ids"] > census["duplicate_ids"]
+                or census["duplicate_ids"] > census["candidate_ids"]):
+            raise ValueError("invalid_worker_census")
 
     raw_rows = payload.get("rows")
     raw_errors = payload.get("errors")
     if not isinstance(raw_rows, list) or len(raw_rows) > MAX_HELPER_ROWS:
         raise ValueError("invalid_worker_rows")
     if len(raw_rows) > census["candidate_files"]:
+        raise ValueError("invalid_worker_census")
+    if "projected_ids" in census and len(raw_rows) != census["projected_ids"]:
         raise ValueError("invalid_worker_census")
     if not isinstance(raw_errors, list) or any(
         not isinstance(code, str) or code not in _ERROR_CODES for code in raw_errors
@@ -275,6 +290,9 @@ def collect_saved_history(
     )
     display_limited = len(rows) > history_limit
     result_errors = [{"code": code} for code in errors]
+    census = dict(payload.get("census", {}))
+    census["displayed_ids"] = min(len(rows), history_limit)
+    census["display_omitted_ids"] = max(0, len(rows) - history_limit)
     return {
         "rows": rows[:history_limit],
         "coverage": {
@@ -282,4 +300,5 @@ def collect_saved_history(
             "reason": "history_limit" if display_limited else "metadata_scan",
         },
         "errors": result_errors,
+        "census": census,
     }

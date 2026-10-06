@@ -55,6 +55,25 @@ def worker_payload(rows, *, errors=None, candidates=None):
 
 
 class ClaudeHistoryTest(unittest.TestCase):
+    def test_census_distinguishes_sdk_omissions_companions_and_display_limits(self):
+        payload = worker_payload([worker_row(FIRST, created_at=1, last_modified=2),
+                                  worker_row(SECOND, created_at=1, last_modified=3)], candidates=5)
+        counts = {"candidate_ids": 4, "sdk_returned_ids": 3, "projected_ids": 2,
+                  "sdk_omitted_ids": 1, "unresolved_ids": 1, "duplicate_ids": 1,
+                  "resolved_companion_ids": 1, "malformed_filename_ids": 0}
+        payload["census"].update(counts)
+        result = self.run_collector(payload, history_limit=1)
+        self.assertEqual(result["census"]["sdk_omitted_ids"], 1)
+        self.assertEqual(result["census"]["unresolved_ids"], 1)
+        self.assertEqual(result["census"]["display_omitted_ids"], 1)
+        self.assertFalse(result["coverage"]["complete"])
+        for field in counts:
+            invalid = json.loads(json.dumps(payload))
+            invalid["census"][field] = True
+            self.assertEqual(self.run_collector(invalid)["errors"], [{"code": "history_source_failed"}])
+        payload["census"]["sdk_omitted_ids"] = 2
+        self.assertEqual(self.run_collector(payload)["errors"], [{"code": "history_source_failed"}])
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)

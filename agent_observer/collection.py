@@ -90,6 +90,9 @@ def project_source(native):
     if health == "current" and native.get("errors"):
         health = "partial"
     coverage = native.get("coverage", {})
+    question_supported = provider == "claude" and any(
+        "job_question" in row.get("phaseCapabilities", []) for row in native.get("sessions", [])
+    )
     result = {
         "provider": provider,
         "namespace": namespace,
@@ -108,7 +111,7 @@ def project_source(native):
         "capabilities": {
             "phase": ["working", "blocked", "waiting"]
             if provider != "codex" or coverage.get("work", {}).get("supported") else [],
-            "blockedReasons": ["approval"]
+            "blockedReasons": ["approval", "question"] if question_supported else ["approval"]
             if provider != "codex" or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", []) else [],
             "runtime": ["running"]
             if provider != "codex" or coverage.get("loaded", {}).get("complete") else [],
@@ -137,8 +140,12 @@ def project_source(native):
         result["limitations"].append("unloaded_work_state_unavailable")
         result["limitations"].append("unbound_tui_contexts_unobserved")
     else:
-        result["limitations"].append("interactive_readiness_unproved")
-        result["limitations"].append("waiting_requires_completed_background_context")
+        result["limitations"].append("interactive_readiness_requires_current_worker_image")
+        result["limitations"].append("background_readiness_requires_no_pending_work")
+        result["limitations"].extend(reason for reason in native.get("limitations", []) if reason in {
+            "history_sdk_candidates_omitted", "history_candidates_unresolved",
+            "history_duplicate_companions", "history_invalid_filename_candidates",
+        })
     result["coverage"]["runtime"]["scope"] = (
         "loaded_threads" if provider == "codex" else "registered_workers"
     )
@@ -172,10 +179,20 @@ def project_session(native, source):
         and (native.get("job") or {}).get("state") == "done"
         and native.get("work", {}).get("source") == "claude_job_store"
     )
+    claude_ready |= (
+        provider == "claude" and native.get("sessionKind") == "interactive"
+        and worker["value"] == "present" and ids.get("jobId") is None
+        and "interactive_readiness" in native.get("phaseCapabilities", [])
+        and native.get("work", {}).get("source") == "claude_registry"
+    )
     if claude_ready:
         mapping["settled"] = "waiting"
     phase = fact(native.get("work"), mapping)
-    if phase["value"] == "blocked" and native.get("waitReason") != "approval":
+    question = (provider == "claude" and native.get("waitReason") == "question"
+                and "job_question" in native.get("phaseCapabilities", []))
+    input_wait = (provider == "claude" and native.get("waitReason") in {"question", "user_input"}
+                  and "input_wait" in native.get("phaseCapabilities", []))
+    if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not input_wait:
         phase = unknown("questions_unproved", "unsupported")
     if (
         native.get("work", {}).get("value") == "settled"
@@ -194,6 +211,10 @@ def project_session(native, source):
         ):
             phase = unknown("background_readiness_unproved", "unsupported")
     outcome = unknown("outcome_source_unproved", "unsupported")
+    if provider == "codex" and "outcome" in native:
+        outcome = fact(native["outcome"], {v: v for v in ("completed", "failed", "cancelled")})
+    if provider == "codex" and (native.get("nativeState") or {}).get("type") == "systemError":
+        phase = unknown("native_runtime_error", "unsupported")
     if (
         provider == "claude"
         and native.get("work", {}).get("source") == "claude_job_store"
@@ -233,7 +254,7 @@ def project_session(native, source):
             native.get("attachment"), {"attached": "attached", "detached": "detached"}
         ),
         "outcome": outcome,
-        "blockedReason": "approval" if phase["value"] == "blocked" else "unknown",
+        "blockedReason": ("question" if question else "approval" if native.get("waitReason") == "approval" else "unknown") if phase["value"] == "blocked" else "unknown",
         "createdAt": times.get("createdAt")
         if provider == "codex"
         else history.get("createdAt")

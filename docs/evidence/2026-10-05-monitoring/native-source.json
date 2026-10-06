@@ -1,0 +1,490 @@
+{
+  "evidenceLevel": "native",
+  "ordinaryProviderActions": 0,
+  "claudeForeground": {
+    "provider": "claude",
+    "version": "2.1.289",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "id": "8d84309b-3476-4e12-9108-be239ce869df",
+    "terminalOutputPersisted": false,
+    "cases": {
+      "firstPrompt": {
+        "case": "first_prompt",
+        "at": 1791244412620,
+        "status": "idle",
+        "statusUpdatedAt": 1791244403590,
+        "kind": "interactive",
+        "waitingFor": null,
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": []
+      },
+      "working": {
+        "case": "working",
+        "at": 1791244412921,
+        "status": "busy",
+        "statusUpdatedAt": 1791244412652,
+        "kind": "interactive",
+        "waitingFor": null,
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": [
+          "UserPromptSubmit"
+        ]
+      },
+      "completed": {
+        "case": "completed",
+        "at": 1791244428874,
+        "status": "idle",
+        "statusUpdatedAt": 1791244428747,
+        "kind": "interactive",
+        "waitingFor": null,
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": [
+          "UserPromptSubmit",
+          "Stop"
+        ]
+      },
+      "continuation": {
+        "case": "stop_continuation",
+        "at": 1791244430680,
+        "status": "busy",
+        "statusUpdatedAt": 1791244428900,
+        "kind": "interactive",
+        "waitingFor": null,
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": [
+          "UserPromptSubmit",
+          "Stop",
+          "UserPromptSubmit",
+          "Stop",
+          "SubagentStop"
+        ]
+      },
+      "continuationCompleted": {
+        "case": "continuation_completed",
+        "at": 1791244447238,
+        "status": "idle",
+        "statusUpdatedAt": 1791244447232,
+        "kind": "interactive",
+        "waitingFor": null,
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": [
+          "UserPromptSubmit",
+          "Stop",
+          "UserPromptSubmit",
+          "Stop",
+          "SubagentStop",
+          "SubagentStop",
+          "Stop"
+        ]
+      },
+      "question": {
+        "case": "held_question",
+        "at": 1791244449643,
+        "status": "waiting",
+        "statusUpdatedAt": 1791244449636,
+        "kind": "interactive",
+        "waitingFor": "input needed",
+        "jobState": null,
+        "tempo": null,
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "events": [
+          "UserPromptSubmit",
+          "Stop",
+          "UserPromptSubmit",
+          "Stop",
+          "SubagentStop",
+          "SubagentStop",
+          "Stop",
+          "UserPromptSubmit",
+          "SubagentStop"
+        ]
+      }
+    },
+    "status": "accepted",
+    "questionToolRequestObserved": true
+  },
+  "claudeBackground": {
+    "provider": "claude",
+    "version": "2.1.289",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "cases": {
+      "firstPrompt": {
+        "case": "first_prompt",
+        "at": 1791244537798,
+        "status": "idle",
+        "statusUpdatedAt": 1791244525909,
+        "waitingFor": null,
+        "jobState": "working",
+        "tempo": "blocked",
+        "inFlight": {
+          "tasks": null,
+          "queued": null,
+          "drainableMonitors": null
+        },
+        "terminalAt": null,
+        "firstTerminalAt": null,
+        "needsPresent": true
+      },
+      "working": {
+        "case": "working",
+        "at": 1791244538099,
+        "status": "busy",
+        "statusUpdatedAt": 1791244537838,
+        "waitingFor": null,
+        "jobState": "working",
+        "tempo": "active",
+        "inFlight": {
+          "tasks": 0,
+          "queued": 0,
+          "drainableMonitors": 0
+        },
+        "terminalAt": null,
+        "firstTerminalAt": null,
+        "needsPresent": false
+      },
+      "completed": {
+        "case": "completed",
+        "at": 1791244557965,
+        "status": "idle",
+        "statusUpdatedAt": 1791244557730,
+        "waitingFor": null,
+        "jobState": "done",
+        "tempo": "idle",
+        "inFlight": {
+          "tasks": 0,
+          "queued": 0,
+          "drainableMonitors": 0
+        },
+        "terminalAt": "2026-10-05T23:55:57.697Z",
+        "firstTerminalAt": "2026-10-05T23:55:57.697Z",
+        "needsPresent": false
+      },
+      "childInFlight": {
+        "case": "childInFlight",
+        "at": 1791244561882,
+        "status": "busy",
+        "statusUpdatedAt": 1791244557993,
+        "waitingFor": null,
+        "jobState": "working",
+        "tempo": "active",
+        "inFlight": {
+          "tasks": 1,
+          "queued": 0,
+          "drainableMonitors": 0
+        },
+        "terminalAt": null,
+        "firstTerminalAt": "2026-10-05T23:55:57.697Z",
+        "needsPresent": false
+      },
+      "heldQuestion": {
+        "case": "heldQuestion",
+        "at": 1791244629311,
+        "status": "waiting",
+        "statusUpdatedAt": 1791244629292,
+        "waitingFor": "input needed",
+        "jobState": "done",
+        "tempo": "active",
+        "inFlight": {
+          "tasks": 0,
+          "queued": 0,
+          "drainableMonitors": 0
+        },
+        "terminalAt": null,
+        "firstTerminalAt": "2026-10-05T23:55:57.697Z",
+        "needsPresent": false
+      }
+    },
+    "terminalOutputPersisted": false,
+    "id": "21aca992-1ec6-49dc-b8b0-bd478fade844",
+    "status": "accepted",
+    "stateShapes": [
+      {
+        "shape": [
+          "idle",
+          "working",
+          "blocked",
+          null,
+          null
+        ],
+        "samples": 1
+      },
+      {
+        "shape": [
+          "busy",
+          "working",
+          "active",
+          0,
+          0
+        ],
+        "samples": 66
+      },
+      {
+        "shape": [
+          "idle",
+          "done",
+          "idle",
+          0,
+          0
+        ],
+        "samples": 1
+      },
+      {
+        "shape": [
+          "busy",
+          "done",
+          "active",
+          0,
+          0
+        ],
+        "samples": 19
+      },
+      {
+        "shape": [
+          "busy",
+          "working",
+          "active",
+          1,
+          0
+        ],
+        "samples": 25
+      },
+      {
+        "shape": [
+          "busy",
+          "working",
+          "active",
+          2,
+          0
+        ],
+        "samples": 11
+      },
+      {
+        "shape": [
+          "busy",
+          "working",
+          "active",
+          1,
+          1
+        ],
+        "samples": 10
+      },
+      {
+        "shape": [
+          "busy",
+          "done",
+          "active",
+          1,
+          1
+        ],
+        "samples": 7
+      },
+      {
+        "shape": [
+          "shell",
+          "done",
+          "idle",
+          1,
+          1
+        ],
+        "samples": 47
+      },
+      {
+        "shape": [
+          "busy",
+          "done",
+          "idle",
+          1,
+          1
+        ],
+        "samples": 8
+      },
+      {
+        "shape": [
+          "busy",
+          "done",
+          "active",
+          0,
+          1
+        ],
+        "samples": 11
+      },
+      {
+        "shape": [
+          "idle",
+          "done",
+          "idle",
+          0,
+          1
+        ],
+        "samples": 44
+      },
+      {
+        "shape": [
+          "waiting",
+          "done",
+          "active",
+          0,
+          0
+        ],
+        "samples": 1
+      }
+    ],
+    "idleWithPendingSamples": 44
+  },
+  "claudeForegroundChild": {
+    "id": "99a66b77-858a-4e71-a437-30ee2405f282",
+    "provider": "claude",
+    "version": "2.1.289",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "terminalOutputPersisted": false,
+    "status": "accepted",
+    "heldBackgroundAtRootStop": true,
+    "idleWithBackgroundEvidence": 0,
+    "sampleCount": 216
+  },
+  "codexOutcomes": {
+    "provider": "codex",
+    "runtimeVersion": "0.160.1",
+    "runtimeSha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "cases": {
+      "inProgress": {
+        "id": "01a10e7b-205a-74a3-97b9-77747102cc2c",
+        "phase": "active",
+        "turnId": "01a10e7b-3e81-7821-a618-39fc239e15c1",
+        "status": "inProgress",
+        "startedAt": 1791244320,
+        "completedAt": null,
+        "itemsView": "notLoaded",
+        "errorPresent": false
+      },
+      "completed": {
+        "id": "01a10e7b-205a-74a3-97b9-77747102cc2c",
+        "phase": "idle",
+        "turnId": "01a10e7b-3e81-7821-a618-39fc239e15c1",
+        "status": "completed",
+        "startedAt": 1791244320,
+        "completedAt": 1791244337,
+        "itemsView": "notLoaded",
+        "errorPresent": false
+      },
+      "newTurn": {
+        "id": "01a10e7b-205a-74a3-97b9-77747102cc2c",
+        "phase": "active",
+        "turnId": "01a10e7b-8258-7ff0-876c-163f688f3b6b",
+        "status": "inProgress",
+        "startedAt": 1791244337,
+        "completedAt": null,
+        "itemsView": "notLoaded",
+        "errorPresent": false
+      },
+      "interrupted": {
+        "id": "01a10e7b-205a-74a3-97b9-77747102cc2c",
+        "phase": "idle",
+        "turnId": "01a10e7b-8258-7ff0-876c-163f688f3b6b",
+        "status": "interrupted",
+        "startedAt": 1791244337,
+        "completedAt": 1791244342,
+        "itemsView": "notLoaded",
+        "errorPresent": false
+      }
+    },
+    "terminalOutputPersisted": false,
+    "status": "accepted"
+  },
+  "codexFailureReadOnly": {
+    "provider": "codex",
+    "hostScope": "snap",
+    "runtimeVersion": "0.160.1",
+    "ordinaryReadOnly": true,
+    "rows": [
+      {
+        "id": "01a10e1c-6ffd-7b51-b5ac-9e960142315b",
+        "nativeRuntimeState": "systemError",
+        "turnId": "01a10e1c-704c-7142-bb83-9dbd75e8c66d",
+        "status": "failed",
+        "startedAt": 1791238107,
+        "completedAt": 1791238616,
+        "itemsView": "notLoaded",
+        "errorPresent": true
+      }
+    ]
+  },
+  "historyCensus": [
+    {
+      "counts": {
+        "candidate_files": 33,
+        "candidate_ids": 31,
+        "display_omitted_ids": 0,
+        "displayed_ids": 30,
+        "duplicate_ids": 2,
+        "malformed_filename_ids": 0,
+        "projected_ids": 30,
+        "projects": 11,
+        "resolved_companion_ids": 2,
+        "sdk_omitted_ids": 1,
+        "sdk_returned_ids": 30,
+        "total_bytes": 730511482,
+        "unresolved_ids": 0
+      },
+      "coverage": {
+        "complete": false,
+        "reason": "metadata_scan"
+      },
+      "errors": [],
+      "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+      "provider": "claude",
+      "sampledAt": 1791244540894
+    }
+  ]
+}

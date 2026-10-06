@@ -20,7 +20,7 @@ import unicodedata
 import uuid
 from pathlib import Path
 
-from .activity import codex_activity, ordering, unavailable
+from .activity import codex_activity, codex_outcome, ordering, unavailable
 from .codex_endpoint import (
     EndpointError,
     inspect_managed_endpoint,
@@ -308,10 +308,15 @@ def collect_codex(
             for identifier, row in rows.items():
                 try:
                     client.timeout = remaining()
+                    turn_metadata = client.latest_turn(identifier) if result["activitySupported"] else None
                     row["activity"] = codex_activity(
-                        client.latest_turn(identifier),
+                        turn_metadata,
                         completion_only=profile is not None and "completion_only_activity" in profile.capabilities,
                     ) if result["activitySupported"] else unavailable("activity_source_unproved", "unsupported")
+                    if profile is not None and "managed_outcome" in profile.capabilities:
+                        row["outcome"] = codex_outcome(
+                            turn_metadata, completion_only="completion_only_activity" in profile.capabilities,
+                        )
                 except (TransportError, SnapshotError) as error:
                     row["activity"] = unavailable(str(error))
             selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[

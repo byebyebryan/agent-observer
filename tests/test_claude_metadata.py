@@ -17,6 +17,28 @@ from agent_observer.claude_metadata import (
 
 
 class ClaudeMetadataTest(unittest.TestCase):
+    def test_current_registry_phase_overrides_old_turn_but_not_pending_idle(self):
+        sid = "01234567-0123-4567-89ab-0123456789ab"
+        row = self.write_session(pid=123, session_id=sid, status="busy", kind="bg", job_id="abcdef12")
+        job = self.write_job(job_id="abcdef12", session_id=sid, state="done", tempo="idle",
+                       lastTerminalAt="2026-10-02T00:00:00.000Z",
+                       inFlight={"tasks": 0, "queued": 0, "drainableMonitors": 0}, block={"questions": [{}]})
+        with (patch("agent_observer.claude_metadata._phase_capabilities", return_value=["registry_phase", "input_wait", "job_question"]),
+              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
+            self.assertEqual(self.read()["observations"][0]["work"]["value"], "working")
+            row.update(status="waiting", waitingFor="input needed")
+            self.write_json(self.root / "sessions/123.json", row)
+            item = self.read()["observations"][0]
+            self.assertEqual(item["work"]["value"], "needs_input")
+            self.assertEqual(item["waitReason"], "question")
+            row.update(status="idle", waitingFor=None)
+            self.write_json(self.root / "sessions/123.json", row)
+            self.assertEqual(self.read()["observations"][0]["work"]["value"], "settled")
+            for changes in ({"queued": 1}, {"tasks": 1}, {"drainableMonitors": 1}, {"tasks": True}):
+                job["inFlight"] = {"tasks": 0, "queued": 0, "drainableMonitors": 0, **changes}
+                self.write_json(self.root / "jobs/abcdef12/state.json", job)
+                self.assertEqual(self.read()["observations"][0]["work"]["value"], "unknown")
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)

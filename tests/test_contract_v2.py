@@ -29,6 +29,47 @@ def fixture(name="snapshot"):
 
 
 class ContractV2Test(unittest.TestCase):
+    def test_claude_question_requires_the_verified_current_image_predicate(self):
+        value = fixture("claude-ready")
+        original = value["sessions"][-1]
+        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+                  "title": original["title"], "waitReason": "question",
+                  "work": {"value": "needs_input", "observedAt": 123,
+                           "source": "claude_registry", "health": "current", "reason": "native_snapshot"}}
+        source = value["sources"][-1]
+        self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
+        native["phaseCapabilities"] = ["input_wait", "job_question"]
+        row = project_session(native, source)
+        self.assertEqual(row["phase"]["value"], "blocked")
+        self.assertEqual(row["blockedReason"], "question")
+        native["waitReason"] = "user_input"
+        generic = project_session(native, source)
+        self.assertEqual(generic["phase"]["value"], "blocked")
+        self.assertEqual(generic["blockedReason"], "unknown")
+        native.update(sessionKind="interactive", phaseCapabilities=["interactive_readiness"],
+                      presence={"value": "present", "observedAt": 123, "source": "claude_registry",
+                                "health": "current", "reason": "native_snapshot"})
+        native["nativeIds"] = {**native["nativeIds"], "jobId": None}
+        native["work"]["value"] = "settled"
+        self.assertEqual(project_session(native, source)["phase"]["value"], "waiting")
+        native["phaseCapabilities"] = []
+        self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
+
+    def test_codex_outcome_does_not_settle_a_failed_runtime(self):
+        value = fixture()
+        original = value["sessions"][0]
+        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+                  "title": original["title"], "nativeState": {"type": "systemError"},
+                  "outcome": {"value": "failed", "observedAt": 120000,
+                              "source": "codex_turn_metadata", "health": "current",
+                              "reason": "latest_terminal_turn"}}
+        row = project_session(native, value["sources"][0])
+        self.assertEqual(row["phase"]["value"], "unknown")
+        self.assertEqual(row["phase"]["reason"], "native_runtime_error")
+        self.assertEqual(row["outcome"]["value"], "failed")
+        self.assertEqual(row["outcome"]["clock"], "native")
+        self.assertEqual(row["outcome"]["observedAt"], 120000)
+
     def test_failed_saved_dimension_does_not_become_partial_from_healthy_runtime(self):
         self.assertEqual(
             _coverage({"complete": False, "reason": "source_failed"}, "current")["status"],
