@@ -1,7 +1,7 @@
 # Monitoring execution checkpoint
 
-Date: 2026-10-05. Status: in progress; source and native acceptance remain
-separate. This regular goal loop follows the
+Date: 2026-10-05. Status: complete within the accepted a10 candidate subset;
+source and native acceptance are recorded separately. This regular goal loop follows the
 [CLI/native validation workflow](observation-validation-workflow.md) after the
 [evaluation repair](evaluation-repair-execution.md).
 
@@ -44,4 +44,8 @@ entrypoints or install hooks. Ordinary sessions remain available throughout.
 - M0: exact preflight and private namespace preparation accepted.
 - M1: native predicate proof and source changes accepted within the
   [monitoring report](evidence/2026-10-05-monitoring/REPORT.md)'s exact-image bounds.
-- M2: frozen package, independent CLI/native acceptance and review pending.
+- M2: final immutable a10 package, outside-checkout CLI/native comparison on both
+  hosts, unchanged strict v2/frozen-reader compatibility, isolated native entry
+  and recovery, cleanup and review accepted. See the
+  [package evidence](evidence/2026-10-05-monitoring/package-acceptance.json).
+  Candidate installation leaves selected a9 and frontend sources unchanged.

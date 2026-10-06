@@ -13,6 +13,15 @@ simplified.
 
 ## Status
 
+The [monitoring checkpoint](docs/evidence/2026-10-05-monitoring/REPORT.md)
+independently accepts the `0.2.0a10` candidate on Snap and Starship. It adds
+exact-image Codex question waits and explicit turn outcomes, proved current
+Claude readiness and background question predicates, and an optional bounded
+Claude history census. Installed CLI/native comparisons, isolated New/Resume,
+held input, recovery and the frozen consumer reader pass within the recorded
+artifact bounds. The candidate is installed separately; ordinary entrypoints
+remain on `0.2.0a9`. Frontend work and production selection have separate gates.
+
 The [evaluation repair pass](docs/evidence/2026-10-05-evaluation-repair/REPORT.md)
 independently accepted `agent-observer 0.2.0a9`, now selected on Snap and Starship.
 It supports the exact current Codex `0.160.1` managed image separately from the
@@ -29,9 +38,9 @@ No provider configuration change or session restart is required by this update.
 The preceding [CLI/native evaluation](docs/evidence/2026-10-05-cli-native-evaluation/REPORT.md)
 found nine producer gaps. The [repair execution](docs/evaluation-repair-execution.md)
 records a fix or bounded unsupported outcome for each before compatible selection.
-Blank Claude background/native blocked-job semantics, ephemeral helper ancestry,
-foreground readiness, questions and older Codex TUI binding remain explicit
-limits. Recorded cwd and project/worktree context are preserved with provenance.
+Blank Claude background contexts, untyped blocked jobs, ephemeral helper ancestry,
+foreground questions, older worker predicates and older Codex TUI binding remain
+explicit limits. Recorded cwd and project/worktree context are preserved with provenance.
 Further frontend acceptance remains a separate development checkpoint.
 
 The initial regular contract/client execution loop independently accepted
