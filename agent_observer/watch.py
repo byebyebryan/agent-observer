@@ -43,6 +43,7 @@ def _retain_missing(previous, current):
         if all(entry["status"] == "complete" for entry in source["coverage"].values()):
             continue
         retained = copy.deepcopy(old)
+        retained["blockedReason"] = "unknown"
         for name in ("phase", "runtime", "worker", "attachment", "outcome"):
             evidence = retained[name]
             if evidence["value"] != "unknown":

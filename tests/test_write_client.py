@@ -305,6 +305,17 @@ class WriteClientTest(unittest.TestCase):
                     with self.assertRaisesRegex(ContractError, "unsupported_resume_route"):
                         prepare(request)
 
+    def test_prepared_attach_rejects_a_replaced_native_job_before_entry(self):
+        request = self.request("claude", "resume")
+        snapshot = self.snapshot(request)
+        collect, select = self.targeted(request, snapshot)
+        with collect, select:
+            plan = prepare(request)
+            snapshot["sessions"][0]["nativeIds"]["jobId"] = "bbbb1234"
+            snapshot["sessions"][0]["job"]["id"] = "bbbb1234"
+            with self.assertRaisesRegex(ContractError, "handoff_context_changed"):
+                revalidate(plan)
+
     def test_partial_health_never_overrides_target_identity_or_stale_evidence(self):
         request = self.request("claude", "resume")
         for mutate in (

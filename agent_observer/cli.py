@@ -100,6 +100,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("api", help="describe the versioned public interface")
     schemas = commands.add_parser("schema", help="emit a bundled public JSON schema")
     schemas.add_argument("--kind", choices=("snapshot", "watch"), required=True)
     for command in ("snapshot", "list", "show", "doctor", "watch"):
@@ -123,6 +124,10 @@ def main(argv=None):
             command_parser.add_argument("--count", type=int, help="stop after this many samples")
     args = parser.parse_args(argv)
     try:
+        if args.command == "api":
+            from .public import interface
+            print(canonical(interface()))
+            return 0
         if args.command == "schema":
             print(canonical(schema_document(args.kind)))
             return 0

@@ -315,6 +315,20 @@ def validate_snapshot(value):
             or ".." in PurePosixPath(source["configHome"]).parts
         ):
             raise ContractError("invalid_config_path")
+        if source["coverage"]["runtime"]["scope"] != (
+            "loaded_threads" if source["provider"] == "codex" else "registered_workers"
+        ):
+            raise ContractError("runtime_scope_conflict")
+        runtime_info = source["runtime"]
+        if runtime_info is not None and runtime_info["topology"] != (
+            "native_managed_endpoint" if source["provider"] == "codex"
+            else "private_session_registry_and_job_store"
+        ):
+            raise ContractError("runtime_topology_conflict")
+        for capability in ("phase", "blockedReasons", "runtime"):
+            values = source["capabilities"][capability]
+            if len(values) != len(set(values)):
+                raise ContractError("duplicate_capability")
     seen = set()
     for row in value["sessions"]:
         identity = row["identity"]
@@ -371,6 +385,14 @@ def validate_snapshot(value):
             raise ContractError("parked_phase_conflict")
         if row["phase"]["value"] == "blocked" and row["blockedReason"] == "unknown":
             raise ContractError("missing_blocked_reason")
+        if row["phase"]["value"] != "blocked" and row["blockedReason"] != "unknown":
+            raise ContractError("unexpected_blocked_reason")
+        if row["job"] is not None and row["job"]["id"] != ids["jobId"]:
+            raise ContractError("job_identity_conflict")
+        if identity["provider"] == "codex" and (
+            row["job"] is not None or row["history"] is not None or row["sessionKind"] != "unknown"
+        ):
+            raise ContractError("provider_metadata_conflict")
     if value["collectedAt"] is None:
         raise ContractError("missing_collection_time")
     if len(canonical(value).encode()) > MAX_SNAPSHOT_BYTES:

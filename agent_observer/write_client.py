@@ -143,7 +143,8 @@ def prepare(request):
     else:
         row, source = _target(request)
         runtime_token = hashlib.sha256(
-            canonical([source["runtimeNamespace"], source["runtime"]]).encode()
+            canonical([source["runtimeNamespace"], source["runtime"],
+                       row["nativeIds"], row["sessionKind"], row["inventory"]]).encode()
         ).hexdigest()
         if provider == "codex":
             route = "codex_resume"
