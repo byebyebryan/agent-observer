@@ -100,6 +100,14 @@ After verified creation, handoff-preparation failure keeps the confirmed effect
 and resulting identity while reporting handoff_unavailable. Consumers must
 preserve that work and avoid repeating New/Resume creation.
 
+Public result validation binds operation, effect, identity-pending status and
+handoff semantics. A prepared handoff targets its exact requested identity; a
+ready Claude attach targets the exact resulting identity. Claude copied history
+can change the native UUID within the same host/provider/store scope. A confirmed
+effect with no usable handoff retains its resulting identity; an uncertain effect
+cannot claim a confirmed resulting identity or a safe handoff. Shape validation
+alone is insufficient: consumers must apply these semantic checks too.
+
 Launcher cleanup stops only the exact owned launcher. It never kills the
 process group containing provider-managed descendants. A controlled descendant
 test covers that ownership distinction; native lifetime proof remains separate.

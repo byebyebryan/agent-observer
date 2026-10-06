@@ -46,5 +46,9 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
 ## Progress
 
 - S0: clean Observer baseline `7b69894`; no implementation accepted yet.
-- S1-S6: pending. Update this record at reviewed checkpoints with concrete
+- S1: write-result cross-object identity, operation/effect/pending and route
+  invariants repaired; copied Claude identities and confirmed-effect/no-viewer
+  cases remain valid. Source check passes 214 tests. Watch repairs remain pending;
+  no new packaged/native acceptance is claimed by this validator-only change.
+- S2-S6: pending. Update this record at reviewed checkpoints with concrete
   source, packaged and native results and any remaining capabilities.
