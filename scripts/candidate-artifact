@@ -27,7 +27,10 @@ def document(path):
         or not re.fullmatch(r"[0-9a-f]{64}", value.get("wheelSha256", ""))
         or not re.fullmatch(r"[0-9a-f]{40}", value.get("sourceRevision", ""))
         or value.get("entrypoints") != ["agent-observer", "agent-observer-write"]
-        or value.get("schemas") != {"snapshot": 2, "watch": 2, "write": 1}
+        or value.get("schemas") not in (
+            {"snapshot": 2, "watch": 2, "write": 1},
+            {"snapshot": 3, "watch": 3, "write": 1},
+        )
     ):
         raise ValueError("manifest_invalid")
     return value

@@ -1,4 +1,4 @@
-"""Host-local collection into the public v2 model; actions are separate."""
+"""Host-local collection into the public observation model; actions are separate."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import uuid
 from pathlib import Path
 
 from .activity import unavailable
-from .contract import SOURCE, identity_key, store_namespace, validate_shape, validate_snapshot
+from .contract import SCHEMA_VERSION, SOURCE, identity_key, store_namespace, validate_shape, validate_snapshot
 
 
 def unknown(reason="unobserved", health="unavailable"):
@@ -282,9 +282,9 @@ def project_session(native, source):
     }
 
 
-def compose_v2(*, host_scope, provider_snapshots):
+def compose_snapshot(*, host_scope, provider_snapshots):
     result = {
-        "schemaVersion": 2,
+        "schemaVersion": SCHEMA_VERSION,
         "collectionId": str(uuid.uuid4()),
         "collectedAt": time.time_ns() // 1_000_000,
         "host": {
@@ -365,7 +365,7 @@ def collect(*, host_scope, providers, codex_home, claude_home, workspace_config=
         else collect_claude(Path(claude_home), host_scope=host_scope)
         for p in providers
     ]
-    result = compose_v2(host_scope=host_scope, provider_snapshots=snapshots)
+    result = compose_snapshot(host_scope=host_scope, provider_snapshots=snapshots)
     from .workspace import enrich
 
     enrich(result, workspace_config or {"roots": [], "projects": []})

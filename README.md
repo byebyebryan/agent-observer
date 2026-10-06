@@ -13,6 +13,12 @@ simplified.
 
 ## Status
 
+The [first stable API execution](docs/stable-api-execution.md) is active. Source
+candidate `0.3.0a1` introduces the explicit
+[observation wire v3](docs/public-contract-v3.md) prerelease cutover for stale age
+and diagnostic-version representation, with bounded watch reconciliation.
+Installed entrypoints remain on a11 until independent packaged/native acceptance.
+
 The [provider compatibility plan](docs/provider-contract-compatibility-plan.md)
 sets the support boundary to required protocol, metadata and CLI contracts.
 Daily Codex/Claude release changes should preserve working capabilities when

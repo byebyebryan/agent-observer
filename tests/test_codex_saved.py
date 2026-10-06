@@ -11,7 +11,7 @@ from unittest.mock import patch
 from agent_observer import codex_saved
 from agent_observer.codex_endpoint import EndpointError
 from agent_observer.codex_snapshot import collect_codex
-from agent_observer.collection import compose_v2
+from agent_observer.collection import compose_snapshot
 
 THREAD = "11111111-1111-4111-8111-111111111111"
 SESSION = "22222222-2222-4222-8222-222222222222"
@@ -101,7 +101,7 @@ class SavedStoreTest(unittest.TestCase):
         with patch("agent_observer.codex_snapshot.inspect_managed_endpoint", side_effect=EndpointError("endpoint_unavailable")), patch("agent_observer.codex_snapshot.PassiveClient.connect") as connect:
             native = collect_codex(self.home, host_scope="fixture")
         connect.assert_not_called()
-        snapshot = compose_v2(host_scope="fixture", provider_snapshots=[native])
+        snapshot = compose_snapshot(host_scope="fixture", provider_snapshots=[native])
         self.assertEqual(snapshot["sourceHealth"], "partial")
         self.assertEqual(snapshot["sources"][0]["coverage"]["saved"]["status"], "partial")
         self.assertEqual(snapshot["sources"][0]["coverage"]["runtime"]["status"], "unavailable")

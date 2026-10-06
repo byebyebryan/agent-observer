@@ -6,7 +6,11 @@ import copy
 import time
 import uuid
 
-from .contract import canonical, identity_key, validate_snapshot, validate_watch
+from .contract import (
+    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, SCHEMA_VERSION, canonical, identity_key,
+    validate_snapshot, validate_watch,
+)
+from .read_client import listing
 
 MIN_INTERVAL = 1.0
 
@@ -28,6 +32,8 @@ def _retain_missing(previous, current):
     """A partial/capped roster cannot remove prior rows or prove parked."""
     present = {identity_key(row["identity"]) for row in current["sessions"]}
     sources = {(source["provider"], source["namespace"]): source for source in current["sources"]}
+    used_bytes = len(canonical(current).encode())
+    evicted = False
     for old in previous["sessions"]:
         if identity_key(old["identity"]) in present:
             continue
@@ -43,11 +49,25 @@ def _retain_missing(previous, current):
                 evidence["lastKnownValue"] = evidence["value"]
             evidence.update(value="unknown", health="stale", reason="observation_gap")
         if retained["activity"]["at"] is not None:
-            retained["activity"].update(at=None, health="stale", reason="observation_gap")
-        retained["metadataIssues"] = list(
-            dict.fromkeys(retained["metadataIssues"] + ["retained_after_gap"])
-        )
+            retained["activity"].update(
+                lastKnownAt=retained["activity"]["at"], at=None,
+                health="stale", reason="observation_gap",
+            )
+        retained["metadataIssues"] = [
+            issue for issue in retained["metadataIssues"] if issue != "retained_after_gap"
+        ][:127] + ["retained_after_gap"]
+        row_bytes = len(canonical(retained).encode()) + 1
+        if (
+            len(current["sessions"]) >= MAX_SESSIONS
+            or used_bytes + row_bytes > MAX_SNAPSHOT_BYTES - 512
+        ):
+            evicted = True
+            continue
         current["sessions"].append(retained)
+        used_bytes += row_bytes
+    if evicted:
+        current["errors"] = [code for code in current["errors"] if code != "retention_limit"][:127] + ["retention_limit"]
+    return evicted
 
 
 class SampledWatch:
@@ -62,7 +82,7 @@ class SampledWatch:
         self.revision += 1
         return validate_watch(
             {
-                "schemaVersion": 2,
+                "schemaVersion": SCHEMA_VERSION,
                 "streamId": self.stream_id,
                 "revision": self.revision,
                 "kind": kind,
@@ -76,14 +96,18 @@ class SampledWatch:
         self.gapped = True
         return self.frame("gap", reason)
 
-    def sample(self, snapshot):
+    def sample(self, snapshot, *, include_children=True, providers=None, order="activity"):
         value = copy.deepcopy(validate_snapshot(snapshot))
+        evicted = False
         if self.previous:
-            _retain_missing(self.previous, value)
+            evicted = _retain_missing(self.previous, value)
         validate_snapshot(value)
-        signature = _semantic(value)
+        projected = listing(value, include_children=include_children, providers=providers, order=order)
+        signature = _semantic(projected)
         frames = []
-        if (
+        if evicted:
+            frames.append(self.gap("retention_limit"))
+        elif (
             self.previous
             and self.previous["sourceHealth"] == "current"
             and value["sourceHealth"] != "current"
@@ -101,7 +125,7 @@ class SampledWatch:
             self.frame(
                 kind,
                 "sampled_snapshot" if kind != "heartbeat" else "unchanged",
-                value if kind != "heartbeat" else None,
+                projected if kind != "heartbeat" else None,
             )
         )
         self.previous, self.signature, self.gapped = value, signature, False

@@ -4,9 +4,14 @@ from __future__ import annotations
 
 import copy
 
-from .contract import ContractError, identity_key, validate_snapshot
+from .contract import SCHEMA_VERSION, ContractError, identity_key, validate_snapshot
 
 _ATTENTION = {"blocked": 0, "waiting": 1, "working": 2, "unknown": 3}
+
+
+def _activity_time(row):
+    evidence = row["activity"]
+    return evidence["at"] if evidence["health"] == "current" else evidence.get("lastKnownAt")
 
 
 def ordered_rows(snapshot, *, include_children=False, providers=None, order="activity"):
@@ -21,7 +26,7 @@ def ordered_rows(snapshot, *, include_children=False, providers=None, order="act
     ]
 
     def key(row):
-        clock = row["activity"]["at"] if order == "activity" else row["createdAt"]
+        clock = _activity_time(row) if order == "activity" else row["createdAt"]
         return (
             _ATTENTION[row["phase"]["value"]],
             clock is None,
@@ -53,7 +58,7 @@ def listing(snapshot, **options):
 def diagnostic(snapshot):
     validate_snapshot(snapshot)
     return {
-        "schemaVersion": 2,
+        "schemaVersion": SCHEMA_VERSION,
         "host": snapshot["host"],
         "sourceHealth": snapshot["sourceHealth"],
         "sources": copy.deepcopy(snapshot["sources"]),
@@ -66,7 +71,7 @@ def human_rows(snapshot, **options):
     lines = ["HOST  PROVIDER  PHASE  RUNTIME  AGE  ID  TITLE"]
     for row in ordered_rows(snapshot, **options):
         identity = row["identity"]
-        at = row["activity"]["at"]
+        at = _activity_time(row)
         if at is None:
             activity = "unknown"
         elif at > snapshot["collectedAt"]:
@@ -78,6 +83,8 @@ def human_rows(snapshot, **options):
                 for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s"))
                 if seconds >= unit or unit == 1
             )
+        if at is not None and row["activity"]["health"] == "stale":
+            activity = "stale:" + activity
         lines.append(
             f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value']}  {row['runtime']['value']}  {activity}  {identity['nativeId']}  {row['title']}"
         )

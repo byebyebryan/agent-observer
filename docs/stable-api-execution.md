@@ -50,5 +50,12 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   invariants repaired; copied Claude identities and confirmed-effect/no-viewer
   cases remain valid. Source check passes 214 tests. Watch repairs remain pending;
   no new packaged/native acceptance is claimed by this validator-only change.
+- S1 source candidate additionally uses observation wire v3 (`0.3.0a1`): stale
+  age provenance, reconcile-before-filter, row/byte/node alignment and bounded
+  retention/gap recovery. SDK diagnostic text no longer has a release enum.
+  The [v3 contract](public-contract-v3.md) records the explicit consumer cutover.
+  Full source check passes 220 tests, including 4,096-row snapshot/watch round
+  trips, repeated maximum-row churn and serialized-byte eviction. Candidate
+  packaging/selection remains pending.
 - S2-S6: pending. Update this record at reviewed checkpoints with concrete
   source, packaged and native results and any remaining capabilities.
