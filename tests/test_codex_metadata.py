@@ -272,11 +272,16 @@ class CodexMetadataTest(unittest.TestCase):
         self.assertIn("sessionId", value["nativeIds"])
 
     def test_version_schema_and_native_id_mismatch_fail_with_bounded_codes(self):
-        with self.assertRaisesRegex(MetadataError, "^unsupported_runtime_version$"):
-            saved_thread_metadata(self.row, **{**self.scope, "runtime_version": "0.161.0"})
+        compatible = saved_thread_metadata(self.row, **{**self.scope, "runtime_version": "0.999.0"})
+        self.assertEqual(compatible["nativeIds"]["threadId"], self.row["id"])
+        with self.assertRaisesRegex(MetadataError, "^invalid_runtime_version_metadata$"):
+            saved_thread_metadata(self.row, **{**self.scope, "runtime_version": "invalid\n"})
         for status in ("idle", {"type": []}, {"type": "synthetic_private_state"}):
-            with self.assertRaisesRegex(MetadataError, "^unsupported_status_schema$"):
-                live_thread_metadata({**self.row, "status": status}, **self.scope, observed_at=100)
+            value = live_thread_metadata({**self.row, "status": status}, **self.scope, observed_at=100)
+            self.assertEqual(value["nativeIds"]["threadId"], self.row["id"])
+            self.assertEqual(value["work"]["value"], "unknown")
+            self.assertEqual(value["presence"]["value"], "unknown")
+            self.assertIn("unsupported_status_schema", value["metadataIssues"])
         with self.assertRaisesRegex(MetadataError, "^invalid_native_identity$"):
             saved_thread_metadata({**self.row, "sessionId": "ambiguous"}, **self.scope)
 

@@ -10,7 +10,7 @@ import uuid
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_observer.collection import _coverage, project_session
+from agent_observer.collection import _coverage, project_session, project_source
 from agent_observer.contract import (
     ContractError,
     canonical,
@@ -74,7 +74,7 @@ class ContractV3Test(unittest.TestCase):
         self.assertEqual(row["phase"]["value"], "blocked")
         self.assertEqual(row["blockedReason"], "question")
 
-    def test_claude_question_requires_the_verified_current_image_predicate(self):
+    def test_claude_question_requires_the_verified_worker_contract(self):
         value = fixture("claude-ready")
         original = value["sessions"][-1]
         native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
@@ -128,6 +128,16 @@ class ContractV3Test(unittest.TestCase):
             _coverage({"complete": False, "reason": "metadata_scan"}, "unavailable")["status"],
             "partial",
         )
+
+    def test_unavailable_claude_runtime_does_not_advertise_phase_or_running(self):
+        source = project_source({
+            "provider": "claude", "host": {"uid": os.geteuid()},
+            "configHome": "/tmp/fixture", "sessions": [], "runtime": None,
+            "sourceHealth": "unavailable", "coverage": {"sessionRegistry": "unavailable"},
+        })
+        self.assertEqual(source["capabilities"]["phase"], [])
+        self.assertEqual(source["capabilities"]["runtime"], [])
+        self.assertEqual(source["capabilities"]["blockedReasons"], [])
 
     def test_bundled_schemas_match_public_spec(self):
         root = Path(__file__).parent.parent / "agent_observer/contracts"

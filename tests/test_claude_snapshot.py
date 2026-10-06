@@ -93,13 +93,14 @@ class ClaudeCollectionTest(unittest.TestCase):
             ],
         }
 
-    def test_unknown_artifact_prevents_private_metadata_reads(self):
-        with patch("agent_observer.claude_snapshot.snapshot") as source:
+    def test_unregistered_image_preserves_independently_verified_metadata(self):
+        with patch("agent_observer.claude_snapshot.snapshot", return_value=self.native()) as source:
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
-        source.assert_not_called()
-        self.assertEqual(value["errors"], [{"code": "runtime_artifact_not_accepted"}])
-        self.assertEqual(value["sessions"], [])
-        self.assertEqual(value["sourceHealth"], "unavailable")
+        source.assert_called_once()
+        self.assertEqual(value["runtime"]["version"], "unknown")
+        self.assertEqual(value["errors"], [])
+        self.assertEqual(value["sessions"][0]["work"]["value"], "working")
+        self.assertEqual(value["sourceHealth"], "current")
 
     def test_runtime_failure_keeps_fresh_saved_history_independent(self):
         from agent_observer.collection import project_source
@@ -119,16 +120,19 @@ class ClaudeCollectionTest(unittest.TestCase):
                 },
             }
         ]
-        with patch("agent_observer.claude_snapshot.snapshot") as native:
+        unavailable = {"supported": False, "observations": [], "limitations": [],
+                       "coverage": {"sessionRegistry": "unavailable", "jobStore": "unavailable"},
+                       "errors": [{"code": "session_registry_unavailable"}]}
+        with patch("agent_observer.claude_snapshot.snapshot", return_value=unavailable) as native:
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
-        native.assert_not_called()
+        native.assert_called_once()
         self.assertEqual(value["sourceHealth"], "partial")
         self.assertEqual(value["sessions"][0]["activity"]["at"], 150)
         self.assertEqual(value["sessions"][0]["presence"]["value"], "unknown")
         source = project_source(value)
         self.assertEqual(source["coverage"]["saved"]["status"], "partial")
         self.assertEqual(source["coverage"]["runtime"]["status"], "unavailable")
-        self.assertIn("runtime_artifact_not_accepted", source["errors"])
+        self.assertIn("session_registry_unavailable", source["errors"])
 
     def test_default_configuration_is_distinct_from_explicit_same_directory(self):
         config = self.root / ".claude"
@@ -151,10 +155,10 @@ class ClaudeCollectionTest(unittest.TestCase):
     def test_symlink_and_writable_artifacts_are_rejected(self):
         link = self.root / "link"
         link.symlink_to(self.binary)
-        with self.assertRaisesRegex(CollectionError, "runtime_artifact_unavailable"):
+        with self.assertRaisesRegex(CollectionError, "runtime_image_ownership_mismatch"):
             _verify_artifact(link)
         self.binary.chmod(0o666)
-        with self.assertRaisesRegex(CollectionError, "runtime_artifact_not_accepted"):
+        with self.assertRaisesRegex(CollectionError, "runtime_image_ownership_mismatch"):
             _verify_artifact(self.binary)
 
     def test_configured_namespace_is_not_inferred_from_rows(self):
@@ -205,7 +209,7 @@ class ClaudeCollectionTest(unittest.TestCase):
         self.assertEqual(value["sessions"][0]["work"]["health"], "unsupported")
         self.assertFalse(value["coverage"]["clientBinding"]["supported"])
 
-    def test_artifact_replacement_invalidates_facts_without_renewing_clocks(self):
+    def test_installed_replacement_does_not_invalidate_worker_facts(self):
         expected = Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)
 
         def source(*_args, **_kwargs):
@@ -220,11 +224,11 @@ class ClaudeCollectionTest(unittest.TestCase):
             patch("agent_observer.claude_snapshot.snapshot", side_effect=source),
         ):
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
-        self.assertEqual(value["errors"], [{"code": "runtime_artifact_changed"}])
-        self.assertEqual(value["sourceHealth"], "stale")
+        self.assertEqual(value["errors"], [{"code": "installed_image_changed"}])
+        self.assertEqual(value["sourceHealth"], "partial")
+        self.assertIsNone(value["runtime"])
         work = value["sessions"][0]["work"]
-        self.assertEqual(work["value"], "unknown")
-        self.assertEqual(work["lastKnownValue"], "working")
+        self.assertEqual(work["value"], "working")
         self.assertEqual(work["observedAt"], 123)
 
     def test_saved_history_merges_only_by_uuid_and_keeps_native_clocks_and_identity(self):

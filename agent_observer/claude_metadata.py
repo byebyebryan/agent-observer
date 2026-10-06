@@ -20,7 +20,8 @@ from datetime import datetime
 from typing import Any
 
 from .bounded_json import WireError, decode_document
-from .native_artifacts import CLAUDE, inspect_process, registered, supported_versions
+from .native_artifacts import CLAUDE, inspect_process
+from .native_contracts import CLAUDE_READ, claude_registry_capabilities
 from .observation_model import (
     Evidence,
     NativeIdentity,
@@ -65,7 +66,7 @@ _MAX_JOB_FILE_BYTES = 8 * 1024 * 1024
 _MAX_JOB_TOTAL_BYTES = 24 * 1024 * 1024
 _MAX_DIRECTORY_ENTRIES = 4096
 _MAX_ERRORS = 128
-_MAX_TIME_MS = 4_000_000_000_000_000
+_MAX_TIME_MS = 4_000_000_000_000
 
 
 @dataclass(frozen=True)
@@ -175,15 +176,15 @@ def _linux_process_uses_supported_binary(pid: int, cache=None) -> tuple[bool | N
 
 
 def _phase_capabilities(record, presence, cache):
-    """New predicates are gated by the worker image, not the installed CLI."""
+    """Match required registry semantics after verifying the same worker birth."""
     if presence.effective_value != "present":
         return []
     try:
-        image = inspect_process(record["pid"], "claude", cache=cache)
+        inspect_process(record["pid"], "claude", cache=cache)
         start, state = _linux_proc_start_token(record["pid"])
         if state != "present" or start != record["procStart"]:
             return []
-        return sorted(image.artifact.capabilities - {"entry"})
+        return claude_registry_capabilities(record)
     except (OSError, ValueError):
         return []
 
@@ -743,7 +744,7 @@ def snapshot(
     host_scope: str,
     namespace: str,
     runtime_version: str,
-    binary_sha256: str,
+    binary_sha256: str | None,
 ) -> dict[str, Any]:
     """Read an allowlisted Claude metadata snapshot from an explicit config root.
 
@@ -752,7 +753,7 @@ def snapshot(
     """
     result: dict[str, Any] = {
         "source": "claude_private_metadata",
-        "schema": "private-2.1.287-and-2.1.289",
+        "schema": CLAUDE_READ.name,
         "supported": False,
         "runtime": {"version": "unknown", "sha256": "unknown"},
         "coverage": {
@@ -764,7 +765,7 @@ def snapshot(
         "errors": [],
         "observations": [],
         "limitations": [
-            "private_schema_version_gated",
+            "private_required_contract",
             "direct_metadata_reads_only",
             "attachment_not_observed",
             "hooks_and_current_client_not_observed",
@@ -772,15 +773,11 @@ def snapshot(
         ],
     }
     errors: list[dict[str, str]] = result["errors"]
-    if runtime_version not in supported_versions("claude"):
-        _error(errors, "unsupported_runtime_version")
+    if not isinstance(runtime_version, str) or not 0 < len(runtime_version) <= 64:
+        _error(errors, "invalid_runtime_version_metadata")
         return result
-    if not isinstance(binary_sha256, str) or not _SHA256.fullmatch(binary_sha256):
+    if binary_sha256 is not None and (not isinstance(binary_sha256, str) or not _SHA256.fullmatch(binary_sha256)):
         _error(errors, "invalid_runtime_digest")
-        return result
-    artifact = registered("claude", binary_sha256)
-    if artifact is None or artifact.version != runtime_version:
-        _error(errors, "unsupported_runtime_digest")
         return result
     if not sys.platform.startswith("linux"):
         _error(errors, "unsupported_platform")
@@ -1055,7 +1052,7 @@ def snapshot(
             )
         )
 
-    parked_supported = "parked_runtime" in artifact.capabilities
+    parked_supported = bool(jobs) and session_complete and job_complete and pid_domain is not None
     if parked_supported and session_complete and job_complete and pid_domain is not None:
         try:
             _parked_runtimes(root_path, directory_ids, registry_rows, jobs, observations,

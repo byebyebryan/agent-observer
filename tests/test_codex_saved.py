@@ -1,6 +1,5 @@
 """Current-store fallback identity/clock/passivity; no native provider calls."""
 
-import hashlib
 import json
 import sqlite3
 import tempfile
@@ -27,8 +26,7 @@ class SavedStoreTest(unittest.TestCase):
         self.rollout.write_text(json.dumps({"type": "session_meta", "payload": {
             "id": THREAD, "session_id": SESSION, "cwd": "/project", "base_instructions": "never export this",
         }}) + "\n")
-        self.fingerprint = hashlib.sha256(json.dumps([[1, "ff", 1]], separators=(",", ":")).encode()).hexdigest()
-        for name in codex_saved.MIGRATIONS:
+        for name in codex_saved.PROJECTIONS:
             with sqlite3.connect(self.home / name) as db:
                 db.execute("CREATE TABLE _sqlx_migrations(version INTEGER,checksum BLOB,success INTEGER)")
                 db.execute("INSERT INTO _sqlx_migrations VALUES(1,?,1)", (b"\xff",))
@@ -38,9 +36,6 @@ class SavedStoreTest(unittest.TestCase):
                 else:
                     db.execute("CREATE TABLE thread_turns(thread_id TEXT,started_at INTEGER,completed_at INTEGER,rollout_ordinal INTEGER)")
                     db.execute("INSERT INTO thread_turns VALUES(?,NULL,120,1)", (THREAD,))
-        patcher = patch.dict(codex_saved.MIGRATIONS, {name: self.fingerprint for name in codex_saved.MIGRATIONS})
-        patcher.start()
-        self.addCleanup(patcher.stop)
 
     def collect(self):
         return codex_saved.collect_saved(self.home, host_scope="fixture", namespace="fixture-native")
@@ -59,11 +54,17 @@ class SavedStoreTest(unittest.TestCase):
         self.assertEqual(before, {p: p.read_bytes() for p in before})
         self.assertFalse(list(self.home.glob("*-shm")))
 
-    def test_schema_drift_is_rejected_instead_of_selecting_a_legacy_database(self):
+    def test_required_column_change_is_rejected_without_legacy_fallback(self):
         with sqlite3.connect(self.home / "state_5.sqlite") as db:
-            db.execute("UPDATE _sqlx_migrations SET checksum=?", (b"new-schema",))
+            db.execute("ALTER TABLE threads RENAME COLUMN rollout_path TO incompatible_path")
         with self.assertRaisesRegex(ValueError, "saved_store_schema_unsupported"):
             self.collect()
+
+    def test_unrelated_migrations_and_columns_do_not_change_compatibility(self):
+        with sqlite3.connect(self.home / "state_5.sqlite") as db:
+            db.execute("UPDATE _sqlx_migrations SET checksum=?", (b"new-schema",))
+            db.execute("ALTER TABLE threads ADD COLUMN future_metadata TEXT")
+        self.assertEqual(self.collect()["sessions"][0]["nativeIds"]["threadId"], THREAD)
 
     def test_mismatched_head_and_external_or_symlink_rollout_are_not_identified(self):
         self.rollout.write_text(json.dumps({"type": "session_meta", "payload": {"id": SESSION, "session_id": SESSION}}) + "\n")

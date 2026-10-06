@@ -148,10 +148,8 @@ class EndpointInspectionTest(unittest.TestCase):
         with self.assertRaisesRegex(EndpointError, "^endpoint_incarnation_changed$"):
             validate_incarnation(identity, proc_root=self.proc)
 
-    def test_unknown_owned_image_reports_artifact_failure_with_actual_runtime(self):
-        with self.assertRaisesRegex(EndpointError, "^runtime_artifact_not_accepted$") as raised:
-            inspect_managed_endpoint(self.home, proc_root=self.proc)
-        identity = raised.exception.identity
+    def test_unregistered_owned_image_retains_actual_runtime_identity(self):
+        identity = inspect_managed_endpoint(self.home, proc_root=self.proc)
         self.assertEqual(identity.pid, 123)
         self.assertEqual(identity.version, "0.160.0")
         self.assertEqual(identity.binary_sha256, self.fingerprint)

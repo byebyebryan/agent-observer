@@ -14,21 +14,12 @@ from pathlib import Path
 
 from .bounded_json import WireError, decode_document
 from .contract import ContractError, canonical, store_namespace
-from .native_artifacts import CLAUDE, CODEX, registered
+from .native_artifacts import CLAUDE, CODEX
 from .native_cues import background_receipt, trust_required
 from .read_client import select as select_session
 from .write_contract import schema_document, validate_plan, validate_request, validate_result
 
-ARTIFACTS = {
-    "codex": (
-        CODEX.path,
-        CODEX.sha256,
-    ),
-    "claude": (
-        CLAUDE.path,
-        CLAUDE.sha256,
-    ),
-}
+EXECUTABLES = {"codex": CODEX.path, "claude": CLAUDE.path}
 BG_SETTINGS = '{"worktree":{"bgIsolation":"none"}}'
 _OBSERVATION_ONLY_ISSUES = frozenset(
     {
@@ -41,13 +32,17 @@ _OBSERVATION_ONLY_ISSUES = frozenset(
 )
 
 
-def _digest(path, limit, timeout=3):
+def _digest(path, limit, timeout=3, *, executable=False):
     digest = hashlib.sha256()
     deadline = time.monotonic() + timeout
     fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
     try:
         before = os.fstat(fd)
-        if not stat.S_ISREG(before.st_mode) or before.st_size > limit or before.st_mode & 0o022:
+        if (
+            not stat.S_ISREG(before.st_mode) or before.st_size > limit or before.st_mode & 0o022
+            or before.st_uid not in {0, os.geteuid()}
+            or executable and (not before.st_mode & 0o111 or not os.access(path, os.X_OK))
+        ):
             raise ContractError("artifact_unavailable")
         total = 0
         while chunk := os.read(fd, 1024 * 1024):
@@ -108,8 +103,6 @@ def _target(request):
     ):
         raise ContractError("resume_evidence_unavailable")
     if request["provider"] == "codex":
-        if registered("codex", source["runtime"].get("binarySha256"), capability="managed_entry") is None:
-            raise ContractError("runtime_entry_not_accepted")
         if source["coverage"].get("runtime", {}).get("status") == "unavailable":
             raise ContractError("resume_evidence_unavailable")
     expected = store_namespace(
@@ -138,10 +131,8 @@ def prepare(request):
         )
     ):
         raise ContractError("unsupported_config_selector")
-    executable, accepted_hash = ARTIFACTS[provider]
-    binary_hash, binary = _digest(Path(executable), 512 * 1024 * 1024)
-    if binary_hash != accepted_hash and registered(provider, binary_hash, capability="entry") is None:
-        raise ContractError("runtime_artifact_not_accepted")
+    executable = EXECUTABLES[provider]
+    binary_hash, binary = _digest(Path(executable), 512 * 1024 * 1024, executable=True)
     settings = Path(request["configHome"]) / (
         "config.toml" if provider == "codex" else "settings.json"
     )
@@ -211,7 +202,7 @@ def invocation(plan, *, background=False):
     """Derive native argv locally; caller cannot supply executable/arguments."""
     request = plan["request"]
     provider = request["provider"]
-    argv = [ARTIFACTS[provider][0]]
+    argv = [EXECUTABLES[provider]]
     env = os.environ.copy()
     if provider == "codex":
         env["CODEX_HOME"] = request["configHome"]

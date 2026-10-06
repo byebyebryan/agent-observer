@@ -61,5 +61,12 @@ Keep desktop sender/title changes out of the read/write contract acceptance.
   siblings on an unchanged verified runtime and reports partial loaded coverage.
   Cross-row identity conflicts still invalidate prior live evidence. Full source
   check passes 222 tests. Contract compatibility/reference repairs remain pending.
+- S2 source additionally replaces daily release/hash support gates with minimal
+  required contracts, retaining actual hashes/ownership/birth and prepared-entry
+  replacement guards. Compatible worker images survive installed CLI changes;
+  unknown Codex state variants preserve identity without inferred facts. Saved
+  Codex fallback checks required typed table projections rather than whole
+  migrations. The independent reference reads new images and reports duplicate
+  workers explicitly. Source acceptance is separate from packaged/native S4.
 - S3-S6: pending. Update this record at reviewed checkpoints with concrete
   source, packaged and native results and any remaining capabilities.

@@ -29,11 +29,7 @@ from .codex_endpoint import (
 from .codex_metadata import MetadataError, live_thread_metadata, saved_thread_metadata
 from .codex_saved import collect_saved
 from .codex_transport import PassiveClient, TransportError
-from .native_artifacts import CODEX, registered
 
-VERSION = CODEX.version
-RELEASE = VERSION + "-x86_64-unknown-linux-musl"
-BINARY_SHA256 = CODEX.sha256
 # Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
 # verified running disposable tool; all were active with an empty flags list.
 # The same native series supplied idle before/after successful completion.
@@ -159,8 +155,7 @@ def collect_codex(
         result["namespace"] = namespace
         result["runtime"] = {
             "version": identity.version,
-            "versionEvidence": "verified_executable_sha256"
-            if registered("codex", identity.binary_sha256) else "unaccepted_release_path_and_sha256",
+            "versionEvidence": "owning_release_path_and_inspected_sha256",
             "binarySha256": identity.binary_sha256,
             "pid": identity.pid,
             "startTicks": identity.start_ticks,
@@ -175,12 +170,9 @@ def collect_codex(
             timeout=min(3.0, remaining()),
         )
         runtime_info(identity)
-        profile = registered("codex", identity.binary_sha256)
-        work_supported = WORK_STATE_ACCEPTED and profile is not None and "managed_work" in profile.capabilities
-        wait_flags = ACCEPTED_WAIT_FLAGS if profile is not None and "managed_approval" in profile.capabilities else frozenset()
-        if profile is not None and "managed_question" in profile.capabilities:
-            wait_flags |= {"waitingOnUserInput"}
-        result["activitySupported"] = profile is not None and "managed_activity" in profile.capabilities
+        work_supported = WORK_STATE_ACCEPTED
+        wait_flags = ACCEPTED_WAIT_FLAGS | {"waitingOnUserInput"} if work_supported else frozenset()
+        result["activitySupported"] = False
         result["coverage"]["work"].update(
             supported=work_supported,
             reason="native_proof" if work_supported else "native_transition_proof_pending",
@@ -267,6 +259,9 @@ def collect_codex(
                     }
                     row["waitReason"] = "unknown"
                 rows[identifier] = row
+            result["coverage"]["work"]["supported"] = work_supported and any(
+                row["work"]["health"] == "current" for row in rows.values()
+            )
             runtime_rows_read = True
             cursor = None
             cursors = set()
@@ -316,15 +311,15 @@ def collect_codex(
             for identifier, row in rows.items():
                 try:
                     client.timeout = remaining()
-                    turn_metadata = client.latest_turn(identifier) if result["activitySupported"] else None
+                    turn_metadata = client.latest_turn(identifier)
                     row["activity"] = codex_activity(
-                        turn_metadata,
-                        completion_only=profile is not None and "completion_only_activity" in profile.capabilities,
-                    ) if result["activitySupported"] else unavailable("activity_source_unproved", "unsupported")
-                    if profile is not None and "managed_outcome" in profile.capabilities:
-                        row["outcome"] = codex_outcome(
-                            turn_metadata, completion_only="completion_only_activity" in profile.capabilities,
-                        )
+                        turn_metadata, completion_only=True,
+                    )
+                    result["activitySupported"] |= (
+                        row["activity"]["health"] == "current"
+                        or row["activity"]["reason"] == "no_conversation_activity"
+                    )
+                    row["outcome"] = codex_outcome(turn_metadata, completion_only=True)
                 except (TransportError, SnapshotError) as error:
                     row["activity"] = unavailable(str(error))
             selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[
