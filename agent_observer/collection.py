@@ -93,6 +93,7 @@ def project_source(native):
     question_supported = provider == "claude" and any(
         "job_question" in row.get("phaseCapabilities", []) for row in native.get("sessions", [])
     )
+    question_supported |= provider == "codex" and "waitingOnUserInput" in coverage.get("work", {}).get("supportedWaitFlags", [])
     result = {
         "provider": provider,
         "namespace": namespace,
@@ -127,19 +128,20 @@ def project_source(native):
         ),
         "limitations": [
             "parked_predicate_unproved",
-            "questions_unproved",
             "client_binding_unproved",
         ],
     }
     if not result["capabilities"]["activity"]:
         result["limitations"].append("activity_source_unproved")
     if provider == "codex":
+        result["limitations"].append("questions_require_current_daemon_image" if question_supported else "questions_unproved")
         if result["coverage"]["saved"]["status"] == "unavailable":
             result["limitations"].append("saved_metadata_unavailable")
         result["limitations"].append("offline_runtime_state_unavailable")
         result["limitations"].append("unloaded_work_state_unavailable")
         result["limitations"].append("unbound_tui_contexts_unobserved")
     else:
+        result["limitations"].extend(["foreground_questions_unproved", "older_worker_input_unproved"])
         result["limitations"].append("interactive_readiness_requires_current_worker_image")
         result["limitations"].append("background_readiness_requires_no_pending_work")
         result["limitations"].extend(reason for reason in native.get("limitations", []) if reason in {
@@ -190,6 +192,8 @@ def project_session(native, source):
     phase = fact(native.get("work"), mapping)
     question = (provider == "claude" and native.get("waitReason") == "question"
                 and "job_question" in native.get("phaseCapabilities", []))
+    question |= (provider == "codex" and native.get("waitReason") == "user_input"
+                 and "question" in source["capabilities"]["blockedReasons"])
     if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not question:
         phase = unknown("questions_unproved", "unsupported")
     if (

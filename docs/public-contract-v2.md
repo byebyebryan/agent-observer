@@ -42,7 +42,9 @@ state cannot override current working/input-wait registry evidence.
 Codex 0.160.1 explicit latest-turn completed/failed/interrupted metadata maps to
 completed/failed/cancelled outcome, with its terminal clock. A new in-progress
 turn clears the preceding outcome. Outcome does not settle runtime phase;
-systemError remains unknown with `native_runtime_error`. Codex questions and
+systemError remains unknown with `native_runtime_error`. Codex 0.160.1 native
+Plan mode held `waitingOnUserInput` additionally accepts blocked/question within
+that exact daemon image. Older Codex question predicates and
 Claude failure/cancellation outcome predicates remain unproved. These source
 changes await independent package acceptance and do not change selected a9.
 

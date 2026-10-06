@@ -1,0 +1,62 @@
+{
+  "provider": "codex",
+  "hostScope": "snap",
+  "runtimeVersion": "0.160.1",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "terminalOutputPersisted": false,
+  "samples": [
+    {
+      "at": 1791245761790,
+      "state": "active",
+      "flags": []
+    },
+    {
+      "at": 1791245762260,
+      "state": "active",
+      "flags": []
+    },
+    {
+      "at": 1791245762721,
+      "state": "active",
+      "flags": []
+    },
+    {
+      "at": 1791245763189,
+      "state": "active",
+      "flags": []
+    },
+    {
+      "at": 1791245763660,
+      "state": "active",
+      "flags": []
+    },
+    {
+      "at": 1791245764128,
+      "state": "active",
+      "flags": [
+        "waitingOnUserInput"
+      ]
+    },
+    {
+      "at": 1791245764593,
+      "state": "active",
+      "flags": [
+        "waitingOnUserInput"
+      ]
+    },
+    {
+      "at": 1791245765057,
+      "state": "active",
+      "flags": [
+        "waitingOnUserInput"
+      ]
+    }
+  ],
+  "id": "01a10e91-10eb-7753-986a-5fd09ca7826d",
+  "status": "accepted",
+  "heldQuestionSamples": 3
+}

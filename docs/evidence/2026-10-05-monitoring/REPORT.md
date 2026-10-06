@@ -15,6 +15,10 @@ Codex latest metadata-only turns prove in-progress, completed and interrupted
 results. A separate ordinary read confirms the previously observed failed turn
 under systemError, without reading turn items. Source projection keeps outcome
 independent from phase and clears a past outcome on new work.
+An additional [native question proof](codex-question.json) holds Plan mode
+waitingOnUserInput across three samples on Snap. An earlier question attempt
+overlapped an owned daemon recovery and establishes no question semantics;
+only the sequential rerun accepts the exact 0.160.1 question flag.
 
 Claude foreground first prompt and completed turns are idle; held work and a
 Stop-hook continuation stay busy; held AskUserQuestion is waiting/input needed.
@@ -55,6 +59,6 @@ not an installed production source.
 Package, outside-checkout installed CLI/native comparison on both hosts,
 strict v2/frozen-reader compatibility and cleanup verification remain pending.
 No consumer implementation, production selection, ordinary restart or public
-release is accepted by source proof. Codex questions, blank background readiness,
+release is accepted by source proof. Older Codex questions, blank background readiness,
 older TUI cutover, recent-cwd contract revision, event-source installation and
 physical/graphical acceptance remain separate work.
