@@ -16,6 +16,13 @@ provider upgrade blocks, watch retention/wire-limit defects and the remaining
 compatibility decisions. Earlier accepted images do not certify current upgraded
 CLI entry or private metadata behavior.
 
+Future native support follows the
+[required provider contract policy](provider-contract-compatibility-plan.md).
+Provider versions/hashes remain provenance and context-change evidence, rather
+than runtime allowlist selectors. The current a11 implementation still uses
+exact-image gates described below; replacing them does not weaken full identity,
+passivity, semantic evidence or public wire validation.
+
 ## Identity, states and source decisions
 
 `identity` contains the caller-supplied host scope, provider, store namespace,

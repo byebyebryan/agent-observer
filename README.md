@@ -13,6 +13,12 @@ simplified.
 
 ## Status
 
+The [provider compatibility plan](docs/provider-contract-compatibility-plan.md)
+sets the support boundary to required protocol, metadata and CLI contracts.
+Daily Codex/Claude release changes should preserve working capabilities when
+those contracts remain compatible. Versions/hashes are diagnostics and context
+change guards; the current a11 allowlists still need implementation replacement.
+
 The [2026-10-06 discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
 rechecks the installed a11 producer independently of frontend work. Codex reads
 match native evidence on both hosts. New provider upgrades leave Claude runtime
