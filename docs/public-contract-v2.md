@@ -10,6 +10,12 @@ CLI proof. Selection does not extend the accepted artifact bounds; new images
 require independent proof. See the [repair execution](evaluation-repair-execution.md)
 and subsequent [stopped-runtime execution](stopped-runtime-execution.md).
 
+This is a pinned prerelease boundary, not a stable release freeze. The
+[2026-10-06 review](discovery-monitoring-contract-review.md) records current
+provider upgrade blocks, watch retention/wire-limit defects and the remaining
+compatibility decisions. Earlier accepted images do not certify current upgraded
+CLI entry or private metadata behavior.
+
 ## Identity, states and source decisions
 
 `identity` contains the caller-supplied host scope, provider, store namespace,
@@ -201,7 +207,12 @@ collection took approximately one second in this checkpoint, with provider
 timeouts independently bounded. Default interval is two seconds.
 
 Partial/capped inventories retain missing last-known rows as stale, preserving
-their original evidence clocks. They cannot imply deletion or parked state.
+their original dimension evidence clocks. Current a11 retention clears
+`activity.at` rather than preserving a last-known conversation timestamp; its
+age representation needs closure before stable freeze. Filtering before retention
+can also restore a newly confirmed child, and accumulated retained rows can
+exceed public bounds. These reviewed defects have independent repair gates.
+Missing rows cannot imply deletion or parked state.
 Source failure emits a gap and resynchronization; collector exceptions emit a
 gap until a successful sample. `--count` bounds an invocation for development.
 SIGINT exits without provider cleanup/actions. A blocked stdout consumer times

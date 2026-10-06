@@ -1,0 +1,17 @@
+{
+  "validator": "jsonschema",
+  "validatorVersion": "4.26.0",
+  "draft": "2020-12",
+  "installedAndBundledSchemasMatch": true,
+  "schemasChecked": 5,
+  "fixturesChecked": [
+    "snapshot",
+    "partial",
+    "claude-ready",
+    "gap",
+    "write-request",
+    "write-plan",
+    "write-result"
+  ],
+  "ordinaryProviderActions": false
+}

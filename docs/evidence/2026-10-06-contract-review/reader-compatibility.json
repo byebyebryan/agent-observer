@@ -1,0 +1,12 @@
+{
+  "selectedProducerVersion": "0.2.0a11",
+  "pureReaderVersion": "0.2.0a3",
+  "schemasEqual": {
+    "snapshot": true,
+    "watch": true,
+    "request": true,
+    "plan": true,
+    "result": true
+  },
+  "providerInvocations": 0
+}

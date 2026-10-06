@@ -13,14 +13,24 @@ simplified.
 
 ## Status
 
+The [2026-10-06 discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
+rechecks the installed a11 producer independently of frontend work. Codex reads
+match native evidence on both hosts. New provider upgrades leave Claude runtime
+monitoring unavailable and current New/Resume preparation rejected; watch
+retention, wire limits and contract validation also need a separate Observer
+repair pass. The interface remains a pinned prerelease baseline. The review and
+the adjacent `../rofi-agent-plus/docs/observer-client-handoff.md` separate
+producer closure from the next Agent Plus agent's work.
+
 The [stopped-runtime checkpoint](docs/evidence/2026-10-05-stopped-runtime/REPORT.md)
 accepts and selects `0.2.0a11` on Snap and Starship. Exact-image Claude retained
 done/stopped idle jobs report parked when complete stable inventories prove no
-live bound worker. Both ordinary recap sessions now report parked with their
-conversation ages preserved. Installed native stop/resume, independent ordinary
-CLI comparisons and the frozen reader's watch/schema checks pass. Only managed
-Observer read/write entrypoints change; no frontend work or session restart is
-required. Saved-only absence and unsupported contexts remain unknown.
+live bound worker. At that acceptance both ordinary recap sessions reported parked
+with their conversation ages preserved. Installed native stop/resume, independent
+ordinary CLI comparisons and the frozen reader's watch/schema checks passed.
+That selection changed only managed Observer read/write entrypoints; no frontend
+work or session restart accompanied it. Saved-only absence and unsupported
+contexts remain unknown.
 
 The [monitoring checkpoint](docs/evidence/2026-10-05-monitoring/REPORT.md)
 independently accepts the `0.2.0a10` candidate on Snap and Starship. It adds

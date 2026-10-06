@@ -1,0 +1,41 @@
+{
+  "evidence": "installed_public_cli_controlled_fixtures",
+  "ordinaryProviderActions": false,
+  "cases": {
+    "retained_activity": {
+      "exit": 0,
+      "firstKind": "snapshot",
+      "followingKinds": [
+        "gap",
+        "resync"
+      ],
+      "beforeAt": 1700000010000,
+      "afterActivity": {
+        "at": null,
+        "health": "stale",
+        "reason": "observation_gap",
+        "source": "claude_transcript_message"
+      }
+    },
+    "child_reclassification": {
+      "exit": 0,
+      "firstKind": "snapshot",
+      "followingKinds": [
+        "gap",
+        "resync"
+      ],
+      "currentInputKind": "child",
+      "outputKind": "unknown",
+      "outputStillVisible": true
+    },
+    "snapshot_roundtrip": {
+      "rows": 1024,
+      "bytes": 1509834,
+      "exit": 2,
+      "error": {
+        "error": "node_limit",
+        "schemaVersion": 2
+      }
+    }
+  }
+}

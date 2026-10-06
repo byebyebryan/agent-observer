@@ -1,0 +1,51 @@
+{
+  "sampledAt": 1791307765334,
+  "evidence": "independent_bounded_registry_and_kernel_metadata",
+  "workerRecords": [
+    {
+      "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+      "pid": 4185252,
+      "startTicks": "26313538",
+      "sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
+      "kind": "interactive",
+      "nativeStatus": "idle",
+      "birthMatches": true,
+      "pidDomainMatches": true,
+      "processOwnerMatches": true
+    },
+    {
+      "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+      "pid": 891780,
+      "startTicks": "27868879",
+      "sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
+      "kind": "interactive",
+      "nativeStatus": "idle",
+      "birthMatches": true,
+      "pidDomainMatches": true,
+      "processOwnerMatches": true
+    },
+    {
+      "id": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+      "pid": 1168213,
+      "startTicks": "28343191",
+      "sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
+      "kind": "interactive",
+      "nativeStatus": "idle",
+      "birthMatches": true,
+      "pidDomainMatches": true,
+      "processOwnerMatches": true
+    },
+    {
+      "id": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+      "pid": 851974,
+      "startTicks": "34406617",
+      "sha256": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb",
+      "kind": "interactive",
+      "nativeStatus": "shell",
+      "birthMatches": true,
+      "pidDomainMatches": true,
+      "processOwnerMatches": true
+    }
+  ],
+  "ordinaryProviderActions": false
+}

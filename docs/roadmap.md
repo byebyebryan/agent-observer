@@ -1,12 +1,24 @@
 # Agent Observer roadmap
 
-Date: 2026-10-05. This document records status and delivery dependencies.
+Date: 2026-10-06. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
 [design review](design-review.md) define the associated scope and acceptance.
 
 ## Current track: contract and first-party clients
+
+The [current discovery/monitoring review](discovery-monitoring-contract-review.md)
+keeps this pass Observer-only. Current provider upgrades block Claude runtime
+monitoring and all tested New preparation routes; controlled watch retention,
+wire-bound and semantic-validation findings reopen producer work. The next pass
+repairs independent reference coverage, accepts current images, closes watch and
+contract gaps, then independently accepts a new Observer artifact. The existing
+identity/state model remains a pinned prerelease baseline; stable freeze is pending.
+The adjacent `../rofi-agent-plus/docs/observer-client-handoff.md` lets a separate
+agent own fixture-based client work and records the producer/native gates
+required before action acceptance or rollout. Earlier exact-artifact acceptance
+below remains historical proof, not upgraded-image support.
 
 The [contract/client plan](contract-and-clients-plan.md) and its
 [review](contract-and-clients-review.md) govern the next development work. The

@@ -1,0 +1,63 @@
+{
+  "evidence": "controlled_public_fixtures",
+  "interpreter": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/python",
+  "ordinaryProviderActions": false,
+  "cases": {
+    "retained_activity": {
+      "beforeAt": 1700000010000,
+      "afterActivity": {
+        "at": null,
+        "source": "claude_transcript_message",
+        "health": "stale",
+        "reason": "observation_gap"
+      },
+      "originalPhaseClockRetained": true
+    },
+    "child_reclassification": {
+      "inputKind": "child",
+      "filteredCurrentRowCount": 3,
+      "outputKind": "unknown",
+      "issues": [
+        "retained_after_gap"
+      ],
+      "outputStillVisible": true
+    },
+    "retention_overflow": {
+      "oldRows": 4096,
+      "newRows": 1,
+      "bothInputShapesValid": true,
+      "error": "contract_row_limit"
+    },
+    "snapshot_roundtrip": [
+      {
+        "rows": 512,
+        "bytes": 696179,
+        "shapeValid": true,
+        "readerError": null
+      },
+      {
+        "rows": 600,
+        "bytes": 815595,
+        "shapeValid": true,
+        "readerError": null
+      },
+      {
+        "rows": 1024,
+        "bytes": 1390963,
+        "shapeValid": true,
+        "readerError": "node_limit"
+      },
+      {
+        "rows": 4096,
+        "bytes": 5559667,
+        "shapeValid": true,
+        "readerError": "node_limit"
+      }
+    ],
+    "write_result_identity_binding": {
+      "validated": true,
+      "resultIdentityMatchesHandoff": false,
+      "providerDispatchTested": false
+    }
+  }
+}

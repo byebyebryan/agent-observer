@@ -1,0 +1,60 @@
+{
+  "evidence": "installed_public_cli_controlled_churning_inventory",
+  "ordinaryProviderActions": false,
+  "eachInputRows": 512,
+  "samples": [
+    {
+      "rows": 512,
+      "bytes": 696343,
+      "kind": "snapshot",
+      "wireReaderError": null
+    },
+    {
+      "rows": 1024,
+      "bytes": 1411093,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 1536,
+      "bytes": 2125845,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 2048,
+      "bytes": 2840597,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 2560,
+      "bytes": 3555349,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 3072,
+      "bytes": 4270101,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 3584,
+      "bytes": 4984853,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    },
+    {
+      "rows": 4096,
+      "bytes": 5699605,
+      "kind": "change",
+      "wireReaderError": "node_limit"
+    }
+  ],
+  "exit": 2,
+  "error": {
+    "error": "contract_row_limit",
+    "schemaVersion": 2
+  }
+}

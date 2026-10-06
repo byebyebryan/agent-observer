@@ -1,5 +1,13 @@
 # Contract and clients handoff
 
+For the latest operational state and next producer checkpoint, read the
+[2026-10-06 discovery/monitoring review](discovery-monitoring-contract-review.md).
+Provider upgrades have reopened current-image monitoring/write acceptance;
+watch/contract findings also need closure. The selected tuple below remains the
+earlier exact-artifact baseline. The adjacent Agent Plus checkout's
+`docs/observer-client-handoff.md` records client ownership and the renewed
+producer gates.
+
 Date: 2026-10-05. The regular primary-owned goal loop closed independent G1/G2
 and the subsequent bounded Plus E8 consumer pass. Networking G3 remains deferred;
 Plus retains existing Host Mesh composition. The [execution record](contract-clients-execution-status.md)
