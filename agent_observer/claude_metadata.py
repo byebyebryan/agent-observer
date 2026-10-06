@@ -676,7 +676,8 @@ def _observation(
             retained = None
     wait_reason = registry["waitReason"] if registry is not None else "unknown"
     if (registry is not None and registry.get("questionWait")
-            and job is not None and job.question_wait and "job_question" in phase_capabilities):
+            and job is not None and job.state == "working" and job.tempo == "blocked"
+            and job.question_wait and "job_question" in phase_capabilities):
         wait_reason = "question"
     title = registry["title"] if registry is not None else None
     if (

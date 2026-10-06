@@ -22,10 +22,13 @@ The question has an independent tool request event and remains held after viewer
 exit in the background case. A foreground background-child proof samples 216
 observations, including root Stop with running background tasks; none is idle
 while that running-child evidence remains current. Those exact-image registry
-predicates accept foreground readiness and input blocking. Static inspection
-also establishes that input needed is shared with other dialogs: foreground
-blocked reason remains unknown. Linked background job block/questions structure
-accepts question reason without reading or exporting question text.
+predicates accept foreground readiness. The packaged gate rejected foreground
+blocked/unknown reason, correctly enforcing the existing v2 semantic invariant.
+Static inspection establishes that input needed is shared with other dialogs;
+the source preserves foreground question phase as unknown. Linked background
+job block/questions structure with working/blocked state accepts question reason
+without reading or exporting question text. A future foreground question source
+needs independently bound event facts or another explicit native discriminator.
 
 Background proof demonstrates retained done state during later work and a held
 question. It also observes 44 idle samples with queued work. Current-image work
