@@ -44,7 +44,7 @@ class ContractV2Test(unittest.TestCase):
         self.assertEqual(row["blockedReason"], "question")
         native["waitReason"] = "user_input"
         generic = project_session(native, source)
-        self.assertEqual(generic["phase"]["value"], "blocked")
+        self.assertEqual(generic["phase"]["value"], "unknown")
         self.assertEqual(generic["blockedReason"], "unknown")
         native.update(sessionKind="interactive", phaseCapabilities=["interactive_readiness"],
                       presence={"value": "present", "observedAt": 123, "source": "claude_registry",

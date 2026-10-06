@@ -190,9 +190,7 @@ def project_session(native, source):
     phase = fact(native.get("work"), mapping)
     question = (provider == "claude" and native.get("waitReason") == "question"
                 and "job_question" in native.get("phaseCapabilities", []))
-    input_wait = (provider == "claude" and native.get("waitReason") in {"question", "user_input"}
-                  and "input_wait" in native.get("phaseCapabilities", []))
-    if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not input_wait:
+    if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not question:
         phase = unknown("questions_unproved", "unsupported")
     if (
         native.get("work", {}).get("value") == "settled"

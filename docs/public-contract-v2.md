@@ -28,9 +28,11 @@ verified worker maps to waiting within its exact image gate: an isolated native 
 prompt under the same UUID and completed it. Completion with a missing/unknown
 worker does not establish readiness. The monitoring source checkpoint additionally
 accepts Claude 2.1.289 foreground first-prompt/completed readiness and held
-held input as blocked. A foreground registry input label is shared with other
-dialogs, so its blocked reason stays unknown; exact linked background job
-question structure additionally accepts blocked/question. New predicates require that exact
+held background input as blocked/question. Foreground registry input labels are
+shared with other dialogs and cannot establish the reason required by v2;
+foreground questions remain unknown. Exact linked background job question
+structure, working/blocked job state and current registry input wait accept
+blocked/question. New predicates require that exact
 worker image, independently of the installed CLI; surviving 2.1.287 workers keep
 their previous limits. Current background completion requires explicit latest
 terminal metadata and zero tasks, queued work and drainable monitors. Idle with

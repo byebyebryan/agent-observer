@@ -27,11 +27,15 @@ class ClaudeMetadataTest(unittest.TestCase):
               patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
             self.assertEqual(self.read()["observations"][0]["work"]["value"], "working")
             row.update(status="waiting", waitingFor="input needed")
+            job.update(state="working", tempo="blocked")
+            self.write_json(self.root / "jobs/abcdef12/state.json", job)
             self.write_json(self.root / "sessions/123.json", row)
             item = self.read()["observations"][0]
             self.assertEqual(item["work"]["value"], "needs_input")
             self.assertEqual(item["waitReason"], "question")
             row.update(status="idle", waitingFor=None)
+            job.update(state="done", tempo="idle")
+            self.write_json(self.root / "jobs/abcdef12/state.json", job)
             self.write_json(self.root / "sessions/123.json", row)
             self.assertEqual(self.read()["observations"][0]["work"]["value"], "settled")
             for changes in ({"queued": 1}, {"tasks": 1}, {"drainableMonitors": 1}, {"tasks": True}):
