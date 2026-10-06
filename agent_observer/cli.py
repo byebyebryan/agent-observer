@@ -12,7 +12,7 @@ from pathlib import Path
 
 from . import __version__
 from .bounded_json import WireError, decode_document
-from .contract import MAX_BYTES, ContractError, canonical, parse_snapshot, schema_document
+from .contract import MAX_BYTES, SCHEMA_VERSION, ContractError, canonical, parse_snapshot, schema_document
 from .native_artifacts import supported_versions
 from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
@@ -138,16 +138,13 @@ def main(argv=None):
             while args.count is None or count < args.count:
                 started = time.monotonic()
                 try:
-                    snapshot = listing(
-                        _snapshot(args),
-                        include_children=args.include_children,
-                        providers=args.provider,
-                        order=args.order,
+                    snapshot = _snapshot(args)
+                    frames = watch.sample(
+                        snapshot, include_children=args.include_children,
+                        providers=args.provider, order=args.order,
                     )
                 except (ContractError, WireError, ValueError, OSError):
                     frames = [watch.gap()]
-                else:
-                    frames = watch.sample(snapshot)
                 for frame in frames:
                     _watch_output(frame)
                 count += 1
@@ -221,10 +218,10 @@ def main(argv=None):
         code = str(exc)
         if not code.replace("_", "").isalnum() or len(code) > 128:
             code = "invalid_request"
-        print(canonical({"schemaVersion": 2, "error": code}), file=sys.stderr)
+        print(canonical({"schemaVersion": SCHEMA_VERSION, "error": code}), file=sys.stderr)
         return 2
     except OSError:
-        print('{"schemaVersion":2,"error":"io_unavailable"}', file=sys.stderr)
+        print(canonical({"schemaVersion": SCHEMA_VERSION, "error": "io_unavailable"}), file=sys.stderr)
         return 2
     except KeyboardInterrupt:
         return 130

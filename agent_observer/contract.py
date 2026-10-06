@@ -1,4 +1,4 @@
-"""Public v2 contract and bounded validation; no provider or action imports."""
+"""Public v3 contract and bounded validation; no provider or action imports."""
 
 from __future__ import annotations
 
@@ -11,8 +11,11 @@ from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 MAX_BYTES = 8 * 1024 * 1024
+MAX_SNAPSHOT_BYTES = MAX_BYTES - 1024
+MAX_NODES = 2_000_000
+MAX_SESSIONS = 4096
 UUID = r"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
 SCOPE = r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
 CODE = r"^[a-z][a-z0-9_]{0,127}$"
@@ -95,6 +98,7 @@ ACTIVITY = obj(
     health=HEALTH,
     reason=text(128, pattern=CODE),
 )
+ACTIVITY["properties"]["lastKnownAt"] = TIME
 RUNTIME_INFO = obj(
     version=text(64),
     binarySha256=text(64, pattern=r"^[0-9a-f]{64}$"),
@@ -109,7 +113,7 @@ HISTORY = {
     "anyOf": [
         obj(
             source=choice("claude_sdk"),
-            sdkVersion=choice("0.2.163"),
+            sdkVersion=text(64),
             createdAt=TIME,
             fileModifiedAt=TIME,
         ),
@@ -193,7 +197,7 @@ SESSION = obj(
     metadataIssues=array(text(128, pattern=CODE), 128),
 )
 SNAPSHOT = obj(
-    schemaVersion={"const": 2},
+    schemaVersion={"const": SCHEMA_VERSION},
     collectionId=text(36, pattern=UUID),
     collectedAt=TIME,
     host=obj(
@@ -204,12 +208,12 @@ SNAPSHOT = obj(
     ),
     sourceHealth=choice("current", "partial", "unavailable"),
     sources=array(SOURCE, 2),
-    sessions=array(SESSION, 4096),
+    sessions=array(SESSION, MAX_SESSIONS),
     errors=array(text(128, pattern=CODE), 128),
     limitations=array(text(128, pattern=CODE), 128),
 )
 WATCH = obj(
-    schemaVersion={"const": 2},
+    schemaVersion={"const": SCHEMA_VERSION},
     streamId=text(36, pattern=UUID),
     revision=INTEGER,
     kind=choice("snapshot", "change", "heartbeat", "gap", "resync"),
@@ -227,7 +231,7 @@ def schema_document(name):
     spec = {"snapshot": SNAPSHOT, "watch": WATCH}[name]
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": f"urn:agent-observer:{name}:2",
+        "$id": f"urn:agent-observer:{name}:{SCHEMA_VERSION}",
         **copy.deepcopy(spec),
     }
 
@@ -357,17 +361,25 @@ def validate_snapshot(value):
             row["activity"]["source"] is None or row["activity"]["health"] != "current"
         ):
             raise ContractError("missing_activity_provenance")
+        if row["activity"].get("lastKnownAt") is not None and (
+            row["activity"]["at"] is not None
+            or row["activity"]["health"] != "stale"
+            or row["activity"]["source"] is None
+        ):
+            raise ContractError("invalid_last_known_activity")
         if row["runtime"]["value"] == "parked" and row["phase"]["value"] != "unknown":
             raise ContractError("parked_phase_conflict")
         if row["phase"]["value"] == "blocked" and row["blockedReason"] == "unknown":
             raise ContractError("missing_blocked_reason")
     if value["collectedAt"] is None:
         raise ContractError("missing_collection_time")
+    if len(canonical(value).encode()) > MAX_SNAPSHOT_BYTES:
+        raise ContractError("snapshot_byte_limit")
     return value
 
 
 def parse_snapshot(data):
-    return validate_snapshot(decode_document(data, max_bytes=MAX_BYTES))
+    return validate_snapshot(decode_document(data, max_bytes=MAX_SNAPSHOT_BYTES, max_nodes=MAX_NODES))
 
 
 def validate_watch(value):
@@ -380,7 +392,16 @@ def validate_watch(value):
         raise ContractError("unexpected_watch_snapshot")
     if value["snapshot"] is not None:
         validate_snapshot(value["snapshot"])
+    if len(canonical(value).encode()) > MAX_BYTES - 1:
+        raise ContractError("watch_byte_limit")
     return value
+
+
+def parse_watch(data):
+    """Parse one newline-terminated public frame with the same producer bounds."""
+    return validate_watch(decode_document(
+        data, max_bytes=MAX_BYTES, max_nodes=MAX_NODES, line_framed=True
+    ))
 
 
 def canonical(value):

@@ -51,6 +51,18 @@ class CandidateArtifactTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "wheel_path_invalid"):
                 HELPER["wheel_check"](wheel, manifest)
 
+    def test_v3_candidate_receipt_requires_matching_read_and_watch_versions(self):
+        manifest = HELPER["document"](ROOT / "artifacts/observer-0.2.0a11.json")
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "manifest.json"
+            manifest["schemas"] = {"snapshot": 3, "watch": 3, "write": 1}
+            path.write_text(json.dumps(manifest))
+            self.assertEqual(HELPER["document"](path)["schemas"]["snapshot"], 3)
+            manifest["schemas"]["watch"] = 2
+            path.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                HELPER["document"](path)
+
     def test_failed_install_removes_only_owned_new_prefix(self):
         with tempfile.TemporaryDirectory() as root:
             root = Path(root)

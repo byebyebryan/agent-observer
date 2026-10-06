@@ -11,7 +11,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from agent_observer.contract import MAX_BYTES, validate_watch
+from agent_observer.contract import MAX_BYTES, parse_watch
 
 
 def measure(prefix, host, providers, samples, interval, readers):
@@ -79,7 +79,7 @@ def measure(prefix, host, providers, samples, interval, readers):
                     line, state["buffer"] = state["buffer"].split(b"\n", 1)
                     if len(line) > MAX_BYTES:
                         raise ValueError("watch_frame_limit")
-                    frame = validate_watch(json.loads(line))
+                    frame = parse_watch(line + b"\n")
                     if frame["revision"] != state["revision"] + 1 or (
                         state["stream"] and frame["streamId"] != state["stream"]
                     ):

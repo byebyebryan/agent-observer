@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agent-observer:snapshot:2",
+  "$id": "urn:agent-observer:snapshot:3",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": 2
+      "const": 3
     },
     "collectionId": {
       "type": "string",
@@ -817,6 +817,14 @@
                 "maxLength": 128,
                 "minLength": 1,
                 "pattern": "^[a-z][a-z0-9_]{0,127}$"
+              },
+              "lastKnownAt": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 4000000000000
               }
             },
             "required": [
@@ -1004,9 +1012,9 @@
                     ]
                   },
                   "sdkVersion": {
-                    "enum": [
-                      "0.2.163"
-                    ]
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1
                   },
                   "createdAt": {
                     "type": [
