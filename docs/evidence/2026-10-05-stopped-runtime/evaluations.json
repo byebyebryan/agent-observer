@@ -1,0 +1,562 @@
+{
+  "snap": {
+    "hostScope": "snap",
+    "cliVersion": "agent-observer 0.2.0a11",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "nativeBeforeAt": {
+          "codex": 1791254447974,
+          "claude": 1791254448515
+        },
+        "cliCollectedAt": 1791254450633,
+        "nativeAfterAt": {
+          "codex": 1791254451637,
+          "claude": 1791254452095
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_current_daemon_image",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          },
+          {
+            "provider": "claude",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "registered_workers",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "metadata_scan",
+                "status": "partial"
+              }
+            },
+            "limitations": [
+              "parked_requires_terminal_job_and_complete_inventory",
+              "client_binding_unproved",
+              "foreground_questions_unproved",
+              "older_worker_input_unproved",
+              "interactive_readiness_requires_current_worker_image",
+              "background_readiness_requires_no_pending_work",
+              "history_sdk_candidates_omitted",
+              "history_duplicate_companions"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 81
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 6,
+          "doctorSessionCount": true,
+          "cliRows": 78,
+          "filteredChildren": 3
+        },
+        "nativeRuntime": {
+          "pid": 129007,
+          "startTicks": "26593010",
+          "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "provider": "codex",
+          "version": "0.160.1",
+          "referenceOnly": true,
+          "versionEvidence": "exact_sha256_and_release_path"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 53437149,
+            "runtimeGaps": []
+          }
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 51,
+            "nativeAfterRows": 51,
+            "cliRows": 51,
+            "nativeCounts": {
+              "running": 6,
+              "activityKnown": 51,
+              "classification": {
+                "user": 3,
+                "unknown": 45,
+                "child": 3
+              }
+            },
+            "checks": {
+              "membership": 51,
+              "title": 41,
+              "cwd": 51,
+              "runtime_unproved": 45,
+              "phase_unproved": 46,
+              "activity": 51,
+              "kind_unproved": 45,
+              "sessionId": 51,
+              "createdAt": 51,
+              "outcome": 51,
+              "outcomeAt": 50,
+              "title_unproved": 10,
+              "runtime": 6,
+              "phase": 5,
+              "kind": 6,
+              "outcomeAt_unproved": 1
+            },
+            "issues": [
+              {
+                "id": "01a10e1c-6ffd-7b51-b5ac-9e960142315b",
+                "field": "phase",
+                "result": "native_reference_unproved",
+                "cli": "unknown"
+              }
+            ]
+          },
+          "claude": {
+            "nativeBeforeRows": 30,
+            "nativeAfterRows": 30,
+            "cliRows": 30,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 30,
+              "title": 27,
+              "cwd": 30,
+              "runtime": 6,
+              "phase_unproved": 27,
+              "activity": 30,
+              "kind": 30,
+              "runtime_unproved": 24,
+              "title_unproved": 3,
+              "phase": 3
+            },
+            "issues": []
+          }
+        }
+      },
+      {
+        "nativeBeforeAt": {
+          "codex": 1791254453710,
+          "claude": 1791254454171
+        },
+        "cliCollectedAt": 1791254456306,
+        "nativeAfterAt": {
+          "codex": 1791254457292,
+          "claude": 1791254457777
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_current_daemon_image",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          },
+          {
+            "provider": "claude",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "registered_workers",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "metadata_scan",
+                "status": "partial"
+              }
+            },
+            "limitations": [
+              "parked_requires_terminal_job_and_complete_inventory",
+              "client_binding_unproved",
+              "foreground_questions_unproved",
+              "older_worker_input_unproved",
+              "interactive_readiness_requires_current_worker_image",
+              "background_readiness_requires_no_pending_work",
+              "history_sdk_candidates_omitted",
+              "history_duplicate_companions"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 81
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 6,
+          "doctorSessionCount": true,
+          "cliRows": 78,
+          "filteredChildren": 3
+        },
+        "nativeRuntime": {
+          "pid": 129007,
+          "startTicks": "26593010",
+          "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "provider": "codex",
+          "version": "0.160.1",
+          "referenceOnly": true,
+          "versionEvidence": "exact_sha256_and_release_path"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 53437149,
+            "runtimeGaps": []
+          }
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 51,
+            "nativeAfterRows": 51,
+            "cliRows": 51,
+            "nativeCounts": {
+              "running": 6,
+              "activityKnown": 51,
+              "classification": {
+                "user": 3,
+                "unknown": 45,
+                "child": 3
+              }
+            },
+            "checks": {
+              "membership": 51,
+              "title": 41,
+              "cwd": 51,
+              "runtime_unproved": 45,
+              "phase_unproved": 46,
+              "activity": 51,
+              "kind_unproved": 45,
+              "sessionId": 51,
+              "createdAt": 51,
+              "outcome": 51,
+              "outcomeAt": 50,
+              "title_unproved": 10,
+              "runtime": 6,
+              "phase": 5,
+              "kind": 6,
+              "outcomeAt_unproved": 1
+            },
+            "issues": [
+              {
+                "id": "01a10e1c-6ffd-7b51-b5ac-9e960142315b",
+                "field": "phase",
+                "result": "native_reference_unproved",
+                "cli": "unknown"
+              }
+            ]
+          },
+          "claude": {
+            "nativeBeforeRows": 30,
+            "nativeAfterRows": 30,
+            "cliRows": 30,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 30,
+              "title": 27,
+              "cwd": 30,
+              "runtime": 6,
+              "phase_unproved": 27,
+              "activity": 30,
+              "kind": 30,
+              "runtime_unproved": 24,
+              "title_unproved": 3,
+              "phase": 3
+            },
+            "issues": []
+          }
+        }
+      }
+    ]
+  },
+  "starship": {
+    "hostScope": "starship",
+    "cliVersion": "agent-observer 0.2.0a11",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "nativeBeforeAt": {
+          "codex": 1791254449945
+        },
+        "cliCollectedAt": 1791254451519,
+        "nativeAfterAt": {
+          "codex": 1791254453023
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_current_daemon_image",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 96
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 2,
+          "doctorSessionCount": true,
+          "cliRows": 90,
+          "filteredChildren": 6
+        },
+        "nativeRuntime": {
+          "pid": 1072865,
+          "startTicks": "26754140",
+          "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "provider": "codex",
+          "version": "0.160.1",
+          "referenceOnly": true,
+          "versionEvidence": "exact_sha256_and_release_path"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 96,
+            "nativeAfterRows": 96,
+            "cliRows": 96,
+            "nativeCounts": {
+              "running": 8,
+              "activityKnown": 96,
+              "classification": {
+                "unknown": 88,
+                "user": 2,
+                "child": 6
+              }
+            },
+            "checks": {
+              "membership": 96,
+              "title": 68,
+              "cwd": 96,
+              "runtime_unproved": 88,
+              "phase_unproved": 88,
+              "activity": 96,
+              "kind_unproved": 88,
+              "sessionId": 96,
+              "createdAt": 96,
+              "outcome": 95,
+              "outcomeAt": 95,
+              "title_unproved": 28,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 1,
+              "runtime": 8,
+              "phase": 8,
+              "kind": 8
+            },
+            "issues": []
+          }
+        }
+      },
+      {
+        "nativeBeforeAt": {
+          "codex": 1791254454753
+        },
+        "cliCollectedAt": 1791254456309,
+        "nativeAfterAt": {
+          "codex": 1791254457823
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_current_daemon_image",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 96
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 2,
+          "doctorSessionCount": true,
+          "cliRows": 90,
+          "filteredChildren": 6
+        },
+        "nativeRuntime": {
+          "pid": 1072865,
+          "startTicks": "26754140",
+          "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "provider": "codex",
+          "version": "0.160.1",
+          "referenceOnly": true,
+          "versionEvidence": "exact_sha256_and_release_path"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 96,
+            "nativeAfterRows": 96,
+            "cliRows": 96,
+            "nativeCounts": {
+              "running": 8,
+              "activityKnown": 96,
+              "classification": {
+                "unknown": 88,
+                "user": 2,
+                "child": 6
+              }
+            },
+            "checks": {
+              "membership": 96,
+              "title": 68,
+              "cwd": 96,
+              "runtime_unproved": 88,
+              "phase_unproved": 88,
+              "activity": 96,
+              "kind_unproved": 88,
+              "sessionId": 96,
+              "createdAt": 96,
+              "outcome": 95,
+              "outcomeAt": 95,
+              "title_unproved": 28,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 1,
+              "runtime": 8,
+              "phase": 8,
+              "kind": 8
+            },
+            "issues": []
+          }
+        }
+      }
+    ]
+  }
+}

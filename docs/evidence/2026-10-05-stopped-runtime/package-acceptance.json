@@ -1,0 +1,54 @@
+{
+  "status": "accepted",
+  "version": "0.2.0a11",
+  "sourceRevision": "06af32dc9f28aa5d356d6da6c0235ccc1056dac2",
+  "wheelSha256": "999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65",
+  "schemas": {
+    "snapshot": 2,
+    "watch": 2,
+    "write": 1
+  },
+  "wheelSourceBytesMatch": true,
+  "snap": {
+    "status": "accepted",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4",
+    "wheelSha256": "999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65",
+    "sourceRevision": "06af32dc9f28aa5d356d6da6c0235ccc1056dac2",
+    "profile": "claude-history",
+    "version": "0.2.0a11",
+    "sdk": "0.2.163",
+    "bundledExecutable": false,
+    "installedWheelBytesVerified": true,
+    "entrypointsVerified": true,
+    "schemaVersionsVerified": true,
+    "providerInvocations": 0,
+    "selectedLinksChanged": false
+  },
+  "starship": {
+    "status": "accepted",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4",
+    "wheelSha256": "999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65",
+    "sourceRevision": "06af32dc9f28aa5d356d6da6c0235ccc1056dac2",
+    "profile": "core",
+    "version": "0.2.0a11",
+    "sdk": null,
+    "bundledExecutable": false,
+    "installedWheelBytesVerified": true,
+    "entrypointsVerified": true,
+    "schemaVersionsVerified": true,
+    "providerInvocations": 0,
+    "selectedLinksChanged": false
+  },
+  "frozenReaderVersion": "0.2.0a3",
+  "frozenReaderPackage": "rofi-agent-plus 0.14.0a1",
+  "sourceChecks": {
+    "tests": 212,
+    "markdownFiles": 46,
+    "requiredCheck": "passed",
+    "scopedRuff": "passed"
+  },
+  "selectedLinksChanged": false,
+  "ordinaryProviderActions": 0,
+  "privateNamespaceCleanup": "accepted",
+  "ordinaryProviderSettingsUnchanged": true
+}
