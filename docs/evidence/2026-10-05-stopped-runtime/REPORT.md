@@ -1,7 +1,7 @@
 # Claude stopped runtime acceptance
 
-Date: 2026-10-05. Status: independent source and a11 packaged/native G2 accepted.
-Scoped pilot selection is pending. This follows the
+Date: 2026-10-05. Status: independent source and a11 packaged/native G2 accepted,
+followed by scoped two-host pilot selection. This follows the
 [execution plan](../../stopped-runtime-execution.md) and
 [CLI/native validation workflow](../../observation-validation-workflow.md).
 Observer producer acceptance precedes selection; frontend work is separate.
@@ -81,6 +81,34 @@ four samples per reader with two readers using the frozen Plus environment's
 Observer a3 validator, outside the checkout:
 [Snap](watch-snap-a3.json), [Starship](watch-starship-a3.json).
 This proves public compatibility, not graphical consumer acceptance.
+
+## Scoped selection
+
+After producer acceptance commit `a0e8282`, managed source commit `66fbdd3`
+updates only the two Observer selectors, the exact pilot tuple and its operations
+note. Starship's prior uncommitted migration work is preserved: the three exact
+selector/tuple inputs receive the scoped patch, and its older operations history
+receives the new checkpoint paragraph without replacement or a broad Git sync.
+The candidate gate independently verifies producer, unchanged Plus and its
+frozen a3 reader bytes/schemas before selection on both hosts.
+
+Snap's full chezmoi status/diff still hits the pre-existing SSH Plus external
+archive checksum mismatch; Starship's scoped diff is clean and its unrelated
+Claude drift is preserved. A private source containing only the two canonical
+Observer templates and machine mapping provides scoped diff, template rendering,
+dry run and apply without evaluating externals or hooks. Only Observer's read
+and write symlinks change; other-host selectors and consumer state stay intact.
+Both normal commands now select a11, independently rechecked through the public
+CLI and native reference. The recap rows remain parked, worker absent and age
+unchanged; three ordinary Claude workers remain running. The
+[selection receipt](selection.json) records exact targets and source state.
+
+Rollback snapshots are armed at
+`~/.local/share/agent-observer/rollback-20261005-stopped-live-HOST`; the established
+managed rollback helper can restore the previous selectors/tuple only after its
+current-source/link guards pass. Both previous and new artifacts remain installed.
+No frontend implementation, cache migration, provider policy change, public push
+or ordinary session restart accompanies this selection.
 
 ## Cleanup and remaining limits
 

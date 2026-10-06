@@ -15,7 +15,9 @@ baseline rollout section below is historical. The subsequent independent
 by the [operational resilience pass](evidence/2026-10-05-operational-resilience/REPORT.md),
 which selected Observer `0.2.0a8`. The subsequent independent
 [evaluation repair](evidence/2026-10-05-evaluation-repair/REPORT.md) selects
-`0.2.0a9` on both hosts, preserving the Plus artifact and frozen reader. Use
+`0.2.0a9` on both hosts. The subsequent
+[stopped-runtime checkpoint](evidence/2026-10-05-stopped-runtime/REPORT.md)
+selects `0.2.0a11`, preserving the Plus artifact and frozen reader. Use
 that report and the managed tuple for current selection and rollback. Wrapper association, silent Plus Resume, age presentation
 and graphical acceptance remain a separate consumer checkpoint.
 
@@ -23,11 +25,11 @@ and graphical acceptance remain a separate consumer checkpoint.
 
 | Component | Source | Version | Selected prefix on Snap and Starship |
 | --- | --- | --- | --- |
-| Observer | `f5067ba` | `0.2.0a9` | `/home/bryan/.local/share/agent-observer/0.2.0a9-b4563dc2a09df0e1` |
+| Observer | `06af32d` | `0.2.0a11` | `/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4` |
 | Plus | `90e5b4f` | `0.14.0a1` | `/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a` |
 
 Observer wheel SHA-256:
-`b4563dc2a09df0e198d6df8047b12b1355da66505a31714f19b01e237a552697`.
+`999d45171adfc4c4e62fe57b417614c0814de2a556693a6d23bb97b45a0a8b65`.
 Plus wheel SHA-256:
 `8ba19a0eba87944aec2848542fb3ddcb91f3ccc33790ba42565928e18daa497b`.
 Persistent wheels are under each project's `artifacts` directory beneath
@@ -39,7 +41,7 @@ SHA-256 `6aa793e6a0ba5ae37403f73999ea6e6d56bc8c21e5e4c7a10ac52cb946a45a3f`.
 The managed gate checks this dependency independently of the selected producer
 and verifies their unchanged public schemas before selecting the new producer.
 
-Observer passes 196 tests and its documentation gate; Plus previously passed
+Observer passes 212 tests and its documentation gate; Plus previously passed
 309 tests and its full local source gate. Independent installed fixture conformance,
 native entry/recovery and selected headless gates pass. Plus E8 evidence lives in its own checkout at
 `docs/evidence/2026-10-04-observer-v2/REPORT.md`; no Observer code was changed to
@@ -52,12 +54,12 @@ provider daemons or change the pilot links. The ordinary read/write commands
 now resolve to this same artifact on the pilot hosts:
 
 ```sh
-observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a9-b4563dc2a09df0e1
+observer_candidate=/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4
 "$observer_candidate/bin/agent-observer" --version
 "$observer_candidate/bin/agent-observer" list --host-scope snap
 "$observer_candidate/bin/agent-observer" doctor --host-scope snap --json
 "$observer_candidate/bin/agent-observer" watch --host-scope snap --interval 2 --count 3
-ssh starship /home/bryan/.local/share/agent-observer/0.2.0a9-b4563dc2a09df0e1/bin/agent-observer list --host-scope starship --provider codex
+ssh starship /home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer list --host-scope starship --provider codex
 ```
 
 For saved public fixtures, use `list/show/doctor/watch --input FILE|-` with no
@@ -75,8 +77,8 @@ and native TTY enter are deliberate actions with guarded context/effect results.
 New needs no existing row; Resume requires the complete current reference.
 Do not treat a prepared plan or historical Tmux label as current attachment
 authority. Current-store Codex saved discovery survives runtime failure, while
-offline Resume remains guarded. General questions, parked inference, exhaustive
-legacy discovery, blank/foreground Claude readiness, ephemeral helper ancestry
+offline Resume remains guarded. Foreground Claude questions, saved-only runtime
+absence, exhaustive legacy discovery, blank background readiness, ephemeral helper ancestry
 and current-client binding remain explicit unsupported/pending capabilities.
 
 ## Prior rollout baseline

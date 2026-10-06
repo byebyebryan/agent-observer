@@ -1,13 +1,14 @@
 # Public observation and read client contract v2
 
-Version: 2; package candidate `0.2.0a9`, independently accepted subset recorded
-in the [repair report](evidence/2026-10-05-evaluation-repair/REPORT.md). The `0.2.0a9`
+Version: 2; package candidate `0.2.0a11`, independently accepted subset recorded
+in the [stopped-runtime report](evidence/2026-10-05-stopped-runtime/REPORT.md). The `0.2.0a11`
 producer is selected on Snap and Starship after its independent artifact gate;
 Plus retains its schema-compatible `0.2.0a3` reader dependency. This is a semantic
 cutover from the [v1 pilot](snapshot-contract.md), with no v1 option on the CLI.
 Codex `0.160.1` daemon capability proof is separate from the `0.160.0` installed
 CLI proof. Selection does not extend the accepted artifact bounds; new images
-require independent proof. See the [repair execution](evaluation-repair-execution.md).
+require independent proof. See the [repair execution](evaluation-repair-execution.md)
+and subsequent [stopped-runtime execution](stopped-runtime-execution.md).
 
 ## Identity, states and source decisions
 
@@ -47,7 +48,8 @@ Plan mode held `waitingOnUserInput` additionally accepts blocked/question within
 that exact daemon image. Older Codex question predicates and
 Claude failure/cancellation outcome predicates remain unproved. The
 [independent package acceptance](evidence/2026-10-05-monitoring/REPORT.md)
-accepts this exact a10 candidate and leaves selected a9 unchanged.
+accepted the exact a10 candidate separately. The subsequent a11 gate retains
+those predicates and accepts the bounded parked predicate below before selection.
 
 Blank live background rows use `background_readiness_unproved`; native job
 state `blocked` without a proved typed input discriminator,
@@ -58,9 +60,16 @@ transcript carrying its parent's UUID never classifies that parent as a child;
 UUID-only runtime rows without conversation evidence remain unknown.
 
 Runtime is running, parked or unknown. Current loaded Codex context or verified
-Claude worker establishes running. Saved-only rows and worker absence remain
-unknown: the sources do not prove absence of every relevant runtime context.
-Parked is part of the vocabulary but is not enabled by these adapters yet.
+Claude worker establishes running. Saved-only rows and worker absence alone
+remain unknown. Exact accepted Claude 2.1.289 metadata additionally establishes
+parked from a unique exact-UUID retained done/stopped idle job with a valid
+nonfuture terminal clock, no pending/invalid in-flight counters, complete stable
+job/registry inventories and positively absent matching workers. Directory and
+inventory identities, job state and worker absence are rechecked before reporting
+parked; ambiguity, unsupported contexts, live workers and incomplete/changing
+reads prevent it. Failed jobs and other images have no new parked proof.
+Parked has a sampled runtime clock and phase unknown with `runtime_parked`;
+native outcome and conversation activity clocks remain separate and unchanged.
 Worker and attachment evidence are separate. Codex does not claim worker presence
 from a loaded server thread; current client binding remains unsupported.
 Runtime coverage explicitly names its scope: loaded_threads for Codex and
