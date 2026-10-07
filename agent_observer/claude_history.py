@@ -161,9 +161,9 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
     return rows, list(dict.fromkeys(raw_errors))
 
 
-def _kill_process(process: subprocess.Popen[bytes]) -> None:
+def _kill_process(process: subprocess.Popen[bytes], *, grouped=True) -> None:
     try:
-        if hasattr(os, "killpg"):
+        if grouped and hasattr(os, "killpg"):
             os.killpg(process.pid, signal.SIGKILL)
         else:
             process.kill()
@@ -173,7 +173,9 @@ def _kill_process(process: subprocess.Popen[bytes]) -> None:
         process.kill()
 
 
-def _run_worker(config_home: Path, *, timeout: float) -> tuple[bytes | None, str | None]:
+def _run_worker(config_home: Path, *, timeout: float, owned_worker_group=False) -> tuple[bytes | None, str | None]:
+    if owned_worker_group and (os.getpgrp() != os.getpid() or os.getsid(0) != os.getpid()):
+        return None, "history_source_failed"
     worker = Path(__file__).with_name("_claude_history_worker.py")
     env = {
         "CLAUDE_CONFIG_DIR": str(config_home),
@@ -190,7 +192,7 @@ def _run_worker(config_home: Path, *, timeout: float) -> tuple[bytes | None, str
             cwd=str(config_home),
             env=env,
             close_fds=True,
-            start_new_session=True,
+            start_new_session=not owned_worker_group,
         )
     except OSError:
         return None, "history_source_failed"
@@ -204,12 +206,12 @@ def _run_worker(config_home: Path, *, timeout: float) -> tuple[bytes | None, str
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                _kill_process(process)
+                _kill_process(process, grouped=not owned_worker_group)
                 process.wait()
                 return None, "history_timeout"
             ready = selector.select(remaining)
             if not ready:
-                _kill_process(process)
+                _kill_process(process, grouped=not owned_worker_group)
                 process.wait()
                 return None, "history_timeout"
             chunk = os.read(process.stdout.fileno(), 65536)
@@ -217,14 +219,14 @@ def _run_worker(config_home: Path, *, timeout: float) -> tuple[bytes | None, str
                 break
             output.extend(chunk)
             if len(output) > MAX_HELPER_OUTPUT_BYTES + 1:
-                _kill_process(process)
+                _kill_process(process, grouped=not owned_worker_group)
                 process.wait()
                 return None, "history_limit"
         remaining = max(0.0, deadline - time.monotonic())
         try:
             return_code = process.wait(timeout=remaining)
         except subprocess.TimeoutExpired:
-            _kill_process(process)
+            _kill_process(process, grouped=not owned_worker_group)
             process.wait()
             return None, "history_timeout"
         if return_code != 0:
@@ -234,7 +236,7 @@ def _run_worker(config_home: Path, *, timeout: float) -> tuple[bytes | None, str
         selector.close()
         process.stdout.close()
         if process.poll() is None:
-            _kill_process(process)
+            _kill_process(process, grouped=not owned_worker_group)
             process.wait()
 
 
@@ -243,6 +245,7 @@ def collect_saved_history(
     *,
     history_limit: int = DEFAULT_HISTORY_LIMIT,
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    owned_worker_group: bool = False,
 ) -> dict[str, object]:
     """Read bounded saved metadata without launching Claude or its daemon.
 
@@ -250,7 +253,8 @@ def collect_saved_history(
     sidechains and transcripts without usable top-level metadata.
     """
     if (
-        not isinstance(config_home, Path)
+        type(owned_worker_group) is not bool
+        or not isinstance(config_home, Path)
         or not config_home.is_absolute()
         or len(str(config_home)) > 4096
         or any(unicodedata.category(char).startswith("C") for char in str(config_home))
@@ -268,7 +272,7 @@ def collect_saved_history(
     if resolved != config_home:
         return _error("history_unsafe_entry")
 
-    output, failure = _run_worker(config_home, timeout=float(timeout))
+    output, failure = _run_worker(config_home, timeout=float(timeout), owned_worker_group=True) if owned_worker_group else _run_worker(config_home, timeout=float(timeout))
     if failure:
         return _error(failure)
     if output is None:

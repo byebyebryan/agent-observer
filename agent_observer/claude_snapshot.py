@@ -63,9 +63,11 @@ def collect_claude(
     host_scope: str,
     executable: Path = Path("/opt/claude-code/bin/claude"),
     include_history: bool = True,
+    owned_worker_group: bool = False,
 ):
     if (
         type(include_history) is not bool
+        or type(owned_worker_group) is not bool
         or not isinstance(config_home, Path)
         or not config_home.is_absolute()
         or len(str(config_home)) > 4096
@@ -228,7 +230,7 @@ def collect_claude(
         history = {"rows": [], "coverage": {"complete": False, "reason": "not_observed"}, "errors": []}
     elif "namespace" in result:
         try:
-            history = collect_saved_history(config_home)
+            history = collect_saved_history(config_home, owned_worker_group=True) if owned_worker_group else collect_saved_history(config_home)
         except Exception:
             history = {
                 "rows": [],

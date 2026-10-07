@@ -303,7 +303,7 @@ class Runtime:
 
     def _stop_worker(self, worker):
         process = worker.process
-        if process.poll() is None:
+        if process.returncode is None:
             # Each process is spawned in its own owned session; never a native
             # provider's process group. A still-unreaped child cannot be PID-reused.
             try:
@@ -314,6 +314,17 @@ class Runtime:
                 pass
         process.wait(timeout=2)
 
+    @staticmethod
+    def _exit_status(process):
+        if process.returncode is not None:
+            return process.returncode
+        # Keep the exited leader unreaped until its owned helper group has been
+        # stopped. EOF or a leader crash must not orphan a still-running helper.
+        result = os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+        if result is None:
+            return None
+        return result.si_status if result.si_code == os.CLD_EXITED else -result.si_status
+
     def _complete(self, worker, *, timed_out=False):
         provider = worker.job.provider
         process = worker.process
@@ -321,10 +332,10 @@ class Runtime:
             self.selector.unregister(process.stdout)
         except (KeyError, ValueError):
             pass
-        if timed_out:
-            self._stop_worker(worker)
+        exit_status = self._exit_status(process)
+        self._stop_worker(worker)
         success = False
-        if not timed_out and process.poll() == 0:
+        if not timed_out and exit_status == 0:
             try:
                 value = parse_snapshot(bytes(worker.buffer))
                 ttl = max(self.scheduler.timeout + 2 * self.scheduler.intervals[worker.job.component] + 1000, 3 * self.scheduler.intervals[worker.job.component])
@@ -349,7 +360,7 @@ class Runtime:
                     for worker in list(self.workers.values()):
                         if now >= worker.job.deadline:
                             self._complete(worker, timed_out=True)
-                        elif worker.eof and worker.process.poll() is not None:
+                        elif worker.eof and self._exit_status(worker.process) is not None:
                             self._complete(worker)
                     if self.collect:
                         for job in self.scheduler.start_due(now):

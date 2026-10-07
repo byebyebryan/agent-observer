@@ -21,3 +21,13 @@ The existing pure API 1 and observation snapshot/watch 3, write 1 remain the
 baseline. The new service protocol starts as a separately prerelease version 1.
 Accepted checkpoints, candidate identity and proof ownership are recorded here
 as execution advances. No service is selected or installed by this initial note.
+
+## Owned-worker repair checkpoint
+
+Review found that the nested Claude SDK metadata helper started its own session,
+so an outer service deadline could miss it. Service collection now keeps that
+helper in its verified owned group. Direct history collection retains its
+separate helper group. The supervisor also keeps an exited leader unreaped until
+owned group cleanup; a leader crash cannot orphan its helper. Actual subprocess
+tests exercise both deadline and crash cases. A fresh a2 candidate follows this
+repair; a1 evidence is retained separately.

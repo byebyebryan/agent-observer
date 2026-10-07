@@ -36,7 +36,7 @@ def main():
                 raise ValueError("service_worker_selector")
             os.environ.pop("CLAUDE_CONFIG_DIR", None)
         from agent_observer.claude_snapshot import collect_claude
-        native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history")
+        native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history", owned_worker_group=True)
     value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
     if component == "history":
         from agent_observer.workspace import enrich
