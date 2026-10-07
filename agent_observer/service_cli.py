@@ -96,6 +96,8 @@ def serve(argv=None):
     parser.add_argument("--runtime-interval", type=float, default=20)
     parser.add_argument("--history-interval", type=float, default=60)
     parser.add_argument("--collection-timeout", type=float, default=10)
+    parser.add_argument("--workspace-config", type=Path,
+                        help="startup-only local root/project mapping JSON; restart to reload")
     args = parser.parse_args(argv)
     try:
         if len(set(args.provider)) != len(args.provider):
@@ -103,6 +105,8 @@ def serve(argv=None):
         from .service_runtime import Runtime
         from .service_scheduler import Scheduler
         from .service_state import ServiceState
+        from .workspace import load_config
+        workspace_config = load_config(args.workspace_config) if args.workspace_config else None
         configs = {p: (str(args.codex_home), "explicit") if p == "codex" else (str(args.claude_home), "default" if args.claude_home == Path.home() / ".claude" and "CLAUDE_CONFIG_DIR" not in os.environ else "explicit") for p in args.provider}
         state = ServiceState(host_scope=args.host_scope, configs=configs)
         scheduler = Scheduler(configs, intervals={"runtime": int(args.runtime_interval * 1000), "history": int(args.history_interval * 1000)}, timeout_ms=int(args.collection_timeout * 1000))
@@ -111,7 +115,7 @@ def serve(argv=None):
         try:
             for s in handlers:
                 signal.signal(s, lambda *_args: stop.set())
-            Runtime(state, args.socket, scheduler=scheduler).run(stop)
+            Runtime(state, args.socket, scheduler=scheduler, workspace_config=workspace_config).run(stop)
         finally:
             for s, handler in handlers.items():
                 signal.signal(s, handler)

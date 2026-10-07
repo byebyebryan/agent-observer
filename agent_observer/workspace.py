@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import copy
+import os
+import stat
 import time
 from pathlib import Path, PurePosixPath
 
 from .contract import SCOPE, array, obj, text, validate_shape
+
+MAX_CONFIG_BYTES = 128 * 1024
 
 CONFIG = obj(
     roots=array(obj(key=text(128, pattern=SCOPE), path=text()), 64),
@@ -20,6 +24,21 @@ CONFIG = obj(
     ),
 )
 _CACHE = {}
+
+
+def load_config(path):
+    """Read one bounded regular configuration file; no live reload or stdin."""
+    from .bounded_json import decode_document
+
+    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_CLOEXEC)
+    with os.fdopen(fd, "rb") as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode):
+            raise ValueError("workspace_config_file_required")
+        if info.st_size > MAX_CONFIG_BYTES:
+            raise ValueError("workspace_config_limit")
+        value = decode_document(stream.read(MAX_CONFIG_BYTES + 1), max_bytes=MAX_CONFIG_BYTES)
+    return validate_config(value)
 
 
 def validate_config(config):

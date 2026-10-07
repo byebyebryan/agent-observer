@@ -26,7 +26,7 @@ ordinary provider-policy changes belong to this rollout.
 | Checkpoint | Exit | Status |
 | --- | --- | --- |
 | O0 baseline | Selected and candidate installed CLI/native comparisons, preservation bookends and host topology | Complete; old selected image gates lose supported native facts, while candidate matches its accepted subset |
-| O1 workspace | Startup-only bounded workspace configuration; same direct/history enrichment and leases | Pending |
+| O1 workspace | Startup-only bounded workspace configuration; same direct/history enrichment and leases | Source complete as a7; 283 tests and focused Ruff checks pass; installed gate remains O2 |
 | O2 artifact | Immutable wheel, installed read/write/service conformance and affected native proof | Pending |
 | O3 operations | Observer-only managed selectors/unit/manifest/check/apply/rollback; dry run and drift review | Pending |
 | O4 selection | Scoped rollout, normal commands, unit restart and rollback/reselection verified | Pending |
