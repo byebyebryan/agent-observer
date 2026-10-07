@@ -1,0 +1,73 @@
+{
+  "status": "accepted",
+  "unit": "ao-service-proof-a5-unit-snap",
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a5-7be6bb00833c8706",
+  "uid": 1000,
+  "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+  "clockDomain": "time:[4026531834]",
+  "sources": [
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 378826798,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 378766798
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 378947027,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 378767027
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    },
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 378826798,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 378766798
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 378947278,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 378767278
+        }
+      ],
+      "configHome": "/home/bryan/.claude",
+      "configHomeKind": "default",
+      "contextGeneration": 1,
+      "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+      "provider": "claude"
+    }
+  ],
+  "socketRemoved": true,
+  "nativeStoresVisible": true,
+  "enabledOrLingeringChanged": false,
+  "ordinaryProviderActions": false
+}

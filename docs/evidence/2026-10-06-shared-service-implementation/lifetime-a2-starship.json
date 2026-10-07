@@ -1,0 +1,72 @@
+{
+  "hostScope": "starship",
+  "provider": "codex",
+  "status": "pending_native_retirement",
+  "observedId": "01a113d7-ad05-7471-9960-dfc54f5a7603",
+  "controlId": "01a113d7-cba7-7ef0-b8a9-c9dd56fa1e27",
+  "observedUnloadedAtSeconds": null,
+  "controlBookends": [
+    {
+      "elapsedSeconds": 1790.3591123159858,
+      "loaded": false,
+      "pid": 4340,
+      "startTicks": "37455859",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1810.2410075239604,
+      "loaded": false,
+      "pid": 4340,
+      "startTicks": "37455859",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1890.4438421299565,
+      "loaded": false,
+      "pid": 4340,
+      "startTicks": "37455859",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1980.0089540119516,
+      "loaded": false,
+      "pid": 4340,
+      "startTicks": "37455859",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    }
+  ],
+  "finalObserved": {
+    "loaded": false,
+    "pid": 2299,
+    "startTicks": "37391366",
+    "artifact": {
+      "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "provider": "codex",
+      "version": "0.160.1",
+      "versionEvidence": "owned_release_path_and_inspected_sha256"
+    }
+  },
+  "observerCadenceSeconds": 20,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false
+}

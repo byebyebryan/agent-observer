@@ -1,0 +1,55 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a5-7be6bb00833c8706",
+  "warmingNullObserved": true,
+  "singletonRejected": true,
+  "absentClientDoesNotAutostart": true,
+  "absentReason": "service_io_unavailable",
+  "wrongHostRejected": true,
+  "wrongHostReason": "service_host_mismatch",
+  "forcedPublisherExitObservedAsEof": true,
+  "workersSelfExpire": [
+    {
+      "pid": 2634216,
+      "startTicks": "37918174"
+    }
+  ],
+  "staleOwnedEndpointRecovered": true,
+  "newIncarnationRequiresNewStream": true,
+  "oldServiceId": "58365363-faf3-40e2-a5bc-a2e344fc8477",
+  "newServiceId": "0604d221-2c37-4807-bf6b-b5d1112060e0",
+  "normalStopSocketRemoved": true,
+  "ordinaryProviderActions": false,
+  "initialSources": [
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 2,
+          "expiresBoottimeMs": 379192818,
+          "health": "current",
+          "inFlight": true,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 379179818
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379360029,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 379180029
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ]
+}

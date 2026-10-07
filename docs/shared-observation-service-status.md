@@ -1,70 +1,78 @@
 # Shared service implementation status
 
-Date: 2026-10-06. Regular implementation goal started from `dc92725`.
-Follow the [batch runbook](shared-observation-service-batch-plan.md).
-Normal provider sessions, hooks, selected Observer links and downstream clients
-remain outside this loop. Physical suspend is a separate pending gate.
+Date: 2026-10-06, with overnight evidence collected on 2026-10-07 UTC.
+The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
+defines B0–B8. Producer work and client development remain separate.
 
 | Checkpoint | Status |
 | --- | --- |
-| B0 preflight/context | Clean source; Snap/Starship CLI/tool/SSH preflight available; native topology rechecked during installed proof |
-| B1 service contract/reader | Pure bounded protocol/schema committed; transport client follows in B6 |
-| B2 scheduler/state/fan-out | Controlled sockets, leases, independent jobs and fragmented loss/resync implemented; native/resource gates remain B7 |
-| B3 owned collection | Bounded single-provider worker implemented; source-native runtime samples passed, installed proof follows |
-| B4 Codex cadence | Runtime skips saved catalog; Snap source sample 160 ms / 3 loaded rows; history 904 ms / 51 rows |
-| B5 Claude cadence | Runtime skips SDK history; Snap source sample 375 ms / 6 registry rows; source interpreter has no SDK, installed history proof follows |
-| B6 package/installed read client | A3 installed and byte/schema/entrypoint verified independently on Snap and Starship; explicit CLI and transient user-unit acceptance passed |
-| B7 native/resource/lifetime | A3 ordinary/native entry/age/resume/Codex recovery, Claude blocked/parked, forced publisher recovery and maximum-frame measurements passed; sustained/retirement checks running |
-| B8 final handoff/cleanup | Pending |
+| B0 preflight/context | Snap/Starship topology and isolation rechecked; ordinary sessions retained |
+| B1 contract | Separate pure service wire/schema/guard 1; API v1 unchanged |
+| B2 scheduler/state/fan-out | Actual controlled sockets, leases, independent jobs, bounded delivery and gap/resync accepted |
+| B3 owned collection | Bounded existing-only workers; nested SDK cleanup and independent deadline survive publisher death |
+| B4 Codex | Runtime/history split; ordinary and disposable native comparisons on both hosts |
+| B5 Claude | Runtime/SDK-history split; ordinary comparisons and disposable blocked/parked proofs on Snap |
+| B6 installed client | A6 byte/schema/entrypoint verification on both hosts; pure imports, installed state tests and transient user units accepted |
+| B7 operational/native | A6 native entry/age/resume/outage/recovery/outcome/retirement and Claude blocked/parked accepted; final 30-minute runs in progress |
+| B8 closure | Native fixtures cleaned; final resource receipt, publisher cleanup and handoff closure pending |
 
-The existing pure API 1 and observation snapshot/watch 3, write 1 remain the
-baseline. The new service protocol starts as a separately prerelease version 1.
-Accepted checkpoints, candidate identity and proof ownership are recorded here
-as execution advances. Candidates are installed separately; no normal service or
-Observer link has been selected.
+## Frozen candidate
 
-## Owned-worker repair checkpoint
+`0.4.0a6`, source `c8c3992984e2dfb9aad3d6812ee936babd9bf999`, wheel SHA256
+`3c2e5ae28d6e099f4fc8a9559832b813aa7a84286abaada3a815d1b0cf4b46e8`,
+installed at `/home/bryan/.local/share/agent-observer/0.4.0a6-3c2e5ae28d6e099f`
+on both hosts. Snap uses the source-only Claude-history profile; Starship uses
+core. The [manifest](../artifacts/observer-0.4.0a6.json) and
+[implementation evidence](evidence/2026-10-06-shared-service-implementation/REPORT.md)
+identify exact installed acceptance. API 1 snapshot/watch 3 and write 1 remain
+unchanged; service protocol 1 is separately prerelease.
 
-Review found that the nested Claude SDK metadata helper started its own session,
-so an outer service deadline could miss it. Service collection now keeps that
-helper in its verified owned group. Direct history collection retains its
-separate helper group. The supervisor also keeps an exited leader unreaped until
-owned group cleanup; a leader crash cannot orphan its helper. Actual subprocess
-tests exercise both deadline and crash cases. A fresh a2 candidate follows this
-repair; a1 evidence is retained separately.
+Normal Observer links still select a11. Agent Plus retains its previous artifact
+and wire 2. No persistent service, provider policy, hook, network bridge or
+frontend has been selected. The [producer handoff](shared-observation-service-handoff.md)
+gives explicit candidate commands and client obligations.
 
-A3 (`e39fbef`) also adds an independent hard worker deadline. A publisher SIGKILL
-cannot leave the owned metadata worker/helper group running indefinitely. The
-actual installed forced-exit/restart proof passed on both hosts.
+## Repairs accepted during validation
 
-## Installed checkpoint
+- A2 keeps the nested Claude SDK helper in its verified collection-worker group
+  and retains an exited leader until owned group cleanup. Direct SDK reads still
+  own their separate helper group.
+- A3 gives the worker its own hard deadline so a publisher SIGKILL cannot leave
+  its collection helper running indefinitely. Installed forced-exit/recovery
+  checks passed independently on both hosts.
+- A4 clears an older terminal outcome when a newer sample explicitly reports a
+  turn in progress, including after that negative sample expires. A genuinely
+  later terminal sample can restore the outcome.
+- A5 binds unloaded age/workspace to history rather than a healthy runtime
+  roster. Newer last-known activity is preserved when its lease expires instead
+  of reviving an older clock as current. Pure validation now checks coverage,
+  workspace and metadata lease dependencies.
 
-Final candidate so far: `0.4.0a3`, source `e39fbef02455dd791d9b57dea7679862763340db`,
-wheel SHA256 `e90edba4ceaf0609cfac0b382053165c544497305a1256b92233e1de5827fbfa`,
-prefix `/home/bryan/.local/share/agent-observer/0.4.0a3-e90edba4ceaf0609` on both
-hosts. Snap uses the Claude-history profile; Starship uses core.
+The A6 source check passed 278 tests with one optional JSON Schema skip, plus
+66 Markdown files. Independent JSON Schema validation of an actual installed
+frame passed separately. Installed state/scheduler tests passed on both hosts.
 
-See the [implementation evidence](evidence/2026-10-06-shared-service-implementation/REPORT.md)
-for scoped acceptance. Cached reads met the initial latency target. The first
-30-minute Snap run exceeded the 5-percent CPU tuning target; an explicit
-30-second runtime/120-second history configuration is under sustained retest.
-The default remains 20/60 seconds. Physical suspend and the native retirement
-predicate remain unaccepted while their respective gates are pending.
+## Measured operating boundary
 
-## Outcome reconciliation repair
+The packaged default is runtime 20/history 60 seconds, with a 10-second worker
+deadline. Snap's two-provider runs exceeded the initial five-percent CPU target
+at that cadence. Runtime 30/history 120 seconds met it on A3 and A4; Starship's
+single-provider default met it. These are explicit measured configurations,
+not real-time monitoring or whole-host idle CPU guarantees. Final A6 resource
+results remain pending until its sustained runs finish.
 
-Review found that an older history completion could override a newer runtime
-sample explicitly reporting a turn in progress; the reverse sampling order had
-the same problem. The latest explicit new-turn evidence now clears the older
-outcome, including after its lease expires. Only a subsequently sampled terminal
-outcome restores a completed/failed/cancelled value. API 1 and service schemas
-are unchanged. A4 will freeze and independently validate this producer repair.
+Current push distributes snapshots obtained through scheduled native reads.
+Native/file/hook signals, durable notification events, configured service project
+mapping, physical suspend/wake and downstream rollout retain separate gates.
+Claude saved history is partial; foreground question detection and native PTY
+`/exit` recognition remain unproved. See the handoff's gap matrix before selecting
+or extending this candidate.
 
-## History dependency repair
+## Retained gap-row repair
 
-A final expiry audit found that a healthy runtime roster could keep an unloaded
-row's history-derived clock/workspace current after history expired, and an older
-clock could replace a newer last-known clock when a component expired. A5 fixes
-both projection paths, keeps workspace bound to history, and strengthens the
-pure reader's coverage/workspace/metadata lease checks. It preserves newer
-last-known conversation evidence instead of promoting an older sample.
+A partial inventory may retain an older row for identity continuity. Its new
+component receipt must not make that retained row's old in-progress evidence a
+new observation. A6 excludes retained rows from the latest negative-outcome
+guard, allowing genuinely later terminal evidence to remain known. Both runtime/
+history component orders have a regression check. A6 is frozen and installed
+separately. A5 receipts remain exact earlier-artifact evidence.

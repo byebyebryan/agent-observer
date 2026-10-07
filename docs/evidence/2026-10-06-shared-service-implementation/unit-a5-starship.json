@@ -1,0 +1,44 @@
+{
+  "status": "accepted",
+  "unit": "ao-service-proof-a5-unit-starship",
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a5-7be6bb00833c8706",
+  "uid": 1000,
+  "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+  "clockDomain": "time:[4026531834]",
+  "sources": [
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379239836,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 379179836
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379360026,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 379180026
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ],
+  "socketRemoved": true,
+  "nativeStoresVisible": true,
+  "enabledOrLingeringChanged": false,
+  "ordinaryProviderActions": false
+}

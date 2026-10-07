@@ -1,0 +1,84 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a6-3c2e5ae28d6e099f",
+  "warmingNullObserved": true,
+  "singletonRejected": true,
+  "absentClientDoesNotAutostart": true,
+  "absentReason": "service_io_unavailable",
+  "wrongHostRejected": true,
+  "wrongHostReason": "service_host_mismatch",
+  "forcedPublisherExitObservedAsEof": true,
+  "workersSelfExpire": [
+    {
+      "pid": 2221254,
+      "startTicks": "37948366"
+    }
+  ],
+  "staleOwnedEndpointRecovered": true,
+  "newIncarnationRequiresNewStream": true,
+  "oldServiceId": "5066dbd7-ed61-432e-ac43-ccad841bfbf3",
+  "newServiceId": "418ae73e-6379-48b3-a7fe-f0d709b647a6",
+  "normalStopSocketRemoved": true,
+  "ordinaryProviderActions": false,
+  "initialSources": [
+    {
+      "components": [
+        {
+          "accepted": 2,
+          "attempts": 2,
+          "expiresBoottimeMs": 379496319,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 379483319
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379662083,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 379482083
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    },
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 2,
+          "expiresBoottimeMs": 379494846,
+          "health": "current",
+          "inFlight": true,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 379481846
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379662344,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 379482344
+        }
+      ],
+      "configHome": "/home/bryan/.claude",
+      "configHomeKind": "default",
+      "contextGeneration": 1,
+      "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+      "provider": "claude"
+    }
+  ]
+}

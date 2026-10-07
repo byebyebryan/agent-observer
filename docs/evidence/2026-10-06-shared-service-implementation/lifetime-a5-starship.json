@@ -1,0 +1,41 @@
+{
+  "hostScope": "starship",
+  "provider": "codex",
+  "status": "accepted",
+  "observedId": "01a11420-b051-7d70-90f7-853be4c34407",
+  "controlId": "01a11420-cf96-7c10-ae27-11acacc31c9b",
+  "observedUnloadedAtSeconds": 61.87807169399457,
+  "controlBookends": [
+    {
+      "elapsedSeconds": 92.19697823096067,
+      "probeReason": "observed_native_unload_plus_margin",
+      "loaded": false,
+      "pid": 6022,
+      "startTicks": "37934359",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    }
+  ],
+  "finalObserved": {
+    "loaded": false,
+    "pid": 1695,
+    "startTicks": "37918284",
+    "artifact": {
+      "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "provider": "codex",
+      "version": "0.160.1",
+      "versionEvidence": "owned_release_path_and_inspected_sha256"
+    }
+  },
+  "observerCadenceSeconds": 20,
+  "observedCompletedTurnAt": 1791339065000,
+  "controlCompletedTurnAt": 1791339068000,
+  "controlFirstProbeAfterNativeUnloadOrGrace": true,
+  "durationSeconds": 152.82095393096097,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false
+}

@@ -1,0 +1,85 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "independentOfFrontend": true,
+      "ownedDaemonFailureVisible": true,
+      "independentSavedDiscoverySurvivesFailure": true,
+      "offlineSavedResumeRejected": true,
+      "publicNewRestartsRuntime": true,
+      "exactSavedResumeAfterRecovery": true,
+      "recoveryPreservesConversationAge": true,
+      "offlineSavedResumeDirectly": "unsupported",
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "case": "native_source_failure_isolation",
+      "samples": [
+        {
+          "codexRuntimeCoverage": "unavailable",
+          "claudeRuntimeHealth": "current",
+          "claudeRuntimeAcceptedReads": 39,
+          "independentClaudeWaitingIds": [
+            "754ac912-3b24-4af1-852b-903d487678ec"
+          ]
+        }
+      ],
+      "otherProviderContinuesCurrent": true,
+      "readBackend": "installed_service",
+      "ordinaryProviderActions": false
+    }
+  ]
+}

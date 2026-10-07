@@ -1,0 +1,33 @@
+{
+  "manifestVersion": 2,
+  "package": "agent-observer",
+  "version": "0.4.0a6",
+  "sourceRevision": "c8c3992984e2dfb9aad3d6812ee936babd9bf999",
+  "wheel": "agent_observer-0.4.0a6-py3-none-any.whl",
+  "wheelSha256": "3c2e5ae28d6e099f4fc8a9559832b813aa7a84286abaada3a815d1b0cf4b46e8",
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-write",
+    "agent-observer-service"
+  ],
+  "apiVersion": 1,
+  "schemas": {
+    "snapshot": 3,
+    "watch": 3,
+    "write": 1
+  },
+  "claudeHistorySdk": "0.2.163",
+  "nativeContracts": [
+    "codex_managed_metadata_v1",
+    "claude_registry_job_metadata_v1",
+    "codex_tty_entry_v1",
+    "claude_background_attach_v1"
+  ],
+  "service": {
+    "protocol": 1,
+    "schemas": {
+      "request": 1,
+      "frame": 1
+    }
+  }
+}

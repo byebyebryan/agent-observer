@@ -1,0 +1,120 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "provider": "claude",
+      "hostScope": "snap",
+      "exitCommandObserved": false,
+      "viewerDetachPreservesWorker": true,
+      "nativeStopVerified": true,
+      "heldParkedSamples": [
+        {
+          "jobState": "done",
+          "tempo": "idle",
+          "workers": [],
+          "runtime": "parked",
+          "activityAt": 1791339059333
+        },
+        {
+          "jobState": "done",
+          "tempo": "idle",
+          "workers": [],
+          "runtime": "parked",
+          "activityAt": 1791339059333
+        },
+        {
+          "jobState": "done",
+          "tempo": "idle",
+          "workers": [],
+          "runtime": "parked",
+          "activityAt": 1791339059333
+        }
+      ],
+      "savedResumeCopiedIdentityExplicit": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "provider": "claude",
+      "hostScope": "snap",
+      "workingObserved": true,
+      "heldQuestionSamples": [
+        {
+          "nativeStatus": "waiting",
+          "nativeJobState": "working",
+          "nativeTempo": "blocked",
+          "phase": "blocked",
+          "reason": "question",
+          "activityAt": 1791339138114
+        },
+        {
+          "nativeStatus": "waiting",
+          "nativeJobState": "working",
+          "nativeTempo": "blocked",
+          "phase": "blocked",
+          "reason": "question",
+          "activityAt": 1791339138114
+        },
+        {
+          "nativeStatus": "waiting",
+          "nativeJobState": "working",
+          "nativeTempo": "blocked",
+          "phase": "blocked",
+          "reason": "question",
+          "activityAt": 1791339138114
+        }
+      ],
+      "questionNotAnswered": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "cliSha256": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb",
+      "workingObserved": true,
+      "nativePermissionPromptObserved": true,
+      "nativeJobState": "working",
+      "nativeJobTempo": "blocked",
+      "observedPhase": "blocked",
+      "heldApprovalPreservesAge": true,
+      "toolNotExecuted": true,
+      "approvalAutomaticallyAnswered": false,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    }
+  ]
+}

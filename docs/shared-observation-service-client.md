@@ -9,7 +9,8 @@ Start the candidate in the foreground with its full installed prefix:
 ```sh
 PREFIX=/absolute/candidate/prefix
 "$PREFIX/bin/agent-observer-service" serve --host-scope snap \
-  --provider codex --provider claude --socket /run/user/1000/ao-proof/read.sock
+  --provider codex --provider claude --runtime-interval 30 \
+  --history-interval 120 --socket /run/user/1000/ao-proof/read.sock
 "$PREFIX/bin/agent-observer" service status --host-scope snap \
   --socket /run/user/1000/ao-proof/read.sock
 "$PREFIX/bin/agent-observer" service list --host-scope snap \
@@ -55,14 +56,23 @@ The candidate defaults to runtime polling every 20 seconds and saved history
 deadline. Runtime/history lease lengths are independently derived as the larger
 of three intervals and the timeout plus two intervals plus one second. Failed
 reads invalidate their component immediately; heartbeats and cached requests
-never renew it. Retry uses bounded backoff. Faster intervals are explicit server
+never renew it. Retry uses bounded backoff. The measured Snap configuration is
+runtime 30/history 120 seconds, with
+90/360-second leases; Starship uses the packaged 20/60 seconds and 60/180-second
+leases. Snap's slower cadence reduces measured publisher/owned-worker CPU below
+the initial five-percent target. Monitoring and saved discovery can lag their
+respective cadence plus bounded read delay. Faster intervals are explicit server
 configuration and require separate resource measurements.
 
 Watch heartbeats occur every 10 seconds. The client defaults to a 15-second
 transport deadline and rejects current leases that expire during delivery. A
 custom consumer must also stop presenting current claims when its local lease
-expires or delivery becomes silent; a service heartbeat is only transport
-liveness. Native conversation activity and last-known clocks are preserved.
+expires or delivery becomes silent. With no public per-field receipt map,
+conservatively invalidate that source's current claims at the earliest expiry
+among its currently current/partial components, or receive a newly projected view;
+ignore already-stale components when computing the next deadline. In particular,
+a runtime receipt cannot renew cached history fields. A service heartbeat is only
+transport liveness. Native conversation activity and last-known clocks are preserved.
 Use current display time to calculate age; do not mutate collection/evidence
 clocks when drawing a cached view.
 
