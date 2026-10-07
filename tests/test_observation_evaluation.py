@@ -121,11 +121,52 @@ class ObservationEvaluationTest(unittest.TestCase):
                        "message": {"role": "user", "content": "<command-name>/exit</command-name>"}}
             path.write_text(json.dumps(command) + "\n")
             rows, gaps, _ = evaluation.native_history(home)
-            self.assertNotIn(SID, rows)
+            self.assertEqual(rows[SID]["kind"], "unknown")
+            self.assertIsNone(rows[SID]["activity"])
             self.assertIn("non_conversation_or_outside_tail:" + SID, gaps)
+            path.write_text(json.dumps({**command, "sessionId": "unbound"}) + "\n")
+            rows, _, _ = evaluation.native_history(home)
+            self.assertNotIn(SID, rows)
             prompt = {**command, "timestamp": "2026-10-05T00:00:00Z",
                       "message": {"role": "user", "content": "synthetic prompt"}}
             path.write_text(json.dumps(prompt) + "\n" + json.dumps(command) + "\n")
             rows, _, _ = evaluation.native_history(home)
             self.assertEqual(rows[SID]["kind"], "user")
             self.assertEqual(rows[SID]["activity"], 1791158400000)
+
+    def test_metadata_companion_preserves_conversation_in_either_path_order(self):
+        for conversation_directory in ("a", "z"):
+            with self.subTest(directory=conversation_directory), tempfile.TemporaryDirectory() as scratch:
+                home = Path(scratch)
+                for directory in ("a", "z"):
+                    project = home / "projects" / directory
+                    project.mkdir(parents=True)
+                    record = {"type": "mode", "sessionId": SID}
+                    if directory == conversation_directory:
+                        record = {"type": "user", "sessionId": SID,
+                                  "isSidechain": False, "cwd": "/tmp/project",
+                                  "timestamp": "2026-10-05T00:00:00Z",
+                                  "message": {"role": "user", "content": "synthetic prompt"}}
+                    (project / (SID + ".jsonl")).write_text(json.dumps(record) + "\n")
+                rows, _, _ = evaluation.native_history(home)
+                self.assertEqual(rows[SID]["kind"], "user")
+                self.assertEqual(rows[SID]["activity"], 1791158400000)
+                self.assertEqual(rows[SID]["paths"], 2)
+                self.assertEqual(rows[SID]["conversationPaths"], 1)
+                self.assertNotIn("conflictingConversation", rows[SID])
+
+    def test_multiple_conversations_leave_reference_metadata_unproved(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            for directory in ("a", "z"):
+                project = home / "projects" / directory
+                project.mkdir(parents=True)
+                record = {"type": "user", "sessionId": SID, "isSidechain": False,
+                          "cwd": "/tmp/" + directory, "timestamp": "2026-10-05T00:00:00Z",
+                          "message": {"role": "user", "content": "synthetic prompt"}}
+                (project / (SID + ".jsonl")).write_text(json.dumps(record) + "\n")
+            rows, _, _ = evaluation.native_history(home)
+            self.assertTrue(rows[SID]["conflictingConversation"])
+            self.assertIsNone(rows[SID]["activity"])
+            self.assertIsNone(rows[SID]["cwd"])
+            self.assertEqual(rows[SID]["kind"], "unknown")

@@ -1,0 +1,8 @@
+{
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a3-e90edba4ceaf0609",
+  "pureApi1Imports": true,
+  "api1DescriptorUnchanged": true,
+  "independentJsonSchemaActualFrame": true,
+  "serviceProtocol": 1,
+  "providerInvocationsForVerification": 0
+}
