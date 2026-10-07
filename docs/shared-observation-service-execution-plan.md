@@ -6,6 +6,10 @@ Read the [design](shared-observation-service-plan.md),
 [evidence](evidence/2026-10-06-shared-service/REPORT.md) first.
 This documentation checkpoint performs no service deployment or client migration.
 
+The [large-loop runbook](shared-observation-service-batch-plan.md) maps S0–S5
+to B0–B8 commit-sized steps, a proposed CLI/module layout, packaging dependencies,
+performance targets and unattended native/operational procedures.
+
 ## Sequence and ownership
 
 Observer owns all S0–S5 producer work and acceptance. Keep Agent Plus, networking,
