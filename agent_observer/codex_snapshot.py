@@ -86,6 +86,7 @@ def collect_codex(
     history_limit: int = 100,
     live_limit: int = 512,
     timeout: float = 10.0,
+    include_history: bool = True,
 ):
     if (
         not isinstance(config_home, Path)
@@ -94,6 +95,7 @@ def collect_codex(
         or any(unicodedata.category(char).startswith("C") for char in str(config_home))
         or not isinstance(host_scope, str)
         or not _SCOPE.fullmatch(host_scope)
+        or type(include_history) is not bool
         or type(history_limit) is not int
         or not 1 <= history_limit <= 1000
         or type(live_limit) is not int
@@ -263,48 +265,50 @@ def collect_codex(
                 row["work"]["health"] == "current" for row in rows.values()
             )
             runtime_rows_read = True
-            cursor = None
-            cursors = set()
-            saved_count = 0
             saved_ids = set()
-            catalog_limit = 1000
-            for _ in range(64):
-                client.timeout = remaining()
-                data, following = _page(
-                    client.list_threads(cursor=cursor, limit=min(100, catalog_limit - saved_count))
-                )
-                if len(data) > catalog_limit - saved_count:
-                    data = data[: catalog_limit - saved_count]
-                    following = following or "display_limit"
-                for payload in data:
-                    row = saved_thread_metadata(payload, **scope)
-                    identifier = row["identity"]["nativeId"]
-                    if identifier in saved_ids:
-                        raise SnapshotError("saved_identity_ambiguous")
-                    saved_ids.add(identifier)
-                    existing = rows.get(identifier)
-                    if existing and existing["nativeIds"] != row["nativeIds"]:
-                        raise SnapshotError("native_identity_mapping_conflict")
-                    rows.setdefault(identifier, row)
-                saved_count += len(data)
-                if following is None:
-                    result["coverage"]["saved"] = {
-                        "complete": True,
-                        "reason": "native_snapshot",
-                    }
-                    break
-                if saved_count >= catalog_limit:
-                    result["coverage"]["saved"] = {
-                        "complete": False,
-                        "reason": "catalog_limit",
-                    }
-                    break
-                if following in cursors:
-                    raise SnapshotError("inventory_cursor_cycle")
-                cursors.add(following)
-                cursor = following
-            else:
-                raise SnapshotError("inventory_page_limit")
+            if include_history:
+                cursor = None
+                cursors = set()
+                saved_count = 0
+                saved_ids = set()
+                catalog_limit = 1000
+                for _ in range(64):
+                    client.timeout = remaining()
+                    data, following = _page(
+                        client.list_threads(cursor=cursor, limit=min(100, catalog_limit - saved_count))
+                    )
+                    if len(data) > catalog_limit - saved_count:
+                        data = data[: catalog_limit - saved_count]
+                        following = following or "display_limit"
+                    for payload in data:
+                        row = saved_thread_metadata(payload, **scope)
+                        identifier = row["identity"]["nativeId"]
+                        if identifier in saved_ids:
+                            raise SnapshotError("saved_identity_ambiguous")
+                        saved_ids.add(identifier)
+                        existing = rows.get(identifier)
+                        if existing and existing["nativeIds"] != row["nativeIds"]:
+                            raise SnapshotError("native_identity_mapping_conflict")
+                        rows.setdefault(identifier, row)
+                    saved_count += len(data)
+                    if following is None:
+                        result["coverage"]["saved"] = {
+                            "complete": True,
+                            "reason": "native_snapshot",
+                        }
+                        break
+                    if saved_count >= catalog_limit:
+                        result["coverage"]["saved"] = {
+                            "complete": False,
+                            "reason": "catalog_limit",
+                        }
+                        break
+                    if following in cursors:
+                        raise SnapshotError("inventory_cursor_cycle")
+                    cursors.add(following)
+                    cursor = following
+                else:
+                    raise SnapshotError("inventory_page_limit")
             # Fetch a bounded metadata-only clock before applying the display
             # cap. Neither thread recency nor file modification substitutes for
             # conversation completion. A clock failure cannot erase live facts.
@@ -370,7 +374,7 @@ def collect_codex(
             "partial" if preserve_runtime else "stale" if rows else "unavailable"
         )
         result["coverage"]["saved"] = {"complete": False, "reason": "source_failed"}
-    if result["coverage"]["saved"].get("reason") == "source_failed":
+    if include_history and result["coverage"]["saved"].get("reason") == "source_failed":
         # This is the current metadata store, not a spawned legacy backend.
         # Its exact migration/schema/identity proof is independent of the peer.
         try:

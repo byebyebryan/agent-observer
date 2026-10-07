@@ -62,9 +62,11 @@ def collect_claude(
     *,
     host_scope: str,
     executable: Path = Path("/opt/claude-code/bin/claude"),
+    include_history: bool = True,
 ):
     if (
-        not isinstance(config_home, Path)
+        type(include_history) is not bool
+        or not isinstance(config_home, Path)
         or not config_home.is_absolute()
         or len(str(config_home)) > 4096
         or any(unicodedata.category(c).startswith("C") for c in str(config_home))
@@ -222,7 +224,9 @@ def collect_claude(
     # Saved history has its own failure and coverage boundary. A missing SDK,
     # oversized history tree, or failed metadata scan must not stale live
     # registry/job evidence above.
-    if "namespace" in result:
+    if not include_history:
+        history = {"rows": [], "coverage": {"complete": False, "reason": "not_observed"}, "errors": []}
+    elif "namespace" in result:
         try:
             history = collect_saved_history(config_home)
         except Exception:

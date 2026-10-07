@@ -291,6 +291,17 @@ class ClaudeCollectionTest(unittest.TestCase):
         self.assertIsNone(saved["presence"]["observedAt"])
         self.assertEqual(value["sourceHealth"], "current")
 
+    def test_runtime_cadence_does_not_invoke_history_worker(self):
+        with (
+            patch("agent_observer.claude_snapshot._verify_artifact", return_value=Inspection((self.binary.stat().st_dev, self.binary.stat().st_ino), CLAUDE)),
+            patch("agent_observer.claude_snapshot._namespace", return_value=("namespace", "boot")),
+            patch("agent_observer.claude_snapshot.snapshot", return_value=self.native()),
+            patch("agent_observer.claude_snapshot.collect_saved_history") as history,
+        ):
+            value = collect_claude(self.config, host_scope="snap", executable=self.binary, include_history=False)
+        history.assert_not_called()
+        self.assertEqual(value["coverage"]["saved"]["reason"], "not_observed")
+
     def test_history_failure_does_not_stale_healthy_native_evidence(self):
         self.history["errors"] = [{"code": "history_source_failed"}]
         self.history["coverage"] = {"complete": False, "reason": "source_failed"}
