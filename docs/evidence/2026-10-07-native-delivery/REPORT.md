@@ -1,6 +1,6 @@
 # Native-assisted Observer delivery
 
-Date: 2026-10-07. Status: P0 baseline accepted; subsequent gates pending.
+Date: 2026-10-07. Status: P0/P1 accepted; P2 controlled port checks accepted; native hint gates pending.
 Execution follows the [next delivery plan](../../observer-next-delivery-plan.md).
 
 ## Baseline
@@ -27,5 +27,19 @@ authentication/history and owned test processes must be removed before handoff.
 
 ## Checkpoints
 
-P1-P7 remain pending. Artifact acceptance, selected normal state and installed
-proofs will be recorded separately. No frontend change is part of this delivery.
+P1 selects the independently accepted a8 on both hosts. The [operations receipt](a8-operations.json)
+records exact artifact, profiles, unit/process identities, restart, rollback and
+reselection. Rollback snapshots remain in the stated private persistent paths.
+The helper now separately verifies the prior artifact, six-target render, exact
+interpreter/arguments and PID birth. Prior publisher warming does not obstruct
+ownership verification; the selected publisher must still pass readiness.
+Both chezmoi source checks passed. Provider settings and frontend pins are unchanged.
+The [fresh direct comparison](a8-direct.json) keeps independent gaps/races explicit.
+
+P2 adds the bounded epoch/component/reason pipe, owned helper cleanup, optional
+private diagnostics, 1-second runtime / 10-second history hint cooldowns and
+failure backoff that bursts cannot bypass. Controlled pipes prove obsolete epochs,
+malformed/oversized messages, one pending bit, fair history, unchanged observation
+receipts and publisher-death cleanup. No native hint candidate is selected.
+P3-P7 remain pending native/artifact/operational acceptance. No frontend change
+is part of this delivery.

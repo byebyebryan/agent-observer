@@ -15,6 +15,7 @@ import uuid
 from agent_observer.service_hints import Hints, MAX_BUFFER, message, parse_message
 from agent_observer.service_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
+from test_service_runtime import Running
 
 
 def stop_process(process):
@@ -134,8 +135,8 @@ class HintPortTest(unittest.TestCase):
             path.unlink()
             path.symlink_to(root / "unowned")
             self.port.changed = True
-            with self.assertRaisesRegex(ValueError, "diagnostics_scope"):
-                self.port.tick(3001)
+            self.port.tick(3001)
+            self.assertIsNone(self.port.diagnostics)
             self.assertFalse((root / "unowned").exists())
 
     def test_private_message_contract_rejects_extra_payload(self):
@@ -143,3 +144,46 @@ class HintPortTest(unittest.TestCase):
         self.assertEqual(parse_message(message(epoch, "runtime", "native_event"), epoch)["component"], "runtime")
         with self.assertRaises(ValueError):
             parse_message(json.dumps({"epoch": epoch, "component": "runtime", "reason": "native_event", "payload": "x"}).encode(), epoch)
+
+    def test_publisher_owns_feed_shutdown_and_hints_do_not_publish_a_view(self):
+        with Running(native_hints=True, hint_factory=self.factory(lambda epoch: message(epoch, "runtime", "source_ready"))) as server:
+            deadline = time.monotonic() + 2
+            while not server.runtime.hints.counts["codex"]["ready"] and time.monotonic() < deadline:
+                time.sleep(0.01)
+            self.assertTrue(server.runtime.hints.counts["codex"]["ready"])
+            self.assertIsNone(server.state.frame("status", 1)["snapshot"])
+            self.assertEqual(server.runtime.counts["workerStarts"], 0)
+            process = server.runtime.hints.sources["codex"].process
+        self.assertIsNotNone(process.returncode)
+
+    def test_real_passive_watcher_dies_after_publisher_sigkill(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = str(Path(__file__).resolve().parents[1])
+            script = ("import sys,time;sys.path.insert(0," + repr(root) + ");"
+                      "from agent_observer.service_hints import Hints;"
+                      "p=Hints._spawn('claude',(" + repr(directory) + ",'explicit'),'" + str(uuid.uuid4()) + "');"
+                      "p.stdout.readline();print(p.pid,flush=True);time.sleep(30)")
+            parent = subprocess.Popen([sys.executable, "-I", "-B", "-c", script], stdout=subprocess.PIPE)
+            child = None
+            try:
+                self.assertTrue(__import__('select').select([parent.stdout], [], [], 4)[0])
+                child = int(parent.stdout.readline())
+                before = Path(f"/proc/{child}/stat").read_text().rsplit(")", 1)[1].split()[19]
+                parent.kill()
+                parent.wait(timeout=2)
+                deadline = time.monotonic() + 3
+                while time.monotonic() < deadline:
+                    try:
+                        fields = Path(f"/proc/{child}/stat").read_text().rsplit(")", 1)[1].split()
+                    except FileNotFoundError:
+                        break
+                    if fields[0] == "Z" or fields[19] != before:
+                        break
+                    time.sleep(0.01)
+                else:
+                    self.fail("passive helper survived publisher death")
+            finally:
+                if parent.poll() is None:
+                    parent.kill()
+                    parent.wait(timeout=2)
+                parent.stdout.close()
