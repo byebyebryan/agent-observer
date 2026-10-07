@@ -105,6 +105,26 @@ class ClaudeHintsTest(unittest.TestCase):
         info = Path(f"/proc/self/fdinfo/{self.watcher.fd}").read_text()
         self.assertEqual(sum(line.startswith("inotify wd:") for line in info.splitlines()), previous)
 
+    def test_nested_transcript_writes_do_not_refresh_the_primary_catalog(self):
+        project = self.home / "projects/project"
+        project.mkdir()
+        self.assertEqual(self.events(), {"history"})
+        self.watcher.reconcile()
+        self.watcher.read()
+        nested = project / "session/subagents"
+        nested.mkdir(parents=True)
+        self.assertFalse(self.events())
+        self.assertFalse(self.watcher.rearm)
+        self.assertFalse(self.watcher.reconcile())
+        self.assertEqual(len(self.watcher.watches), 5)
+        with (nested / "agent-fixture.jsonl").open("w") as stream:
+            for _ in range(100):
+                stream.write("bounded fixture\n")
+                stream.flush()
+        self.assertFalse(self.events())
+        (project / "primary.jsonl").write_text("bounded fixture\n")
+        self.assertEqual(self.events(), {"history"})
+
     def test_watch_limit_permission_and_symlink_failures_recover(self):
         with self.assertRaisesRegex(ValueError, "watch_limit"):
             Watcher(self.home, max_watches=1)
@@ -133,4 +153,4 @@ class ClaudeHintsTest(unittest.TestCase):
             directory.mkdir()
             directory = directory / "nested"
         self.watcher.reconcile()
-        self.assertLessEqual(len(self.watcher.watches), 7)
+        self.assertEqual(len(self.watcher.watches), 5)
