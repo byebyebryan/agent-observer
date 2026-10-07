@@ -182,6 +182,7 @@ class Proof:
             if self.provider == "claude"
             else next(row["identity"] for row in rows if row["identity"]["nativeId"] not in prior)
         )
+        self.accepted_ref = ref
         empty = self.row(ref)
         assert empty["activity"]["at"] is None and empty["runtime"]["value"] == "running"
         os.write(client[1], b"Reply only with OK.\r")

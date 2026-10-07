@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Paired disposable Codex retirement proof; controlled stores, never ordinary.
 
-The control is read only at bootstrap and three retirement boundary bookends.
+The control is read only before detach and after the retirement grace window.
 The observed store is served continuously at the candidate's default cadence.
 """
 
@@ -52,10 +52,32 @@ def main():
     def service_snapshot(path):
         frame = proof.command(["agent-observer", "service", "snapshot", "--host-scope", host, "--socket", str(path)])
         return frame["snapshot"]
+    def settle(home, sid, client):
+        os.write(client[1], b"Reply only with OK.\r")
+        proof.pause(client, 1)
+        os.write(client[1], b"\r")
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            proof.pause(client, 0.3)
+            peer = NativeRPC(home)
+            try:
+                turns = peer.call("thread/turns/list", {"threadId": sid, "limit": 1,
+                                  "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
+                if turns and turns[0].get("status") == "completed" and type(turns[0].get("completedAt")) is int:
+                    assert turns[0].get("items") == [] and turns[0].get("itemsView") == "notLoaded"
+                    return turns[0]["completedAt"] * 1000
+            finally:
+                peer.close()
+        raise RuntimeError("lifetime_native_turn_pending")
     try:
         # The existing observed store may contain earlier controlled sessions;
         # select the new context by an exact native loaded-ID difference.
-        before = set(reference(proof.base / "codex")["loaded"])
+        try:
+            before = set(reference(proof.base / "codex")["loaded"])
+        except (ValueError, OSError):
+            bootstrap = make(proof.base / "codex")
+            proof.stop(bootstrap)
+            before = set(reference(proof.base / "codex")["loaded"])
         observed_client = make(proof.base / "codex")
         new = set(reference(proof.base / "codex")["loaded"]) - before
         assert len(new) == 1
@@ -64,6 +86,8 @@ def main():
         initial_control = reference(control)
         assert len(initial_control["loaded"]) == 1
         control_id = initial_control["loaded"][0]
+        observed_terminal_at = settle(proof.base / "codex", observed_id, observed_client)
+        control_terminal_at = settle(control, control_id, control_client)
         initial_observed = reference(proof.base / "codex", observed_id)
         assert initial_observed["artifact"]["sha256"] == initial_control["artifact"]["sha256"]
         path = proof.base / "runtime/lifetime/read.sock"
@@ -75,11 +99,14 @@ def main():
         started = time.monotonic()
         observed_unloaded_at = None
         controls, progress = [], -1
+        finish_at = 1985
         # Current primary docs describe a 30-minute no-subscriber grace. The
         # installed native outcome, including non-retirement, is recorded;
         # documentation alone never accepts the installed lifetime predicate.
-        bookends = [1790, 1810, 1890, 1980]
-        while time.monotonic() - started < 1985:
+        # A pre-grace control query could itself affect the predicate under
+        # investigation. Keep it quiet until the documented window plus margin.
+        bookends = [1890, 1980]
+        while time.monotonic() - started < finish_at:
             elapsed = time.monotonic() - started
             if service.poll() is not None:
                 raise RuntimeError("lifetime_service_exited")
@@ -88,13 +115,24 @@ def main():
                 if snapshot is None:
                     time.sleep(0.2)
                     continue
-                row = next(r for r in snapshot["sessions"] if r["identity"]["nativeId"] == observed_id)
-                if row["runtime"]["value"] != "running" and observed_unloaded_at is None:
+                row = next((r for r in snapshot["sessions"] if r["identity"]["nativeId"] == observed_id), None)
+                source = next(s for s in snapshot["sources"] if s["provider"] == "codex")
+                absent = row is None and source["coverage"]["runtime"]["status"] == "complete"
+                if (absent or row is not None and row["runtime"]["value"] != "running") and observed_unloaded_at is None:
                     native = reference(proof.base / "codex", observed_id)
                     if not native["loaded"]:
                         observed_unloaded_at = elapsed
             except (StopIteration, RuntimeError, OSError):
                 pass
+            # An installed native unload is stronger evidence of its actual
+            # window than a documented upper grace period. Probe the quiet
+            # control only after that positive predicate plus a bounded margin.
+            # If both have retired, retain another minute of continuous reads.
+            if observed_unloaded_at is not None and not controls and elapsed >= observed_unloaded_at + 30:
+                controls.append({"elapsedSeconds": elapsed, "probeReason": "observed_native_unload_plus_margin",
+                                 **reference(control, control_id)})
+                if not controls[-1]["loaded"]:
+                    finish_at = min(finish_at, elapsed + 60)
             if bookends and elapsed >= bookends[0]:
                 bookends.pop(0)
                 controls.append({"elapsedSeconds": elapsed, **reference(control, control_id)})
@@ -109,6 +147,10 @@ def main():
                    "observedId": observed_id, "controlId": control_id,
                    "observedUnloadedAtSeconds": observed_unloaded_at, "controlBookends": controls,
                    "finalObserved": final_observed, "observerCadenceSeconds": 20,
+                   "observedCompletedTurnAt": observed_terminal_at,
+                   "controlCompletedTurnAt": control_terminal_at,
+                   "controlFirstProbeAfterNativeUnloadOrGrace": True,
+                   "durationSeconds": time.monotonic() - started,
                    "ordinaryProviderActions": False, "terminalOutputPersisted": False}
         (root / "lifetime-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
         print(json.dumps({"hostScope": host, "stage": "lifetime", "status": receipt["status"]}), flush=True)

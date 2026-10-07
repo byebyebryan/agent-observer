@@ -9,6 +9,7 @@ from agent_observer.activity import codex_activity, codex_outcome
 from agent_observer.contract import ContractError, validate_snapshot
 from agent_observer.service_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
+from agent_observer.workspace import context
 
 
 def provider_snapshot(provider):
@@ -147,6 +148,32 @@ class ServiceStateTest(unittest.TestCase):
                 row = self.state.snapshot["sessions"][0]
                 self.assertEqual(row["outcome"]["value"], "completed")
                 self.assertEqual(row["outcome"]["observedAt"], 4000)
+
+    def test_newer_activity_remains_last_known_when_its_component_expires(self):
+        for older, newer in (("history", "runtime"), ("runtime", "history")):
+            with self.subTest(older=older):
+                self.setUp()
+                self.accept("codex", older, value=self.turn("completed", 1, 2))
+                self.now += 1
+                self.accept("codex", newer, ttl=1000, value=self.turn("inProgress", 3, None))
+                self.now += 1001
+                row = self.state.frame("view", 1)["snapshot"]["sessions"][0]
+                self.assertIsNone(row["activity"]["at"])
+                self.assertEqual(row["activity"]["lastKnownAt"], 3000)
+                self.assertEqual(row["activity"]["health"], "stale")
+
+    def test_runtime_roster_does_not_renew_unloaded_history_fields(self):
+        history = self.turn("completed", 1, 2)
+        history["sessions"][0]["workspace"] = context("/fixture/codex", {"roots": [], "projects": []})
+        self.accept("codex", "history", ttl=1000, value=history)
+        runtime = provider_snapshot("codex")
+        runtime["sessions"] = []
+        self.accept("codex", "runtime", value=runtime)
+        self.now += 1001
+        row = self.state.frame("view", 1)["snapshot"]["sessions"][0]
+        self.assertIsNone(row["activity"]["at"])
+        self.assertEqual(row["activity"]["lastKnownAt"], 2000)
+        self.assertIsNone(row["workspace"])
 
 
 class SchedulerTest(unittest.TestCase):

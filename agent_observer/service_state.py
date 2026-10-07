@@ -193,7 +193,12 @@ class ServiceState:
             hi_rows = {identity_key(r["identity"]): r for r in history.data["sessions"]} if history.data else {}
             for key in rt_rows.keys() | hi_rows.keys():
                 raw = rt_rows.get(key) or hi_rows[key]
-                row = stale_row(raw, runtime=key not in rt_rows or not runtime.current(), metadata=not runtime.current())
+                has_runtime = key in rt_rows
+                row = stale_row(raw, runtime=not has_runtime or not runtime.current(),
+                                metadata=not (runtime.current() if has_runtime else history.current()))
+                # Workspace is collected only by the history component, even
+                # when the runtime roster remains healthy.
+                row["workspace"] = None
                 saved = hi_rows.get(key)
                 if saved:
                     saved = stale_row(saved, runtime=True, metadata=not history.current())
@@ -205,6 +210,20 @@ class ServiceState:
                     for name in ("activity", "outcome"):
                         current = row[name]
                         candidate = saved[name]
+                        if name == "activity":
+                            rt_activity = rt_rows[key][name] if key in rt_rows else {}
+                            hi_activity = hi_rows[key][name]
+                            rt_clock = rt_activity.get("at") if rt_activity.get("at") is not None else rt_activity.get("lastKnownAt")
+                            hi_clock = hi_activity.get("at") if hi_activity.get("at") is not None else hi_activity.get("lastKnownAt")
+                            rt_known = rt_clock is not None and "retained_after_gap" not in rt_rows[key]["metadataIssues"]
+                            hi_known = hi_clock is not None and "retained_after_gap" not in hi_rows[key]["metadataIssues"]
+                            # A lease expiry does not move conversation history
+                            # backward or promote an older clock to current.
+                            if rt_known and (not hi_known or runtime.sampledBoottimeMs >= history.sampledBoottimeMs):
+                                continue
+                            if hi_known:
+                                row[name] = candidate
+                                continue
                         if name == "outcome":
                             # In-progress metadata is explicit negative knowledge
                             # about the latest turn, despite its unknown result.
