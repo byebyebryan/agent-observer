@@ -13,6 +13,18 @@ HELPER = runpy.run_path(str(ROOT / "scripts/candidate-artifact"))
 
 
 class CandidateArtifactTest(unittest.TestCase):
+    def test_service_manifest_is_a_separate_versioned_extension(self):
+        manifest = HELPER["document"](ROOT / "artifacts/observer-0.3.0a2.json")
+        manifest.update(manifestVersion=2, entrypoints=["agent-observer", "agent-observer-write", "agent-observer-service"], service={"protocol": 1, "schemas": {"request": 1, "frame": 1}})
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "manifest.json"
+            path.write_text(json.dumps(manifest))
+            self.assertEqual(HELPER["document"](path)["service"]["protocol"], 1)
+            manifest["schemas"]["service"] = 1
+            path.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                HELPER["document"](path)
+
     def test_rejected_wheel_has_no_install_effect(self):
         with tempfile.TemporaryDirectory() as root:
             wheel = Path(root) / "invalid.whl"

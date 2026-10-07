@@ -468,7 +468,7 @@ def cli_call(cli, argv, snapshot=None):
     process = subprocess.run([str(cli), *argv], input=snapshot, capture_output=True, cwd="/tmp", timeout=40)
     if process.returncode:
         raise ValueError("installed_cli_failed")
-    if len(process.stdout) > 8 * 1024 * 1024:
+    if len(process.stdout) > 8 * 1024 * 1024 + 16384:
         raise ValueError("installed_cli_output_limit")
     return process.stdout
 
@@ -577,6 +577,7 @@ def main():
     parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
     parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
     parser.add_argument("--rounds", type=int, choices=range(1, 5), default=2)
+    parser.add_argument("--service-socket", type=Path, help="compare explicit cached service output; no autostart")
     parser.add_argument("--codex-reference-sha256", help="optional operator guard for the inspected daemon hash; compatibility is contract based")
     args = parser.parse_args()
     for variable, suffix in (("CODEX_HOME", ".codex"), ("CLAUDE_CONFIG_DIR", ".claude")):
@@ -596,13 +597,21 @@ def main():
     try:
         for _ in range(args.rounds):
             before = native()
-            argv = ["snapshot", "--host-scope", args.host_scope]
-            for provider in args.provider:
-                argv += ["--provider", provider]
+            argv = ["service", "snapshot", "--socket", str(args.service_socket), "--host-scope", args.host_scope] if args.service_socket else ["snapshot", "--host-scope", args.host_scope]
+            if args.service_socket is None:
+                for provider in args.provider:
+                    argv += ["--provider", provider]
             payload = cli_call(args.cli, argv)
             snapshot = json.loads(payload)
+            service = None
+            if args.service_socket:
+                if snapshot.get("serviceProtocol") != 1 or snapshot.get("hostScope") != args.host_scope or snapshot.get("uid") != os.geteuid() or snapshot.get("snapshot") is None:
+                    raise ValueError("service_scope_unavailable")
+                service = {k: snapshot[k] for k in ("serviceProtocol", "serviceId", "bootId", "hostScope", "viewRevision", "emittedAt", "emittedBoottimeMs", "clockDomain", "sources")}
+                snapshot = snapshot["snapshot"]
+                payload = json.dumps(snapshot, separators=(",", ":")).encode()
             after = native()
-            samples.append({"nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned", "runtimeGaps") if k in v} for p, v in after.items()}})
+            samples.append({**({"service": service} if service else {}), "nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned", "runtimeGaps") if k in v} for p, v in after.items()}})
     finally:
         if client is not None:
             client.close()

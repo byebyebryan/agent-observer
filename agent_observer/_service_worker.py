@@ -1,8 +1,8 @@
 """Owned single-provider metadata collector; never a native provider launcher."""
 
-from pathlib import Path
 import os
 import sys
+from pathlib import Path
 
 # Invoked by an installed/source absolute file with Python -I. Import only its
 # own package tree, never the working directory or user Python search path.

@@ -22,11 +22,14 @@ def document(path):
         raise ValueError("manifest_limit")
     value = json.loads(path.read_text())
     if (
-        value.get("manifestVersion") != 1
+        value.get("manifestVersion") not in {1, 2}
         or value.get("package") != "agent-observer"
         or not re.fullmatch(r"[0-9a-f]{64}", value.get("wheelSha256", ""))
         or not re.fullmatch(r"[0-9a-f]{40}", value.get("sourceRevision", ""))
-        or value.get("entrypoints") != ["agent-observer", "agent-observer-write"]
+        or value.get("entrypoints") != (["agent-observer", "agent-observer-write"] if value.get("manifestVersion") == 1 else ["agent-observer", "agent-observer-write", "agent-observer-service"])
+        or value.get("manifestVersion") == 2 and value.get("service") != {"protocol": 1, "schemas": {"request": 1, "frame": 1}}
+        or value.get("manifestVersion") == 2 and value.get("schemas") != {"snapshot": 3, "watch": 3, "write": 1}
+        or value.get("manifestVersion") == 1 and "service" in value
         or value.get("schemas") not in (
             {"snapshot": 2, "watch": 2, "write": 1},
             {"snapshot": 3, "watch": 3, "write": 1},
@@ -124,6 +127,17 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         )
         if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"]["write"]}:
             raise ValueError("schema_mismatch")
+    if manifest["manifestVersion"] == 2:
+        service = json.loads(run([str(prefix / "bin/agent-observer"), "service", "api"]))
+        if service.get("serviceProtocol") != manifest["service"]["protocol"] or service.get("observationApiVersion") != 1 or service.get("embeddedSnapshotVersion") != 3:
+            raise ValueError("service_api_mismatch")
+        version = run([str(prefix / "bin/agent-observer-service"), "--version"]).decode().strip()
+        if version != "agent-observer-service " + manifest["version"]:
+            raise ValueError("service_version_mismatch")
+        for kind, version in manifest["service"]["schemas"].items():
+            schema = json.loads(run([str(prefix / "bin/agent-observer"), "service", "schema", "--kind", kind]))
+            if schema["properties"]["serviceProtocol"] != {"const": version}:
+                raise ValueError("service_schema_mismatch")
     return {
         "status": "accepted",
         "prefix": str(prefix),
@@ -134,6 +148,7 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         "installedWheelBytesVerified": True,
         "entrypointsVerified": True,
         "schemaVersionsVerified": True,
+        **({"serviceProtocolVerified": True} if manifest["manifestVersion"] == 2 else {}),
         "providerInvocations": 0,
         "selectedLinksChanged": False,
     }

@@ -6,7 +6,6 @@ import errno
 import fcntl
 import json
 import os
-from pathlib import Path
 import selectors
 import signal
 import socket
@@ -15,8 +14,9 @@ import struct
 import subprocess
 import sys
 from dataclasses import dataclass, field
+from pathlib import Path
 
-from .contract import MAX_SNAPSHOT_BYTES, ContractError, canonical, parse_snapshot
+from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
 from .service_scheduler import Scheduler
 

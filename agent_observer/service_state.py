@@ -11,8 +11,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .contract import (
-    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, ContractError, canonical, identity_key,
-    store_namespace, validate_snapshot,
+    MAX_SESSIONS,
+    MAX_SNAPSHOT_BYTES,
+    ContractError,
+    canonical,
+    identity_key,
+    store_namespace,
+    validate_snapshot,
 )
 from .service_contract import validate_frame
 
