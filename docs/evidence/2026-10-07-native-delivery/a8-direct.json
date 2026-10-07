@@ -1,0 +1,306 @@
+{
+  "snap": {
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+    "cliVersion": "agent-observer 0.4.0a8",
+    "samples": [
+      {
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 54975061,
+            "runtimeGaps": []
+          }
+        },
+        "sourceHealth": "current",
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 31,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 6,
+              "phase_unproved": 28,
+              "activity": 29,
+              "kind": 30,
+              "runtime_unproved": 25,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 2
+            },
+            "issues": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "field": "phase",
+                "result": "sampling_race"
+              },
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "field": "activity",
+                "result": "sampling_race"
+              },
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 54975061,
+            "runtimeGaps": []
+          }
+        },
+        "sourceHealth": "current",
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 31,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 6,
+              "phase_unproved": 28,
+              "activity": 30,
+              "kind": 30,
+              "runtime_unproved": 25,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 3
+            },
+            "issues": [
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "starship": {
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+    "cliVersion": "agent-observer 0.4.0a8",
+    "samples": [
+      {
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        },
+        "sourceHealth": "current",
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 90,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 3,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "issues": []
+          }
+        }
+      },
+      {
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        },
+        "sourceHealth": "current",
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 90,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 3,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "issues": []
+          }
+        }
+      }
+    ]
+  }
+}

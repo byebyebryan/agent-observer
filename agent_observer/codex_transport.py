@@ -273,6 +273,16 @@ class PassiveClient:
         self.initialized = True
         return result
 
+    def notification(self):
+        """Receive bounded unsolicited metadata; never subscribe or acknowledge.
+
+        The caller waits for socket readability and owns reconnect after any
+        timeout/protocol error, because an incomplete frame cannot be reused.
+        """
+        if not self.initialized:
+            raise TransportError("not_initialized")
+        return self._message(time.monotonic() + self.timeout)
+
     def list_threads(self, *, cursor=None, limit=100):
         if type(limit) is not int or not 1 <= limit <= 100:
             raise TransportError("invalid_limit")

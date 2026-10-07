@@ -56,6 +56,7 @@ class Hints:
         self.diagnostics = Path(diagnostics) if diagnostics else None
         self.last_diagnostic = -1000
         self.changed = True
+        self.diagnostic_parent = None
         if self.diagnostics:
             path = self.diagnostics
             if not path.is_absolute() or path.parent.resolve() != path.parent:
@@ -63,6 +64,7 @@ class Hints:
             info = path.parent.stat()
             if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
                 raise ValueError("service_hint_diagnostics_scope")
+            self.diagnostic_parent = info.st_dev, info.st_ino
             if path.exists() or path.is_symlink():
                 info = path.lstat()
                 if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o600:
@@ -171,15 +173,24 @@ class Hints:
         # Bounded operator diagnostics stay outside strict public frames. A
         # replaced/foreign path is never followed or overwritten.
         path = self.diagnostics
-        if path.exists() or path.is_symlink():
-            info = path.lstat()
-            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o600:
+        try:
+            parent = path.parent.lstat()
+            if (not stat.S_ISDIR(parent.st_mode) or (parent.st_dev, parent.st_ino) != self.diagnostic_parent
+                    or parent.st_uid != os.geteuid() or stat.S_IMODE(parent.st_mode) != 0o700):
                 raise ValueError("service_hint_diagnostics_scope")
-        with tempfile.TemporaryDirectory(prefix=".hints-", dir=path.parent) as directory:
-            temporary = Path(directory) / "diagnostic"
-            temporary.write_text(json.dumps({"diagnosticVersion": 1, "providers": self.counts}) + "\n")
-            temporary.chmod(0o600)
-            os.replace(temporary, path)
+            if path.exists() or path.is_symlink():
+                info = path.lstat()
+                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o600:
+                    raise ValueError("service_hint_diagnostics_scope")
+            with tempfile.TemporaryDirectory(prefix=".hints-", dir=path.parent) as directory:
+                temporary = Path(directory) / "diagnostic"
+                temporary.write_text(json.dumps({"diagnosticVersion": 1, "providers": self.counts}) + "\n")
+                temporary.chmod(0o600)
+                os.replace(temporary, path)
+        except (ValueError, OSError):
+            # Losing optional diagnostics cannot take collection/IPC down.
+            self.diagnostics = None
+            return
         self.changed = False
         self.last_diagnostic = now
 
