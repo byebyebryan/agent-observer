@@ -1,6 +1,10 @@
 # Shared service implementation status
 
-Date: 2026-10-06, with overnight evidence collected on 2026-10-07 UTC.
+Historical B0–B8 candidate record: 2026-10-06, with overnight evidence collected
+on 2026-10-07 UTC. The [2026-10-07 operational baseline](observer-operations-execution.md)
+now selects a7 and a persistent Observer-only user unit on both hosts, adds
+startup workspace configuration and accepts normal-unit restart/crash/rollback.
+Current resource/final comparisons are in [the operational report](evidence/2026-10-07-observer-operations/REPORT.md).
 The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
 defines B0–B8. Producer work and client development remain separate.
 
@@ -27,10 +31,10 @@ core. The [manifest](../artifacts/observer-0.4.0a6.json) and
 identify exact installed acceptance. API 1 snapshot/watch 3 and write 1 remain
 unchanged; service protocol 1 is separately prerelease.
 
-Normal Observer links still select a11. Agent Plus retains its previous artifact
-and wire 2. No persistent service, provider policy, hook, network bridge or
-frontend has been selected. The [producer handoff](shared-observation-service-handoff.md)
-gives explicit candidate commands and client obligations.
+At the earlier B8 closure, normal Observer links still selected a11. Agent Plus retains its previous artifact
+and wire 2. That B8 batch selected no persistent service, provider policy, hook, network
+bridge or frontend. The later operational gate selects only Observer. The [producer handoff](shared-observation-service-handoff.md)
+gives current a7 commands and client obligations.
 
 ## Repairs accepted during validation
 
@@ -65,8 +69,9 @@ idle CPU guarantees. Native provider/client/reference CPU is outside the measure
 publisher/owned-descendant scope.
 
 Current push distributes snapshots obtained through scheduled native reads.
-Native/file/hook signals, durable notification events, configured service project
-mapping, physical suspend/wake and downstream rollout retain separate gates.
+Native/file/hook signals, durable notification events, physical suspend/wake
+and downstream rollout retain separate gates. A7 closes configured service
+project mapping and normal Observer selection after independent proof.
 Claude saved history is partial; foreground question detection and native PTY
 `/exit` recognition remain unproved. See the handoff's gap matrix before selecting
 or extending this candidate.

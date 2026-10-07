@@ -1,0 +1,38 @@
+{
+  "hostScope": "snap",
+  "cases": [
+    {
+      "provider": "codex",
+      "configHomeKind": "explicit",
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "status": "accepted",
+      "schemaVersion": 1,
+      "reason": null,
+      "opaquePlanPersisted": false
+    },
+    {
+      "provider": "claude",
+      "configHomeKind": "default",
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "status": "rejected",
+      "schemaVersion": 1,
+      "reason": "unsupported_resume_route",
+      "opaquePlanPersisted": false
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "executeOrEnterCalled": false,
+  "nativeTuiEntryProved": false
+}

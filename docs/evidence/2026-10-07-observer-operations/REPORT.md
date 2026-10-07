@@ -2,8 +2,8 @@
 
 Date: 2026-10-07. Status: active producer/operations execution. See
 [the execution record](../../observer-operations-execution.md) for scope and gates.
-Opening receipts retain their original scope. Artifact acceptance below precedes
-normal selection, which is still pending at O2/O3.
+Opening receipts retain their original scope. O2/O3 acceptance below precedes
+the accepted O4 selection and completed O5 sustained checks.
 
 ## Opening independent comparison
 
@@ -49,7 +49,8 @@ select `0.2.0a11`; Plus selects `0.14.0a1`. Neither host has a selected
 `agent-observer.service` at this checkpoint. Copied proof credentials and raw
 native/provider payloads must never enter evidence.
 
-Selection, recovery, resource measurements and final acceptance are pending.
+At the opening checkpoint selection, recovery and resource measurements were
+pending; subsequent gates below record independent acceptance.
 
 ## Immutable a7 acceptance
 
@@ -102,8 +103,115 @@ authentication, and clears parent-agent environment identifiers. The successful
 fresh proof uses the new directory isolation. Historical failed attempts are not
 promoted to accepted evidence.
 
-ChezmoI source checkpoint `1d42b72` adds an independent six-target Observer
+Chezmoi source checkpoint `1d42b72` adds an independent six-target Observer
 selector and owned-unit apply/restore tool. Full source validation, artifact/unit
 rendering and scoped dry runs pass. Starship's older source contains preexisting
 uncommitted pilot/worker migrations; the scoped patch preserves them. Source
 acceptance does not yet claim normal live selection or physical suspend/wake.
+
+## Normal selection and operational recovery
+
+Managed source commits `1d42b72`, `18a0a69`, `3f29e31` and `6ff443f` select the
+Observer-only tuple and fix scoped parent creation, validated reselection after
+rollback, and exact live unit arguments. Full managed source checks pass on Snap.
+Starship's [preexisting full-check limitation](managed-source-starship.json)
+remains the older Tmux Plus archive-pin assertion; independent Observer artifact,
+unit render, six-target selection and live argument/namespace checks pass.
+Its unrelated uncommitted source migrations are preserved.
+
+Both hosts selected the read/write/service links, startup workspace configuration,
+user unit and default-target enablement link. The six original files/links were
+restored exactly and a7 reselected with the same private snapshots. The snapshots
+remain under the recorded 0700 scratch directories for recovery. New empty parent
+directories are harmless rollback residue. Installed settings and service scope
+are verified on [Snap](managed-verify-snap.json) and
+[Starship](managed-verify-starship.json), including exact running argv and provider
+store selectors. Selection does not imply frontend or provider policy delivery.
+
+Selection/rollback/reselection receipts are retained for
+[Snap first selection](selection-first-snap.json),
+[Snap rollback](selection-rollback-snap.json),
+[Snap reselection](selection-final-snap.json),
+[Starship first selection](selection-first-starship.json),
+[Starship rollback](selection-rollback-starship.json) and
+[Starship reselection](selection-final-starship.json).
+
+Independent normal-unit [Snap](managed-recovery-snap.json) and
+[Starship](managed-recovery-starship.json) checks force only the validated Observer
+publisher to exit and test an ordinary Observer restart. Both cases end the old
+watch, produce a new service ID/PID, and reconnect with sequence one. All
+components warm through the installed cached CLI. No ordinary provider process
+is stopped, resumed or restarted. The new proof resets the unit's rate-limit
+counter before deliberately testing failures; the real restart policy remains.
+
+## Final installed/native comparisons
+
+Two rounds of selected normal direct CLI and two rounds of cached service output
+are independently bracketed by native reads on each host:
+
+| Scope | Direct and cached comparison |
+| --- | --- |
+| [Snap direct](final-direct-snap.json), [cached](final-service-snap.json) Codex | 50 exact identities; two loaded user contexts; supported identity/state/phase/activity/outcome fields match |
+| Snap Claude | 31 CLI rows versus 32 native candidates; all 30 conversations and four supported live workers match; the same setup-only candidate remains omitted |
+| [Starship direct](final-direct-starship.json), [cached](final-service-starship.json) Codex | 92 exact identities, including four ordinary loaded user contexts; supported fields match |
+
+All child-filter, attention/activity ordering, human age and exact-reference
+checks pass. Old unproved kind/runtime/phase stays unknown; these are not promises
+of parked state or exhaustive old child classification. Snapshot retains the
+producer inventory, while list/watch apply the documented presentation filters.
+Configured workspace checks against the actual selected service pass on
+[Snap](workspace-managed-snap.json) and [Starship](workspace-managed-starship.json).
+
+Passive write preparation against ordinary selected contexts passes for
+[Codex on both hosts](prepare-only-starship.json) and
+[Claude default-store saved Resume](prepare-parked-snap.json). The
+[sampled live Claude foreground row](prepare-only-snap.json) rejects preparation
+with `unsupported_resume_route`, as expected: live attach requires a positively
+bound background job. Foreground attachment is not accepted. No execute/enter
+command or native action was run on these ordinary rows; opaque plans were not
+persisted. Disposable native entry receipts retain their separate scope.
+
+## Preservation and handoff
+
+Closing [Snap](preservation-after-snap.json) and
+[Starship](preservation-after-starship.json) metadata preserve Agent Plus's
+selected links. Snap's ordinary provider settings hashes are unchanged. Shared
+external pins changed during concurrent Tmux Plus deployment commits; Starship's
+ordinary Codex config hash also changed, with its actor unestablished by these
+bookends. Those changes are preserved. Observer's scoped operations never edit
+these files; the hash drift prevents a claim that every shared configuration
+stayed identical throughout the batch.
+
+All disposable native namespaces are stopped and copied authentication/history
+removed. Normal Observer units remain active by design. Source and installed
+acceptance do not establish hosted CI, package publication, physical wake,
+foreground Claude attachment, ordinary default Codex cold entry for the mixed
+native pair, event-assisted latency, networking or downstream graphical/device
+acceptance. The [current service handoff](../../shared-observation-service-handoff.md)
+binds the selected a7 tuple and gives separate client migration gates.
+
+## Sustained normal-unit acceptance
+
+Both 30-minute checks attach to the selected publisher rather than launch another
+collector. Each host has three independent socket readers, one connected peer
+that never reads, and 100 installed cached CLI requests. All healthy readers have
+zero errors and gaps, stable service IDs, consecutive sequences and valid component
+leases. The publisher remains running when the proof exits.
+
+| Host / cadence | CLI read p95 | Publisher cgroup CPU, one core | Sampled aggregate RSS / FDs | Unit memory peak |
+| --- | --- | --- | --- | --- |
+| [Snap, 30/120 seconds](soak-managed-snap.json) | 102.17 ms | 4.48% | 129.01 MB / 29 | 86.60 MB |
+| [Starship, 20/60 seconds](soak-managed-starship.json) | 79.34 ms | 1.81% | 48.84 MB / 14 | 27.35 MB |
+
+The [Snap](job-budget-snap.json) and [Starship](job-budget-starship.json)
+collection-attempt deltas stay within the scheduled cadence budget despite the
+extra readers and requests. CPU covers the publisher cgroup and its helpers;
+it excludes ordinary native provider, reference and client CPU. RSS is a sampled
+sum across the process tree and can double-count shared pages. Cgroup memory
+accounting has different ownership semantics. These are explicit configurations
+under the sampled host workload, not whole-host idle guarantees or instantaneous
+native event delivery. Physical suspend/wake remains an operator gate.
+
+O0–O5 are complete for the scoped Observer operational baseline. The package and
+API are unchanged by later proof/docs commits. No source publication, remote push,
+frontend implementation or device rollout is claimed.

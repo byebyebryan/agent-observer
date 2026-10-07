@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0",
+  "serviceProtocol": 1,
+  "serviceId": "cdf18ff2-a750-4a57-8d51-8daa8373afb5",
+  "matchedIdentities": 81,
+  "unavailableCwds": 10,
+  "explicitlyMappedRows": 34,
+  "changedCwds": 0,
+  "directOnlyRows": 0,
+  "serviceOnlyRows": 0,
+  "independentGitReference": "git_rev_parse_read_only",
+  "importsObserver": false,
+  "ordinaryProviderActions": false,
+  "ownedPublisher": false
+}

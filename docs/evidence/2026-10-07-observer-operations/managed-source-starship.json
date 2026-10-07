@@ -1,0 +1,11 @@
+{
+  "status": "accepted_observer_subset",
+  "hostScope": "starship",
+  "managedSourceCheckpoint": "1d42b72",
+  "scopedSourcePatchApplied": true,
+  "preexistingManagedChangesPreserved": true,
+  "wholeRepositoryCheck": "rejected_preexisting_tmux_plus_archive_pin_drift",
+  "observerArtifactUnitDryRun": "accepted",
+  "frontendTargets": 0,
+  "ordinaryProviderActions": false
+}

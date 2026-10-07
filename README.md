@@ -30,9 +30,12 @@ sets the current checkpoints and unattended producer validation.
 The [operational baseline pass](docs/observer-operations-execution.md) adds
 startup-only service workspace configuration and independently gates an
 Observer-only managed CLI/user-service rollout. Its
-[opening evidence](docs/evidence/2026-10-07-observer-operations/REPORT.md) compares
+[operational evidence](docs/evidence/2026-10-07-observer-operations/REPORT.md) compares
 the installed selected and service-capable candidates against native metadata;
-normal selection remains unchanged until that pass accepts its rollout.
+normal read/write/service commands now select a7, and the Observer user unit
+is enabled on Snap and Starship. Restart/crash/rollback/reselection gates pass;
+both 30-minute normal-unit reader/resource checks pass. The report records
+remaining native entry, foreground attach and physical wake limits.
 
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
@@ -43,10 +46,10 @@ Required native contracts replace daily provider release/hash allowlists;
 actual executable identity and changed-context action guards remain enforced.
 
 The immutable a2 candidate is installed separately on both hosts. Normal
-Observer links still select a11/wire 2, and Agent Plus still uses its old frozen
-reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
-separate client migration; normal selection, frontend and notification rollout
-have independent gates. No ordinary provider restart is needed to review a2.
+Observer links now select a7/wire 3, and Agent Plus still uses its old frozen
+wire-2 reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
+separate client migration; frontend and notification rollout have independent
+gates. No ordinary provider restart is needed for passive observation.
 
 The [earlier discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
 records eight producer findings; the stable API execution closes their scoped
@@ -112,7 +115,7 @@ a passive host-local core, read and New/Resume write clients, and an optional
 separate networking component in this repository. Contract/core work and
 frontend migrations have independent gates. The [design review](docs/contract-and-clients-review.md)
 distinguishes this direction from the preceding pilot below. The public v2
-contract is now selected on the two pilot hosts; other consumers migrate separately.
+contract was selected at the earlier pilot gate; API v1 wire 3 now supersedes it on those hosts; other consumers migrate separately.
 
 The preceding pilot was `agent-observer 0.1.0a5`, written in Python
 with no runtime dependencies. Its host-local JSON

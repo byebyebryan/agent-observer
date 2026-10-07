@@ -1,6 +1,6 @@
 # Agent Observer roadmap
 
-Date: 2026-10-06. This document records status and delivery dependencies.
+Date: 2026-10-07. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
@@ -23,7 +23,10 @@ Hook selection and downstream migration remain outside this producer checkpoint.
 The [implementation-loop runbook](shared-observation-service-batch-plan.md) targets
 a feature-complete installed producer candidate, both-provider native comparisons
 and sustained recovery/resource proof, with physical wake and normal selection
-remaining independent follow-ups.
+remaining independent follow-ups at B8. The [operational baseline](observer-operations-execution.md)
+now adds startup workspace mappings, selects a7 and enables its user unit on both
+hosts after installed/native/managed acceptance. Normal-unit restart/crash and
+rollback/reselection pass; physical wake and downstream clients remain separate.
 
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
@@ -35,9 +38,9 @@ reference coverage from the [review](discovery-monitoring-contract-review.md)
 are repaired with explicit unsupported capabilities.
 
 The [API v1 client handoff](api-v1-client-handoff.md) is the next consumer boundary.
-A2 is installed separately; normal links remain a11/wire 2 and Plus retains its
-old frozen reader. Client/cache migration and scoped selection have their own
-gates. The separate notification source/client checkpoint follows stable read/write
+A2 remains a separately installed historical acceptance tuple. Normal links
+now select a7/wire 3; Plus retains its old frozen reader. Client/cache migration
+has its own gate. The separate notification source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older
 exact-image records below remain historical proof.
 

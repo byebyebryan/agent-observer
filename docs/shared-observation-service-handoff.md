@@ -1,38 +1,51 @@
 # Shared service producer handoff
 
-Date: 2026-10-06. Producer and client development remain separate. This handoff
+Date: 2026-10-07. Producer and client development remain separate. This handoff
 adds explicit cached service access to the accepted [API v1 boundary](api-v1.md).
 The service envelope is separately prerelease protocol 1; direct snapshot/watch 3
 and write 1 remain unchanged. Read the [execution status](shared-observation-service-status.md)
 and [evidence](evidence/2026-10-06-shared-service-implementation/REPORT.md) for
-case-by-case acceptance and final resource results.
+case-by-case earlier acceptance. The [operational baseline](observer-operations-execution.md)
+and [current evidence](evidence/2026-10-07-observer-operations/REPORT.md) record a7
+selection, workspace configuration, normal user-unit recovery and sustained checks.
 
 ## Candidate and selection
 
-The repaired candidate is `0.4.0a6`, source
-`c8c3992984e2dfb9aad3d6812ee936babd9bf999`, wheel SHA256
-`3c2e5ae28d6e099f4fc8a9559832b813aa7a84286abaada3a815d1b0cf4b46e8`.
-Its [manifest](../artifacts/observer-0.4.0a6.json) verifies three entrypoints,
+The repaired candidate is `0.4.0a7`, source
+`8ca7a789899066cd6c2399f8c6fad60e06e869e7`, wheel SHA256
+`09f41f33e6c22fe019e518af3deae067b58b42f571b84d6c45aebe706079865a`.
+Its [manifest](../artifacts/observer-0.4.0a7.json) verifies three entrypoints,
 API 1's existing schemas and the separate service extension. It is installed at
-`/home/bryan/.local/share/agent-observer/0.4.0a6-3c2e5ae28d6e099f` on Snap and
+`/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0` on Snap and
 Starship. Snap includes the source-only Claude-history SDK; Starship uses core.
 The exact wheel and manifest are retained on both hosts under
-`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a6-3c2e5ae28d6e099f`,
+`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a7-09f41f33e6c22fe0`,
 separate from the frozen installed prefix.
 Provider support depends on required native predicates and actual process/image/
 endpoint ownership, rather than native release allowlists.
 
-Normal Observer links still select a11. Agent Plus still binds its previous
-artifact and wire 2. No persistent service, hook, networking component or frontend
-has been selected by this producer batch. Use the full candidate path; the normal
-`agent-observer` command does not supply these service subcommands yet.
+Normal Observer read/write/service links now select a7, and the persistent
+`agent-observer.service` user unit is enabled on both hosts. Agent Plus still
+binds its previous artifact and wire 2; its private venv can shadow normal
+commands. Use the explicit a7 prefix when validating or migrating a client.
+No hook, networking component or frontend is selected by the Observer rollout.
 
 ## Reproducible local entry
 
-Run the owning service explicitly, then read its socket from another terminal:
+The normal selected unit supplies the default endpoint:
 
 ```sh
-candidate=/home/bryan/.local/share/agent-observer/0.4.0a6-3c2e5ae28d6e099f
+agent-observer service status --host-scope snap
+agent-observer service list --host-scope snap
+agent-observer service watch --host-scope snap --count 10
+systemctl --user status agent-observer.service
+```
+
+For a separately owned candidate endpoint, start an explicit foreground publisher
+and read it from another terminal:
+
+```sh
+candidate=/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0
 "$candidate/bin/agent-observer-service" serve --host-scope snap \
   --provider codex --provider claude --runtime-interval 30 \
   --history-interval 120 --socket /run/user/1000/ao-candidate/read.sock
@@ -91,13 +104,15 @@ it does not make a CLI-filtered row set a complete producer inventory. Use
 | Physical suspend/wake | Pending operator window. Fake BOOTTIME expiry tests establish logic only. |
 | Native signals/hooks | Shared views are pushed after scheduled pulls. Faster event-assisted monitoring, subscriptions and hooks need independent loss/identity/lifetime proof. |
 | Notification events | No durable completion/attention publication here. Existing API v1 notification work is separate; source/view counters cannot substitute for native event correlation. |
-| Workspace mapping | Service history performs default Git enrichment. Configured common roots/project mappings remain available to direct reads; the service has no workspace-config selection yet. Do not guess cross-host project identity. |
+| Workspace mapping | A7 accepts startup-only `--workspace-config` root/project mappings on history jobs, with independent Git validation and history leases. Restart only the Observer unit to reload. Explicit grouping does not merge native identities. |
 | Claude coverage | SDK saved coverage is partial. One current setup-metadata-only candidate is omitted; foreground question predicates remain unproved. Background questions/approvals and positive parked predicates have native acceptance. |
+| Claude foreground attach | The writer rejects a live foreground row with `unsupported_resume_route`; live attach requires a positively bound background job. Saved Resume is separately supported. Observation alone does not authorize terminal focus or attachment. |
+| Native default entry | The current mixed Codex CLI/server pairing rejects a default feature mismatch in a fresh fixture. Entry proof disables `api_key_model_discovery` only in that private fixture; ordinary default startup is not accepted. Surface deferred TTY errors and never retry an uncertain write automatically. |
 | Native UI exit | The disposable PTY `/exit` attempt did not establish command recognition. Viewer detach and explicit native stop/parked are separate accepted cases. |
 | Resource/latency | Warm cache latency and publisher/owned-descendant CPU/RSS are measured per configuration. Native provider CPU and full-host idle overhead are not separately attributed. Monitoring/history can lag their configured cadence plus bounded read delay. |
-| Selection/clients | Persistent user-unit selection, Agent Plus migration, remote streams and device bridges require their separate delivery gates. |
+| Selection/clients | Observer-only unit selection and restart/crash/rollback gates pass. Agent Plus migration, remote streams and device bridges retain independent delivery gates. |
 
-The next Agent Plus pass should first bind an explicit service-capable artifact
+The next Agent Plus pass should first bind this explicit installed a7 artifact
 and exercise envelope/freshness/reconnect fixtures independently of UI work,
 then validate installed local and remote reads against native evidence. Keep
 write actions and terminal/focus behavior as separate client acceptance. Producer

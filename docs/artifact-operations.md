@@ -1,23 +1,23 @@
 # Candidate artifact operations
 
-The selected candidate manifest is `artifacts/observer-0.2.0a11.json`. It records
-the frozen producer checkpoint and wheel independently of later operational
-tooling/docs commits. It does not attest a host or authorize provider actions.
-Its Codex support separately accepts the exact `0.160.0` entry image and
-`0.160.1` managed image through the [repair gate](evaluation-repair-execution.md). Earlier
-manifests remain available for artifact verification and rollback.
-The [stopped-runtime gate](evidence/2026-10-05-stopped-runtime/REPORT.md)
-accepts current-image Claude parked runtime and verifies read/write selection
-independently of unchanged downstream clients.
+The current selected manifest is [Observer a7](../artifacts/observer-0.4.0a7.json).
+It freezes the producer wheel independently of later operations/tooling/docs
+commits. Normal read/write/service links and a user unit are selected on Snap
+and Starship through the Observer-only chezmoi operations tuple. See the
+[execution record](observer-operations-execution.md) and
+[evidence](evidence/2026-10-07-observer-operations/REPORT.md) for source,
+installed, native and operational acceptance. Provider compatibility follows
+required contracts, not executable-release allowlists. Older manifests and
+exact-image pilot receipts remain historical verification/rollback artifacts.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.2.0a11.json \
-  --wheel /absolute/path/agent_observer-0.2.0a11-py3-none-any.whl \
+  --manifest artifacts/observer-0.4.0a7.json \
+  --wheel /absolute/path/agent_observer-0.4.0a7-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.2.0a11.json \
-  --wheel /absolute/path/agent_observer-0.2.0a11-py3-none-any.whl \
+  --manifest artifacts/observer-0.4.0a7.json \
+  --wheel /absolute/path/agent_observer-0.4.0a7-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 

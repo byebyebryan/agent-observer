@@ -1,0 +1,23 @@
+{
+  "hostScope": "starship",
+  "cases": [
+    {
+      "provider": "codex",
+      "configHomeKind": "explicit",
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "status": "accepted",
+      "schemaVersion": 1,
+      "reason": null,
+      "opaquePlanPersisted": false
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "executeOrEnterCalled": false,
+  "nativeTuiEntryProved": false
+}
