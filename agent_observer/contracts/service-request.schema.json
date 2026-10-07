@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-observer:service-request:1",
+  "type": "object",
+  "properties": {
+    "serviceProtocol": {
+      "const": 1
+    },
+    "operation": {
+      "enum": [
+        "status",
+        "snapshot",
+        "watch"
+      ]
+    },
+    "hostScope": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
+    }
+  },
+  "required": [
+    "serviceProtocol",
+    "operation",
+    "hostScope"
+  ],
+  "additionalProperties": false
+}
