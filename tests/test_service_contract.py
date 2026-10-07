@@ -10,7 +10,12 @@ from pathlib import Path
 
 from agent_observer.contract import ContractError, canonical
 from agent_observer.service_contract import (
-    StreamGuard, interface, parse_frame, parse_request, schema_document, validate_frame,
+    StreamGuard,
+    interface,
+    parse_frame,
+    parse_request,
+    schema_document,
+    validate_frame,
 )
 from agent_observer.workspace import context
 

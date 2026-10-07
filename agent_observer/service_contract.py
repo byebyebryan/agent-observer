@@ -7,9 +7,25 @@ from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
 from .contract import (
-    CODE, DIGEST, INTEGER, MAX_BYTES, MAX_NODES, PROVIDER, SCOPE, SNAPSHOT,
-    TIME, UUID, ContractError, array, canonical, choice, obj, store_namespace,
-    text, validate_shape, validate_snapshot,
+    CODE,
+    DIGEST,
+    INTEGER,
+    MAX_BYTES,
+    MAX_NODES,
+    PROVIDER,
+    SCOPE,
+    SNAPSHOT,
+    TIME,
+    UUID,
+    ContractError,
+    array,
+    canonical,
+    choice,
+    obj,
+    store_namespace,
+    text,
+    validate_shape,
+    validate_snapshot,
 )
 
 SERVICE_PROTOCOL = 1
