@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+"""Explicit private foreground question/exit proof with registry and hook evidence."""
+
+import ctypes
+import argparse
+import fcntl
+import json
+import os
+import pty
+import runpy
+import select
+import signal
+import subprocess
+import struct
+import termios
+import time
+import uuid
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--service", action="store_true", help="compare the explicitly owned cached publisher as well as direct reads")
+    args = parser.parse_args()
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.getuid() == 0 and os.environ["NATIVE_PROOF_HOST"] == "snap"
+    assert all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    proof = Proof("claude")
+    settings = proof.base / "claude/settings.json"
+    original = settings.read_bytes()
+    config = json.loads(original)
+    command = str(Path(os.sys.executable)) + " " + str(root / "capture-native-lifecycle")
+    config.update(disableAllHooks=False, hooks={event: [{"matcher": "AskUserQuestion" if event == "PreToolUse" else "", "hooks": [{"type": "command", "command": command, "timeout": 2}]}] for event in ("PreToolUse", "SessionEnd", "Notification")})
+    settings.write_text(json.dumps(config))
+    sid = str(uuid.uuid4())
+    watch_fd, service = None, None
+    result = {"hostScope": "snap", "provider": "claude", "nativeId": sid,
+              "ordinaryProviderActions": False, "terminalOutputPersisted": False,
+              "question": "unproved", "exit": "unproved", "filesystemWakeups": 0}
+    def registry():
+        for path in (proof.base / "claude/sessions").glob("*.json"):
+            try:
+                value = json.loads(path.read_text())
+                if value.get("sessionId") == sid:
+                    return value
+            except (OSError, ValueError):
+                pass
+        return None
+    def events():
+        path = root / "lifecycle-events.jsonl"
+        return [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+    def wakeups():
+        if watch_fd is not None and select.select([watch_fd], [], [], 0)[0]:
+            data = os.read(watch_fd, 65536)
+            offset = 0
+            while offset + 16 <= len(data):
+                _wd, mask, _cookie, length = struct.unpack_from("iIII", data, offset)
+                result["filesystemWakeups"] += 1
+                result["filesystemOverflow"] |= bool(mask & 0x4000)
+                offset += 16 + length
+    try:
+        if args.service:
+            socket = proof.base / "runtime/foreground/read.sock"
+            service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", proof.host,
+                                        "--provider", "claude", "--runtime-interval", "1",
+                                        "--history-interval", "5", "--socket", str(socket)],
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        libc = ctypes.CDLL(None, use_errno=True)
+        watch_fd = libc.inotify_init1(os.O_NONBLOCK | os.O_CLOEXEC)
+        assert watch_fd >= 0
+        assert libc.inotify_add_watch(watch_fd, os.fsencode(proof.base / "claude/sessions"), 0x8 | 0x80 | 0x100 | 0x200) >= 0
+        result["filesystemOverflow"] = False
+        pid, fd = pty.fork()
+        if pid == 0:
+            os.execv("/opt/claude-code/bin/claude", ["claude", "Reply only with OK.", "--session-id", sid, "--name", "Observer private foreground proof"])
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+        os.set_blocking(fd, False)
+        viewer = (pid, fd)
+        proof.clients.append(viewer)
+        proof.pause(viewer, 8)
+        proof.assert_native_client(viewer)
+        native = registry()
+        assert native and native.get("kind") == "interactive" and native.get("jobId") is None
+        result["nativeForegroundRegistered"] = True
+        os.write(fd, b"\x1b[200~Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.\x1b[201~\r")
+        deadline = time.monotonic() + 75
+        held = []
+        while time.monotonic() < deadline:
+            proof.pause(viewer, 0.2)
+            wakeups()
+            native = registry()
+            if native and native.get("status") == "waiting" and any(e.get("askUserQuestion") and e["nativeId"] == sid for e in events()):
+                snapshot = proof.snapshot()
+                row = next(r for r in snapshot["sessions"] if r["identity"]["nativeId"] == sid)
+                held.append({"nativeStatus": "waiting", "noJob": native.get("jobId") is None,
+                             "nativeWaitClass": "input_needed" if native.get("waitingFor") == "input needed" else "dialog" if str(native.get("waitingFor", "")).startswith("dialog:") else "other",
+                             "phase": row["phase"]["value"], "phaseHealth": row["phase"]["health"],
+                             "phaseReason": row["phase"]["reason"], "runtime": row["runtime"]["value"],
+                             "worker": row["worker"]["value"], "metadataIssues": row["metadataIssues"],
+                             "blockedReason": row["blockedReason"], "activityAt": row["activity"]["at"]})
+                if args.service:
+                    frame = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(socket)])
+                    cached = next((r for r in (frame.get("snapshot") or {}).get("sessions", []) if r["identity"]["nativeId"] == sid), None)
+                    held[-1]["cachedPhase"] = cached["phase"]["value"] if cached else None
+                    held[-1]["cachedBlockedReason"] = cached["blockedReason"] if cached else None
+                    if not cached or cached["phase"]["value"] != "blocked":
+                        held.pop()
+                        continue
+                if len(held) == 3:
+                    break
+        result["heldQuestionSamples"] = held
+        if len(held) == 3 and all(r["phase"] == "blocked" and r["blockedReason"] == "question" and (not args.service or r["cachedPhase"] == "blocked" and r["cachedBlockedReason"] == "question") for r in held):
+            result["question"] = "foreground_question_accepted"
+        # Cancel only the owned prompt, then send actual native /exit. The
+        # SessionEnd hook independently distinguishes command recognition.
+        for _ in range(2):
+            os.write(fd, b"\x1b")
+            proof.pause(viewer, 1)
+        os.write(fd, b"\x03")
+        proof.pause(viewer, 2)
+        os.write(fd, b"/exit\r")
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline:
+            proof.pause(viewer, 0.2)
+            wakeups()
+            if any(e["event"] == "SessionEnd" and e["nativeId"] == sid and e.get("promptInputExit") for e in events()):
+                result["exit"] = "native_prompt_input_exit_accepted"
+                break
+        result["registryAfterExitPresent"] = registry() is not None
+        result["metadataCallbacks"] = [e for e in events() if e["nativeId"] == sid]
+        result["status"] = "accepted" if result["question"] != "unproved" and result["exit"] != "unproved" else "partial"
+        result["cachedServiceCompared"] = args.service
+        print(json.dumps(result))
+    finally:
+        settings.write_bytes(original)
+        if watch_fd is not None:
+            os.close(watch_fd)
+        for client in list(proof.clients):
+            proof.stop(client)
+        if service is not None:
+            if service.poll() is None:
+                service.send_signal(signal.SIGTERM)
+            service.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    main()

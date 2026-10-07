@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Private attached background /exit proof; worker/job lifetime stays distinct."""
+
+import json
+import os
+import runpy
+import time
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.getuid() == 0 and os.environ["NATIVE_PROOF_HOST"] == "snap"
+    assert all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    proof = Proof("claude")
+    settings = proof.base / "claude/settings.json"
+    original = settings.read_bytes()
+    config = json.loads(original)
+    config.update(disableAllHooks=False, hooks={"SessionEnd": [{"hooks": [{"type": "command", "command": str(Path(os.sys.executable)) + " " + str(root / "capture-native-lifecycle"), "timeout": 2}]}]})
+    settings.write_text(json.dumps(config))
+    try:
+        created = proof.handoff()
+        ref = created["resultingIdentity"]
+        viewer = proof.spawn(created)
+        proof.pause(viewer, 8)
+        proof.assert_native_client(viewer)
+        os.write(viewer[1], b"\x1b[200~Reply only with OK.\x1b[201~\r")
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            proof.pause(viewer, 0.2)
+            row = proof.row(ref)
+            if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:
+                break
+        else:
+            raise RuntimeError("native_background_completion_unproved")
+        age = row["activity"]["at"]
+        job_id = row["nativeIds"]["jobId"]
+        os.write(viewer[1], b"/exit\r")
+        deadline = time.monotonic() + 20
+        recognized = False
+        while time.monotonic() < deadline:
+            proof.pause(viewer, 0.2)
+            events = root / "lifecycle-events.jsonl"
+            if events.exists():
+                recognized = any(e.get("promptInputExit") and e.get("nativeId") == ref["nativeId"] for e in (json.loads(line) for line in events.read_text().splitlines()))
+            if recognized:
+                break
+        proof.pause(viewer, 3)
+        job = json.loads((proof.base / "claude/jobs" / job_id / "state.json").read_text())
+        registries = [json.loads(p.read_text()) for p in (proof.base / "claude/sessions").glob("*.json")]
+        native = [r for r in registries if r.get("sessionId") == ref["nativeId"]]
+        after = proof.row(ref)
+        print(json.dumps({"hostScope": "snap", "nativeId": ref["nativeId"],
+                          "ordinaryProviderActions": False, "terminalOutputPersisted": False,
+                          "exitRecognizedByNativeHook": recognized,
+                          "nativeRegistryPresent": bool(native), "nativeJobState": job.get("state"),
+                          "nativeJobTempo": job.get("tempo"), "runtime": after["runtime"]["value"],
+                          "worker": after["worker"]["value"], "phase": after["phase"]["value"],
+                          "conversationAgePreserved": after["activity"]["at"] == age,
+                          "status": "accepted" if recognized else "unproved"}))
+    finally:
+        settings.write_bytes(original)
+        for client in list(proof.clients):
+            proof.stop(client)
+
+
+if __name__ == "__main__":
+    main()

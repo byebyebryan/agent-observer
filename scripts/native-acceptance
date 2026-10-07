@@ -568,7 +568,13 @@ class Proof:
             if (registry.get("status") == "waiting" and registry.get("waitingFor") == "input needed"
                     and job.get("sessionId") == ref["nativeId"] and job.get("state") == "working"
                     and job.get("tempo") == "blocked" and isinstance(questions, list) and questions):
+                # The native wait may begin after the earlier discovery read.
+                # Read the public projection only after the held predicate;
+                # no question is answered during this proof.
+                row = self.row(ref)
                 assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "question"
+                if held and held[-1]["activityAt"] != row["activity"]["at"]:
+                    held.clear()
                 held.append({"nativeStatus": "waiting", "nativeJobState": "working", "nativeTempo": "blocked",
                              "phase": "blocked", "reason": "question", "activityAt": row["activity"]["at"]})
                 if len(held) == 3:

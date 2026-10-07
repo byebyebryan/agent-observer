@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Private cold-entry proof: bounded cues and independent native identities only."""
+
+import json
+import os
+import re
+import runpy
+import time
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    host = os.environ["NATIVE_PROOF_HOST"]
+    assert os.getuid() == 0 and all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+    proof = Proof("codex")
+    handoff = proof.handoff()
+    client = proof.spawn(handoff)
+    cues = bytearray()
+    loaded, rows = [], []
+    result = {"hostScope": host, "ordinaryProviderActions": False,
+              "referenceImportsObserver": False, "entryBackend": "installed_write_1",
+              "featureMismatch": False, "loadedUserIds": [], "nativeStatuses": []}
+    # Drain native output in memory, retaining only a static failure predicate.
+    # No terminal text, model content or native RPC payload enters the receipt.
+    original_read = os.read
+    def read(fd, size):
+        value = original_read(fd, size)
+        if fd == client[1]:
+            cues.extend(value.lower())
+            del cues[:-65536]
+            plain = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]", b"", cues)
+            if b"api_key_model_discovery" in plain and b"disabled" in plain:
+                result["featureMismatch"] = True
+        return value
+    os.read = read
+    try:
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            proof.pause(client, 0.2)
+            if result["featureMismatch"]:
+                break
+            try:
+                peer = NativeRPC(proof.base / "codex")
+                try:
+                    loaded = peer.pages("thread/loaded/list")
+                    rows = [peer.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"] for sid in loaded]
+                finally:
+                    peer.close()
+            except (OSError, ValueError):
+                continue
+            users = [row for row in rows if row.get("threadSource") == "user"]
+            if len(users) == 1:
+                result["loadedUserIds"] = [users[0]["id"]]
+                result["nativeStatuses"] = [users[0]["status"]["type"]]
+                break
+        result["status"] = "native_feature_mismatch" if result["featureMismatch"] else "entered" if result["loadedUserIds"] else "native_entry_unproved"
+        result["observedLoadedCount"] = len(loaded)
+        print(json.dumps(result))
+    finally:
+        os.read = original_read
+        for owned in list(proof.clients):
+            proof.stop(owned)
+
+
+if __name__ == "__main__":
+    main()
