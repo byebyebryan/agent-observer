@@ -175,6 +175,23 @@ class ServiceStateTest(unittest.TestCase):
         self.assertEqual(row["activity"]["lastKnownAt"], 2000)
         self.assertIsNone(row["workspace"])
 
+    def test_retained_gap_row_does_not_renew_older_in_progress_evidence(self):
+        for retained, terminal in (("runtime", "history"), ("history", "runtime")):
+            with self.subTest(retained=retained):
+                self.setUp()
+                self.accept("codex", retained, value=self.turn("inProgress", 3, None))
+                self.now += 1
+                self.accept("codex", terminal, value=self.turn("completed", 3, 4))
+                self.now += 1
+                gap = provider_snapshot("codex")
+                gap["sessions"] = []
+                dimension = "runtime" if retained == "runtime" else "saved"
+                gap["sources"][0]["coverage"][dimension].update(status="partial", reason="bounded_inventory")
+                self.accept("codex", retained, value=gap)
+                row = self.state.frame("view", 1)["snapshot"]["sessions"][0]
+                self.assertEqual(row["outcome"]["value"], "completed")
+                self.assertEqual(row["outcome"]["observedAt"], 4000)
+
 
 class SchedulerTest(unittest.TestCase):
     def test_independent_jobs_fair_history_and_dirty_followup(self):

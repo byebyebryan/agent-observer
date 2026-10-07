@@ -231,8 +231,10 @@ class ServiceState:
                             # outcome across a subsequently observed new turn.
                             # Expiring the new-turn sample cannot make an older
                             # completion become the latest turn again.
-                            rt_latest = key in rt_rows and runtime.sampledBoottimeMs >= history.sampledBoottimeMs
-                            hi_latest = key not in rt_rows or history.sampledBoottimeMs >= runtime.sampledBoottimeMs
+                            rt_observed = key in rt_rows and "retained_after_gap" not in rt_rows[key]["metadataIssues"]
+                            hi_observed = "retained_after_gap" not in hi_rows[key]["metadataIssues"]
+                            rt_latest = rt_observed and (not hi_observed or runtime.sampledBoottimeMs >= history.sampledBoottimeMs)
+                            hi_latest = hi_observed and (not rt_observed or history.sampledBoottimeMs >= runtime.sampledBoottimeMs)
                             pending = (rt_rows[key] if rt_latest and rt_rows[key][name]["reason"] == "turn_in_progress"
                                        else hi_rows[key] if hi_latest and hi_rows[key][name]["reason"] == "turn_in_progress" else None)
                             if pending is not None:
