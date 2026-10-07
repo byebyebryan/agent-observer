@@ -37,6 +37,13 @@ reader lifetime and SSH connection epochs. The
 next producer pass. Managed a8 selection, physical wake, terminal notifications
 and downstream migrations retain separate gates.
 
+The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
+proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,
+both-provider artifact/native/cost acceptance and an independent client handoff.
+It includes source-derived upgrade guard work, provisional latency/resource
+targets and bounded native workflow investigations. This is a planning record;
+no provider-policy or frontend deployment follows from it alone.
+
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
 wire 3 and write wire 1, strict pure consumer conformance and native Snap/Starship

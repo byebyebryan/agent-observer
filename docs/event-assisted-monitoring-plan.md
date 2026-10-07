@@ -5,6 +5,11 @@ wiring or a new public API. The [native investigation](evidence/2026-10-07-gap-i
 proves useful passive Codex global start/status hints and Claude registry wakeups
 within disposable contexts. The selected service still pushes scheduled reads.
 
+The [next-delivery execution plan](observer-next-delivery-plan.md) defines ordered
+checkpoints, provisional latency/cost targets, operational upgrade/rollback work
+and the separate native workflow/client branches. This document supplies the
+provider-source boundary for that plan.
+
 ## Ownership and algorithm
 
 Keep one host-local publisher and provider-owned hint sources. The pure core and
