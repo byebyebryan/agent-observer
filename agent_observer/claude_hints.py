@@ -69,10 +69,10 @@ class Watcher:
                 continue
             result.append(directory)
             if name != "sessions":
-                pending.append((directory, 0))
+                pending.append(directory)
         entries, deadline = 0, time.monotonic() + 2
         while pending:
-            directory, depth = pending.pop()
+            directory = pending.pop()
             with os.scandir(directory.path) as children:
                 for entry in children:
                     entries += 1
@@ -84,8 +84,9 @@ class Watcher:
                     result.append(child)
                     if len(result) > self.max_watches:
                         raise ValueError("service_watch_limit")
-                    if directory.root == "projects" and depth < 2:
-                        pending.append((child, depth + 1))
+                    # The saved-history collector scans project-level files.
+                    # Nested session/subagent transcripts are outside that
+                    # catalog and cannot update its conversation activity.
         if len(result) > self.max_watches:
             raise ValueError("service_watch_limit")
         return result
@@ -146,13 +147,15 @@ class Watcher:
             if mask & ISDIR:
                 if directory.component is None and name not in {b"sessions", b"jobs", b"projects"}:
                     continue
+                if directory.root in {"projects", "jobs"} and directory.path != self.home / directory.root:
+                    continue
                 components.update((directory.component,) if directory.component else (ROOTS[name.decode()],))
                 self.rearm = True
             elif directory.root == "sessions" and re.fullmatch(rb"[0-9]+\.json", name):
                 components.add("runtime")
             elif directory.root == "jobs" and directory.path.parent.name == "jobs" and name == b"state.json":
                 components.add("runtime")
-            elif directory.root == "projects" and name.endswith(b".jsonl"):
+            elif directory.root == "projects" and directory.path.parent == self.home / "projects" and name.endswith(b".jsonl"):
                 components.add("history")
         return components
 
