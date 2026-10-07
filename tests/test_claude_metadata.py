@@ -182,6 +182,22 @@ class ClaudeMetadataTest(unittest.TestCase):
                 self.write_json(self.root / "jobs/abcdef12/state.json", job)
                 self.assertEqual(self.read()["observations"][0]["work"]["value"], "unknown")
 
+    def test_foreground_input_needed_is_question_only_with_verified_predicate(self):
+        row = self.write_session(pid=123, kind="interactive", status="waiting", waitingFor="input needed")
+        caps = ["registry_phase", "input_wait", "foreground_question"]
+        with (patch("agent_observer.claude_metadata._phase_capabilities", return_value=caps),
+              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
+            item = self.read()["observations"][0]
+            self.assertEqual(item["work"]["value"], "needs_input")
+            self.assertEqual(item["waitReason"], "question")
+            row["waitingFor"] = "dialog:other"
+            self.write_json(self.root / "sessions/123.json", row)
+            self.assertEqual(self.read()["observations"][0]["waitReason"], "user_input")
+        row["waitingFor"] = "input needed"
+        self.write_json(self.root / "sessions/123.json", row)
+        with patch("agent_observer.claude_metadata._phase_capabilities", return_value=[]):
+            self.assertNotEqual(self.read()["observations"][0]["waitReason"], "question")
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)

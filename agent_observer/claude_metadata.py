@@ -682,6 +682,10 @@ def _observation(
             and job is not None and job.state == "working" and job.tempo == "blocked"
             and job.question_wait and "job_question" in phase_capabilities):
         wait_reason = "question"
+    elif (registry is not None and registry.get("questionWait")
+          and registry["kind"] == "interactive" and linked_job_id is None and job is None
+          and "foreground_question" in phase_capabilities):
+        wait_reason = "question"
     title = registry["title"] if registry is not None else None
     if (
         title is None

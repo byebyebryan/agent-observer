@@ -100,6 +100,22 @@ class ContractV3Test(unittest.TestCase):
         native["phaseCapabilities"] = []
         self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
 
+    def test_foreground_claude_question_needs_explicit_worker_predicate(self):
+        value = fixture("claude-ready")
+        original = value["sessions"][-1]
+        native = {"identity": original["identity"], "nativeIds": {**original["nativeIds"], "jobId": None},
+                  "title": original["title"], "sessionKind": "interactive", "waitReason": "question",
+                  "phaseCapabilities": ["registry_phase", "input_wait", "foreground_question"],
+                  "presence": {"value": "present", "observedAt": 123, "source": "claude_registry", "health": "current", "reason": "native_snapshot"},
+                  "work": {"value": "needs_input", "observedAt": 123, "source": "claude_registry", "health": "current", "reason": "native_snapshot"}}
+        row = project_session(native, value["sources"][-1])
+        self.assertEqual((row["phase"]["value"], row["blockedReason"]), ("blocked", "question"))
+        native["phaseCapabilities"] = ["registry_phase", "input_wait"]
+        self.assertEqual(project_session(native, value["sources"][-1])["phase"]["value"], "unknown")
+        native["phaseCapabilities"].append("foreground_question")
+        native["waitReason"] = "user_input"
+        self.assertEqual(project_session(native, value["sources"][-1])["phase"]["value"], "unknown")
+
     def test_codex_outcome_does_not_settle_a_failed_runtime(self):
         value = fixture()
         original = value["sessions"][0]

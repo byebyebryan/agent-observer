@@ -10,7 +10,14 @@ import uuid
 from pathlib import Path
 
 from .activity import unavailable
-from .contract import SCHEMA_VERSION, SOURCE, identity_key, store_namespace, validate_shape, validate_snapshot
+from .contract import (
+    SCHEMA_VERSION,
+    SOURCE,
+    identity_key,
+    store_namespace,
+    validate_shape,
+    validate_snapshot,
+)
 
 
 def unknown(reason="unobserved", health="unavailable"):
@@ -105,7 +112,8 @@ def project_source(native):
         or any(row.get("presence", {}).get("value") == "present" for row in native.get("sessions", []))
     ) and health in {"current", "partial"}
     question_supported = provider == "claude" and any(
-        "job_question" in row.get("phaseCapabilities", []) for row in native.get("sessions", [])
+        {"job_question", "foreground_question"} & set(row.get("phaseCapabilities", []))
+        for row in native.get("sessions", [])
     )
     question_supported |= provider == "codex" and "waitingOnUserInput" in coverage.get("work", {}).get("supportedWaitFlags", [])
     question_supported &= phase_supported
@@ -160,7 +168,9 @@ def project_source(native):
         result["limitations"].append("unloaded_work_state_unavailable")
         result["limitations"].append("unbound_tui_contexts_unobserved")
     else:
-        result["limitations"].append("foreground_questions_unproved")
+        result["limitations"].append("foreground_question_requires_exact_input_wait"
+                                     if "foreground_question" in phase_capabilities
+                                     else "foreground_questions_unproved")
         result["limitations"].append("interactive_readiness_requires_verified_worker_contract")
         result["limitations"].append("background_readiness_requires_no_pending_work")
         result["limitations"].extend(reason for reason in native.get("limitations", []) if reason in {
@@ -214,7 +224,7 @@ def project_session(native, source):
         mapping["settled"] = "waiting"
     phase = fact(native.get("work"), mapping)
     question = (provider == "claude" and native.get("waitReason") == "question"
-                and "job_question" in native.get("phaseCapabilities", []))
+                and bool({"job_question", "foreground_question"} & set(native.get("phaseCapabilities", []))))
     question |= (provider == "codex" and native.get("waitReason") == "user_input"
                  and "question" in source["capabilities"]["blockedReasons"])
     if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not question:

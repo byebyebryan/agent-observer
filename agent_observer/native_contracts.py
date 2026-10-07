@@ -50,6 +50,8 @@ def claude_registry_capabilities(record):
     capabilities = ["registry_phase", "input_wait"]
     if record["kind"] == "interactive" and record.get("jobId") is None:
         capabilities.append("interactive_readiness")
-    if record.get("questionWait") is True:
+    if record.get("questionWait") is True and record["status"] == "waiting":
         capabilities.append("job_question")
+        if record["kind"] == "interactive" and record.get("jobId") is None:
+            capabilities.append("foreground_question")
     return capabilities
