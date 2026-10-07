@@ -1,0 +1,1177 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.2.0a11",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791392701412
+      },
+      "cliCollectedAt": 1791392701632,
+      "nativeAfterAt": {
+        "codex": 1791392703103
+      },
+      "sourceHealth": "partial",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "partial",
+          "coverage": {
+            "runtime": {
+              "reason": "source_failed",
+              "scope": "loaded_threads",
+              "status": "unavailable"
+            },
+            "saved": {
+              "reason": "saved_metadata_scan",
+              "status": "partial"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_unproved",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": [
+            "runtime_artifact_not_accepted",
+            "saved_row_metadata_unavailable"
+          ]
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 70
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 90,
+          "nativeAfterRows": 90,
+          "cliRows": 70,
+          "nativeCounts": {
+            "running": 0,
+            "activityKnown": 90,
+            "classification": {
+              "unknown": 90
+            }
+          },
+          "checks": {
+            "membership": 66,
+            "title": 47,
+            "cwd": 66,
+            "runtime_unproved": 66,
+            "phase_unproved": 66,
+            "activity": 66,
+            "kind_unproved": 66,
+            "sessionId": 66,
+            "createdAt": 66,
+            "title_unproved": 19
+          },
+          "nativeActive": [],
+          "active": [],
+          "contextDifferences": [],
+          "issues": [
+            {
+              "id": "019d9c5d-cc3a-78e1-a435-9b170f45c13c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019d9f22-f28b-7630-b123-f30f9c574912",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019e74b0-8b7b-7c33-a9be-38613cad3ab6",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ebfdf-240f-7963-8b4b-329359a60cc3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019ed278-d742-7490-a6ea-51199bad5fa3",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019ed278-d742-7490-a6ea-51199bad5fa3",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1781811641000,
+              "cli": null
+            },
+            {
+              "id": "019f1626-bb87-7f91-8851-5f86264e140e",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f1626-bb87-7f91-8851-5f86264e140e",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784121303000,
+              "cli": null
+            },
+            {
+              "id": "019f6838-1cb9-7240-864d-034f906a7aaa",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f6838-1cb9-7240-864d-034f906a7aaa",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784161050000,
+              "cli": null
+            },
+            {
+              "id": "019f6a67-a897-7661-97c5-41ca255d1284",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f6a67-a897-7661-97c5-41ca255d1284",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784829352000,
+              "cli": null
+            },
+            {
+              "id": "019f6c7e-cf15-7203-84fc-e92b6f3c2c64",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f6c7e-cf15-7203-84fc-e92b6f3c2c64",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784243208000,
+              "cli": null
+            },
+            {
+              "id": "019f8a7d-f4a3-7870-991e-8c73cd8b1c43",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f8a7d-f4a3-7870-991e-8c73cd8b1c43",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784767322000,
+              "cli": null
+            },
+            {
+              "id": "019f8d3e-f49d-7921-b3f1-55b314c4e52a",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-2136-7902-a5f4-6db30908f067",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d43-8f0e-75d3-86e9-04d4478b6729",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d45-2995-7b73-8574-ad7a00f444a1",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d50-54d4-7ab2-861b-e628b2bc5ba7",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-1fff-7b41-baf0-aca88535f465",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8d57-8655-7f50-9ebd-1af0f929e6f3",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8dd8-cde9-7fa3-8866-2443f58c49c9",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8de1-5839-7b61-ad09-000946629f5b",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e02-8c3d-7710-aff1-4a6684f5aaa5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e03-017b-7a52-92c2-6f61b992118d",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e0b-d4e7-7831-80c0-3180f3a17c51",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e11-8151-77f0-9292-cb79c220ae19",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e14-3446-7e23-93b1-6a5df791faa2",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1a-d395-76d2-9914-bbad38fa144c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f8e1b-d237-7b31-8b7d-e3fa70a6f5b5",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019f9021-14fe-7661-9224-f3df77797d4a",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f9021-14fe-7661-9224-f3df77797d4a",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785659127000,
+              "cli": null
+            },
+            {
+              "id": "019f91bc-b253-71b2-8fc0-f7237146192e",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "cancelled",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f91bc-b253-71b2-8fc0-f7237146192e",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1784862096000,
+              "cli": null
+            },
+            {
+              "id": "019f9d52-6735-7501-89b3-f66b7a5636d0",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019f9d52-6735-7501-89b3-f66b7a5636d0",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785101682000,
+              "cli": null
+            },
+            {
+              "id": "019fa57c-4be6-7a02-903f-0e8ba3357b89",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fa57c-4be6-7a02-903f-0e8ba3357b89",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785191473000,
+              "cli": null
+            },
+            {
+              "id": "019fa587-0b8a-7651-a77d-b838a6715822",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fa587-0b8a-7651-a77d-b838a6715822",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786084239000,
+              "cli": null
+            },
+            {
+              "id": "019fa695-bb0c-75f3-a99a-73e98931da7a",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fa695-bb0c-75f3-a99a-73e98931da7a",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785445233000,
+              "cli": null
+            },
+            {
+              "id": "019faee0-f135-7023-aaa0-8090f3bd7099",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019faee0-f135-7023-aaa0-8090f3bd7099",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785813477000,
+              "cli": null
+            },
+            {
+              "id": "019faf13-03b0-70d3-89f4-c109535492aa",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019faf13-03b0-70d3-89f4-c109535492aa",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785391702000,
+              "cli": null
+            },
+            {
+              "id": "019fafd0-8831-71a2-89e6-8a01eab48f11",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fafd0-8831-71a2-89e6-8a01eab48f11",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785361257000,
+              "cli": null
+            },
+            {
+              "id": "019fafe3-8784-7d62-b7a8-063dfd7f47da",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fafe3-8784-7d62-b7a8-063dfd7f47da",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785362435000,
+              "cli": null
+            },
+            {
+              "id": "019fb00a-2871-7a43-af02-4fbf35cf9728",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb00a-2871-7a43-af02-4fbf35cf9728",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785364901000,
+              "cli": null
+            },
+            {
+              "id": "019fb00a-7fe9-7b82-b00f-af1825053605",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb00a-7fe9-7b82-b00f-af1825053605",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785364912000,
+              "cli": null
+            },
+            {
+              "id": "019fb062-42fe-78c0-ba60-d29eed85290e",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb062-42fe-78c0-ba60-d29eed85290e",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785370771000,
+              "cli": null
+            },
+            {
+              "id": "019fb19f-78ca-7952-8a8c-a478e84c7386",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb19f-78ca-7952-8a8c-a478e84c7386",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785449392000,
+              "cli": null
+            },
+            {
+              "id": "019fb1a0-4487-74e2-b869-7a6930c0bf98",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb1a0-4487-74e2-b869-7a6930c0bf98",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785449402000,
+              "cli": null
+            },
+            {
+              "id": "019fb55f-737c-73c3-a2e4-75c34b5d6099",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb55f-737c-73c3-a2e4-75c34b5d6099",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785519607000,
+              "cli": null
+            },
+            {
+              "id": "019fb672-98b4-7100-a780-ecf8a0ea7a57",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb672-98b4-7100-a780-ecf8a0ea7a57",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785473783000,
+              "cli": null
+            },
+            {
+              "id": "019fb67e-349c-7d42-bc30-fa09b630fa67",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb687-a43e-73a2-ac3d-40fc4392ea53",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fb6bb-7f89-73a0-ad3d-38259adc8d77",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fb6bb-7f89-73a0-ad3d-38259adc8d77",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785477197000,
+              "cli": null
+            },
+            {
+              "id": "019fb6bc-8025-7123-848c-53d6b8cb3a64",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "019fc42b-ff4f-7a80-9162-93b9ca0ca2d1",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fc42b-ff4f-7a80-9162-93b9ca0ca2d1",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1785814049000,
+              "cli": null
+            },
+            {
+              "id": "019fe01b-9ebd-7c11-8fa4-b852adb42c19",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fe01b-9ebd-7c11-8fa4-b852adb42c19",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786214967000,
+              "cli": null
+            },
+            {
+              "id": "019fe097-fe69-7a42-9e9c-92626aa4e3f8",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fe097-fe69-7a42-9e9c-92626aa4e3f8",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786730292000,
+              "cli": null
+            },
+            {
+              "id": "019fe449-c849-7470-afa0-4eec902af5a5",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fe449-c849-7470-afa0-4eec902af5a5",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786645820000,
+              "cli": null
+            },
+            {
+              "id": "019fe451-b403-7543-a5d9-64d7935343d1",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019fe451-b403-7543-a5d9-64d7935343d1",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787812919000,
+              "cli": null
+            },
+            {
+              "id": "019ff705-4377-7d20-a1a0-c226e20b7676",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019ff705-4377-7d20-a1a0-c226e20b7676",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786559737000,
+              "cli": null
+            },
+            {
+              "id": "019ffc14-8c82-73d1-b778-864d2507218f",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "019ffc14-8c82-73d1-b778-864d2507218f",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787102184000,
+              "cli": null
+            },
+            {
+              "id": "01a00147-f784-7072-b2fc-2f3c944ac665",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a00147-f784-7072-b2fc-2f3c944ac665",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1789281368000,
+              "cli": null
+            },
+            {
+              "id": "01a00148-0e65-7082-99f1-f537ff04cd1f",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a00148-0e65-7082-99f1-f537ff04cd1f",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786728053000,
+              "cli": null
+            },
+            {
+              "id": "01a0041e-a6fa-7b22-96f1-d4c5d449f1ab",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0041e-a6fa-7b22-96f1-d4c5d449f1ab",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1786915525000,
+              "cli": null
+            },
+            {
+              "id": "01a00431-46ee-7390-9f15-e2e62e82156e",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a00431-46ee-7390-9f15-e2e62e82156e",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787331317000,
+              "cli": null
+            },
+            {
+              "id": "01a010b8-cf21-7890-81d5-de39929330ce",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a010b8-cf21-7890-81d5-de39929330ce",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787010536000,
+              "cli": null
+            },
+            {
+              "id": "01a01232-5b0e-7390-b084-11231a2da895",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a01232-5b0e-7390-b084-11231a2da895",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787791192000,
+              "cli": null
+            },
+            {
+              "id": "01a01690-5371-71a0-9e47-417dab28479c",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a01690-5371-71a0-9e47-417dab28479c",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1789408485000,
+              "cli": null
+            },
+            {
+              "id": "01a016a4-19de-7362-b4f2-b8c835660496",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a016a4-19de-7362-b4f2-b8c835660496",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787093005000,
+              "cli": null
+            },
+            {
+              "id": "01a016a4-73f2-7853-b5cd-d8bd2314f835",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a016a4-73f2-7853-b5cd-d8bd2314f835",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787092988000,
+              "cli": null
+            },
+            {
+              "id": "01a0184b-6d54-7010-bbf8-b1c50ab7a0c4",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0184b-6d54-7010-bbf8-b1c50ab7a0c4",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787126479000,
+              "cli": null
+            },
+            {
+              "id": "01a020ef-21fa-7612-b954-8ffe8fac3dd8",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a020ef-21fa-7612-b954-8ffe8fac3dd8",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787806607000,
+              "cli": null
+            },
+            {
+              "id": "01a02546-6737-7011-adb9-af753fc7ae04",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a02546-6737-7011-adb9-af753fc7ae04",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1787962497000,
+              "cli": null
+            },
+            {
+              "id": "01a0500b-abb3-7ce1-95d5-03af17384279",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0500b-abb3-7ce1-95d5-03af17384279",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1788198440000,
+              "cli": null
+            },
+            {
+              "id": "01a058e0-2e4a-7930-8224-1b83fe830d8f",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a058e0-2e4a-7930-8224-1b83fe830d8f",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1788230743000,
+              "cli": null
+            },
+            {
+              "id": "01a05a49-f9f8-7e90-b20d-779363c678b1",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a05a49-f9f8-7e90-b20d-779363c678b1",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1788325713000,
+              "cli": null
+            },
+            {
+              "id": "01a05adc-3842-7e23-803c-432a21583a05",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a05adc-3842-7e23-803c-432a21583a05",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1788368585000,
+              "cli": null
+            },
+            {
+              "id": "01a06e7e-f6ed-7412-b540-8fb36302aae4",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a06e7e-f6ed-7412-b540-8fb36302aae4",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1789280876000,
+              "cli": null
+            },
+            {
+              "id": "01a074a4-decf-7841-8dad-217de707008d",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a074a4-decf-7841-8dad-217de707008d",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1788663500000,
+              "cli": null
+            },
+            {
+              "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790372001000,
+              "cli": null
+            },
+            {
+              "id": "01a0997e-9651-7f33-a806-04bf3930b83b",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0997e-9651-7f33-a806-04bf3930b83b",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1789471006000,
+              "cli": null
+            },
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "field": "membership",
+              "result": "missing_cli_row"
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1791334123000,
+              "cli": null
+            },
+            {
+              "id": "01a0ccb7-809e-7701-8584-50eb5609f2cc",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0ccb7-809e-7701-8584-50eb5609f2cc",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790143045000,
+              "cli": null
+            },
+            {
+              "id": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790874148000,
+              "cli": null
+            },
+            {
+              "id": "01a0d756-7619-78d1-9131-8646b0fc2447",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0d756-7619-78d1-9131-8646b0fc2447",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790320465000,
+              "cli": null
+            },
+            {
+              "id": "01a0e48b-c079-7ce1-b621-f143e3c9b41c",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0e48b-c079-7ce1-b621-f143e3c9b41c",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790542827000,
+              "cli": null
+            },
+            {
+              "id": "01a0e493-1847-7e00-aa8e-4b99dda6fe00",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0e493-1847-7e00-aa8e-4b99dda6fe00",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790615785000,
+              "cli": null
+            },
+            {
+              "id": "01a0e52b-c735-7df0-a2c7-b0f44fc3df80",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0e52b-c735-7df0-a2c7-b0f44fc3df80",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790617809000,
+              "cli": null
+            },
+            {
+              "id": "01a0e94e-a9bf-7e33-9852-6b10e20b0be7",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0e94e-a9bf-7e33-9852-6b10e20b0be7",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790624914000,
+              "cli": null
+            },
+            {
+              "id": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1791103940000,
+              "cli": null
+            },
+            {
+              "id": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790911580000,
+              "cli": null
+            },
+            {
+              "id": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790965175000,
+              "cli": null
+            },
+            {
+              "id": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1791081508000,
+              "cli": null
+            },
+            {
+              "id": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1791072571000,
+              "cli": null
+            },
+            {
+              "id": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1790981853000,
+              "cli": null
+            },
+            {
+              "id": "01a10586-9881-7463-904d-dd4af6f512d8",
+              "field": "outcome",
+              "result": "mismatch",
+              "native": "completed",
+              "cli": "unknown"
+            },
+            {
+              "id": "01a10586-9881-7463-904d-dd4af6f512d8",
+              "field": "outcomeAt",
+              "result": "mismatch",
+              "native": 1791095424000,
+              "cli": null
+            },
+            {
+              "id": "019fac5e-f5a9-78f2-8ee2-7aadf02639cf",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            },
+            {
+              "id": "019fafa8-31d6-7781-a906-5452c0f18094",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            },
+            {
+              "id": "019fafab-c801-77a0-9004-732013601573",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            },
+            {
+              "id": "01a11301-d45e-7563-8fa3-d931d79e985d",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 70,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3365070,
+        "startTicks": "42988057",
+        "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "provider": "codex",
+        "version": "0.161.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    }
+  ]
+}

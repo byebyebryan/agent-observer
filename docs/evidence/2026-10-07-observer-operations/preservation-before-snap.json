@@ -1,0 +1,17 @@
+{
+  "hostScope": "snap",
+  "scratch": "/tmp/ao-operations-snap-5ce07ev4",
+  "head": "8707c2a26502ab263935103cac1e9da0b04eee12",
+  "configHashes": {
+    "/home/bryan/.codex/config.toml": "d316f9584ee194636e5ebb730c608a95d4747225b4353253cda72426c2c8e68f",
+    "/home/bryan/.claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+    "/home/bryan/.local/share/chezmoi/.chezmoiexternal.toml": "0472b0cd847359b58f1c17db66df648985c2ce308f9e374b4ab12b7a5ade45c5"
+  },
+  "selectedLinks": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write",
+    "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+    "rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+  },
+  "ordinaryProviderActions": false
+}
