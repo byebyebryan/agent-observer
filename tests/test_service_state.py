@@ -194,6 +194,21 @@ class ServiceStateTest(unittest.TestCase):
 
 
 class SchedulerTest(unittest.TestCase):
+    def test_slow_configured_cadence_is_not_shortened_by_retry_cap(self):
+        for success in (True, False):
+            for base in (300000, 600000, 3600000):
+                with self.subTest(success=success, base=base):
+                    scheduler = Scheduler(("codex",), intervals={"runtime": base, "history": base})
+                    job = scheduler.start_due(0)[0]
+                    self.assertTrue(scheduler.finish(job, 100, success=success))
+                    self.assertEqual(scheduler.due[("codex", job.component)], 100 + base)
+
+    def test_short_cadence_failure_still_backs_off(self):
+        scheduler = Scheduler(("codex",), intervals={"runtime": 20000, "history": 60000})
+        job = scheduler.start_due(0)[0]
+        scheduler.finish(job, 100, success=False)
+        self.assertEqual(scheduler.due[("codex", job.component)], 40100)
+
     def test_independent_jobs_fair_history_and_dirty_followup(self):
         scheduler = Scheduler(("codex", "claude"))
         jobs = scheduler.start_due(10000)

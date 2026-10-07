@@ -57,8 +57,10 @@ class Scheduler:
         del self.active[job.provider]
         key = job.provider, job.component
         self.failures[key] = 0 if success else min(6, self.failures[key] + 1)
-        interval = self.intervals[job.component] * max(1, 2 ** self.failures[key])
-        self.due[key] = now + min(interval, 300000)
+        base_interval = self.intervals[job.component]
+        interval = base_interval * max(1, 2 ** self.failures[key])
+        # Cap additional retry backoff, never a caller's slower base cadence.
+        self.due[key] = now + max(base_interval, min(interval, 300000))
         if self.dirty[key] != job.dirty:
             self.due[key] = max(now, self.last[key] + self.debounce)
         return job.generation == self.generation[job.provider]
