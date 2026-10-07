@@ -16,6 +16,10 @@ source freshness, fan-out/recovery and consumer timing findings. The
 [execution plan](shared-observation-service-execution-plan.md) sequences S0–S5
 producer work before managed selection or separate client passes. No shared
 service, hook selection or downstream migration is implemented by this checkpoint.
+The [implementation-loop runbook](shared-observation-service-batch-plan.md) targets
+a feature-complete installed producer candidate, both-provider native comparisons
+and sustained recovery/resource proof, with physical wake and normal selection
+remaining independent follow-ups.
 
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
