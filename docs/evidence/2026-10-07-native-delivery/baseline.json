@@ -1,0 +1,564 @@
+{
+  "snap": {
+    "cliVersion": "agent-observer 0.4.0a7",
+    "ordinaryProviderActions": false,
+    "samples": [
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "cdf18ff2-a750-4a57-8d51-8daa8373afb5",
+          "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+          "hostScope": "snap",
+          "viewRevision": 1179,
+          "emittedAt": 1791413200350,
+          "emittedBoottimeMs": 453074784,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 474,
+                  "attempts": 474,
+                  "expiresBoottimeMs": 453161362,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453071362
+                },
+                {
+                  "accepted": 119,
+                  "attempts": 119,
+                  "expiresBoottimeMs": 453418395,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 453058395
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            },
+            {
+              "components": [
+                {
+                  "accepted": 468,
+                  "attempts": 468,
+                  "expiresBoottimeMs": 453155355,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453065355
+                },
+                {
+                  "accepted": 118,
+                  "attempts": 119,
+                  "expiresBoottimeMs": 453312248,
+                  "health": "partial",
+                  "inFlight": true,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 452952248
+                }
+              ],
+              "configHome": "/home/bryan/.claude",
+              "configHomeKind": "default",
+              "contextGeneration": 1,
+              "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+              "provider": "claude"
+            }
+          ]
+        },
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 33,
+            "nativeCounts": {
+              "running": 4,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 7,
+              "phase_unproved": 27,
+              "activity": 29,
+              "kind": 30,
+              "runtime_unproved": 24,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 4
+            },
+            "issues": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "field": "activity",
+                "result": "mismatch",
+                "native": 1791413192765,
+                "cli": 1791413074699
+              },
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              },
+              {
+                "id": "ccf9536c-89bb-45d5-b4fd-580eb4a72991",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              },
+              {
+                "id": "d373c529-c210-49d2-9c2e-d0571962cf28",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              }
+            ]
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 6,
+          "doctorSessionCount": true,
+          "cliRows": 83,
+          "filteredChildren": 0
+        },
+        "sourceHealth": "partial"
+      },
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "cdf18ff2-a750-4a57-8d51-8daa8373afb5",
+          "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+          "hostScope": "snap",
+          "viewRevision": 1180,
+          "emittedAt": 1791413205339,
+          "emittedBoottimeMs": 453079774,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 474,
+                  "attempts": 474,
+                  "expiresBoottimeMs": 453161362,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453071362
+                },
+                {
+                  "accepted": 119,
+                  "attempts": 119,
+                  "expiresBoottimeMs": 453418395,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 453058395
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            },
+            {
+              "components": [
+                {
+                  "accepted": 468,
+                  "attempts": 468,
+                  "expiresBoottimeMs": 453155355,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453065355
+                },
+                {
+                  "accepted": 119,
+                  "attempts": 119,
+                  "expiresBoottimeMs": 453434201,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 453074201
+                }
+              ],
+              "configHome": "/home/bryan/.claude",
+              "configHomeKind": "default",
+              "contextGeneration": 1,
+              "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+              "provider": "claude"
+            }
+          ]
+        },
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 33,
+            "nativeCounts": {
+              "running": 4,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 7,
+              "phase_unproved": 27,
+              "activity": 29,
+              "kind": 30,
+              "runtime_unproved": 24,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 4
+            },
+            "issues": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "field": "activity",
+                "result": "mismatch",
+                "native": 1791413204162,
+                "cli": 1791413192765
+              },
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              },
+              {
+                "id": "ccf9536c-89bb-45d5-b4fd-580eb4a72991",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              },
+              {
+                "id": "d373c529-c210-49d2-9c2e-d0571962cf28",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              }
+            ]
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 6,
+          "doctorSessionCount": true,
+          "cliRows": 83,
+          "filteredChildren": 0
+        },
+        "sourceHealth": "partial"
+      }
+    ]
+  },
+  "starship": {
+    "cliVersion": "agent-observer 0.4.0a7",
+    "ordinaryProviderActions": false,
+    "samples": [
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "7551d2b2-1fcd-4332-a483-fcfdc219252a",
+          "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+          "hostScope": "starship",
+          "viewRevision": 929,
+          "emittedAt": 1791413199538,
+          "emittedBoottimeMs": 453486737,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 697,
+                  "attempts": 697,
+                  "expiresBoottimeMs": 453543051,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453483051
+                },
+                {
+                  "accepted": 232,
+                  "attempts": 232,
+                  "expiresBoottimeMs": 453620771,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 453440771
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            }
+          ]
+        },
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 90,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 3,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 93,
+          "filteredChildren": 0
+        },
+        "sourceHealth": "current"
+      },
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "7551d2b2-1fcd-4332-a483-fcfdc219252a",
+          "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+          "hostScope": "starship",
+          "viewRevision": 929,
+          "emittedAt": 1791413202875,
+          "emittedBoottimeMs": 453490074,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 697,
+                  "attempts": 697,
+                  "expiresBoottimeMs": 453543051,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 453483051
+                },
+                {
+                  "accepted": 232,
+                  "attempts": 232,
+                  "expiresBoottimeMs": 453620771,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 453440771
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            }
+          ]
+        },
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 90,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 3,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 93,
+          "filteredChildren": 0
+        },
+        "sourceHealth": "current"
+      }
+    ]
+  }
+}
