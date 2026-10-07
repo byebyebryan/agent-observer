@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+"""Installed-code maximum-frame/retention RSS/FD measurement; synthetic only."""
+
+import argparse
+import json
+import resource
+import socket
+import sys
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--test-root", type=Path, required=True)
+    parser.add_argument("--receipt", type=Path, required=True)
+    args = parser.parse_args()
+    # -I excludes the source tree. Fixtures import the installed artifact's
+    # parser/runtime, and the exact package path is checked before measurement.
+    sys.path.insert(0, str(args.test_root))
+    from test_service_capacity import maximum_snapshot
+    from test_service_contract import fixture
+
+    import agent_observer
+    from agent_observer.contract import canonical
+    from agent_observer.service_contract import MAX_FRAME_BYTES, parse_frame
+    from agent_observer.service_runtime import Peer, Runtime
+    from agent_observer.service_state import ServiceState
+    assert Path(agent_observer.__file__).resolve().is_relative_to(args.prefix.resolve())
+    value = maximum_snapshot()
+    frame = fixture()
+    frame["snapshot"] = value
+    frame["sources"] = [s for s in frame["sources"] if s["provider"] == "codex"]
+    raw = (canonical(frame) + "\n").encode()
+    assert len(raw) <= MAX_FRAME_BYTES
+    assert len(parse_frame(raw)["snapshot"]["sessions"]) == 4096
+    parse_peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
+    runtime = Runtime(ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")}),
+                      "/unused/socket", collect=False)
+    receivers, encoded_peak, fd_peak = [], 0, 0
+    try:
+        for revision in range(1, 17):
+            sender, receiver = socket.socketpair()
+            receivers.append(receiver)
+            peer = Peer(sender, revision, operation="watch", write_started=revision)
+            runtime.peers.add(peer)
+            runtime._body(revision, value)
+            peer.body_revision = revision
+            peer.parts = (b"{", runtime.bodies[revision], b"}\n")
+            encoded_peak = max(encoded_peak, runtime.encoded_bytes())
+            fd_peak = max(fd_peak, len(list(Path("/proc/self/fd").iterdir())))
+            assert encoded_peak <= runtime.encoded_limit
+        assert runtime.counts["droppedConnections"] > 0
+        receipt = {"status": "accepted", "proofClass": "synthetic_installed_code",
+                   "prefix": str(args.prefix), "version": agent_observer.__version__,
+                   "frameBytes": len(raw), "rows": 4096, "attemptedDistinctPinnedBodies": 16,
+                   "encodedPeakBytes": encoded_peak, "encodedLimitBytes": runtime.encoded_limit,
+                   "droppedConnections": runtime.counts["droppedConnections"],
+                   "parsePeakRssBytes": parse_peak,
+                   "totalPeakRssBytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024,
+                   "peakFds": fd_peak, "providerInvocations": 0,
+                   "rssIncludesSyntheticFixtureConstruction": True}
+        args.receipt.write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"status": "accepted", "totalPeakRssBytes": receipt["totalPeakRssBytes"]}))
+    finally:
+        for peer in list(runtime.peers):
+            runtime._drop(peer)
+        for receiver in receivers:
+            receiver.close()
+        runtime.selector.close()
+
+
+if __name__ == "__main__":
+    main()

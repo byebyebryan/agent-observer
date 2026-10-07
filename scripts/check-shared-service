@@ -87,11 +87,15 @@ def main():
     parser.add_argument("--host-scope", required=True)
     parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
     parser.add_argument("--duration", type=int, default=1800)
+    parser.add_argument("--runtime-interval", type=float, default=20)
+    parser.add_argument("--history-interval", type=float, default=60)
     args = parser.parse_args()
     if not 30 <= args.duration <= 3600 or args.root.resolve(strict=True) != args.root or args.root.stat().st_uid != os.geteuid():
         raise ValueError("proof_scope")
     path = args.root / "ipc" / "read.sock"
-    argv = [str(args.prefix / "bin/agent-observer-service"), "serve", "--host-scope", args.host_scope, "--socket", str(path)]
+    argv = [str(args.prefix / "bin/agent-observer-service"), "serve", "--host-scope", args.host_scope, "--socket", str(path),
+            "--runtime-interval", str(args.runtime_interval),
+            "--history-interval", str(args.history_interval)]
     for provider in args.provider:
         argv += ["--provider", provider]
     service = subprocess.Popen(argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, cwd="/tmp")
@@ -169,6 +173,8 @@ def main():
         cpu_ms = (process_state(service.pid)[1] - start_cpu) * 1000 / os.sysconf("SC_CLK_TCK")
         receipt = {
             "hostScope": args.host_scope, "prefix": str(args.prefix), "providers": args.provider,
+            "runtimeIntervalSeconds": args.runtime_interval,
+            "historyIntervalSeconds": args.history_interval,
             "status": "accepted", "durationSeconds": elapsed_ms / 1000,
             "serviceId": initial["serviceId"], "serviceProtocol": 1,
             "readSamples": 100, "readP95Ms": sorted(latencies)[94], "readMaxMs": max(latencies),

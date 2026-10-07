@@ -280,12 +280,14 @@ def native_history(home):
                 lines = lines[1:]
             lines = lines[:-1]
             metadata = {"title": None, "cwd": None, "latestConversationCwd": None, "activity": None, "kind": "unknown", "paths": 1, "scanBounded": bool(offset), "growing": before.st_size != after.st_size}
+            identity_bound = False
             for line in (head.split(b"\n")[:-1] if head else lines):
                 try:
                     record = json.loads(line)
                 except (ValueError, UnicodeError):
                     continue
                 if isinstance(record, dict) and record.get("sessionId") == path.stem:
+                    identity_bound = True
                     metadata["cwd"] = metadata["cwd"] or bounded_text(record.get("cwd"), 4096)
             conversation = False
             for line in lines:
@@ -323,11 +325,27 @@ def native_history(home):
                         metadata["activity"] = max(metadata["activity"] or 0, at)
             if not conversation:
                 gaps.append("non_conversation_or_outside_tail:" + path.stem)
-                continue
+                # Exact provider-owned sessionId metadata can establish saved
+                # discovery even when all records are local/meta commands.
+                # It cannot establish conversation age or top-level kind.
+                if not identity_bound:
+                    continue
+                metadata.update(activity=None, kind="unknown")
             old = rows.get(path.stem)
+            metadata["conversationPaths"] = int(conversation)
             if old:
-                metadata["paths"] += old["paths"]
-                metadata["conflictingConversation"] = True
+                paths = metadata["paths"] + old["paths"]
+                conversations = metadata["conversationPaths"] + old["conversationPaths"]
+                # A provider companion can establish the same exact saved ID
+                # without carrying conversation records. Preserve the actual
+                # conversation evidence independently of filename sort order.
+                if not conversation and old["conversationPaths"]:
+                    metadata = dict(old)
+                metadata.update(paths=paths, conversationPaths=conversations)
+                if conversations > 1:
+                    metadata["conflictingConversation"] = True
+                    metadata.update(activity=None, kind="unknown", title=None,
+                                    cwd=None, latestConversationCwd=None)
             rows[path.stem] = metadata
         except (OSError, ValueError, TypeError):
             gaps.append("native_history_scan_unavailable:" + path.stem)

@@ -124,3 +124,56 @@ Physical suspend/wake remains pending. Fake sleep-inclusive clock expiry is a
 source logic check. Optional native push/hook inputs, networking/remote streams,
 notification publication, consumer migration and normal service selection have
 independent follow-on gates.
+
+## A3 installed operational checkpoint
+
+The worker now owns a separate hard deadline even after publisher death. Final
+candidate `0.4.0a3` is built from `e39fbef02455dd791d9b57dea7679862763340db`,
+wheel SHA256 `e90edba4ceaf0609cfac0b382053165c544497305a1256b92233e1de5827fbfa`,
+installed at `/home/bryan/.local/share/agent-observer/0.4.0a3-e90edba4ceaf0609`.
+Independent artifact verification passed [Snap](artifact-a3-snap.json) and
+[Starship](artifact-a3-starship.json). Installed API 1 import/descriptor purity
+and independent JSON Schema validation of an actual frame passed
+([reader receipt](installed-reader-a3.json)).
+
+A3 ordinary comparisons passed all 51 Codex rows on [Snap](ordinary-a3-snap.json)
+and all 96 on [Starship](ordinary-a3-starship.json), including respectively three
+and eight loaded states. Snap's 30 conversation-bearing Claude rows matched;
+the CLI includes one additional command-only UUID with unknown age/kind.
+One separate setup-metadata-only UUID is omitted by the SDK catalog. The
+[history census](history-census-a3-snap.json) reports 32 candidates, 31 projected,
+one SDK omission and two resolved companions, with explicit partial saved
+coverage. No missing conversation or active row was found in this comparison.
+The independent validator now preserves conversation evidence when a metadata
+companion sorts after it; conflicting conversation files remain unproved.
+
+A3 isolated entry/age/rename/Resume and Codex outage/recovery passed
+[Snap](native-a3-snap.json) and [Starship](native-a3-starship.json). Additional
+[Snap Claude monitoring](monitoring-a3-snap.json) proves held questions and
+permission prompts as blocked, native stop plus worker absence as parked,
+preserved conversation age and explicit copied identity on saved Resume.
+The PTY `/exit` attempt did not establish native UI command recognition;
+viewer detach and native stop are independently accepted, `/exit` remains unproved.
+
+Installed forced publisher exit, worker self-expiry, reader EOF, singleton
+rejection, warming/null state, wrong-host rejection, stale owned socket recovery,
+new-incarnation reconnection and clean normal stop passed
+[Snap](lifecycle-a3-snap.json) and [Starship](lifecycle-a3-starship.json).
+Temporary user-unit acceptance also passed [Snap](unit-a3-snap.json) and
+[Starship](unit-a3-starship.json); neither unit was enabled or selected normally.
+
+Installed synthetic maximum-frame measurements passed
+[Snap](capacity-a3-snap.json) and [Starship](capacity-a3-starship.json):
+8,388,292-byte/4096-row frames, sixteen attempted distinct pinned bodies, nine
+slow-peer evictions and a 58,711,884-byte encoded peak under the 64-MiB limit.
+Peak RSS was 129,064,960/129,847,296 bytes, including fixture construction;
+peak FDs were 28. These measure the parser/body allocator, rather than a native
+maximum-size inventory or complete two-provider worker/state heap workload.
+
+The first completed 30-minute a1 run measured p95 83.04 ms on Snap and 77.86 ms
+on Starship over 100 cached reads. Snap CPU was 6.26 percent of one core, above
+the 5-percent tuning target; Starship was 1.79 percent. See
+[Snap](soak-a1-snap.json) and [Starship](soak-a1-starship.json).
+A2/A3 sustained and paired retirement results are still pending. An explicit
+30-second runtime/120-second history A3 Snap retest measures the CPU/freshness
+tradeoff; it does not change packaged defaults or establish a result yet.

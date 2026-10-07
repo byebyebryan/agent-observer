@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Owned transient user-unit proof; no enable, lingering or normal selection."""
+
+import argparse
+import json
+import os
+import subprocess
+import time
+from pathlib import Path
+
+
+def command(argv):
+    result = subprocess.run(argv, capture_output=True, timeout=20, cwd="/tmp")
+    if result.returncode:
+        raise ValueError("owned_unit_command_failed")
+    return result.stdout
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    args = parser.parse_args()
+    assert args.root.resolve(strict=True) == args.root and args.root.stat().st_uid == os.getuid()
+    unit = "ao-service-proof-" + args.root.name
+    assert all(c.isalnum() or c == "-" for c in unit) and len(unit) <= 80
+    existing = subprocess.run(["systemctl", "--user", "show", unit, "-p", "LoadState", "--value"],
+                              capture_output=True, timeout=15)
+    assert existing.stdout.strip() in (b"not-found", b"")
+    path = args.root / "ipc/read.sock"
+    argv = ["systemd-run", "--user", "--unit", unit, "--collect", "--service-type=exec",
+            "--property=NoNewPrivileges=yes", "--property=UMask=0077",
+            "--property=RuntimeMaxSec=60", str(args.prefix / "bin/agent-observer-service"),
+            "serve", "--host-scope", args.host_scope, "--socket", str(path)]
+    for provider in args.provider:
+        argv += ["--provider", provider]
+    started = False
+    try:
+        command(argv)
+        started = True
+        deadline = time.monotonic() + 25
+        while time.monotonic() < deadline:
+            result = subprocess.run([str(args.prefix / "bin/agent-observer"), "service", "status",
+                                     "--host-scope", args.host_scope, "--socket", str(path)],
+                                    capture_output=True, timeout=15, cwd="/tmp")
+            if not result.returncode:
+                frame = json.loads(result.stdout)
+                if frame["snapshot"] is not None and all(c["accepted"] for s in frame["sources"] for c in s["components"]):
+                    break
+            time.sleep(0.1)
+        else:
+            raise ValueError("owned_unit_warmup")
+        assert frame["uid"] == os.getuid()
+        assert frame["clockDomain"] == os.readlink("/proc/self/ns/time")
+        expected_homes = {"codex": str(Path.home() / ".codex"), "claude": str(Path.home() / ".claude")}
+        assert all(s["configHome"] == expected_homes[s["provider"]] for s in frame["sources"])
+        command(["systemctl", "--user", "stop", unit])
+        started = False
+        assert not path.exists()
+        receipt = {"status": "accepted", "unit": unit, "hostScope": args.host_scope,
+                   "prefix": str(args.prefix), "uid": frame["uid"], "bootId": frame["bootId"],
+                   "clockDomain": frame["clockDomain"], "sources": frame["sources"],
+                   "socketRemoved": True, "nativeStoresVisible": True,
+                   "enabledOrLingeringChanged": False, "ordinaryProviderActions": False}
+        (args.root / "unit-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"status": "accepted", "hostScope": args.host_scope}), flush=True)
+    finally:
+        if started:
+            command(["systemctl", "--user", "stop", unit])
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (AssertionError, ValueError, OSError, subprocess.SubprocessError) as error:
+        print(json.dumps({"status": "rejected", "reason": "owned_user_unit_failed",
+                          "exceptionClass": type(error).__name__}), flush=True)
+        raise SystemExit(2) from None

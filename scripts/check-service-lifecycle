@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""Installed owned-publisher lifecycle proof; native providers are read only.
+
+Persist predicates, PID births and source receipts, never native payloads.
+"""
+
+import argparse
+import json
+import os
+import runpy
+import signal
+import subprocess
+import time
+from pathlib import Path
+
+
+def birth(pid):
+    try:
+        parts = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+        return parts[19] if parts[0] != "Z" else None
+    except OSError:
+        return None
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    args = parser.parse_args()
+    assert args.root.resolve(strict=True) == args.root and args.root.stat().st_uid == os.getuid()
+    helpers = runpy.run_path(str(Path(__file__).with_name("check-shared-service")))
+    request, read = helpers["request"], helpers["read"]
+    path = args.root / "ipc/read.sock"
+    executable = str(args.prefix / "bin/agent-observer")
+    argv = [str(args.prefix / "bin/agent-observer-service"), "serve", "--host-scope", args.host_scope,
+            "--socket", str(path), "--runtime-interval", "1", "--history-interval", "60"]
+    for provider in args.provider:
+        argv += ["--provider", provider]
+    def cli(host=args.host_scope):
+        result = subprocess.run([executable, "service", "status", "--host-scope", host,
+                                 "--socket", str(path)], capture_output=True, timeout=20, cwd="/tmp")
+        payload = json.loads(result.stdout if result.returncode == 0 else result.stderr)
+        return result.returncode, payload
+    processes, watches = [], []
+    def start():
+        service = subprocess.Popen(argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                   start_new_session=True, cwd="/tmp")
+        processes.append(service)
+        deadline, warming = time.monotonic() + 20, False
+        while time.monotonic() < deadline:
+            assert service.poll() is None
+            try:
+                with request(path, "status", args.host_scope) as peer:
+                    frame, _ = read(peer, bytearray())
+                warming |= frame["state"] == "warming" and frame["snapshot"] is None
+                if frame["snapshot"] is not None and all(c["accepted"] for s in frame["sources"] for c in s["components"]):
+                    return service, frame, warming
+            except OSError:
+                pass
+            time.sleep(0.02)
+        raise ValueError("installed_lifecycle_warmup")
+    try:
+        absent_status, absent = cli()
+        assert absent_status == 2 and not path.exists()
+        service, initial, warming = start()
+        contender = subprocess.run(argv, capture_output=True, timeout=15, cwd="/tmp")
+        assert contender.returncode == 2 and json.loads(contender.stderr)["error"] == "service_already_running"
+        wrong_status, wrong = cli("wrong-proof-host")
+        assert wrong_status == 2
+        watch = request(path, "watch", args.host_scope)
+        watches.append(watch)
+        first, pending = read(watch, bytearray())
+        assert first["serviceId"] == initial["serviceId"] and first["sequence"] == 1
+        # Kill only the recorded publisher. Its currently owned Python worker
+        # groups must expire even when the supervisor can no longer reap them.
+        deadline, workers = time.monotonic() + 4, []
+        while time.monotonic() < deadline and not workers:
+            children = Path(f"/proc/{service.pid}/task/{service.pid}/children").read_text().split()
+            for item in children:
+                pid = int(item)
+                start_ticks = birth(pid)
+                if start_ticks is not None and os.getpgid(pid) == pid and os.getsid(pid) == pid:
+                    workers.append({"pid": pid, "startTicks": start_ticks})
+            if not workers:
+                time.sleep(0.01)
+        assert workers
+        service.send_signal(signal.SIGKILL)
+        service.wait(timeout=5)
+        assert path.exists()
+        eof, deadline = False, time.monotonic() + 15
+        while time.monotonic() < deadline:
+            watch.settimeout(max(0.01, deadline - time.monotonic()))
+            if not watch.recv(65536):
+                eof = True
+                break
+        assert eof
+        deadline = time.monotonic() + 15
+        while time.monotonic() < deadline and any(birth(w["pid"]) == w["startTicks"] for w in workers):
+            time.sleep(0.05)
+        assert all(birth(w["pid"]) != w["startTicks"] for w in workers)
+        restarted, replacement, _ = start()
+        assert replacement["serviceId"] != initial["serviceId"] and replacement["sequence"] == 1
+        with request(path, "watch", args.host_scope) as peer:
+            fresh, _ = read(peer, bytearray())
+        assert fresh["serviceId"] == replacement["serviceId"] and fresh["sequence"] == 1
+        restarted.send_signal(signal.SIGTERM)
+        assert restarted.wait(timeout=15) == 0 and not path.exists()
+        receipt = {"status": "accepted", "hostScope": args.host_scope, "prefix": str(args.prefix),
+                   "warmingNullObserved": warming, "singletonRejected": True,
+                   "absentClientDoesNotAutostart": True, "absentReason": absent["error"],
+                   "wrongHostRejected": True, "wrongHostReason": wrong["error"],
+                   "forcedPublisherExitObservedAsEof": True, "workersSelfExpire": workers,
+                   "staleOwnedEndpointRecovered": True, "newIncarnationRequiresNewStream": True,
+                   "oldServiceId": initial["serviceId"], "newServiceId": replacement["serviceId"],
+                   "normalStopSocketRemoved": True, "ordinaryProviderActions": False,
+                   "initialSources": initial["sources"]}
+        (args.root / "lifecycle-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"status": "accepted", "hostScope": args.host_scope}), flush=True)
+    finally:
+        for peer in watches:
+            peer.close()
+        for process in processes:
+            if process.poll() is None:
+                process.send_signal(signal.SIGTERM)
+                process.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (AssertionError, ValueError, OSError, subprocess.SubprocessError) as error:
+        print(json.dumps({"status": "rejected", "reason": "installed_lifecycle_failed",
+                          "exceptionClass": type(error).__name__}), flush=True)
+        raise SystemExit(2) from None
