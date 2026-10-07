@@ -1,0 +1,23 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "durationSeconds": 1800.185,
+  "independentReaders": 3,
+  "cachedCliRequests": 100,
+  "components": [
+    {
+      "provider": "codex",
+      "component": "runtime",
+      "attemptsDuringSoak": 89,
+      "maxScheduledAttempts": 92,
+      "noClientTriggeredCollection": true
+    },
+    {
+      "provider": "codex",
+      "component": "history",
+      "attemptsDuringSoak": 30,
+      "maxScheduledAttempts": 32,
+      "noClientTriggeredCollection": true
+    }
+  ]
+}

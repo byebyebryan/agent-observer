@@ -1,0 +1,27 @@
+{
+  "hostScope": "snap",
+  "configHashes": {
+    "/home/bryan/.codex/config.toml": "d316f9584ee194636e5ebb730c608a95d4747225b4353253cda72426c2c8e68f",
+    "/home/bryan/.claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+    "/home/bryan/.local/share/chezmoi/.chezmoiexternal.toml": "07a6761b5a159952a4383bcb2eeba176f81cffdc07512fa73c0b5ec2c40dba31"
+  },
+  "selectedLinks": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-write",
+    "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+    "rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+  },
+  "selectedServiceLink": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-service",
+  "checks": {
+    "providerSettingsAndExternalPinsUnchanged": false,
+    "frontendSelectionsUnchanged": true,
+    "providerSettingsUnchanged": true
+  },
+  "ordinaryProviderActions": false,
+  "observerSourceHead": "736ae0fbd974dbb1a5418467d3f097c85cad43ac",
+  "managedSourceHead": "6ff443f68cfcde113b9b881a2fafb16b5a569d83",
+  "changedHashPaths": [
+    "/home/bryan/.local/share/chezmoi/.chezmoiexternal.toml"
+  ],
+  "concurrentChangesRestored": false
+}

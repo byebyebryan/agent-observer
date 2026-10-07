@@ -1,0 +1,1 @@
+{"status": "accepted", "hostScope": "snap", "restoredTargets": 6, "unit": {"LoadState": "not-found", "ActiveState": "inactive", "UnitFileState": "", "MainPID": "0"}, "managedSourceChanged": false, "intentionalManagedDrift": true, "providerActions": 0, "frontendTargets": 0}

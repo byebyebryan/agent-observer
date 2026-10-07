@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Explicit recovery proof for the owned Observer user unit; no provider actions."""
+
+import argparse
+import json
+import os
+import runpy
+import subprocess
+import time
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    args = parser.parse_args()
+    helpers = runpy.run_path(str(Path(__file__).with_name("check-shared-service")))
+    unit, cli, request, read = (helpers[k] for k in ("unit_state", "cli", "request", "read"))
+    path = Path(os.environ["XDG_RUNTIME_DIR"]) / "agent-observer/read.sock"
+    if args.root.resolve(strict=True) != args.root or args.root.stat().st_uid != os.getuid():
+        raise ValueError("proof_scope")
+
+    def warm(previous=None):
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            try:
+                pid = unit(args.prefix)[0]
+                frame, _ = cli(args.prefix, ["service", "status", "--host-scope", args.host_scope])
+                if frame["snapshot"] and all(c["accepted"] for s in frame["sources"] for c in s["components"]):
+                    if previous is None or pid != previous[0] and frame["serviceId"] != previous[1]:
+                        return pid, frame["serviceId"]
+            except (OSError, ValueError, KeyError):
+                pass
+            time.sleep(0.2)
+        raise ValueError("unit_recovery_pending")
+
+    initial = warm()
+    subprocess.run(["systemctl", "--user", "reset-failed", "agent-observer.service"],
+                   check=True, capture_output=True, timeout=15)
+    cases = []
+    for stage, argv in (("restart", ["restart", "agent-observer.service"]),
+                        ("forced_publisher_failure", ["kill", "--kill-whom=main", "--signal=SIGKILL", "agent-observer.service"])):
+        before = warm()
+        with request(path, "watch", args.host_scope) as peer:
+            frame, pending = read(peer, bytearray())
+            if frame["serviceId"] != before[1] or unit(args.prefix)[0] != before[0]:
+                raise ValueError("unit_incarnation_changed")
+            begin = time.monotonic()
+            subprocess.run(["systemctl", "--user", *argv], check=True, capture_output=True, timeout=15)
+            ended = False
+            for _ in range(16):
+                try:
+                    frame, pending = read(peer, pending)
+                except (ConnectionError, ValueError) as error:
+                    if isinstance(error, ValueError) and str(error) != "reader_eof":
+                        raise
+                    ended = True
+                    break
+            if not ended:
+                raise ValueError("old_watch_did_not_end")
+        after = warm(before)
+        with request(path, "watch", args.host_scope) as peer:
+            frame, _ = read(peer, bytearray())
+            if frame["serviceId"] != after[1] or frame["sequence"] != 1 or frame["kind"] != "view":
+                raise ValueError("fresh_watch_reconnect")
+        cases.append({"case": stage, "oldPid": before[0], "newPid": after[0],
+                      "oldServiceId": before[1], "newServiceId": after[1],
+                      "oldWatchEnded": True, "reconnectedInitialSequence": 1,
+                      "recoverySeconds": time.monotonic() - begin})
+    receipt = {"status": "accepted", "hostScope": args.host_scope, "prefix": str(args.prefix),
+               "initialServiceId": initial[1], "cases": cases,
+               "installedCachedCli": True, "startLimitResetBeforeProof": True,
+               "ordinaryProviderActions": False}
+    (args.root / "managed-recovery.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    print(json.dumps({"status": "accepted", "hostScope": args.host_scope, "cases": len(cases)}))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, OSError, KeyError, subprocess.SubprocessError) as error:
+        code = str(error) if isinstance(error, ValueError) else "managed_recovery_proof_failed"
+        if len(code) > 128 or not code.replace("_", "").isalnum():
+            code = "managed_recovery_proof_failed"
+        print(json.dumps({"status": "rejected", "reason": code}))
+        raise SystemExit(2) from None

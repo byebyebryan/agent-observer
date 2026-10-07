@@ -3,7 +3,12 @@
 Date: 2026-10-06. The independent Observer gate is accepted; this handoff does not
 implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 
-## Accepted producer and selected baseline
+The [current service handoff](shared-observation-service-handoff.md) supersedes
+this historical a2 installation tuple: normal Observer links and the user unit
+now select a7, while Agent Plus keeps its old frozen reader. API v1 is unchanged;
+service protocol 1 remains separately prerelease. Use a7 for new client work.
+
+## Historical accepted producer and selected baseline
 
 | Property | Accepted candidate |
 | --- | --- |
@@ -23,7 +28,7 @@ Canonical fixtures live under `tests/fixtures/contract-v3` and `write-v1`.
 passes 231 tests. CLI and Python public semantics are stable within these scopes.
 No upstream release/hash is a client support filter.
 
-Normal Observer entrypoints remain a11/wire 2. Selected Plus is still `0.14.0a1`
+At this a2 gate, normal Observer entrypoints remained a11/wire 2. Selected Plus is still `0.14.0a1`
 with its frozen a3/wire-2 reader. Use explicit candidate paths and separate cache
 roots during development. Its venv also contains old Observer console scripts;
 putting that venv first in PATH can choose the wrong collector or deferred writer.

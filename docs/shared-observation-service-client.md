@@ -2,9 +2,14 @@
 
 The service is a separate prerelease protocol 1 carrying unchanged API 1
 snapshot 3. Direct `snapshot/list/show/watch` and the pure `public` facade retain
-their existing contracts. No service is automatically started or selected.
+their existing contracts. Clients never autostart a publisher or fall back to
+direct collection. The [managed operational baseline](observer-operations-execution.md)
+selects a7 and enables its user unit on Snap and Starship.
 
-Start the candidate in the foreground with its full installed prefix:
+The selected unit is available through `agent-observer service list --host-scope snap`
+and `agent-observer service watch --host-scope snap`. Use host scope `starship` on
+Starship. For a separately owned candidate endpoint, start a foreground publisher
+with its full installed prefix:
 
 ```sh
 PREFIX=/absolute/candidate/prefix
@@ -97,6 +102,6 @@ transport liveness. Native conversation activity and last-known clocks are prese
 Use current display time to calculate age; do not mutate collection/evidence
 clocks when drawing a cached view.
 
-No normal unit, link, frontend, notification publisher or provider policy is
-selected by this interface. See the [implementation status](shared-observation-service-status.md)
+This interface grants no frontend, notification or provider action authority.
+The normal Observer unit/link selection has its own operational acceptance. See the [implementation status](shared-observation-service-status.md)
 for the exact accepted artifact and operational gaps.

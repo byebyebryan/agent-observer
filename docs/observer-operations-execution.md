@@ -1,7 +1,6 @@
 # Observer operational baseline execution
 
-Date: 2026-10-07. Status: active regular goal loop, authorized after the reviewed
-next-pass plan. This is an Observer producer/operations pass. Agent Plus,
+Date: 2026-10-07. Status: scoped O0–O5 complete after the authorized regular goal loop. This is an Observer producer/operations pass. Agent Plus,
 networking, native event signals, notification publication and firmware have
 separate implementation and delivery gates.
 
@@ -29,8 +28,8 @@ ordinary provider-policy changes belong to this rollout.
 | O1 workspace | Startup-only bounded workspace configuration; same direct/history enrichment and leases | Source complete as a7; 283 tests and focused Ruff checks pass; installed gate remains O2 |
 | O2 artifact | Immutable wheel, installed read/write/service conformance and affected native proof | Accepted a7 on both hosts; native entry is bounded to the explicitly configured disposable pairing |
 | O3 operations | Observer-only managed selectors/unit/manifest/check/apply/rollback; dry run and drift review | Source accepted in chezmoi `1d42b72`; six-target dry runs pass; Starship's preexisting source drift is preserved |
-| O4 selection | Scoped rollout, normal commands, unit restart and rollback/reselection verified | Pending |
-| O5 closure | Sustained multi-reader measurements, final independent native comparison and client handoff | Pending |
+| O4 selection | Scoped rollout, normal commands, unit restart and rollback/reselection verified | Accepted on both hosts; six-target rollback, reselection, restart and forced publisher failure pass |
+| O5 closure | Sustained multi-reader measurements, final independent native comparison and client handoff | Complete: both 30-minute normal-unit checks, direct/cached native comparisons and current client handoff pass within documented limits |
 
 Each accepted checkpoint runs `./scripts/check` and affected checks before a
 scoped commit. Source changes require a new immutable artifact; historical

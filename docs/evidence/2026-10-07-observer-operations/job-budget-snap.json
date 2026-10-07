@@ -1,0 +1,37 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "durationSeconds": 1800.198,
+  "independentReaders": 3,
+  "cachedCliRequests": 100,
+  "components": [
+    {
+      "provider": "codex",
+      "component": "runtime",
+      "attemptsDuringSoak": 60,
+      "maxScheduledAttempts": 62,
+      "noClientTriggeredCollection": true
+    },
+    {
+      "provider": "codex",
+      "component": "history",
+      "attemptsDuringSoak": 15,
+      "maxScheduledAttempts": 17,
+      "noClientTriggeredCollection": true
+    },
+    {
+      "provider": "claude",
+      "component": "runtime",
+      "attemptsDuringSoak": 59,
+      "maxScheduledAttempts": 62,
+      "noClientTriggeredCollection": true
+    },
+    {
+      "provider": "claude",
+      "component": "history",
+      "attemptsDuringSoak": 15,
+      "maxScheduledAttempts": 17,
+      "noClientTriggeredCollection": true
+    }
+  ]
+}
