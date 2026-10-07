@@ -13,7 +13,7 @@ remain outside this loop. Physical suspend is a separate pending gate.
 | B3 owned collection | Bounded single-provider worker implemented; source-native runtime samples passed, installed proof follows |
 | B4 Codex cadence | Runtime skips saved catalog; Snap source sample 160 ms / 3 loaded rows; history 904 ms / 51 rows |
 | B5 Claude cadence | Runtime skips SDK history; Snap source sample 375 ms / 6 registry rows; source interpreter has no SDK, installed history proof follows |
-| B6 package/installed read client | Pending |
+| B6 package/installed read client | Explicit CLI and manifest-v2 extension implemented; candidate installation/native checks pending |
 | B7 native/resource/lifetime | Pending |
 | B8 final handoff/cleanup | Pending |
 

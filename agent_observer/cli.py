@@ -97,9 +97,14 @@ def _watch_output(frame):
 
 
 def main(argv=None):
+    arguments = sys.argv[1:] if argv is None else argv
+    if arguments and arguments[0] == "service":
+        from .service_cli import main as service_main
+        return service_main(arguments[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("service", help="explicit cached service read client (service --help)")
     commands.add_parser("api", help="describe the versioned public interface")
     schemas = commands.add_parser("schema", help="emit a bundled public JSON schema")
     schemas.add_argument("--kind", choices=("snapshot", "watch"), required=True)

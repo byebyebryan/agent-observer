@@ -2,7 +2,7 @@
 
 import copy
 import os
-from pathlib import Path
+import selectors
 import socket
 import subprocess
 import sys
@@ -10,14 +10,15 @@ import tempfile
 import threading
 import time
 import unittest
-import selectors
 import uuid
+from pathlib import Path
+
+from test_service_state import provider_snapshot
 
 from agent_observer.contract import canonical, store_namespace
 from agent_observer.service_contract import StreamGuard, parse_frame
 from agent_observer.service_runtime import Endpoint, Peer, Runtime
 from agent_observer.service_state import ServiceState
-from test_service_state import provider_snapshot
 
 
 class Running:
@@ -38,7 +39,14 @@ class Running:
     def __enter__(self):
         self.thread.start()
         deadline = time.monotonic() + 3
-        while not self.path.exists() and time.monotonic() < deadline and not self.errors:
+        while time.monotonic() < deadline and not self.errors:
+            try:
+                if self.path.stat().st_mode & 0o777 == 0o600:
+                    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as probe:
+                        probe.connect(str(self.path))
+                    break
+            except OSError:
+                pass
             time.sleep(0.01)
         if not self.path.exists():
             self.__exit__()
