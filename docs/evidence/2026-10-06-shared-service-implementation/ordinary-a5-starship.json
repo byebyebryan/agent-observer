@@ -1,0 +1,673 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.4.0a5",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a5-7be6bb00833c8706/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "service": {
+        "serviceProtocol": 1,
+        "serviceId": "d038f1d2-2e87-47c2-9b88-9ec40f010319",
+        "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+        "hostScope": "starship",
+        "viewRevision": 2,
+        "emittedAt": 1791338863083,
+        "emittedBoottimeMs": 379150282,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 379193115,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 379133115
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 379313314,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 379133314
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791338863054
+      },
+      "cliCollectedAt": 1791338847833,
+      "nativeAfterAt": {
+        "codex": 1791338864572
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "saved_metadata_unavailable",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 96
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 96,
+          "nativeAfterRows": 96,
+          "cliRows": 96,
+          "nativeCounts": {
+            "running": 8,
+            "activityKnown": 96,
+            "classification": {
+              "unknown": 88,
+              "user": 2,
+              "child": 6
+            }
+          },
+          "checks": {
+            "membership": 96,
+            "title": 68,
+            "cwd": 96,
+            "runtime_unproved": 88,
+            "phase_unproved": 88,
+            "activity": 96,
+            "kind_unproved": 88,
+            "sessionId": 96,
+            "createdAt": 96,
+            "outcome": 95,
+            "outcomeAt": 95,
+            "title_unproved": 28,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 1,
+            "runtime": 8,
+            "phase": 8,
+            "kind": 8
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791333668000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791334123000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791235617000
+            },
+            {
+              "id": "01a10e21-425e-7202-91da-d9cdd7217e45",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791240267000
+            },
+            {
+              "id": "01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791245108000
+            },
+            {
+              "id": "01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791244134000
+            },
+            {
+              "id": "01a10e90-d6e3-7883-b774-260153a0af71",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791246312000
+            },
+            {
+              "id": "01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791253394000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791333668000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791334123000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": "Codex 01a10de4-7eda-7f43-905b-a975e9267351",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791235617000
+            },
+            {
+              "id": "01a10e21-425e-7202-91da-d9cdd7217e45",
+              "title": "Codex 01a10e21-425e-7202-91da-d9cdd7217e45",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791240267000
+            },
+            {
+              "id": "01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "title": "Codex 01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791245108000
+            },
+            {
+              "id": "01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "title": "Codex 01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791244134000
+            },
+            {
+              "id": "01a10e90-d6e3-7883-b774-260153a0af71",
+              "title": "Codex 01a10e90-d6e3-7883-b774-260153a0af71",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791246312000
+            },
+            {
+              "id": "01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "title": "Codex 01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791253394000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 2,
+        "doctorSessionCount": true,
+        "cliRows": 90,
+        "filteredChildren": 6
+      },
+      "nativeRuntime": {
+        "pid": 1072865,
+        "startTicks": "26754140",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    },
+    {
+      "service": {
+        "serviceProtocol": 1,
+        "serviceId": "d038f1d2-2e87-47c2-9b88-9ec40f010319",
+        "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+        "hostScope": "starship",
+        "viewRevision": 3,
+        "emittedAt": 1791338866402,
+        "emittedBoottimeMs": 379153601,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 2,
+                "attempts": 2,
+                "expiresBoottimeMs": 379213349,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 379153349
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 379313314,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 379133314
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791338866371
+      },
+      "cliCollectedAt": 1791338866343,
+      "nativeAfterAt": {
+        "codex": 1791338867897
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "saved_metadata_unavailable",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 96
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 96,
+          "nativeAfterRows": 96,
+          "cliRows": 96,
+          "nativeCounts": {
+            "running": 8,
+            "activityKnown": 96,
+            "classification": {
+              "unknown": 88,
+              "user": 2,
+              "child": 6
+            }
+          },
+          "checks": {
+            "membership": 96,
+            "title": 68,
+            "cwd": 96,
+            "runtime_unproved": 88,
+            "phase_unproved": 88,
+            "activity": 96,
+            "kind_unproved": 88,
+            "sessionId": 96,
+            "createdAt": 96,
+            "outcome": 95,
+            "outcomeAt": 95,
+            "title_unproved": 28,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 1,
+            "runtime": 8,
+            "phase": 8,
+            "kind": 8
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791333668000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791334123000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791235617000
+            },
+            {
+              "id": "01a10e21-425e-7202-91da-d9cdd7217e45",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791240267000
+            },
+            {
+              "id": "01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791245108000
+            },
+            {
+              "id": "01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791244134000
+            },
+            {
+              "id": "01a10e90-d6e3-7883-b774-260153a0af71",
+              "title": null,
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791246312000
+            },
+            {
+              "id": "01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "title": null,
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "child",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791253394000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791333668000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791334123000
+            },
+            {
+              "id": "01a10de4-7eda-7f43-905b-a975e9267351",
+              "title": "Codex 01a10de4-7eda-7f43-905b-a975e9267351",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791235617000
+            },
+            {
+              "id": "01a10e21-425e-7202-91da-d9cdd7217e45",
+              "title": "Codex 01a10e21-425e-7202-91da-d9cdd7217e45",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791240267000
+            },
+            {
+              "id": "01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "title": "Codex 01a10e6d-2e21-7b13-abf0-253bf930be9b",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791245108000
+            },
+            {
+              "id": "01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "title": "Codex 01a10e73-f87c-7763-ab77-541a4ab76c6e",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791244134000
+            },
+            {
+              "id": "01a10e90-d6e3-7883-b774-260153a0af71",
+              "title": "Codex 01a10e90-d6e3-7883-b774-260153a0af71",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791246312000
+            },
+            {
+              "id": "01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "title": "Codex 01a10efb-7d10-7ed3-8757-89f8697a097b",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "child",
+              "nativeKind": "child",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791253394000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 2,
+        "doctorSessionCount": true,
+        "cliRows": 90,
+        "filteredChildren": 6
+      },
+      "nativeRuntime": {
+        "pid": 1072865,
+        "startTicks": "26754140",
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    }
+  ]
+}

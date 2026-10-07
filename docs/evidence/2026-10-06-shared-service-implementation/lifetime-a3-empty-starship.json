@@ -1,0 +1,72 @@
+{
+  "hostScope": "starship",
+  "provider": "codex",
+  "status": "rejected_reader_extends_lifetime",
+  "observedId": "01a113e8-8aa4-7bf0-991f-6efdfae53347",
+  "controlId": "01a113e8-aa4c-7a11-b9e8-402710ae9c86",
+  "observedUnloadedAtSeconds": null,
+  "controlBookends": [
+    {
+      "elapsedSeconds": 1790.7771981770056,
+      "loaded": false,
+      "pid": 2906,
+      "startTicks": "37566376",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1810.6675510379719,
+      "loaded": false,
+      "pid": 2906,
+      "startTicks": "37566376",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1890.6629271939746,
+      "loaded": false,
+      "pid": 2906,
+      "startTicks": "37566376",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    },
+    {
+      "elapsedSeconds": 1980.1618365769973,
+      "loaded": false,
+      "pid": 2906,
+      "startTicks": "37566376",
+      "artifact": {
+        "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "provider": "codex",
+        "version": "0.160.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      }
+    }
+  ],
+  "finalObserved": {
+    "loaded": false,
+    "pid": 1716,
+    "startTicks": "37545277",
+    "artifact": {
+      "sha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+      "provider": "codex",
+      "version": "0.160.1",
+      "versionEvidence": "owned_release_path_and_inspected_sha256"
+    }
+  },
+  "observerCadenceSeconds": 20,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false
+}

@@ -1,0 +1,50 @@
+{
+  "classification": "fixture_retirement_classification_error",
+  "reason": "empty_unloaded_sessions_can_disappear_from_discovery; old fixture ignored missing rows",
+  "observations": [
+    {
+      "receipt": "lifetime-a2-snap.json",
+      "reportedStatus": "pending_native_retirement",
+      "controlNativeLoaded": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "finalObservedNativeLoaded": false
+    },
+    {
+      "receipt": "lifetime-a2-starship.json",
+      "reportedStatus": "pending_native_retirement",
+      "controlNativeLoaded": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "finalObservedNativeLoaded": false
+    },
+    {
+      "receipt": "lifetime-a3-empty-snap.json",
+      "reportedStatus": "rejected_reader_extends_lifetime",
+      "controlNativeLoaded": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "finalObservedNativeLoaded": false
+    },
+    {
+      "receipt": "lifetime-a3-empty-starship.json",
+      "reportedStatus": "rejected_reader_extends_lifetime",
+      "controlNativeLoaded": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "finalObservedNativeLoaded": false
+    }
+  ]
+}

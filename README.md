@@ -22,7 +22,8 @@ implementation, native service proof and downstream migrations separate.
 The shared service and explicit cached read client are now implemented as a
 separate prerelease candidate. Read the [client guide](docs/shared-observation-service-client.md)
 and [implementation status](docs/shared-observation-service-status.md) for exact
-source, artifact and native acceptance. Normal selection remains unchanged.
+acceptance. The [producer handoff](docs/shared-observation-service-handoff.md)
+records the explicit candidate, client obligations and separate rollout gates.
 The [large implementation-loop plan](docs/shared-observation-service-batch-plan.md)
 sets the current checkpoints and unattended producer validation.
 

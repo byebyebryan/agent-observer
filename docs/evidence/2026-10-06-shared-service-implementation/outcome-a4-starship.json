@@ -1,0 +1,66 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 1
+    },
+    {
+      "status": "accepted",
+      "provider": "codex",
+      "hostScope": "starship",
+      "case": "new_turn_clears_older_cached_outcome",
+      "heldSamples": [
+        {
+          "nativeStatus": "inProgress",
+          "outcome": "unknown",
+          "activityAt": 1791337236000,
+          "phase": "working"
+        },
+        {
+          "nativeStatus": "inProgress",
+          "outcome": "unknown",
+          "activityAt": 1791337236000,
+          "phase": "working"
+        },
+        {
+          "nativeStatus": "inProgress",
+          "outcome": "unknown",
+          "activityAt": 1791337236000,
+          "phase": "working"
+        }
+      ],
+      "previousOutcomeAt": 1791337208000,
+      "newOutcomeAt": 1791337262000,
+      "historySampleUnchanged": true,
+      "runtimeIntervalSeconds": 1,
+      "historyIntervalSeconds": 120,
+      "independentNativeTerminalClock": true,
+      "readBackend": "installed_service",
+      "terminalOutputPersisted": false
+    }
+  ]
+}

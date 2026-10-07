@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "proofClass": "synthetic_installed_code",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a4-075e9c0892314342",
+  "version": "0.4.0a4",
+  "frameBytes": 8388292,
+  "rows": 4096,
+  "attemptedDistinctPinnedBodies": 16,
+  "encodedPeakBytes": 58711884,
+  "encodedLimitBytes": 67108864,
+  "droppedConnections": 9,
+  "parsePeakRssBytes": 89964544,
+  "totalPeakRssBytes": 128000000,
+  "peakFds": 28,
+  "providerInvocations": 0,
+  "rssIncludesSyntheticFixtureConstruction": true
+}

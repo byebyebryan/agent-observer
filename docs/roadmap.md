@@ -17,6 +17,8 @@ source freshness, fan-out/recovery and consumer timing findings. The
 producer work before managed selection or separate client passes. The
 [implementation status](shared-observation-service-status.md) now records the
 shared service candidate and its [explicit client](shared-observation-service-client.md).
+The [producer handoff](shared-observation-service-handoff.md) records the exact
+installed tuple, measured cadence and independent consumer/rollout gates.
 Hook selection and downstream migration remain outside this producer checkpoint.
 The [implementation-loop runbook](shared-observation-service-batch-plan.md) targets
 a feature-complete installed producer candidate, both-provider native comparisons
