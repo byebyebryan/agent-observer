@@ -96,12 +96,18 @@ def serve(argv=None):
     parser.add_argument("--runtime-interval", type=float, default=20)
     parser.add_argument("--history-interval", type=float, default=60)
     parser.add_argument("--collection-timeout", type=float, default=10)
+    parser.add_argument("--native-hints", action="store_true",
+                        help="candidate passive native wakeups alongside periodic reconciliation")
+    parser.add_argument("--hint-diagnostics", type=Path,
+                        help="optional bounded private operator JSON, outside public frames")
     parser.add_argument("--workspace-config", type=Path,
                         help="startup-only local root/project mapping JSON; restart to reload")
     args = parser.parse_args(argv)
     try:
         if len(set(args.provider)) != len(args.provider):
             raise ContractError("invalid_provider_selection")
+        if args.hint_diagnostics and not args.native_hints:
+            raise ContractError("service_hint_diagnostics_mode")
         from .service_runtime import Runtime
         from .service_scheduler import Scheduler
         from .service_state import ServiceState
@@ -115,7 +121,8 @@ def serve(argv=None):
         try:
             for s in handlers:
                 signal.signal(s, lambda *_args: stop.set())
-            Runtime(state, args.socket, scheduler=scheduler, workspace_config=workspace_config).run(stop)
+            Runtime(state, args.socket, scheduler=scheduler, workspace_config=workspace_config,
+                    native_hints=args.native_hints, hint_diagnostics=args.hint_diagnostics).run(stop)
         finally:
             for s, handler in handlers.items():
                 signal.signal(s, handler)

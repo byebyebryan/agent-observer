@@ -140,7 +140,8 @@ class Worker:
 class Runtime:
     def __init__(self, state, path, *, scheduler=None, worker_factory=None, collect=True,
                  max_clients=16, encoded_limit=64 * 1024 * 1024, io_timeout_ms=5000,
-                 heartbeat_ms=10000, workspace_config=None):
+                 heartbeat_ms=10000, workspace_config=None, native_hints=False,
+                 hint_factory=None, hint_diagnostics=None):
         if not 1 <= max_clients <= 16 or encoded_limit < MAX_SNAPSHOT_BYTES + MAX_OVERHEAD_BYTES or not 100 <= io_timeout_ms <= 30000:
             raise ValueError("service_runtime_limits")
         self.state, self.path = state, Path(path)
@@ -160,6 +161,8 @@ class Runtime:
         self.bodies = {}
         self.latest = None
         self.counts = {"acceptedConnections": 0, "droppedConnections": 0, "frames": 0, "workerStarts": 0}
+        self.native_hints, self.hint_factory = native_hints, hint_factory
+        self.hint_diagnostics, self.hints = hint_diagnostics, None
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -366,9 +369,16 @@ class Runtime:
         try:
             with Endpoint(self.path) as listener:
                 self.selector.register(listener, selectors.EVENT_READ, ("listener", None))
+                if self.native_hints:
+                    from .service_hints import Hints
+                    self.hints = Hints(self.state.configs, self.selector, self.scheduler,
+                                       lambda process: self._stop_worker(Worker(None, process)),
+                                       factory=self.hint_factory, diagnostics=self.hint_diagnostics)
                 while not stop.is_set():
                     now = self.state.clock()
                     self.state.expire()
+                    if self.hints:
+                        self.hints.tick(now)
                     for worker in list(self.workers.values()):
                         if now >= worker.job.deadline:
                             self._complete(worker, timed_out=True)
@@ -431,6 +441,8 @@ class Runtime:
                             else:
                                 obj.eof = True
                                 self.selector.unregister(obj.process.stdout)
+                        elif kind == "hint":
+                            self.hints.read(obj, self.state.clock())
                         elif obj in self.peers:
                             try:
                                 if mask & selectors.EVENT_READ:
@@ -441,6 +453,8 @@ class Runtime:
                                 self._drop(obj)
                     self._prune()
         finally:
+            if self.hints:
+                self.hints.close()
             for peer in list(self.peers):
                 self._drop(peer)
             for worker in list(self.workers.values()):
