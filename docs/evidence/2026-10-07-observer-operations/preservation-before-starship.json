@@ -1,0 +1,16 @@
+{
+  "hostScope": "starship",
+  "scratch": "/tmp/ao-operations-starship-5t2f1g7z",
+  "configHashes": {
+    "/home/bryan/.codex/config.toml": "768c5da2345d01cc3d430937f94565d4e41605f8f77eb259a546df9684894fc8",
+    "/home/bryan/.claude/settings.json": "0fe84d03b8ed583db473f6815d63b80fc7dba01fe4fb064344bb2b731d3dee62",
+    "/home/bryan/.local/share/chezmoi/.chezmoiexternal.toml": "0472b0cd847359b58f1c17db66df648985c2ce308f9e374b4ab12b7a5ade45c5"
+  },
+  "selectedLinks": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write",
+    "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+    "rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+  },
+  "ordinaryProviderActions": false
+}
