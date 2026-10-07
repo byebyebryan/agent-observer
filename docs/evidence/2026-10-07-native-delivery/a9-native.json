@@ -1,0 +1,824 @@
+{
+  "scope": "Controlled disposable native workflows; not full transition coverage",
+  "runtimeAndHistory": {
+    "snap/codex": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "nativeId": "01a118a3-ffd4-7851-9475-4a94feef5df4",
+      "runtimeP95Seconds": 1.4066717099631205,
+      "historyP95Seconds": 1.4216228859731928,
+      "samples": [
+        {
+          "stage": "new",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.2680035440134816,
+          "activityAt": null,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "cwd"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "working_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.43385489901993424,
+          "activityAt": 1791414766000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": -230
+        },
+        {
+          "stage": "completed_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.3679201809572987,
+          "activityAt": 1791414776000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "activity_0",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.4506471629720181,
+          "activityAt": 1791414776000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -5470
+        },
+        {
+          "stage": "working_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.425726561981719,
+          "activityAt": 1791414779000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.3946203690138645,
+          "activityAt": 1791414790000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "activity_1",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.4263031800510362,
+          "activityAt": 1791414790000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": 786
+        },
+        {
+          "stage": "working_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.4466678890166804,
+          "activityAt": 1791414793000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.4066717099631205,
+          "activityAt": 1791414803000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "activity_2",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.4469615949783474,
+          "activityAt": 1791414803000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -2114
+        },
+        {
+          "stage": "rename",
+          "component": "history",
+          "nativeObservedToViewSeconds": 1.4216228859731928,
+          "activityAt": 1791414803000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "title",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -5040
+        },
+        {
+          "stage": "reconnected",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.49368060898268595,
+          "activityAt": 1791414803000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -2055
+        }
+      ],
+      "runtimeSamples": 7,
+      "historySamples": 5,
+      "sourceReconnectAccepted": true,
+      "passiveLoadedBookends": true,
+      "periodicIntervalsSeconds": [
+        30,
+        120
+      ],
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false,
+      "terminalOutputPersisted": false,
+      "eventToViewLatencyClaimed": false
+    },
+    "starship/codex": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "nativeId": "01a118a5-0120-77e1-a6bd-c742a51d391e",
+      "runtimeP95Seconds": 1.1345457260031253,
+      "historyP95Seconds": 1.092756941972766,
+      "samples": [
+        {
+          "stage": "new",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.5968024399480782,
+          "activityAt": null,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "cwd"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "working_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.34515165199991316,
+          "activityAt": 1791414832000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.1345457260031253,
+          "activityAt": 1791414841000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "activity_0",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.34818585199536756,
+          "activityAt": 1791414841000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -3983
+        },
+        {
+          "stage": "working_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.3491599760018289,
+          "activityAt": 1791414843000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.1041565759805962,
+          "activityAt": 1791414851000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 1
+        },
+        {
+          "stage": "activity_1",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.366655501013156,
+          "activityAt": 1791414851000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -4369
+        },
+        {
+          "stage": "working_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.3552693810197525,
+          "activityAt": 1791414853000,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 1.0913811409845948,
+          "activityAt": 1791414861000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "activity_2",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.3421868570148945,
+          "activityAt": 1791414861000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -4660
+        },
+        {
+          "stage": "rename",
+          "component": "history",
+          "nativeObservedToViewSeconds": 1.092756941972766,
+          "activityAt": 1791414861000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "title",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -6726
+        },
+        {
+          "stage": "reconnected",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.3598657939583063,
+          "activityAt": 1791414861000,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -3202
+        }
+      ],
+      "runtimeSamples": 7,
+      "historySamples": 5,
+      "sourceReconnectAccepted": true,
+      "passiveLoadedBookends": true,
+      "periodicIntervalsSeconds": [
+        20,
+        60
+      ],
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false,
+      "terminalOutputPersisted": false,
+      "eventToViewLatencyClaimed": false
+    },
+    "snap/claude": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "claude",
+      "nativeId": "18dfc40e-1e2a-4a68-997b-4a2c7c4b1a34",
+      "runtimeP95Seconds": 0.800692995020654,
+      "historyP95Seconds": 9.443307392997667,
+      "samples": [
+        {
+          "stage": "new",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.04760505398735404,
+          "activityAt": null,
+          "phase": "unknown",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "cwd"
+          ],
+          "latestHintRelativeToSampleMs": 502
+        },
+        {
+          "stage": "working_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.800692995020654,
+          "activityAt": null,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 7462
+        },
+        {
+          "stage": "completed_0",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.7023878330364823,
+          "activityAt": 1791414829173,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 1
+        },
+        {
+          "stage": "activity_0",
+          "component": "history",
+          "nativeObservedToViewSeconds": 1.5149186729686335,
+          "activityAt": 1791414837980,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": 896
+        },
+        {
+          "stage": "working_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.5487924860208295,
+          "activityAt": 1791414837980,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 0
+        },
+        {
+          "stage": "completed_1",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.661508399003651,
+          "activityAt": 1791414849079,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 3664
+        },
+        {
+          "stage": "activity_1",
+          "component": "history",
+          "nativeObservedToViewSeconds": 9.443307392997667,
+          "activityAt": 1791414849976,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": 8905
+        },
+        {
+          "stage": "working_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.5046502539771609,
+          "activityAt": 1791414849976,
+          "phase": "working",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 1
+        },
+        {
+          "stage": "completed_2",
+          "component": "runtime",
+          "nativeObservedToViewSeconds": 0.3464635760174133,
+          "activityAt": 1791414869555,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "phase"
+          ],
+          "latestHintRelativeToSampleMs": 3532
+        },
+        {
+          "stage": "activity_2",
+          "component": "history",
+          "nativeObservedToViewSeconds": 9.141989911033306,
+          "activityAt": 1791414870655,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": 8310
+        },
+        {
+          "stage": "rename",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.51359369099373,
+          "activityAt": 1791414870655,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "title",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -1147
+        },
+        {
+          "stage": "reconnected",
+          "component": "history",
+          "nativeObservedToViewSeconds": 0.04688258800888434,
+          "activityAt": 1791414870655,
+          "phase": "waiting",
+          "nativeBracketStable": true,
+          "fields": [
+            "runtime",
+            "activity"
+          ],
+          "latestHintRelativeToSampleMs": -6675
+        }
+      ],
+      "runtimeSamples": 7,
+      "historySamples": 5,
+      "sourceReconnectAccepted": true,
+      "passiveLoadedBookends": false,
+      "periodicIntervalsSeconds": [
+        30,
+        120
+      ],
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false,
+      "terminalOutputPersisted": false,
+      "eventToViewLatencyClaimed": false
+    }
+  },
+  "unloadedSavedRename": {
+    "snap": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "nativeId": "01a118a3-ffd4-7851-9475-4a94feef5df4",
+      "renameActionStartToCachedSeconds": 10.158885221986566,
+      "unloadedBeforeAndAfter": true,
+      "loadedSetPreserved": true,
+      "nativeActivityPreserved": true,
+      "historyReceipt": {
+        "accepted": 2,
+        "attempts": 2,
+        "expiresBoottimeMs": 455461164,
+        "health": "current",
+        "inFlight": false,
+        "lastResult": "accepted",
+        "name": "history",
+        "sampledBoottimeMs": 455101164
+      },
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false
+    },
+    "starship": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "nativeId": "01a118a5-0120-77e1-a6bd-c742a51d391e",
+      "renameActionStartToCachedSeconds": 10.096522977983113,
+      "unloadedBeforeAndAfter": true,
+      "loadedSetPreserved": true,
+      "nativeActivityPreserved": true,
+      "historyReceipt": {
+        "accepted": 2,
+        "attempts": 2,
+        "expiresBoottimeMs": 455694008,
+        "health": "current",
+        "inFlight": false,
+        "lastResult": "accepted",
+        "name": "history",
+        "sampledBoottimeMs": 455514008
+      },
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false
+    }
+  },
+  "daemonRecovery": {
+    "snap": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "observerVersion": "0.4.0a9",
+      "oldDaemonPid": 84,
+      "newDaemonPid": 5579,
+      "lossToUnavailableSeconds": 0.9430089700035751,
+      "hintSourceReplaced": true,
+      "unavailableSavedRuntimeUnknown": true,
+      "conversationAgePreserved": true,
+      "offlineObservationDidNotStartDaemon": true,
+      "ownedDaemonOnly": true,
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false
+    },
+    "starship": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "observerVersion": "0.4.0a9",
+      "oldDaemonPid": 83,
+      "newDaemonPid": 5743,
+      "lossToUnavailableSeconds": 0.8591175039764494,
+      "hintSourceReplaced": true,
+      "unavailableSavedRuntimeUnknown": true,
+      "conversationAgePreserved": true,
+      "offlineObservationDidNotStartDaemon": true,
+      "ownedDaemonOnly": true,
+      "ordinaryProviderActions": false,
+      "nativeReferenceImportsObserver": false
+    }
+  },
+  "pairedLifetime": {
+    "snap": {
+      "hostScope": "snap",
+      "provider": "codex",
+      "status": "accepted",
+      "observedId": "01a118a7-bfb8-7a13-a89d-d15da32aa8c4",
+      "controlId": "01a118a7-e5c3-7520-9a9a-7713969b89cf",
+      "observedUnloadedAtSeconds": 63.392723173019476,
+      "controlBookends": [
+        {
+          "elapsedSeconds": 93.94606543600094,
+          "probeReason": "observed_native_unload_plus_margin",
+          "loaded": false,
+          "pid": 445,
+          "startTicks": "45489250",
+          "artifact": {
+            "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+            "provider": "codex",
+            "version": "0.161.0",
+            "versionEvidence": "owned_release_path_and_inspected_sha256"
+          }
+        }
+      ],
+      "finalObserved": {
+        "loaded": false,
+        "pid": 81,
+        "startTicks": "45487638",
+        "artifact": {
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        }
+      },
+      "observerCadenceSeconds": 20,
+      "observedCompletedTurnAt": 1791415026000,
+      "controlCompletedTurnAt": 1791415029000,
+      "controlFirstProbeAfterNativeUnloadOrGrace": true,
+      "durationSeconds": 155.0664346590056,
+      "passiveListenerHeld": false,
+      "publisherNativeHints": true,
+      "listenerMessagesDiscarded": 0,
+      "ordinaryProviderActions": false,
+      "terminalOutputPersisted": false
+    },
+    "starship": {
+      "hostScope": "starship",
+      "provider": "codex",
+      "status": "accepted",
+      "observedId": "01a118a7-c06c-7362-9732-92934dc9f69a",
+      "controlId": "01a118a7-dfab-7bb2-91a6-0970201e46b5",
+      "observedUnloadedAtSeconds": 60.80951214698143,
+      "controlBookends": [
+        {
+          "elapsedSeconds": 91.05369130597683,
+          "probeReason": "observed_native_unload_plus_margin",
+          "loaded": false,
+          "pid": 470,
+          "startTicks": "45530389",
+          "artifact": {
+            "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+            "provider": "codex",
+            "version": "0.161.0",
+            "versionEvidence": "owned_release_path_and_inspected_sha256"
+          }
+        }
+      ],
+      "finalObserved": {
+        "loaded": false,
+        "pid": 82,
+        "startTicks": "45528886",
+        "artifact": {
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        }
+      },
+      "observerCadenceSeconds": 20,
+      "observedCompletedTurnAt": 1791415025000,
+      "controlCompletedTurnAt": 1791415029000,
+      "controlFirstProbeAfterNativeUnloadOrGrace": true,
+      "durationSeconds": 151.72854329599068,
+      "passiveListenerHeld": false,
+      "publisherNativeHints": true,
+      "listenerMessagesDiscarded": 0,
+      "ordinaryProviderActions": false,
+      "terminalOutputPersisted": false
+    }
+  },
+  "foregroundClaude": {
+    "hostScope": "snap",
+    "provider": "claude",
+    "nativeId": "afe48a0c-345a-451e-bb0c-ef7a6f6112be",
+    "ordinaryProviderActions": false,
+    "terminalOutputPersisted": false,
+    "question": "foreground_question_accepted",
+    "exit": "native_prompt_input_exit_accepted",
+    "filesystemWakeups": 9,
+    "filesystemOverflow": false,
+    "nativeForegroundRegistered": true,
+    "nativeQuestionObservedToCachedSeconds": 0.9878032080014236,
+    "heldQuestionSamples": [
+      {
+        "nativeStatus": "waiting",
+        "noJob": true,
+        "nativeWaitClass": "input_needed",
+        "phase": "blocked",
+        "phaseHealth": "current",
+        "phaseReason": "native_snapshot",
+        "runtime": "running",
+        "worker": "present",
+        "metadataIssues": [],
+        "blockedReason": "question",
+        "activityAt": 1791415013777,
+        "cachedPhase": "blocked",
+        "cachedBlockedReason": "question"
+      },
+      {
+        "nativeStatus": "waiting",
+        "noJob": true,
+        "nativeWaitClass": "input_needed",
+        "phase": "blocked",
+        "phaseHealth": "current",
+        "phaseReason": "native_snapshot",
+        "runtime": "running",
+        "worker": "present",
+        "metadataIssues": [],
+        "blockedReason": "question",
+        "activityAt": 1791415013777,
+        "cachedPhase": "blocked",
+        "cachedBlockedReason": "question"
+      },
+      {
+        "nativeStatus": "waiting",
+        "noJob": true,
+        "nativeWaitClass": "input_needed",
+        "phase": "blocked",
+        "phaseHealth": "current",
+        "phaseReason": "native_snapshot",
+        "runtime": "running",
+        "worker": "present",
+        "metadataIssues": [],
+        "blockedReason": "question",
+        "activityAt": 1791415013777,
+        "cachedPhase": "blocked",
+        "cachedBlockedReason": "question"
+      }
+    ],
+    "registryAfterExitPresent": false,
+    "metadataCallbacks": [
+      {
+        "event": "PreToolUse",
+        "nativeId": "afe48a0c-345a-451e-bb0c-ef7a6f6112be",
+        "askUserQuestion": true
+      },
+      {
+        "event": "SessionEnd",
+        "nativeId": "afe48a0c-345a-451e-bb0c-ef7a6f6112be",
+        "promptInputExit": true
+      }
+    ],
+    "status": "accepted",
+    "cachedServiceCompared": true,
+    "nativeHints": true
+  },
+  "backgroundClaudeQuestion": {
+    "status": "accepted",
+    "provider": "claude",
+    "hostScope": "snap",
+    "workingObserved": true,
+    "heldQuestionSamples": [
+      {
+        "nativeStatus": "waiting",
+        "nativeJobState": "working",
+        "nativeTempo": "blocked",
+        "phase": "blocked",
+        "reason": "question",
+        "activityAt": 1791415693552
+      },
+      {
+        "nativeStatus": "waiting",
+        "nativeJobState": "working",
+        "nativeTempo": "blocked",
+        "phase": "blocked",
+        "reason": "question",
+        "activityAt": 1791415693552
+      },
+      {
+        "nativeStatus": "waiting",
+        "nativeJobState": "working",
+        "nativeTempo": "blocked",
+        "phase": "blocked",
+        "reason": "question",
+        "activityAt": 1791415693552
+      }
+    ],
+    "questionNotAnswered": true,
+    "terminalOutputPersisted": false
+  },
+  "attachedBackgroundExit": {
+    "hostScope": "snap",
+    "nativeId": "d3778186-8f6b-48f0-8614-880525692b9a",
+    "ordinaryProviderActions": false,
+    "terminalOutputPersisted": false,
+    "exitRecognizedByNativeHook": false,
+    "nativeRegistryPresent": true,
+    "nativeJobState": "done",
+    "nativeJobTempo": "idle",
+    "runtime": "running",
+    "worker": "present",
+    "phase": "waiting",
+    "conversationAgePreserved": true,
+    "status": "unproved"
+  },
+  "diagnosticClarification": "Latest source-level hint and component sample are not correlated to a native conversation; signed differences, including negatives, are not event-to-view latency."
+}

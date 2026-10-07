@@ -4,6 +4,12 @@ Date: 2026-10-07. Status: scoped O0–O5 complete after the authorized regular g
 networking, native event signals, notification publication and firmware have
 separate implementation and delivery gates.
 
+This is the historical a7 operational record. The later
+[native delivery](evidence/2026-10-07-native-delivery/REPORT.md) selects a8 on both
+hosts with verified prior-to-new ownership, rollback and reselection. Its a9
+native hint candidate remains separately installed with resource acceptance and
+event-capable managed rollout pending.
+
 ## Outcome and boundaries
 
 Complete service workspace configuration, freeze an independently accepted

@@ -7,6 +7,14 @@ installed a8 on both hosts; normal Observer commands and units still select a7.
 The [event design](event-assisted-monitoring-plan.md) supplies the source boundary.
 This plan turns those findings into ordered, independently reviewable deliveries.
 
+Execution outcome: the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
+records P0/P1 selection of a8, bounded P2-P4 implementation and separately
+installed a9 native/artifact acceptance subsets. P5's resource gate is not
+accepted, so P6 hint selection and its 30-minute soaks are withheld. P7 hands off
+selected a8 and explicit candidate limits. The
+[cost follow-up](native-hints-cost-follow-up.md) retains the original targets;
+the table below remains the intended sequence, not a claim every gate passed.
+
 ## Outcome and priorities
 
 Deliver a usable normal Observer baseline, then an independently accepted

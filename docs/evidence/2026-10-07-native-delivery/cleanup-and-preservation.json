@@ -1,0 +1,272 @@
+{
+  "ordinaryProviderActions": false,
+  "ownedNativeActionsIsolated": true,
+  "hosts": {
+    "snap": {
+      "before": {
+        "hashes": {
+          ".codex/config.toml": "d316f9584ee194636e5ebb730c608a95d4747225b4353253cda72426c2c8e68f",
+          ".claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+          ".local/share/chezmoi/.chezmoiexternal.toml": "07a6761b5a159952a4383bcb2eeba176f81cffdc07512fa73c0b5ec2c40dba31"
+        },
+        "links": {
+          ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer",
+          ".local/bin/agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-write",
+          ".local/bin/agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-service",
+          ".local/bin/agent-plus": "/home/bryan/.local/bin/agent-plus"
+        },
+        "unit": {
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "3712851"
+        },
+        "ordinaryProviderActions": false
+      },
+      "after": {
+        "hashes": {
+          ".codex/config.toml": "a3f426048c33b1d17f29bb4dc1534682ac31a03f243639ea52efa26d10c1f70a",
+          ".claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+          ".local/share/chezmoi/.chezmoiexternal.toml": "07a6761b5a159952a4383bcb2eeba176f81cffdc07512fa73c0b5ec2c40dba31"
+        },
+        "links": {
+          ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+          ".local/bin/agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer-write",
+          ".local/bin/agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer-service",
+          ".local/bin/agent-plus": "/home/bryan/.local/bin/agent-plus"
+        },
+        "unit": {
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "120329"
+        },
+        "ordinaryProviderActions": false
+      },
+      "hashChanges": [
+        ".codex/config.toml"
+      ],
+      "wholeCodexConfigPreservationClaimed": false,
+      "codexConfigDriftAttribution": "unattributed; preserved rather than restored",
+      "managedFinal": {
+        "status": "accepted",
+        "hostScope": "snap",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f",
+        "wheelSha256": "a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926",
+        "renderedTargets": 6,
+        "artifactVerified": true,
+        "unitSyntaxVerified": true,
+        "providerActions": 0,
+        "frontendTargets": 0,
+        "live": true,
+        "unit": {
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "120329",
+          "birth": 45398509,
+          "executableDevice": 36,
+          "executableInode": 50458752
+        },
+        "serviceId": "c3360aac-1013-457e-9f2a-e642209f2691",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 87,
+                "attempts": 87,
+                "expiresBoottimeMs": 456678278,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 456588278
+              },
+              {
+                "accepted": 22,
+                "attempts": 22,
+                "expiresBoottimeMs": 456891563,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 456531563
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          },
+          {
+            "components": [
+              {
+                "accepted": 87,
+                "attempts": 87,
+                "expiresBoottimeMs": 456699549,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 456609549
+              },
+              {
+                "accepted": 22,
+                "attempts": 22,
+                "expiresBoottimeMs": 456892755,
+                "health": "partial",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 456532755
+              }
+            ],
+            "configHome": "/home/bryan/.claude",
+            "configHomeKind": "default",
+            "contextGeneration": 1,
+            "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+            "provider": "claude"
+          }
+        ]
+      },
+      "ordinaryCodexDaemon": {
+        "pid": 3345937,
+        "startTicks": "43188780",
+        "matchesInitialIncarnation": true
+      }
+    },
+    "starship": {
+      "before": {
+        "hashes": {
+          ".codex/config.toml": "6ce8a53b27faa8fd64b936ebe554f185324c814ec835211031a96a770615d9a7",
+          ".claude/settings.json": "0fe84d03b8ed583db473f6815d63b80fc7dba01fe4fb064344bb2b731d3dee62",
+          ".local/share/chezmoi/.chezmoiexternal.toml": "07a6761b5a159952a4383bcb2eeba176f81cffdc07512fa73c0b5ec2c40dba31"
+        },
+        "links": {
+          ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer",
+          ".local/bin/agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-write",
+          ".local/bin/agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0/bin/agent-observer-service",
+          ".local/bin/agent-plus": "/home/bryan/.local/bin/agent-plus"
+        },
+        "unit": {
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "3639748"
+        },
+        "ordinaryProviderActions": false
+      },
+      "after": {
+        "hashes": {
+          ".codex/config.toml": "a86b36fb7339fcd2850bc130720c7f257a7c0b152775ba970f058334df0a626d",
+          ".claude/settings.json": "0fe84d03b8ed583db473f6815d63b80fc7dba01fe4fb064344bb2b731d3dee62",
+          ".local/share/chezmoi/.chezmoiexternal.toml": "07a6761b5a159952a4383bcb2eeba176f81cffdc07512fa73c0b5ec2c40dba31"
+        },
+        "links": {
+          ".local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+          ".local/bin/agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer-write",
+          ".local/bin/agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer-service",
+          ".local/bin/agent-plus": "/home/bryan/.local/bin/agent-plus"
+        },
+        "unit": {
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "3968631"
+        },
+        "ordinaryProviderActions": false
+      },
+      "hashChanges": [
+        ".codex/config.toml"
+      ],
+      "wholeCodexConfigPreservationClaimed": false,
+      "codexConfigDriftAttribution": "unattributed; preserved rather than restored",
+      "managedFinal": {
+        "status": "accepted",
+        "hostScope": "starship",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f",
+        "wheelSha256": "a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926",
+        "renderedTargets": 6,
+        "artifactVerified": true,
+        "unitSyntaxVerified": true,
+        "providerActions": 0,
+        "frontendTargets": 0,
+        "live": true,
+        "unit": {
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "UnitFileState": "enabled",
+          "MainPID": "3968631",
+          "birth": 45421305,
+          "executableDevice": 36,
+          "executableInode": 18693316
+        },
+        "serviceId": "2ade173c-b2a0-4c34-b9ea-a353e8b21e6c",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 138,
+                "attempts": 138,
+                "expiresBoottimeMs": 457079633,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 457019633
+              },
+              {
+                "accepted": 46,
+                "attempts": 46,
+                "expiresBoottimeMs": 457177691,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 456997691
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "ordinaryCodexDaemon": {
+        "pid": 3414244,
+        "startTicks": "43337316",
+        "matchesInitialIncarnation": true
+      }
+    }
+  },
+  "cleanup": {
+    "snap": {
+      "hints-codex": {
+        "ownedNamespaceStopped": true,
+        "ownedNativeStoreRemoved": true,
+        "borrowedAuthenticationAndHistoryRemoved": true
+      },
+      "hints-claude": {
+        "ownedNamespaceStopped": true,
+        "ownedNativeStoreRemoved": true,
+        "borrowedAuthenticationAndHistoryRemoved": true
+      },
+      "lifetime": {
+        "ownedNamespaceStopped": true,
+        "ownedNativeStoreRemoved": true,
+        "borrowedAuthenticationAndHistoryRemoved": true
+      }
+    },
+    "starship": {
+      "hints-codex": {
+        "ownedNamespaceStopped": true,
+        "ownedNativeStoreRemoved": true,
+        "borrowedAuthenticationAndHistoryRemoved": true
+      },
+      "lifetime": {
+        "ownedNamespaceStopped": true,
+        "ownedNativeStoreRemoved": true,
+        "borrowedAuthenticationAndHistoryRemoved": true
+      }
+    }
+  }
+}
