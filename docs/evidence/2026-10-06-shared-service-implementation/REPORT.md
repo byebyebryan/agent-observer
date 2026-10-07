@@ -2,7 +2,8 @@
 
 Date: 2026-10-06, continuing overnight on 2026-10-07 UTC. This is an Observer
 producer pass. Source, controlled, installed and native gates remain separate.
-Final A6 sustained resource checks are collecting. No downstream migration,
+Final A6 sustained/native checks are complete within the scopes below. No
+downstream migration,
 persistent normal unit/link, ordinary provider action, hook change or physical
 suspend belongs to this batch.
 
@@ -140,8 +141,9 @@ lifetime. The fixed fixture settles a turn and independently confirms absent row
 
 Each run uses three independent healthy readers, a never-reading peer and 100
 validated installed cached reads over 30 minutes. Readers share one producer
-schedule; receipt counters/maxima report the actual workload. A6 final runs are
-collecting; earlier artifacts below do not establish final A6 resource acceptance.
+schedule; receipt counters/maxima report the actual workload. A6 completed its
+final 30-minute runs on both hosts. Earlier artifacts are retained separately
+to show measured tuning and repair lineage.
 
 | Artifact / host | Runtime / history seconds | Read p95 ms | One-core CPU percent | Peak aggregate RSS MB | Peak FDs |
 | --- | --- | --- | --- | --- | --- |
@@ -150,6 +152,10 @@ collecting; earlier artifacts below do not establish final A6 resource acceptanc
 | [A3 tuned Snap](soak-a3-tuned-snap.json) | 30 / 120 | 85.09 | 3.884 | 130.92 | 24 |
 | [A4 Snap](soak-a4-snap.json) | 30 / 120 | 84.32 | 3.795 | 131.00 | 32 |
 | [A4 Starship](soak-a4-starship.json) | 20 / 60 | 80.04 | 1.784 | 48.18 | 19 |
+| [A5 Snap](soak-a5-snap.json) | 30 / 120 | 88.91 | 3.853 | 131.28 | 23 |
+| [A5 Starship](soak-a5-starship.json) | 20 / 60 | 77.66 | 1.779 | 48.22 | 14 |
+| [A6 Snap](soak-a6-snap.json) | 30 / 120 | 83.45 | 3.800 | 131.19 | 24 |
+| [A6 Starship](soak-a6-starship.json) | 20 / 60 | 76.15 | 1.786 | 48.04 | 14 |
 
 Warm target is p95 <=250 ms; CPU tuning target is <=5 percent of one core.
 Snap missed CPU at defaults and met it at explicit slower cadence. Monitoring/
@@ -175,5 +181,26 @@ Current push distributes views from scheduled pulls. Native/file/hook signals,
 durable notification events, networking/remote streams, normal selection,
 Agent Plus, RLCD and other clients/devices retain separate gates. The
 [producer handoff](../../shared-observation-service-handoff.md) provides the exact
-candidate quick-start and conservative expiry/reconnect obligations. Final owned
-cleanup and preservation bookends follow the A6 sustained checks.
+candidate quick-start and conservative expiry/reconnect obligations.
+
+Closing independent comparisons on [Snap](ordinary-final-snap.json) and
+[Starship](ordinary-final-starship.json) retain the same supported-field matches
+and sole SDK setup-only omission. [Final Snap artifact verification](artifact-final-snap.json)
+and [Starship verification](artifact-final-starship.json) use the durable archived
+wheel, not checkout imports.
+
+[Snap cleanup](cleanup-snap.json) and [Starship cleanup](cleanup-starship.json)
+confirm no owned candidate processes, no remaining private native directories,
+and stopped namespace anchors. All copied credentials/history were removed.
+Closing normal link/config-hash bookends matched; these are closure bookends,
+not a claim of a complete initial full-loop config-hash baseline. Normal links
+still select a11. Transient units and publisher sockets are stopped/cleaned;
+immutable candidate prefixes and archived wheel/manifest remain available.
+B0–B8 is complete for this bounded producer batch; the named external and
+follow-on gates above remain separate.
+
+The closing suite exposed a test-helper race: `/proc/<pid>/stat` may raise
+`ProcessLookupError` when an owned process disappears during the read. The helper
+now treats it like `FileNotFoundError`, while retaining other failures. This
+changes only test observation, not the frozen A6 production bytes. The owned
+helper subset and complete closing check are rerun after the repair.
