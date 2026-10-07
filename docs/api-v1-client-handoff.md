@@ -5,10 +5,11 @@ implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 
 The [current service handoff](shared-observation-service-handoff.md) supersedes
 this historical a2 installation tuple: normal Observer links and the user unit
-now select a7, while Agent Plus keeps its old frozen reader. API v1 is unchanged;
+now select a8, while Agent Plus keeps its old frozen reader. API v1 is unchanged;
 service protocol 1 remains separately prerelease. The current handoff also records
-the separately accepted a8 candidate and its exact installation tuple; choose an
-explicit producer artifact/endpoint before client work. Normal selection stays a7.
+the selected a8 tuple and separately installed a9 hint candidate; choose an
+explicit producer artifact/endpoint before client work. A9's resource gate is
+not accepted. See the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md).
 
 ## Historical accepted producer and selected baseline
 
@@ -74,8 +75,8 @@ Claude parked is accepted only for terminal done/stopped idle jobs plus complete
 stable inventory and positively absent matching workers. Saved-only absence,
 Codex parked inference, generic Claude dialogs/transient helper ancestry and
 current-client binding retain explicit limits. The newer a8 predicate accepts
-verified foreground exact input waits as blocked/question; a7 retains its older
-limit. Equal titles are valid. Rename,
+verified foreground exact input waits as blocked/question and is now selected.
+Equal titles are valid. Rename,
 resume and local UI commands do not renew conversation age.
 
 ## Optional write client

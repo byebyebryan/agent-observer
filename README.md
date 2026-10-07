@@ -32,9 +32,9 @@ startup-only service workspace configuration and independently gates an
 Observer-only managed CLI/user-service rollout. Its
 [operational evidence](docs/evidence/2026-10-07-observer-operations/REPORT.md) compares
 the installed selected and service-capable candidates against native metadata;
-normal read/write/service commands now select a7, and the Observer user unit
-is enabled on Snap and Starship. Restart/crash/rollback/reselection gates pass;
-both 30-minute normal-unit reader/resource checks pass. The report records
+that pass selected a7 read/write/service commands, and the Observer user unit
+was enabled on Snap and Starship. At that a7 gate, restart/crash/rollback/
+reselection and both 30-minute normal-unit reader/resource checks passed. The report records
 remaining native entry, foreground attach and physical wake limits.
 
 The [remaining-gap investigation](docs/evidence/2026-10-07-gap-investigation/REPORT.md)
@@ -42,9 +42,15 @@ accepts a separate installed a8 candidate: verified Claude foreground questions
 now report blocked, and configured polling intervals above five minutes are
 preserved. Both-host private Codex entry matrices explain native feature-default
 skew; foreground `/exit`, passive native hints and remote reconnect gain bounded
-proof. Normal units still select a7. The
+proof. The subsequent [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md)
+promotes a8 on both hosts with verified old-to-new ownership, restart, rollback
+and reselection. Its a9 candidate implements passive Codex global-event and
+Claude filesystem wakeups alongside polling. Controlled native runtime/history
+latency, feed recovery and lifetime cases pass; the resource target is not
+accepted, so a9 remains separately installed and normal units keep a8 polling.
+The
 [event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
-the next producer implementation without combining it with frontend work.
+the remaining producer acceptance before hint rollout, separate from frontend work.
 
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
@@ -55,7 +61,7 @@ Required native contracts replace daily provider release/hash allowlists;
 actual executable identity and changed-context action guards remain enforced.
 
 The immutable a2 candidate is installed separately on both hosts. Normal
-Observer links now select a7/wire 3, and Agent Plus still uses its old frozen
+Observer links now select a8/wire 3, and Agent Plus still uses its old frozen
 wire-2 reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
 separate client migration; frontend and notification rollout have independent
 gates. No ordinary provider restart is needed for passive observation.

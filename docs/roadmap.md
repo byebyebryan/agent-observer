@@ -24,25 +24,32 @@ The [implementation-loop runbook](shared-observation-service-batch-plan.md) targ
 a feature-complete installed producer candidate, both-provider native comparisons
 and sustained recovery/resource proof, with physical wake and normal selection
 remaining independent follow-ups at B8. The [operational baseline](observer-operations-execution.md)
-now adds startup workspace mappings, selects a7 and enables its user unit on both
+added startup workspace mappings, selected a7 and enabled its user unit on both
 hosts after installed/native/managed acceptance. Normal-unit restart/crash and
 rollback/reselection pass; physical wake and downstream clients remain separate.
 
-The [remaining-gap loop](evidence/2026-10-07-gap-investigation/REPORT.md) freezes
-and independently accepts a8 while retaining selected a7. It repairs exact
+The [remaining-gap loop](evidence/2026-10-07-gap-investigation/REPORT.md) froze
+and independently accepted a8 while retaining selected a7 at that checkpoint.
+It repairs exact
 foreground-question classification and slow polling intervals, narrows Codex
 default entry to client/server feature skew, and proves passive native hints,
 reader lifetime and SSH connection epochs. The
-[event-assisted implementation gate](event-assisted-monitoring-plan.md) is the
-next producer pass. Managed a8 selection, physical wake, terminal notifications
-and downstream migrations retain separate gates.
+[event-assisted implementation gate](event-assisted-monitoring-plan.md) is
+implemented in the [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md).
+That pass selects a8 through verified upgrade/restart/rollback/reselection on both
+hosts and freezes separately installed a9 passive runtime/history wakeups. Native
+latency, source recovery and listener lifetime cases pass. Its resource gate is
+not accepted; a8 polling remains selected, and a9 hint-unit rollout/30-minute
+soaks are withheld. The [cost follow-up](native-hints-cost-follow-up.md) precedes
+that rollout. Physical wake, notifications and downstream migrations stay separate.
 
 The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
 proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,
 both-provider artifact/native/cost acceptance and an independent client handoff.
 It includes source-derived upgrade guard work, provisional latency/resource
-targets and bounded native workflow investigations. This is a planning record;
-no provider-policy or frontend deployment follows from it alone.
+targets and bounded native workflow investigations. Its execution report keeps
+the failed cost gate explicit. No provider-policy or frontend deployment follows
+from producer selection alone.
 
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
@@ -55,7 +62,7 @@ are repaired with explicit unsupported capabilities.
 
 The [API v1 client handoff](api-v1-client-handoff.md) is the next consumer boundary.
 A2 remains a separately installed historical acceptance tuple. Normal links
-now select a7/wire 3; Plus retains its old frozen reader. Client/cache migration
+now select a8/wire 3; Plus retains its old frozen reader. Client/cache migration
 has its own gate. The separate notification source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older
 exact-image records below remain historical proof.

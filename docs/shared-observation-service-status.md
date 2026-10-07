@@ -2,9 +2,14 @@
 
 Historical B0–B8 candidate record: 2026-10-06, with overnight evidence collected
 on 2026-10-07 UTC. The [2026-10-07 operational baseline](observer-operations-execution.md)
-now selects a7 and a persistent Observer-only user unit on both hosts, adds
-startup workspace configuration and accepts normal-unit restart/crash/rollback.
-Current resource/final comparisons are in [the operational report](evidence/2026-10-07-observer-operations/REPORT.md).
+selected a7 and a persistent Observer-only user unit on both hosts, added
+startup workspace configuration and accepted normal-unit restart/crash/rollback.
+The [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md) now selects a8
+on both hosts. Separately installed a9 implements passive native runtime/history
+wakeups; latency/recovery/lifetime subsets pass, but its provisional resource
+gate is not accepted. Normal units retain polling without hints. The
+[cost follow-up](native-hints-cost-follow-up.md) and current handoff supersede
+earlier selection statements below; earlier resource results remain historical.
 The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
 defines B0–B8. Producer work and client development remain separate.
 
@@ -34,7 +39,7 @@ unchanged; service protocol 1 is separately prerelease.
 At the earlier B8 closure, normal Observer links still selected a11. Agent Plus retains its previous artifact
 and wire 2. That B8 batch selected no persistent service, provider policy, hook, network
 bridge or frontend. The later operational gate selects only Observer. The [producer handoff](shared-observation-service-handoff.md)
-gives current a7 commands and client obligations.
+gives current a8 commands and client obligations.
 
 ## Repairs accepted during validation
 
@@ -77,7 +82,8 @@ Claude saved history is partial. The
 accepts foreground questions in the separate a8 candidate, recognizes foreground
 prompt `/exit`, proves private passive native hints/lifetime and SSH reconnect,
 and explains the Codex default feature skew. A8 also preserves configured polling
-intervals above five minutes. The selected normal units remain a7. Background
+intervals above five minutes. That checkpoint kept normal units on a7; the latest
+delivery selects a8. Background
 `/exit`, live foreground attach, physical wake and notification publication keep
 their explicit limits. See the handoff before selecting or extending a candidate.
 

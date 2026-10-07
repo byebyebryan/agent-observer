@@ -6,40 +6,47 @@ The service envelope is separately prerelease protocol 1; direct snapshot/watch 
 and write 1 remain unchanged. Read the [execution status](shared-observation-service-status.md)
 and [evidence](evidence/2026-10-06-shared-service-implementation/REPORT.md) for
 case-by-case earlier acceptance. The [operational baseline](observer-operations-execution.md)
-and [current evidence](evidence/2026-10-07-observer-operations/REPORT.md) record a7
-selection, workspace configuration, normal user-unit recovery and sustained checks.
+and [earlier evidence](evidence/2026-10-07-observer-operations/REPORT.md) record the
+a7 baseline. The [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md)
+selects a8 on both hosts and records the unselected a9 hint candidate and cost gate.
 
 ## Candidate and selection
 
-The repaired candidate is `0.4.0a7`, source
-`8ca7a789899066cd6c2399f8c6fad60e06e869e7`, wheel SHA256
-`09f41f33e6c22fe019e518af3deae067b58b42f571b84d6c45aebe706079865a`.
-Its [manifest](../artifacts/observer-0.4.0a7.json) verifies three entrypoints,
+The selected producer is `0.4.0a8`, source
+`3c71f216a716a36f2403f7c71fa5935c41c9917f`, wheel SHA256
+`a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926`.
+Its [manifest](../artifacts/observer-0.4.0a8.json) verifies three entrypoints,
 API 1's existing schemas and the separate service extension. It is installed at
-`/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0` on Snap and
+`/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f` on Snap and
 Starship. Snap includes the source-only Claude-history SDK; Starship uses core.
 The exact wheel and manifest are retained on both hosts under
-`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a7-09f41f33e6c22fe0`,
+`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a8-a8370b0f96d2669f`,
 separate from the frozen installed prefix.
 Provider support depends on required native predicates and actual process/image/
 endpoint ownership, rather than native release allowlists.
 
-Normal Observer read/write/service links now select a7, and the persistent
+Normal Observer read/write/service links now select a8, and the persistent
 `agent-observer.service` user unit is enabled on both hosts. Agent Plus still
 binds its previous artifact and wire 2; its private venv can shadow normal
-commands. Use the explicit a7 prefix when validating or migrating a client.
+commands. Use the explicit a8 prefix when validating or migrating a client.
 No hook, networking component or frontend is selected by the Observer rollout.
 
-The [remaining-gap report](evidence/2026-10-07-gap-investigation/REPORT.md) accepts
-an additional installed candidate, `0.4.0a8`, source
-`3c71f216a716a36f2403f7c71fa5935c41c9917f`, wheel SHA256
-`a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926`.
-Its [manifest](../artifacts/observer-0.4.0a8.json), archived wheel and installed
-prefix `0.4.0a8-a8370b0f96d2669f` are available on both hosts under the same roots
-as a7. It repairs foreground Claude question detection and slow polling schedules;
-API/wire/service versions stay unchanged. A8 is not the managed selection: use
-its explicit prefix and an explicitly owned candidate endpoint when testing it,
-or complete its separate managed rollout before normal client acceptance.
+A8 repairs foreground Claude question detection and slow polling schedules.
+The old-to-new managed helper verifies prior and desired artifacts separately;
+restart, rollback and reselection passed on both hosts. Persistent private
+rollback snapshots are under `~/.local/state/agent-observer/operations/2026-10-07-a8`.
+
+The separate hint candidate is `0.4.0a9`, source
+`c2f3754353cb72cd9afc644d9aba1ab296987875`, wheel SHA256
+`8165f9400fadaa50f5d95e95f578630492791a74f81ba417cd5f6faf89a36497`.
+Its [manifest](../artifacts/observer-0.4.0a9.json), archive and installed prefix
+`0.4.0a9-8165f9400fadaa50` exist on both hosts under the same roots as a8.
+It adds opt-in `--native-hints` and optional private `--hint-diagnostics` alongside
+periodic reconciliation. API/wire/service versions and public fixtures remain
+unchanged. Native latency, helper recovery and paired retirement cases pass,
+but the provisional resource gate is not accepted. Do not treat its installation
+as normal selection or enable its hints in the managed unit. The
+[cost follow-up](native-hints-cost-follow-up.md) defines the remaining producer work.
 
 ## Reproducible local entry
 
@@ -56,7 +63,7 @@ For a separately owned candidate endpoint, start an explicit foreground publishe
 and read it from another terminal:
 
 ```sh
-candidate=/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0
+candidate=/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f
 "$candidate/bin/agent-observer-service" serve --host-scope snap \
   --provider codex --provider claude --runtime-interval 30 \
   --history-interval 120 --socket /run/user/1000/ao-candidate/read.sock
@@ -113,17 +120,17 @@ it does not make a CLI-filtered row set a complete producer inventory. Use
 | Case | Boundary |
 | --- | --- |
 | Physical suspend/wake | Pending operator window. Fake BOOTTIME expiry tests establish logic only. |
-| Native signals/hooks | Shared views are pushed after scheduled pulls. Private Codex global start/status hints and Claude registry wakeups now have bounded native proof; production event-assisted collection still needs the loss/scheduling/cost gate in the event plan. No action-based subscription is authorized. |
+| Native signals/hooks | Selected a8 pushes shared views after scheduled pulls. Separate a9 native start/status/name and Claude registry/job/history wakeups pass bounded latency/recovery cases, with controlled overflow/rearm/burst/backoff checks. Cost acceptance and the 30-minute hint-unit rollout soak remain pending. No action-based subscription or hook replacement is used. |
 | Notification events | No durable completion/attention publication here. Existing API v1 notification work is separate; source/view counters cannot substitute for native event correlation. |
 | Workspace mapping | A7 accepts startup-only `--workspace-config` root/project mappings on history jobs, with independent Git validation and history leases. Restart only the Observer unit to reload. Explicit grouping does not merge native identities. |
 | Claude coverage | SDK saved coverage stays partial; the omitted setup-only candidate has zero conversation records. A8 accepts verified interactive/no-job exact input waits as blocked/question. Generic dialogs remain unknown. Background questions/approvals and positive parked predicates retain native acceptance. |
 | Claude foreground attach | The writer rejects a live foreground row with `unsupported_resume_route`; live attach requires a positively bound background job. Saved Resume is separately supported. Observation alone does not authorize terminal focus or attachment. |
-| Native default entry | Both-host private matrices isolate mixed Codex client/server feature defaults; matched pairs enter with defaults. Ordinary pairing/policy remains unchanged and needs provider-owned repair/reproof. Surface deferred TTY errors and never retry an uncertain write automatically. |
+| Native default entry | Both-host private matrices isolate mixed Codex client/server feature defaults; matched pairs enter with defaults. Ordinary provider repair/reproof remains a separate delivery. Surface deferred TTY errors and never retry an uncertain write automatically. |
 | Native UI exit | Foreground prompt `/exit` is independently recognized and removes its registration. Attached-background recognition remains unproved and its worker stays live. Viewer detach and explicit native stop/parked remain separate cases. |
-| Resource/latency | Warm cache latency and publisher/owned-descendant CPU/RSS are measured per configuration. Native provider CPU and full-host idle overhead are not separately attributed. Monitoring/history can lag their configured cadence plus bounded read delay. |
-| Selection/clients | A7 selection and restart/crash/rollback pass. A8 needs its own managed promotion. Independent SSH reconnect/schema epochs pass against a7; networking/bridge, Agent Plus and device migrations retain separate delivery gates. |
+| Resource/latency | Selected polling can lag 30/120 seconds on Snap and 20/60 on Starship plus bounded reads. A9 controlled native-to-view runtime p95 is 0.8–1.4 seconds; activity p95 is at most 9.5 seconds and saved unloaded rename about 10.2 seconds. Exact event-arrival latency is not claimed. Snap observed CPU delta +2.17 points needs equivalent-workload proof; aggregate RSS 167.2 MiB Snap / 67.6 MiB Starship exceeds the provisional 64 MiB target. |
+| Selection/clients | A8 upgrade/restart/rollback/reselection passes. SSH disconnect/reconnect with fresh connection sequence passes against selected a8; networking/bridge, Agent Plus and device migrations retain separate delivery gates. |
 
-The next Agent Plus pass should first bind the exact chosen a7 or a8 artifact
+The next Agent Plus pass should first bind the exact selected a8 artifact
 and exercise envelope/freshness/reconnect fixtures independently of UI work,
 then validate installed local and remote reads against native evidence. Keep
 write actions and terminal/focus behavior as separate client acceptance. Producer
@@ -132,7 +139,9 @@ repairs. RLCD and other clients use the same read boundary with their own bridge
 transport and presentation gates. OpenCode remains deprecated.
 
 Before a client pass, read the [event-assisted monitoring plan](event-assisted-monitoring-plan.md)
-and [latest gap verdict](evidence/2026-10-07-gap-investigation/REPORT.md). Cached
+and [latest delivery verdict](evidence/2026-10-07-native-delivery/REPORT.md). Cached
 Claude conversation ages can lag the configured history cadence; current receipt
 health is not a promise of the latest native message. A8's question repair is
-available only through a8 reads/publishers until normal producer promotion.
+available through the selected producer. A client can migrate now against this
+polling baseline; a9 hint acceptance is a later producer checkpoint and must not
+be closed through a simultaneous frontend repair.

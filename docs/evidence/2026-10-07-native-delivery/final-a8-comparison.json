@@ -1,0 +1,1264 @@
+{
+  "snap": {
+    "evaluationVersion": 1,
+    "hostScope": "snap",
+    "cliVersion": "agent-observer 0.4.0a8",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "c3360aac-1013-457e-9f2a-e642209f2691",
+          "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+          "hostScope": "snap",
+          "viewRevision": 178,
+          "emittedAt": 1791416249321,
+          "emittedBoottimeMs": 456123756,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 71,
+                  "attempts": 71,
+                  "expiresBoottimeMs": 456194101,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456104101
+                },
+                {
+                  "accepted": 18,
+                  "attempts": 18,
+                  "expiresBoottimeMs": 456406831,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456046831
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            },
+            {
+              "components": [
+                {
+                  "accepted": 71,
+                  "attempts": 71,
+                  "expiresBoottimeMs": 456211999,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456121999
+                },
+                {
+                  "accepted": 18,
+                  "attempts": 18,
+                  "expiresBoottimeMs": 456408261,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456048261
+                }
+              ],
+              "configHome": "/home/bryan/.claude",
+              "configHomeKind": "default",
+              "contextGeneration": 1,
+              "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+              "provider": "claude"
+            }
+          ]
+        },
+        "nativeBeforeAt": {
+          "codex": 1791416248728,
+          "claude": 1791416249286
+        },
+        "cliCollectedAt": 1791416248039,
+        "nativeAfterAt": {
+          "codex": 1791416250196,
+          "claude": 1791416250489
+        },
+        "sourceHealth": "partial",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_known_wait_flags",
+              "saved_metadata_unavailable",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          },
+          {
+            "provider": "claude",
+            "sourceHealth": "partial",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "registered_workers",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "metadata_scan",
+                "status": "partial"
+              }
+            },
+            "limitations": [
+              "parked_requires_terminal_job_and_complete_inventory",
+              "client_binding_unproved",
+              "foreground_questions_unproved",
+              "interactive_readiness_requires_verified_worker_contract",
+              "background_readiness_requires_no_pending_work"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 82
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "nativeActive": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "title": "agent-observer",
+                "cwd": "/home/bryan/code/agent-observer",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791412939000
+              },
+              {
+                "id": "01a113b3-adca-7b62-834f-262791c1c774",
+                "title": "tmux-plus",
+                "cwd": "/home/bryan/code/rofi-tmux-plus",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791413194000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "title": "agent-observer",
+                "cwd": "/home/bryan/code/agent-observer",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791412939000
+              },
+              {
+                "id": "01a113b3-adca-7b62-834f-262791c1c774",
+                "title": "tmux-plus",
+                "cwd": "/home/bryan/code/rofi-tmux-plus",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791413194000
+              }
+            ],
+            "contextDifferences": [],
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 32,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 6,
+              "phase_unproved": 28,
+              "activity": 30,
+              "kind": 30,
+              "runtime_unproved": 25,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 3
+            },
+            "nativeActive": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "title": "spare-gpus",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791415334502
+              },
+              {
+                "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+                "title": "caos-models",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791414849048
+              },
+              {
+                "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+                "title": "embeddings-bf",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791409217582
+              }
+            ],
+            "active": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "title": "spare-gpus",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791415334502
+              },
+              {
+                "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+                "title": "caos-models",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791414849048
+              },
+              {
+                "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+                "title": "embeddings-bf",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791409217582
+              }
+            ],
+            "contextDifferences": [
+              {
+                "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+              },
+              {
+                "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+              },
+              {
+                "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+              },
+              {
+                "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+              },
+              {
+                "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+              },
+              {
+                "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+              },
+              {
+                "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+              }
+            ],
+            "issues": [
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              },
+              {
+                "id": "f97b6a86-d09a-4af3-a548-c2f56bca72c9",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              }
+            ]
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 5,
+          "doctorSessionCount": true,
+          "cliRows": 82,
+          "filteredChildren": 0
+        },
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 54975061,
+            "runtimeGaps": []
+          }
+        }
+      },
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "c3360aac-1013-457e-9f2a-e642209f2691",
+          "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+          "hostScope": "snap",
+          "viewRevision": 178,
+          "emittedAt": 1791416252264,
+          "emittedBoottimeMs": 456126699,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 71,
+                  "attempts": 71,
+                  "expiresBoottimeMs": 456194101,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456104101
+                },
+                {
+                  "accepted": 18,
+                  "attempts": 18,
+                  "expiresBoottimeMs": 456406831,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456046831
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            },
+            {
+              "components": [
+                {
+                  "accepted": 71,
+                  "attempts": 71,
+                  "expiresBoottimeMs": 456211999,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456121999
+                },
+                {
+                  "accepted": 18,
+                  "attempts": 18,
+                  "expiresBoottimeMs": 456408261,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456048261
+                }
+              ],
+              "configHome": "/home/bryan/.claude",
+              "configHomeKind": "default",
+              "contextGeneration": 1,
+              "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+              "provider": "claude"
+            }
+          ]
+        },
+        "nativeBeforeAt": {
+          "codex": 1791416251933,
+          "claude": 1791416252227
+        },
+        "cliCollectedAt": 1791416248039,
+        "nativeAfterAt": {
+          "codex": 1791416253117,
+          "claude": 1791416253415
+        },
+        "sourceHealth": "partial",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_known_wait_flags",
+              "saved_metadata_unavailable",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          },
+          {
+            "provider": "claude",
+            "sourceHealth": "partial",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "registered_workers",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "metadata_scan",
+                "status": "partial"
+              }
+            },
+            "limitations": [
+              "parked_requires_terminal_job_and_complete_inventory",
+              "client_binding_unproved",
+              "foreground_questions_unproved",
+              "interactive_readiness_requires_verified_worker_contract",
+              "background_readiness_requires_no_pending_work"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 82
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 50,
+            "nativeAfterRows": 50,
+            "cliRows": 50,
+            "nativeCounts": {
+              "running": 2,
+              "activityKnown": 50,
+              "classification": {
+                "user": 2,
+                "unknown": 48
+              }
+            },
+            "checks": {
+              "membership": 50,
+              "title": 43,
+              "cwd": 50,
+              "runtime_unproved": 48,
+              "phase_unproved": 48,
+              "activity": 50,
+              "kind_unproved": 48,
+              "sessionId": 50,
+              "createdAt": 50,
+              "outcome": 50,
+              "outcomeAt": 48,
+              "title_unproved": 7,
+              "runtime": 2,
+              "phase": 2,
+              "kind": 2,
+              "outcomeAt_unproved": 2
+            },
+            "nativeActive": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "title": "agent-observer",
+                "cwd": "/home/bryan/code/agent-observer",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791412939000
+              },
+              {
+                "id": "01a113b3-adca-7b62-834f-262791c1c774",
+                "title": "tmux-plus",
+                "cwd": "/home/bryan/code/rofi-tmux-plus",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791413194000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "title": "agent-observer",
+                "cwd": "/home/bryan/code/agent-observer",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791412939000
+              },
+              {
+                "id": "01a113b3-adca-7b62-834f-262791c1c774",
+                "title": "tmux-plus",
+                "cwd": "/home/bryan/code/rofi-tmux-plus",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791413194000
+              }
+            ],
+            "contextDifferences": [],
+            "issues": []
+          },
+          "claude": {
+            "nativeBeforeRows": 32,
+            "nativeAfterRows": 32,
+            "cliRows": 32,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 30,
+              "classification": {
+                "unknown": 2,
+                "user": 30
+              }
+            },
+            "checks": {
+              "membership": 31,
+              "title": 28,
+              "cwd": 31,
+              "runtime": 6,
+              "phase_unproved": 28,
+              "activity": 30,
+              "kind": 30,
+              "runtime_unproved": 25,
+              "title_unproved": 3,
+              "activity_unproved": 1,
+              "kind_unproved": 1,
+              "phase": 3
+            },
+            "nativeActive": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "title": "spare-gpus",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791415334502
+              },
+              {
+                "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+                "title": "caos-models",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791414849048
+              },
+              {
+                "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+                "title": "embeddings-bf",
+                "cwd": "/home/bryan/code/caos",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791409217582
+              }
+            ],
+            "active": [
+              {
+                "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+                "title": "spare-gpus",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791415334502
+              },
+              {
+                "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+                "title": "caos-models",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791414849048
+              },
+              {
+                "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+                "title": "embeddings-bf",
+                "cwd": "/home/bryan/code/caos",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": "unknown",
+                "activityAt": 1791409217582
+              }
+            ],
+            "contextDifferences": [
+              {
+                "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+              },
+              {
+                "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+              },
+              {
+                "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+              },
+              {
+                "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+              },
+              {
+                "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+              },
+              {
+                "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+              },
+              {
+                "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+                "recordedCwd": "/home/bryan/code/caos",
+                "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+              }
+            ],
+            "issues": [
+              {
+                "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+                "field": "membership",
+                "result": "missing_cli_row"
+              },
+              {
+                "id": "f97b6a86-d09a-4af3-a548-c2f56bca72c9",
+                "field": "membership",
+                "result": "cli_only_unproved",
+                "runtime": "unknown"
+              }
+            ]
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 5,
+          "doctorSessionCount": true,
+          "cliRows": 82,
+          "filteredChildren": 0
+        },
+        "nativeRuntime": {
+          "pid": 3345937,
+          "startTicks": "43188780",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {},
+          "claude": {
+            "historyGaps": [
+              "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+              "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+            ],
+            "historyBytesScanned": 54975061,
+            "runtimeGaps": []
+          }
+        }
+      }
+    ]
+  },
+  "starship": {
+    "evaluationVersion": 1,
+    "hostScope": "starship",
+    "cliVersion": "agent-observer 0.4.0a8",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "2ade173c-b2a0-4c34-b9ea-a353e8b21e6c",
+          "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+          "hostScope": "starship",
+          "viewRevision": 152,
+          "emittedAt": 1791416250833,
+          "emittedBoottimeMs": 456538032,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 114,
+                  "attempts": 114,
+                  "expiresBoottimeMs": 456585400,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456525400
+                },
+                {
+                  "accepted": 38,
+                  "attempts": 38,
+                  "expiresBoottimeMs": 456683386,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456503386
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            }
+          ]
+        },
+        "nativeBeforeAt": {
+          "codex": 1791416250803
+        },
+        "cliCollectedAt": 1791416238388,
+        "nativeAfterAt": {
+          "codex": 1791416252437
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_known_wait_flags",
+              "saved_metadata_unavailable",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 93
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 91,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 2,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "nativeActive": [
+              {
+                "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+                "title": "fluid-2.5d",
+                "cwd": "/home/bryan/code/cubey",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791414534000
+              },
+              {
+                "id": "01a0ca16-d486-7142-8170-c496b7419368",
+                "title": "pd-lab-next",
+                "cwd": "/home/bryan/code/powered-descent-lab",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791415700000
+              },
+              {
+                "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+                "title": "bookkeeper-retirement",
+                "cwd": "/home/bryan/code/homelab",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791414886000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+                "title": "fluid-2.5d",
+                "cwd": "/home/bryan/code/cubey",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791414534000
+              },
+              {
+                "id": "01a0ca16-d486-7142-8170-c496b7419368",
+                "title": "pd-lab-next",
+                "cwd": "/home/bryan/code/powered-descent-lab",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791415700000
+              },
+              {
+                "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+                "title": "bookkeeper-retirement",
+                "cwd": "/home/bryan/code/homelab",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791414886000
+              }
+            ],
+            "contextDifferences": [],
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 93,
+          "filteredChildren": 0
+        },
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        }
+      },
+      {
+        "service": {
+          "serviceProtocol": 1,
+          "serviceId": "2ade173c-b2a0-4c34-b9ea-a353e8b21e6c",
+          "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+          "hostScope": "starship",
+          "viewRevision": 152,
+          "emittedAt": 1791416254380,
+          "emittedBoottimeMs": 456541578,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 114,
+                  "attempts": 114,
+                  "expiresBoottimeMs": 456585400,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 456525400
+                },
+                {
+                  "accepted": 38,
+                  "attempts": 38,
+                  "expiresBoottimeMs": 456683386,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 456503386
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            }
+          ]
+        },
+        "nativeBeforeAt": {
+          "codex": 1791416254349
+        },
+        "cliCollectedAt": 1791416238388,
+        "nativeAfterAt": {
+          "codex": 1791416255913
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "loaded_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "parked_predicate_unproved",
+              "client_binding_unproved",
+              "questions_require_known_wait_flags",
+              "saved_metadata_unavailable",
+              "offline_runtime_state_unavailable",
+              "unloaded_work_state_unavailable",
+              "unbound_tui_contexts_unobserved"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 93
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 93,
+            "nativeAfterRows": 93,
+            "cliRows": 93,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 93,
+              "classification": {
+                "user": 3,
+                "unknown": 90
+              }
+            },
+            "checks": {
+              "membership": 93,
+              "title": 71,
+              "cwd": 93,
+              "runtime_unproved": 90,
+              "phase_unproved": 90,
+              "activity": 93,
+              "kind_unproved": 90,
+              "sessionId": 93,
+              "createdAt": 93,
+              "outcome": 92,
+              "outcomeAt": 91,
+              "title_unproved": 22,
+              "outcome_unproved": 1,
+              "outcomeAt_unproved": 2,
+              "runtime": 3,
+              "phase": 3,
+              "kind": 3
+            },
+            "nativeActive": [
+              {
+                "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+                "title": "fluid-2.5d",
+                "cwd": "/home/bryan/code/cubey",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791414534000
+              },
+              {
+                "id": "01a0ca16-d486-7142-8170-c496b7419368",
+                "title": "pd-lab-next",
+                "cwd": "/home/bryan/code/powered-descent-lab",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791415700000
+              },
+              {
+                "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+                "title": "bookkeeper-retirement",
+                "cwd": "/home/bryan/code/homelab",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791414886000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+                "title": "fluid-2.5d",
+                "cwd": "/home/bryan/code/cubey",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791414534000
+              },
+              {
+                "id": "01a0ca16-d486-7142-8170-c496b7419368",
+                "title": "pd-lab-next",
+                "cwd": "/home/bryan/code/powered-descent-lab",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791415700000
+              },
+              {
+                "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+                "title": "bookkeeper-retirement",
+                "cwd": "/home/bryan/code/homelab",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "nativeJobState": null,
+                "nativeTempo": null,
+                "workerVersion": null,
+                "activityAt": 1791414886000
+              }
+            ],
+            "contextDifferences": [],
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 93,
+          "filteredChildren": 0
+        },
+        "nativeRuntime": {
+          "pid": 3414244,
+          "startTicks": "43337316",
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {}
+        }
+      }
+    ]
+  }
+}

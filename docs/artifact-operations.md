@@ -1,23 +1,23 @@
 # Candidate artifact operations
 
-The current selected manifest is [Observer a7](../artifacts/observer-0.4.0a7.json).
+The current selected manifest is [Observer a8](../artifacts/observer-0.4.0a8.json).
 It freezes the producer wheel independently of later operations/tooling/docs
 commits. Normal read/write/service links and a user unit are selected on Snap
 and Starship through the Observer-only chezmoi operations tuple. See the
-[execution record](observer-operations-execution.md) and
-[evidence](evidence/2026-10-07-observer-operations/REPORT.md) for source,
+[execution record](observer-operations-execution.md) and the latest
+[delivery evidence](evidence/2026-10-07-native-delivery/REPORT.md) for source,
 installed, native and operational acceptance. Provider compatibility follows
 required contracts, not executable-release allowlists. Older manifests and
 exact-image pilot receipts remain historical verification/rollback artifacts.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.4.0a7.json \
-  --wheel /absolute/path/agent_observer-0.4.0a7-py3-none-any.whl \
+  --manifest artifacts/observer-0.4.0a8.json \
+  --wheel /absolute/path/agent_observer-0.4.0a8-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.4.0a7.json \
-  --wheel /absolute/path/agent_observer-0.4.0a7-py3-none-any.whl \
+  --manifest artifacts/observer-0.4.0a8.json \
+  --wheel /absolute/path/agent_observer-0.4.0a8-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 

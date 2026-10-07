@@ -1,0 +1,165 @@
+{
+  "manifest": {
+    "manifestVersion": 2,
+    "package": "agent-observer",
+    "version": "0.4.0a9",
+    "sourceRevision": "c2f3754353cb72cd9afc644d9aba1ab296987875",
+    "wheel": "agent_observer-0.4.0a9-py3-none-any.whl",
+    "wheelSha256": "8165f9400fadaa50f5d95e95f578630492791a74f81ba417cd5f6faf89a36497",
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "apiVersion": 1,
+    "schemas": {
+      "snapshot": 3,
+      "watch": 3,
+      "write": 1
+    },
+    "claudeHistorySdk": "0.2.163",
+    "nativeContracts": [
+      "codex_managed_metadata_v1",
+      "claude_registry_job_metadata_v1",
+      "codex_tty_entry_v1",
+      "claude_background_attach_v1"
+    ],
+    "service": {
+      "protocol": 1,
+      "schemas": {
+        "request": 1,
+        "frame": 1
+      }
+    }
+  },
+  "installed": {
+    "snap": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a9-8165f9400fadaa50",
+      "wheelSha256": "8165f9400fadaa50f5d95e95f578630492791a74f81ba417cd5f6faf89a36497",
+      "sourceRevision": "c2f3754353cb72cd9afc644d9aba1ab296987875",
+      "profile": "claude-history",
+      "version": "0.4.0a9",
+      "sdk": "0.2.163",
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    },
+    "starship": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a9-8165f9400fadaa50",
+      "wheelSha256": "8165f9400fadaa50f5d95e95f578630492791a74f81ba417cd5f6faf89a36497",
+      "sourceRevision": "c2f3754353cb72cd9afc644d9aba1ab296987875",
+      "profile": "core",
+      "version": "0.4.0a9",
+      "sdk": null,
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    }
+  },
+  "publicApi": {
+    "status": "accepted",
+    "api": {
+      "apiVersion": 1,
+      "hostLocal": true,
+      "nativeEventReplay": false,
+      "readCommands": [
+        "snapshot",
+        "list",
+        "show",
+        "watch",
+        "schema"
+      ],
+      "schemas": {
+        "snapshot": 3,
+        "watch": 3,
+        "write": 1
+      },
+      "writeCommands": [
+        "prepare",
+        "execute",
+        "enter",
+        "schema"
+      ]
+    },
+    "selectedPrefix": "/home/bryan/.local/share/agent-observer/0.4.0a9-8165f9400fadaa50",
+    "independentReader": "jsonschema",
+    "readerVersion": "4.26.0",
+    "importsObserver": false,
+    "providerInvocations": 0,
+    "fixtureRows": {
+      "claude-ready": 5,
+      "partial": 3,
+      "snapshot": 5
+    },
+    "strictInputAndExactReference": true,
+    "maximumSerializedCliRows": 4096
+  },
+  "capacity": {
+    "status": "accepted",
+    "proofClass": "synthetic_installed_code",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a9-8165f9400fadaa50",
+    "version": "0.4.0a9",
+    "frameBytes": 8388292,
+    "rows": 4096,
+    "attemptedDistinctPinnedBodies": 16,
+    "encodedPeakBytes": 58711884,
+    "encodedLimitBytes": 67108864,
+    "droppedConnections": 9,
+    "parsePeakRssBytes": 83841024,
+    "totalPeakRssBytes": 122605568,
+    "peakFds": 28,
+    "providerInvocations": 0,
+    "rssIncludesSyntheticFixtureConstruction": true
+  },
+  "selectedA8RemoteReader": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "connections": [
+      {
+        "connection": 1,
+        "serviceId": "2ade173c-b2a0-4c34-b9ea-a353e8b21e6c",
+        "initialSequence": 1,
+        "finalSequence": 2,
+        "kinds": [
+          "view",
+          "heartbeat"
+        ],
+        "durationSeconds": 10.35666929895524,
+        "schemaAccepted": true,
+        "viewDiscardedOnDisconnect": true
+      },
+      {
+        "connection": 2,
+        "serviceId": "2ade173c-b2a0-4c34-b9ea-a353e8b21e6c",
+        "initialSequence": 1,
+        "finalSequence": 3,
+        "kinds": [
+          "view",
+          "view",
+          "view"
+        ],
+        "durationSeconds": 0.858657011995092,
+        "schemaAccepted": true,
+        "viewDiscardedOnDisconnect": true
+      }
+    ],
+    "samePublisherAcrossReconnect": true,
+    "newConnectionEpoch": true,
+    "ordinaryProviderActions": false,
+    "referenceImportsObserver": false,
+    "localBoottimeComparedWithRemote": false,
+    "providerInvocations": 0,
+    "nativeCompletenessProved": false,
+    "networkReplayClaimed": false
+  }
+}
