@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""Explicit disposable native proof through the installed shared service.
+
+Run only via native-isolation enter. Credentials/output remain in the owned
+fixture; stdout records bounded predicates, never provider or terminal content.
+"""
+
+import json
+import os
+import signal
+import subprocess
+import time
+import traceback
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    host = os.environ["NATIVE_PROOF_HOST"]
+    ready = json.loads((root / "ready.json").read_text())
+    assert os.getuid() == 0 and all(ready.values())
+    # The older direct-read fixture used waiting + a conversation clock as its
+    # completion cue. Independent service components can expose a newer turn's
+    # start clock alongside an earlier sampled waiting phase. Require the
+    # separately observed terminal outcome, then retain its native clock check.
+    source = (root / "native-acceptance").read_text().replace(
+        'if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:',
+        'if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None and row["outcome"]["value"] == "completed":',
+        1,
+    ).replace('time.sleep(1)\n        failed = self.snapshot()', 'time.sleep(3)\n        failed = self.snapshot()', 1)
+    namespace = {"__name__": "owned_service_native_fixture"}
+    exec(compile(source, str(root / "native-acceptance"), "exec"), namespace)
+    original = namespace["Proof"]
+    path = root / ("native-" + host) / "runtime" / "observer" / "read.sock"
+    providers = ["codex", "claude"] if host == "snap" else ["codex"]
+    argv = ["agent-observer-service", "serve", "--host-scope", host, "--socket", str(path), "--runtime-interval", "1", "--history-interval", "1"]
+    for provider in providers:
+        argv += ["--provider", provider]
+    service = subprocess.Popen(argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    proofs, receipts = [], []
+    class ServiceProof(original):
+        def codex_metadata(self, ref, *, rename=False, touch=False):
+            result = super().codex_metadata(ref, rename=rename, touch=touch)
+            if rename:
+                time.sleep(3)
+            return result
+        def snapshot(self):
+            value = self.command(["agent-observer", "service", "snapshot", "--host-scope", self.host, "--socket", str(path)])
+            if value["snapshot"] is None:
+                raise RuntimeError("service_warming")
+            snapshot = value["snapshot"]
+            return {**snapshot,
+                    "sources": [s for s in snapshot["sources"] if s["provider"] == self.provider],
+                    "sessions": [r for r in snapshot["sessions"] if r["identity"]["provider"] == self.provider]}
+        def row(self, ref):
+            deadline = time.monotonic() + 15
+            while time.monotonic() < deadline:
+                try:
+                    return super().row(ref)
+                except StopIteration:
+                    time.sleep(0.2)
+            raise RuntimeError("service_identity_pending")
+    try:
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            if service.poll() is not None:
+                raise RuntimeError("service_exited")
+            try:
+                p = ServiceProof("codex")
+                if p.snapshot()["sources"]:
+                    break
+            except (RuntimeError, OSError):
+                pass
+            time.sleep(0.1)
+        else:
+            raise RuntimeError("service_warming")
+        for provider in providers:
+            proof = ServiceProof(provider)
+            proofs.append(proof)
+            result = proof.run()
+            receipts.append({**result, "readBackend": "installed_service", "serviceProtocol": 1})
+            (root / "native-service-progress.json").write_text(json.dumps(receipts, indent=2) + "\n")
+            print(json.dumps({"hostScope": host, "provider": provider, "stage": "entry_age_resume_accepted"}), flush=True)
+        # Existing Codex proof establishes the exact owned daemon and saved
+        # native activity before killing/restarting it. Its snapshot override
+        # exercises shared-service outage/recovery rather than direct collection.
+        proof = proofs[0]
+        time.sleep(2)
+        receipts.append({**proof.recovery(), "readBackend": "installed_service", "serviceProtocol": 1})
+        print(json.dumps({"hostScope": host, "stage": "owned_codex_recovery_accepted"}), flush=True)
+        result = {"status": "accepted", "hostScope": host, "isolation": ready,
+                  "ordinaryProviderActions": False, "cases": receipts}
+        (root / "native-service-receipt.json").write_text(json.dumps(result, indent=2) + "\n")
+    finally:
+        for proof in proofs:
+            for client in list(proof.clients):
+                proof.stop(client)
+        if service.poll() is None:
+            service.send_signal(signal.SIGTERM)
+        service.wait(timeout=15)
+        assert not path.exists()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        code = str(error)
+        if not code.replace("_", "").isalnum() or len(code) > 128:
+            code = "native_service_proof_failed"
+        locations = [{"file": Path(f.filename).name, "line": f.lineno, "function": f.name} for f in traceback.extract_tb(error.__traceback__)][-4:]
+        print(json.dumps({"status": "rejected", "reason": code, "exceptionClass": type(error).__name__, "locations": locations}), flush=True)
+        raise SystemExit(2) from None

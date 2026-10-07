@@ -14,8 +14,10 @@ reads and bounded push for Plus/dashboard clients, with one collection loop.
 The [review](shared-observation-service-review.md) records current cost,
 source freshness, fan-out/recovery and consumer timing findings. The
 [execution plan](shared-observation-service-execution-plan.md) sequences S0–S5
-producer work before managed selection or separate client passes. No shared
-service, hook selection or downstream migration is implemented by this checkpoint.
+producer work before managed selection or separate client passes. The
+[implementation status](shared-observation-service-status.md) now records the
+shared service candidate and its [explicit client](shared-observation-service-client.md).
+Hook selection and downstream migration remain outside this producer checkpoint.
 The [implementation-loop runbook](shared-observation-service-batch-plan.md) targets
 a feature-complete installed producer candidate, both-provider native comparisons
 and sustained recovery/resource proof, with physical wake and normal selection
