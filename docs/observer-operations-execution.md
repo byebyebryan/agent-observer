@@ -27,8 +27,8 @@ ordinary provider-policy changes belong to this rollout.
 | --- | --- | --- |
 | O0 baseline | Selected and candidate installed CLI/native comparisons, preservation bookends and host topology | Complete; old selected image gates lose supported native facts, while candidate matches its accepted subset |
 | O1 workspace | Startup-only bounded workspace configuration; same direct/history enrichment and leases | Source complete as a7; 283 tests and focused Ruff checks pass; installed gate remains O2 |
-| O2 artifact | Immutable wheel, installed read/write/service conformance and affected native proof | Pending |
-| O3 operations | Observer-only managed selectors/unit/manifest/check/apply/rollback; dry run and drift review | Pending |
+| O2 artifact | Immutable wheel, installed read/write/service conformance and affected native proof | Accepted a7 on both hosts; native entry is bounded to the explicitly configured disposable pairing |
+| O3 operations | Observer-only managed selectors/unit/manifest/check/apply/rollback; dry run and drift review | Source accepted in chezmoi `1d42b72`; six-target dry runs pass; Starship's preexisting source drift is preserved |
 | O4 selection | Scoped rollout, normal commands, unit restart and rollback/reselection verified | Pending |
 | O5 closure | Sustained multi-reader measurements, final independent native comparison and client handoff | Pending |
 
@@ -51,3 +51,10 @@ PTY `/exit` recognition, general Codex parked inference, every topology's idle
 retirement and event-assisted latency remain explicit limits. Shared push still
 distributes views from polling. Remote streams, notification events, Agent Plus
 and dashboard/device acceptance remain separate tasks after producer acceptance.
+
+The current installed Codex CLI and managed daemon disagree on the default
+`api_key_model_discovery` setting in a fresh disposable store. Native entry
+acceptance explicitly disables that setting only in the fixture; it does not
+establish ordinary default New/Resume startup or authorize a provider settings
+change. Native observation succeeds with the ordinary current runtime. This
+provider entry limitation remains separate from producer read/service acceptance.

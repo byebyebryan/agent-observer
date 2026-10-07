@@ -37,7 +37,11 @@ def main():
         'if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:',
         'if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None and row["outcome"]["value"] == "completed":',
         1,
-    ).replace('time.sleep(1)\n        failed = self.snapshot()', 'time.sleep(3)\n        failed = self.snapshot()', 1)
+    ).replace('time.sleep(1)\n        failed = self.snapshot()', 'time.sleep(3)\n        failed = self.snapshot()', 1).replace(
+        'rows = self.snapshot()["sessions"]\n        ref = (',
+        'rows = self.await_new(prior, client) if self.provider == "codex" else self.snapshot()["sessions"]\n        ref = (',
+        1,
+    )
     if args.claude_monitoring:
         # Wait for both independent native evidence and the bounded service
         # sample; an earlier cached phase is not a projection failure.
@@ -59,6 +63,65 @@ def main():
     proofs, receipts, isolated_samples = [], [], []
     isolation_armed = False
     class ServiceProof(original):
+        def handoff(self, ref=None):
+            if self.provider == "codex" and ref is None:
+                NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+                self.native_prior = set()
+                try:
+                    peer = NativeRPC(self.base / "codex")
+                    try:
+                        self.native_prior = set(peer.pages("thread/loaded/list"))
+                    finally:
+                        peer.close()
+                except (FileNotFoundError, ConnectionRefusedError):
+                    # The owned failure/recovery case explicitly starts with
+                    # no reachable daemon; public New supplies the action.
+                    pass
+                except ValueError as error:
+                    if str(error) != "native_endpoint_unavailable":
+                        raise
+            return super().handoff(ref)
+
+        def await_new(self, prior, client):
+            # Native TUI startup and independent service samples are asynchronous.
+            # Require the exact independently loaded ID, never a guessed label.
+            NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+            deadline = time.monotonic() + 30
+            native_ids, rows, errors = set(), [], []
+            while time.monotonic() < deadline:
+                self.pause(client, 0.2)
+                users, ambiguous = set(), set()
+                try:
+                    rpc = NativeRPC(self.base / "codex")
+                    try:
+                        native_ids = set(rpc.pages("thread/loaded/list")) - self.native_prior
+                        users, ambiguous = set(), set()
+                        for sid in native_ids:
+                            native = rpc.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
+                            if native.get("threadSource") == "user":
+                                users.add(sid)
+                            elif native.get("threadSource") != "subagent":
+                                ambiguous.add(sid)
+                    finally:
+                        rpc.close()
+                except (OSError, ValueError, KeyError) as error:
+                    errors.append(type(error).__name__)
+                rows = self.snapshot()["sessions"]
+                matched = [r for r in rows if r["identity"]["nativeId"] in users
+                           and r["runtime"]["value"] == "running"]
+                if not ambiguous and len(users) == len(matched) == 1:
+                    return matched
+                if ambiguous or len(users) > 1:
+                    raise RuntimeError("native_new_identity_ambiguous")
+            (root / "native-new-pending.json").write_text(json.dumps({
+                "status": "pending", "hostScope": host,
+                "nativeLoadedIds": sorted(native_ids),
+                "serviceNewIds": [r["identity"]["nativeId"] for r in rows if r["identity"]["nativeId"] not in prior],
+                "referenceErrorClasses": sorted(set(errors)),
+                "ordinaryProviderActions": False,
+            }, indent=2) + "\n")
+            raise RuntimeError("native_new_context_unavailable" if not native_ids else "service_new_context_pending")
+
         def codex_metadata(self, ref, *, rename=False, touch=False):
             result = super().codex_metadata(ref, rename=rename, touch=touch)
             if rename:
