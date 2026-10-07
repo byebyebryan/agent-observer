@@ -34,8 +34,10 @@ def owned(root):
         raise ValueError("fixture_ownership_changed")
 
 
-def prepare(root, host, prefix, release=None):
+def prepare(root, host, prefix, release=None, disable_api_key_discovery=False):
     owned(root)
+    if (root / "fixture.json").exists() or (root / "runtime.json").exists():
+        raise ValueError("fixture_already_prepared")
     if prefix.resolve(strict=True) != prefix or not (prefix / "bin/agent-observer-write").is_file():
         raise ValueError("candidate_prefix_unavailable")
     package = ORDINARY / ".codex/packages/app-server-daemon"
@@ -65,7 +67,9 @@ def prepare(root, host, prefix, release=None):
                              ("claude", Path("/opt/claude-code/bin/claude"))):
         if provider == "claude" and host != "snap":
             continue
-        target = cli / provider
+        directory = cli / (provider + "-bin")
+        directory.mkdir(mode=0o700)
+        target = directory / provider
         shutil.copyfile(source, target)
         target.chmod(0o700)
         with source.open("rb") as stream:
@@ -79,7 +83,9 @@ def prepare(root, host, prefix, release=None):
     (base / "codex/auth.json").chmod(0o600)
     (base / "codex/config.toml").write_text(
         'model = "gpt-6.1-sol"\napproval_policy = "never"\nsandbox_mode = "danger-full-access"\n'
-        "[features]\ndaemon_auto_start = true\n[projects."
+        "[features]\ndaemon_auto_start = true\n"
+        + ("api_key_model_discovery = false\n" if disable_api_key_discovery else "")
+        + "[projects."
         + json.dumps(str(base / "workspace"))
         + ']\ntrust_level = "trusted"\n'
     )
@@ -126,7 +132,8 @@ def prepare(root, host, prefix, release=None):
             (base / "claude" / name).mkdir(mode=0o700)
     subprocess.run(["git", "init", "-q", str(base / "workspace")], check=True)
     save(root / "fixture.json", {"host": host, "prefix": str(prefix), "codexRelease": release,
-                                "daemonSha256": daemon_hash, "installedCliSha256": images})
+                                "daemonSha256": daemon_hash, "installedCliSha256": images,
+                                "apiKeyModelDiscoveryDisabledInFixture": disable_api_key_discovery})
 
 
 def init(root):
@@ -150,12 +157,12 @@ def init(root):
     os.close(anchor)
     base = root / ("native-" + host)
     mounts = [(base / "codex", ORDINARY / ".codex"),
-              (base / "native-cli/codex", Path("/opt/openai-codex/bin/codex"))]
+              (base / "native-cli/codex-bin", Path("/opt/openai-codex/bin"))]
     if host == "snap":
         mounts += [
             (base / "claude", ORDINARY / ".claude"),
             (base / "home/.claude.json", ORDINARY / ".claude.json"),
-            (base / "native-cli/claude", Path("/opt/claude-code/bin/claude")),
+            (base / "native-cli/claude-bin", Path("/opt/claude-code/bin")),
         ]
     for source, target in mounts:
         subprocess.run(["mount", "--bind", str(source), str(target)], check=True)
@@ -268,7 +275,8 @@ def enter(root, argv):
         "NATIVE_PROOF_HOST": fixture["host"],
     }
     env = ["env"]
-    for key in ("PYTHONPATH", "TMUX", "DBUS_SESSION_BUS_ADDRESS", "DISPLAY", "WAYLAND_DISPLAY"):
+    for key in ("PYTHONPATH", "TMUX", "DBUS_SESSION_BUS_ADDRESS", "DISPLAY", "WAYLAND_DISPLAY",
+                "CODEX_CI", "CODEX_SESSION_ID", "CODEX_THREAD_ID", "CODEX_VERSION"):
         env += ["-u", key]
     env += [key + "=" + value for key, value in values.items()]
     os.execv(
@@ -312,11 +320,12 @@ def main():
     parser.add_argument("--host", choices=("snap", "starship"))
     parser.add_argument("--prefix", type=Path)
     parser.add_argument("--codex-release", help="optional explicit cached proof release; default is the current cache target")
+    parser.add_argument("--codex-disable-api-key-discovery", action="store_true", help="Explicit private fixture configuration; never changes ordinary provider settings")
     args, command = parser.parse_known_args()
     if args.operation == "prepare":
         if args.host is None or args.prefix is None:
             parser.error("prepare requires --host and --prefix")
-        prepare(args.root, args.host, args.prefix, args.codex_release)
+        prepare(args.root, args.host, args.prefix, args.codex_release, args.codex_disable_api_key_discovery)
     elif args.operation == "enter":
         enter(args.root, command[1:] if command[:1] == ["--"] else command)
     else:
