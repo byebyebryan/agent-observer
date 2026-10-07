@@ -1,6 +1,6 @@
 # Observer operational baseline evidence
 
-Date: 2026-10-07. Status: active producer/operations execution. See
+Date: 2026-10-07. Status: scoped producer/operations baseline accepted. See
 [the execution record](../../observer-operations-execution.md) for scope and gates.
 Opening receipts retain their original scope. O2/O3 acceptance below precedes
 the accepted O4 selection and completed O5 sustained checks.
