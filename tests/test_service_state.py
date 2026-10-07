@@ -194,6 +194,49 @@ class ServiceStateTest(unittest.TestCase):
 
 
 class SchedulerTest(unittest.TestCase):
+    def test_bursts_have_one_trailing_read_and_history_cooldown(self):
+        scheduler = Scheduler(("codex",), intervals={"runtime": 20000, "history": 60000})
+        runtime = scheduler.start_due(0)[0]
+        scheduler.finish(runtime, 100, success=True)
+        history = scheduler.start_due(100)[0]
+        for _ in range(100000):
+            scheduler.hint("codex", "history", 101)
+        self.assertEqual(scheduler.dirty[("codex", "history")], 1)
+        scheduler.finish(history, 200, success=True)
+        self.assertEqual(scheduler.due[("codex", "history")], 10100)
+        self.assertEqual(scheduler.start_due(10099), [])
+        trailing = scheduler.start_due(10100)[0]
+        self.assertEqual(trailing.component, "history")
+        scheduler.finish(trailing, 10200, success=True)
+        self.assertEqual(scheduler.due[("codex", "history")], 70200)
+
+    def test_hints_cannot_bypass_failed_collection_backoff(self):
+        scheduler = Scheduler(("codex",))
+        job = scheduler.start_due(0)[0]
+        scheduler.hint("codex", "runtime", 100)
+        scheduler.finish(job, 200, success=False)
+        due = scheduler.due[("codex", "runtime")]
+        for now in range(201, due):
+            scheduler.hint("codex", "runtime", now)
+        self.assertEqual(scheduler.due[("codex", "runtime")], due)
+        self.assertEqual(scheduler.start_due(due - 1)[0].component, "history")
+        self.assertEqual(scheduler.start_due(due), [])  # history still owns provider
+        scheduler.finish(scheduler.active["codex"], due, success=True)
+        retry = scheduler.start_due(due)[0]
+        self.assertEqual(retry.component, "runtime")
+
+    def test_hint_scope_rejected_and_history_not_starved(self):
+        scheduler = Scheduler(("codex",))
+        with self.assertRaisesRegex(ValueError, "service_hint_scope"):
+            scheduler.hint("claude", "runtime", 1)
+        for now in range(0, 100000, 1000):
+            scheduler.hint("codex", "runtime", now)
+            scheduler.hint("codex", "history", now)
+            jobs = scheduler.start_due(now)
+            for job in jobs:
+                scheduler.finish(job, now + 1, success=True)
+        self.assertLessEqual(99000 - scheduler.last[("codex", "history")], 11000)
+
     def test_slow_configured_cadence_is_not_shortened_by_retry_cap(self):
         for success in (True, False):
             for base in (300000, 600000, 3600000):
