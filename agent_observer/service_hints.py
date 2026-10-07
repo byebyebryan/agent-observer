@@ -52,7 +52,9 @@ class Hints:
         self.due = {p: 0 for p in configs}
         self.failures = {p: 0 for p in configs}
         self.counts = {p: {"starts": 0, "runtime": 0, "history": 0, "losses": 0,
-                           "rejected": 0, "ready": False} for p in configs}
+                           "rejected": 0, "ready": False,
+                           "lastRuntimeHintBoottimeMs": None,
+                           "lastHistoryHintBoottimeMs": None} for p in configs}
         self.diagnostics = Path(diagnostics) if diagnostics else None
         self.last_diagnostic = -1000
         self.changed = True
@@ -164,6 +166,7 @@ class Hints:
             for component in pending:
                 self.scheduler.hint(source.provider, component, now)
                 self._increment(source.provider, component)
+                self.counts[source.provider]["last" + component.title() + "HintBoottimeMs"] = now
         except (ValueError, TypeError, OSError):
             self.drop(source, now, rejected=True)
 
