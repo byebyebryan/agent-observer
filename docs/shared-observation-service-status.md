@@ -59,3 +59,12 @@ the same problem. The latest explicit new-turn evidence now clears the older
 outcome, including after its lease expires. Only a subsequently sampled terminal
 outcome restores a completed/failed/cancelled value. API 1 and service schemas
 are unchanged. A4 will freeze and independently validate this producer repair.
+
+## History dependency repair
+
+A final expiry audit found that a healthy runtime roster could keep an unloaded
+row's history-derived clock/workspace current after history expired, and an older
+clock could replace a newer last-known clock when a component expired. A5 fixes
+both projection paths, keeps workspace bound to history, and strengthens the
+pure reader's coverage/workspace/metadata lease checks. It preserves newer
+last-known conversation evidence instead of promoting an older sample.

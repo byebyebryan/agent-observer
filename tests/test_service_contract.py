@@ -12,6 +12,7 @@ from agent_observer.contract import ContractError, canonical
 from agent_observer.service_contract import (
     StreamGuard, interface, parse_frame, parse_request, schema_document, validate_frame,
 )
+from agent_observer.workspace import context
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -69,6 +70,20 @@ class ServiceContractTest(unittest.TestCase):
         guard.accept({**value, "sequence": 3, "kind": "resync"})
         with self.assertRaises(ContractError):
             guard.accept({**value, "sequence": 4, "serviceId": "00000000-0000-0000-0000-000000000099"})
+
+    def test_saved_coverage_and_workspace_require_a_history_lease(self):
+        for workspace in (False, True):
+            with self.subTest(workspace=workspace):
+                value = fixture()
+                source = value["sources"][0]
+                next(c for c in source["components"] if c["name"] == "history")["health"] = "stale"
+                if workspace:
+                    native = next(s for s in value["snapshot"]["sources"] if s["provider"] == source["provider"])
+                    native["coverage"]["saved"].update(status="unavailable", reason="service_history_expired")
+                    row = next(r for r in value["snapshot"]["sessions"] if r["identity"]["provider"] == source["provider"])
+                    row["workspace"] = context(row["cwd"], {"roots": [], "projects": []})
+                with self.assertRaisesRegex(ContractError, "service_workspace_without_lease" if workspace else "service_coverage_without_lease"):
+                    validate_frame(value)
 
     def test_service_facade_remains_pure(self):
         code = "import sys;import agent_observer.service_public;assert not any(x in sys.modules for x in ['agent_observer.collection','agent_observer.write_client','agent_observer.codex_snapshot','agent_observer.claude_snapshot'])"

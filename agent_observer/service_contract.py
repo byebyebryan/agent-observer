@@ -143,10 +143,20 @@ def validate_frame(value, *, expected_host=None, expected_uid=None):
             (s["provider"], s["namespace"]) for s in sources.values()
         }:
             raise ContractError("service_snapshot_sources")
+        for source in snapshot["sources"]:
+            components = {c["name"]: c for c in sources[source["provider"]]["components"]}
+            for dimension, component in (("runtime", "runtime"), ("saved", "history")):
+                if source["coverage"][dimension]["status"] in {"complete", "partial"} and components[component]["health"] not in {"current", "partial"}:
+                    raise ContractError("service_coverage_without_lease")
         for row in snapshot["sessions"]:
-            runtime = next(item for item in sources[row["identity"]["provider"]]["components"] if item["name"] == "runtime")
+            components = {item["name"]: item for item in sources[row["identity"]["provider"]]["components"]}
+            runtime = components["runtime"]
             if any(row[name]["value"] != "unknown" for name in ("phase", "runtime", "worker", "attachment")) and runtime["health"] not in {"current", "partial"}:
                 raise ContractError("service_runtime_without_lease")
+            if row["workspace"] is not None and components["history"]["health"] not in {"current", "partial"}:
+                raise ContractError("service_workspace_without_lease")
+            if (row["activity"]["health"] == "current" or row["outcome"]["value"] != "unknown") and not any(c["health"] in {"current", "partial"} for c in components.values()):
+                raise ContractError("service_metadata_without_lease")
     if len(canonical({**value, "snapshot": None}).encode()) + 1 > MAX_OVERHEAD_BYTES:
         raise ContractError("service_overhead_limit")
     if len(canonical(value).encode()) + 1 > MAX_FRAME_BYTES:
