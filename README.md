@@ -19,9 +19,12 @@ The [deep review](docs/shared-observation-service-review.md) includes passive
 Snap/Starship cost measurements and controlled delivery/freshness exercises.
 The [execution plan](docs/shared-observation-service-execution-plan.md) keeps
 implementation, native service proof and downstream migrations separate.
-This is reviewed design; no shared service or rollout is implemented yet.
+The shared service and explicit cached read client are now implemented as a
+separate prerelease candidate. Read the [client guide](docs/shared-observation-service-client.md)
+and [implementation status](docs/shared-observation-service-status.md) for exact
+source, artifact and native acceptance. Normal selection remains unchanged.
 The [large implementation-loop plan](docs/shared-observation-service-batch-plan.md)
-sets concrete checkpoints and unattended validation for the next producer pass.
+sets the current checkpoints and unattended producer validation.
 
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The

@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Paired disposable Codex retirement proof; controlled stores, never ordinary.
+
+The control is read only at bootstrap and three retirement boundary bookends.
+The observed store is served continuously at the candidate's default cadence.
+"""
+
+import json
+import os
+import runpy
+import shutil
+import signal
+import subprocess
+import time
+import traceback
+from pathlib import Path
+
+
+def main():
+    root, host = Path(os.environ["NATIVE_PROOF_ROOT"]), os.environ["NATIVE_PROOF_HOST"]
+    assert os.geteuid() == 0 and all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+    proof = Proof("codex")
+    control = proof.base / "codex-control"
+    control.mkdir(mode=0o700)
+    shutil.copyfile(proof.base / "codex/auth.json", control / "auth.json")
+    (control / "auth.json").chmod(0o600)
+    shutil.copyfile(proof.base / "codex/config.toml", control / "config.toml")
+    shutil.copytree(proof.base / "codex/packages", control / "packages", symlinks=True)
+    service, clients, receipt = None, [], {}
+    def reference(home, sid=None):
+        peer = NativeRPC(home)
+        try:
+            loaded = peer.pages("thread/loaded/list")
+            return {"loaded": sid in loaded if sid else loaded,
+                    "pid": peer.pid, "startTicks": peer.start,
+                    "artifact": peer.artifact}
+        finally:
+            peer.close()
+    def make(home):
+        request = {"schemaVersion": 1, "operation": "new", "hostScope": host,
+                   "provider": "codex", "configHome": str(home), "configHomeKind": "explicit",
+                   "cwd": str(proof.base / "workspace"), "reference": None}
+        plan = proof.command(["agent-observer-write", "prepare", "--request-json", json.dumps(request)])
+        result = proof.command(["agent-observer-write", "execute", "--plan-json", json.dumps(plan)])
+        client = proof.spawn(result)
+        clients.append(client)
+        proof.pause(client, 5)
+        proof.assert_native_client(client)
+        return client
+    def service_snapshot(path):
+        frame = proof.command(["agent-observer", "service", "snapshot", "--host-scope", host, "--socket", str(path)])
+        return frame["snapshot"]
+    try:
+        # The existing observed store may contain earlier controlled sessions;
+        # select the new context by an exact native loaded-ID difference.
+        before = set(reference(proof.base / "codex")["loaded"])
+        observed_client = make(proof.base / "codex")
+        new = set(reference(proof.base / "codex")["loaded"]) - before
+        assert len(new) == 1
+        observed_id = new.pop()
+        control_client = make(control)
+        initial_control = reference(control)
+        assert len(initial_control["loaded"]) == 1
+        control_id = initial_control["loaded"][0]
+        initial_observed = reference(proof.base / "codex", observed_id)
+        assert initial_observed["artifact"]["sha256"] == initial_control["artifact"]["sha256"]
+        path = proof.base / "runtime/lifetime/read.sock"
+        service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", host,
+                                    "--provider", "codex", "--socket", str(path)],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        proof.stop(observed_client)
+        proof.stop(control_client)
+        started = time.monotonic()
+        observed_unloaded_at = None
+        controls, progress = [], -1
+        # Current primary docs describe a 30-minute no-subscriber grace. The
+        # installed native outcome, including non-retirement, is recorded;
+        # documentation alone never accepts the installed lifetime predicate.
+        bookends = [1790, 1810, 1890, 1980]
+        while time.monotonic() - started < 1985:
+            elapsed = time.monotonic() - started
+            if service.poll() is not None:
+                raise RuntimeError("lifetime_service_exited")
+            try:
+                snapshot = service_snapshot(path)
+                if snapshot is None:
+                    time.sleep(0.2)
+                    continue
+                row = next(r for r in snapshot["sessions"] if r["identity"]["nativeId"] == observed_id)
+                if row["runtime"]["value"] != "running" and observed_unloaded_at is None:
+                    native = reference(proof.base / "codex", observed_id)
+                    if not native["loaded"]:
+                        observed_unloaded_at = elapsed
+            except (StopIteration, RuntimeError, OSError):
+                pass
+            if bookends and elapsed >= bookends[0]:
+                bookends.pop(0)
+                controls.append({"elapsedSeconds": elapsed, **reference(control, control_id)})
+            if int(elapsed) // 60 != progress:
+                progress = int(elapsed) // 60
+                print(json.dumps({"hostScope": host, "stage": "lifetime", "elapsedSeconds": int(elapsed), "observedUnloadedAtSeconds": observed_unloaded_at}), flush=True)
+            time.sleep(1)
+        final_observed = reference(proof.base / "codex", observed_id)
+        control_retired = any(not c["loaded"] for c in controls)
+        status = "accepted" if control_retired and observed_unloaded_at is not None else "rejected_reader_extends_lifetime" if control_retired else "pending_native_retirement"
+        receipt = {"hostScope": host, "provider": "codex", "status": status,
+                   "observedId": observed_id, "controlId": control_id,
+                   "observedUnloadedAtSeconds": observed_unloaded_at, "controlBookends": controls,
+                   "finalObserved": final_observed, "observerCadenceSeconds": 20,
+                   "ordinaryProviderActions": False, "terminalOutputPersisted": False}
+        (root / "lifetime-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"hostScope": host, "stage": "lifetime", "status": receipt["status"]}), flush=True)
+    finally:
+        for client in list(proof.clients):
+            proof.stop(client)
+        if service is not None:
+            if service.poll() is None:
+                service.send_signal(signal.SIGTERM)
+            service.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        locations = [{"file": Path(f.filename).name, "line": f.lineno, "function": f.name} for f in traceback.extract_tb(error.__traceback__)][-4:]
+        print(json.dumps({"status": "rejected", "reason": "owned_lifetime_proof_failed", "exceptionClass": type(error).__name__, "locations": locations}), flush=True)
+        raise SystemExit(2) from None

@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""Owned installed-service operational proof; ordinary provider reads only.
+
+No Observer imports. Independent stdlib readers discard observation payloads.
+Only allowlisted service/resource counters and finite failures are persisted.
+"""
+
+import argparse
+import json
+import os
+import signal
+import socket
+import subprocess
+import threading
+import time
+from pathlib import Path
+
+MAX_FRAME = 8 * 1024 * 1024 + 16384
+
+
+def clock():
+    return int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
+
+
+def process_state(pid):
+    parts = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+    return int(parts[19]), sum(int(parts[i]) for i in (11, 12, 13, 14))
+
+
+def resources(pid):
+    pending, seen, rss, fds = [pid], set(), 0, 0
+    while pending and len(seen) < 64:
+        current = pending.pop()
+        if current in seen:
+            continue
+        seen.add(current)
+        try:
+            rss += int(Path(f"/proc/{current}/statm").read_text().split()[1]) * os.sysconf("SC_PAGE_SIZE")
+            fds += len(list(Path(f"/proc/{current}/fd").iterdir()))
+            pending += [int(p) for p in Path(f"/proc/{current}/task/{current}/children").read_text().split()]
+        except (OSError, ValueError, IndexError):
+            pass
+    return rss, fds, len(seen)
+
+
+def request(path, operation, host):
+    peer = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    peer.settimeout(15)
+    peer.connect(str(path))
+    peer.sendall((json.dumps({"serviceProtocol": 1, "operation": operation, "hostScope": host}) + "\n").encode())
+    return peer
+
+
+def read(peer, pending):
+    deadline = clock() + 15000
+    while b"\n" not in pending:
+        remaining = (deadline - clock()) / 1000
+        if remaining <= 0:
+            raise ValueError("reader_timeout")
+        peer.settimeout(remaining)
+        data = peer.recv(min(65536, MAX_FRAME + 1 - len(pending)))
+        if not data:
+            raise ValueError("reader_eof")
+        pending.extend(data)
+        if len(pending) > MAX_FRAME and b"\n" not in pending:
+            raise ValueError("reader_limit")
+    line, _, rest = pending.partition(b"\n")
+    if len(line) + 1 > MAX_FRAME:
+        raise ValueError("reader_limit")
+    value = json.loads(line)
+    if value.get("serviceProtocol") != 1:
+        raise ValueError("reader_protocol")
+    return value, bytearray(rest)
+
+
+def cli(prefix, argv):
+    result = subprocess.run([str(prefix / "bin/agent-observer"), *argv], capture_output=True, timeout=30, cwd="/tmp")
+    if result.returncode or len(result.stdout) > MAX_FRAME:
+        raise ValueError("installed_read_failed")
+    return json.loads(result.stdout), len(result.stdout)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    parser.add_argument("--duration", type=int, default=1800)
+    args = parser.parse_args()
+    if not 30 <= args.duration <= 3600 or args.root.resolve(strict=True) != args.root or args.root.stat().st_uid != os.geteuid():
+        raise ValueError("proof_scope")
+    path = args.root / "ipc" / "read.sock"
+    argv = [str(args.prefix / "bin/agent-observer-service"), "serve", "--host-scope", args.host_scope, "--socket", str(path)]
+    for provider in args.provider:
+        argv += ["--provider", provider]
+    service = subprocess.Popen(argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, cwd="/tmp")
+    birth, _ = process_state(service.pid)
+    stop = threading.Event()
+    counts = [{"frames": 0, "views": 0, "gaps": 0, "errors": 0} for _ in range(3)]
+    failures, threads = [], []
+    slow = None
+    peak_rss = peak_fds = peak_processes = 0
+    def watch(index):
+        sequence, revision, incarnation, pending = 0, 0, None, bytearray()
+        try:
+            with request(path, "watch", args.host_scope) as peer:
+                while not stop.is_set():
+                    frame, pending = read(peer, pending)
+                    if frame["hostScope"] != args.host_scope or frame["uid"] != os.geteuid() or frame["sequence"] != sequence + 1 or frame["viewRevision"] < revision:
+                        raise ValueError("reader_scope_sequence")
+                    if incarnation is not None and frame["serviceId"] != incarnation:
+                        raise ValueError("reader_incarnation")
+                    sequence, revision, incarnation = frame["sequence"], frame["viewRevision"], frame["serviceId"]
+                    counts[index]["frames"] += 1
+                    counts[index]["views"] += frame["snapshot"] is not None
+                    counts[index]["gaps"] += frame["kind"] == "gap"
+                    for source in frame["sources"]:
+                        for component in source["components"]:
+                            if component["health"] in {"current", "partial"} and component["expiresBoottimeMs"] <= clock():
+                                raise ValueError("reader_expired_claim")
+        except (OSError, ValueError, KeyError):
+            if not stop.is_set():
+                counts[index]["errors"] += 1
+                failures.append("healthy_reader_failed")
+    try:
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            if service.poll() is not None:
+                raise ValueError("owned_service_exited")
+            try:
+                frame, size = cli(args.prefix, ["service", "status", "--host-scope", args.host_scope, "--socket", str(path)])
+                if frame["snapshot"] and all(c["accepted"] for s in frame["sources"] for c in s["components"]):
+                    break
+            except (OSError, ValueError):
+                pass
+            time.sleep(0.1)
+        else:
+            raise ValueError("service_warmup_pending")
+        initial = frame
+        started, start_cpu = clock(), process_state(service.pid)[1]
+        for index in range(3):
+            thread = threading.Thread(target=watch, args=(index,), daemon=True)
+            thread.start()
+            threads.append(thread)
+        slow = request(path, "watch", args.host_scope)  # Deliberately never read.
+        latencies, sizes = [], []
+        for _ in range(100):
+            begin = time.perf_counter()
+            result, size = cli(args.prefix, ["service", "snapshot", "--host-scope", args.host_scope, "--socket", str(path)])
+            latencies.append((time.perf_counter() - begin) * 1000)
+            sizes.append(size)
+            if result["serviceId"] != initial["serviceId"]:
+                raise ValueError("service_changed_during_reads")
+        read_batch_ms = clock() - started
+        progress = -1
+        while clock() - started < args.duration * 1000:
+            if service.poll() is not None or failures:
+                raise ValueError("service_soak_failed")
+            rss, fds, processes = resources(service.pid)
+            peak_rss, peak_fds, peak_processes = max(peak_rss, rss), max(peak_fds, fds), max(peak_processes, processes)
+            elapsed = (clock() - started) // 1000
+            if elapsed // 60 != progress:
+                progress = elapsed // 60
+                print(json.dumps({"hostScope": args.host_scope, "elapsedSeconds": elapsed, "healthyReaderFrames": [c["frames"] for c in counts], "peakRssBytes": peak_rss, "peakFds": peak_fds}), flush=True)
+            time.sleep(0.2)
+        final, _ = cli(args.prefix, ["service", "status", "--host-scope", args.host_scope, "--socket", str(path)])
+        elapsed_ms = clock() - started
+        cpu_ms = (process_state(service.pid)[1] - start_cpu) * 1000 / os.sysconf("SC_CLK_TCK")
+        receipt = {
+            "hostScope": args.host_scope, "prefix": str(args.prefix), "providers": args.provider,
+            "status": "accepted", "durationSeconds": elapsed_ms / 1000,
+            "serviceId": initial["serviceId"], "serviceProtocol": 1,
+            "readSamples": 100, "readP95Ms": sorted(latencies)[94], "readMaxMs": max(latencies),
+            "readBatchMs": read_batch_ms, "payloadBytes": max(sizes),
+            "serviceAndReapedChildrenCpuMs": cpu_ms, "oneCoreCpuPercent": cpu_ms / elapsed_ms * 100,
+            "peakAggregateRssBytes": peak_rss, "peakAggregateFds": peak_fds, "peakOwnedProcesses": peak_processes,
+            "independentReaders": counts, "slowReaderConnectedWithoutReading": True,
+            "initialSources": initial["sources"], "finalSources": final["sources"],
+            "ordinaryProviderActions": False, "selectedLinksChanged": False,
+        }
+        (args.root / "soak-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"hostScope": args.host_scope, "status": "accepted", "receipt": str(args.root / "soak-receipt.json")}), flush=True)
+    finally:
+        stop.set()
+        if slow is not None:
+            slow.close()
+        if service.poll() is None and process_state(service.pid)[0] == birth:
+            service.send_signal(signal.SIGTERM)
+        service.wait(timeout=15)
+        for thread in threads:
+            thread.join(16)
+        if path.exists():
+            raise ValueError("owned_socket_cleanup_failed")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, OSError, subprocess.SubprocessError):
+        print(json.dumps({"status": "rejected", "reason": "service_proof_failed"}), flush=True)
+        raise SystemExit(2) from None

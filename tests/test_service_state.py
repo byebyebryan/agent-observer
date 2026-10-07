@@ -3,10 +3,11 @@
 import copy
 import unittest
 
+from test_service_contract import fixture
+
 from agent_observer.contract import ContractError, validate_snapshot
 from agent_observer.service_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
-from test_service_contract import fixture
 
 
 def provider_snapshot(provider):
@@ -85,6 +86,36 @@ class ServiceStateTest(unittest.TestCase):
         self.assertIsNone(frame["snapshot"])
         self.assertEqual(self.state.snapshot, previous)
         self.assertEqual(frame["sources"], receipts)
+
+    def test_changed_native_context_stales_the_other_component(self):
+        value = provider_snapshot("codex")
+        value["sources"][0]["runtime"] = {
+            "version": "diagnostic", "binarySha256": "a" * 64,
+            "topology": "native_managed_endpoint", "bootId": self.state.boot_id,
+            "pid": 123, "startTicks": 456, "endpoint": "/fixture/endpoint",
+        }
+        self.accept("codex", "runtime", value=value)
+        self.accept("codex", "history", value=value)
+        first = self.state.generations["codex"]
+        value["sources"][0]["runtime"]["startTicks"] += 1
+        self.accept("codex", "history", value=value)
+        self.assertGreater(self.state.generations["codex"], first)
+        self.assertEqual(self.state.receipts["codex"]["runtime"].health, "stale")
+        self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "unknown")
+        self.accept("codex", "runtime", value=value)
+        self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "running")
+
+    def test_partial_inventory_keeps_missing_identity_as_stale(self):
+        value = provider_snapshot("codex")
+        self.accept("codex", "runtime", value=value)
+        sid = value["sessions"][0]["identity"]
+        value["sessions"] = []
+        value["sources"][0]["coverage"]["runtime"].update(status="partial", reason="live_limit")
+        self.accept("codex", "runtime", value=value)
+        row = next(r for r in self.state.snapshot["sessions"] if r["identity"] == sid)
+        self.assertEqual(row["runtime"]["value"], "unknown")
+        self.assertEqual(row["runtime"]["lastKnownValue"], "running")
+        self.assertIn("retained_after_gap", row["metadataIssues"])
 
 
 class SchedulerTest(unittest.TestCase):
