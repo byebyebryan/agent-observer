@@ -1,0 +1,79 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0",
+  "wheelSha256": "09f41f33e6c22fe019e518af3deae067b58b42f571b84d6c45aebe706079865a",
+  "renderedTargets": 6,
+  "artifactVerified": true,
+  "unitSyntaxVerified": true,
+  "providerActions": 0,
+  "frontendTargets": 0,
+  "live": true,
+  "unit": {
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "UnitFileState": "enabled",
+    "MainPID": "3712851"
+  },
+  "serviceId": "cdf18ff2-a750-4a57-8d51-8daa8373afb5",
+  "sources": [
+    {
+      "components": [
+        {
+          "accepted": 240,
+          "attempts": 240,
+          "expiresBoottimeMs": 446077108,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 445987108
+        },
+        {
+          "accepted": 60,
+          "attempts": 60,
+          "expiresBoottimeMs": 446264613,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 445904613
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    },
+    {
+      "components": [
+        {
+          "accepted": 237,
+          "attempts": 237,
+          "expiresBoottimeMs": 446069764,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 445979764
+        },
+        {
+          "accepted": 60,
+          "attempts": 60,
+          "expiresBoottimeMs": 446270946,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 445910946
+        }
+      ],
+      "configHome": "/home/bryan/.claude",
+      "configHomeKind": "default",
+      "contextGeneration": 1,
+      "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+      "provider": "claude"
+    }
+  ]
+}

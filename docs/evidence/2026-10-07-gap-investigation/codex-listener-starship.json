@@ -1,0 +1,35 @@
+{
+  "hostScope": "starship",
+  "nativeId": "01a11826-1ed1-7301-94f4-76b57442a1e3",
+  "status": "accepted_listener_sample",
+  "newNativeUsers": 1,
+  "newNativeContexts": 2,
+  "ordinaryProviderActions": false,
+  "readOnlyListener": true,
+  "ownedFixtureBootstrap": true,
+  "listenerResumedOrSubscribed": false,
+  "referenceImportsObserver": false,
+  "notificationMethods": {
+    "account/updated": 1,
+    "thread/started": 2,
+    "thread/status/changed": 4,
+    "thread/name/updated": 1
+  },
+  "exactNewThreadHints": [
+    {
+      "method": "thread/started",
+      "nativeId": "01a11826-1ed1-7301-94f4-76b57442a1e3"
+    },
+    {
+      "method": "thread/status/changed",
+      "nativeId": "01a11826-1ed1-7301-94f4-76b57442a1e3"
+    },
+    {
+      "method": "thread/status/changed",
+      "nativeId": "01a11826-1ed1-7301-94f4-76b57442a1e3"
+    }
+  ],
+  "durationSeconds": 25.06743994000135,
+  "nativeFinalStatus": "idle",
+  "terminalOutputPersisted": false
+}

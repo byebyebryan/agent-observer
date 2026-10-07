@@ -1,0 +1,52 @@
+{
+  "hostScope": "snap",
+  "provider": "claude",
+  "nativeId": "4c761f7c-9d35-49bc-ac23-724529dfe5f0",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "question": "unproved",
+  "exit": "native_prompt_input_exit_accepted",
+  "filesystemWakeups": 9,
+  "filesystemOverflow": false,
+  "nativeForegroundRegistered": true,
+  "heldQuestionSamples": [
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "unknown",
+      "blockedReason": "unknown",
+      "activityAt": 1791404596818
+    },
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "unknown",
+      "blockedReason": "unknown",
+      "activityAt": 1791404600473
+    },
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "unknown",
+      "blockedReason": "unknown",
+      "activityAt": 1791404600473
+    }
+  ],
+  "registryAfterExitPresent": false,
+  "metadataCallbacks": [
+    {
+      "event": "PreToolUse",
+      "nativeId": "4c761f7c-9d35-49bc-ac23-724529dfe5f0",
+      "askUserQuestion": true
+    },
+    {
+      "event": "SessionEnd",
+      "nativeId": "4c761f7c-9d35-49bc-ac23-724529dfe5f0",
+      "promptInputExit": true
+    }
+  ],
+  "status": "partial"
+}

@@ -28,6 +28,15 @@ now adds startup workspace mappings, selects a7 and enables its user unit on bot
 hosts after installed/native/managed acceptance. Normal-unit restart/crash and
 rollback/reselection pass; physical wake and downstream clients remain separate.
 
+The [remaining-gap loop](evidence/2026-10-07-gap-investigation/REPORT.md) freezes
+and independently accepts a8 while retaining selected a7. It repairs exact
+foreground-question classification and slow polling intervals, narrows Codex
+default entry to client/server feature skew, and proves passive native hints,
+reader lifetime and SSH connection epochs. The
+[event-assisted implementation gate](event-assisted-monitoring-plan.md) is the
+next producer pass. Managed a8 selection, physical wake, terminal notifications
+and downstream migrations retain separate gates.
+
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
 wire 3 and write wire 1, strict pure consumer conformance and native Snap/Starship

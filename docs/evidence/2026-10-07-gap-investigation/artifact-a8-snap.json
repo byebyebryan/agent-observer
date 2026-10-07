@@ -1,0 +1,16 @@
+{
+  "status": "accepted",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f",
+  "wheelSha256": "a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926",
+  "sourceRevision": "3c71f216a716a36f2403f7c71fa5935c41c9917f",
+  "profile": "claude-history",
+  "version": "0.4.0a8",
+  "sdk": "0.2.163",
+  "bundledExecutable": false,
+  "installedWheelBytesVerified": true,
+  "entrypointsVerified": true,
+  "schemaVersionsVerified": true,
+  "serviceProtocolVerified": true,
+  "providerInvocations": 0,
+  "selectedLinksChanged": false
+}

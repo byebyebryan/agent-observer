@@ -1,0 +1,41 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "connections": [
+    {
+      "connection": 1,
+      "serviceId": "7551d2b2-1fcd-4332-a483-fcfdc219252a",
+      "initialSequence": 1,
+      "finalSequence": 2,
+      "kinds": [
+        "view",
+        "heartbeat"
+      ],
+      "durationSeconds": 10.33299225999508,
+      "schemaAccepted": true,
+      "viewDiscardedOnDisconnect": true
+    },
+    {
+      "connection": 2,
+      "serviceId": "7551d2b2-1fcd-4332-a483-fcfdc219252a",
+      "initialSequence": 1,
+      "finalSequence": 3,
+      "kinds": [
+        "view",
+        "view",
+        "view"
+      ],
+      "durationSeconds": 2.6379867020295933,
+      "schemaAccepted": true,
+      "viewDiscardedOnDisconnect": true
+    }
+  ],
+  "samePublisherAcrossReconnect": true,
+  "newConnectionEpoch": true,
+  "ordinaryProviderActions": false,
+  "referenceImportsObserver": false,
+  "localBoottimeComparedWithRemote": false,
+  "providerInvocations": 0,
+  "nativeCompletenessProved": false,
+  "networkReplayClaimed": false
+}

@@ -1,0 +1,18 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "provider": "codex",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "independentOfFrontend": true,
+  "emptyActivityUnknown": true,
+  "nativeConversationActivity": true,
+  "readsRenameHousekeepingPreserveAge": true,
+  "savedOrLiveResumeExactIdentity": true,
+  "resumePreservesAge": true,
+  "repeatedNativeEntry": true,
+  "terminalOutputPersisted": false
+}

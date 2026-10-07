@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "isolationEstablished": true
+    },
+    {
+      "variant": "mixed-default",
+      "result": {
+        "hostScope": "starship",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": true,
+        "loadedUserIds": [],
+        "nativeStatuses": [],
+        "status": "native_feature_mismatch",
+        "observedLoadedCount": 0
+      }
+    },
+    {
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "isolationEstablished": true
+    },
+    {
+      "variant": "matched-old",
+      "result": {
+        "hostScope": "starship",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": false,
+        "loadedUserIds": [
+          "01a11806-53b8-7533-9db5-84bb8d11aa02"
+        ],
+        "nativeStatuses": [
+          "idle"
+        ],
+        "status": "entered",
+        "observedLoadedCount": 1
+      }
+    },
+    {
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "isolationEstablished": true
+    },
+    {
+      "variant": "matched-current",
+      "result": {
+        "hostScope": "starship",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": false,
+        "loadedUserIds": [
+          "01a11806-60a7-7903-8da4-f8f9f1d3787d"
+        ],
+        "nativeStatuses": [
+          "idle"
+        ],
+        "status": "entered",
+        "observedLoadedCount": 1
+      }
+    },
+    {
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    }
+  ]
+}

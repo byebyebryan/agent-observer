@@ -1,0 +1,29 @@
+{
+  "ownedFixtures": [
+    {
+      "fixture": "mixed-default",
+      "stopped": true,
+      "borrowedStoreRemoved": true
+    },
+    {
+      "fixture": "matched-old",
+      "stopped": true,
+      "borrowedStoreRemoved": true
+    },
+    {
+      "fixture": "matched-current",
+      "stopped": true,
+      "borrowedStoreRemoved": true
+    },
+    {
+      "fixture": "event-probe",
+      "stopped": true,
+      "borrowedStoreRemoved": true
+    },
+    {
+      "fixture": "event-probe-bootstrapped",
+      "stopped": true,
+      "borrowedStoreRemoved": true
+    }
+  ]
+}

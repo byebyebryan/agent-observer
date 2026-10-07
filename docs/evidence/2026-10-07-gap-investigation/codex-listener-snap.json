@@ -1,0 +1,34 @@
+{
+  "hostScope": "snap",
+  "nativeId": "01a11814-f2cd-75a3-9822-072f537cb33d",
+  "status": "accepted_listener_sample",
+  "newNativeUsers": 1,
+  "newNativeContexts": 2,
+  "ordinaryProviderActions": false,
+  "readOnlyListener": true,
+  "listenerResumedOrSubscribed": false,
+  "referenceImportsObserver": false,
+  "notificationMethods": {
+    "account/updated": 1,
+    "thread/started": 2,
+    "thread/status/changed": 4,
+    "thread/name/updated": 1
+  },
+  "exactNewThreadHints": [
+    {
+      "method": "thread/started",
+      "nativeId": "01a11814-f2cd-75a3-9822-072f537cb33d"
+    },
+    {
+      "method": "thread/status/changed",
+      "nativeId": "01a11814-f2cd-75a3-9822-072f537cb33d"
+    },
+    {
+      "method": "thread/status/changed",
+      "nativeId": "01a11814-f2cd-75a3-9822-072f537cb33d"
+    }
+  ],
+  "durationSeconds": 25.093128478969447,
+  "nativeFinalStatus": "idle",
+  "terminalOutputPersisted": false
+}

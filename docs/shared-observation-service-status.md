@@ -72,9 +72,14 @@ Current push distributes snapshots obtained through scheduled native reads.
 Native/file/hook signals, durable notification events, physical suspend/wake
 and downstream rollout retain separate gates. A7 closes configured service
 project mapping and normal Observer selection after independent proof.
-Claude saved history is partial; foreground question detection and native PTY
-`/exit` recognition remain unproved. See the handoff's gap matrix before selecting
-or extending this candidate.
+Claude saved history is partial. The
+[remaining-gap investigation](evidence/2026-10-07-gap-investigation/REPORT.md)
+accepts foreground questions in the separate a8 candidate, recognizes foreground
+prompt `/exit`, proves private passive native hints/lifetime and SSH reconnect,
+and explains the Codex default feature skew. A8 also preserves configured polling
+intervals above five minutes. The selected normal units remain a7. Background
+`/exit`, live foreground attach, physical wake and notification publication keep
+their explicit limits. See the handoff before selecting or extending a candidate.
 
 ## Retained gap-row repair
 

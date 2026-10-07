@@ -1,0 +1,29 @@
+{
+  "ownedFixtures": [
+    {
+      "fixture": "mixed-default",
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "fixture": "matched-old",
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "fixture": "matched-current",
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "fixture": "candidate-question",
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    },
+    {
+      "fixture": "listener-lifetime",
+      "ownedNamespaceStopped": true,
+      "borrowedAuthAndHistoryRemoved": true
+    }
+  ]
+}

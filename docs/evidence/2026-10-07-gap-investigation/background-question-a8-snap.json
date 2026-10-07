@@ -1,0 +1,34 @@
+{
+  "status": "accepted",
+  "provider": "claude",
+  "hostScope": "snap",
+  "workingObserved": true,
+  "heldQuestionSamples": [
+    {
+      "nativeStatus": "waiting",
+      "nativeJobState": "working",
+      "nativeTempo": "blocked",
+      "phase": "blocked",
+      "reason": "question",
+      "activityAt": 1791406015700
+    },
+    {
+      "nativeStatus": "waiting",
+      "nativeJobState": "working",
+      "nativeTempo": "blocked",
+      "phase": "blocked",
+      "reason": "question",
+      "activityAt": 1791406015700
+    },
+    {
+      "nativeStatus": "waiting",
+      "nativeJobState": "working",
+      "nativeTempo": "blocked",
+      "phase": "blocked",
+      "reason": "question",
+      "activityAt": 1791406015700
+    }
+  ],
+  "questionNotAnswered": true,
+  "terminalOutputPersisted": false
+}

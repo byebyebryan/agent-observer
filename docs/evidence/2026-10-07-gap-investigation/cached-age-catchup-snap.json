@@ -1,0 +1,32 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "selectedCandidate": "0.4.0a7",
+  "historyIntervalSeconds": 120,
+  "targets": {
+    "64725eaf-7e6d-4503-bd9c-053dfe84d510": 1791406074267,
+    "9fd1ae71-76f0-41c3-925f-da4756e64953": 1791406088918,
+    "e8e76b76-b20a-46bf-8762-83383bf0bb86": 1791406137370
+  },
+  "caughtUp": {
+    "64725eaf-7e6d-4503-bd9c-053dfe84d510": {
+      "nativeTargetAt": 1791406074267,
+      "cachedActivityAt": 1791406074267,
+      "catchupSeconds": 0.08770486095454544
+    },
+    "9fd1ae71-76f0-41c3-925f-da4756e64953": {
+      "nativeTargetAt": 1791406088918,
+      "cachedActivityAt": 1791406088918,
+      "catchupSeconds": 0.08770759997423738
+    },
+    "e8e76b76-b20a-46bf-8762-83383bf0bb86": {
+      "nativeTargetAt": 1791406137370,
+      "cachedActivityAt": 1791406148680,
+      "catchupSeconds": 0.08770896296482533
+    }
+  },
+  "readFrames": 1,
+  "durationSeconds": 0.0877274329541251,
+  "ordinaryProviderActions": false,
+  "latestNativeStateClaimed": false
+}
