@@ -157,7 +157,8 @@ class Runtime:
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
                    "component": job.component, "configHome": self.state.configs[job.provider][0],
-                   "configHomeKind": self.state.configs[job.provider][1]}
+                   "configHomeKind": self.state.configs[job.provider][1],
+                   "timeoutMs": self.scheduler.timeout}
         process = subprocess.Popen(
             [sys.executable, "-I", "-B", str(Path(__file__).with_name("_service_worker.py"))],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,

@@ -25,6 +25,26 @@ def alive(pid):
 
 
 class OwnedHelpersTest(unittest.TestCase):
+    def test_collection_has_its_own_deadline_without_a_publisher(self):
+        with tempfile.TemporaryDirectory(prefix="ao-independent-deadline-") as directory:
+            root = Path(directory)
+            marker = root / "child.pid"
+            child = "import os,time;from pathlib import Path;Path(" + repr(str(marker)) + ").write_text(str(os.getpid()));time.sleep(30)"
+            code = "import sys,time,subprocess;sys.path.insert(0," + repr(str(Path(__file__).resolve().parent.parent)) + ");from agent_observer import _service_worker;from unittest.mock import patch\ndef slow(*a,**k):\n subprocess.Popen([sys.executable,'-c'," + repr(child) + "],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)\n time.sleep(30)\nwith patch('agent_observer.codex_snapshot.collect_codex',side_effect=slow):_service_worker.main()"
+            process = subprocess.Popen([sys.executable, "-I", "-B", "-c", code], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
+            request = {"hostScope": "fixture", "provider": "codex", "component": "runtime", "configHome": str(root), "configHomeKind": "explicit", "timeoutMs": 1000}
+            try:
+                process.communicate(json.dumps(request).encode(), timeout=3)
+                self.assertEqual(process.returncode, -9)
+                pid = int(marker.read_text())
+                deadline = time.monotonic() + 1
+                while alive(pid) and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                self.assertFalse(alive(pid))
+            finally:
+                if process.poll() is None:
+                    os.killpg(process.pid, 9)
+                    process.wait()
     def test_shared_history_group_requires_its_own_leader(self):
         with patch("agent_observer.claude_history.os.getpgrp", return_value=-1), patch("agent_observer.claude_history.subprocess.Popen") as spawn:
             self.assertEqual(_run_worker(Path("/unused"), timeout=1, owned_worker_group=True), (None, "history_source_failed"))
