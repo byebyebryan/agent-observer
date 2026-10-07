@@ -1,6 +1,7 @@
 """Owned single-provider metadata collector; never a native provider launcher."""
 
 import os
+import signal
 import sys
 from pathlib import Path
 
@@ -10,13 +11,27 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
 def main():
+    def deadline(*_args):
+        # This entry is invoked only as an owned session/group leader. The
+        # private helper group survives publisher SIGKILL, so its own deadline
+        # must still stop every nested metadata helper.
+        if os.getpgrp() == os.getpid() and os.getsid(0) == os.getpid():
+            os.killpg(os.getpid(), signal.SIGKILL)
+        raise SystemExit(2)
+    signal.signal(signal.SIGALRM, deadline)
+    signal.setitimer(signal.ITIMER_REAL, 1)
     from agent_observer.bounded_json import decode_document
     from agent_observer.collection import compose_snapshot
     from agent_observer.contract import canonical
 
     request = decode_document(sys.stdin.buffer.read(16385), max_bytes=16384)
-    if set(request) != {"hostScope", "provider", "component", "configHome", "configHomeKind"}:
+    if set(request) != {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs"}:
         raise ValueError("service_worker_request")
+    if type(request["timeoutMs"]) is not int or not 1000 <= request["timeoutMs"] <= 30000:
+        raise ValueError("service_worker_timeout")
+    if os.getpgrp() != os.getpid() or os.getsid(0) != os.getpid():
+        raise ValueError("service_worker_ownership")
+    signal.setitimer(signal.ITIMER_REAL, request["timeoutMs"] / 1000)
     provider, component = request["provider"], request["component"]
     if provider not in {"codex", "claude"} or component not in {"runtime", "history"}:
         raise ValueError("service_worker_request")
