@@ -67,7 +67,10 @@ def main():
             hint_at = hints["last" + component.title() + "HintBoottimeMs"]
             samples.append({"stage": stage, "component": component, "nativeObservedToViewSeconds": delay,
                             "activityAt": actual["activity"], "phase": actual["phase"],
-                            "hintToCollectionStartMs": receipt["sampledBoottimeMs"] - hint_at if hint_at is not None else None,
+                            # The bounded feed carries no conversation ID. Its
+                            # latest hint may follow the sample already in view;
+                            # this signed diagnostic is not event/view latency.
+                            "latestHintRelativeToSampleMs": receipt["sampledBoottimeMs"] - hint_at if hint_at is not None else None,
                             "nativeBracketStable": True, "fields": fields})
             return row
         raise RuntimeError("native_hint_" + stage + "_pending")
@@ -158,6 +161,7 @@ def main():
                    "runtimeP95Seconds": p95(runtime), "historyP95Seconds": p95(history),
                    "samples": samples, "runtimeSamples": len(runtime), "historySamples": len(history),
                    "sourceReconnectAccepted": True, "passiveLoadedBookends": args.provider == "codex",
+                   "eventToViewLatencyClaimed": False,
                    "periodicIntervalsSeconds": interval, "ordinaryProviderActions": False,
                    "nativeReferenceImportsObserver": False, "terminalOutputPersisted": False}
         (root / ("hint-receipt-" + args.provider + ".json")).write_text(json.dumps(receipt, indent=2) + "\n")
