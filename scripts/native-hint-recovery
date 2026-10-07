@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""Owned native daemon loss/reincarnation with a passive hint publisher."""
+
+import json
+from importlib.metadata import version
+import os
+from pathlib import Path
+import runpy
+import signal
+import subprocess
+import time
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.geteuid() == 0 and all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    reference = runpy.run_path(str(root / "evaluate-observation"))
+    proof = Proof("codex")
+    sid = json.loads((root / "hint-receipt-codex.json").read_text())["nativeId"]
+    # The provider may have retired its quiet daemon since the earlier proof.
+    # Explicit native entry establishes the fixture; observation never does.
+    try:
+        existing = reference["NativeRPC"](proof.base / "codex")
+    except (OSError, ValueError):
+        bootstrap = proof.spawn(proof.handoff())
+        try:
+            proof.pause(bootstrap, 5)
+            proof.assert_native_client(bootstrap)
+        finally:
+            proof.stop(bootstrap)
+    else:
+        existing.close()
+    path = proof.base / "runtime/hr/read.sock"
+    diagnostic = path.parent / "hints.json"
+    service = subprocess.Popen(
+        ["agent-observer-service", "serve", "--host-scope", proof.host,
+         "--provider", "codex", "--socket", str(path), "--native-hints",
+         "--hint-diagnostics", str(diagnostic), "--runtime-interval",
+         "30" if proof.host == "snap" else "20", "--history-interval",
+         "120" if proof.host == "snap" else "60"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True,
+    )
+
+    def cached():
+        return proof.command(["agent-observer", "service", "snapshot", "--host-scope",
+                              proof.host, "--socket", str(path)])
+
+    def target(frame):
+        return next(r for r in (frame["snapshot"] or {}).get("sessions", [])
+                    if r["identity"]["nativeId"] == sid)
+
+    def counters():
+        return json.loads(diagnostic.read_text())["providers"]["codex"]
+
+    try:
+        deadline = time.monotonic() + 25
+        while time.monotonic() < deadline:
+            if service.poll() is not None:
+                raise RuntimeError("hint_recovery_publisher_exited")
+            try:
+                initial = cached()
+                row = target(initial)
+                if counters()["ready"] and all(c["accepted"] for s in initial["sources"] for c in s["components"]):
+                    break
+            except (OSError, ValueError, RuntimeError, KeyError, StopIteration):
+                pass
+            time.sleep(.1)
+        else:
+            raise RuntimeError("hint_recovery_warm_pending")
+        activity = row["activity"]["at"]
+        starts = counters()["starts"]
+        rpc = reference["NativeRPC"](proof.base / "codex")
+        pid, birth = rpc.pid, rpc.start
+        executable = Path(os.readlink(f"/proc/{pid}/exe"))
+        assert executable.is_relative_to(proof.base / "codex/packages/app-server-daemon")
+        assert reference["birth"](pid)[0] == birth
+        rpc.close()
+        started = time.monotonic()
+        os.kill(pid, signal.SIGKILL)
+        deadline = started + 40
+        while time.monotonic() < deadline:
+            frame = cached()
+            row = target(frame)
+            runtime = next(c for s in frame["sources"] for c in s["components"] if c["name"] == "runtime")
+            source = next(s for s in (frame["snapshot"] or {}).get("sources", []) if s["provider"] == "codex")
+            if not counters()["ready"] and source["coverage"]["runtime"]["status"] == "unavailable":
+                break
+            time.sleep(.1)
+        else:
+            raise RuntimeError("hint_recovery_loss_pending")
+        loss_delay = time.monotonic() - started
+        assert row["runtime"]["value"] == row["phase"]["value"] == "unknown"
+        assert row["activity"]["at"] == activity
+        # Feed retries and authoritative reads must not start the daemon.
+        until = time.monotonic() + 7
+        while time.monotonic() < until:
+            try:
+                unexpected = reference["NativeRPC"](proof.base / "codex")
+            except (OSError, ValueError):
+                pass
+            else:
+                unexpected.close()
+                raise RuntimeError("observation_started_native_daemon")
+            time.sleep(.2)
+        viewer = proof.spawn(proof.handoff())  # Explicit isolated native New.
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            proof.pause(viewer, .1)
+            try:
+                current = reference["NativeRPC"](proof.base / "codex")
+                new_pid, new_birth = current.pid, current.start
+                current.close()
+                frame = cached()
+                row = target(frame)
+                runtime = next(c for s in frame["sources"] for c in s["components"] if c["name"] == "runtime")
+                if (new_pid, new_birth) != (pid, birth) and counters()["ready"] and counters()["starts"] > starts and runtime["health"] in {"current", "partial"}:
+                    break
+            except (OSError, ValueError, RuntimeError):
+                pass
+        else:
+            raise RuntimeError("hint_recovery_incarnation_pending")
+        assert row["activity"]["at"] == activity
+        receipt = {"status": "accepted", "hostScope": proof.host, "observerVersion": version("agent-observer"),
+                   "oldDaemonPid": pid, "newDaemonPid": new_pid,
+                   "lossToUnavailableSeconds": loss_delay,
+                   "hintSourceReplaced": True, "unavailableSavedRuntimeUnknown": True,
+                   "conversationAgePreserved": True, "offlineObservationDidNotStartDaemon": True,
+                   "ownedDaemonOnly": True, "ordinaryProviderActions": False,
+                   "nativeReferenceImportsObserver": False}
+        (root / "hint-recovery-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps(receipt))
+    finally:
+        for client in list(proof.clients):
+            proof.stop(client)
+        if service.poll() is None:
+            service.send_signal(signal.SIGTERM)
+        service.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    main()

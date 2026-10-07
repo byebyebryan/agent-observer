@@ -138,7 +138,7 @@ class Proof:
             self.pause(client, 0.2)
         raise RuntimeError("native_client_not_entered")
 
-    def codex_metadata(self, ref, *, rename=False, touch=False):
+    def codex_metadata(self, ref, *, rename=False, touch=False, name="Activity proof renamed"):
         owner = inspect_managed_endpoint(
             self.base / "codex"
         )
@@ -156,7 +156,7 @@ class Proof:
                 try:
                     client._request(
                         "thread/name/set",
-                        {"threadId": ref["nativeId"], "name": "Activity proof renamed"},
+                        {"threadId": ref["nativeId"], "name": name},
                     )
                 finally:
                     codex_transport._READ_METHODS = allowed
