@@ -1,0 +1,66 @@
+{
+  "hostScope": "starship",
+  "closingBookendsMatch": true,
+  "bookendScope": "closure only; no full-loop initial config hash baseline",
+  "normalSelectionAndConfigHashes": {
+    "links": {
+      "agent-observer": {
+        "selectedPath": "/home/bryan/.local/bin/agent-observer",
+        "resolvedPath": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer"
+      },
+      "agent-observer-write": {
+        "selectedPath": "/home/bryan/.local/bin/agent-observer-write",
+        "resolvedPath": "/home/bryan/.local/share/agent-observer/0.2.0a11-999d45171adfc4c4/bin/agent-observer-write"
+      }
+    },
+    "configHashes": {
+      "/home/bryan/.codex/config.toml": "768c5da2345d01cc3d430937f94565d4e41605f8f77eb259a546df9684894fc8",
+      "/home/bryan/.claude/settings.json": "0fe84d03b8ed583db473f6815d63b80fc7dba01fe4fb064344bb2b731d3dee62"
+    }
+  },
+  "ownedResources": {
+    "host": "starship",
+    "privateNativeFixtures": [
+      {
+        "root": "/tmp/observer-service-proof-q4o3vzm1",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-native-a2-2wdzwsrz",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-native-a3-1tff8h5x",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-isolation-a3-71oa870j",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-native-a4-cvdoh82t",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-native-a5-q82a0eyr",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      },
+      {
+        "root": "/tmp/observer-service-native-a6-hlyp6p34",
+        "namespaceStopped": true,
+        "remainingNativeDirectories": []
+      }
+    ],
+    "candidateProcesses": [],
+    "ordinaryProcessActions": false
+  },
+  "ordinaryProviderActions": false,
+  "remainingOwnedProofSockets": 0,
+  "remainingTransientProofUnits": 0
+}

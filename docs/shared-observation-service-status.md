@@ -13,8 +13,8 @@ defines B0–B8. Producer work and client development remain separate.
 | B4 Codex | Runtime/history split; ordinary and disposable native comparisons on both hosts |
 | B5 Claude | Runtime/SDK-history split; ordinary comparisons and disposable blocked/parked proofs on Snap |
 | B6 installed client | A6 byte/schema/entrypoint verification on both hosts; pure imports, installed state tests and transient user units accepted |
-| B7 operational/native | A6 native entry/age/resume/outage/recovery/outcome/retirement and Claude blocked/parked accepted; final 30-minute runs in progress |
-| B8 closure | Native fixtures cleaned; final resource receipt, publisher cleanup and handoff closure pending |
+| B7 operational/native | A6 native entry/age/resume/outage/recovery/outcome/retirement, Claude blocked/parked and 30-minute multi-reader/resource subset accepted |
+| B8 closure | Final artifact reverified; proof processes/sockets/native fixtures cleaned; closing preservation checks and producer handoff complete |
 
 ## Frozen candidate
 
@@ -56,10 +56,13 @@ frame passed separately. Installed state/scheduler tests passed on both hosts.
 
 The packaged default is runtime 20/history 60 seconds, with a 10-second worker
 deadline. Snap's two-provider runs exceeded the initial five-percent CPU target
-at that cadence. Runtime 30/history 120 seconds met it on A3 and A4; Starship's
-single-provider default met it. These are explicit measured configurations,
-not real-time monitoring or whole-host idle CPU guarantees. Final A6 resource
-results remain pending until its sustained runs finish.
+at that cadence. The final A6 Snap run at runtime 30/history 120 seconds measured
+83.45-ms warm-read p95 and 3.80 percent of one core; Starship at 20/60 measured
+76.15 ms and 1.79 percent. All three healthy readers per host had zero errors.
+Peak aggregate RSS/FDs were 131.19 MB/24 on Snap and 48.04 MB/14 on Starship.
+These are explicit measured configurations, not real-time monitoring or whole-host
+idle CPU guarantees. Native provider/client/reference CPU is outside the measured
+publisher/owned-descendant scope.
 
 Current push distributes snapshots obtained through scheduled native reads.
 Native/file/hook signals, durable notification events, configured service project

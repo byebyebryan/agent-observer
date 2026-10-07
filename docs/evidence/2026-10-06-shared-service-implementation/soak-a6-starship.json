@@ -1,0 +1,108 @@
+{
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a6-3c2e5ae28d6e099f",
+  "providers": [
+    "codex"
+  ],
+  "runtimeIntervalSeconds": 20,
+  "historyIntervalSeconds": 60,
+  "status": "accepted",
+  "durationSeconds": 1800.186,
+  "serviceId": "09e8dd88-c588-4b6d-9b52-81311190203a",
+  "serviceProtocol": 1,
+  "readSamples": 100,
+  "readP95Ms": 76.1516279890202,
+  "readMaxMs": 92.13763003936037,
+  "readBatchMs": 7412,
+  "payloadBytes": 151891,
+  "serviceAndReapedChildrenCpuMs": 32160.0,
+  "oneCoreCpuPercent": 1.786482063520103,
+  "peakAggregateRssBytes": 48041984,
+  "peakAggregateFds": 14,
+  "peakOwnedProcesses": 2,
+  "independentReaders": [
+    {
+      "frames": 274,
+      "views": 118,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 274,
+      "views": 118,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 274,
+      "views": 118,
+      "gaps": 0,
+      "errors": 0
+    }
+  ],
+  "slowReaderConnectedWithoutReading": true,
+  "initialSources": [
+    {
+      "components": [
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 379898632,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 379838632
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 380018830,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 379838830
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ],
+  "finalSources": [
+    {
+      "components": [
+        {
+          "accepted": 89,
+          "attempts": 89,
+          "expiresBoottimeMs": 381691303,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 381631303
+        },
+        {
+          "accepted": 30,
+          "attempts": 30,
+          "expiresBoottimeMs": 381809554,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 381629554
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "selectedLinksChanged": false
+}
