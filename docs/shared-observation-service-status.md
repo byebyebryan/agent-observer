@@ -8,8 +8,8 @@ remain outside this loop. Physical suspend is a separate pending gate.
 | Checkpoint | Status |
 | --- | --- |
 | B0 preflight/context | Clean source; Snap/Starship CLI/tool/SSH preflight available; native topology rechecked during installed proof |
-| B1 service contract/reader | In progress |
-| B2 scheduler/state/fan-out | Pending |
+| B1 service contract/reader | Pure bounded protocol/schema committed; transport client follows in B6 |
+| B2 scheduler/state/fan-out | Controlled sockets, leases, independent jobs and fragmented loss/resync implemented; native/resource gates remain B7 |
 | B3 owned collection | Pending |
 | B4 Codex cadence | Pending |
 | B5 Claude cadence | Pending |
