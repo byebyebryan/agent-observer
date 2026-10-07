@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""Private Codex listener feasibility; no resume/subscription for observation."""
+
+import collections
+import json
+import os
+import runpy
+import select
+import time
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.getuid() == 0 and all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+    allowed = set(json.loads((root / "notification-methods.json").read_text()))
+    proof = Proof("codex")
+    peer = NativeRPC(proof.base / "codex")
+    before = set(peer.pages("thread/loaded/list"))
+    counts, hints = collections.Counter(), []
+    def drain():
+        for _ in range(256):
+            if not peer.buffer and not select.select([peer.sock], [], [], 0)[0]:
+                break
+            value = peer.message()
+            method = value.get("method")
+            if method not in allowed:
+                continue
+            counts[method] += 1
+            if method in {"thread/started", "thread/status/changed", "thread/closed", "turn/started", "turn/completed"}:
+                params = value.get("params") or {}
+                sid = params.get("threadId") or (params.get("thread") or {}).get("id")
+                if isinstance(sid, str) and len(sid) == 36:
+                    hints.append({"method": method, "nativeId": sid})
+    try:
+        viewer = proof.spawn(proof.handoff())
+        started = time.monotonic()
+        while time.monotonic() - started < 4:
+            proof.pause(viewer, 0.1)
+            drain()
+        proof.assert_native_client(viewer)
+        os.write(viewer[1], b"Reply only with OK.\r")
+        proof.pause(viewer, 1)
+        os.write(viewer[1], b"\r")
+        while time.monotonic() - started < 25:
+            proof.pause(viewer, 0.1)
+            drain()
+        after = set(peer.pages("thread/loaded/list"))
+        candidates = [peer.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"] for sid in after - before]
+        users = [r for r in candidates if r.get("threadSource") == "user"]
+        sid = users[0]["id"] if len(users) == 1 else None
+        relevant = [hint for hint in hints if sid is not None and hint["nativeId"] == sid]
+        print(json.dumps({"hostScope": proof.host, "nativeId": sid,
+                          "status": "accepted_listener_sample" if sid else "native_new_context_unproved",
+                          "newNativeUsers": len(users), "newNativeContexts": len(candidates),
+                          "ordinaryProviderActions": False, "readOnlyListener": True,
+                          "listenerResumedOrSubscribed": False, "referenceImportsObserver": False,
+                          "notificationMethods": dict(counts), "exactNewThreadHints": relevant,
+                          "durationSeconds": time.monotonic() - started,
+                          "nativeFinalStatus": users[0]["status"]["type"] if sid else None,
+                          "terminalOutputPersisted": False}))
+    finally:
+        peer.close()
+        for client in list(proof.clients):
+            proof.stop(client)
+
+
+if __name__ == "__main__":
+    main()

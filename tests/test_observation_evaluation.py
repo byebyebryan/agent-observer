@@ -66,7 +66,7 @@ class ObservationEvaluationTest(unittest.TestCase):
         self.assertEqual(result["issues"], [{"id": SID, "field": "kind", "result": "mismatch",
                                             "native": "user", "cli": "unknown"}])
 
-    def test_native_foreground_permission_wait_has_independent_phase_reference(self):
+    def test_native_foreground_input_wait_has_independent_phase_reference(self):
         with tempfile.TemporaryDirectory() as scratch:
             home = Path(scratch)
             (home / "sessions").mkdir()
@@ -83,7 +83,10 @@ class ObservationEvaluationTest(unittest.TestCase):
                                                                        "version": "unknown", "sha256": "f" * 64}):
                 for changes, expected in (
                     ({}, "blocked"), ({"kind": "bg"}, None),
-                    ({"waitingFor": "input needed"}, None),
+                    ({"waitingFor": "input needed"}, "blocked"),
+                    ({"waitingFor": "dialog:settings"}, None),
+                    ({"waitingFor": "input needed", "kind": "bg"}, None),
+                    ({"waitingFor": "input needed", "jobId": "abcdef12"}, None),
                     ({"status": "idle"}, "waiting"),
                 ):
                     registry.write_text(json.dumps({**record, **changes}))

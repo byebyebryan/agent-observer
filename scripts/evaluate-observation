@@ -408,8 +408,9 @@ def claude_reference(home, image_cache):
                 question_bound = (job is not None and native_state == "working" and tempo == "blocked"
                                   and isinstance(questions, list) and 1 <= len(questions) <= 32
                                   and all(isinstance(q, dict) for q in questions))
+                foreground_question = job is None and job_id is None and r.get("kind") == "interactive"
                 if current_job and status == "waiting" and (
-                    r.get("waitingFor") == "permission prompt" or r.get("waitingFor") == "input needed" and question_bound
+                    r.get("waitingFor") == "permission prompt" or r.get("waitingFor") == "input needed" and (question_bound or foreground_question)
                 ):
                     phase = "blocked"
                 elif job is None and r.get("kind") == "interactive" and status == "idle":
