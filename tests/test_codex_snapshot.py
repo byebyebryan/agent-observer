@@ -62,6 +62,15 @@ class FakeClient:
 
 
 class SnapshotCollectionTest(unittest.TestCase):
+    def test_runtime_cadence_never_scans_saved_catalog(self):
+        client = FakeClient({"data": [FIRST], "nextCursor": None},
+                            {"data": [native(SECOND)], "nextCursor": None})
+        result = self.collect(client, include_history=False)
+        self.assertNotIn("saved", client.calls)
+        self.assertEqual([r["identity"]["nativeId"] for r in result["sessions"]], [FIRST])
+        self.assertEqual(result["coverage"]["saved"]["reason"], "not_observed")
+        self.assertEqual(result["sessions"][0]["work"]["value"], "settled")
+
     def collect(self, client, *, artifact=CODEX, **changes):
         identity = RuntimeIdentity(
             "/config",

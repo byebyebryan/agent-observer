@@ -322,6 +322,7 @@ def compose_snapshot(*, host_scope, provider_snapshots):
             "no_native_event_replay",
         ],
     }
+    identities = {}
     for native in provider_snapshots:
         if native.get("host", {}).get("authority") != host_scope:
             raise ValueError("source_provenance_mismatch")
@@ -334,14 +335,8 @@ def compose_snapshot(*, host_scope, provider_snapshots):
             ):
                 raise ValueError("session_provenance_mismatch")
             projected = project_session(row, source)
-            duplicate = next(
-                (
-                    old
-                    for old in result["sessions"]
-                    if identity_key(old["identity"]) == identity_key(projected["identity"])
-                ),
-                None,
-            )
+            key = identity_key(projected["identity"])
+            duplicate = identities.get(key)
             if duplicate is not None:
                 for dimension in ("phase", "runtime", "worker", "attachment", "outcome"):
                     duplicate[dimension] = unknown("identity_ambiguous", "ambiguous")
@@ -353,6 +348,7 @@ def compose_snapshot(*, host_scope, provider_snapshots):
                     dict.fromkeys(source["errors"] + ["duplicate_native_identity"])
                 )
                 continue
+            identities[key] = projected
             result["sessions"].append(projected)
     result["sourceHealth"] = (
         "current"
