@@ -1,6 +1,6 @@
 # Observer remaining-gap investigation
 
-Date: 2026-10-07. Status: authorized regular goal loop in progress, starting
+Date: 2026-10-07. Status: completed scoped investigation and candidate acceptance, starting
 from `98746d8` and the selected `0.4.0a7` operational baseline. This pass
 investigates every gap in the overview and fixes independently proved Observer
 defects. Provider support follows required native contracts and capabilities;
@@ -47,3 +47,19 @@ The prior [operational baseline](observer-operations-execution.md) and
 [service handoff](shared-observation-service-handoff.md) remain accepted within
 their original scope. Investigation findings do not silently redefine API v1
 or the separately prerelease service protocol.
+
+## Closing checkpoint verdicts
+
+The [report](evidence/2026-10-07-gap-investigation/REPORT.md) retains exact
+metadata evidence and the full gap matrix. I0 accepts the independent ordinary
+baseline. I1 explains both-host Codex default skew and proves foreground Claude
+prompt exit while preserving foreground-attach/background-exit limits. I2 fixes
+foreground questions in a8, diagnoses the setup-only omission and retains
+unknown old Codex/parked predicates. I3 fixes slow cadence, proves private native
+hint/lifetime feasibility and defines the
+[production event gate](event-assisted-monitoring-plan.md). I4 reviews native
+notification coverage and leaves terminal/desktop/device publication separate.
+I5 proves independent SSH reconnect/schema epochs and keeps physical wake,
+native CPU attribution, managed selection, client migration and release separate.
+I6 freezes/installs a8, verifies source/consumer/native checks, removes owned proof
+stores and confirms ordinary preservation. Normal a7 services remain selected.

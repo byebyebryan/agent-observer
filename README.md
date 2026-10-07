@@ -37,6 +37,15 @@ is enabled on Snap and Starship. Restart/crash/rollback/reselection gates pass;
 both 30-minute normal-unit reader/resource checks pass. The report records
 remaining native entry, foreground attach and physical wake limits.
 
+The [remaining-gap investigation](docs/evidence/2026-10-07-gap-investigation/REPORT.md)
+accepts a separate installed a8 candidate: verified Claude foreground questions
+now report blocked, and configured polling intervals above five minutes are
+preserved. Both-host private Codex entry matrices explain native feature-default
+skew; foreground `/exit`, passive native hints and remote reconnect gain bounded
+proof. Normal units still select a7. The
+[event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
+the next producer implementation without combining it with frontend work.
+
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
 [packaged/native report](docs/evidence/2026-10-06-stable-api/REPORT.md) records

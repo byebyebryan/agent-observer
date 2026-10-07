@@ -30,6 +30,17 @@ binds its previous artifact and wire 2; its private venv can shadow normal
 commands. Use the explicit a7 prefix when validating or migrating a client.
 No hook, networking component or frontend is selected by the Observer rollout.
 
+The [remaining-gap report](evidence/2026-10-07-gap-investigation/REPORT.md) accepts
+an additional installed candidate, `0.4.0a8`, source
+`3c71f216a716a36f2403f7c71fa5935c41c9917f`, wheel SHA256
+`a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926`.
+Its [manifest](../artifacts/observer-0.4.0a8.json), archived wheel and installed
+prefix `0.4.0a8-a8370b0f96d2669f` are available on both hosts under the same roots
+as a7. It repairs foreground Claude question detection and slow polling schedules;
+API/wire/service versions stay unchanged. A8 is not the managed selection: use
+its explicit prefix and an explicitly owned candidate endpoint when testing it,
+or complete its separate managed rollout before normal client acceptance.
+
 ## Reproducible local entry
 
 The normal selected unit supplies the default endpoint:
@@ -102,20 +113,26 @@ it does not make a CLI-filtered row set a complete producer inventory. Use
 | Case | Boundary |
 | --- | --- |
 | Physical suspend/wake | Pending operator window. Fake BOOTTIME expiry tests establish logic only. |
-| Native signals/hooks | Shared views are pushed after scheduled pulls. Faster event-assisted monitoring, subscriptions and hooks need independent loss/identity/lifetime proof. |
+| Native signals/hooks | Shared views are pushed after scheduled pulls. Private Codex global start/status hints and Claude registry wakeups now have bounded native proof; production event-assisted collection still needs the loss/scheduling/cost gate in the event plan. No action-based subscription is authorized. |
 | Notification events | No durable completion/attention publication here. Existing API v1 notification work is separate; source/view counters cannot substitute for native event correlation. |
 | Workspace mapping | A7 accepts startup-only `--workspace-config` root/project mappings on history jobs, with independent Git validation and history leases. Restart only the Observer unit to reload. Explicit grouping does not merge native identities. |
-| Claude coverage | SDK saved coverage is partial. One current setup-metadata-only candidate is omitted; foreground question predicates remain unproved. Background questions/approvals and positive parked predicates have native acceptance. |
+| Claude coverage | SDK saved coverage stays partial; the omitted setup-only candidate has zero conversation records. A8 accepts verified interactive/no-job exact input waits as blocked/question. Generic dialogs remain unknown. Background questions/approvals and positive parked predicates retain native acceptance. |
 | Claude foreground attach | The writer rejects a live foreground row with `unsupported_resume_route`; live attach requires a positively bound background job. Saved Resume is separately supported. Observation alone does not authorize terminal focus or attachment. |
-| Native default entry | The current mixed Codex CLI/server pairing rejects a default feature mismatch in a fresh fixture. Entry proof disables `api_key_model_discovery` only in that private fixture; ordinary default startup is not accepted. Surface deferred TTY errors and never retry an uncertain write automatically. |
-| Native UI exit | The disposable PTY `/exit` attempt did not establish command recognition. Viewer detach and explicit native stop/parked are separate accepted cases. |
+| Native default entry | Both-host private matrices isolate mixed Codex client/server feature defaults; matched pairs enter with defaults. Ordinary pairing/policy remains unchanged and needs provider-owned repair/reproof. Surface deferred TTY errors and never retry an uncertain write automatically. |
+| Native UI exit | Foreground prompt `/exit` is independently recognized and removes its registration. Attached-background recognition remains unproved and its worker stays live. Viewer detach and explicit native stop/parked remain separate cases. |
 | Resource/latency | Warm cache latency and publisher/owned-descendant CPU/RSS are measured per configuration. Native provider CPU and full-host idle overhead are not separately attributed. Monitoring/history can lag their configured cadence plus bounded read delay. |
-| Selection/clients | Observer-only unit selection and restart/crash/rollback gates pass. Agent Plus migration, remote streams and device bridges retain independent delivery gates. |
+| Selection/clients | A7 selection and restart/crash/rollback pass. A8 needs its own managed promotion. Independent SSH reconnect/schema epochs pass against a7; networking/bridge, Agent Plus and device migrations retain separate delivery gates. |
 
-The next Agent Plus pass should first bind this explicit installed a7 artifact
+The next Agent Plus pass should first bind the exact chosen a7 or a8 artifact
 and exercise envelope/freshness/reconnect fixtures independently of UI work,
 then validate installed local and remote reads against native evidence. Keep
 write actions and terminal/focus behavior as separate client acceptance. Producer
 findings reopen an Observer checkpoint; avoid simultaneous producer/frontend
 repairs. RLCD and other clients use the same read boundary with their own bridge,
 transport and presentation gates. OpenCode remains deprecated.
+
+Before a client pass, read the [event-assisted monitoring plan](event-assisted-monitoring-plan.md)
+and [latest gap verdict](evidence/2026-10-07-gap-investigation/REPORT.md). Cached
+Claude conversation ages can lag the configured history cadence; current receipt
+health is not a promise of the latest native message. A8's question repair is
+available only through a8 reads/publishers until normal producer promotion.

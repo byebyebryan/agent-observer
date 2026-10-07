@@ -1,0 +1,403 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.4.0a8",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791405737673
+      },
+      "cliCollectedAt": 1791405739386,
+      "nativeAfterAt": {
+        "codex": 1791405740846
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 92
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 92,
+          "nativeAfterRows": 92,
+          "cliRows": 92,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 92,
+            "classification": {
+              "user": 4,
+              "unknown": 88
+            }
+          },
+          "checks": {
+            "membership": 92,
+            "title": 70,
+            "cwd": 92,
+            "runtime_unproved": 88,
+            "phase_unproved": 88,
+            "activity": 92,
+            "kind_unproved": 88,
+            "sessionId": 92,
+            "createdAt": 92,
+            "outcome": 91,
+            "outcomeAt": 89,
+            "title_unproved": 22,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 3,
+            "runtime": 4,
+            "phase": 4,
+            "kind": 4
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791403208000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791405619000
+            },
+            {
+              "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+              "title": "bookkeeper",
+              "cwd": "/home/bryan/code/agent-bookkeeper",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791405418000
+            },
+            {
+              "id": "01a1176c-6c90-7162-b420-422492c83d33",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791396024000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791403208000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791405619000
+            },
+            {
+              "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+              "title": "bookkeeper",
+              "cwd": "/home/bryan/code/agent-bookkeeper",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791405418000
+            },
+            {
+              "id": "01a1176c-6c90-7162-b420-422492c83d33",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791396024000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 4,
+        "doctorSessionCount": true,
+        "cliRows": 92,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3414244,
+        "startTicks": "43337316",
+        "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "provider": "codex",
+        "version": "0.161.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791405742799
+      },
+      "cliCollectedAt": 1791405744423,
+      "nativeAfterAt": {
+        "codex": 1791405745892
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 92
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 92,
+          "nativeAfterRows": 92,
+          "cliRows": 92,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 92,
+            "classification": {
+              "user": 4,
+              "unknown": 88
+            }
+          },
+          "checks": {
+            "membership": 92,
+            "title": 70,
+            "cwd": 92,
+            "runtime_unproved": 88,
+            "phase_unproved": 88,
+            "activity": 92,
+            "kind_unproved": 88,
+            "sessionId": 92,
+            "createdAt": 92,
+            "outcome": 91,
+            "outcomeAt": 89,
+            "title_unproved": 22,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 3,
+            "runtime": 4,
+            "phase": 4,
+            "kind": 4
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791403208000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791405619000
+            },
+            {
+              "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+              "title": "bookkeeper",
+              "cwd": "/home/bryan/code/agent-bookkeeper",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791405418000
+            },
+            {
+              "id": "01a1176c-6c90-7162-b420-422492c83d33",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791396024000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791403208000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791405619000
+            },
+            {
+              "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+              "title": "bookkeeper",
+              "cwd": "/home/bryan/code/agent-bookkeeper",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791405418000
+            },
+            {
+              "id": "01a1176c-6c90-7162-b420-422492c83d33",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791396024000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 4,
+        "doctorSessionCount": true,
+        "cliRows": 92,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3414244,
+        "startTicks": "43337316",
+        "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "provider": "codex",
+        "version": "0.161.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {}
+      }
+    }
+  ]
+}

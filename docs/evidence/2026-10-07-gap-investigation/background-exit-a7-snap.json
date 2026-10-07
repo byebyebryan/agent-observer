@@ -1,0 +1,15 @@
+{
+  "hostScope": "snap",
+  "nativeId": "f1896eba-dfb9-4bcf-8f90-ffef42b68763",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "exitRecognizedByNativeHook": false,
+  "nativeRegistryPresent": true,
+  "nativeJobState": "done",
+  "nativeJobTempo": "idle",
+  "runtime": "running",
+  "worker": "present",
+  "phase": "waiting",
+  "conversationAgePreserved": true,
+  "status": "unproved"
+}

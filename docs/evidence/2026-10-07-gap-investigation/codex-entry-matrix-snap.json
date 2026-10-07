@@ -1,0 +1,90 @@
+{
+  "variants": [
+    {
+      "variant": "mixed-default",
+      "fixture": {
+        "host": "snap",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0",
+        "codexRelease": "0.161.0-x86_64-unknown-linux-musl",
+        "daemonSha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "installedCliSha256": {
+          "codex": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "claude": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3"
+        },
+        "apiKeyModelDiscoveryDisabledInFixture": false,
+        "codexCliSource": "/opt/openai-codex/bin/codex"
+      },
+      "result": {
+        "hostScope": "snap",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": true,
+        "loadedUserIds": [],
+        "nativeStatuses": [],
+        "status": "native_feature_mismatch",
+        "observedLoadedCount": 0
+      }
+    },
+    {
+      "variant": "matched-old",
+      "fixture": {
+        "host": "snap",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0",
+        "codexRelease": "0.160.1-x86_64-unknown-linux-musl",
+        "daemonSha256": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+        "installedCliSha256": {
+          "codex": "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
+          "claude": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3"
+        },
+        "apiKeyModelDiscoveryDisabledInFixture": false,
+        "codexCliSource": "/opt/openai-codex/bin/codex"
+      },
+      "result": {
+        "hostScope": "snap",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": false,
+        "loadedUserIds": [
+          "01a117fd-08a1-7ff1-8b03-aad00c1a79b1"
+        ],
+        "nativeStatuses": [
+          "idle"
+        ],
+        "status": "entered",
+        "observedLoadedCount": 1
+      }
+    },
+    {
+      "variant": "matched-current",
+      "fixture": {
+        "host": "snap",
+        "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a7-09f41f33e6c22fe0",
+        "codexRelease": "0.161.0-x86_64-unknown-linux-musl",
+        "daemonSha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "installedCliSha256": {
+          "codex": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "claude": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3"
+        },
+        "apiKeyModelDiscoveryDisabledInFixture": false,
+        "codexCliSource": "/home/bryan/.codex/packages/app-server-daemon/releases/0.161.0-x86_64-unknown-linux-musl/bin/codex"
+      },
+      "result": {
+        "hostScope": "snap",
+        "ordinaryProviderActions": false,
+        "referenceImportsObserver": false,
+        "entryBackend": "installed_write_1",
+        "featureMismatch": false,
+        "loadedUserIds": [
+          "01a117fd-0852-7d60-aaf1-3c82fbb90ad3"
+        ],
+        "nativeStatuses": [
+          "idle"
+        ],
+        "status": "entered",
+        "observedLoadedCount": 1
+      }
+    }
+  ]
+}

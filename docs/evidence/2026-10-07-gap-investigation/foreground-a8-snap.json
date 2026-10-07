@@ -1,0 +1,74 @@
+{
+  "hostScope": "snap",
+  "provider": "claude",
+  "nativeId": "036ebd9c-10bc-481b-bc19-60d1a77c081b",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "question": "foreground_question_accepted",
+  "exit": "native_prompt_input_exit_accepted",
+  "filesystemWakeups": 9,
+  "filesystemOverflow": false,
+  "nativeForegroundRegistered": true,
+  "heldQuestionSamples": [
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "blocked",
+      "phaseHealth": "current",
+      "phaseReason": "native_snapshot",
+      "runtime": "running",
+      "worker": "present",
+      "metadataIssues": [],
+      "blockedReason": "question",
+      "activityAt": 1791405750093,
+      "cachedPhase": "blocked",
+      "cachedBlockedReason": "question"
+    },
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "blocked",
+      "phaseHealth": "current",
+      "phaseReason": "native_snapshot",
+      "runtime": "running",
+      "worker": "present",
+      "metadataIssues": [],
+      "blockedReason": "question",
+      "activityAt": 1791405750093,
+      "cachedPhase": "blocked",
+      "cachedBlockedReason": "question"
+    },
+    {
+      "nativeStatus": "waiting",
+      "noJob": true,
+      "nativeWaitClass": "input_needed",
+      "phase": "blocked",
+      "phaseHealth": "current",
+      "phaseReason": "native_snapshot",
+      "runtime": "running",
+      "worker": "present",
+      "metadataIssues": [],
+      "blockedReason": "question",
+      "activityAt": 1791405750093,
+      "cachedPhase": "blocked",
+      "cachedBlockedReason": "question"
+    }
+  ],
+  "registryAfterExitPresent": false,
+  "metadataCallbacks": [
+    {
+      "event": "PreToolUse",
+      "nativeId": "036ebd9c-10bc-481b-bc19-60d1a77c081b",
+      "askUserQuestion": true
+    },
+    {
+      "event": "SessionEnd",
+      "nativeId": "036ebd9c-10bc-481b-bc19-60d1a77c081b",
+      "promptInputExit": true
+    }
+  ],
+  "status": "accepted",
+  "cachedServiceCompared": true
+}
