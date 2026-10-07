@@ -31,6 +31,27 @@ is `CLAUDE_CONFIG_DIR` or `~/.claude`; the default and explicit Claude selectors
 remain distinct. Subscribers cannot relabel the host, choose stores, change
 collection intervals, trigger a refresh or request an action.
 
+Starting with the operational a7 candidate, `serve --workspace-config /path/to/workspace.json`
+uses the same root/project mapping model as direct reads. The file must be a
+regular JSON file of at most 128 KiB. It is validated and copied at startup before
+opening the endpoint or collecting providers; file changes require an Observer
+restart. A missing option retains default Git enrichment with no configured roots
+or project mappings. For example:
+
+```json
+{
+  "roots": [{"key": "code", "path": "/home/bryan/code"}],
+  "projects": [{"rootKey": "code", "relativePath": "agent-observer", "projectKey": "agent-observer"}]
+}
+```
+
+Only history jobs carry this configuration and enrich workspace metadata.
+Workspace expires with its history lease even while runtime monitoring remains
+healthy. A project key groups explicit workspace mappings; it does not merge
+session identities, attest another host or grant action authority. Installed/native
+acceptance and normal selection are tracked in
+[the operational execution](observer-operations-execution.md).
+
 `service api` and `service schema --kind request|frame` work without a service.
 `status` and `snapshot` emit one service envelope. `list` displays ordered rows;
 its `--json` form retains the envelope and filters its embedded snapshot.

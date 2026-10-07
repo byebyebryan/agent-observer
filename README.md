@@ -27,6 +27,13 @@ records the explicit candidate, client obligations and separate rollout gates.
 The [large implementation-loop plan](docs/shared-observation-service-batch-plan.md)
 sets the current checkpoints and unattended producer validation.
 
+The [operational baseline pass](docs/observer-operations-execution.md) adds
+startup-only service workspace configuration and independently gates an
+Observer-only managed CLI/user-service rollout. Its
+[opening evidence](docs/evidence/2026-10-07-observer-operations/REPORT.md) compares
+the installed selected and service-capable candidates against native metadata;
+normal selection remains unchanged until that pass accepts its rollout.
+
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
 [packaged/native report](docs/evidence/2026-10-06-stable-api/REPORT.md) records

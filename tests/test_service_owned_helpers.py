@@ -32,7 +32,7 @@ class OwnedHelpersTest(unittest.TestCase):
             child = "import os,time;from pathlib import Path;Path(" + repr(str(marker)) + ").write_text(str(os.getpid()));time.sleep(30)"
             code = "import sys,time,subprocess;sys.path.insert(0," + repr(str(Path(__file__).resolve().parent.parent)) + ");from agent_observer import _service_worker;from unittest.mock import patch\ndef slow(*a,**k):\n subprocess.Popen([sys.executable,'-c'," + repr(child) + "],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)\n time.sleep(30)\nwith patch('agent_observer.codex_snapshot.collect_codex',side_effect=slow):_service_worker.main()"
             process = subprocess.Popen([sys.executable, "-I", "-B", "-c", code], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
-            request = {"hostScope": "fixture", "provider": "codex", "component": "runtime", "configHome": str(root), "configHomeKind": "explicit", "timeoutMs": 1000}
+            request = {"hostScope": "fixture", "provider": "codex", "component": "runtime", "configHome": str(root), "configHomeKind": "explicit", "timeoutMs": 1000, "workspaceConfig": None}
             try:
                 process.communicate(json.dumps(request).encode(), timeout=3)
                 self.assertEqual(process.returncode, -9)
@@ -68,7 +68,7 @@ class OwnedHelpersTest(unittest.TestCase):
                     time.sleep(0.01)
                 pid, group = json.loads(marker.read_text())
                 self.assertEqual(group, parents[0].pid)
-                while alive(pid) and time.monotonic() < deadline:
+                while (alive(pid) or parents[0].returncode is None) and time.monotonic() < deadline:
                     time.sleep(0.02)
                 self.assertFalse(alive(pid))
                 self.assertIsNotNone(parents[0].returncode)

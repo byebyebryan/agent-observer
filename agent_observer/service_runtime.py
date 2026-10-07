@@ -16,9 +16,11 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .bounded_json import decode_document
 from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
 from .service_scheduler import Scheduler
+from .workspace import MAX_CONFIG_BYTES, validate_config
 
 
 def birth(pid):
@@ -138,10 +140,15 @@ class Worker:
 class Runtime:
     def __init__(self, state, path, *, scheduler=None, worker_factory=None, collect=True,
                  max_clients=16, encoded_limit=64 * 1024 * 1024, io_timeout_ms=5000,
-                 heartbeat_ms=10000):
+                 heartbeat_ms=10000, workspace_config=None):
         if not 1 <= max_clients <= 16 or encoded_limit < MAX_SNAPSHOT_BYTES + MAX_OVERHEAD_BYTES or not 100 <= io_timeout_ms <= 30000:
             raise ValueError("service_runtime_limits")
         self.state, self.path = state, Path(path)
+        # Own an immutable startup value, independent of the caller/file. Only
+        # history jobs receive it; runtime samples cannot enrich/freshen it.
+        configured = workspace_config if workspace_config is not None else {"roots": [], "projects": []}
+        validate_config(configured)
+        self.workspace_config = decode_document(canonical(configured).encode(), max_bytes=MAX_CONFIG_BYTES)
         self.scheduler = scheduler or Scheduler(state.configs)
         self.worker_factory = worker_factory or self._spawn
         self.collect = collect
@@ -158,14 +165,18 @@ class Runtime:
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
                    "component": job.component, "configHome": self.state.configs[job.provider][0],
                    "configHomeKind": self.state.configs[job.provider][1],
-                   "timeoutMs": self.scheduler.timeout}
+                   "timeoutMs": self.scheduler.timeout,
+                   "workspaceConfig": self.workspace_config if job.component == "history" else None}
+        request = (canonical(payload) + "\n").encode()
+        if len(request) > MAX_CONFIG_BYTES + 16384:
+            raise ValueError("service_worker_request_limit")
         process = subprocess.Popen(
             [sys.executable, "-I", "-B", str(Path(__file__).with_name("_service_worker.py"))],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             start_new_session=True,
         )
         try:
-            process.stdin.write((canonical(payload) + "\n").encode())
+            process.stdin.write(request)
             process.stdin.close()
         except BaseException:
             self._stop_worker(Worker(job, process))

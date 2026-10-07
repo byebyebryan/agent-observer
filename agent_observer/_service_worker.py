@@ -23,9 +23,11 @@ def main():
     from agent_observer.bounded_json import decode_document
     from agent_observer.collection import compose_snapshot
     from agent_observer.contract import canonical
+    from agent_observer.workspace import MAX_CONFIG_BYTES, enrich, validate_config
 
-    request = decode_document(sys.stdin.buffer.read(16385), max_bytes=16384)
-    if set(request) != {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs"}:
+    request_limit = MAX_CONFIG_BYTES + 16384
+    request = decode_document(sys.stdin.buffer.read(request_limit + 1), max_bytes=request_limit)
+    if set(request) != {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig"}:
         raise ValueError("service_worker_request")
     if type(request["timeoutMs"]) is not int or not 1000 <= request["timeoutMs"] <= 30000:
         raise ValueError("service_worker_timeout")
@@ -35,6 +37,12 @@ def main():
     provider, component = request["provider"], request["component"]
     if provider not in {"codex", "claude"} or component not in {"runtime", "history"}:
         raise ValueError("service_worker_request")
+    if component == "history":
+        validate_config(request["workspaceConfig"])
+        if len(canonical(request["workspaceConfig"]).encode()) > MAX_CONFIG_BYTES:
+            raise ValueError("service_worker_workspace_limit")
+    elif request["workspaceConfig"] is not None:
+        raise ValueError("service_worker_workspace_scope")
     home = Path(request["configHome"])
     if request["configHomeKind"] not in {"explicit", "default"}:
         raise ValueError("service_worker_request")
@@ -54,8 +62,7 @@ def main():
         native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history", owned_worker_group=True)
     value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
     if component == "history":
-        from agent_observer.workspace import enrich
-        enrich(value, {"roots": [], "projects": []})
+        enrich(value, request["workspaceConfig"])
     sys.stdout.write(canonical(value))
     return 0
 
