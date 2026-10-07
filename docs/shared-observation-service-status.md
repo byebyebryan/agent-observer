@@ -50,3 +50,12 @@ for scoped acceptance. Cached reads met the initial latency target. The first
 30-second runtime/120-second history configuration is under sustained retest.
 The default remains 20/60 seconds. Physical suspend and the native retirement
 predicate remain unaccepted while their respective gates are pending.
+
+## Outcome reconciliation repair
+
+Review found that an older history completion could override a newer runtime
+sample explicitly reporting a turn in progress; the reverse sampling order had
+the same problem. The latest explicit new-turn evidence now clears the older
+outcome, including after its lease expires. Only a subsequently sampled terminal
+outcome restores a completed/failed/cancelled value. API 1 and service schemas
+are unchanged. A4 will freeze and independently validate this producer repair.

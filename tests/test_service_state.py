@@ -5,6 +5,7 @@ import unittest
 
 from test_service_contract import fixture
 
+from agent_observer.activity import codex_activity, codex_outcome
 from agent_observer.contract import ContractError, validate_snapshot
 from agent_observer.service_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
@@ -116,6 +117,36 @@ class ServiceStateTest(unittest.TestCase):
         self.assertEqual(row["runtime"]["value"], "unknown")
         self.assertEqual(row["runtime"]["lastKnownValue"], "running")
         self.assertIn("retained_after_gap", row["metadataIssues"])
+
+    def turn(self, status, start, end):
+        value = provider_snapshot("codex")
+        payload = {"data": [{"status": status, "startedAt": start, "completedAt": end,
+                             "items": [], "itemsView": "notLoaded"}]}
+        value["sessions"][0]["activity"] = codex_activity(payload)
+        outcome = codex_outcome(payload)
+        value["sessions"][0]["outcome"] = {**outcome, "clock": "native" if outcome["observedAt"] is not None else None}
+        return value
+
+    def test_new_turn_clears_old_terminal_from_either_component(self):
+        for older, newer in (("history", "runtime"), ("runtime", "history")):
+            with self.subTest(older=older):
+                self.accept("codex", older, value=self.turn("completed", 1, 2))
+                self.now += 1
+                self.accept("codex", newer, ttl=1000, value=self.turn("inProgress", 3, None))
+                row = self.state.snapshot["sessions"][0]
+                self.assertEqual(row["outcome"]["value"], "unknown")
+                self.assertEqual(row["outcome"]["reason"], "turn_in_progress")
+                self.assertIsNone(row["outcome"]["observedAt"])
+                self.assertEqual(row["activity"]["at"], 3000)
+                self.now += 1001
+                row = self.state.frame("view", 1)["snapshot"]["sessions"][0]
+                self.assertEqual(row["outcome"]["value"], "unknown")
+                self.assertIsNone(row["outcome"]["observedAt"])
+                self.now += 1
+                self.accept("codex", older, value=self.turn("completed", 3, 4))
+                row = self.state.snapshot["sessions"][0]
+                self.assertEqual(row["outcome"]["value"], "completed")
+                self.assertEqual(row["outcome"]["observedAt"], 4000)
 
 
 class SchedulerTest(unittest.TestCase):

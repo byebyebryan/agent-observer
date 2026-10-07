@@ -205,6 +205,20 @@ class ServiceState:
                     for name in ("activity", "outcome"):
                         current = row[name]
                         candidate = saved[name]
+                        if name == "outcome":
+                            # In-progress metadata is explicit negative knowledge
+                            # about the latest turn, despite its unknown result.
+                            # An older component must not restore a terminal
+                            # outcome across a subsequently observed new turn.
+                            # Expiring the new-turn sample cannot make an older
+                            # completion become the latest turn again.
+                            rt_latest = key in rt_rows and runtime.sampledBoottimeMs >= history.sampledBoottimeMs
+                            hi_latest = key not in rt_rows or history.sampledBoottimeMs >= runtime.sampledBoottimeMs
+                            pending = (rt_rows[key] if rt_latest and rt_rows[key][name]["reason"] == "turn_in_progress"
+                                       else hi_rows[key] if hi_latest and hi_rows[key][name]["reason"] == "turn_in_progress" else None)
+                            if pending is not None:
+                                row[name] = copy.deepcopy(pending[name])
+                                continue
                         # History can establish metadata/outcome, never runtime phase.
                         if name == "outcome" and history.current():
                             candidate = copy.deepcopy(hi_rows[key][name])
