@@ -1,0 +1,141 @@
+{
+  "evidenceKind": "ordinary_installed_cli_vs_independent_stdlib_native_rpc",
+  "hostScope": "snap",
+  "sampleStartUtc": "2026-10-08T20:39:01.811000+00:00",
+  "sampleEndUtc": "2026-10-08T20:39:03.072403+00:00",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+  "cliVersion": "agent-observer 0.4.0a16",
+  "nativeRuntimeDiagnostic": {
+    "pid": 3519017,
+    "startTicks": "52946647",
+    "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+    "provider": "codex",
+    "version": "0.162.0",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  },
+  "catalog": {
+    "complete": true,
+    "rows": 67,
+    "sourceKinds": [
+      "cli",
+      "vscode",
+      "exec",
+      "appServer",
+      "subAgent",
+      "subAgentReview",
+      "subAgentCompact",
+      "subAgentThreadSpawn",
+      "subAgentOther",
+      "unknown"
+    ],
+    "nativeStatusCounts": {
+      "systemError": 1,
+      "notLoaded": 65,
+      "active": 1
+    },
+    "threadIdDiffersFromTreeRootCount": 0
+  },
+  "loadedBefore": [
+    "01a0fece-0176-7a33-abb3-e99fdb38417a",
+    "01a113b3-adca-7b62-834f-262791c1c774"
+  ],
+  "loadedAfter": [
+    "01a0fece-0176-7a33-abb3-e99fdb38417a",
+    "01a113b3-adca-7b62-834f-262791c1c774"
+  ],
+  "active": [
+    {
+      "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+      "nativeSessionTreeRootId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+      "title": "agent-observer",
+      "nativeStatus": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "working",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "working",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791491498000,
+      "cliActivityAt": 1791491498000
+    },
+    {
+      "threadId": "01a113b3-adca-7b62-834f-262791c1c774",
+      "nativeSessionTreeRootId": "01a113b3-adca-7b62-834f-262791c1c774",
+      "title": "tmux-plus",
+      "nativeStatus": {
+        "type": "systemError"
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "unknown",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "unknown",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791491891000,
+      "cliActivityAt": 1791491891000
+    }
+  ],
+  "savedStatusSamples": [
+    {
+      "threadId": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+      "nativeSessionTreeRootId": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    },
+    {
+      "threadId": "01a10d42-4dac-7ee1-b846-210742296942",
+      "nativeSessionTreeRootId": "01a10d42-4dac-7ee1-b846-210742296942",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    },
+    {
+      "threadId": "01a0f87e-3524-7861-946e-e89005f07905",
+      "nativeSessionTreeRootId": "01a0f87e-3524-7861-946e-e89005f07905",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    }
+  ],
+  "cliRuntimeCounts": {
+    "running": 2,
+    "unknown": 48
+  },
+  "directSourceHealth": "current",
+  "directRuntimeCoverage": [
+    {
+      "reason": "native_snapshot",
+      "scope": "loaded_threads",
+      "status": "complete"
+    }
+  ],
+  "cachedCodexSourceHealth": "current",
+  "cachedActive": [
+    {
+      "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+      "present": true,
+      "runtime": "running",
+      "phase": "working"
+    },
+    {
+      "threadId": "01a113b3-adca-7b62-834f-262791c1c774",
+      "present": true,
+      "runtime": "running",
+      "phase": "unknown"
+    }
+  ],
+  "providerActionsIssued": false,
+  "postTuiClosureCaseRun": false,
+  "rawNativePayloadsRetained": false
+}

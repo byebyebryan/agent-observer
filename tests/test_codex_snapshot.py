@@ -74,10 +74,10 @@ class SnapshotCollectionTest(unittest.TestCase):
         result = self.collect(client)
         row = result["sessions"][0]
         self.assertEqual(row["threadKind"], "user")
-        self.assertEqual(row["inventory"], "saved")
-        self.assertEqual(row["presence"]["value"], "unknown")
-        self.assertEqual(row["work"]["value"], "unknown")
-        self.assertNotIn("nativeState", row)
+        self.assertEqual(row["inventory"], "live")
+        self.assertEqual(row["presence"]["value"], "present")
+        self.assertEqual(row["work"]["value"], "settled")
+        self.assertEqual(row["nativeState"]["type"], "idle")
         self.assertIsNone(row["activity"]["at"])
         self.assertIn(("read", SECOND), client.calls)
 
@@ -87,8 +87,8 @@ class SnapshotCollectionTest(unittest.TestCase):
         client.read_thread = lambda identifier: {"thread": {**native(identifier), "threadSource": "subagent"}}
         row = self.collect(client)["sessions"][0]
         self.assertEqual(row["threadKind"], "child")
-        self.assertEqual(row["inventory"], "saved")
-        self.assertEqual(row["presence"]["value"], "unknown")
+        self.assertEqual(row["inventory"], "live")
+        self.assertEqual(row["presence"]["value"], "present")
 
     def test_optional_saved_detail_failure_keeps_catalog_and_live_sibling(self):
         client = FakeClient({"data": [FIRST], "nextCursor": None},
@@ -131,13 +131,13 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertEqual(row["threadKind"], "unknown")
         self.assertIn("thread_classification_conflict", row["metadataIssues"])
 
-    def test_runtime_cadence_never_scans_saved_catalog(self):
+    def test_runtime_cadence_samples_catalog_without_history_clocks(self):
         client = FakeClient({"data": [FIRST], "nextCursor": None},
                             {"data": [native(SECOND)], "nextCursor": None})
         result = self.collect(client, include_history=False)
-        self.assertNotIn("saved", client.calls)
-        self.assertEqual([r["identity"]["nativeId"] for r in result["sessions"]], [FIRST])
-        self.assertEqual(result["coverage"]["saved"]["reason"], "not_observed")
+        self.assertIn("saved", client.calls)
+        self.assertEqual([r["identity"]["nativeId"] for r in result["sessions"]], [FIRST, SECOND])
+        self.assertEqual(result["coverage"]["saved"]["reason"], "native_snapshot")
         self.assertEqual(result["sessions"][0]["work"]["value"], "settled")
 
     def collect(self, client, *, artifact=CODEX, **changes):
@@ -253,7 +253,7 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertEqual("live", rows[FIRST]["inventory"])
         self.assertEqual("child", rows[SECOND]["threadKind"])
         self.assertEqual("subagent", rows[SECOND]["sourceKind"])
-        self.assertEqual("saved", rows[SECOND]["inventory"])
+        self.assertEqual("live", rows[SECOND]["inventory"])
         self.assertNotIn("thread_spawn", str(result["sessions"]))
         self.assertEqual("current", result["sourceHealth"])
 
@@ -270,7 +270,6 @@ class SnapshotCollectionTest(unittest.TestCase):
         self.assertEqual(row["work"]["value"], "unknown")
         self.assertFalse(result["coverage"]["work"]["supported"])
         self.assertFalse(result["coverage"]["workerPresence"]["supported"])
-        self.assertEqual(row["presenceKind"], "server_thread_loaded")
 
     def test_unproved_wait_and_error_states_remain_unknown(self):
         for status in (
@@ -320,7 +319,7 @@ class SnapshotCollectionTest(unittest.TestCase):
                 {"data": [], "nextCursor": None},
             )
         )
-        self.assertEqual(result["errors"], [{"code": "loaded_identity_ambiguous"}, {"code": "saved_metadata_unavailable"}])
+        self.assertEqual(result["errors"], [{"code": "loaded_identity_ambiguous"}])
         self.assertEqual(result["sourceHealth"], "unavailable")
 
     def test_history_failure_preserves_independent_live_facts(self):
@@ -374,7 +373,7 @@ class SnapshotCollectionTest(unittest.TestCase):
                 {"data": [conflicting], "nextCursor": None},
             )
         )
-        self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}, {"code": "saved_metadata_unavailable"}])
+        self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}])
         self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
 
     def test_absent_runtime_reports_failed_coverage_without_connecting(self):
@@ -389,5 +388,5 @@ class SnapshotCollectionTest(unittest.TestCase):
         connect.assert_not_called()
         self.assertEqual(result["sessions"], [])
         self.assertEqual(result["sourceHealth"], "unavailable")
-        self.assertEqual(result["errors"], [{"code": "endpoint_unavailable"}, {"code": "saved_metadata_unavailable"}])
+        self.assertEqual(result["errors"], [{"code": "endpoint_unavailable"}])
         self.assertFalse(result["coverage"]["saved"]["complete"])

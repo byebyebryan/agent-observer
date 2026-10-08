@@ -40,7 +40,7 @@ class ObservationEvaluationTest(unittest.TestCase):
         with patch.object(evaluation, "birth", return_value=("456", "S", 1)):
             result = evaluation.codex_reference(client)
             self.assertEqual(result["rows"][SID]["kind"], "user")
-            self.assertIsNone(result["rows"][SID]["runtime"])
+            self.assertEqual(result["rows"][SID]["runtime"], "unknown")
             self.assertEqual(result["loaded"], result["loadedAfter"])
             self.assertIn(("thread/read", {"threadId": SID, "includeTurns": False}), client.calls)
             client.returned_id = "11234567-0123-4567-89ab-0123456789ab"
@@ -93,11 +93,11 @@ class ObservationEvaluationTest(unittest.TestCase):
                 self.assertFalse(result["storeScopes"] and result["fullRowReferences"])
 
     def native(self, **fields):
-        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionId": SID, "createdAt": 50}
+        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionTreeRootId": SID, "blockedReasons": [], "createdAt": 50}
         return {"rows": {SID: {**row, **fields}}}
 
     def public(self, **fields):
-        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionId": SID}, "createdAt": 50, "outcome": {"value": "unknown", "observedAt": None}}
+        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionTreeRootId": SID}, "blockedReasons": [], "createdAt": 50, "outcome": {"value": "unknown", "observedAt": None}}
         return {"sessions": [{**row, **fields}]}
 
     def test_stable_missing_row_and_native_active_inventory_are_retained(self):
@@ -110,6 +110,14 @@ class ObservationEvaluationTest(unittest.TestCase):
         self.assertEqual(result["issues"], [{"id": SID, "field": "phase", "result": "sampling_race"}])
         result = evaluation.compare(self.native(phase="waiting"), self.public(), self.native(phase="waiting"), "codex")
         self.assertEqual(result["issues"][0]["result"], "mismatch")
+
+    def test_positive_parked_compares_null_phase_without_loaded_membership(self):
+        native = self.native(runtime="parked", phase=None)
+        public = self.public(runtime={"value": "parked"}, phase=None)
+        result = evaluation.compare(native, public, native, "codex")
+        self.assertEqual(result["issues"], [])
+        self.assertEqual(result["checks"]["runtime"], 1)
+        self.assertEqual(result["checks"]["phase"], 1)
 
     def test_public_only_row_is_unproved_without_double_counting_a_race(self):
         result = evaluation.compare({"rows": {}}, self.public(), {"rows": {}}, "codex")

@@ -19,7 +19,7 @@ from agent_observer.notification_source import (
 )
 from agent_observer.public import ContractError, WireError
 
-FIXTURE = Path(__file__).parent / "fixtures/contract-v3/snapshot.json"
+FIXTURE = Path(__file__).parent / "fixtures/contract-v4/snapshot.json"
 TURN = "99999999-1234-1234-1234-123456789abc"
 RECEIPT = "88888888-1234-1234-1234-123456789abc"
 

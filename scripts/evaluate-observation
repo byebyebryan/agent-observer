@@ -194,6 +194,9 @@ class NativeRPC:
             params = {"cursor": cursor}
             if method == "thread/list":
                 params["limit"] = 100
+                # Deliberately independent of Observer's transport/constants.
+                params["sourceKinds"] = ["cli", "vscode", "exec", "appServer", "subAgent", "subAgentReview", "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown"]
+                params["useStateDbOnly"] = True
             response = self.call(method, params)
             rows.extend(response["data"])
             if len(rows) > 2048:
@@ -221,10 +224,11 @@ def codex_reference(client):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
     saved_reads = 0
+    unreadable_saved = set()
     for sid, record in records.items():
-        if sid in loaded or record.get("threadSource") in ("user", "subagent") or isinstance(record.get("source"), dict):
+        if sid in loaded or (record.get("status", {}).get("type") != "notLoaded" and (record.get("threadSource") in ("user", "subagent") or isinstance(record.get("source"), dict))):
             continue
-        if saved_reads >= 256:
+        if saved_reads >= 1000:
             classification_gaps.append("native_saved_classification_limit")
             break
         saved_reads += 1
@@ -232,10 +236,11 @@ def codex_reference(client):
             detail = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
         except (ValueError, OSError, KeyError):
             classification_gaps.append("native_saved_detail_unavailable:" + sid)
+            unreadable_saved.add(sid)
             continue
         if detail.get("id") != sid or detail.get("sessionId") != record.get("sessionId"):
             raise ValueError("native_detail_identity_conflict")
-        records[sid] = {**record, "source": detail.get("source"), "threadSource": detail.get("threadSource")}
+        records[sid] = detail
     rows = {}
     for sid, r in records.items():
         if not UUID.fullmatch(sid):
@@ -243,11 +248,14 @@ def codex_reference(client):
         source = r.get("source")
         child = r.get("threadSource") == "subagent" or isinstance(source, dict) and "subAgent" in source
         kind = "child" if child else "user" if r.get("threadSource") == "user" else "unknown"
-        status = r.get("status", {}).get("type") if sid in loaded else None
-        flags = r.get("status", {}).get("activeFlags", []) if sid in loaded else []
+        status = r.get("status", {}).get("type") if sid not in unreadable_saved else None
+        flags = r.get("status", {}).get("activeFlags", [])
+        valid_waits = isinstance(flags, list) and all(isinstance(f, str) for f in flags) and len(flags) == len(set(flags)) and all(f in ("waitingOnApproval", "waitingOnUserInput") for f in flags)
         phase = "waiting" if status == "idle" else "blocked" if status == "active" and (
-            flags in (["waitingOnApproval"], ["waitingOnUserInput"])
-        ) else "working" if status == "active" and flags == [] else None
+            valid_waits and flags
+        ) else "working" if status == "active" and flags == [] else None if status == "notLoaded" else "unknown"
+        runtime = "parked" if status == "notLoaded" else "running" if status in ("idle", "active", "systemError") else "unknown"
+        blocked_reasons = sorted({"approval" if f == "waitingOnApproval" else "question" for f in flags}) if phase == "blocked" else []
         at, reason, outcome, outcome_at = None, None, None, None
         try:
             turns = client.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
@@ -265,7 +273,7 @@ def codex_reference(client):
             reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
         except (ValueError, OSError, KeyError):
             reason = "native_turn_read_unavailable"
-        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": "running" if sid in loaded else None, "phase": phase, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
+        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
     loaded_after = set(client.pages("thread/loaded/list"))
@@ -559,15 +567,21 @@ def compare(before, snapshot, after, provider):
             issues.append({"id": sid, "field": "membership", "result": "missing_cli_row"})
             continue
         checks["membership"] += 1
-        comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"], "activity": c["activity"]["at"], "kind": c["kind"]}
+        comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"] if c["phase"] else None, "activity": c["activity"]["at"], "kind": c["kind"]}
         if provider == "codex":
-            comparisons.update(sessionId=c["nativeIds"]["sessionId"], createdAt=c["createdAt"],
+            comparisons.update(sessionTreeRootId=c["nativeIds"]["sessionTreeRootId"], blockedReasons=c["blockedReasons"], createdAt=c["createdAt"],
                                outcome=c["outcome"]["value"], outcomeAt=c["outcome"]["observedAt"])
         for field, observed in comparisons.items():
             expected = b.get(field)
             if a.get(field) != expected:
                 issues.append({"id": sid, "field": field, "result": "sampling_race"})
             elif expected is None or field == "kind" and expected == "unknown":
+                if field == "phase" and b.get("runtime") == "parked":
+                    if observed is not None:
+                        issues.append({"id": sid, "field": field, "result": "mismatch", "native": None, "cli": observed})
+                    else:
+                        checks[field] += 1
+                    continue
                 checks[field + "_unproved"] += 1
                 if field == "phase" and (b.get("runtime") == "running" or observed != "unknown") or field == "activity" and (b.get("runtime") == "running" or observed is not None):
                     issues.append({"id": sid, "field": field, "result": "native_reference_unproved", "cli": observed})
@@ -597,7 +611,7 @@ def read_client_checks(cli, payload):
     def order(row):
         at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
         r = row["identity"]
-        return (attention[row["phase"]["value"]], at is None, -(at or 0), r["hostScope"], r["provider"], r["namespace"], r["nativeIdKind"], r["nativeId"])
+        return (attention[row["phase"]["value"] if row["phase"] else "unknown"], at is None, -(at or 0), r["hostScope"], r["provider"], r["namespace"], r["nativeIdKind"], r["nativeId"])
     display_before = clock()
     human = cli_call(cli, ["list", "--input", "-"], payload).decode().splitlines()
     display_after = clock()
@@ -657,7 +671,7 @@ def main():
             snapshot = json.loads(payload)
             service = None
             if args.service_socket:
-                if snapshot.get("serviceProtocol") != 1 or snapshot.get("hostScope") != args.host_scope or snapshot.get("uid") != os.geteuid() or snapshot.get("snapshot") is None:
+                if snapshot.get("serviceProtocol") != 2 or snapshot.get("hostScope") != args.host_scope or snapshot.get("uid") != os.geteuid() or snapshot.get("snapshot") is None:
                     raise ValueError("service_scope_unavailable")
                 service = {k: snapshot[k] for k in ("serviceProtocol", "serviceId", "bootId", "hostScope", "viewRevision", "emittedAt", "emittedBoottimeMs", "clockDomain", "sources")}
                 snapshot = snapshot["snapshot"]

@@ -60,7 +60,7 @@ class ServiceStateTest(unittest.TestCase):
         self.assertEqual(row["phase"]["value"], "unknown")
         self.assertEqual(row["phase"]["lastKnownValue"], "blocked")
         self.assertEqual(row["phase"]["observedAt"], clock)
-        self.assertEqual(row["blockedReason"], "unknown")
+        self.assertEqual(row["blockedReasons"], [])
         self.assertEqual(row["runtime"]["value"], "unknown")
 
     def test_failed_source_preserves_healthy_provider(self):
@@ -102,8 +102,8 @@ class ServiceStateTest(unittest.TestCase):
         value["sources"][0]["runtime"]["startTicks"] += 1
         self.accept("codex", "history", value=value)
         self.assertGreater(self.state.generations["codex"], first)
-        self.assertEqual(self.state.receipts["codex"]["runtime"].health, "stale")
-        self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "unknown")
+        self.assertEqual(self.state.receipts["codex"]["runtime"].health, "current")
+        self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "running")
         self.accept("codex", "runtime", value=value)
         self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "running")
 
@@ -122,18 +122,20 @@ class ServiceStateTest(unittest.TestCase):
     def test_partial_claude_history_does_not_own_runtime_only_membership(self):
         value = provider_snapshot("claude")
         value["sessions"] = [value["sessions"][0]]
-        value["sessions"][0]["history"] = None
+        value["sessions"][0]["hasSavedHistory"] = False
         value["sources"][0]["coverage"]["saved"].update(status="partial", reason="metadata_scan")
         self.accept("claude", "history", value=value)
         self.accept("claude", "runtime", value=value)
         missing = copy.deepcopy(value)
         missing["sessions"] = []
+        missing["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
         self.now += 1
         self.accept("claude", "history", value=missing)
         # The current runtime still establishes this exact identity.
         self.assertEqual(len(self.state.snapshot["sessions"]), 1)
         self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "running")
         self.now += 1
+        missing["sources"][0]["coverage"]["runtime"].update(status="complete")
         self.accept("claude", "runtime", value=missing)
         # Complete runtime absence plus no saved evidence removes it from the
         # sampled view, without claiming a logical end, deletion or child kind.
@@ -143,6 +145,7 @@ class ServiceStateTest(unittest.TestCase):
     def test_partial_claude_history_keeps_saved_evidence_and_original_age(self):
         value = provider_snapshot("claude")
         value["sessions"] = [value["sessions"][0]]
+        value["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
         value["sessions"][0]["activity"] = {
             "at": 1700000040000, "source": "claude_transcript_message",
             "health": "current", "reason": "native_conversation_event",
@@ -151,12 +154,13 @@ class ServiceStateTest(unittest.TestCase):
         original = copy.deepcopy(value["sessions"][0])
         missing = copy.deepcopy(value)
         missing["sessions"] = []
+        missing["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
         missing["sources"][0]["coverage"]["saved"].update(status="partial", reason="metadata_scan")
         self.now += 1
         self.accept("claude", "history", value=missing)
         row = self.state.snapshot["sessions"][0]
         self.assertEqual(row["identity"], original["identity"])
-        self.assertEqual(row["history"], original["history"])
+        self.assertTrue(row["hasSavedHistory"])
         self.assertEqual(row["runtime"]["value"], "unknown")
         self.assertIsNone(row["activity"]["at"])
         self.assertEqual(row["activity"]["lastKnownAt"], original["activity"]["at"])
@@ -166,10 +170,11 @@ class ServiceStateTest(unittest.TestCase):
     def test_partial_claude_runtime_keeps_runtime_only_identity(self):
         value = provider_snapshot("claude")
         value["sessions"] = [value["sessions"][0]]
-        value["sessions"][0]["history"] = None
+        value["sessions"][0]["hasSavedHistory"] = False
         self.accept("claude", "runtime", value=value)
         missing = copy.deepcopy(value)
         missing["sessions"] = []
+        missing["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
         missing["sources"][0]["coverage"]["runtime"].update(status="partial", reason="bounded_inventory")
         self.now += 1
         self.accept("claude", "runtime", value=missing)
@@ -184,6 +189,7 @@ class ServiceStateTest(unittest.TestCase):
         self.accept("codex", "history", value=value)
         missing = copy.deepcopy(value)
         missing["sessions"] = []
+        missing["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
         missing["sources"][0]["coverage"]["saved"].update(status="partial", reason="catalog_limit")
         self.now += 1
         self.accept("codex", "history", value=missing)
@@ -255,6 +261,8 @@ class ServiceStateTest(unittest.TestCase):
                 self.now += 1
                 gap = provider_snapshot("codex")
                 gap["sessions"] = []
+                if retained == "history":
+                    gap["sources"][0]["coverage"]["runtime"].update(status="unavailable", reason="metadata_only")
                 dimension = "runtime" if retained == "runtime" else "saved"
                 gap["sources"][0]["coverage"][dimension].update(status="partial", reason="bounded_inventory")
                 self.accept("codex", retained, value=gap)

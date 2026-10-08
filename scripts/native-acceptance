@@ -59,7 +59,7 @@ class Proof:
 
     def handoff(self, ref=None):
         request = {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "operation": "resume" if ref else "new",
             "hostScope": self.host,
             "provider": self.provider,
@@ -256,11 +256,14 @@ class Proof:
         os.kill(owner.pid, signal.SIGKILL)
         time.sleep(1)
         failed = self.snapshot()
-        saved = next(row for row in failed["sessions"] if row["identity"] == ref)
-        assert failed["sourceHealth"] == "partial"
+        saved = next((row for row in failed["sessions"] if row["identity"] == ref), None)
+        assert failed["sourceHealth"] in {"partial", "unavailable"}
         assert failed["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
-        assert saved["runtime"]["value"] == saved["phase"]["value"] == "unknown"
-        assert saved["activity"]["at"] == at
+        if saved is not None:
+            assert saved["runtime"]["value"] == saved["phase"]["value"] == "unknown"
+            assert saved["activity"].get("lastKnownAt", saved["activity"]["at"]) == at
+        else:
+            assert not failed["sessions"]
         try:
             self.handoff(ref)
         except RuntimeError as exc:
@@ -286,7 +289,8 @@ class Proof:
             "provider": "codex",
             "independentOfFrontend": True,
             "ownedDaemonFailureVisible": True,
-            "independentSavedDiscoverySurvivesFailure": True,
+            "cachedSavedMetadataSurvivesFailure": saved is not None,
+            "privateSavedStoreFallback": False,
             "offlineSavedResumeRejected": True,
             "publicNewRestartsRuntime": True,
             "exactSavedResumeAfterRecovery": True,
@@ -537,7 +541,7 @@ class Proof:
                     break
             assert status == 2
             assert json.loads(output.decode().strip()) == {
-                "schemaVersion": 1, "error": "handoff_context_changed",
+                "schemaVersion": 2, "error": "handoff_context_changed",
             }
         finally:
             config.write_bytes(original)
@@ -656,8 +660,8 @@ class Proof:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--provider", choices=("codex", "claude"), required=True)
-    parser.add_argument("--scenario", choices=("entry", "recovery", "partial", "mixed", "approval", "companion", "rejection", "question", "parked"), default="entry")
+    parser.add_argument("--provider", choices=("codex",), required=True)
+    parser.add_argument("--scenario", choices=("entry", "recovery", "rejection"), default="entry")
     arguments = parser.parse_args()
     proof = Proof(arguments.provider)
     try:

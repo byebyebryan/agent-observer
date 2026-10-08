@@ -22,8 +22,8 @@ def _semantic(snapshot):
     value["sources"].sort(key=lambda source: (source["provider"], source["namespace"]))
     value["sessions"].sort(key=lambda row: identity_key(row["identity"]))
     for row in value["sessions"]:
-        for name in ("phase", "runtime", "worker", "attachment", "outcome"):
-            if row[name]["clock"] == "sample":
+        for name in ("phase", "runtime", "outcome"):
+            if row[name] and row[name]["clock"] == "sample":
                 row[name]["observedAt"] = None
     return canonical(value)
 
@@ -43,9 +43,11 @@ def _retain_missing(previous, current):
         if all(entry["status"] == "complete" for entry in source["coverage"].values()):
             continue
         retained = copy.deepcopy(old)
-        retained["blockedReason"] = "unknown"
-        for name in ("phase", "runtime", "worker", "attachment", "outcome"):
+        retained["blockedReasons"] = []
+        for name in ("phase", "runtime", "outcome"):
             evidence = retained[name]
+            if evidence is None:
+                retained[name] = evidence = {"value": "unknown", "observedAt": None, "source": None, "health": "stale", "reason": "observation_gap", "clock": None}
             if evidence["value"] != "unknown":
                 evidence["lastKnownValue"] = evidence["value"]
             evidence.update(value="unknown", health="stale", reason="observation_gap")

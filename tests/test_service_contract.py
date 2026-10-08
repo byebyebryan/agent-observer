@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def fixture():
-    return json.loads((ROOT / "tests/fixtures/service-v1/view.json").read_text())
+    return json.loads((ROOT / "tests/fixtures/service-v2/view.json").read_text())
 
 
 class ServiceContractTest(unittest.TestCase):
@@ -33,12 +33,12 @@ class ServiceContractTest(unittest.TestCase):
         for kind in ("request", "frame"):
             bundled = json.loads((ROOT / f"agent_observer/contracts/service-{kind}.schema.json").read_text())
             self.assertEqual(schema_document(kind), bundled)
-        self.assertEqual(interface()["embeddedSnapshotVersion"], 3)
+        self.assertEqual(interface()["embeddedSnapshotVersion"], 4)
 
     def test_strict_request_and_frame_failures(self):
-        self.assertEqual(parse_request(b'{"serviceProtocol":1,"operation":"snapshot","hostScope":"fixture"}\n')["operation"], "snapshot")
+        self.assertEqual(parse_request(b'{"serviceProtocol":2,"operation":"snapshot","hostScope":"fixture"}\n')["operation"], "snapshot")
         bad = [
-            lambda v: v.update(serviceProtocol=2),
+            lambda v: v.update(serviceProtocol=1),
             lambda v: v.update(uid=True),
             lambda v: v.update(extra="untrusted"),
             lambda v: v.update(hostScope="another-host"),
@@ -53,9 +53,9 @@ class ServiceContractTest(unittest.TestCase):
             with self.assertRaises(ContractError):
                 validate_frame(value, expected_host="fixture", expected_uid=1000)
         for wire in (
-            b'{"serviceProtocol":1,"operation":"resume","hostScope":"fixture"}\n',
-            b'{"serviceProtocol":1,"operation":"snapshot","hostScope":"fixture","home":"/arbitrary"}\n',
-            b'{"serviceProtocol":1,"operation":"snapshot","hostScope":"fixture"}',
+            b'{"serviceProtocol":2,"operation":"resume","hostScope":"fixture"}\n',
+            b'{"serviceProtocol":2,"operation":"snapshot","hostScope":"fixture","home":"/arbitrary"}\n',
+            b'{"serviceProtocol":2,"operation":"snapshot","hostScope":"fixture"}',
             b'{}\n{}\n',
         ):
             with self.assertRaises(ValueError):

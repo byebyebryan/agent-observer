@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agent-observer:write-result:1",
+  "$id": "urn:agent-observer:write-result:2",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 2
     },
     "operation": {
       "enum": [
@@ -14,10 +14,7 @@
     },
     "status": {
       "enum": [
-        "prepared",
-        "ready",
-        "rejected",
-        "uncertain"
+        "prepared"
       ]
     },
     "reason": {
@@ -28,9 +25,7 @@
     },
     "effect": {
       "enum": [
-        "none",
-        "confirmed",
-        "uncertain"
+        "none"
       ]
     },
     "requestedIdentity": {
@@ -84,10 +79,29 @@
       ]
     },
     "resultingIdentity": {
-      "anyOf": [
-        {
+      "type": "null"
+    },
+    "identityPending": {
+      "type": "boolean"
+    },
+    "handoff": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 2
+        },
+        "request": {
           "type": "object",
           "properties": {
+            "schemaVersion": {
+              "const": 2
+            },
+            "operation": {
+              "enum": [
+                "new",
+                "resume"
+              ]
+            },
             "hostScope": {
               "type": "string",
               "maxLength": 256,
@@ -96,290 +110,213 @@
             },
             "provider": {
               "enum": [
-                "codex",
-                "claude"
+                "codex"
               ]
             },
-            "namespace": {
+            "configHome": {
               "type": "string",
-              "maxLength": 71,
-              "minLength": 1,
-              "pattern": "^sha256:[0-9a-f]{64}$"
+              "maxLength": 4096,
+              "minLength": 1
             },
-            "nativeIdKind": {
+            "configHomeKind": {
               "enum": [
-                "thread",
-                "session"
+                "default",
+                "explicit"
               ]
             },
-            "nativeId": {
+            "cwd": {
               "type": "string",
-              "maxLength": 36,
-              "minLength": 1,
-              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-            }
-          },
-          "required": [
-            "hostScope",
-            "provider",
-            "namespace",
-            "nativeIdKind",
-            "nativeId"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "identityPending": {
-      "type": "boolean"
-    },
-    "handoff": {
-      "anyOf": [
-        {
-          "type": "object",
-          "properties": {
-            "schemaVersion": {
-              "const": 1
+              "maxLength": 4096,
+              "minLength": 1
             },
-            "request": {
-              "type": "object",
-              "properties": {
-                "schemaVersion": {
-                  "const": 1
-                },
-                "operation": {
-                  "enum": [
-                    "new",
-                    "resume"
-                  ]
-                },
-                "hostScope": {
-                  "type": "string",
-                  "maxLength": 256,
-                  "minLength": 1,
-                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
-                },
-                "provider": {
-                  "enum": [
-                    "codex",
-                    "claude"
-                  ]
-                },
-                "configHome": {
-                  "type": "string",
-                  "maxLength": 4096,
-                  "minLength": 1
-                },
-                "configHomeKind": {
-                  "enum": [
-                    "default",
-                    "explicit"
-                  ]
-                },
-                "cwd": {
-                  "type": "string",
-                  "maxLength": 4096,
-                  "minLength": 1
-                },
-                "reference": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "hostScope": {
-                          "type": "string",
-                          "maxLength": 256,
-                          "minLength": 1,
-                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
-                        },
-                        "provider": {
-                          "enum": [
-                            "codex",
-                            "claude"
-                          ]
-                        },
-                        "namespace": {
-                          "type": "string",
-                          "maxLength": 71,
-                          "minLength": 1,
-                          "pattern": "^sha256:[0-9a-f]{64}$"
-                        },
-                        "nativeIdKind": {
-                          "enum": [
-                            "thread",
-                            "session"
-                          ]
-                        },
-                        "nativeId": {
-                          "type": "string",
-                          "maxLength": 36,
-                          "minLength": 1,
-                          "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-                        }
-                      },
-                      "required": [
-                        "hostScope",
-                        "provider",
-                        "namespace",
-                        "nativeIdKind",
-                        "nativeId"
-                      ],
-                      "additionalProperties": false
+            "reference": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "hostScope": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
                     },
-                    {
-                      "type": "null"
+                    "provider": {
+                      "enum": [
+                        "codex",
+                        "claude"
+                      ]
+                    },
+                    "namespace": {
+                      "type": "string",
+                      "maxLength": 71,
+                      "minLength": 1,
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "nativeIdKind": {
+                      "enum": [
+                        "thread",
+                        "session"
+                      ]
+                    },
+                    "nativeId": {
+                      "type": "string",
+                      "maxLength": 36,
+                      "minLength": 1,
+                      "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
                     }
-                  ]
+                  },
+                  "required": [
+                    "hostScope",
+                    "provider",
+                    "namespace",
+                    "nativeIdKind",
+                    "nativeId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
                 }
-              },
-              "required": [
-                "schemaVersion",
-                "operation",
-                "hostScope",
-                "provider",
-                "configHome",
-                "configHomeKind",
-                "cwd",
-                "reference"
-              ],
-              "additionalProperties": false
-            },
-            "guard": {
-              "type": "object",
-              "properties": {
-                "uid": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 9007199254740991
-                },
-                "cwd": {
-                  "type": "object",
-                  "properties": {
-                    "device": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    },
-                    "inode": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    }
-                  },
-                  "required": [
-                    "device",
-                    "inode"
-                  ],
-                  "additionalProperties": false
-                },
-                "config": {
-                  "type": "object",
-                  "properties": {
-                    "device": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    },
-                    "inode": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    }
-                  },
-                  "required": [
-                    "device",
-                    "inode"
-                  ],
-                  "additionalProperties": false
-                },
-                "binary": {
-                  "type": "object",
-                  "properties": {
-                    "device": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    },
-                    "inode": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    }
-                  },
-                  "required": [
-                    "device",
-                    "inode"
-                  ],
-                  "additionalProperties": false
-                },
-                "binarySha256": {
-                  "type": "string",
-                  "maxLength": 64,
-                  "minLength": 1,
-                  "pattern": "^[0-9a-f]{64}$"
-                },
-                "settingsSha256": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
-                  "maxLength": 64,
-                  "pattern": "^[0-9a-f]{64}$"
-                },
-                "runtimeToken": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
-                  "maxLength": 64,
-                  "pattern": "^[0-9a-f]{64}$"
-                }
-              },
-              "required": [
-                "uid",
-                "cwd",
-                "config",
-                "binary",
-                "binarySha256",
-                "settingsSha256",
-                "runtimeToken"
-              ],
-              "additionalProperties": false
-            },
-            "route": {
-              "enum": [
-                "codex_new",
-                "codex_resume",
-                "claude_new",
-                "claude_attach",
-                "claude_saved_resume"
               ]
-            },
-            "createdAt": {
-              "type": [
-                "integer",
-                "null"
-              ],
-              "minimum": 0,
-              "maximum": 4000000000000
             }
           },
           "required": [
             "schemaVersion",
-            "request",
-            "guard",
-            "route",
-            "createdAt"
+            "operation",
+            "hostScope",
+            "provider",
+            "configHome",
+            "configHomeKind",
+            "cwd",
+            "reference"
           ],
           "additionalProperties": false
         },
-        {
-          "type": "null"
+        "guard": {
+          "type": "object",
+          "properties": {
+            "uid": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "cwd": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "inode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "device",
+                "inode"
+              ],
+              "additionalProperties": false
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "inode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "device",
+                "inode"
+              ],
+              "additionalProperties": false
+            },
+            "binary": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "inode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "device",
+                "inode"
+              ],
+              "additionalProperties": false
+            },
+            "binarySha256": {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "settingsSha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "runtimeToken": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 64,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "uid",
+            "cwd",
+            "config",
+            "binary",
+            "binarySha256",
+            "settingsSha256",
+            "runtimeToken"
+          ],
+          "additionalProperties": false
+        },
+        "route": {
+          "enum": [
+            "codex_new",
+            "codex_resume"
+          ]
+        },
+        "createdAt": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 4000000000000
         }
-      ]
+      },
+      "required": [
+        "schemaVersion",
+        "request",
+        "guard",
+        "route",
+        "createdAt"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

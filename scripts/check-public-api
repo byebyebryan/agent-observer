@@ -29,7 +29,7 @@ def run(cli, args, value=None, accepted=True):
 def check(prefix, fixtures):
     cli, writer = prefix / "bin/agent-observer", prefix / "bin/agent-observer-write"
     interface = run(cli, ["api"])
-    if interface["apiVersion"] != 1 or interface["schemas"] != {"snapshot": 3, "watch": 3, "write": 1}:
+    if interface["apiVersion"] != 2 or interface["schemas"] != {"snapshot": 4, "watch": 4}:
         raise ValueError("interface_mismatch")
     validators = {}
     for kind in ("snapshot", "watch"):
@@ -40,10 +40,10 @@ def check(prefix, fixtures):
         schema = run(writer, ["schema", "--kind", kind])
         Draft202012Validator.check_schema(schema)
         validators["write-" + kind] = Draft202012Validator(schema)
-        value = json.loads((fixtures / "write-v1" / (kind + ".json")).read_text())
+        value = json.loads((fixtures / "write-v2" / (kind + ".json")).read_text())
         validators["write-" + kind].validate(value)
     counts = {}
-    for path in sorted((fixtures / "contract-v3").glob("*.json")):
+    for path in sorted((fixtures / "contract-v4").glob("*.json")):
         value = json.loads(path.read_text())
         if path.stem == "gap":
             validators["watch"].validate(value)
@@ -60,14 +60,14 @@ def check(prefix, fixtures):
             age = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
             ref = row["identity"]
             key = tuple(ref[k] for k in ("hostScope", "provider", "namespace", "nativeIdKind", "nativeId"))
-            return attention[row["phase"]["value"]], age is None, -(age or 0), key
+            return attention[row["phase"]["value"] if row["phase"] else "unknown"], age is None, -(age or 0), key
         if listed["sessions"] != sorted(rows, key=order):
             raise ValueError("listing_mismatch")
         for row in value["sessions"]:
             if run(cli, ["show", "--input", "-", "--ref", json.dumps(row["identity"]), "--json"], value) != row:
                 raise ValueError("exact_reference_mismatch")
         counts[path.stem] = len(value["sessions"])
-    original = json.loads((fixtures / "contract-v3/snapshot.json").read_text())
+    original = json.loads((fixtures / "contract-v4/snapshot.json").read_text())
     wrong = copy.deepcopy(original)
     wrong["schemaVersion"] = 2
     run(cli, ["list", "--input", "-", "--json"], wrong, accepted=False)
@@ -80,7 +80,7 @@ def check(prefix, fixtures):
         row = copy.deepcopy(original["sessions"][0])
         identifier = str(uuid.UUID(int=index + 1))
         row["identity"]["nativeId"] = identifier
-        row["nativeIds"]["threadId"] = row["nativeIds"]["sessionId"] = identifier
+        row["nativeIds"]["threadId"] = row["nativeIds"]["sessionTreeRootId"] = identifier
         maximum["sessions"].append(row)
     validators["snapshot"].validate(maximum)
     output = run(cli, ["list", "--input", "-", "--include-children", "--json"], maximum)

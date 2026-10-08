@@ -1,0 +1,220 @@
+{
+  "evidenceKind": "ordinary_installed_cli_vs_independent_stdlib_native_rpc",
+  "hostScope": "starship",
+  "sampleStartUtc": "2026-10-08T20:39:02.646000+00:00",
+  "sampleEndUtc": "2026-10-08T20:39:04.408316+00:00",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+  "cliVersion": "agent-observer 0.4.0a16",
+  "nativeRuntimeDiagnostic": {
+    "pid": 1566532,
+    "startTicks": "52740759",
+    "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+    "provider": "codex",
+    "version": "0.162.0",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  },
+  "catalog": {
+    "complete": true,
+    "rows": 337,
+    "sourceKinds": [
+      "cli",
+      "vscode",
+      "exec",
+      "appServer",
+      "subAgent",
+      "subAgentReview",
+      "subAgentCompact",
+      "subAgentThreadSpawn",
+      "subAgentOther",
+      "unknown"
+    ],
+    "nativeStatusCounts": {
+      "idle": 3,
+      "notLoaded": 332,
+      "active": 2
+    },
+    "threadIdDiffersFromTreeRootCount": 0
+  },
+  "loadedBefore": [
+    "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+    "01a0ca16-d486-7142-8170-c496b7419368",
+    "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+    "01a1197f-1113-7261-bc5b-810100a74236",
+    "01a11d31-e1cc-7811-935d-77b4a9235aac"
+  ],
+  "loadedAfter": [
+    "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+    "01a0ca16-d486-7142-8170-c496b7419368",
+    "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+    "01a1197f-1113-7261-bc5b-810100a74236",
+    "01a11d31-e1cc-7811-935d-77b4a9235aac"
+  ],
+  "active": [
+    {
+      "threadId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+      "nativeSessionTreeRootId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+      "title": "fluid-2.5d",
+      "nativeStatus": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "working",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "working",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791491132000,
+      "cliActivityAt": 1791491132000
+    },
+    {
+      "threadId": "01a0ca16-d486-7142-8170-c496b7419368",
+      "nativeSessionTreeRootId": "01a0ca16-d486-7142-8170-c496b7419368",
+      "title": "pd-lab-next",
+      "nativeStatus": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "working",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "working",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791491746000,
+      "cliActivityAt": 1791491746000
+    },
+    {
+      "threadId": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+      "nativeSessionTreeRootId": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+      "title": "raster90",
+      "nativeStatus": {
+        "type": "idle"
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "waiting",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "waiting",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791442380000,
+      "cliActivityAt": 1791442380000
+    },
+    {
+      "threadId": "01a1197f-1113-7261-bc5b-810100a74236",
+      "nativeSessionTreeRootId": "01a1197f-1113-7261-bc5b-810100a74236",
+      "title": "devlog",
+      "nativeStatus": {
+        "type": "idle"
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "waiting",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "waiting",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791433114000,
+      "cliActivityAt": 1791433114000
+    },
+    {
+      "threadId": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+      "nativeSessionTreeRootId": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+      "title": "sleep",
+      "nativeStatus": {
+        "type": "idle"
+      },
+      "nativeThreadSource": "user",
+      "nativePhase": "waiting",
+      "stateStableAcrossCli": true,
+      "cliPresent": true,
+      "cliRuntime": "running",
+      "cliPhase": "waiting",
+      "identityMatches": true,
+      "titleMatches": true,
+      "nativeActivityAt": 1791491840000,
+      "cliActivityAt": 1791491840000
+    }
+  ],
+  "savedStatusSamples": [
+    {
+      "threadId": "01a11c74-5afe-7d82-a878-edeb27683d00",
+      "nativeSessionTreeRootId": "01a11c74-5afe-7d82-a878-edeb27683d00",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    },
+    {
+      "threadId": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+      "nativeSessionTreeRootId": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    },
+    {
+      "threadId": "01a11985-48e2-7102-9637-7805a08c5782",
+      "nativeSessionTreeRootId": "01a11985-48e2-7102-9637-7805a08c5782",
+      "nativeCatalogStatus": "notLoaded",
+      "nativeDetailStatus": "notLoaded",
+      "cliRuntime": "unknown",
+      "cliRuntimeHealth": "unavailable"
+    }
+  ],
+  "cliRuntimeCounts": {
+    "running": 5,
+    "unknown": 94
+  },
+  "directSourceHealth": "current",
+  "directRuntimeCoverage": [
+    {
+      "reason": "native_snapshot",
+      "scope": "loaded_threads",
+      "status": "complete"
+    }
+  ],
+  "cachedCodexSourceHealth": "current",
+  "cachedActive": [
+    {
+      "threadId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+      "present": true,
+      "runtime": "running",
+      "phase": "working"
+    },
+    {
+      "threadId": "01a0ca16-d486-7142-8170-c496b7419368",
+      "present": true,
+      "runtime": "running",
+      "phase": "working"
+    },
+    {
+      "threadId": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+      "present": true,
+      "runtime": "running",
+      "phase": "waiting"
+    },
+    {
+      "threadId": "01a1197f-1113-7261-bc5b-810100a74236",
+      "present": true,
+      "runtime": "running",
+      "phase": "waiting"
+    },
+    {
+      "threadId": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+      "present": true,
+      "runtime": "running",
+      "phase": "waiting"
+    }
+  ],
+  "providerActionsIssued": false,
+  "postTuiClosureCaseRun": false,
+  "rawNativePayloadsRetained": false
+}

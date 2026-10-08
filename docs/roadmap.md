@@ -1,6 +1,6 @@
 # Agent Observer roadmap
 
-Date: 2026-10-07. This document records status and delivery dependencies.
+Date: 2026-10-08. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
@@ -8,8 +8,20 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
-The [daily-use gap execution](daily-use-gap-execution-plan.md) is the current
-Observer-only goal loop. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)
+The current checkpoint is the
+[Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
+[deep review](codex-daemon-authority-review.md). D0 captures the reviewed design
+and [ordinary/synthetic evidence](evidence/2026-10-08-codex-authority-review/REPORT.md).
+D1 corrects the independent native oracle and freezes a breaking API 2/read
+wire 4/service 2; D2 repairs Codex collection/projection; D3 reconciles the service
+and read CLI; D4 independently accepts the packaged Codex producer on both hosts;
+D5 separately gates delivery/write identity; D6 restores Claude. TUI/tmux
+ownership remains client-side, and post-TUI-closure proof is deferred. No legacy
+reader/converter or provider fallback is required. The [API 2 source contract](api-v2.md) is implemented; final packaged native
+acceptance and selection remain pending, and a16 remains selected. Frontend work remains a separate checkpoint.
+
+The preceding [daily-use gap execution](daily-use-gap-execution-plan.md)
+selected a16. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)
 prioritizes cached Claude retention, current saved-session evidence and first-party
 CLI diagnostics before separate native-entry and Observer operational gates.
 Tmux Plus is under active development; Agent Plus work remains deferred.

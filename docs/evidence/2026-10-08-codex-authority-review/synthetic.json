@@ -1,0 +1,16 @@
+{
+  "evidenceKind": "synthetic_source_review",
+  "installedOrNativeAcceptance": false,
+  "combinedKnownWaitFlags": {
+    "nativeWork": "needs_input",
+    "nativeWaitReason": "multiple",
+    "publicPhase": "unknown",
+    "publicPhaseReason": "questions_unproved"
+  },
+  "knownPhaseWithUnknownRuntimeAcceptedByValidator": true,
+  "historySuppliedCurrentParkedRow": {
+    "inputRuntime": "parked",
+    "cachedRuntime": "unknown",
+    "cachedRuntimeHealth": "stale"
+  }
+}

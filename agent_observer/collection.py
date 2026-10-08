@@ -76,110 +76,40 @@ def _coverage(value, health):
 
 def project_source(native):
     provider = native["provider"]
-    parked_supported = provider == "claude" and native.get("parkedSupported") is True
-    config_home = native["configHome"]
+    if provider != "codex":
+        raise ValueError("unsupported_provider")
     selector = native.get("configHomeKind", "explicit")
-    namespace = store_namespace(provider, config_home, selector, native["host"]["uid"])
-    runtime = native.get("runtime")
-    if runtime:
-        runtime = {
-            name: runtime.get(name)
-            for name in (
-                "version",
-                "binarySha256",
-                "topology",
-                "bootId",
-                "pid",
-                "startTicks",
-                "endpoint",
-            )
-        }
+    namespace = store_namespace(provider, native["configHome"], selector, native["host"]["uid"])
+    raw_runtime = native.get("runtime")
+    runtime = {name: raw_runtime.get(name) for name in (
+        "version", "binarySha256", "topology", "bootId", "pid", "startTicks", "endpoint",
+    )} if raw_runtime else None
     health = native.get("sourceHealth", "unavailable")
     if health == "current" and native.get("errors"):
         health = "partial"
     coverage = native.get("coverage", {})
-    phase_capabilities = set().union(*(
-        set(row.get("phaseCapabilities", [])) for row in native.get("sessions", [])
-    ))
-    phase_supported = (
-        coverage.get("work", {}).get("supported") is True if provider == "codex"
-        else "registry_phase" in phase_capabilities
-        or any(row.get("work", {}).get("health") == "current" for row in native.get("sessions", []))
-    ) and health in {"current", "partial"}
-    running_supported = (
-        (coverage.get("loaded", {}).get("complete") is True if provider == "codex"
-         else coverage.get("workerPresence") == "complete")
-        or any(row.get("presence", {}).get("value") == "present" for row in native.get("sessions", []))
-    ) and health in {"current", "partial"}
-    question_supported = provider == "claude" and any(
-        {"job_question", "foreground_question"} & set(row.get("phaseCapabilities", []))
-        for row in native.get("sessions", [])
-    )
-    question_supported |= provider == "codex" and "waitingOnUserInput" in coverage.get("work", {}).get("supportedWaitFlags", [])
-    question_supported &= phase_supported
-    approval_supported = phase_supported and (
-        provider == "claude"
-        or "waitingOnApproval" in coverage.get("work", {}).get("supportedWaitFlags", [])
-    )
+    supported = coverage.get("work", {}).get("supported") is True
     result = {
-        "provider": provider,
-        "namespace": namespace,
-        "runtimeNamespace": native.get("namespace"),
-        "configHome": config_home,
-        "configHomeKind": selector,
-        "runtime": runtime,
-        "sourceHealth": health,
+        "provider": provider, "namespace": namespace,
+        "runtimeNamespace": native.get("namespace"), "configHome": native["configHome"],
+        "configHomeKind": selector, "runtime": runtime, "sourceHealth": health,
+        "discovery": copy.deepcopy(native.get("discovery")),
         "coverage": {
             "saved": _coverage(coverage.get("saved"), health),
-            "runtime": _coverage(
-                coverage.get("loaded") if provider == "codex" else coverage.get("sessionRegistry"),
-                health,
-            ),
+            "runtime": {**_coverage(coverage.get("daemon", coverage.get("loaded")), health), "scope": "daemon_threads"},
         },
         "capabilities": {
-            "phase": ["working", "blocked", "waiting"]
-            if phase_supported else [],
-            "blockedReasons": (["approval"] if approval_supported else [])
-            + (["question"] if question_supported else []),
-            "runtime": ["running", "parked"] if parked_supported else ["running"]
-            if running_supported else [],
+            "phase": ["working", "blocked", "waiting"] if supported else [],
+            "blockedReasons": ["approval", "question"] if supported else [],
+            "runtime": ["running", "parked"] if supported else [],
             "activity": native.get("activitySupported") is True,
-            "clientBinding": False,
         },
-        "errors": list(
-            dict.fromkeys(
-                item["code"]
-                for item in native.get("errors", [])
-                if isinstance(item, dict) and isinstance(item.get("code"), str)
-            )
-        ),
-        "limitations": [
-            "parked_requires_terminal_job_and_complete_inventory" if parked_supported else "parked_predicate_unproved",
-            "client_binding_unproved",
-        ],
+        "errors": list(dict.fromkeys(item["code"] for item in native.get("errors", [])
+                                      if isinstance(item, dict) and isinstance(item.get("code"), str))),
+        "limitations": ["one_configured_namespace", "offline_runtime_state_unavailable", "native_status_required"],
     }
-    if not result["capabilities"]["activity"]:
-        result["limitations"].append("activity_source_unproved")
-    if provider == "codex":
-        result["limitations"].append("questions_require_known_wait_flags" if question_supported else "questions_unproved")
-        if result["coverage"]["saved"]["status"] == "unavailable":
-            result["limitations"].append("saved_metadata_unavailable")
-        result["limitations"].append("offline_runtime_state_unavailable")
-        result["limitations"].append("unloaded_work_state_unavailable")
-        result["limitations"].append("unbound_tui_contexts_unobserved")
-    else:
-        result["limitations"].append("foreground_question_requires_exact_input_wait"
-                                     if "foreground_question" in phase_capabilities
-                                     else "foreground_questions_unproved")
-        result["limitations"].append("interactive_readiness_requires_verified_worker_contract")
-        result["limitations"].append("background_readiness_requires_no_pending_work")
-        result["limitations"].extend(reason for reason in native.get("limitations", []) if reason in {
-            "history_sdk_candidates_omitted", "history_candidates_unresolved",
-            "history_duplicate_companions", "history_invalid_filename_candidates",
-        })
-    result["coverage"]["runtime"]["scope"] = (
-        "loaded_threads" if provider == "codex" else "registered_workers"
-    )
+    result["limitations"].extend(native.get("limitations", []))
+    result["limitations"] = list(dict.fromkeys(result["limitations"]))[:128]
     validate_shape(result, SOURCE)
     return result
 
@@ -187,126 +117,36 @@ def project_source(native):
 def project_session(native, source):
     identity = copy.deepcopy(native["identity"])
     identity["namespace"] = source["namespace"]
-    provider = identity["provider"]
+    if identity["provider"] != "codex":
+        raise ValueError("unsupported_provider")
     ids = native["nativeIds"]
-    native_presence = native.get("presence", {})
-    runtime = fact(native_presence, {"present": "running"}, sampled=True)
-    # Worker absence or capped history alone cannot establish parked runtime.
-    # A supported adapter must supply the independently checked disposition.
-    if runtime["value"] == "unknown" and runtime["health"] == "current":
-        runtime = unknown("parked_predicate_unproved", "unsupported")
-    if provider == "claude" and runtime["value"] != "running" and "parked" in source["capabilities"]["runtime"]:
-        disposition = native.get("runtimeDisposition")
-        if isinstance(disposition, dict):
-            runtime = fact(disposition, {"parked": "parked"}, sampled=True)
-    worker = (
-        fact(native_presence, {"present": "present", "absent": "absent"}, sampled=True)
-        if provider == "claude"
-        else unknown("worker_presence_unproved", "unsupported")
-    )
-    mapping = {"working": "working", "needs_input": "blocked"}
-    if provider == "codex" and runtime["value"] == "running":
-        mapping["settled"] = "waiting"
-    claude_ready = (
-        provider == "claude"
-        and native.get("sessionKind") == "bg"
-        and worker["value"] == "present"
-        and (native.get("job") or {}).get("state") == "done"
-        and native.get("work", {}).get("source") == "claude_job_store"
-    )
-    claude_ready |= (
-        provider == "claude" and native.get("sessionKind") == "interactive"
-        and worker["value"] == "present" and ids.get("jobId") is None
-        and "interactive_readiness" in native.get("phaseCapabilities", [])
-        and native.get("work", {}).get("source") == "claude_registry"
-    )
-    if claude_ready:
-        mapping["settled"] = "waiting"
-    phase = fact(native.get("work"), mapping)
-    question = (provider == "claude" and native.get("waitReason") == "question"
-                and bool({"job_question", "foreground_question"} & set(native.get("phaseCapabilities", []))))
-    question |= (provider == "codex" and native.get("waitReason") == "user_input"
-                 and "question" in source["capabilities"]["blockedReasons"])
-    if phase["value"] == "blocked" and native.get("waitReason") != "approval" and not question:
-        phase = unknown("questions_unproved", "unsupported")
-    if (
-        native.get("work", {}).get("value") == "settled"
-        and provider == "claude"
-        and not claude_ready
-    ):
-        phase = unknown("interactive_readiness_unproved", "unsupported")
-    if provider == "claude" and phase["value"] == "unknown":
-        if "native_blocked_phase_unproved" in native.get("metadataIssues", []):
-            phase = unknown("native_blocked_phase_unproved", "unsupported")
-        elif (
-            native.get("sessionKind") == "bg"
-            and runtime["value"] == "running"
-            and (native.get("nativeStatus") or {}).get("value") == "idle"
-            and (native.get("job") or {}).get("state") == "working"
-        ):
-            phase = unknown("background_readiness_unproved", "unsupported")
+    runtime = fact(native.get("runtimeDisposition"), {"running": "running", "parked": "parked"}, sampled=True)
+    phase = fact(native.get("work"), {"working": "working", "needs_input": "blocked", "settled": "waiting"})
+    reasons = []
     if runtime["value"] == "parked":
-        phase = unknown("runtime_parked", "unsupported")
-    outcome = unknown("outcome_source_unproved", "unsupported")
-    if provider == "codex" and "outcome" in native:
-        outcome = fact(native["outcome"], {v: v for v in ("completed", "failed", "cancelled")})
-    if provider == "codex" and (native.get("nativeState") or {}).get("type") == "systemError":
+        phase = None
+    elif runtime["value"] != "running":
+        phase = unknown("runtime_unavailable", runtime["health"])
+    elif (native.get("nativeState") or {}).get("type") == "systemError":
         phase = unknown("native_runtime_error", "unsupported")
-    if (
-        provider == "claude"
-        and native.get("work", {}).get("source") == "claude_job_store"
-        and native["work"].get("value") == "settled"
-    ):
-        outcome = fact(native["work"], {"settled": "completed"})
-    history = copy.deepcopy(native.get("history"))
+    elif phase["value"] == "blocked":
+        flags = (native.get("nativeState") or {}).get("activeFlags", [])
+        valid = isinstance(flags, list) and all(isinstance(f, str) and f in {"waitingOnApproval", "waitingOnUserInput"} for f in flags)
+        reasons = sorted({{"waitingOnApproval": "approval", "waitingOnUserInput": "question"}[f] for f in flags}) if valid else []
+        if not reasons or not set(reasons) <= set(source["capabilities"]["blockedReasons"]):
+            phase, reasons = unknown("unsupported_wait_flags", "unsupported"), []
     times = native.get("nativeHistoryTimes", {})
-    kind = (
-        native.get("threadKind", "unknown")
-        if provider == "codex"
-        else "user"
-        if (
-            native.get("activity", {}).get("health") == "current"
-            and native.get("activity", {}).get("source") == "claude_transcript_message"
-            and native.get("activity", {}).get("reason") == "native_conversation_event"
-            and native.get("activity", {}).get("at") is not None
-        )
-        else "unknown"
-    )
     return {
         "identity": identity,
-        "nativeIds": {
-            "threadId": ids.get("threadId"),
-            "sessionId": ids["sessionId"],
-            "jobId": ids.get("jobId"),
-        },
-        "title": native["title"],
-        "kind": kind,
-        "cwd": native.get("cwd"),
-        "cwdSource": native.get("cwdSource", "codex_rpc" if native.get("cwd") else None),
-        "inventory": native.get("inventory", "registry"),
-        "phase": phase,
-        "runtime": runtime,
-        "worker": worker,
-        "attachment": fact(
-            native.get("attachment"), {"attached": "attached", "detached": "detached"}
-        ),
-        "outcome": outcome,
-        "blockedReason": ("question" if question else "approval" if native.get("waitReason") == "approval" else "unknown") if phase["value"] == "blocked" else "unknown",
-        "createdAt": times.get("createdAt")
-        if provider == "codex"
-        else history.get("createdAt")
-        if history
-        else None,
-        "activity": copy.deepcopy(
-            native.get("activity", unavailable("activity_source_unproved", "unsupported"))
-        ),
-        "workspace": None,
-        "sessionKind": native.get("sessionKind")
-        if native.get("sessionKind") in {"interactive", "bg"}
-        else "unknown",
-        "job": copy.deepcopy(native.get("job")),
-        "history": history,
-        "metadataIssues": list(native.get("metadataIssues", [])),
+        "nativeIds": {"threadId": ids["threadId"], "sessionTreeRootId": ids["sessionId"]},
+        "title": native["title"], "kind": native.get("threadKind", "unknown"),
+        "cwd": native.get("cwd"), "cwdSource": native.get("cwdSource", "codex_rpc" if native.get("cwd") else None),
+        "inventory": native.get("inventory", "saved"), "phase": phase, "runtime": runtime,
+        "hasSavedHistory": native.get("savedIdentity", native.get("inventory") == "saved"),
+        "outcome": fact(native.get("outcome"), {v: v for v in ("completed", "failed", "cancelled")}),
+        "blockedReasons": reasons, "createdAt": times.get("createdAt"),
+        "activity": copy.deepcopy(native.get("activity", unavailable("activity_source_unproved", "unsupported"))),
+        "workspace": None, "metadataIssues": list(native.get("metadataIssues", [])),
     }
 
 
@@ -348,7 +188,7 @@ def compose_snapshot(*, host_scope, provider_snapshots):
             key = identity_key(projected["identity"])
             duplicate = identities.get(key)
             if duplicate is not None:
-                for dimension in ("phase", "runtime", "worker", "attachment", "outcome"):
+                for dimension in ("phase", "runtime", "outcome"):
                     duplicate[dimension] = unknown("identity_ambiguous", "ambiguous")
                 duplicate["metadataIssues"] = list(
                     dict.fromkeys(duplicate["metadataIssues"] + ["duplicate_native_identity"])
@@ -374,7 +214,6 @@ def compose_snapshot(*, host_scope, provider_snapshots):
 
 def collect(*, host_scope, providers, codex_home, claude_home, workspace_config=None):
     # Imports belong to the collecting path, not the public fixture reader.
-    from .claude_snapshot import collect_claude
     from .codex_snapshot import collect_codex
 
     if (
@@ -383,10 +222,10 @@ def collect(*, host_scope, providers, codex_home, claude_home, workspace_config=
         or any(p not in {"codex", "claude"} for p in providers)
     ):
         raise ValueError("invalid_provider_selection")
+    if "claude" in providers:
+        raise ValueError("unsupported_provider")
     snapshots = [
         collect_codex(Path(codex_home), host_scope=host_scope)
-        if p == "codex"
-        else collect_claude(Path(claude_home), host_scope=host_scope)
         for p in providers
     ]
     result = compose_snapshot(host_scope=host_scope, provider_snapshots=snapshots)

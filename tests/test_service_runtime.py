@@ -96,7 +96,7 @@ class ServiceRuntimeTest(unittest.TestCase):
             row = copy.deepcopy(seed)
             row["identity"]["nativeId"] = str(uuid.uuid5(uuid.NAMESPACE_OID, str(number)))
             row["nativeIds"]["threadId"] = row["identity"]["nativeId"]
-            row["nativeIds"]["sessionId"] = row["identity"]["nativeId"]
+            row["nativeIds"]["sessionTreeRootId"] = row["identity"]["nativeId"]
             value["sessions"].append(row)
         state.attempt("codex", "runtime")
         state.accept("codex", "runtime", value, sampled_ms=state.clock(), ttl_ms=60000)
@@ -143,7 +143,7 @@ class ServiceRuntimeTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already_running"):
                 with Endpoint(server.path):
                     pass
-            with server.connect(b'{"serviceProtocol":1,"operation":"status","hostScope":"fixture"}\n') as peer:
+            with server.connect(b'{"serviceProtocol":2,"operation":"status","hostScope":"fixture"}\n') as peer:
                 with peer.makefile("rb") as reader:
                     value = parse_frame(reader.readline(), expected_host="fixture", expected_uid=os.geteuid())
                     self.assertEqual(value["state"], "warming")
@@ -153,8 +153,8 @@ class ServiceRuntimeTest(unittest.TestCase):
 
     def test_partial_and_pipelined_input_do_not_block_healthy_reader(self):
         with Running(timeout=200) as server:
-            with server.connect(b'{"serviceProtocol":1') as stalled:
-                with server.connect(b'{"serviceProtocol":1,"operation":"snapshot","hostScope":"fixture"}\n') as healthy:
+            with server.connect(b'{"serviceProtocol":2') as stalled:
+                with server.connect(b'{"serviceProtocol":2,"operation":"snapshot","hostScope":"fixture"}\n') as healthy:
                     self.assertEqual(parse_frame(healthy.makefile("rb").readline())["kind"], "status")
                 time.sleep(0.3)
                 self.assertEqual(stalled.recv(1), b"")
@@ -163,7 +163,7 @@ class ServiceRuntimeTest(unittest.TestCase):
 
     def test_real_worker_watch_and_cached_reads_do_not_start_more_jobs(self):
         with Running(collect=True, factory=source_worker) as server:
-            with server.connect(b'{"serviceProtocol":1,"operation":"watch","hostScope":"fixture"}\n') as peer:
+            with server.connect(b'{"serviceProtocol":2,"operation":"watch","hostScope":"fixture"}\n') as peer:
                 with peer.makefile("rb") as reader:
                     guard = StreamGuard(expected_host="fixture", expected_uid=os.geteuid())
                     frames = []
@@ -177,7 +177,7 @@ class ServiceRuntimeTest(unittest.TestCase):
                     self.assertEqual(server.runtime.counts["workerStarts"], 2)
                     initial = server.runtime.counts["workerStarts"]
                     for _ in range(5):
-                        with server.connect(b'{"serviceProtocol":1,"operation":"snapshot","hostScope":"fixture"}\n') as cached:
+                        with server.connect(b'{"serviceProtocol":2,"operation":"snapshot","hostScope":"fixture"}\n') as cached:
                             with cached.makefile("rb") as raw:
                                 self.assertIsNotNone(parse_frame(raw.readline())["snapshot"])
                     self.assertEqual(server.runtime.counts["workerStarts"], initial)

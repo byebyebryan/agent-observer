@@ -22,7 +22,7 @@ def maximum_snapshot():
         row = copy.deepcopy(seed)
         sid = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(number)))
         row["identity"]["nativeId"] = sid
-        row["nativeIds"]["threadId"] = row["nativeIds"]["sessionId"] = sid
+        row["nativeIds"]["threadId"] = row["nativeIds"]["sessionTreeRootId"] = sid
         row["title"] = "T" * 256
         value["sessions"].append(row)
     remaining = MAX_SNAPSHOT_BYTES - 64 - len(canonical(value).encode())

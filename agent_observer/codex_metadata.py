@@ -178,6 +178,7 @@ def live_thread_metadata(payload, *, host_scope, namespace, runtime_version, obs
         return {
             **observation.metadata(), **metadata, "inventory": "live",
             "nativeState": {"type": "unknown", "activeFlags": []},
+            "runtimeDisposition": Evidence("presence", health="unsupported", reason="unsupported").metadata(),
             "waitReason": "unknown",
         }
     kind = status["type"]
@@ -214,10 +215,13 @@ def live_thread_metadata(payload, *, host_scope, namespace, runtime_version, obs
     else:
         work = Evidence("work", health="unsupported", reason="unsupported")
     observation = SessionObservation(observation.identity, work, presence, observation.attachment)
+    disposition = presence.metadata()
+    disposition["value"] = "parked" if kind == "notLoaded" else "running"
     return {
         **observation.metadata(),
         **metadata,
-        "inventory": "live",
+        "inventory": "saved" if kind == "notLoaded" else "live",
+        "runtimeDisposition": disposition,
         "nativeState": {"type": kind, "activeFlags": flags if known_flags else []},
         "waitReason": (
             "approval"

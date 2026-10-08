@@ -1,5 +1,12 @@
 # Observation contract and first-party clients plan
 
+The [2026-10-08 Codex authority reconciliation](codex-daemon-authority-plan.md)
+supersedes this plan for the next producer correction: daemon-authoritative
+Codex running/parked, client-owned TUI lifetime/attachment, clean breaking
+read/service contracts and Claude as a following checkpoint. This document
+retains the preceding design history; its Claude-first/common-contract and
+compatibility gates do not block that Codex checkpoint.
+
 Current 2026-10-06 status: [API v1](api-v1.md) is accepted within its a2 subset.
 The later [shared-service design](shared-observation-service-plan.md),
 [review](shared-observation-service-review.md) and

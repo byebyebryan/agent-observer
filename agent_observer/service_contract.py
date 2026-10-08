@@ -1,4 +1,4 @@
-"""Prerelease local service protocol 1; pure, bounded and provider independent."""
+"""Prerelease local service protocol 2; pure, bounded and provider independent."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .contract import (
     validate_snapshot,
 )
 
-SERVICE_PROTOCOL = 1
+SERVICE_PROTOCOL = 2
 MAX_REQUEST_BYTES = 16 * 1024
 MAX_OVERHEAD_BYTES = 16 * 1024
 MAX_FRAME_BYTES = MAX_BYTES + MAX_OVERHEAD_BYTES
@@ -81,7 +81,7 @@ _FRAME_META["properties"]["snapshot"] = {"type": ["object", "null"]}
 def interface():
     return {
         "serviceProtocol": SERVICE_PROTOCOL, "stability": "prerelease",
-        "observationApiVersion": 1, "embeddedSnapshotVersion": 3,
+        "observationApiVersion": 2, "embeddedSnapshotVersion": 4,
         "hostLocal": True, "operations": list(OPERATIONS),
         "nativeEventReplay": False, "durableReplay": False,
         "limits": {"requestBytes": MAX_REQUEST_BYTES, "frameBytes": MAX_FRAME_BYTES,
@@ -167,7 +167,7 @@ def validate_frame(value, *, expected_host=None, expected_uid=None):
         for row in snapshot["sessions"]:
             components = {item["name"]: item for item in sources[row["identity"]["provider"]]["components"]}
             runtime = components["runtime"]
-            if any(row[name]["value"] != "unknown" for name in ("phase", "runtime", "worker", "attachment")) and runtime["health"] not in {"current", "partial"}:
+            if any(row[name] is not None and row[name]["value"] != "unknown" for name in ("phase", "runtime")) and runtime["health"] not in {"current", "partial"}:
                 raise ContractError("service_runtime_without_lease")
             if row["workspace"] is not None and components["history"]["health"] not in {"current", "partial"}:
                 raise ContractError("service_workspace_without_lease")

@@ -123,7 +123,7 @@ def main():
         if not matches or not mapped:
             raise ValueError("workspace_mapping_unexercised")
         receipt = {"status": "accepted", "hostScope": args.host_scope, "prefix": str(args.prefix),
-                   "serviceProtocol": 1, "serviceId": cached["serviceId"],
+                   "serviceProtocol": 2, "serviceId": cached["serviceId"],
                    "matchedIdentities": matches, "unavailableCwds": unavailable,
                    "explicitlyMappedRows": mapped, "changedCwds": changed,
                    "directOnlyRows": len(before.keys() - after.keys()),
