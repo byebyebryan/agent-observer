@@ -1,0 +1,252 @@
+#!/usr/bin/env python3
+"""Explicit private native actions and independent read/push comparisons.
+
+Run only inside native-isolation enter, with native-acceptance and
+ evaluate-observation copied into the owned root. Never emits native payloads.
+"""
+
+import argparse
+import json
+import os
+import runpy
+import signal
+import socket
+import sqlite3
+import subprocess
+import time
+import traceback
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--case", choices=("monitor", "catalog", "fork", "read"), required=True)
+    args = parser.parse_args()
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    if os.getuid() != 0 or not all(json.loads((root / "ready.json").read_text()).values()):
+        raise ValueError("isolation_required")
+    helpers = runpy.run_path(str(root / "native-acceptance"))
+    oracle = runpy.run_path(str(root / "evaluate-observation"))
+    proof = helpers["Proof"]("codex")
+    home = proof.base / "codex"
+
+    class ActionRPC(oracle["NativeRPC"]):
+        def call(self, method, params):
+            if method == "initialize":
+                params = {**params, "capabilities": {"experimentalApi": True}}
+            return super().call(method, params)
+
+        def action(self, method, params):
+            if method not in {"thread/resume", "thread/fork", "thread/name/set", "turn/start", "turn/interrupt"}:
+                raise ValueError("action_not_allowed")
+            self.sequence += 1
+            self.send({"id": self.sequence, "method": method, "params": params})
+            for _ in range(256):
+                message = self.message()
+                if message.get("id") == self.sequence:
+                    if "error" in message:
+                        raise ValueError("native_action_rejected_" + method.replace("/", "_"))
+                    return message["result"]
+            raise ValueError("native_response_limit")
+
+    peer = ActionRPC(home)
+    service = None
+    stream = None
+    receipt = {"case": args.case, "hostScope": proof.host, "isolationEstablished": True,
+               "ordinaryProviderActions": False, "terminalOutputPersisted": False,
+               "referenceImportsObserver": False, "providerVersion": peer.artifact["version"]}
+    try:
+        if args.case == "catalog":
+            identifier = next(r["id"] for r in peer.pages("thread/list") if r.get("name") == "Activity proof renamed")
+            database = next(home.glob("state_*.sqlite"))
+            # Explicit private negative control: remove only the disposable
+            # metadata index entry and retain its real saved log.
+            with sqlite3.connect(database) as db:
+                row = db.execute("SELECT * FROM threads WHERE id=?", (identifier,)).fetchone()
+                columns = [r[1] for r in db.execute("PRAGMA table_info(threads)")]
+                if row is None:
+                    raise ValueError("private_saved_row_missing")
+                db.execute("DELETE FROM threads WHERE id=?", (identifier,))
+                db.commit()
+                sampled = []
+                try:
+                    for _ in range(3):
+                        sampled.append(any(r["id"] == identifier for r in peer.pages("thread/list")))
+                        if db.execute("SELECT COUNT(*) FROM threads WHERE id=?", (identifier,)).fetchone()[0]:
+                            raise ValueError("database_only_repaired_metadata")
+                    peer.call("thread/list", {"limit": 100, "sourceKinds": ["cli", "vscode"], "useStateDbOnly": False})
+                    repaired = db.execute("SELECT COUNT(*) FROM threads WHERE id=?", (identifier,)).fetchone()[0] == 1
+                    if not repaired:
+                        raise ValueError("repair_negative_control_unavailable")
+                finally:
+                    if not db.execute("SELECT COUNT(*) FROM threads WHERE id=?", (identifier,)).fetchone()[0]:
+                        db.execute("INSERT INTO threads (" + ",".join(columns) + ") VALUES (" + ",".join("?" for _ in row) + ")", row)
+                        db.commit()
+            db.close()
+            receipt.update(databaseOnlyOmittedUnindexedLog=not any(sampled), databaseOnlyDidNotRepair=True,
+                           defaultRepairNegativeControl=True, nativeId=identifier)
+        elif args.case == "fork":
+            identifier = next(r["id"] for r in peer.pages("thread/list") if r.get("name") == "Activity proof renamed")
+            peer.action("thread/resume", {"threadId": identifier, "cwd": str(proof.base / "workspace")})
+            fork = peer.action("thread/fork", {"threadId": identifier, "cwd": str(proof.base / "workspace")})["thread"]
+            fork_id = fork["id"]
+            peer.action("thread/name/set", {"threadId": fork_id, "name": "Observer private exact fork target"})
+            ref = next(r["identity"] for r in proof.snapshot()["sessions"] if r["identity"]["nativeId"] == fork_id)
+            def latest(sid):
+                return peer.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
+            before_root = latest(identifier)[0]["id"]
+            before_fork = latest(fork_id)[0]["id"]
+            viewer = proof.spawn(proof.handoff(ref))
+            proof.pause(viewer, 5)
+            proof.assert_native_client(viewer)
+            os.write(viewer[1], b"Reply only with OK.\r")
+            proof.pause(viewer, 1)
+            os.write(viewer[1], b"\r")
+            deadline = time.monotonic() + 60
+            while time.monotonic() < deadline:
+                proof.pause(viewer, .3)
+                turns = latest(fork_id)
+                if turns and turns[0]["id"] != before_fork and turns[0]["completedAt"] is not None:
+                    break
+            else:
+                raise ValueError("fork_turn_pending")
+            if latest(identifier)[0]["id"] != before_root:
+                raise ValueError("fork_modified_parent")
+            receipt.update(exactThreadTargetVerified=True, rootUnchanged=True, nativeThreadId=fork_id,
+                           sessionTreeRootId=fork["sessionId"], distinctThreadAndTreeRoot=fork_id != fork["sessionId"])
+        else:
+            if args.case == "monitor":
+                identifier = next(r["id"] for r in peer.pages("thread/list") if r.get("name") == "Activity proof renamed")
+                ref = next(r["identity"] for r in proof.snapshot()["sessions"] if r["identity"]["nativeId"] == identifier)
+                viewer = proof.spawn(proof.handoff(ref))
+                proof.pause(viewer, 4)
+                proof.assert_native_client(viewer)
+                peer.action("thread/resume", {"threadId": identifier, "cwd": str(proof.base / "workspace")})
+            else:
+                identifier = None
+            path = root / "authority-ipc/read.sock"
+            service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", proof.host,
+                                        "--provider", "codex", "--socket", str(path),
+                                        "--runtime-interval", "1", "--history-interval", "3"],
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            deadline = time.monotonic() + 20
+            while time.monotonic() < deadline:
+                if path.exists():
+                    try:
+                        frame = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])
+                        if frame["snapshot"] is not None and frame["snapshot"]["sourceHealth"] == "current":
+                            break
+                    except RuntimeError:
+                        pass
+                time.sleep(.1)
+            else:
+                raise ValueError("private_service_warming")
+            stream = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            stream.settimeout(5)
+            stream.connect(str(path))
+            stream.sendall((json.dumps({"serviceProtocol": 2, "operation": "watch", "hostScope": proof.host}) + "\n").encode())
+            pending = bytearray()
+            push_frames = 0
+            sequence = 0
+            def pushed():
+                nonlocal pending, push_frames, sequence
+                while b"\n" not in pending:
+                    part = stream.recv(65536)
+                    if not part or len(pending) > 8 * 1024 * 1024 + 16384:
+                        raise ValueError("private_push_unavailable")
+                    pending.extend(part)
+                line, _, rest = pending.partition(b"\n")
+                pending = bytearray(rest)
+                value = json.loads(line)
+                if value["serviceProtocol"] != 2 or value["sequence"] != sequence + 1:
+                    raise ValueError("private_push_sequence")
+                sequence = value["sequence"]
+                push_frames += 1
+                return value
+            def independent():
+                return oracle["codex_reference"](peer)
+            before = independent()
+            direct = proof.snapshot()
+            cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
+            push = pushed()["snapshot"]
+            after = independent()
+            for value in (direct, cached, push):
+                if value is None or oracle["compare"](before, value, after, "codex")["issues"]:
+                    raise ValueError("private_read_parity_mismatch")
+            receipt.update(directCachedPushParity=True, nativeRows=len(after["rows"]),
+                           nativeParkedRows=sum(r["runtime"] == "parked" for r in after["rows"].values()),
+                           allParkedStartup=bool(after["rows"]) and all(r["runtime"] == "parked" for r in after["rows"].values()))
+            if args.case == "monitor":
+                cases = [
+                    ("approval", "Run /bin/sleep 20 using exec_command with sandbox_permissions=require_escalated and a justification asking approval for this private monitoring test. Do not use other tools. Wait for the approval.", None),
+                    ("question", "Use request_user_input to ask exactly one multiple choice question with two options, and wait for my answer. Do not run commands or edit files.", {"mode": "plan", "settings": {"model": "gpt-6.1-sol", "reasoning_effort": "low", "developer_instructions": None}}),
+                ]
+                held = []
+                for reason, prompt, collaboration in cases:
+                    params = {"threadId": identifier, "input": [{"type": "text", "text": prompt}], "approvalPolicy": "on-request",
+                              "sandboxPolicy": {"type": "workspaceWrite", "writableRoots": [str(proof.base / "workspace")]}}
+                    if collaboration:
+                        params["collaborationMode"] = collaboration
+                    turn = peer.action("turn/start", params)["turn"]["id"]
+                    working = False
+                    deadline = time.monotonic() + 75
+                    while time.monotonic() < deadline:
+                        proof.pause(viewer, .2)
+                        native = peer.call("thread/read", {"threadId": identifier, "includeTurns": False})["thread"]["status"]
+                        working |= native.get("type") == "active" and native.get("activeFlags") == []
+                        flag = "waitingOnApproval" if reason == "approval" else "waitingOnUserInput"
+                        if native.get("type") == "active" and flag in native.get("activeFlags", []):
+                            break
+                    else:
+                        raise ValueError("native_held_" + reason + "_unavailable")
+                    row = next(r for r in proof.snapshot()["sessions"] if r["identity"]["nativeId"] == identifier)
+                    if row["runtime"]["value"] != "running" or row["phase"]["value"] != "blocked" or reason not in row["blockedReasons"]:
+                        raise ValueError("private_blocked_projection_mismatch")
+                    deadline = time.monotonic() + 20
+                    cached_seen = push_seen = False
+                    while time.monotonic() < deadline and not (cached_seen and push_seen):
+                        cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
+                        cached_seen |= any(r["identity"]["nativeId"] == identifier and r["phase"] and r["phase"]["value"] == "blocked" and reason in r["blockedReasons"] for r in cached["sessions"])
+                        pushed_value = pushed()["snapshot"]
+                        if pushed_value:
+                            push_seen |= any(r["identity"]["nativeId"] == identifier and r["phase"] and r["phase"]["value"] == "blocked" and reason in r["blockedReasons"] for r in pushed_value["sessions"])
+                    if not cached_seen or not push_seen:
+                        raise ValueError("private_blocked_cache_push_pending")
+                    peer.action("turn/interrupt", {"threadId": identifier, "turnId": turn})
+                    deadline = time.monotonic() + 15
+                    while time.monotonic() < deadline:
+                        proof.pause(viewer, .2)
+                        native = peer.call("thread/read", {"threadId": identifier, "includeTurns": False})["thread"]["status"]
+                        if native.get("type") == "idle":
+                            row = next(r for r in proof.snapshot()["sessions"] if r["identity"]["nativeId"] == identifier)
+                            if row["runtime"]["value"] == "running" and row["phase"]["value"] == "waiting":
+                                break
+                    else:
+                        raise ValueError("private_waiting_pending")
+                    held.append({"reason": reason, "workingObserved": working, "nativeHeldFlag": flag,
+                                 "directCachedPushBlocked": True, "nativeWaitingAfterInterrupt": True})
+                receipt["heldCases"] = held
+            receipt["pushFrames"] = push_frames
+    finally:
+        if stream is not None:
+            stream.close()
+        if service is not None:
+            if service.poll() is None:
+                service.send_signal(signal.SIGTERM)
+            service.wait(timeout=15)
+        for viewer in list(proof.clients):
+            proof.stop(viewer)
+        peer.close()
+    receipt["status"] = "accepted"
+    (root / ("authority-" + args.case + ".json")).write_text(json.dumps(receipt, indent=2) + "\n")
+    print(json.dumps(receipt))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, RuntimeError, OSError, KeyError, StopIteration, subprocess.SubprocessError) as exc:
+        code = str(exc) if isinstance(exc, (ValueError, RuntimeError)) and str(exc).replace("_", "").isalnum() else "native_authority_proof_failed"
+        print(json.dumps({"status": "rejected", "reason": code[:128], "exceptionClass": type(exc).__name__,
+                          "frames": [{"file": Path(f.filename).name, "line": f.lineno} for f in traceback.extract_tb(exc.__traceback__)]}))
+        raise SystemExit(2) from None
