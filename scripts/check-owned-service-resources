@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Read owned process/FD/inotify counters; no Observer imports or provider I/O.
+
+Attach only to an independently recorded publisher incarnation and exact
+installed interpreter/entrypoint. Process payloads and FD paths are discarded.
+"""
+
+import argparse
+from collections import defaultdict
+import json
+import os
+from pathlib import Path
+import time
+
+
+def state(pid):
+    values = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+    return int(values[19]), int(values[1])
+
+
+def sample(pid, birth):
+    pending, seen, result = [(pid, birth, None)], set(), []
+    while pending and len(seen) < 64:
+        current, expected, parent = pending.pop()
+        if current in seen:
+            continue
+        seen.add(current)
+        process = Path(f"/proc/{current}")
+        try:
+            actual, ppid = state(current)
+            if actual != expected or parent is not None and ppid != parent or process.stat().st_uid != os.geteuid():
+                continue
+            argv = (process / "cmdline").read_bytes().split(b"\0")
+            role = "publisher" if current == pid else "collector"
+            if any(a.endswith(b"/_hint_worker.py") for a in argv):
+                role = "codex_hint" if b"codex" in argv else "claude_hint" if b"claude" in argv else "unknown_hint"
+            elif any(a.endswith(b"/_claude_history_worker.py") for a in argv):
+                role = "claude_metadata"
+            descriptors = list((process / "fd").iterdir())
+            watches = 0
+            for descriptor in descriptors:
+                try:
+                    watches += sum(line.startswith("inotify wd:") for line in (process / "fdinfo" / descriptor.name).read_text().splitlines())
+                except OSError:
+                    pass
+            rss = int((process / "statm").read_text().split()[1]) * os.sysconf("SC_PAGE_SIZE")
+            children = (process / "task" / str(current) / "children").read_text().split()
+            if state(current) != (actual, ppid):
+                continue
+            result.append({"role": role, "rssBytes": rss, "fds": len(descriptors), "watches": watches})
+            for child in children:
+                try:
+                    child_birth, child_parent = state(int(child))
+                    if child_parent == current:
+                        pending.append((int(child), child_birth, current))
+                except OSError:
+                    pass
+        except (OSError, ValueError, IndexError):
+            pass
+    if not result or result[0]["role"] != "publisher":
+        raise RuntimeError("owned_publisher_incarnation_unavailable")
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--measurement", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--duration", type=int, default=180)
+    args = parser.parse_args()
+    assert 30 <= args.duration <= 300
+    marker = json.loads(args.measurement.read_text())
+    pid, birth = marker["publisherPid"], marker["publisherBirth"]
+    process = Path(f"/proc/{pid}")
+    assert state(pid)[0] == birth and process.stat().st_uid == os.geteuid()
+    argv = (process / "cmdline").read_bytes().split(b"\0")
+    assert argv[1:3] == [os.fsencode(args.prefix / "bin/agent-observer-service"), b"serve"]
+    image, expected = (process / "exe").stat(), (args.prefix / "bin/python").stat()
+    assert (image.st_dev, image.st_ino) == (expected.st_dev, expected.st_ino)
+    begin, roles, windows, count = time.monotonic(), {}, {}, 0
+    while time.monotonic() - begin < args.duration:
+        assert state(pid)[0] == birth
+        values = sample(pid, birth)
+        count += 1
+        aggregated = defaultdict(lambda: {"rssBytes": 0, "fds": 0, "watches": 0, "processes": 0})
+        for value in values:
+            row = aggregated[value["role"]]
+            for name in ("rssBytes", "fds", "watches"):
+                row[name] += value[name]
+            row["processes"] += 1
+        for role, row in aggregated.items():
+            previous = roles.setdefault(role, {k: 0 for k in row})
+            for name, value in row.items():
+                previous[name] = max(previous[name], value)
+        index = int((time.monotonic() - begin) // 20)
+        window = windows.setdefault(index, {"offsetSeconds": index * 20, "peakRssBytes": 0, "peakFds": 0, "peakProcesses": 0, "peakInotifyWatches": 0})
+        for name, key in (("rssBytes", "peakRssBytes"), ("fds", "peakFds"), ("processes", "peakProcesses"), ("watches", "peakInotifyWatches")):
+            window[key] = max(window[key], sum(r[name] for r in aggregated.values()))
+        time.sleep(.2)
+    receipt = {"status": "measured", "evidenceClass": "independent_owned_proc_counters", "prefix": str(args.prefix),
+               "serviceId": marker["serviceId"], "durationSeconds": time.monotonic() - begin,
+               "samples": count, "roleMaximaNotSimultaneous": roles, "twentySecondWindows": list(windows.values()),
+               "importsObserver": False, "providerIo": False, "managedSelectionChanged": False}
+    args.output.write_text(json.dumps(receipt, indent=2) + "\n")
+    print(json.dumps({"status": "measured", "samples": count, "output": str(args.output)}))
+
+
+if __name__ == "__main__":
+    main()

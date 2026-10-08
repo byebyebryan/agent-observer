@@ -122,8 +122,10 @@ def main():
     parser.add_argument("--history-interval", type=float, default=60)
     parser.add_argument("--unit", action="store_true", help="Read the existing managed user unit; never start or stop it")
     parser.add_argument("--native-hints", action="store_true", help="explicit candidate hint mode for a separately owned service")
+    parser.add_argument("--settle-seconds", type=int, default=0,
+                        help="exclude bounded startup work before resource measurement")
     args = parser.parse_args()
-    if not 30 <= args.duration <= 3600 or args.root.resolve(strict=True) != args.root or args.root.stat().st_uid != os.geteuid():
+    if not 30 <= args.duration <= 3600 or not 0 <= args.settle_seconds <= 30 or args.root.resolve(strict=True) != args.root or args.root.stat().st_uid != os.geteuid():
         raise ValueError("proof_scope")
     path = (Path(os.environ["XDG_RUNTIME_DIR"]) / "agent-observer/read.sock"
             if args.unit else args.root / "ipc" / "read.sock")
@@ -178,10 +180,15 @@ def main():
             time.sleep(0.1)
         else:
             raise ValueError("service_warmup_pending")
+        if args.settle_seconds:
+            time.sleep(args.settle_seconds)
+            frame, size = cli(args.prefix, ["service", "status", "--host-scope", args.host_scope, "--socket", str(path)])
         initial = frame
         if sorted(s["provider"] for s in frame["sources"]) != sorted(args.provider):
             raise ValueError("provider_scope")
         started, start_cpu = clock(), process_state(pid)[1]
+        (args.root / "measurement.json").write_text(json.dumps({"publisherPid": pid,
+            "publisherBirth": birth, "startedBoottimeMs": started, "serviceId": initial["serviceId"]}) + "\n")
         unit_cpu = unit_state(args.prefix)[1] if args.unit else None
         for index in range(3):
             thread = threading.Thread(target=watch, args=(index,), daemon=True)
@@ -223,6 +230,7 @@ def main():
             "hostScope": args.host_scope, "prefix": str(args.prefix), "providers": args.provider,
             "runtimeIntervalSeconds": args.runtime_interval,
             "historyIntervalSeconds": args.history_interval,
+            "nativeHints": args.native_hints, "startupSettledSeconds": args.settle_seconds,
             "status": "accepted", "durationSeconds": elapsed_ms / 1000,
             "serviceId": initial["serviceId"], "serviceProtocol": 1,
             "readSamples": 100, "readP95Ms": sorted(latencies)[94], "readMaxMs": max(latencies),

@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+"""Private native-event instrumentation; no Observer imports or actions.
+
+Codex measures receipt of exact thread status/name metadata. Claude measures
+inotify receipt on its metadata directories, then independently binds the
+changed state to the target ID. Neither clock is a provider transition time.
+Only bounded projected metadata is retained in memory.
+"""
+
+from collections import deque
+import ctypes
+import os
+from pathlib import Path
+import select
+import struct
+import threading
+import time
+
+
+def clock():
+    return time.clock_gettime_ns(time.CLOCK_BOOTTIME) // 1_000_000
+
+
+class EventClock:
+    def __init__(self, provider, home, reference):
+        self.provider, self.home, self.reference = provider, home, reference
+        self.target = None
+        self.events = deque(maxlen=128)
+        self.lock, self.stop = threading.Lock(), threading.Event()
+        self.errors, self.watches, self.image_cache = [], {}, {}
+        self.rpc, self.fd = None, None
+        if provider == "codex":
+            self.rpc = reference["NativeRPC"](home)
+        else:
+            self.lib = ctypes.CDLL(None, use_errno=True)
+            self.lib.inotify_init1.argtypes = [ctypes.c_int]
+            self.lib.inotify_add_watch.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_uint32]
+            self.fd = self.lib.inotify_init1(os.O_NONBLOCK | os.O_CLOEXEC)
+            if self.fd < 0:
+                raise RuntimeError("independent_event_clock_unavailable")
+            self.rearm()
+        self.thread = threading.Thread(target=self.run, daemon=True)
+        self.thread.start()
+
+    def rearm(self):
+        for name in ("sessions", "jobs", "projects"):
+            root = self.home / name
+            paths = [root] + (list(root.iterdir()) if name != "sessions" else [])
+            for path in paths:
+                if path in self.watches.values() or not path.is_dir() or path.is_symlink():
+                    continue
+                if len(self.watches) >= 128:
+                    raise RuntimeError("independent_event_clock_limit")
+                wd = self.lib.inotify_add_watch(self.fd, os.fsencode(path), 0x01000000 | 0x02000000 | 0x1ce)
+                if wd < 0:
+                    raise RuntimeError("independent_event_clock_unavailable")
+                self.watches[wd] = path
+
+    def retain(self, event):
+        with self.lock:
+            self.events.append(event)
+
+    def run(self):
+        try:
+            while not self.stop.is_set():
+                if self.provider == "codex":
+                    if not self.rpc.buffer and not select.select([self.rpc.sock], [], [], .1)[0]:
+                        continue
+                    value, at = self.rpc.message(), clock()
+                    if not isinstance(value, dict) or "id" in value:
+                        continue
+                    method, params = value.get("method"), value.get("params")
+                    if not isinstance(params, dict):
+                        continue
+                    sid = params.get("threadId")
+                    event = {"nativeId": sid, "receivedBoottimeMs": at}
+                    if method == "thread/status/changed":
+                        status = params.get("status") or {}
+                        if not isinstance(status, dict):
+                            continue
+                        phase = "waiting" if status.get("type") == "idle" else "working" if status.get("type") == "active" and status.get("activeFlags", []) == [] else None
+                        if phase is None:
+                            continue
+                        event.update(component="runtime", phase=phase, nativeMethod=method)
+                    elif method == "thread/name/updated":
+                        event.update(component="history", title=self.reference["bounded_text"](params.get("threadName")), nativeMethod=method)
+                    else:
+                        continue
+                    if isinstance(sid, str) and self.reference["UUID"].fullmatch(sid):
+                        self.retain(event)
+                else:
+                    if not select.select([self.fd], [], [], .1)[0]:
+                        continue
+                    data, at, offset, components = os.read(self.fd, 65536), clock(), 0, set()
+                    while offset < len(data):
+                        wd, mask, _, size = struct.unpack_from("iIII", data, offset)
+                        name = data[offset + 16:offset + 16 + size].split(b"\0", 1)[0]
+                        offset += 16 + size
+                        if mask & (0x4000 | 0x8000 | 0x400 | 0x800):
+                            raise RuntimeError("independent_event_clock_loss")
+                        directory = self.watches.get(wd)
+                        if directory is None:
+                            continue
+                        if mask & 0x40000000:
+                            self.rearm()
+                            continue
+                        if directory == self.home / "sessions" or directory.parent == self.home / "jobs" and name == b"state.json":
+                            try:
+                                record = self.reference["read_json"](directory / os.fsdecode(name))
+                            except (OSError, ValueError):
+                                continue
+                            if isinstance(record, dict) and record.get("sessionId") == self.target:
+                                components.add("runtime")
+                        elif directory.parent == self.home / "projects" and name == (str(self.target) + ".jsonl").encode():
+                            components.add("history")
+                    if not self.target or not components:
+                        continue
+                    row = self.reference["claude_reference"](self.home, self.image_cache)["rows"].get(self.target)
+                    if row:
+                        for component in components:
+                            self.retain({"nativeId": self.target, "receivedBoottimeMs": at,
+                                         "component": component, "phase": row.get("phase"),
+                                         "activity": row.get("activity"), "title": row.get("title"),
+                                         "nativeMethod": "inotify_then_independent_metadata_binding"})
+        except Exception:
+            if not self.stop.is_set():
+                self.errors.append("independent_event_clock_failed")
+
+    def match(self, boundary, component, native, stage):
+        if self.errors:
+            raise RuntimeError(self.errors[0])
+        with self.lock:
+            candidates = list(self.events)
+        for event in candidates:
+            if event["nativeId"] != self.target or event["receivedBoottimeMs"] < boundary:
+                continue
+            if self.provider == "codex":
+                if stage == "rename":
+                    matched = event.get("title") == native.get("title") and event["component"] == "history"
+                else:
+                    matched = event.get("phase") == native.get("phase") and event["component"] == "runtime"
+            else:
+                matched = event["component"] == component and (event.get("phase") == native.get("phase") if component == "runtime" else event.get("activity") == native.get("activity") and event.get("title") == native.get("title"))
+            if matched:
+                return event
+        return None
+
+    def close(self):
+        self.stop.set()
+        if self.rpc:
+            self.rpc.close()
+        self.thread.join(8)
+        if self.fd is not None:
+            os.close(self.fd)
+        if self.thread.is_alive():
+            raise RuntimeError("independent_event_clock_cleanup_failed")

@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""Paired installed resource measurements over identical synthetic metadata.
+
+No native sessions/actions or borrowed authentication. Ordinary provider images
+may be inspected read-only. This is controlled cost evidence, not native proof.
+"""
+
+import argparse
+from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import threading
+import time
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--duration", type=int, default=300)
+    parser.add_argument("--cases", choices=("quiet", "active", "all"), default="all")
+    args = parser.parse_args()
+    assert args.root.resolve(strict=True) == args.root and args.root.stat().st_uid == os.getuid()
+    assert args.root.stat().st_mode & 0o077 == 0 and 120 <= args.duration <= 600
+    reports = {}
+    workloads = ("quiet", "active") if args.cases == "all" else (args.cases,)
+
+    def append(path, sid, cwd):
+        at = int(time.time() * 1000)
+        value = {"sessionId": sid, "type": "user", "isSidechain": False,
+                 "isMeta": False, "cwd": str(cwd),
+                 "timestamp": datetime.fromtimestamp(at / 1000, timezone.utc).isoformat(),
+                 "message": {"role": "user", "content": "bounded synthetic fixture"}}
+        with path.open("a") as stream:
+            stream.write(json.dumps(value) + "\n")
+
+    for workload in workloads:
+        reports[workload] = {}
+        for hints in (False, True):
+            mode = "hints" if hints else "polling"
+            root = args.root / (workload + "-" + mode)
+            root.mkdir(mode=0o700)
+            home = root / "history"
+            home.mkdir(mode=0o700)
+            for name in ("projects", "jobs", "sessions"):
+                (home / name).mkdir(mode=0o700)
+            project = home / "projects/project"
+            project.mkdir(mode=0o700)
+            ids = [f"{number:08x}-0123-4567-89ab-0123456789ab" for number in range(1, 32)]
+            for sid in ids:
+                append(project / (sid + ".jsonl"), sid, root)
+            nested = project / (ids[0] + "/subagents")
+            nested.mkdir(parents=True)
+            actor_stop, actions, actor_errors = threading.Event(), [], []
+            environment = dict(os.environ, CLAUDE_CONFIG_DIR=str(home))
+            command = ["python", str(Path(__file__).with_name("check-shared-service")),
+                       "--prefix", str(args.prefix), "--root", str(root),
+                       "--host-scope", "cost-fixture", "--provider", "claude",
+                       "--duration", str(args.duration), "--runtime-interval", "30",
+                       "--history-interval", "120", "--settle-seconds", "12"]
+            if hints:
+                command.append("--native-hints")
+            actor = None
+            with (root / "run.log").open("w") as log:
+                process = subprocess.Popen(command, env=environment, stdout=log, stderr=log)
+
+                def act():
+                    marker = root / "measurement.json"
+                    while not marker.exists() and not actor_stop.wait(.1):
+                        if process.poll() is not None:
+                            return
+                    if actor_stop.is_set() or workload == "quiet":
+                        return
+                    beginning = json.loads(marker.read_text())["startedBoottimeMs"] / 1000
+                    for offset in range(40, args.duration, 40):
+                        while not actor_stop.is_set() and time.clock_gettime(time.CLOCK_BOOTTIME) < beginning + offset:
+                            actor_stop.wait(.1)
+                        if actor_stop.is_set():
+                            return
+                        append(project / (ids[0] + ".jsonl"), ids[0], root)
+                        with (nested / "agent-fixture.jsonl").open("a") as stream:
+                            for _ in range(100):
+                                stream.write("bounded synthetic noise\n")
+                        actions.append({"scheduledOffsetSeconds": offset, "primaryAppends": 1, "nestedWrites": 100})
+
+                try:
+                    def guarded_act():
+                        try:
+                            act()
+                        except Exception:
+                            actor_errors.append("controlled_workload_actor_failed")
+
+                    actor = threading.Thread(target=guarded_act, daemon=True)
+                    actor.start()
+                    result = process.wait(timeout=args.duration + 90)
+                    if result:
+                        raise RuntimeError("controlled_cost_measurement_failed")
+                    expected = list(range(40, args.duration, 40)) if workload == "active" else []
+                    if actor_errors or [a["scheduledOffsetSeconds"] for a in actions] != expected:
+                        raise RuntimeError("controlled_workload_incomplete")
+                    value = json.loads((root / "soak-receipt.json").read_text())
+                    value.update(evidenceClass="installed_controlled_synthetic_metadata",
+                                 workload=workload, savedRows=31, scriptedActions=actions,
+                                 nativeWorkflowClaimed=False, borrowedAuthentication=False)
+                    reports[workload][mode] = value
+                    print(json.dumps({"workload": workload, "mode": mode,
+                                      "oneCoreCpuPercent": value["oneCoreCpuPercent"],
+                                      "peakAggregateRssBytes": value["peakAggregateRssBytes"]}), flush=True)
+                finally:
+                    actor_stop.set()
+                    if actor:
+                        actor.join(2)
+                    if process.poll() is None:
+                        process.terminate()
+                        process.wait(timeout=30)
+                    # Only the fresh synthetic subtree created by this run.
+                    shutil.rmtree(home)
+        baseline, hinted = reports[workload]["polling"], reports[workload]["hints"]
+        assert baseline["scriptedActions"] == hinted["scriptedActions"]
+        reports[workload]["observedCpuDeltaPercentagePoints"] = hinted["oneCoreCpuPercent"] - baseline["oneCoreCpuPercent"]
+        reports[workload]["observedRssDeltaBytes"] = hinted["peakAggregateRssBytes"] - baseline["peakAggregateRssBytes"]
+    receipt = {"status": "measured", "evidenceClass": "installed_controlled_synthetic_metadata",
+               "provider": "claude", "nativeWorkflowClaimed": False, "durationPerModeSeconds": args.duration,
+               "prefix": str(args.prefix), "workloads": reports,
+               "ownedSyntheticHistoryRemoved": True, "ordinaryProviderActions": False,
+               "managedSelectionChanged": False}
+    (args.root / "pair-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    print(json.dumps({"status": "measured", "receipt": str(args.root / "pair-receipt.json")}), flush=True)
+
+
+if __name__ == "__main__":
+    main()
