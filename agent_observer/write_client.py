@@ -100,6 +100,8 @@ def _target(request):
     ):
         raise ContractError("resume_evidence_unavailable")
     if request["provider"] == "codex":
+        if row.get("hasSavedHistory") is not True:
+            raise ContractError("resume_saved_history_unproved")
         if source["coverage"].get("runtime", {}).get("status") == "unavailable":
             raise ContractError("resume_evidence_unavailable")
     expected = store_namespace(
