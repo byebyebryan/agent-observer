@@ -294,3 +294,18 @@ The pending memory-budget choice does not waive the CPU gate. A further separate
 frozen a12 repair shares installed/resident image digests within one collection
 only, preserving ownership/signature/birth bookends; its native cost gate is still
 being measured and is not reassigned the a11 results.
+
+## A12 runtime digest-sharing acceptance subset
+
+Source `8ffd8e6`, wheel `4bc275dd69fdc11bed1eb81d2883e505e972be963d7cb2c2556a7e63666d0a5f`,
+and both separately installed prefixes verify; 317 source tests and pure public
+API conformance pass. Two independent ordinary Claude comparisons retain the
+31 projected/32 native saved rows, three live workers, matching known phase and
+conversation clocks and explicit setup-only/unknown history coverage. The
+[a12 resource receipt](a12-runtime-cost.json) records matched scripted native
+turns, three healthy readers and 100 cached reads per mode, no reader gaps or
+errors, and complete removal of private stores/authentication. CPU overhead is
+1.433 percentage points and hinted aggregate RSS is 87.840 MiB. Both original
+resource gates remain unmet, so selection stays a8 and P6 remains withheld.
+A13's subsequent anchored debounce is a separately tested producer repair;
+it has no native acceptance yet.

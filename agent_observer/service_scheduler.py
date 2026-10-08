@@ -24,6 +24,7 @@ class Scheduler:
         self.active = {}
         self.generation = {p: 0 for p in providers}
         self.dirty = {(p, c): 0 for p in providers for c in self.intervals}
+        self.hint_due = {key: None for key in self.dirty}
         self.due = {key: 0 for key in self.dirty}
         self.last = {key: -self.minimum_gap[key[1]] for key in self.dirty}
         self.failures = {key: 0 for key in self.dirty}
@@ -35,7 +36,12 @@ class Scheduler:
             raise ValueError("service_hint_scope")
         # A bit, not a count: a burst owns one trailing read per component.
         self.dirty[key] = 1
-        self.due[key] = min(self.due[key], max(now, self.last[key] + self.minimum_gap[component],
+        # Anchor the settling window to the first unconsumed hint. Subsequent
+        # hints cannot postpone reconciliation indefinitely, and a periodic
+        # read which is already due remains entitled to run sooner.
+        if self.hint_due[key] is None:
+            self.hint_due[key] = now + self.debounce
+        self.due[key] = min(self.due[key], max(self.hint_due[key], self.last[key] + self.minimum_gap[component],
                                               self.retry_not_before[key]))
 
     def invalidate(self, provider):
@@ -55,6 +61,7 @@ class Scheduler:
             self.active[provider] = job
             self.last[key] = now
             self.dirty[key] = 0
+            self.hint_due[key] = None
             jobs.append(job)
         return jobs
 
@@ -70,7 +77,7 @@ class Scheduler:
         self.due[key] = now + max(base_interval, min(interval, 300000))
         self.retry_not_before[key] = 0 if success else self.due[key]
         if success and self.dirty[key]:
-            self.due[key] = max(now, self.last[key] + self.minimum_gap[job.component])
+            self.due[key] = max(now, self.hint_due[key], self.last[key] + self.minimum_gap[job.component])
         return job.generation == self.generation[job.provider]
 
     def expired(self, now):

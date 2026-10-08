@@ -194,6 +194,40 @@ class ServiceStateTest(unittest.TestCase):
 
 
 class SchedulerTest(unittest.TestCase):
+    def settled(self):
+        scheduler = Scheduler(("codex",), intervals={"runtime": 20000, "history": 60000})
+        for now in (0, 100):
+            scheduler.finish(scheduler.start_due(now)[0], now + 50, success=True)
+        return scheduler
+
+    def test_first_hint_settles_and_continuous_burst_cannot_postpone_it(self):
+        scheduler = self.settled()
+        scheduler.hint("codex", "runtime", 2000)
+        for now in range(2001, 2500):
+            scheduler.hint("codex", "runtime", now)
+        self.assertEqual(scheduler.start_due(2499), [])
+        job = scheduler.start_due(2500)[0]
+        self.assertEqual(job.component, "runtime")
+        self.assertEqual(job.dirty, 1)
+        scheduler.finish(job, 2550, success=True)
+        self.assertEqual(scheduler.start_due(3000), [])
+
+    def test_hint_during_active_job_retains_its_unfinished_settling_window(self):
+        scheduler = self.settled()
+        scheduler.hint("codex", "runtime", 2000)
+        job = scheduler.start_due(2500)[0]
+        scheduler.hint("codex", "runtime", 3900)
+        scheduler.finish(job, 4000, success=True)
+        scheduler.hint("codex", "runtime", 4100)
+        self.assertEqual(scheduler.start_due(4399), [])
+        self.assertEqual(scheduler.start_due(4400)[0].component, "runtime")
+
+    def test_already_due_periodic_read_precedes_hint_settling(self):
+        scheduler = self.settled()
+        due = scheduler.due[("codex", "runtime")]
+        scheduler.hint("codex", "runtime", due - 100)
+        self.assertEqual(scheduler.start_due(due)[0].component, "runtime")
+
     def test_bursts_have_one_trailing_read_and_history_cooldown(self):
         scheduler = Scheduler(("codex",), intervals={"runtime": 20000, "history": 60000})
         runtime = scheduler.start_due(0)[0]
