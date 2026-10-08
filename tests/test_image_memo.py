@@ -15,8 +15,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from test_service_runtime import Running
-from test_service_state import provider_snapshot
+from test_service_runtime import Running, scoped_snapshot
 
 from agent_observer import native_artifacts
 from agent_observer._image_memo import MAX_ENTRIES, MAX_PACKET, ImageMemo, receive, send
@@ -328,7 +327,7 @@ class ImageMemoTest(unittest.TestCase):
                 with tempfile.TemporaryDirectory() as directory, Running() as server:
                     path = Path(directory) / "image"
                     path.write_bytes(b"image")
-                    value = provider_snapshot("codex")
+                    value = scoped_snapshot()
                     value["sources"][0]["runtime"] = {
                         "version": "diagnostic",
                         "binarySha256": "a" * 64,
