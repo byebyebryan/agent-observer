@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Matched two-provider Snap cost case inside verified disposable isolation.
+
+Only fixture-owned native sessions receive prompts. Outer namespace cleanup is
+mandatory on success or failure. Terminal content is drained without retention.
+"""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import runpy
+import subprocess
+import time
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("polling", "hints"), required=True)
+    args = parser.parse_args()
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.geteuid() == 0 and os.environ["NATIVE_PROOF_HOST"] == "snap"
+    assert all(json.loads((root / "ready.json").read_text()).values())
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    reference = runpy.run_path(str(root / "evaluate-observation"))
+    prefix = Path(json.loads((root / "fixture.json").read_text())["prefix"])
+    proofs = {provider: Proof(provider) for provider in ("claude", "codex")}
+    targets, viewers, actions, image_cache = {}, {}, [], {}
+    process = None
+
+    def pause(duration):
+        end = time.monotonic() + duration
+        while time.monotonic() < end:
+            for proof in proofs.values():
+                for viewer in list(proof.clients):
+                    proof.pause(viewer, .02)
+
+    def native(provider):
+        home = proofs[provider].base / provider
+        if provider == "claude":
+            return reference["claude_reference"](home, image_cache)
+        peer = reference["NativeRPC"](home)
+        try:
+            return reference["codex_reference"](peer)
+        finally:
+            peer.close()
+
+    try:
+        project = proofs["claude"].base / "claude/projects/cost-fixture"
+        project.mkdir(mode=0o700)
+        for number in range(1, 32):
+            sid = f"{number:08x}-0123-4567-89ab-0123456789ab"
+            value = {"sessionId": sid, "type": "user", "isSidechain": False,
+                     "isMeta": False, "cwd": str(proofs["claude"].base / "workspace"),
+                     "timestamp": "2026-10-07T00:00:00+00:00",
+                     "message": {"role": "user", "content": "bounded synthetic fixture"}}
+            (project / (sid + ".jsonl")).write_text(json.dumps(value) + "\n")
+        codex = proofs["codex"]
+        bootstrap = codex.spawn(codex.handoff())
+        codex.pause(bootstrap, 5)
+        codex.assert_native_client(bootstrap)
+        codex.stop(bootstrap)
+        prior = set(native("codex")["loaded"])
+        for provider, proof in proofs.items():
+            created = proof.handoff()
+            viewers[provider] = proof.spawn(created)
+            pause(3)
+            proof.assert_native_client(viewers[provider])
+            if provider == "claude":
+                targets[provider] = created["resultingIdentity"]["nativeId"]
+            else:
+                added = set(native(provider)["loaded"]) - prior
+                assert len(added) == 1
+                targets[provider] = added.pop()
+
+        cost = root / "cost"
+        cost.mkdir(mode=0o700)
+        command = ["/usr/bin/python3", "-I", "-B", str(root / "check-shared-service"),
+                   "--prefix", str(prefix), "--root", str(cost), "--host-scope", "snap",
+                   "--provider", "claude", "--provider", "codex", "--duration", "300",
+                   "--runtime-interval", "30", "--history-interval", "120",
+                   "--settle-seconds", "12"]
+        if args.mode == "hints":
+            command.append("--native-hints")
+        with (root / "cost-run.log").open("w") as log:
+            process = subprocess.Popen(command, stdout=log, stderr=log)
+            deadline = time.monotonic() + 40
+            marker = cost / "measurement.json"
+            while not marker.exists():
+                assert process.poll() is None and time.monotonic() < deadline
+                pause(.1)
+            beginning = json.loads(marker.read_text())["startedBoottimeMs"] / 1000
+            old_activity = {provider: None for provider in proofs}
+            for offset, provider in ((40, "claude"), (60, "codex"),
+                                     (120, "claude"), (140, "codex"),
+                                     (200, "claude"), (220, "codex")):
+                while time.clock_gettime(time.CLOCK_BOOTTIME) < beginning + offset:
+                    assert process.poll() is None
+                    pause(.1)
+                actual_offset = time.clock_gettime(time.CLOCK_BOOTTIME) - beginning
+                assert actual_offset - offset < 5
+                fd = viewers[provider][1]
+                os.write(fd, b"\x1b[200~Run a shell command that sleeps 5 seconds, then reply only OK.\x1b[201~\r")
+                if provider == "codex":
+                    pause(.5)
+                    os.write(fd, b"\r")
+                deadline, working, completed = time.monotonic() + 65, False, False
+                while time.monotonic() < deadline:
+                    assert process.poll() is None
+                    pause(.15)
+                    row = native(provider)["rows"].get(targets[provider])
+                    if not row:
+                        continue
+                    working |= row.get("phase") == "working"
+                    if working and row.get("phase") == "waiting" and row.get("activity") is not None and row["activity"] != old_activity[provider]:
+                        old_activity[provider], completed = row["activity"], True
+                        break
+                assert working and completed
+                actions.append({"provider": provider, "scheduledOffsetSeconds": offset,
+                                "actualOffsetSeconds": round(actual_offset, 3),
+                                "workingIndependentlyObserved": True,
+                                "completionIndependentlyObserved": True,
+                                "activityAt": old_activity[provider]})
+            deadline = time.monotonic() + 130
+            while process.poll() is None:
+                assert time.monotonic() < deadline
+                pause(.1)
+            assert process.returncode == 0
+        measured = json.loads((cost / "soak-receipt.json").read_text())
+        receipt = {"status": "measured", "evidenceClass": "installed_controlled_native_mixed_workload",
+                   "hostScope": "snap", "providers": list(proofs), "mode": args.mode,
+                   "syntheticSavedRows": 31, "liveNativeSessions": 2,
+                   "scriptedNativeTurns": actions, "nativeIds": targets, "resources": measured,
+                   "isolation": next(iter(proofs.values())).ready,
+                   "ordinaryProviderActions": False, "terminalOutputPersisted": False,
+                   "managedSelectionChanged": False}
+        (root / "native-cost-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        print(json.dumps({"status": "measured", "mode": args.mode,
+                          "oneCoreCpuPercent": measured["oneCoreCpuPercent"],
+                          "peakAggregateRssBytes": measured["peakAggregateRssBytes"]}))
+    finally:
+        for proof in proofs.values():
+            for viewer in list(proof.clients):
+                proof.stop(viewer)
+        if process is not None and process.poll() is None:
+            process.terminate()
+            process.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    main()
