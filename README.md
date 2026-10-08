@@ -60,6 +60,13 @@ passes focused native state/activity/questions/reconnect/lifetime checks, but
 matched combined Snap cost still adds 2.086 CPU points and samples 131.402 MiB
 aggregate RSS. The [cost follow-up](docs/native-hints-cost-follow-up.md) records
 the remaining architecture and explicit memory-budget decision before rollout.
+The subsequent a15 descriptor-anchored image memo preserves the native inspection
+guards and passes 337 source tests. Its matched combined Snap and Starship cases
+now meet the one-point incremental CPU target, at +0.946 and +0.153 points.
+Its [bounded receipt](docs/evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
+also records ordinary comparisons and recovery. Sampled aggregate RSS remains
+above 64 MiB, at 109.281 and 64.094 MiB. A15 is
+installed separately; the original memory gate still withholds normal hint rollout.
 The
 [event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
 the remaining producer acceptance before hint rollout, separate from frontend work.

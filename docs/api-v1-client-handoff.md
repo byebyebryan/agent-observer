@@ -11,6 +11,10 @@ the selected a8 tuple and separately installed hint candidates; choose an
 explicit producer artifact/endpoint before client work. The later repairs preserve
 this API, but the resource/managed hint gate remains
 unaccepted. See the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md).
+The newest separately installed a15 candidate preserves API 1, snapshot/watch 3,
+write 1 and service 1. Its controlled host CPU gate passes, but the original
+aggregate-memory gate remains unmet. Use selected a8 for the normal endpoint;
+a15 evaluation and eventual managed selection retain separate acceptance.
 
 ## Historical accepted producer and selected baseline
 

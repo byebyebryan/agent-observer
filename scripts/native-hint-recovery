@@ -69,9 +69,11 @@ def main():
         else:
             raise RuntimeError("hint_recovery_warm_pending")
         activity = row["activity"]["at"]
+        assert activity is not None and row["activity"]["health"] == "current"
         starts = counters()["starts"]
         rpc = reference["NativeRPC"](proof.base / "codex")
         pid, birth = rpc.pid, rpc.start
+        assert reference["codex_reference"](rpc)["rows"][sid]["activity"] == activity
         executable = Path(os.readlink(f"/proc/{pid}/exe"))
         assert executable.is_relative_to(proof.base / "codex/packages/app-server-daemon")
         assert reference["birth"](pid)[0] == birth
@@ -120,12 +122,53 @@ def main():
                 pass
         else:
             raise RuntimeError("hint_recovery_incarnation_pending")
-        assert row["activity"]["at"] == activity
+        # A new daemon context invalidates the old history lease. Readiness of
+        # the runtime feed alone cannot promise a current saved activity clock.
+        # Preserve a truthful stale clock until independent native brackets and
+        # a newly accepted history sample establish the unchanged conversation.
+        first_activity = dict(row["activity"])
+        (root / "hint-recovery-clock-bookends.json").write_text(json.dumps({
+            "expectedNativeActivityAt": activity,
+            "firstNewContextActivity": first_activity,
+            "sources": frame["sources"],
+        }, indent=2) + "\n")
+        if row["activity"]["at"] is None:
+            assert row["activity"]["health"] == "stale" and row["activity"]["lastKnownAt"] == activity
+        else:
+            assert row["activity"]["at"] == activity
+        runtime_ready_at = time.monotonic()
+        deadline = runtime_ready_at + 20
+        while time.monotonic() < deadline:
+            proof.pause(viewer, .1)
+            before = reference["NativeRPC"](proof.base / "codex")
+            try:
+                native_before = reference["codex_reference"](before)["rows"][sid]["activity"]
+            finally:
+                before.close()
+            frame = cached()
+            row = target(frame)
+            history = next(c for s in frame["sources"] for c in s["components"] if c["name"] == "history")
+            after = reference["NativeRPC"](proof.base / "codex")
+            try:
+                native_after = reference["codex_reference"](after)["rows"][sid]["activity"]
+            finally:
+                after.close()
+            assert native_before == native_after == activity
+            if history["health"] in {"current", "partial"} and row["activity"]["health"] == "current" and row["activity"]["at"] == activity:
+                break
+            assert row["activity"].get("lastKnownAt") == activity or row["activity"]["at"] == activity
+        else:
+            raise RuntimeError("hint_recovery_history_pending")
+        history_delay = time.monotonic() - runtime_ready_at
+        assert history_delay <= 15
         receipt = {"status": "accepted", "hostScope": proof.host, "observerVersion": version("agent-observer"),
                    "oldDaemonPid": pid, "newDaemonPid": new_pid,
                    "lossToUnavailableSeconds": loss_delay,
                    "hintSourceReplaced": True, "unavailableSavedRuntimeUnknown": True,
                    "conversationAgePreserved": True, "offlineObservationDidNotStartDaemon": True,
+                   "firstNewContextActivity": first_activity,
+                   "runtimeReadyToCurrentHistorySeconds": history_delay,
+                   "freshHistoryNativeBracketStable": True,
                    "ownedDaemonOnly": True, "ordinaryProviderActions": False,
                    "nativeReferenceImportsObserver": False}
         (root / "hint-recovery-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")

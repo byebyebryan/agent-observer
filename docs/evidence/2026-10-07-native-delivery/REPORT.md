@@ -387,3 +387,93 @@ A subsequent [private anchored-image spike](anchored-image-spike.json) isolates
 the next cost lead without modifying installed bytes. It is research, not a
 production memo or host resource gate. Its ownership/transfer/failure requirements
 and alternative history-collector concerns are captured in the cost follow-up.
+
+## A15 anchored-image memo and host acceptance subset
+
+The [bounded a15 receipt](a15-image-memo-and-host-cost.json) retains artifact,
+interface, native, resource, ordinary comparison, cleanup and preservation
+evidence. Failed proof attempts remain separately identified.
+
+Source `193a929605b7dca0a03f57d4c672e3da439db5fd`, wheel
+`b359730d6a5435484513247ef9048cf109173a456fec5ef0ada16e6d6e2659d9`,
+and both separately installed profiles verify. The private memo retains at most
+32 read-only executable descriptors per provider plus validated file signatures
+and diagnostic digests. It retains no session state. Exact worker ownership,
+generation/context acceptance, failed transfer fallback, descriptor cleanup and
+SDK isolation are tested; current process/endpoint/UID/birth and image-signature
+guards remain mandatory. All 337 source tests and independent public conformance
+pass. API 1, snapshot/watch 3, write 1 and service 1 remain unchanged.
+
+Three-turn native state/activity, unchanged-age rename and source reconnect pass
+for both Codex hosts and Snap Claude. Independent exact-ID event-receipt runtime/
+history p95 is 1.346/2.226 seconds for Snap Codex, 1.724/2.037 for Starship Codex
+and 0.997/9.218 for Snap Claude. These clocks are separate from independent
+native-first-observation and provider transition time. Foreground question/exit
+passes; the held background question reaches cached `blocked/question` state
+0.790 seconds after independent detection and agrees across three held samples.
+Paired passive-listener lifetime passes on both Codex hosts. The quiet control's
+first delayed probe establishes absence, not an exact matching retirement time;
+the Snap lifetime publisher uses 20/60-second cadence rather than normal 30/120.
+
+The matched five-minute combined-provider Snap case retains 31 synthetic saved
+Claude rows, three scheduled native turns per provider, three healthy readers,
+one slow reader and 100 cached reads per mode. Polling/hints use 1.049/1.995
+percent of one core: **+0.946 percentage points**, now within the one-point CPU
+gate. Starship's matched Codex case measures 0.423/0.576 percent: **+0.153 points**.
+All scheduled native turns independently establish working, completion and new
+activity, and all healthy readers have zero errors/gaps. Snap's margin is only
+0.054 points; these finite native workloads do not establish a universal bound.
+
+Sampled aggregate RSS still fails the original 64 MiB limit: Snap polling/hints
+84.891/109.281 MiB, Starship 42.344/64.094 MiB. Incremental RSS is 24.391/21.750
+MiB. Starship exceeds the total target by 98,304 bytes; Snap's polling baseline
+already exceeds it. Sampling every 200 ms can miss brief peaks and is not a hard
+maximum. The CPU checkpoint is accepted for these controlled cases; memory is
+not. The unanswered incremental-versus-aggregate budget question is not approval,
+and P6 hint selection plus normal-unit 30-minute soaks remain withheld.
+
+Supplemental ordinary cached CLI comparisons use two independent native brackets
+per provider/host. Codex reports all 50 saved/two loaded identities on Snap and
+97/six on Starship with matching known states and age. Claude projects 31 of 32
+native candidates and all three running workers with matching known phases.
+One initial active conversation clock is 11.196 seconds behind the native clock;
+four later samples agree. This observes convergence without measuring its exact
+duration. The previously documented setup-only saved candidate remains absent,
+and partial coverage stays explicit. Recorded and latest conversation cwd can
+differ; older unloaded Codex kind/runtime remain unproved. These ordinary-store
+checks supplement controlled proof rather than replacing its latency/resource
+gate, and do not establish complete history classification.
+
+Both additional five-minute owned publishers over ordinary stores complete with
+three healthy readers, one slow reader and 100 cached reads. All readers have
+zero errors/gaps; cached-read p95 is 88.581 ms on Snap and 83.495 ms on Starship.
+Owned CPU is 3.823/1.342 percent and sampled aggregate RSS 113.508/67.277 MiB.
+These runs have no matched same-traffic polling pair, and cannot establish
+incremental CPU, hard resource maxima or long-term process/FD/watch stability.
+Their publishers and private sockets are gone; normal units were not restarted.
+
+Fresh both-host Codex recovery fixtures additionally prove unloaded saved rename
+in 9.817/9.801 seconds, unchanged conversation age and unchanged loaded sets.
+Daemon loss reaches unavailable runtime in 0.941/0.860 seconds; seven seconds
+of offline observation starts no daemon. Only explicit isolated native New
+starts a replacement, and the owning feed follows its new incarnation.
+
+The first Snap recovery attempt failed an immediate activity assertion after
+runtime readiness. It had not recorded the failing clock, so that attempt is
+not accepted. Review identified the missing distinction between runtime and
+history readiness after context replacement. The strengthened proof requires
+truthful stale `lastKnownAt` followed by independently bracketed fresh history
+within 15 seconds. A fresh Snap fixture reproduces stale history with its
+correct unchanged clock, then restores current history in 3.421 seconds after
+runtime readiness. Starship's strengthened fixture has a current initial clock
+and accepted fresh history in 0.606 seconds. The producer artifact is unchanged;
+the harness correction does not renew old evidence or weaken freshness checks.
+
+All eight Snap and six Starship a15 namespaces, including the failed attempt and
+paired controls, are stopped. Their actual `native-<host>` directories containing
+borrowed authentication/history are physically absent. This pass's configuration
+hashes, normal links, managed pins and enabled/active a8 unit PIDs match its own
+starting bookends on both hosts. Earlier unattributed whole-loop drift remains
+documented and was not restored. The native branch's entry/attach/parked/dialog
+limits above remain current. The selected a8 client handoff is updated; P5's
+aggregate memory gate and P6 remain open pending the explicit budget decision.

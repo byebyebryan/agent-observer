@@ -52,7 +52,13 @@ Claude native state/activity, foreground/background questions, reconnect and
 paired listener lifetime. Its matched combined Snap workload still misses the
 original CPU and aggregate-memory gates. A descriptor-anchored image-digest
 spike identifies a further cost lead; the private transfer protocol and its
-ownership/failure proof remain proposed. Neither the spike nor a14 selects hints.
+ownership/failure proof were reviewed separately before a15 implementation.
+A15 passes 337 source tests, public conformance and focused native state, question,
+age, reconnect and lifetime proof. Matched host CPU overhead is +0.946 points on
+combined-provider Snap and +0.153 on Codex-only Starship, meeting the original
+one-point target in those controlled workloads. Sampled aggregate RSS remains
+109.281/64.094 MiB, above the unchanged 64 MiB limit. A15 remains separately
+installed; normal units select a8 polling while the memory decision is pending.
 
 The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
 proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,
