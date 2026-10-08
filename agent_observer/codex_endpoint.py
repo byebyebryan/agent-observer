@@ -59,7 +59,18 @@ def _birth(proc_path):
         raise EndpointError("invalid_runtime_metadata") from None
 
 
-def _fingerprint(path, *, deadline):
+def _fingerprint(path, *, deadline, image_cache=None):
+    if image_cache is not None:
+        from .native_artifacts import _inspect_fd
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise EndpointError("binary_inspection_limit")
+        try:
+            with path.open("rb") as stream:
+                return _inspect_fd(stream.fileno(), "codex", timeout=remaining,
+                                   cache=image_cache).artifact.sha256
+        except ValueError:
+            raise EndpointError("runtime_image_inspection_failed") from None
     digest = hashlib.sha256()
     total = 0
     with path.open("rb") as stream:
@@ -92,6 +103,7 @@ def inspect_managed_endpoint(
     version: str | None = None,
     proc_root: Path = Path("/proc"),
     timeout: float = 3.0,
+    image_cache=None,
 ) -> RuntimeIdentity:
     """Verify the configured managed endpoint's owning executable incarnation.
 
@@ -180,7 +192,8 @@ def inspect_managed_endpoint(
             expected_stat.st_ino,
         ):
             raise EndpointError("runtime_peer_identity_mismatch")
-        actual_digest = _fingerprint(process / "exe", deadline=deadline)
+        image_args = {"image_cache": image_cache} if image_cache is not None else {}
+        actual_digest = _fingerprint(process / "exe", deadline=deadline, **image_args)
         matches = False
         for index, fd in enumerate((process / "fd").iterdir()):
             if index >= 4096 or time.monotonic() > deadline:

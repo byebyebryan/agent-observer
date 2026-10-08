@@ -96,13 +96,18 @@ class ServiceWorkspaceTest(unittest.TestCase):
                 self.assertGreater(len(wire), 16384)
                 self.assertLess(len(wire), MAX_CONFIG_BYTES + 16384)
                 self.assertEqual(json.loads(wire)["workspaceConfig"], config)
-                projected, _ = self.worker(json.loads(wire), scoped_snapshot())
+                replay = json.loads(wire)
+                self.assertIsInstance(replay.pop('imageMemoFd'), int)
+                runtime._close_memo_channel(process)
+                projected, _ = self.worker(replay, scoped_snapshot())
                 self.assertEqual(len(projected["sessions"]), len(scoped_snapshot()["sessions"]))
                 process.reset_mock()
                 with patch("agent_observer.service_runtime.subprocess.Popen", return_value=process):
                     runtime._spawn(Job("codex", "runtime", 0, 1000, 0, 0))
                 self.assertIsNone(json.loads(process.stdin.write.call_args.args[0])["workspaceConfig"])
+                runtime._close_memo_channel(process)
             finally:
+                for memo in runtime.image_memos.values(): memo.close()
                 runtime.selector.close()
 
     def test_invalid_configuration_fails_before_endpoint_or_provider_collection(self):

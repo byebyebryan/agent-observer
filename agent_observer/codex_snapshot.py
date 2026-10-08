@@ -87,6 +87,7 @@ def collect_codex(
     live_limit: int = 512,
     timeout: float = 10.0,
     include_history: bool = True,
+    image_cache=None,
 ):
     if (
         not isinstance(config_home, Path)
@@ -167,9 +168,11 @@ def collect_codex(
         }
 
     try:
+        image_args = {"image_cache": image_cache} if image_cache is not None else {}
         identity = inspect_managed_endpoint(
             config_home,
             timeout=min(3.0, remaining()),
+            **image_args,
         )
         runtime_info(identity)
         work_supported = WORK_STATE_ACCEPTED

@@ -16,6 +16,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ._image_memo import ImageMemo, receive as receive_memo, send as send_memo
 from .bounded_json import decode_document
 from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
@@ -163,6 +164,7 @@ class Runtime:
         self.counts = {"acceptedConnections": 0, "droppedConnections": 0, "frames": 0, "workerStarts": 0}
         self.native_hints, self.hint_factory = native_hints, hint_factory
         self.hint_diagnostics, self.hints = hint_diagnostics, None
+        self.image_memos = {provider: ImageMemo(provider) for provider in state.configs}
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -170,22 +172,68 @@ class Runtime:
                    "configHomeKind": self.state.configs[job.provider][1],
                    "timeoutMs": self.scheduler.timeout,
                    "workspaceConfig": self.workspace_config if job.component == "history" else None}
-        request = (canonical(payload) + "\n").encode()
-        if len(request) > MAX_CONFIG_BYTES + 16384:
-            raise ValueError("service_worker_request_limit")
-        process = subprocess.Popen(
-            [sys.executable, "-I", "-B", str(Path(__file__).with_name("_service_worker.py"))],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-            start_new_session=True,
-        )
+        parent, child, process = None, None, None
         try:
+            parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+            parent.setblocking(False)
+            payload['imageMemoFd'] = child.fileno()
+            request = (canonical(payload) + "\n").encode()
+            if len(request) > MAX_CONFIG_BYTES + 16384:
+                raise ValueError("service_worker_request_limit")
+            process = subprocess.Popen(
+                [sys.executable, "-I", "-B", str(Path(__file__).with_name("_service_worker.py"))],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                start_new_session=True, pass_fds=(child.fileno(),),
+            )
+            child.close()
+            child = None
+            process._observer_image_reply = parent
+            try:
+                send_memo(parent, self.image_memos[job.provider])
+            except (ValueError, OSError):
+                self.image_memos[job.provider].close()
+                self._close_memo_channel(process)
             process.stdin.write(request)
             process.stdin.close()
         except BaseException:
-            self._stop_worker(Worker(job, process))
-            process.stdout.close()
+            self.image_memos[job.provider].close()
+            if parent is not None:
+                parent.close()
+            if child is not None:
+                child.close()
+            if process is not None:
+                self._close_memo_channel(process)
+                try:
+                    self._stop_worker(Worker(job, process))
+                finally:
+                    process.stdout.close()
+                    try:
+                        process.stdin.close()
+                    except OSError:
+                        pass
             raise
         return process
+
+    @staticmethod
+    def _close_memo_channel(process):
+        channel = getattr(process, '_observer_image_reply', None)
+        process._observer_image_reply = None
+        if channel is not None:
+            channel.close()
+
+    def _take_image_memo(self, process, provider, *, eligible):
+        channel = getattr(process, '_observer_image_reply', None)
+        replacement = None
+        try:
+            if eligible and channel is not None:
+                try:
+                    replacement = receive_memo(channel, provider)
+                except (ValueError, OSError):
+                    pass
+        finally:
+            self._close_memo_channel(process)
+        self.image_memos[provider].close()
+        self.image_memos[provider] = replacement if replacement is not None else ImageMemo(provider)
 
     def _drop(self, peer):
         if peer not in self.peers:
@@ -350,6 +398,7 @@ class Runtime:
         exit_status = self._exit_status(process)
         self._stop_worker(worker)
         success = False
+        prior_context = self.state.contexts[provider]
         if not timed_out and exit_status == 0:
             try:
                 value = parse_snapshot(bytes(worker.buffer))
@@ -359,6 +408,10 @@ class Runtime:
                     success = True
             except (ValueError, OSError):
                 pass
+        eligible = success and prior_context is not None and prior_context == self.state.contexts[provider]
+        if success:
+            eligible = eligible and value['sources'][0]['runtime'] is not None and value['sources'][0]['coverage']['runtime']['status'] in {'complete', 'partial'}
+        self._take_image_memo(process, provider, eligible=eligible)
         self.scheduler.finish(worker.job, self.state.clock(), success=success)
         if not success:
             self.state.fail(provider, worker.job.component, "collection_timeout" if timed_out else "collection_failed")
@@ -398,8 +451,10 @@ class Runtime:
                             except (ValueError, OSError):
                                 if process is not None:
                                     self._stop_worker(Worker(job, process))
+                                    self._close_memo_channel(process)
                                     process.stdout.close()
                                     self.workers.pop(job.provider, None)
+                                self.image_memos[job.provider].close()
                                 self.scheduler.finish(job, now, success=False)
                                 self.state.fail(job.provider, job.component)
                     for peer in list(self.peers):
@@ -459,5 +514,8 @@ class Runtime:
                 self._drop(peer)
             for worker in list(self.workers.values()):
                 self._stop_worker(worker)
+                self._close_memo_channel(worker.process)
                 worker.process.stdout.close()
+            for memo in self.image_memos.values():
+                memo.close()
             self.selector.close()

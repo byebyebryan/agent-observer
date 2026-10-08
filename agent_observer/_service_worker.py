@@ -2,6 +2,7 @@
 
 import os
 import signal
+import socket
 import sys
 from pathlib import Path
 
@@ -27,7 +28,8 @@ def main():
 
     request_limit = MAX_CONFIG_BYTES + 16384
     request = decode_document(sys.stdin.buffer.read(request_limit + 1), max_bytes=request_limit)
-    if set(request) != {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig"}:
+    keys = {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig"}
+    if set(request) not in (keys, keys | {"imageMemoFd"}):
         raise ValueError("service_worker_request")
     if type(request["timeoutMs"]) is not int or not 1000 <= request["timeoutMs"] <= 30000:
         raise ValueError("service_worker_timeout")
@@ -46,25 +48,52 @@ def main():
     home = Path(request["configHome"])
     if request["configHomeKind"] not in {"explicit", "default"}:
         raise ValueError("service_worker_request")
-    if provider == "codex":
-        if request["configHomeKind"] != "explicit":
-            raise ValueError("service_worker_selector")
-        from agent_observer.codex_snapshot import collect_codex
-        native = collect_codex(home, host_scope=request["hostScope"], include_history=component == "history")
-    else:
-        if request["configHomeKind"] == "explicit":
-            os.environ["CLAUDE_CONFIG_DIR"] = str(home)
-        else:
-            if home != Path.home() / ".claude":
+    memo, channel = None, None
+    try:
+        if "imageMemoFd" in request:
+            from agent_observer._image_memo import ImageMemo, receive, send
+            descriptor = request['imageMemoFd']
+            if type(descriptor) is not int or not 3 <= descriptor <= 1048576:
+                raise ValueError("service_worker_memo_descriptor")
+            channel = socket.socket(fileno=descriptor)
+            os.set_inheritable(descriptor, False)
+            if channel.family != socket.AF_UNIX or channel.getsockopt(socket.SOL_SOCKET, socket.SO_TYPE) != socket.SOCK_SEQPACKET:
+                raise ValueError("service_worker_memo_channel")
+            channel.settimeout(.5)
+            try:
+                memo = receive(channel, provider)
+            except (ValueError, OSError):
+                memo = ImageMemo(provider)
+        image_args = {"image_cache": memo} if memo is not None else {}
+        if provider == "codex":
+            if request["configHomeKind"] != "explicit":
                 raise ValueError("service_worker_selector")
-            os.environ.pop("CLAUDE_CONFIG_DIR", None)
-        from agent_observer.claude_snapshot import collect_claude
-        native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history", owned_worker_group=True)
-    value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
-    if component == "history":
-        enrich(value, request["workspaceConfig"])
-    sys.stdout.write(canonical(value))
-    return 0
+            from agent_observer.codex_snapshot import collect_codex
+            native = collect_codex(home, host_scope=request["hostScope"], include_history=component == "history", **image_args)
+        else:
+            if request["configHomeKind"] == "explicit":
+                os.environ["CLAUDE_CONFIG_DIR"] = str(home)
+            else:
+                if home != Path.home() / ".claude":
+                    raise ValueError("service_worker_selector")
+                os.environ.pop("CLAUDE_CONFIG_DIR", None)
+            from agent_observer.claude_snapshot import collect_claude
+            native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history", owned_worker_group=True, **image_args)
+        value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
+        if component == "history":
+            enrich(value, request["workspaceConfig"])
+        if channel is not None:
+            try:
+                send(channel, memo)
+            except (ValueError, OSError):
+                pass
+        sys.stdout.write(canonical(value))
+        return 0
+    finally:
+        if memo is not None:
+            memo.close()
+        if channel is not None:
+            channel.close()
 
 
 if __name__ == "__main__":
