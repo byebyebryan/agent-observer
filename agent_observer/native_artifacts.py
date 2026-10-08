@@ -89,10 +89,16 @@ def _inspect_fd(fd, provider, *, timeout, cache=None):
         historical = historical_image(provider, actual_hash)
         artifact = Artifact(provider, historical.version if historical else "unknown",
                             actual_hash, "")
-        if cache is not None and len(cache) < 32:
-            cache[key] = artifact
     if _signature(os.fstat(fd)) != _signature(before):
         raise ValueError("runtime_artifact_changed")
+    if cache is not None:
+        remember = getattr(cache, "remember", None)
+        if remember is not None:
+            # The private cross-worker memo retains an exact open anchor;
+            # current descriptor checks above remain mandatory on every hit.
+            remember(fd, provider, _signature(before), artifact)
+        elif len(cache) < 32:
+            cache[key] = artifact
     return Inspection((before.st_dev, before.st_ino), artifact)
 
 

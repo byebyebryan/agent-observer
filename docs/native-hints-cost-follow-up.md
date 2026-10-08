@@ -213,6 +213,18 @@ publisher shutdown. The SDK subprocess keeps `close_fds=True` and receives none
 of these descriptors. This protocol remains private; it is not a new consumer
 capability or a change to service protocol 1.
 
+A15 implements this private memo and channel in source. Direct collections still
+use only their per-collection cache; the owned shared service supplies retained
+anchors to both providers' existing collectors. Tests use actual executable
+descriptors, surviving replaced processes, same-inode mutation with restored
+mtime, unsafe modes, fixed-capacity eviction, malformed/duplicate/truncated and
+excess descriptor transfers, real failed spawn and optional-send fallback,
+SDK descriptor isolation, exact-generation/context acceptance and an outer
+deadline with a transferred anchor plus nested helper. The Codex endpoint test
+repeats birth and listener ownership failures after a warm memo. Source acceptance
+does not assign the earlier spike's performance to this implementation; frozen
+native/resource acceptance and normal selection remain pending.
+
 Before a source checkpoint, independently exercise same-image reuse, mutation,
 replacement and surviving old workers, read-only descriptor validation, UID/mode
 changes, cache bounds/eviction, truncated or inconsistent transfer, worker and

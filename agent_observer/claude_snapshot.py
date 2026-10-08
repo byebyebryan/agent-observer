@@ -63,6 +63,7 @@ def collect_claude(
     host_scope: str,
     executable: Path = Path("/opt/claude-code/bin/claude"),
     include_history: bool = True,
+    image_cache=None,
     owned_worker_group: bool = False,
 ):
     if (
@@ -119,10 +120,9 @@ def collect_claude(
         namespace, boot_id = _namespace(config_home, config_home_kind)
         result["namespace"] = namespace
         installed_issue = None
-        # One collection only: share an already verified descriptor signature
-        # with resident-image checks. Every open/ownership/birth/fstat bookend
-        # remains in force; replaced or mutated images receive a different key.
-        image_cache = {}
+        # Direct reads share only within this collection. Owned service workers
+        # may supply a bounded descriptor-anchored memo; all current guards stay.
+        image_cache = {} if image_cache is None else image_cache
         try:
             artifact_identity = _verify_artifact(executable, cache=image_cache)
         except (CollectionError, OSError) as error:

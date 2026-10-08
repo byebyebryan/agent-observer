@@ -14,6 +14,7 @@ from agent_observer.codex_endpoint import (
     inspect_managed_endpoint,
     validate_incarnation,
 )
+from agent_observer._image_memo import ImageMemo
 
 
 class EndpointInspectionTest(unittest.TestCase):
@@ -75,13 +76,35 @@ class EndpointInspectionTest(unittest.TestCase):
         )
 
     def inspect(self, **changes):
+        image_args = {'image_cache':changes['image_cache']} if 'image_cache' in changes else {}
         return inspect_managed_endpoint(
             self.home,
             release=self.release,
             binary_sha256=changes.get("binary_sha256", self.fingerprint),
             version="0.160.0",
             proc_root=self.proc,
+            **image_args,
         )
+
+    def test_anchored_digest_does_not_replace_birth_or_listener_ownership_checks(self):
+        memo = ImageMemo('codex')
+        try:
+            first = self.inspect(image_cache=memo)
+            second = self.inspect(image_cache=memo)
+            self.assertEqual(first,second)
+            self.assertEqual(len(memo),1)
+            stat_path = self.proc/'123/stat'
+            stat_path.write_text('123 (synthetic comm) '+ ' '.join(['0']*19+['999','0'])+'\n')
+            with self.assertRaisesRegex(EndpointError,'runtime_incarnation_changed'):
+                validate_incarnation(first,proc_root=self.proc)
+            self.assertEqual(self.inspect(image_cache=memo).start_ticks,999)
+            link = self.proc/'123/fd/33'
+            link.unlink()
+            link.symlink_to('socket:[123456]')
+            with self.assertRaisesRegex(EndpointError,'runtime_owner_ambiguous'):
+                self.inspect(image_cache=memo)
+        finally:
+            memo.close()
 
     def test_exact_listener_owner_and_kernel_vs_filesystem_inode(self):
         identity = self.inspect()
