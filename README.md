@@ -48,6 +48,8 @@ and reselection. Its a9 candidate implements passive Codex global-event and
 Claude filesystem wakeups alongside polling. Controlled native runtime/history
 latency, feed recovery and lifetime cases pass; the resource target is not
 accepted, so a9 remains separately installed and normal units keep a8 polling.
+The separately installed a10 repair removes unnecessary scans from nested
+transcript traffic, with focused installed/native proof; cost acceptance remains pending.
 The
 [event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
 the remaining producer acceptance before hint rollout, separate from frontend work.

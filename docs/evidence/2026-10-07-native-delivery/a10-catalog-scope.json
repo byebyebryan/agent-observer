@@ -1,0 +1,217 @@
+{
+  "manifest": {
+    "manifestVersion": 2,
+    "package": "agent-observer",
+    "version": "0.4.0a10",
+    "sourceRevision": "2cd1bbc693c5c4553e61c0f177d2fe2a0e739271",
+    "wheel": "agent_observer-0.4.0a10-py3-none-any.whl",
+    "wheelSha256": "e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242",
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "apiVersion": 1,
+    "schemas": {
+      "snapshot": 3,
+      "watch": 3,
+      "write": 1
+    },
+    "claudeHistorySdk": "0.2.163",
+    "nativeContracts": [
+      "codex_managed_metadata_v1",
+      "claude_registry_job_metadata_v1",
+      "codex_tty_entry_v1",
+      "claude_background_attach_v1"
+    ],
+    "service": {
+      "protocol": 1,
+      "schemas": {
+        "request": 1,
+        "frame": 1
+      }
+    }
+  },
+  "installed": {
+    "snap": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+      "wheelSha256": "e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242",
+      "sourceRevision": "2cd1bbc693c5c4553e61c0f177d2fe2a0e739271",
+      "profile": "claude-history",
+      "version": "0.4.0a10",
+      "sdk": "0.2.163",
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    },
+    "starship": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+      "wheelSha256": "e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242",
+      "sourceRevision": "2cd1bbc693c5c4553e61c0f177d2fe2a0e739271",
+      "profile": "core",
+      "version": "0.4.0a10",
+      "sdk": null,
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    }
+  },
+  "installedControlledScope": {
+    "status": "accepted",
+    "evidenceClass": "installed_controlled_filesystem",
+    "prefixes": {
+      "before": "/home/bryan/.local/share/agent-observer/0.4.0a9-8165f9400fadaa50",
+      "after": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011"
+    },
+    "nestedWrites": 100,
+    "additionalHistoryReads": {
+      "before": 2,
+      "after": 0
+    },
+    "primaryAppendToCachedSeconds": 1.0641056089662015,
+    "historyReconciliationSeconds": 120,
+    "ordinaryProviderActions": false,
+    "borrowedAuthentication": false,
+    "nativeWorkflowClaimed": false,
+    "rawHistoryArchived": false
+  },
+  "nativeClaude": {
+    "status": "accepted",
+    "hostScope": "snap",
+    "provider": "claude",
+    "nativeId": "752ae9c3-dd3d-41e4-8957-87c3faca0d01",
+    "runtimeP95Seconds": 0.7963386570336297,
+    "historyP95Seconds": 1.980556700960733,
+    "samples": [
+      {
+        "stage": "new",
+        "component": "runtime",
+        "nativeObservedToViewSeconds": 0.045458773034624755,
+        "activityAt": null,
+        "phase": "unknown",
+        "latestHintRelativeToSampleMs": 201,
+        "nativeBracketStable": true,
+        "fields": [
+          "runtime",
+          "cwd"
+        ]
+      },
+      {
+        "stage": "working_0",
+        "component": "runtime",
+        "nativeObservedToViewSeconds": 0.4932750529842451,
+        "activityAt": null,
+        "phase": "working",
+        "latestHintRelativeToSampleMs": 0,
+        "nativeBracketStable": true,
+        "fields": [
+          "runtime",
+          "phase"
+        ]
+      },
+      {
+        "stage": "completed_0",
+        "component": "runtime",
+        "nativeObservedToViewSeconds": 0.7963386570336297,
+        "activityAt": 1791417391662,
+        "phase": "waiting",
+        "latestHintRelativeToSampleMs": 0,
+        "nativeBracketStable": true,
+        "fields": [
+          "runtime",
+          "phase"
+        ]
+      },
+      {
+        "stage": "activity_0",
+        "component": "history",
+        "nativeObservedToViewSeconds": 1.980556700960733,
+        "activityAt": 1791417400390,
+        "phase": "waiting",
+        "latestHintRelativeToSampleMs": 1526,
+        "nativeBracketStable": true,
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "stage": "rename",
+        "component": "history",
+        "nativeObservedToViewSeconds": 0.34895692201098427,
+        "activityAt": 1791417400390,
+        "phase": "waiting",
+        "latestHintRelativeToSampleMs": -1078,
+        "nativeBracketStable": true,
+        "fields": [
+          "title",
+          "activity"
+        ]
+      },
+      {
+        "stage": "reconnected",
+        "component": "history",
+        "nativeObservedToViewSeconds": 0.04954968299716711,
+        "activityAt": 1791417400390,
+        "phase": "waiting",
+        "latestHintRelativeToSampleMs": -6562,
+        "nativeBracketStable": true,
+        "fields": [
+          "runtime",
+          "activity"
+        ]
+      }
+    ],
+    "runtimeSamples": 3,
+    "historySamples": 3,
+    "sourceReconnectAccepted": true,
+    "passiveLoadedBookends": false,
+    "eventToViewLatencyClaimed": false,
+    "periodicIntervalsSeconds": [
+      30,
+      120
+    ],
+    "ordinaryProviderActions": false,
+    "nativeReferenceImportsObserver": false,
+    "terminalOutputPersisted": false
+  },
+  "costGateAccepted": false,
+  "fullCostSoakRerun": false,
+  "selectedNormalProducer": "0.4.0a8",
+  "unchangedCodexProductionBytes": {
+    "codex_hints.py": "66157cf070575b963c1b0c354799b2997c666554545a68732c31fe6507793952",
+    "codex_snapshot.py": "3be4afb58e5f9e7e5c69bddc2efbb378aebee228b1341968c9c528163439a331",
+    "codex_transport.py": "e39a6b518ba6e950072ae3535d66dbc953f85f49036d01af3ff1fefc276973d0",
+    "codex_endpoint.py": "b7e25aceb4f0690d43b2dba99fa170857d2bf5e8c58f3b2e440cb0a5b567c1f6",
+    "service_hints.py": "91a69e1ea669452973e1f9426dde2406eaa5315cfd9a755a0155f6ea8da90274",
+    "service_scheduler.py": "7de27774cc4e7c650a503c5b3c932912f21afec1be64a8df47f692ad0cb7055d",
+    "service_runtime.py": "52ac1d8ca288325368ece719aeddfa4bd64af6b8abc88fbcdc82fe5b599450ab"
+  },
+  "cleanup": {
+    "nativeNamespaceStopped": true,
+    "borrowedAuthAndNativeHistoryRemoved": true,
+    "syntheticStoreRemoved": true,
+    "ownedPublishersExited": true
+  },
+  "closingPreservation": {
+    "snap": {
+      "hashesUnchangedSinceA9Checkpoint": true,
+      "linksUnchanged": true,
+      "unitIncarnationUnchanged": true
+    },
+    "starship": {
+      "hashesUnchangedSinceA9Checkpoint": true,
+      "linksUnchanged": true,
+      "unitIncarnationUnchanged": true
+    }
+  }
+}

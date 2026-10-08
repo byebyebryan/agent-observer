@@ -180,3 +180,39 @@ six scoped Observer managed targets are delivered to both hosts. Starship's
 checkout and unrelated dirty chezmoi migration state are retained; installed
 artifact acceptance does not claim that its Observer checkout was synchronized.
 No source push, public package release or hosted CI result is claimed.
+
+## Follow-up: unnecessary nested history wakeups
+
+Source review found a concrete additional cost: a9 watches nested project/session/
+subagent directories, although the authoritative saved-history census reads only
+project-level transcripts. Child transcript writes therefore request full scans
+without changing the primary catalog. The repair scopes directory watches and
+history events to the same surface as discovery, retaining periodic reconciliation,
+overflow/root replacement recovery and direct job-state/registry wakeups.
+
+This is frozen separately as `0.4.0a10`, source
+`2cd1bbc693c5c4553e61c0f177d2fe2a0e739271`, wheel SHA256
+`e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242`, installed
+at `~/.local/share/agent-observer/0.4.0a10-e57b3e947e731011` on both hosts.
+The [manifest](../../../artifacts/observer-0.4.0a10.json) and
+[repair receipt](a10-catalog-scope.json) distinguish installed controlled and
+native evidence. Both artifact profiles pass byte/schema/entrypoint verification.
+
+Identical controlled synthetic filesystem activity produces two extra history
+reads for a9 and zero for a10 after 100 nested transcript writes; a primary
+append reaches a10's cached native-format activity clock in 1.064 seconds.
+This is installed filesystem integration, not native workflow proof. A separate
+disposable native Claude run accepts New, working/waiting, conversation activity,
+rename-age preservation and owned-helper reconnect at 30/120 cadence: three
+runtime samples p95 0.796 s and three history samples p95 1.981 s. One turn is
+focused regression coverage, not a replacement for a9's broader native matrix.
+Codex adapter/feed and shared scheduler/runtime production bytes are unchanged
+and explicitly compared in the receipt; no additional Codex native claim is made.
+
+The full resource comparison and 30-minute operational soaks are **not rerun**
+or accepted for a10. Removing unnecessary reads is a demonstrated source repair,
+not proof the original CPU/RSS targets now pass. Selected a8 stays unchanged.
+The additional sixth native namespace is stopped and borrowed credentials/history
+removed; both synthetic publisher processes and their owned history store are
+also removed. The current memory-budget clarification is pending; the original
+aggregate target remains in force and no hint-unit rollout occurs.
