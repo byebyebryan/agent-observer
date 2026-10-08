@@ -37,39 +37,19 @@ was enabled on Snap and Starship. At that a7 gate, restart/crash/rollback/
 reselection and both 30-minute normal-unit reader/resource checks passed. The report records
 remaining native entry, foreground attach and physical wake limits.
 
-The [remaining-gap investigation](docs/evidence/2026-10-07-gap-investigation/REPORT.md)
-accepts a separate installed a8 candidate: verified Claude foreground questions
-now report blocked, and configured polling intervals above five minutes are
-preserved. Both-host private Codex entry matrices explain native feature-default
-skew; foreground `/exit`, passive native hints and remote reconnect gain bounded
-proof. The subsequent [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md)
-promotes a8 on both hosts with verified old-to-new ownership, restart, rollback
-and reselection. Its a9 candidate implements passive Codex global-event and
-Claude filesystem wakeups alongside polling. Controlled native runtime/history
-latency, feed recovery and lifetime cases pass; the resource target is not
-accepted, so a9 remains separately installed and normal units keep a8 polling.
-The separately installed a10 repair removes unnecessary scans from nested
-transcript traffic, with focused installed/native proof; cost acceptance remains pending.
-The newer a11 candidate reduces SDK initialization cost with reviewed guarded
-metadata loading and exact saved-history projection equivalence. Independent
-event-clock, foreground Claude and passive listener checks pass; aggregate
-memory and managed hint acceptance remain separate. Normal units still select a8.
-The subsequent a12-a14 runtime and scheduling repairs retain that selected
-baseline. The [a14 receipt](docs/evidence/2026-10-07-native-delivery/a14-filter-and-host-cost.json)
-passes focused native state/activity/questions/reconnect/lifetime checks, but
-matched combined Snap cost still adds 2.086 CPU points and samples 131.402 MiB
-aggregate RSS. The [cost follow-up](docs/native-hints-cost-follow-up.md) records
-the remaining architecture and explicit memory-budget decision before rollout.
-The subsequent a15 descriptor-anchored image memo preserves the native inspection
-guards and passes 337 source tests. Its matched combined Snap and Starship cases
-now meet the one-point incremental CPU target, at +0.946 and +0.153 points.
-Its [bounded receipt](docs/evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
-also records ordinary comparisons and recovery. Sampled aggregate RSS remains
-above 64 MiB, at 109.281 and 64.094 MiB. A15 is
-installed separately; the original memory gate still withholds normal hint rollout.
-The
-[event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
-the remaining producer acceptance before hint rollout, separate from frontend work.
+The [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md) now
+selects `0.4.0a15` on Snap and Starship with passive native wakeups and periodic
+reconciliation. Snap supports Codex/Claude; Starship supports Codex. The
+[a15 receipt](docs/evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
+records supported state, question, age, rename, reconnect and listener-lifetime
+proof. Matched incremental CPU meets the one-point target (+0.946/+0.153 points).
+The user relaxed the 64 MiB aggregate RSS target to a review threshold; absolute
+and added RSS remain reported, with idle/collection PSS and stability measurements
+in the [managed rollout receipt](docs/evidence/2026-10-07-native-delivery/a15-managed-rollout.json).
+That separate operational gate records both-host restart/crash/rollback/reselection
+and normal-unit reader/resource checks. Earlier failed candidates retain their
+original evidence in the delivery report. Physical suspend/wake, provider entry
+repair, notifications and downstream migrations remain separate.
 
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
@@ -80,7 +60,7 @@ Required native contracts replace daily provider release/hash allowlists;
 actual executable identity and changed-context action guards remain enforced.
 
 The immutable a2 candidate is installed separately on both hosts. Normal
-Observer links now select a8/wire 3, and Agent Plus still uses its old frozen
+Observer links now select a15/wire 3, and Agent Plus still uses its old frozen
 wire-2 reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
 separate client migration; frontend and notification rollout have independent
 gates. No ordinary provider restart is needed for passive observation.

@@ -5,10 +5,11 @@ networking, native event signals, notification publication and firmware have
 separate implementation and delivery gates.
 
 This is the historical a7 operational record. The later
-[native delivery](evidence/2026-10-07-native-delivery/REPORT.md) selects a8 on both
-hosts with verified prior-to-new ownership, rollback and reselection. Its a9
-native hint candidate remains separately installed with resource acceptance and
-event-capable managed rollout pending.
+[native delivery](evidence/2026-10-07-native-delivery/REPORT.md) records a8
+promotion followed by a15 native-hint selection on both hosts, with independent
+artifact/native/cost and managed recovery/resource acceptance. Use the
+[current service handoff](shared-observation-service-handoff.md) for the exact
+selected tuple; the O0–O5 evidence below retains its original artifact bounds.
 
 ## Outcome and boundaries
 

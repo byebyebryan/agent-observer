@@ -1,25 +1,18 @@
 # Shared service implementation status
 
-Historical B0–B8 candidate record: 2026-10-06, with overnight evidence collected
-on 2026-10-07 UTC. The [2026-10-07 operational baseline](observer-operations-execution.md)
-selected a7 and a persistent Observer-only user unit on both hosts, added
-startup workspace configuration and accepted normal-unit restart/crash/rollback.
-The [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md) now selects a8
-on both hosts. Separately installed a9 implements passive native runtime/history
-wakeups; latency/recovery/lifetime subsets pass, but its provisional resource
-gate is not accepted. Normal units retain polling without hints. The
-[cost follow-up](native-hints-cost-follow-up.md) and current handoff supersede
-earlier selection statements below; earlier resource results remain historical.
-The separately installed a10 repair scopes Claude hints to the authoritative
-history catalog and passes installed noise/primary-append and focused native
-regression checks. It also remains unselected with cost/operational gates pending.
-The newer a11 candidate loads only the reviewed SDK metadata subtree in its
-audited helper, with exact real/synthetic projection equivalence and both-profile
-installation. Three-turn independent event clocks, foreground Claude question/
-exit and both-host paired listener retirement pass. Its
-[receipt](evidence/2026-10-07-native-delivery/a11-sdk-and-native.json) keeps those
-subsets separate from resource and managed rollout acceptance. A8 stays selected;
-the aggregate-memory gate is not cleared by lower SDK startup cost.
+Current selection: `0.4.0a15` on Snap and Starship, with native hints alongside
+periodic reconciliation. The [current handoff](shared-observation-service-handoff.md)
+records the exact artifact, endpoint, cadences and unchanged API/service versions.
+The [delivery report](evidence/2026-10-07-native-delivery/REPORT.md) separates
+native/cost acceptance from the managed rollout and longer reader/resource checks.
+The provisional 64 MiB aggregate RSS target was relaxed by the user to a review
+threshold; the one-point controlled incremental CPU target remains unchanged.
+Provider policy, frontend selection and physical wake retain separate gates.
+
+The B0–B8 table below is historical: its 2026-10-06 candidate evidence was
+collected on 2026-10-07 UTC. Later a7 operations, a8 promotion and a9–a15 repairs
+are documented in their own reports; current selection does not retroactively
+extend those exact-artifact proofs.
 The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
 defines B0–B8. Producer work and client development remain separate.
 
@@ -49,7 +42,7 @@ unchanged; service protocol 1 is separately prerelease.
 At the earlier B8 closure, normal Observer links still selected a11. Agent Plus retains its previous artifact
 and wire 2. That B8 batch selected no persistent service, provider policy, hook, network
 bridge or frontend. The later operational gate selects only Observer. The [producer handoff](shared-observation-service-handoff.md)
-gives current a8 commands and client obligations.
+gives current a15 commands and client obligations.
 
 ## Repairs accepted during validation
 

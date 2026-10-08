@@ -3,7 +3,9 @@
 Date: 2026-10-07. Status: reviewed investigation proposal, not production event
 wiring or a new public API. The [native investigation](evidence/2026-10-07-gap-investigation/REPORT.md)
 proves useful passive Codex global start/status hints and Claude registry wakeups
-within disposable contexts. The selected service still pushes scheduled reads.
+within disposable contexts. The subsequent [delivery](evidence/2026-10-07-native-delivery/REPORT.md) selects
+a15 native wakeups alongside scheduled reconciliation; the acceptance cases
+below retain their independent proof requirements.
 
 The [next-delivery execution plan](observer-next-delivery-plan.md) defines ordered
 checkpoints, provisional latency/cost targets, operational upgrade/rollback work
