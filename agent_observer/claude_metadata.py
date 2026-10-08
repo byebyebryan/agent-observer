@@ -749,6 +749,7 @@ def snapshot(
     namespace: str,
     runtime_version: str,
     binary_sha256: str | None,
+    image_cache=None,
 ) -> dict[str, Any]:
     """Read an allowlisted Claude metadata snapshot from an explicit config root.
 
@@ -999,7 +1000,7 @@ def snapshot(
     conflicted_jobs.update(duplicate_jobs)
 
     observations: list[dict[str, Any]] = []
-    image_cache = {}
+    image_cache = {} if image_cache is None else image_cache
     paired_jobs: set[str] = set()
     for record in registry_rows:
         job_id = record["jobId"]

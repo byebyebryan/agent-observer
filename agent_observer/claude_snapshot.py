@@ -37,9 +37,9 @@ class CollectionError(ValueError):
     """Finite failure code, without inspected native contents."""
 
 
-def _verify_artifact(path: Path, *, timeout: float = 3.0):
+def _verify_artifact(path: Path, *, timeout: float = 3.0, cache=None):
     try:
-        return inspect_installed(path, "claude", timeout=timeout)
+        return inspect_installed(path, "claude", timeout=timeout, cache=cache)
     except ValueError as exc:
         raise CollectionError(str(exc)) from None
 
@@ -119,8 +119,12 @@ def collect_claude(
         namespace, boot_id = _namespace(config_home, config_home_kind)
         result["namespace"] = namespace
         installed_issue = None
+        # One collection only: share an already verified descriptor signature
+        # with resident-image checks. Every open/ownership/birth/fstat bookend
+        # remains in force; replaced or mutated images receive a different key.
+        image_cache = {}
         try:
-            artifact_identity = _verify_artifact(executable)
+            artifact_identity = _verify_artifact(executable, cache=image_cache)
         except (CollectionError, OSError) as error:
             artifact_identity = None
             installed_issue = str(error) if isinstance(error, CollectionError) else "runtime_artifact_unavailable"
@@ -137,6 +141,7 @@ def collect_claude(
             namespace=namespace,
             runtime_version=artifact_identity.artifact.version if artifact_identity is not None else "unknown",
             binary_sha256=artifact_identity.artifact.sha256 if artifact_identity is not None else None,
+            image_cache=image_cache,
         )
         result["sessions"] = native["observations"]
         result["parkedSupported"] = native.get("parkedSupported") is True

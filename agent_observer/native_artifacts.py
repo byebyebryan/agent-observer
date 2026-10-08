@@ -96,7 +96,7 @@ def _inspect_fd(fd, provider, *, timeout, cache=None):
     return Inspection((before.st_dev, before.st_ino), artifact)
 
 
-def inspect_installed(path: Path, provider: str, *, timeout=3.0):
+def inspect_installed(path: Path, provider: str, *, timeout=3.0, cache=None):
     try:
         if provider not in {"codex", "claude"} or not path.is_absolute() or path.resolve(strict=True) != path:
             raise ValueError("runtime_image_ownership_mismatch")
@@ -104,7 +104,7 @@ def inspect_installed(path: Path, provider: str, *, timeout=3.0):
     except OSError:
         raise ValueError("runtime_artifact_unavailable") from None
     try:
-        value = _inspect_fd(fd, provider, timeout=timeout)
+        value = _inspect_fd(fd, provider, timeout=timeout, cache=cache)
         return replace(value, artifact=replace(value.artifact, path=str(path)))
     finally:
         os.close(fd)

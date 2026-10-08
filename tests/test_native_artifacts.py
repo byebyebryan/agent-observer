@@ -13,6 +13,34 @@ from agent_observer.native_artifacts import Artifact, inspect_installed, inspect
 
 
 class NativeArtifactTest(unittest.TestCase):
+    def test_collection_cache_shares_installed_and_resident_digest_without_skipping_guards(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "sleep"
+            shutil.copyfile("/usr/bin/sleep", path)
+            path.chmod(0o700)
+            process = subprocess.Popen([str(path), "30"])
+            original_sha256 = hashlib.sha256
+            try:
+                cache = {}
+                with patch.object(native_artifacts.hashlib, "sha256", wraps=original_sha256) as hashes:
+                    installed = inspect_installed(path, "claude", cache=cache)
+                    resident = inspect_process(process.pid, "claude", cache=cache, expected_path=path)
+                    self.assertEqual(installed.artifact.sha256, resident.artifact.sha256)
+                    self.assertEqual(hashes.call_count, 1)
+                    path.chmod(0o722)
+                    with self.assertRaisesRegex(ValueError, "runtime_image_ownership_mismatch"):
+                        inspect_process(process.pid, "claude", cache=cache, expected_path=path)
+                    path.chmod(0o700)
+                    replacement = path.with_name("replacement")
+                    replacement.write_bytes(path.read_bytes())
+                    replacement.chmod(0o700)
+                    replacement.replace(path)
+                    inspect_installed(path, "claude", cache=cache)
+                    self.assertEqual(hashes.call_count, 2)
+            finally:
+                process.terminate()
+                process.wait(timeout=5)
+
     def test_replaced_installed_file_does_not_erase_supported_resident_image(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "sleep"
