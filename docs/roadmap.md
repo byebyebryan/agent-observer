@@ -42,6 +42,11 @@ latency, source recovery and listener lifetime cases pass. Its resource gate is
 not accepted; a8 polling remains selected, and a9 hint-unit rollout/30-minute
 soaks are withheld. The [cost follow-up](native-hints-cost-follow-up.md) precedes
 that rollout. Physical wake, notifications and downstream migrations stay separate.
+The a10 catalog-scope repair and newer a11 guarded SDK-initialization repair are
+separately installed. A11 passes projection equivalence, independent native
+event clocks, foreground Claude and paired listener retirement. The original
+aggregate-memory target remains unmet; lower import cost does not complete P5
+or authorize P6. See the latest delivery receipts and cost follow-up.
 
 The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
 proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,

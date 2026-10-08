@@ -48,7 +48,7 @@ but the provisional resource gate is not accepted. Do not treat its installation
 as normal selection or enable its hints in the managed unit. The
 [cost follow-up](native-hints-cost-follow-up.md) defines the remaining producer work.
 
-The latest source repair is separately installed `0.4.0a10`, source
+The catalog repair is separately installed `0.4.0a10`, source
 `2cd1bbc693c5c4553e61c0f177d2fe2a0e739271`, wheel SHA256
 `e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242`, prefix
 `0.4.0a10-e57b3e947e731011` on both hosts. Its
@@ -58,6 +58,27 @@ Claude watches to the project-level saved-history surface. Nested transcript
 noise no longer requests catalog scans; primary activity/title still wakes reads.
 Installed controlled comparison and one-turn native Claude regression pass.
 Broader cost/operational acceptance remains pending; a10 is also unselected.
+
+The latest separately installed candidate is `0.4.0a11`, source
+`28179263ea45d2315350aad0061f52d13bdefb33`, wheel SHA256
+`80b3f82e577b566656b4b3752e0057f89aa46baa23c9fa7742d0d7b9128bb923`, prefix
+`0.4.0a11-80b3f82e577b5666` on both hosts. Its
+[manifest](../artifacts/observer-0.4.0a11.json) and
+[installed/native receipt](evidence/2026-10-07-native-delivery/a11-sdk-and-native.json)
+bind a reviewed, guarded SDK metadata-only initialization and unchanged public
+schemas. Real copied-history and synthetic companion/omitted-kind projections
+match a10 exactly. The helper remains isolated, audited and deadline bounded;
+SDK files/parsers are not patched. The SDK lock is an Observer dependency.
+
+Three-turn event-to-view runtime p95 is 1.431 s on Snap Codex, 1.233 s on Starship
+Codex and 0.703 s on Snap Claude; history p95 is 2.299, 1.982 and 10.164 s.
+These are small controlled exact-ID samples, not native transition-time or
+lossless event guarantees. Foreground Claude question/exit and both-host paired
+retirement pass. Ordinary CLI/native comparisons retain known partial saved
+Claude coverage and unknown older Codex kinds. A11 remains unselected: the
+original aggregate-memory gate is unmet, and P6's managed restart/crash/rollback/
+30-minute acceptance is pending. Clients should keep the explicit selected a8
+endpoint unless intentionally evaluating an unselected candidate.
 
 ## Reproducible local entry
 

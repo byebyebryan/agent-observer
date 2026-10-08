@@ -33,9 +33,35 @@ the measurement completed, not that this delivery gate passed.
 
 One suppressed-output cProfile scan spent 0.946 of 1.114 seconds in SDK imports,
 loading client/MCP/model machinery before read-only history projection. This is
-a useful lead, not proof that bypassing SDK initialization is safe. A bespoke
-loader under a private package alias would add SDK coupling merely to save
-startup cost; none was introduced. Raw history was never archived.
+a useful lead, not proof that bypassing SDK initialization is safe. The separate
+[binding review](sdk-metadata-loading-review.md) now bounds that private SDK
+dependency, preserves the immutable audit guard and requires equivalence/native
+proof. Its separately installed a11 candidate returns identical projections on
+31 real copied rows, reducing that sample's CPU from 0.833 to 0.184 seconds.
+Synthetic companion/omitted-kind cases also agree. Raw history was never archived;
+copied stores were removed. This is a dependency initialization repair, not a
+new public API or provider-version compatibility filter.
+
+The [a11 installed/native receipt](evidence/2026-10-07-native-delivery/a11-sdk-and-native.json)
+adds three-turn independent event clocks, both-host Codex passive-listener
+retirement and foreground Claude question/exit regressions. Event receipt is
+measured separately from native-first-observation and provider transition time.
+The [matched resource receipt](evidence/2026-10-07-native-delivery/a11-resources.json)
+shows a11 saved-metadata CPU delta within one point, but real Claude turns add
+2.311 points and miss that gate. Real Starship Codex turns add 0.766 points.
+Aggregate RSS also exceeds 64 MiB. Source, artifact and native subsets therefore
+do not authorize hint selection. The normal a8 units remain selected while the
+CPU repair and explicit budget decision are completed. ChezmoI's optional hint
+flags default off; a8 rejects enabling them.
+
+A focused runtime profile spends 0.384 of 0.388 seconds in executable inspection,
+including separately hashing the installed CLI and the same resident image.
+A12 shares the existing provider/full-descriptor-signature cache only within one
+collection. Opens, ownership, process birth, signature bookends and replacement/
+mutation rejection remain mandatory. There is no persisted/cross-request image
+cache or cached session state. Distinct surviving images are still independently
+hashed. Its 317 source tests and separate installation do not establish improved
+native cost; repeat the identical native workload before accepting that claim.
 
 ## Next bounded producer pass
 

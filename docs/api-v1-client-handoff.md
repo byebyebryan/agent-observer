@@ -7,9 +7,10 @@ The [current service handoff](shared-observation-service-handoff.md) supersedes
 this historical a2 installation tuple: normal Observer links and the user unit
 now select a8, while Agent Plus keeps its old frozen reader. API v1 is unchanged;
 service protocol 1 remains separately prerelease. The current handoff also records
-the selected a8 tuple and separately installed a9 hint candidate; choose an
-explicit producer artifact/endpoint before client work. A9's resource gate is
-not accepted. See the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md).
+the selected a8 tuple and separately installed a9-a11 hint candidates; choose an
+explicit producer artifact/endpoint before client work. A11 preserves this API
+and narrows SDK initialization, but the resource/managed hint gate remains
+unaccepted. See the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md).
 
 ## Historical accepted producer and selected baseline
 

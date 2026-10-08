@@ -1,0 +1,2247 @@
+{
+  "status": "original_resource_gate_not_accepted",
+  "originalTargets": {
+    "incrementalMeanCpuPercentagePoints": 1,
+    "aggregateRssMiB": 64
+  },
+  "matchedSyntheticMetadata": {
+    "a10": {
+      "status": "measured",
+      "evidenceClass": "installed_controlled_synthetic_metadata",
+      "provider": "claude",
+      "nativeWorkflowClaimed": false,
+      "durationPerModeSeconds": 300,
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+      "workloads": {
+        "quiet": {
+          "polling": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.149,
+            "serviceId": "d163bfb5-b297-4ed4-ae5f-dc7c5adb2f91",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 62.19394598156214,
+            "readMaxMs": 64.38359396997839,
+            "readBatchMs": 5592,
+            "payloadBytes": 51283,
+            "serviceAndReapedChildrenCpuMs": 4580.0,
+            "oneCoreCpuPercent": 1.5259087986300137,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 120700928,
+            "peakAggregateFds": 18,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 458233399,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 458143399
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 458503582,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 458143582
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/quiet-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f87f6ca110c1fbac7bf3c9287cc9d49fc8d6116e03cd14e6a0f6ca0ef303b3e2",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 458535598,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 458445598
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 458745348,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 458385348
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/quiet-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f87f6ca110c1fbac7bf3c9287cc9d49fc8d6116e03cd14e6a0f6ca0ef303b3e2",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "quiet",
+            "savedRows": 31,
+            "scriptedActions": [],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "hints": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.143,
+            "serviceId": "0b6304f0-2640-4d42-a22b-bbcad633272f",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 100.01807898515835,
+            "readMaxMs": 110.50429404713213,
+            "readBatchMs": 7135,
+            "payloadBytes": 51217,
+            "serviceAndReapedChildrenCpuMs": 4850.0,
+            "oneCoreCpuPercent": 1.615896422705177,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 149372928,
+            "peakAggregateFds": 24,
+            "peakOwnedProcesses": 4,
+            "independentReaders": [
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 458547949,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 458457949
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 458817077,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 458457077
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/quiet-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:233882fd9f027b5504b73885299f711db31affeafcedf7b7bb4372f1cf3cca20",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 12,
+                    "attempts": 12,
+                    "expiresBoottimeMs": 458850113,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 458760113
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 459058641,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 458698641
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/quiet-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:233882fd9f027b5504b73885299f711db31affeafcedf7b7bb4372f1cf3cca20",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "quiet",
+            "savedRows": 31,
+            "scriptedActions": [],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "observedCpuDeltaPercentagePoints": 0.08998762407516336,
+          "observedRssDeltaBytes": 28672000
+        },
+        "active": {
+          "polling": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.17,
+            "serviceId": "a5116d57-b04b-4c1e-a69c-cea0fb786cda",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 67.20275600673631,
+            "readMaxMs": 70.20897400798276,
+            "readBatchMs": 6181,
+            "payloadBytes": 51316,
+            "serviceAndReapedChildrenCpuMs": 4590.0,
+            "oneCoreCpuPercent": 1.5291334910217544,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 127418368,
+            "peakAggregateFds": 18,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 458860446,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 458770446
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 459130617,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 458770617
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/active-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:ba51699ef82a6170735b1bc4c85e71f771c98fc2e590a70aa05a3c85283eaa0c",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 459162618,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459072618
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 459372347,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459012347
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/active-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:ba51699ef82a6170735b1bc4c85e71f771c98fc2e590a70aa05a3c85283eaa0c",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "active",
+            "savedRows": 31,
+            "scriptedActions": [
+              {
+                "scheduledOffsetSeconds": 40,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 80,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 120,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 160,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 200,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 240,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 280,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              }
+            ],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "hints": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a10-e57b3e947e731011",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.133,
+            "serviceId": "390f14a5-9c53-43b8-8e7b-b6aca837a444",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 58.21060203015804,
+            "readMaxMs": 60.105279029812664,
+            "readBatchMs": 5526,
+            "payloadBytes": 51250,
+            "serviceAndReapedChildrenCpuMs": 8710.0,
+            "oneCoreCpuPercent": 2.902046759270057,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 149594112,
+            "peakAggregateFds": 23,
+            "peakOwnedProcesses": 4,
+            "independentReaders": [
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 459175015,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459085015
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 459444149,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459084149
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/active-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:39e6de3687eb57d953cdc52351db9c879d4eb6aeb7b6119c0b253ae5596d4064",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 12,
+                    "attempts": 12,
+                    "expiresBoottimeMs": 459477195,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459387195
+                  },
+                  {
+                    "accepted": 8,
+                    "attempts": 8,
+                    "expiresBoottimeMs": 459737340,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459377340
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-pair-v8tdfktn/active-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:39e6de3687eb57d953cdc52351db9c879d4eb6aeb7b6119c0b253ae5596d4064",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "active",
+            "savedRows": 31,
+            "scriptedActions": [
+              {
+                "scheduledOffsetSeconds": 40,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 80,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 120,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 160,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 200,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 240,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 280,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              }
+            ],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "observedCpuDeltaPercentagePoints": 1.3729132682483025,
+          "observedRssDeltaBytes": 22175744
+        }
+      },
+      "ownedSyntheticHistoryRemoved": true,
+      "ordinaryProviderActions": false,
+      "managedSelectionChanged": false
+    },
+    "a11": {
+      "status": "measured",
+      "evidenceClass": "installed_controlled_synthetic_metadata",
+      "provider": "claude",
+      "nativeWorkflowClaimed": false,
+      "durationPerModeSeconds": 300,
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+      "workloads": {
+        "quiet": {
+          "polling": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.11,
+            "serviceId": "b7420ff9-0f46-46f7-9452-3d828a142f90",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 62.12541199056432,
+            "readMaxMs": 67.41856201551855,
+            "readBatchMs": 5655,
+            "payloadBytes": 51250,
+            "serviceAndReapedChildrenCpuMs": 3760.0,
+            "oneCoreCpuPercent": 1.2528739462197194,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 46964736,
+            "peakAggregateFds": 14,
+            "peakOwnedProcesses": 2,
+            "independentReaders": [
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 459647914,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459557914
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 459918104,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459558104
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/quiet-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:fda69389b859f0a4cfe3ca806f89ddff3b1491b54f928fb9efb53e4ae40827b3",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 459950178,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459860178
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 460158799,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459798799
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/quiet-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:fda69389b859f0a4cfe3ca806f89ddff3b1491b54f928fb9efb53e4ae40827b3",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "quiet",
+            "savedRows": 31,
+            "scriptedActions": [],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "hints": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.225,
+            "serviceId": "8e15218f-4f49-4327-aa94-1b7bfea750a4",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 65.82423497457057,
+            "readMaxMs": 75.82356297643855,
+            "readBatchMs": 5911,
+            "payloadBytes": 51184,
+            "serviceAndReapedChildrenCpuMs": 3750.0,
+            "oneCoreCpuPercent": 1.2490632025980515,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 91566080,
+            "peakAggregateFds": 23,
+            "peakOwnedProcesses": 4,
+            "independentReaders": [
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 459961947,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 459871947
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 460231090,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 459871090
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/quiet-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:21f0ad8ae38cd958b314ccd7b2c59fa2c9d840b4101496d6bca07917be2cde7b",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 12,
+                    "attempts": 12,
+                    "expiresBoottimeMs": 460264080,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 460174080
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 460471673,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 460111673
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/quiet-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:21f0ad8ae38cd958b314ccd7b2c59fa2c9d840b4101496d6bca07917be2cde7b",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "quiet",
+            "savedRows": 31,
+            "scriptedActions": [],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "observedCpuDeltaPercentagePoints": -0.003810743621667889,
+          "observedRssDeltaBytes": 44601344
+        },
+        "active": {
+          "polling": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.2,
+            "serviceId": "506286b8-4a0e-4a0e-8e64-8d52354998ce",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 67.30890803737566,
+            "readMaxMs": 69.99663199530914,
+            "readBatchMs": 5924,
+            "payloadBytes": 51283,
+            "serviceAndReapedChildrenCpuMs": 3650.0,
+            "oneCoreCpuPercent": 1.2158560959360427,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 46776320,
+            "peakAggregateFds": 14,
+            "peakOwnedProcesses": 2,
+            "independentReaders": [
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 460274005,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 460184005
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 460544205,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 460184205
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/active-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f510d7651d981ec69b094387d524d1794fc87de6cd7006fdfa5e932117010751",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 460576204,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 460486204
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 460784821,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 460424821
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/active-polling/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f510d7651d981ec69b094387d524d1794fc87de6cd7006fdfa5e932117010751",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "active",
+            "savedRows": 31,
+            "scriptedActions": [
+              {
+                "scheduledOffsetSeconds": 40,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 80,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 120,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 160,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 200,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 240,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 280,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              }
+            ],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "hints": {
+            "hostScope": "cost-fixture",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.128,
+            "serviceId": "e945dbdb-3abc-46d7-aff5-3dc20f859d38",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 69.30488697253168,
+            "readMaxMs": 79.8898939974606,
+            "readBatchMs": 6137,
+            "payloadBytes": 51217,
+            "serviceAndReapedChildrenCpuMs": 5190.0,
+            "oneCoreCpuPercent": 1.7292621814692397,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 86224896,
+            "peakAggregateFds": 23,
+            "peakOwnedProcesses": 4,
+            "independentReaders": [
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 39,
+                "views": 18,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 460588141,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 460498141
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 460857302,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 460497302
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/active-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:1a34756f0bf9e1e54f1996d3491a970916eaf1be392e14bc2b0f94dda55480d0",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 12,
+                    "attempts": 12,
+                    "expiresBoottimeMs": 460890212,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 460800212
+                  },
+                  {
+                    "accepted": 8,
+                    "attempts": 8,
+                    "expiresBoottimeMs": 461149991,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 460789991
+                  }
+                ],
+                "configHome": "/tmp/ao-cost-a11-64xapdsy/active-hints/history",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:1a34756f0bf9e1e54f1996d3491a970916eaf1be392e14bc2b0f94dda55480d0",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false,
+            "evidenceClass": "installed_controlled_synthetic_metadata",
+            "workload": "active",
+            "savedRows": 31,
+            "scriptedActions": [
+              {
+                "scheduledOffsetSeconds": 40,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 80,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 120,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 160,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 200,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 240,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              },
+              {
+                "scheduledOffsetSeconds": 280,
+                "primaryAppends": 1,
+                "nestedWrites": 100
+              }
+            ],
+            "nativeWorkflowClaimed": false,
+            "borrowedAuthentication": false
+          },
+          "observedCpuDeltaPercentagePoints": 0.513406085533197,
+          "observedRssDeltaBytes": 39448576
+        }
+      },
+      "ownedSyntheticHistoryRemoved": true,
+      "ordinaryProviderActions": false,
+      "managedSelectionChanged": false
+    }
+  },
+  "ordinaryNativeHints": {
+    "snap": {
+      "hostScope": "snap",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+      "providers": [
+        "codex",
+        "claude"
+      ],
+      "runtimeIntervalSeconds": 30.0,
+      "historyIntervalSeconds": 120.0,
+      "nativeHints": true,
+      "startupSettledSeconds": 12,
+      "status": "accepted",
+      "durationSeconds": 300.241,
+      "serviceId": "69e1fdd7-e713-4c49-94ca-521aa3784af8",
+      "serviceProtocol": 1,
+      "readSamples": 100,
+      "readP95Ms": 105.4084460483864,
+      "readMaxMs": 112.16228600824252,
+      "readBatchMs": 9411,
+      "payloadBytes": 132085,
+      "serviceAndReapedChildrenCpuMs": 24560.0,
+      "oneCoreCpuPercent": 8.180095323423517,
+      "existingManagedUserUnit": false,
+      "unitMemoryPeakBytes": null,
+      "peakAggregateRssBytes": 135397376,
+      "peakAggregateFds": 33,
+      "peakOwnedProcesses": 6,
+      "independentReaders": [
+        {
+          "frames": 53,
+          "views": 42,
+          "gaps": 0,
+          "errors": 0
+        },
+        {
+          "frames": 53,
+          "views": 42,
+          "gaps": 0,
+          "errors": 0
+        },
+        {
+          "frames": 53,
+          "views": 42,
+          "gaps": 0,
+          "errors": 0
+        }
+      ],
+      "slowReaderConnectedWithoutReading": true,
+      "initialSources": [
+        {
+          "components": [
+            {
+              "accepted": 2,
+              "attempts": 2,
+              "expiresBoottimeMs": 460109474,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460019474
+            },
+            {
+              "accepted": 1,
+              "attempts": 1,
+              "expiresBoottimeMs": 460378272,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460018272
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        },
+        {
+          "components": [
+            {
+              "accepted": 2,
+              "attempts": 2,
+              "expiresBoottimeMs": 460109243,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460019243
+            },
+            {
+              "accepted": 1,
+              "attempts": 1,
+              "expiresBoottimeMs": 460378523,
+              "health": "partial",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460018523
+            }
+          ],
+          "configHome": "/home/bryan/.claude",
+          "configHomeKind": "default",
+          "contextGeneration": 1,
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "provider": "claude"
+        }
+      ],
+      "finalSources": [
+        {
+          "components": [
+            {
+              "accepted": 12,
+              "attempts": 12,
+              "expiresBoottimeMs": 460412523,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460322523
+            },
+            {
+              "accepted": 3,
+              "attempts": 3,
+              "expiresBoottimeMs": 460620757,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460260757
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        },
+        {
+          "components": [
+            {
+              "accepted": 13,
+              "attempts": 13,
+              "expiresBoottimeMs": 460410356,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460320356
+            },
+            {
+              "accepted": 19,
+              "attempts": 19,
+              "expiresBoottimeMs": 460691142,
+              "health": "partial",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460331142
+            }
+          ],
+          "configHome": "/home/bryan/.claude",
+          "configHomeKind": "default",
+          "contextGeneration": 1,
+          "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+          "provider": "claude"
+        }
+      ],
+      "ordinaryProviderActions": false,
+      "selectedLinksChanged": false
+    },
+    "starship": {
+      "hostScope": "starship",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+      "providers": [
+        "codex"
+      ],
+      "runtimeIntervalSeconds": 20.0,
+      "historyIntervalSeconds": 60.0,
+      "nativeHints": true,
+      "startupSettledSeconds": 12,
+      "status": "accepted",
+      "durationSeconds": 300.166,
+      "serviceId": "770874d9-efea-4f00-a58d-93c78ceac4e9",
+      "serviceProtocol": 1,
+      "readSamples": 100,
+      "readP95Ms": 76.80243405047804,
+      "readMaxMs": 97.75505098514259,
+      "readBatchMs": 7352,
+      "payloadBytes": 146646,
+      "serviceAndReapedChildrenCpuMs": 8300.0,
+      "oneCoreCpuPercent": 2.7651366244011646,
+      "existingManagedUserUnit": false,
+      "unitMemoryPeakBytes": null,
+      "peakAggregateRssBytes": 70823936,
+      "peakAggregateFds": 19,
+      "peakOwnedProcesses": 3,
+      "independentReaders": [
+        {
+          "frames": 47,
+          "views": 27,
+          "gaps": 0,
+          "errors": 0
+        },
+        {
+          "frames": 47,
+          "views": 27,
+          "gaps": 0,
+          "errors": 0
+        },
+        {
+          "frames": 47,
+          "views": 27,
+          "gaps": 0,
+          "errors": 0
+        }
+      ],
+      "slowReaderConnectedWithoutReading": true,
+      "initialSources": [
+        {
+          "components": [
+            {
+              "accepted": 2,
+              "attempts": 2,
+              "expiresBoottimeMs": 460494690,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460434690
+            },
+            {
+              "accepted": 1,
+              "attempts": 1,
+              "expiresBoottimeMs": 460613046,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460433046
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "finalSources": [
+        {
+          "components": [
+            {
+              "accepted": 20,
+              "attempts": 20,
+              "expiresBoottimeMs": 460805475,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 460745475
+            },
+            {
+              "accepted": 9,
+              "attempts": 10,
+              "expiresBoottimeMs": 460885145,
+              "health": "current",
+              "inFlight": true,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 460705145
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "ordinaryProviderActions": false,
+      "selectedLinksChanged": false
+    }
+  },
+  "independentOwnedProcessCounters": {
+    "snap": {
+      "status": "measured",
+      "evidenceClass": "independent_owned_proc_counters",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+      "serviceId": "69e1fdd7-e713-4c49-94ca-521aa3784af8",
+      "durationSeconds": 180.1958460159949,
+      "samples": 894,
+      "roleMaximaNotSimultaneous": {
+        "publisher": {
+          "rssBytes": 24707072,
+          "fds": 13,
+          "watches": 0,
+          "processes": 1
+        },
+        "unknown_hint": {
+          "rssBytes": 43945984,
+          "fds": 8,
+          "watches": 18,
+          "processes": 2
+        },
+        "collector": {
+          "rssBytes": 45662208,
+          "fds": 9,
+          "watches": 0,
+          "processes": 2
+        },
+        "claude_metadata": {
+          "rssBytes": 26501120,
+          "fds": 4,
+          "watches": 0,
+          "processes": 1
+        }
+      },
+      "twentySecondWindows": [
+        {
+          "offsetSeconds": 0,
+          "peakRssBytes": 116572160,
+          "peakFds": 28,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 20,
+          "peakRssBytes": 111222784,
+          "peakFds": 28,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 40,
+          "peakRssBytes": 116699136,
+          "peakFds": 28,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 60,
+          "peakRssBytes": 68382720,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 80,
+          "peakRssBytes": 92377088,
+          "peakFds": 24,
+          "peakProcesses": 4,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 100,
+          "peakRssBytes": 116854784,
+          "peakFds": 28,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 120,
+          "peakRssBytes": 116756480,
+          "peakFds": 28,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 140,
+          "peakRssBytes": 116621312,
+          "peakFds": 29,
+          "peakProcesses": 5,
+          "peakInotifyWatches": 18
+        },
+        {
+          "offsetSeconds": 160,
+          "peakRssBytes": 138117120,
+          "peakFds": 33,
+          "peakProcesses": 6,
+          "peakInotifyWatches": 18
+        }
+      ],
+      "importsObserver": false,
+      "providerIo": false,
+      "managedSelectionChanged": false
+    },
+    "starship": {
+      "status": "measured",
+      "evidenceClass": "independent_owned_proc_counters",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+      "serviceId": "770874d9-efea-4f00-a58d-93c78ceac4e9",
+      "durationSeconds": 180.06730992201483,
+      "samples": 897,
+      "roleMaximaNotSimultaneous": {
+        "publisher": {
+          "rssBytes": 25165824,
+          "fds": 17,
+          "watches": 0,
+          "processes": 1
+        },
+        "unknown_hint": {
+          "rssBytes": 22331392,
+          "fds": 4,
+          "watches": 0,
+          "processes": 1
+        },
+        "collector": {
+          "rssBytes": 23388160,
+          "fds": 4,
+          "watches": 0,
+          "processes": 1
+        }
+      },
+      "twentySecondWindows": [
+        {
+          "offsetSeconds": 0,
+          "peakRssBytes": 70668288,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 20,
+          "peakRssBytes": 70541312,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 40,
+          "peakRssBytes": 70823936,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 60,
+          "peakRssBytes": 70529024,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 80,
+          "peakRssBytes": 70561792,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 100,
+          "peakRssBytes": 68681728,
+          "peakFds": 24,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 120,
+          "peakRssBytes": 70729728,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 140,
+          "peakRssBytes": 70696960,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        },
+        {
+          "offsetSeconds": 160,
+          "peakRssBytes": 68866048,
+          "peakFds": 19,
+          "peakProcesses": 3,
+          "peakInotifyWatches": 0
+        }
+      ],
+      "importsObserver": false,
+      "providerIo": false,
+      "managedSelectionChanged": false
+    }
+  },
+  "nativeWorkloadCostComparison": "Claude and Starship Codex complete; native fixtures and authentication removed",
+  "cpuEvidenceLimit": "Matched saved-metadata CPU passes, but the fresh native Claude workload misses the one-point incremental CPU target. Ordinary traffic is not an equivalent-mode comparison.",
+  "memoryBudgetDecision": "pending_explicit_clarification_original_aggregate_retained",
+  "managedHintSelectionChanged": false,
+  "ordinaryProviderActions": false,
+  "matchedNativeClaude": {
+    "status": "measured",
+    "evidenceClass": "installed_controlled_native_claude",
+    "cases": {
+      "polling": {
+        "status": "measured",
+        "evidenceClass": "installed_controlled_native_claude",
+        "mode": "polling",
+        "syntheticSavedRows": 31,
+        "liveNativeSessions": 1,
+        "scriptedNativeTurns": [
+          {
+            "scheduledOffsetSeconds": 40,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791420823165
+          },
+          {
+            "scheduledOffsetSeconds": 120,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791420902722
+          },
+          {
+            "scheduledOffsetSeconds": 200,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791420982867
+          }
+        ],
+        "nativeId": "63467945-fab1-400f-a5b1-eef480318f92",
+        "resources": {
+          "hostScope": "snap",
+          "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+          "providers": [
+            "claude"
+          ],
+          "runtimeIntervalSeconds": 30.0,
+          "historyIntervalSeconds": 120.0,
+          "nativeHints": false,
+          "startupSettledSeconds": 12,
+          "status": "accepted",
+          "durationSeconds": 300.108,
+          "serviceId": "090b172e-f217-4604-9721-1e1e692beefe",
+          "serviceProtocol": 1,
+          "readSamples": 100,
+          "readP95Ms": 67.22759600961581,
+          "readMaxMs": 71.80881302338094,
+          "readBatchMs": 6016,
+          "payloadBytes": 59258,
+          "serviceAndReapedChildrenCpuMs": 5470.0,
+          "oneCoreCpuPercent": 1.8226771695522943,
+          "existingManagedUserUnit": false,
+          "unitMemoryPeakBytes": null,
+          "peakAggregateRssBytes": 47161344,
+          "peakAggregateFds": 14,
+          "peakOwnedProcesses": 2,
+          "independentReaders": [
+            {
+              "frames": 39,
+              "views": 13,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 39,
+              "views": 13,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 39,
+              "views": 13,
+              "gaps": 0,
+              "errors": 0
+            }
+          ],
+          "slowReaderConnectedWithoutReading": true,
+          "initialSources": [
+            {
+              "components": [
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 460724188,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 460634188
+                },
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 460994515,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 460634515
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a11-np/native-snap/claude",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:3bc2754c8add0c6d32cb0abb87a0634fa11653ad5b256fc67e2cc652d7ff6b0d",
+              "provider": "claude"
+            }
+          ],
+          "finalSources": [
+            {
+              "components": [
+                {
+                  "accepted": 11,
+                  "attempts": 11,
+                  "expiresBoottimeMs": 461027811,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 460937811
+                },
+                {
+                  "accepted": 3,
+                  "attempts": 3,
+                  "expiresBoottimeMs": 461235400,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 460875400
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a11-np/native-snap/claude",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:3bc2754c8add0c6d32cb0abb87a0634fa11653ad5b256fc67e2cc652d7ff6b0d",
+              "provider": "claude"
+            }
+          ],
+          "ordinaryProviderActions": false,
+          "selectedLinksChanged": false
+        },
+        "isolation": {
+          "privateTmp": true,
+          "ordinaryProviderPathsMasked": true,
+          "privateUserMountPidNamespaces": true
+        },
+        "ordinaryProviderActions": false,
+        "terminalOutputPersisted": false,
+        "managedSelectionChanged": false
+      },
+      "hints": {
+        "status": "measured",
+        "evidenceClass": "installed_controlled_native_claude",
+        "mode": "hints",
+        "syntheticSavedRows": 31,
+        "liveNativeSessions": 1,
+        "scriptedNativeTurns": [
+          {
+            "scheduledOffsetSeconds": 40,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421145237
+          },
+          {
+            "scheduledOffsetSeconds": 120,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421229642
+          },
+          {
+            "scheduledOffsetSeconds": 200,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421305119
+          }
+        ],
+        "nativeId": "e0afdda9-4b11-42c9-9032-b08f9d73aa77",
+        "resources": {
+          "hostScope": "snap",
+          "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+          "providers": [
+            "claude"
+          ],
+          "runtimeIntervalSeconds": 30.0,
+          "historyIntervalSeconds": 120.0,
+          "nativeHints": true,
+          "startupSettledSeconds": 12,
+          "status": "accepted",
+          "durationSeconds": 300.241,
+          "serviceId": "69236e81-432e-4257-9642-8dcf1f8dfea0",
+          "serviceProtocol": 1,
+          "readSamples": 100,
+          "readP95Ms": 67.62290099868551,
+          "readMaxMs": 73.65756999934092,
+          "readBatchMs": 5926,
+          "payloadBytes": 59258,
+          "serviceAndReapedChildrenCpuMs": 12410.0,
+          "oneCoreCpuPercent": 4.133346211876459,
+          "existingManagedUserUnit": false,
+          "unitMemoryPeakBytes": null,
+          "peakAggregateRssBytes": 91492352,
+          "peakAggregateFds": 24,
+          "peakOwnedProcesses": 4,
+          "independentReaders": [
+            {
+              "frames": 50,
+              "views": 30,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 50,
+              "views": 30,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 50,
+              "views": 30,
+              "gaps": 0,
+              "errors": 0
+            }
+          ],
+          "slowReaderConnectedWithoutReading": true,
+          "initialSources": [
+            {
+              "components": [
+                {
+                  "accepted": 2,
+                  "attempts": 2,
+                  "expiresBoottimeMs": 461047344,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 460957344
+                },
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 461316645,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 460956645
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a11-nh/native-snap/claude",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:c89c93e545d978b49fc9864b6ff225629ea25269af7c4324d364ca179be9ce8e",
+              "provider": "claude"
+            }
+          ],
+          "finalSources": [
+            {
+              "components": [
+                {
+                  "accepted": 22,
+                  "attempts": 22,
+                  "expiresBoottimeMs": 461331411,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 461241411
+                },
+                {
+                  "accepted": 10,
+                  "attempts": 10,
+                  "expiresBoottimeMs": 461549864,
+                  "health": "partial",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 461189864
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a11-nh/native-snap/claude",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:c89c93e545d978b49fc9864b6ff225629ea25269af7c4324d364ca179be9ce8e",
+              "provider": "claude"
+            }
+          ],
+          "ordinaryProviderActions": false,
+          "selectedLinksChanged": false
+        },
+        "isolation": {
+          "privateTmp": true,
+          "ordinaryProviderPathsMasked": true,
+          "privateUserMountPidNamespaces": true
+        },
+        "ordinaryProviderActions": false,
+        "terminalOutputPersisted": false,
+        "managedSelectionChanged": false
+      }
+    },
+    "observedCpuDeltaPercentagePoints": 2.3106690423241645,
+    "observedRssDeltaBytes": 44331008,
+    "ownedNativeStoresAndAuthenticationRemoved": true,
+    "ordinaryProviderActions": false,
+    "managedSelectionChanged": false
+  },
+  "matchedNativeStarshipCodex": {
+    "status": "measured",
+    "evidenceClass": "installed_controlled_native_workload",
+    "cases": {
+      "polling": {
+        "status": "measured",
+        "evidenceClass": "installed_controlled_native_workload",
+        "hostScope": "starship",
+        "provider": "codex",
+        "mode": "polling",
+        "syntheticSavedRows": 0,
+        "liveNativeSessions": 1,
+        "scriptedNativeTurns": [
+          {
+            "scheduledOffsetSeconds": 40,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421207000
+          },
+          {
+            "scheduledOffsetSeconds": 120,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421286000
+          },
+          {
+            "scheduledOffsetSeconds": 200,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421366000
+          }
+        ],
+        "nativeId": "01a11905-50e3-7b72-850e-c64123c76f17",
+        "resources": {
+          "hostScope": "starship",
+          "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+          "providers": [
+            "codex"
+          ],
+          "runtimeIntervalSeconds": 20.0,
+          "historyIntervalSeconds": 60.0,
+          "nativeHints": false,
+          "startupSettledSeconds": 12,
+          "status": "accepted",
+          "durationSeconds": 300.085,
+          "serviceId": "e0b47133-9f0f-4103-89c6-d8e9afe9aaa6",
+          "serviceProtocol": 1,
+          "readSamples": 100,
+          "readP95Ms": 40.78808700433001,
+          "readMaxMs": 44.053631951101124,
+          "readBatchMs": 3826,
+          "payloadBytes": 6041,
+          "serviceAndReapedChildrenCpuMs": 4000.0,
+          "oneCoreCpuPercent": 1.332955662562274,
+          "existingManagedUserUnit": false,
+          "unitMemoryPeakBytes": null,
+          "peakAggregateRssBytes": 45600768,
+          "peakAggregateFds": 15,
+          "peakOwnedProcesses": 2,
+          "independentReaders": [
+            {
+              "frames": 45,
+              "views": 21,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 45,
+              "views": 21,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 45,
+              "views": 21,
+              "gaps": 0,
+              "errors": 0
+            }
+          ],
+          "slowReaderConnectedWithoutReading": true,
+          "initialSources": [
+            {
+              "components": [
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 461492941,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 461432941
+                },
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 461613117,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 461433117
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a11-cp/native-starship/codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:67a70c392dc27f43a0afa7c6c8948c5076068f9fdc95011daf08c02e0c7b86a9",
+              "provider": "codex"
+            }
+          ],
+          "finalSources": [
+            {
+              "components": [
+                {
+                  "accepted": 16,
+                  "attempts": 16,
+                  "expiresBoottimeMs": 461796945,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 461736945
+                },
+                {
+                  "accepted": 6,
+                  "attempts": 6,
+                  "expiresBoottimeMs": 461914396,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 461734396
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a11-cp/native-starship/codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:67a70c392dc27f43a0afa7c6c8948c5076068f9fdc95011daf08c02e0c7b86a9",
+              "provider": "codex"
+            }
+          ],
+          "ordinaryProviderActions": false,
+          "selectedLinksChanged": false
+        },
+        "isolation": {
+          "privateTmp": true,
+          "ordinaryProviderPathsMasked": true,
+          "privateUserMountPidNamespaces": true
+        },
+        "ordinaryProviderActions": false,
+        "terminalOutputPersisted": false,
+        "managedSelectionChanged": false
+      },
+      "hints": {
+        "status": "measured",
+        "evidenceClass": "installed_controlled_native_workload",
+        "hostScope": "starship",
+        "provider": "codex",
+        "mode": "hints",
+        "syntheticSavedRows": 0,
+        "liveNativeSessions": 1,
+        "scriptedNativeTurns": [
+          {
+            "scheduledOffsetSeconds": 40,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421534000
+          },
+          {
+            "scheduledOffsetSeconds": 120,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421614000
+          },
+          {
+            "scheduledOffsetSeconds": 200,
+            "workingIndependentlyObserved": true,
+            "completionIndependentlyObserved": true,
+            "activityAt": 1791421694000
+          }
+        ],
+        "nativeId": "01a1190a-4e9c-7071-a6fb-ed92aca8c705",
+        "resources": {
+          "hostScope": "starship",
+          "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666",
+          "providers": [
+            "codex"
+          ],
+          "runtimeIntervalSeconds": 20.0,
+          "historyIntervalSeconds": 60.0,
+          "nativeHints": true,
+          "startupSettledSeconds": 12,
+          "status": "accepted",
+          "durationSeconds": 300.199,
+          "serviceId": "4cec82fd-08bf-41ef-a102-cecd8e55604b",
+          "serviceProtocol": 1,
+          "readSamples": 100,
+          "readP95Ms": 39.20348099200055,
+          "readMaxMs": 41.303277015686035,
+          "readBatchMs": 3605,
+          "payloadBytes": 6041,
+          "serviceAndReapedChildrenCpuMs": 6300.0,
+          "oneCoreCpuPercent": 2.098607923410804,
+          "existingManagedUserUnit": false,
+          "unitMemoryPeakBytes": null,
+          "peakAggregateRssBytes": 68501504,
+          "peakAggregateFds": 20,
+          "peakOwnedProcesses": 3,
+          "independentReaders": [
+            {
+              "frames": 50,
+              "views": 32,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 50,
+              "views": 32,
+              "gaps": 0,
+              "errors": 0
+            },
+            {
+              "frames": 50,
+              "views": 32,
+              "gaps": 0,
+              "errors": 0
+            }
+          ],
+          "slowReaderConnectedWithoutReading": true,
+          "initialSources": [
+            {
+              "components": [
+                {
+                  "accepted": 2,
+                  "attempts": 2,
+                  "expiresBoottimeMs": 461821062,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 461761062
+                },
+                {
+                  "accepted": 1,
+                  "attempts": 1,
+                  "expiresBoottimeMs": 461940247,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 461760247
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a11-ch/native-starship/codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:17cefbc60b1784f82cfd1149bf1c9d22fcfa6bbf76b444c53d6edfcc38998095",
+              "provider": "codex"
+            }
+          ],
+          "finalSources": [
+            {
+              "components": [
+                {
+                  "accepted": 23,
+                  "attempts": 23,
+                  "expiresBoottimeMs": 462122522,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 462062522
+                },
+                {
+                  "accepted": 11,
+                  "attempts": 11,
+                  "expiresBoottimeMs": 462223593,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 462043593
+                }
+              ],
+              "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a11-ch/native-starship/codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:17cefbc60b1784f82cfd1149bf1c9d22fcfa6bbf76b444c53d6edfcc38998095",
+              "provider": "codex"
+            }
+          ],
+          "ordinaryProviderActions": false,
+          "selectedLinksChanged": false
+        },
+        "isolation": {
+          "privateTmp": true,
+          "ordinaryProviderPathsMasked": true,
+          "privateUserMountPidNamespaces": true
+        },
+        "ordinaryProviderActions": false,
+        "terminalOutputPersisted": false,
+        "managedSelectionChanged": false
+      }
+    },
+    "observedCpuDeltaPercentagePoints": 0.7656522608485301,
+    "observedRssDeltaBytes": 22900736,
+    "ownedNativeStoresAndAuthenticationRemoved": true,
+    "ordinaryProviderActions": false,
+    "managedSelectionChanged": false
+  }
+}
