@@ -10,6 +10,9 @@ wakeups; latency/recovery/lifetime subsets pass, but its provisional resource
 gate is not accepted. Normal units retain polling without hints. The
 [cost follow-up](native-hints-cost-follow-up.md) and current handoff supersede
 earlier selection statements below; earlier resource results remain historical.
+The separately installed a10 repair scopes Claude hints to the authoritative
+history catalog and passes installed noise/primary-append and focused native
+regression checks. It also remains unselected with cost/operational gates pending.
 The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
 defines B0–B8. Producer work and client development remain separate.
 

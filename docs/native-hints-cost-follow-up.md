@@ -4,6 +4,14 @@ Date: 2026-10-07. The [delivery report](evidence/2026-10-07-native-delivery/REPO
 records separately installed a9; normal Snap/Starship units select a8 polling.
 This follow-up does not authorize provider-policy changes or frontend work.
 
+The [subsequent a10 repair](evidence/2026-10-07-native-delivery/a10-catalog-scope.json)
+removes unnecessary scans from nested transcript traffic. Identical installed
+synthetic activity causes two extra history reads in a9 and zero in a10; primary
+append and a focused native Claude workflow still pass. A10 is separately
+installed on both hosts, without a repeated cost/operational gate or selection.
+The remaining sequence below still applies; the a9 CPU/RSS numbers are not
+silently reassigned to a10. Original targets remain pending explicit clarification.
+
 ## Evidence and decision
 
 Controlled native wakeups improve runtime and conversation-age latency without

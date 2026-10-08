@@ -48,6 +48,17 @@ but the provisional resource gate is not accepted. Do not treat its installation
 as normal selection or enable its hints in the managed unit. The
 [cost follow-up](native-hints-cost-follow-up.md) defines the remaining producer work.
 
+The latest source repair is separately installed `0.4.0a10`, source
+`2cd1bbc693c5c4553e61c0f177d2fe2a0e739271`, wheel SHA256
+`e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242`, prefix
+`0.4.0a10-e57b3e947e731011` on both hosts. Its
+[manifest](../artifacts/observer-0.4.0a10.json) and
+[focused receipt](evidence/2026-10-07-native-delivery/a10-catalog-scope.json) bind
+Claude watches to the project-level saved-history surface. Nested transcript
+noise no longer requests catalog scans; primary activity/title still wakes reads.
+Installed controlled comparison and one-turn native Claude regression pass.
+Broader cost/operational acceptance remains pending; a10 is also unselected.
+
 ## Reproducible local entry
 
 The normal selected unit supplies the default endpoint:
@@ -120,7 +131,7 @@ it does not make a CLI-filtered row set a complete producer inventory. Use
 | Case | Boundary |
 | --- | --- |
 | Physical suspend/wake | Pending operator window. Fake BOOTTIME expiry tests establish logic only. |
-| Native signals/hooks | Selected a8 pushes shared views after scheduled pulls. Separate a9 native start/status/name and Claude registry/job/history wakeups pass bounded latency/recovery cases, with controlled overflow/rearm/burst/backoff checks. Cost acceptance and the 30-minute hint-unit rollout soak remain pending. No action-based subscription or hook replacement is used. |
+| Native signals/hooks | Selected a8 pushes shared views after scheduled pulls. A9 passes bounded native wakeup/recovery cases; a10 additionally removes nested-history noise with focused Claude proof. Cost acceptance and the 30-minute hint-unit rollout soak remain pending. No action-based subscription or hook replacement is used. |
 | Notification events | No durable completion/attention publication here. Existing API v1 notification work is separate; source/view counters cannot substitute for native event correlation. |
 | Workspace mapping | A7 accepts startup-only `--workspace-config` root/project mappings on history jobs, with independent Git validation and history leases. Restart only the Observer unit to reload. Explicit grouping does not merge native identities. |
 | Claude coverage | SDK saved coverage stays partial; the omitted setup-only candidate has zero conversation records. A8 accepts verified interactive/no-job exact input waits as blocked/question. Generic dialogs remain unknown. Background questions/approvals and positive parked predicates retain native acceptance. |
