@@ -1,0 +1,419 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.4.0a16",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791441952285
+      },
+      "cliCollectedAt": 1791441953915,
+      "nativeAfterAt": {
+        "codex": 1791441955383
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 97,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 97,
+          "nativeAfterRows": 97,
+          "cliRows": 97,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 97,
+            "classification": {
+              "user": 76,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 97,
+            "title": 75,
+            "cwd": 97,
+            "runtime_unproved": 93,
+            "phase_unproved": 93,
+            "activity": 97,
+            "kind_unproved": 21,
+            "sessionId": 97,
+            "createdAt": 97,
+            "outcome": 96,
+            "outcomeAt": 94,
+            "kind": 76,
+            "title_unproved": 22,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 3,
+            "runtime": 4,
+            "phase": 4
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791439221000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791441341000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791441301000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791433114000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791439221000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791441341000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791441301000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791433114000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 4,
+        "doctorSessionCount": true,
+        "cliRows": 97,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3414244,
+        "startTicks": "43337316",
+        "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "provider": "codex",
+        "version": "0.161.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791441957311
+      },
+      "cliCollectedAt": 1791441958957,
+      "nativeAfterAt": {
+        "codex": 1791441960482
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "loaded_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "parked_predicate_unproved",
+            "client_binding_unproved",
+            "questions_require_known_wait_flags",
+            "offline_runtime_state_unavailable",
+            "unloaded_work_state_unavailable",
+            "unbound_tui_contexts_unobserved"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 97,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 97,
+          "nativeAfterRows": 97,
+          "cliRows": 97,
+          "nativeCounts": {
+            "running": 4,
+            "activityKnown": 97,
+            "classification": {
+              "user": 76,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 97,
+            "title": 75,
+            "cwd": 97,
+            "runtime_unproved": 93,
+            "phase_unproved": 93,
+            "activity": 97,
+            "kind_unproved": 21,
+            "sessionId": 97,
+            "createdAt": 97,
+            "outcome": 96,
+            "outcomeAt": 94,
+            "kind": 76,
+            "title_unproved": 22,
+            "outcome_unproved": 1,
+            "outcomeAt_unproved": 3,
+            "runtime": 4,
+            "phase": 4
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791439221000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791441341000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791441301000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791433114000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791439221000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791441341000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791441301000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791433114000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 4,
+        "doctorSessionCount": true,
+        "cliRows": 97,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3414244,
+        "startTicks": "43337316",
+        "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "provider": "codex",
+        "version": "0.161.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}

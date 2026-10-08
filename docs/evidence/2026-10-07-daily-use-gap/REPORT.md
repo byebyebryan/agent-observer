@@ -120,3 +120,74 @@ artifacts, observing or dispatching. Canonical-path and ownership guards remain
 in place. No historical directory is substituted or provider action retried.
 Regressions cover delayed/stale/skewed rendering and missing versus symlinked
 context. Selected artifact remains a15 until installed/native D5 acceptance.
+
+## D4 native workflow boundaries
+
+An isolated a16 writer cold-entry probe on Snap reproduces the ordinary selected
+CLI 0.160.1 / daemon 0.161.0 default feature mismatch. A second private fixture
+uses the cached 0.161.0 CLI with that daemon and enters successfully with default
+features. No ordinary CLI/daemon selection or feature configuration changes.
+Preparation success is still not proof of entry; this provider coherence issue
+requires a separate provider-management pass, not a writer fallback or version
+allowlist. Both fixture authentication/history copies were removed at cleanup.
+
+Native Claude help explicitly scopes attach to background jobs. The isolated
+empty interactive worker has no job identity and write preparation rejects it
+as `unsupported_resume_route`. Its `/exit` removes its native registry entry.
+With a15, two subsequent cached revisions still retain that runtime-only row;
+with a16, two subsequent revisions omit it. Both cases first observe at least
+nine accepted history samples while the worker runs. These positive and negative
+controls prove the D1 defect and repair without manufacturing saved membership.
+
+The isolated Codex task creates a root and an exact native child. Early harness
+attempts had a wrong service field name and assumed two-minute retirement;
+neither is acceptance evidence. After native retirement, passive exact reads
+confirm the saved root's `user` kind and the child's explicit `subagent` kind and
+parent ID. The provider's default saved roster excludes that child. Direct/cache
+root classification matches and loaded-inventory bookends remain unchanged;
+the receipt records zero public saved-child cases rather than inventing coverage.
+Synthetic source regressions cover the listed-child case. Generic dialog holds,
+background viewer `/exit`, all-topology parked inference and physical wake remain
+outside these proofs.
+
+## D5 frozen installed candidate acceptance
+
+Candidate a16 freezes source `f143a1f6e46cc543b69a738e7da1dc913a0b8643`, wheel
+SHA-256 `a9c13aee3d04144c00dbda80680761d9638fc761ec5cc04922c63ad41f338f23`,
+and prefix `/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c`.
+The [manifest](../../../artifacts/observer-0.4.0a16.json) binds API 1/read 3/write
+1 and prerelease service 1. Exact wheel bytes, entrypoints and schemas verify on
+both hosts; Snap uses the source-only SDK profile and Starship core. Independent
+public JSON Schema/CLI conformance, all 4096 supported rows and strict input pass.
+The producer source checks pass 354 tests with one optional skip.
+
+Two direct and two separately owned cache comparisons per host confirm every
+ordinary active identity and phase: Snap's two Codex plus three Claude workers,
+and Starship's four Codex contexts. Kind matches all 50 Snap Codex rows and 76 of
+97 Starship rows. Twenty-one older Starship kinds remain natively unproved. All
+35 recent/active identities now have user kind. CLI filtering, age at display
+time, ordering, exact references and doctor counts pass. Claude's only native
+candidate omitted from the 31 rows is the prior setup-only transcript; the
+bounded saved census stays partial. The new cache contains 31 Claude rows,
+compared with a15's 42 at baseline; the negative control independently establishes
+why runtime-only rows could linger, without assigning origins to those 11 IDs.
+
+Preparation-only probes of those 35 rows produce seven Snap Codex, sixteen
+Starship Codex and seven Claude saved routes; three foreground Claude routes are
+unsupported. The two missing Starship cwd paths now reject as `cwd_unavailable`.
+No native dispatch follows preparation. Moved projects need a separately designed
+relocation workflow; paths are not substituted from labels or repository guesses.
+
+Workspace configuration already exists in both normal service units. Direct
+collection needs explicit `--workspace-config`; prior unmapped direct results
+did not prove missing service configuration. Independent Git/root comparisons
+match direct/cache for 81 Snap and 97 Starship identities, with 34/9 explicitly
+mapped rows and 10/48 unavailable historical directories. No config change is
+needed for the common-root capability.
+
+The separately owned hint publishers pass three-minute, three-reader/slow-reader
+checks: zero gaps or reader errors, read p95 89/80 ms, peak aggregate RSS about
+112/67 MiB on Snap/Starship. Measured CPU is 3.87/1.42 percent of one core under
+that ordinary traffic, not a matched incremental cost comparison. Earlier a15
+30-minute and native cost receipts remain historical exact-artifact evidence.
+Selection/restart/rollback and normal-unit acceptance follow separately below.

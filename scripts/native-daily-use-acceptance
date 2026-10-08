@@ -1,0 +1,198 @@
+#!/usr/bin/env python3
+"""Explicit isolated saved-kind and runtime-only retention proofs; no content receipts."""
+
+import argparse
+import fcntl
+import json
+import os
+import pty
+import runpy
+import signal
+import struct
+import subprocess
+import termios
+import time
+import uuid
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("case", choices=("codex-saved-kind", "claude-runtime-only"))
+    parser.add_argument("--expect-retained", action="store_true", help="explicit old-artifact negative control for runtime-only retention")
+    parser.add_argument("--saved-native-id", help="reobserve an exact previously created private root instead of another turn")
+    parser.add_argument("--child-native-id", help="exact private child for a reobservation after native roster retirement")
+    args = parser.parse_args()
+    assert not args.expect_retained or args.case == "claude-runtime-only"
+    assert args.saved_native_id is None or args.case == "codex-saved-kind"
+    assert args.child_native_id is None or args.saved_native_id is not None
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.geteuid() == 0 and all(json.loads((root / "ready.json").read_text()).values())
+    provider = "codex" if args.case == "codex-saved-kind" else "claude"
+    Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
+    reference = runpy.run_path(str(root / "evaluate-observation"))
+    proof = Proof(provider)
+    path = proof.base / "runtime/daily-use/read.sock"
+    service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", proof.host,
+                                "--provider", provider, "--runtime-interval", "1", "--history-interval", "1",
+                                "--socket", str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                               start_new_session=True)
+    result = {"case": args.case, "hostScope": proof.host, "ordinaryProviderActions": False,
+              "terminalOutputPersisted": False, "nativeReferenceImportsObserver": False}
+
+    def cached():
+        return proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host,
+                              "--socket", str(path)])
+
+    def native():
+        peer = reference["NativeRPC"](proof.base / "codex")
+        try:
+            return reference["codex_reference"](peer)
+        finally:
+            peer.close()
+
+    try:
+        if provider == "claude":
+            sid = str(uuid.uuid4())
+            pid, fd = pty.fork()
+            if pid == 0:
+                os.execv("/opt/claude-code/bin/claude", ["claude", "--session-id", sid,
+                         "--name", "Observer private empty foreground proof"])
+            fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+            os.set_blocking(fd, False)
+            viewer = (pid, fd)
+            proof.clients.append(viewer)
+            proof.pause(viewer, 8)
+            proof.assert_native_client(viewer)
+            deadline = time.monotonic() + 25
+            while time.monotonic() < deadline:
+                proof.pause(viewer, .2)
+                frame = cached()
+                row = next((r for r in (frame.get("snapshot") or {}).get("sessions", [])
+                            if r["identity"]["nativeId"] == sid), None)
+                counts = {c["name"]: c["accepted"] for s in frame["sources"] for c in s["components"]}
+                if row and row["runtime"]["value"] == "running" and counts.get("history", 0) >= 2:
+                    break
+            assert row and row["history"] is None and row["nativeIds"]["jobId"] is None
+            registered = [json.loads(p.read_bytes()) for p in (proof.base / "claude/sessions").glob("*.json")]
+            assert any(r.get("sessionId") == sid and r.get("kind") == "interactive" for r in registered)
+            result.update(nativeId=sid, runtimeOnlyObserved=True, historySamplesWhileRunning=counts["history"])
+            request = {"schemaVersion": 1, "operation": "resume", "hostScope": proof.host,
+                       "provider": "claude", "configHome": str(proof.base / "claude"),
+                       "configHomeKind": "explicit", "cwd": str(proof.base / "workspace"),
+                       "reference": row["identity"]}
+            prepared = subprocess.run(["agent-observer-write", "prepare", "--request-json", json.dumps(request)],
+                                      capture_output=True, timeout=30)
+            assert prepared.returncode == 2 and json.loads(prepared.stderr)["error"] == "unsupported_resume_route"
+            result["foregroundResumeRejected"] = "unsupported_resume_route"
+            os.write(fd, b"/exit\r")
+            deadline = time.monotonic() + 25
+            removed = []
+            while time.monotonic() < deadline:
+                proof.pause(viewer, .2)
+                registry_present = any(json.loads(p.read_bytes()).get("sessionId") == sid
+                                       for p in (proof.base / "claude/sessions").glob("*.json"))
+                frame = cached()
+                after_row = next((r for r in (frame.get("snapshot") or {}).get("sessions", [])
+                                  if r["identity"]["nativeId"] == sid), None)
+                matched = after_row is None if not args.expect_retained else (
+                    after_row is not None and after_row["runtime"]["value"] == "unknown"
+                    and "retained_after_gap" in after_row["metadataIssues"])
+                if not registry_present and matched:
+                    removed.append(frame["viewRevision"])
+                    if len(set(removed)) >= 2:
+                        break
+            assert len(set(removed)) >= 2
+            result.update(nativeRegistryAbsent=True, runtimeOnlyAbsentAfterExit=not args.expect_retained,
+                          oldArtifactRetainedNegativeControl=args.expect_retained,
+                          matchedRevisions=sorted(set(removed)), providerDeletionClaimed=False)
+        else:
+            before = native()
+            if args.saved_native_id is not None:
+                sid, current = str(uuid.UUID(args.saved_native_id)), before
+                assert current["rows"][sid]["kind"] == "user"
+            else:
+                viewer = proof.spawn(proof.handoff())
+                proof.pause(viewer, 5)
+                proof.assert_native_client(viewer)
+                current = native()
+                roots = [sid for sid in set(current["loaded"]) - set(before["loaded"])
+                         if current["rows"][sid]["kind"] == "user"]
+                assert len(roots) == 1
+                sid = roots[0]
+                os.write(viewer[1], b"Use spawn_agent to create exactly one child that replies OK, wait for it, then close_agent. Do not use any other tools.\r")
+                proof.pause(viewer, 1)
+                os.write(viewer[1], b"\r")
+                deadline = time.monotonic() + 90
+                while time.monotonic() < deadline:
+                    proof.pause(viewer, .3)
+                    current = native()
+                    if any(r["kind"] == "child" for r in current["rows"].values()) and current["rows"][sid]["outcome"] == "completed":
+                        break
+                proof.stop(viewer)
+            children = [key for key, row in current["rows"].items() if row["kind"] == "child"]
+            if args.child_native_id is not None:
+                children = [str(uuid.UUID(args.child_native_id))]
+            assert children and current["rows"][sid]["activity"] is not None
+            peer = reference["NativeRPC"](proof.base / "codex")
+            try:
+                children = [child for child in children if peer.call("thread/read", {"threadId": child, "includeTurns": False})["thread"].get("source", {}).get("subAgent", {}).get("thread_spawn", {}).get("parent_thread_id") == sid]
+                assert children
+                pid, birth = peer.pid, peer.start
+                assert Path(os.readlink(f"/proc/{pid}/exe")).is_relative_to(proof.base / "codex/packages/app-server-daemon")
+                assert reference["birth"](pid)[0] == birth
+            finally:
+                peer.close()
+            result.update(nativeId=sid, nativeChildIds=children)
+            # Native retirement has its own grace period. Establish saved-only
+            # state through an explicitly owned private daemon reincarnation,
+            # never infer unloaded state from terminal exit or a timeout.
+            reincarnated = sid in current["loaded"]
+            if reincarnated:
+                os.kill(pid, signal.SIGKILL)
+                time.sleep(1)
+                bootstrap = proof.spawn(proof.handoff())
+                deadline = time.monotonic() + 25
+                while time.monotonic() < deadline:
+                    proof.pause(bootstrap, .2)
+                    try:
+                        current = native()
+                        if sid not in current["loaded"] and sid in current["saved"]:
+                            break
+                    except (OSError, ValueError):
+                        pass
+            assert sid not in current["loaded"] and sid in current["saved"]
+            observed_before = native()
+            direct = proof.snapshot()
+            deadline = time.monotonic() + 20
+            while time.monotonic() < deadline:
+                frame = cached()
+                public = {r["identity"]["nativeId"]: r for r in (frame.get("snapshot") or {}).get("sessions", [])}
+                if sid in public and public[sid]["inventory"] == "saved" and public[sid]["kind"] == "user":
+                    break
+                time.sleep(.2)
+            observed_after = native()
+            direct_rows = {r["identity"]["nativeId"]: r for r in direct["sessions"]}
+            for rows in (direct_rows, public):
+                assert rows[sid]["kind"] == "user" and rows[sid]["inventory"] == "saved"
+                assert rows[sid]["runtime"]["value"] == "unknown" and rows[sid]["phase"]["value"] == "unknown"
+                for child in children:
+                    if child in observed_before["saved"]:
+                        assert rows[child]["kind"] == "child"
+            assert observed_before["loaded"] == observed_before["loadedAfter"] == observed_after["loaded"] == observed_after["loadedAfter"]
+            result.update(savedUserClassified=True, savedChildClassified=sum(c in observed_before["saved"] for c in children),
+                          loadedInventoryPreserved=True, parkedInferred=False, ownedPrivateDaemonReincarnated=reincarnated,
+                          childSavedRosterCoverage="provider_excluded" if not any(c in observed_before["saved"] for c in children) else "observed")
+        result["status"] = "accepted"
+        (root / (args.case + "-receipt.json")).write_text(json.dumps(result, indent=2) + "\n")
+        print(json.dumps(result))
+    finally:
+        for viewer in list(proof.clients):
+            proof.stop(viewer)
+        if service.poll() is None:
+            service.send_signal(signal.SIGTERM)
+        service.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    main()

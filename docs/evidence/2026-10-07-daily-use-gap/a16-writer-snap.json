@@ -1,0 +1,302 @@
+{
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c",
+  "preparedOnly": true,
+  "providerActions": 0,
+  "rows": [
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "agent-observer",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/agent-observer",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a113b3-adca-7b62-834f-262791c1c774",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "tmux-plus",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/rofi-tmux-plus",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "codex-worker-kit",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/codex-worker-kit",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a10d42-4dac-7ee1-b846-210742296942",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "esp32-rlcd",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32-rlcd",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0f87e-3524-7861-946e-e89005f07905",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "esp32-349",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32-349",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0f331-e655-7ff3-9594-7d080e0524b3",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "remote-chrome",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/remote-chrome",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0ee10-6625-7f61-9873-6150d279af66",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "agent-plus",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/rofi-agent-plus",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "caos-models",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": null,
+      "error": "unsupported_resume_route",
+      "prepareExit": 2
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "embeddings-bf",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": null,
+      "error": "unsupported_resume_route",
+      "prepareExit": 2
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "spare-gpus",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": null,
+      "error": "unsupported_resume_route",
+      "prepareExit": 2
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "bbe9d846-6f6d-4946-803d-fcfaef0a8656",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-f2",
+      "kind": "user",
+      "runtime": "parked",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "e8e76b76-b20a-46bf-8762-83383bf0bb86",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-i8n",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "423c5ec1-913e-452d-9502-42e76785da1e",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-fill",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "caos-models",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "d4cbd3c0-45d7-4680-a993-9898c81317c7",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "oncall",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/ctb-ops",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "f4fc51e2-b69b-4904-a7aa-11bdef5fdd8a",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "task-mgr",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "snap",
+        "namespace": "sha256:22b116968ee2fac5deed3eb54ffab9d91da25564ebae40264f7b04651cb87499",
+        "nativeId": "0767450b-fda2-4763-9fa1-f232ecfbd1c8",
+        "nativeIdKind": "session",
+        "provider": "claude"
+      },
+      "title": "recap-2026-wiring",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/caos",
+      "cwdExists": true,
+      "route": "claude_saved_resume",
+      "error": null,
+      "prepareExit": 0
+    }
+  ],
+  "counts": {
+    "codex_resume": 7,
+    "unsupported_resume_route": 3,
+    "claude_saved_resume": 7
+  }
+}

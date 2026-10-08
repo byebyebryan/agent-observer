@@ -1,0 +1,318 @@
+{
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c",
+  "preparedOnly": true,
+  "providerActions": 0,
+  "rows": [
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "fluid-2.5d",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/cubey",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0ca16-d486-7142-8170-c496b7419368",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "pd-lab-next",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/powered-descent-lab",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "raster90",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/raster90",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a1197f-1113-7261-bc5b-810100a74236",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "devlog",
+      "kind": "user",
+      "runtime": "running",
+      "cwd": "/home/bryan/code/devlog",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "esp32-349",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32-349",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a11985-48e2-7102-9637-7805a08c5782",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "esp32-rlcd",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32-rlcd",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "bookkeeper-retirement",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/homelab",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a1176c-6c90-7162-b420-422492c83d33",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "system",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/.local/share/chezmoi",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "bookkeeper",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/agent-bookkeeper",
+      "cwdExists": false,
+      "route": null,
+      "error": "cwd_unavailable",
+      "prepareExit": 2
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a10586-9881-7463-904d-dd4af6f512d8",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "audio",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "agent-observer",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/agent-observer",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "homelab",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/homelab",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "esp32-rlcd",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32-rlcd",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "system",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "wd75",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "hw",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/homelab",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "349-status-bar",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan/code/esp32",
+      "cwdExists": false,
+      "route": null,
+      "error": "cwd_unavailable",
+      "prepareExit": 2
+    },
+    {
+      "identity": {
+        "hostScope": "starship",
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "nativeId": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "title": "display",
+      "kind": "user",
+      "runtime": "unknown",
+      "cwd": "/home/bryan",
+      "cwdExists": true,
+      "route": "codex_resume",
+      "error": null,
+      "prepareExit": 0
+    }
+  ],
+  "counts": {
+    "codex_resume": 16,
+    "cwd_unavailable": 2
+  }
+}
