@@ -126,8 +126,18 @@ unselected; the original CPU and aggregate-memory gates are not accepted.
 
 ## Memory decision and host scope
 
-The pending budget question distinguishes two implementation directions. Neither
-choice has been accepted by elapsed time or by a suggested-answer default.
+The user has explicitly relaxed the memory target and resumed the goal. The
+original 64 MiB aggregate RSS value is now a review threshold, not a rollout
+blocker. This does not substitute a 64 MiB incremental limit or retroactively
+accept the original target. Preserve the recorded absolute and added RSS results.
+Keep the one-point controlled CPU target and all correctness/native/operational
+gates. Before closing rollout, report idle and collection-time process-tree
+RSS/PSS, helper/FD/watch bounds and the 30-minute soak. Investigate sustained
+unexplained growth or lost cleanup; a measured footprint above 64 MiB alone does
+not require a collection-architecture rewrite.
+
+The following alternatives record the earlier unanswered decision; the user's
+new instruction supersedes their use as a required numeric memory gate.
 
 | Decision | Consequence before selection |
 | --- | --- |
@@ -233,8 +243,9 @@ Codex-only Starship**. Both meet the unchanged one-point target in these finite
 cases; Snap's margin is only 0.054 points, so this is not a universal cost bound.
 Sampled aggregate RSS is **109.281/64.094 MiB**, versus polling 84.891/42.344 MiB.
 Added RSS is 24.391/21.750 MiB; it does not replace the original aggregate limit.
-The CPU checkpoint is accepted for these workloads, while memory still fails
-and a8 polling remains selected. No budget answer has been received.
+The CPU checkpoint is accepted for these workloads. A15 still exceeds the
+historical aggregate target, now relaxed explicitly by the user. A8 polling is
+selected until P6's operational checks complete; there is no pending budget answer.
 
 Before a source checkpoint, independently exercise same-image reuse, mutation,
 replacement and surviving old workers, read-only descriptor validation, UID/mode
@@ -244,7 +255,7 @@ as carefully as the hot path. Then freeze a new candidate and repeat public
 conformance, independent native state/age/title/questions/reconnect/lifetime
 and matched combined Snap plus Starship cost. The spike's CPU reduction must
 not be substituted for those host measurements. Retained descriptors add a
-bounded FD cost and do not solve the unanswered aggregate-memory decision.
+bounded FD cost, which remains part of the long-soak resource review.
 
 A history-only collector is an alternative architectural branch, not an
 incidental `include_runtime=False` change. Current history workers also establish
@@ -270,10 +281,11 @@ history refresh cannot casually renew old runtime or conversation evidence.
    reconstruction or unofficial SDK-loading shims without a separate design and
    evidence. Provider versions remain diagnostics; the reproducible SDK lock is
    an Observer dependency, not a provider compatibility allowlist.
-3. **Settle the budget explicitly.** Preserve the original one-point incremental
-   CPU and 64 MiB aggregate RSS results. Any revised budget is a visible design
-   decision with absolute and incremental values, not retroactive acceptance.
-   If the original budget is retained, meet it with a separately frozen candidate.
+3. **Apply the explicit memory decision.** The user relaxed the original 64 MiB
+   total target to a review threshold. Preserve its failed historical result,
+   absolute and added RSS, and add idle/collection PSS plus sustained resource
+   measurements. Do not invent a replacement numeric cap. CPU and all other
+   acceptance checks remain in force.
 4. **Reaccept the candidate.** Run schema/reference consumers, controlled burst/
    loss/backoff/fairness, independent native ID/state/activity/title comparisons,
    foreground/background Claude and Codex on both hosts, saved unloaded rename,
