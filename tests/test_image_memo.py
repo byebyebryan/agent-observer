@@ -12,6 +12,7 @@ import sys
 import tempfile
 import time
 import unittest
+from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import patch
 
@@ -23,6 +24,7 @@ from agent_observer.claude_history import _run_worker
 from agent_observer.contract import canonical, parse_snapshot
 from agent_observer.native_artifacts import inspect_installed, inspect_process
 from agent_observer.service_runtime import Runtime, Worker
+from agent_observer.service_state import ServiceState
 
 
 def image_fds(path):
@@ -324,7 +326,16 @@ class ImageMemoTest(unittest.TestCase):
             with self.subTest(
                 changed=changed, invalidate=invalidate, malformed=malformed, timeout=timeout
             ):
-                with tempfile.TemporaryDirectory() as directory, Running() as server:
+                with tempfile.TemporaryDirectory() as directory, ExitStack() as cleanup:
+                    # This test completes workers directly. A running service
+                    # loop would race to complete the same already-exited worker.
+                    state = ServiceState(
+                        host_scope="fixture",
+                        configs={"codex": ("/fixture/codex", "explicit")},
+                    )
+                    runtime = Runtime(state, Path(directory) / "read.sock", collect=False)
+                    cleanup.callback(runtime.selector.close)
+                    cleanup.callback(lambda: runtime.image_memos["codex"].close())
                     path = Path(directory) / "image"
                     path.write_bytes(b"image")
                     value = scoped_snapshot()
@@ -332,13 +343,13 @@ class ImageMemoTest(unittest.TestCase):
                         "version": "diagnostic",
                         "binarySha256": "a" * 64,
                         "topology": "native_managed_endpoint",
-                        "bootId": server.state.boot_id,
+                        "bootId": state.boot_id,
                         "pid": 123,
                         "startTicks": 456,
                         "endpoint": "/fixture/endpoint",
                     }
-                    server.state.accept(
-                        "codex", "runtime", value, sampled_ms=server.state.clock(), ttl_ms=60000
+                    state.accept(
+                        "codex", "runtime", value, sampled_ms=state.clock(), ttl_ms=60000
                     )
                     old = copy.deepcopy(value)
                     if changed:
@@ -372,12 +383,12 @@ class ImageMemoTest(unittest.TestCase):
                     deadline = time.monotonic() + 2
                     while Runtime._exit_status(process) is None and time.monotonic() < deadline:
                         time.sleep(0.01)
-                    job = server.runtime.scheduler.start_due(server.state.clock())[0]
-                    server.state.attempt("codex", job.component)
+                    job = runtime.scheduler.start_due(state.clock())[0]
+                    state.attempt("codex", job.component)
                     worker = Worker(job, process, bytearray(canonical(value).encode()), True)
-                    server.runtime.workers["codex"] = worker
+                    runtime.workers["codex"] = worker
                     if invalidate:
-                        server.runtime.scheduler.invalidate("codex")
+                        runtime.scheduler.invalidate("codex")
                     original_receive = receive
 
                     def stopped_first(*args, process=process, original_receive=original_receive):
@@ -388,11 +399,11 @@ class ImageMemoTest(unittest.TestCase):
                         with patch(
                             "agent_observer.service_runtime.receive_memo", side_effect=stopped_first
                         ):
-                            server.runtime._complete(worker, timed_out=timeout)
+                            runtime._complete(worker, timed_out=timeout)
                         expected = not (changed or invalidate or malformed or timeout)
-                        self.assertEqual(len(server.runtime.image_memos["codex"]), int(expected))
+                        self.assertEqual(len(runtime.image_memos["codex"]), int(expected))
                         self.assertIsNone(process._observer_image_reply)
-                        receipt = server.state.receipts["codex"]["runtime"]
+                        receipt = state.receipts["codex"]["runtime"]
                         self.assertEqual(
                             receipt.lastResult,
                             "collection_timeout"
