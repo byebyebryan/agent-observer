@@ -1,5 +1,6 @@
 """Reference-comparison decisions; no provider runtime or payload fixtures."""
 
+import copy
 import importlib.machinery
 import importlib.util
 import json
@@ -21,6 +22,51 @@ SID = "01234567-0123-4567-89ab-0123456789ab"
 
 
 class ObservationEvaluationTest(unittest.TestCase):
+    def scoped_snapshot(self):
+        sources, sessions = [], []
+        for provider, suffix, native_kind in (("codex", ".codex", "thread"), ("claude", ".claude", "session")):
+            home = str(Path.home() / suffix)
+            selector = "explicit" if provider == "codex" or "CLAUDE_CONFIG_DIR" in os.environ else "default"
+            namespace = "sha256:" + evaluation.hashlib.sha256(json.dumps(
+                [provider, home, selector, os.getuid()], separators=(",", ":")
+            ).encode()).hexdigest()
+            sources.append({"provider": provider, "configHome": home,
+                            "configHomeKind": selector, "namespace": namespace})
+            sessions.append({"identity": {"provider": provider, "hostScope": "fixture",
+                                          "namespace": namespace, "nativeIdKind": native_kind,
+                                          "nativeId": SID}})
+        return {"host": {"authority": "fixture", "nativeHostname": evaluation.socket.gethostname(),
+                         "uid": os.getuid()}, "sources": sources, "sessions": sessions}
+
+    def test_single_provider_native_reference_validates_all_cached_frame_scopes(self):
+        for provider in ("codex", "claude"):
+            with self.subTest(provider=provider):
+                result = evaluation.identity_scope(self.scoped_snapshot(), "fixture", [provider])
+                self.assertTrue(result["hostProvenance"])
+                self.assertTrue(result["storeScopes"])
+                self.assertTrue(result["fullRowReferences"])
+                self.assertEqual(result["rowsChecked"], 2)
+                self.assertEqual(result["providersChecked"], ["claude", "codex"])
+                self.assertEqual(result["nativeReferenceProviders"], [provider])
+
+    def test_uncompared_provider_scope_is_not_implicitly_trusted(self):
+        baseline = self.scoped_snapshot()
+        cases = [
+            lambda v: v["sessions"][1]["identity"].update(namespace="sha256:" + "f" * 64),
+            lambda v: v["sessions"][1]["identity"].update(hostScope="foreign"),
+            lambda v: v["sources"][1].update(configHome="/tmp/another-store"),
+            lambda v: v["sources"].append(copy.deepcopy(v["sources"][1])),
+            lambda v: v["sources"].append({"provider": "unsupported"}),
+            lambda v: v["sessions"].append(copy.deepcopy(v["sessions"][1])),
+            lambda v: v["sources"].pop(),
+        ]
+        for index, mutate in enumerate(cases):
+            with self.subTest(case=index):
+                value = copy.deepcopy(baseline)
+                mutate(value)
+                result = evaluation.identity_scope(value, "fixture", ["codex"])
+                self.assertFalse(result["storeScopes"] and result["fullRowReferences"])
+
     def native(self, **fields):
         row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionId": SID, "createdAt": 50}
         return {"rows": {SID: {**row, **fields}}}

@@ -495,8 +495,14 @@ def cli_call(cli, argv, snapshot=None):
 def identity_scope(snapshot, host, providers):
     sources = {source["provider"]: source for source in snapshot["sources"]}
     expected = {}
-    checks = []
-    for provider in providers:
+    checks = [len(sources) == len(snapshot["sources"])]
+    # Cached snapshots retain every configured provider. Native comparisons may
+    # intentionally inspect one provider, but every frame identity still needs
+    # independent store/host validation, including healthy siblings.
+    for provider in sorted(set(providers) | set(sources)):
+        if provider not in {"codex", "claude"}:
+            checks.append(False)
+            continue
         home = str(Path.home() / (".codex" if provider == "codex" else ".claude"))
         selector = "explicit" if provider == "codex" or "CLAUDE_CONFIG_DIR" in os.environ else "default"
         namespace = "sha256:" + hashlib.sha256(json.dumps([provider, home, selector, os.getuid()], separators=(",", ":")).encode()).hexdigest()
@@ -510,8 +516,8 @@ def identity_scope(snapshot, host, providers):
         reference = row["identity"]
         provider = reference["provider"]
         refs.append(tuple(sorted(reference.items())))
-        rows_ok &= provider in providers and reference["hostScope"] == host and reference["namespace"] == expected.get(provider) and reference["nativeIdKind"] == ("thread" if provider == "codex" else "session") and bool(UUID.fullmatch(reference["nativeId"]))
-    return {"hostProvenance": host_ok, "storeScopes": all(checks), "fullRowReferences": rows_ok and len(refs) == len(set(refs)), "rowsChecked": len(refs)}
+        rows_ok &= provider in sources and provider in expected and reference["hostScope"] == host and reference["namespace"] == expected.get(provider) and reference["nativeIdKind"] == ("thread" if provider == "codex" else "session") and bool(UUID.fullmatch(reference["nativeId"]))
+    return {"hostProvenance": host_ok, "storeScopes": all(checks), "fullRowReferences": rows_ok and len(refs) == len(set(refs)), "rowsChecked": len(refs), "providersChecked": sorted(expected), "nativeReferenceProviders": sorted(set(providers))}
 
 
 def compare(before, snapshot, after, provider):
