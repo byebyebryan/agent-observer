@@ -39,6 +39,7 @@ from .codex_transport import PassiveClient, TransportError
 WORK_STATE_ACCEPTED = True
 ACCEPTED_WORK_VALUES = frozenset({"working", "settled", "needs_input"})
 ACCEPTED_WAIT_FLAGS = frozenset({"waitingOnApproval"})
+MAX_SAVED_CLASSIFICATIONS = 256
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _SCOPE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,255}\Z", re.ASCII)
 
@@ -338,6 +339,40 @@ def collect_codex(
             rows = {
                 identifier: row for identifier, row in rows.items() if identifier in selected_ids
             }
+            # thread/list may omit threadSource. A metadata-only read can
+            # establish kind without loading/resuming the saved conversation.
+            # Keep this optional, bounded and separate from runtime evidence.
+            reads = 0
+            for identifier, row in rows.items():
+                if identifier in loaded or row["threadKind"] != "unknown":
+                    continue
+                if reads >= MAX_SAVED_CLASSIFICATIONS or time.monotonic() >= deadline:
+                    result["limitations"].append("saved_classification_limit")
+                    break
+                reads += 1
+                try:
+                    client.timeout = remaining()
+                    response = client.read_thread(identifier)
+                    if not isinstance(response, dict):
+                        raise MetadataError("invalid_thread_metadata")
+                    detail = saved_thread_metadata(response.get("thread"), **scope)
+                except (TransportError, MetadataError, SnapshotError):
+                    if "saved_classification_unavailable" not in result["limitations"]:
+                        result["limitations"].append("saved_classification_unavailable")
+                    continue
+                if detail["nativeIds"] != row["nativeIds"]:
+                    raise SnapshotError("native_identity_mapping_conflict")
+                issues = [issue for issue in detail["metadataIssues"] if issue.startswith("thread_classification_")]
+                if row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]:
+                    issues.append("thread_classification_conflict")
+                if any(issue.startswith("thread_classification_") for issue in row["metadataIssues"]):
+                    continue
+                if issues:
+                    row["metadataIssues"] = list(dict.fromkeys(row["metadataIssues"] + issues))
+                else:
+                    row["threadKind"] = detail["threadKind"]
+                    if row["sourceKind"] == "unknown":
+                        row["sourceKind"] = detail["sourceKind"]
             validate_incarnation(identity)
             result["ignoredMessages"] = client.ignored_messages
             result["sourceHealth"] = "partial" if result["errors"] else "current"

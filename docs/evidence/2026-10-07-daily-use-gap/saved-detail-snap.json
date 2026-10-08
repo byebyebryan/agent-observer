@@ -1,0 +1,49 @@
+{
+  "host": "snap",
+  "loadedBefore": [
+    "01a0fece-0176-7a33-abb3-e99fdb38417a",
+    "01a113b3-adca-7b62-834f-262791c1c774"
+  ],
+  "loadedAfter": [
+    "01a0fece-0176-7a33-abb3-e99fdb38417a",
+    "01a113b3-adca-7b62-834f-262791c1c774"
+  ],
+  "loadedUnchanged": true,
+  "savedDetail": [
+    {
+      "id": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+      "title": "codex-worker-kit",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a10d42-4dac-7ee1-b846-210742296942",
+      "title": "esp32-rlcd",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a0f87e-3524-7861-946e-e89005f07905",
+      "title": "esp32-349",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a0f331-e655-7ff3-9594-7d080e0524b3",
+      "title": "remote-chrome",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a0ee10-6625-7f61-9873-6150d279af66",
+      "title": "agent-plus",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    }
+  ]
+}

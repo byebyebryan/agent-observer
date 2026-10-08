@@ -7,6 +7,7 @@ from unittest.mock import patch
 from agent_observer.codex_endpoint import EndpointError, RuntimeIdentity
 from agent_observer.codex_snapshot import collect_codex
 from agent_observer.native_artifacts import CODEX, CODEX_DAEMON
+from agent_observer.codex_transport import TransportError
 
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
@@ -62,6 +63,74 @@ class FakeClient:
 
 
 class SnapshotCollectionTest(unittest.TestCase):
+    def unclassified(self, identifier):
+        row = native(identifier)
+        del row["threadSource"]
+        return row
+
+    def test_saved_detail_establishes_kind_without_runtime_or_clock_claim(self):
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": [self.unclassified(SECOND)], "nextCursor": None})
+        result = self.collect(client)
+        row = result["sessions"][0]
+        self.assertEqual(row["threadKind"], "user")
+        self.assertEqual(row["inventory"], "saved")
+        self.assertEqual(row["presence"]["value"], "unknown")
+        self.assertEqual(row["work"]["value"], "unknown")
+        self.assertNotIn("nativeState", row)
+        self.assertIsNone(row["activity"]["at"])
+        self.assertIn(("read", SECOND), client.calls)
+
+    def test_saved_detail_classifies_explicit_child_without_loading_it(self):
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": [self.unclassified(SECOND)], "nextCursor": None})
+        client.read_thread = lambda identifier: {"thread": {**native(identifier), "threadSource": "subagent"}}
+        row = self.collect(client)["sessions"][0]
+        self.assertEqual(row["threadKind"], "child")
+        self.assertEqual(row["inventory"], "saved")
+        self.assertEqual(row["presence"]["value"], "unknown")
+
+    def test_optional_saved_detail_failure_keeps_catalog_and_live_sibling(self):
+        client = FakeClient({"data": [FIRST], "nextCursor": None},
+                            {"data": [self.unclassified(SECOND)], "nextCursor": None})
+        def read(identifier):
+            if identifier == SECOND:
+                raise TransportError("rpc_error")
+            return {"thread": native(identifier)}
+        client.read_thread = read
+        result = self.collect(client)
+        rows = {r["identity"]["nativeId"]: r for r in result["sessions"]}
+        self.assertEqual(rows[SECOND]["threadKind"], "unknown")
+        self.assertEqual(rows[FIRST]["presence"]["value"], "present")
+        self.assertEqual(result["coverage"]["saved"]["complete"], True)
+        self.assertIn("saved_classification_unavailable", result["limitations"])
+
+    def test_saved_detail_identity_conflict_invalidates_live_authority(self):
+        client = FakeClient({"data": [FIRST], "nextCursor": None},
+                            {"data": [self.unclassified(SECOND)], "nextCursor": None})
+        client.read_thread = lambda identifier: {"thread": native(FIRST)}
+        result = self.collect(client)
+        self.assertIn({"code": "native_identity_mapping_conflict"}, result["errors"])
+        self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
+        self.assertEqual(result["sessions"][0]["presence"]["health"], "stale")
+
+    def test_saved_detail_budget_leaves_remaining_kind_unknown(self):
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": [self.unclassified(FIRST), self.unclassified(SECOND)], "nextCursor": None})
+        with patch("agent_observer.codex_snapshot.MAX_SAVED_CLASSIFICATIONS", 1):
+            result = self.collect(client)
+        self.assertEqual([r["threadKind"] for r in result["sessions"]], ["user", "unknown"])
+        self.assertIn("saved_classification_limit", result["limitations"])
+        self.assertEqual(sum(isinstance(c, tuple) and c[0] == "read" for c in client.calls), 1)
+
+    def test_saved_detail_source_conflict_does_not_promote_user(self):
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": [self.unclassified(SECOND)], "nextCursor": None})
+        client.read_thread = lambda identifier: {"thread": {**native(identifier), "source": {"subAgent": "review"}, "threadSource": "subagent"}}
+        row = self.collect(client)["sessions"][0]
+        self.assertEqual(row["threadKind"], "unknown")
+        self.assertIn("thread_classification_conflict", row["metadataIssues"])
+
     def test_runtime_cadence_never_scans_saved_catalog(self):
         client = FakeClient({"data": [FIRST], "nextCursor": None},
                             {"data": [native(SECOND)], "nextCursor": None})
