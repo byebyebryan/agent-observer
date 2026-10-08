@@ -155,10 +155,9 @@ def exact_sdk_metadata(path: Path, session_id: str):
     title/cwd extraction in the pinned SDK, binding its lite parser to an owned
     open descriptor instead of accepting that catalog preference.
     """
-    from claude_agent_sdk._internal.sessions import (
-        _parse_session_info_from_lite,
-        _read_session_lite,
-    )
+    _, metadata = _metadata_sdk()
+    _parse_session_info_from_lite = metadata._parse_session_info_from_lite
+    _read_session_lite = metadata._read_session_lite
 
     fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
     try:
@@ -505,6 +504,59 @@ def _install_audit_guard(blocked: list[str]) -> None:
     sys.addaudithook(guard)
 
 
+def _metadata_sdk():
+    """Load the pinned SDK's read-only implementation in this private helper.
+
+    The public package initializer also imports unrelated client/MCP machinery.
+    Metadata functions are the SDK's own implementations, with relative imports
+    under an isolated alias; no installed SDK files or parsers are patched.
+    The caller installs the immutable audit guard before invoking this binding.
+    """
+    import importlib
+    import importlib.machinery
+    import importlib.util
+    import types
+
+    alias = "_observer_claude_metadata"
+    if "claude_agent_sdk" in sys.modules:
+        raise ImportError("metadata helper requires isolated SDK initialization")
+    if alias not in sys.modules:
+        spec = importlib.util.find_spec("claude_agent_sdk")
+        if (spec is None or not isinstance(spec.origin, str)
+                or not spec.submodule_search_locations
+                or len(spec.submodule_search_locations) != 1):
+            raise ImportError("metadata SDK package unavailable")
+        origin = Path(spec.origin)
+        home = Path(spec.submodule_search_locations[0])
+        if (not home.is_absolute() or home.resolve(strict=True) != home
+                or origin != home / "__init__.py"):
+            raise ImportError("metadata SDK location unavailable")
+        info = home.lstat()
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid not in {0, os.geteuid()} or info.st_mode & 0o022:
+            raise ImportError("metadata SDK ownership unavailable")
+        package = types.ModuleType(alias)
+        package.__package__ = alias
+        package.__path__ = [str(home)]
+        package.__spec__ = importlib.machinery.ModuleSpec(alias, None, is_package=True)
+        sys.modules[alias] = package
+    home = Path(sys.modules[alias].__path__[0])
+    metadata_version = importlib.import_module(alias + "._version")
+    sessions = importlib.import_module(alias + "._internal.sessions")
+    for module, path in ((metadata_version, home / "_version.py"),
+                         (sessions, home / "_internal/sessions.py")):
+        if Path(module.__file__) != path or path.resolve(strict=True) != path:
+            raise ImportError("metadata SDK module unavailable")
+        info = path.lstat()
+        if not stat.S_ISREG(info.st_mode) or info.st_uid not in {0, os.geteuid()} or info.st_mode & 0o022:
+            raise ImportError("metadata SDK module ownership unavailable")
+    if (metadata_version.__version__ != SDK_VERSION
+            or "claude_agent_sdk" in sys.modules
+            or any(not callable(getattr(sessions, name, None)) for name in
+                   ("list_sessions", "_read_session_lite", "_parse_session_info_from_lite"))):
+        raise ImportError("metadata SDK binding unavailable")
+    return metadata_version.__version__, sessions
+
+
 def main() -> int:
     sys.dont_write_bytecode = True
     config_value = os.environ.get("CLAUDE_CONFIG_DIR")
@@ -535,7 +587,8 @@ def main() -> int:
     blocked: list[str] = []
     _install_audit_guard(blocked)
     try:
-        from claude_agent_sdk import __version__, list_sessions
+        __version__, metadata = _metadata_sdk()
+        list_sessions = metadata.list_sessions
     except ImportError:
         _emit({"error": "history_sdk_unavailable"})
         return 0
