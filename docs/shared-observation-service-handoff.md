@@ -87,7 +87,10 @@ listener retirement, but its matched two-provider Snap workload measures +2.330
 CPU percentage points and 109.289 MiB sampled aggregate RSS. Both original
 resource gates fail. A14 adds bounded metadata scheduling fingerprints to the
 owned Claude helper; its separately installed native subset passes, and its
-combined cost comparison is pending. These repairs do not change API 1 or the
+held background question reaches cached blocked state in 0.789 seconds. Its
+[combined cost receipt](evidence/2026-10-07-native-delivery/a14-filter-and-host-cost.json)
+still misses the original gates: +2.086 CPU points and 131.402 MiB sampled
+aggregate RSS. These repairs do not change API 1 or the
 service envelope and do not select native hints for ordinary use. Refer to the
 [cost follow-up](native-hints-cost-follow-up.md) before evaluating an unselected
 candidate; selected a8 remains the client handoff endpoint.

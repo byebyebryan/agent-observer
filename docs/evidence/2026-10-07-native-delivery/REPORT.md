@@ -330,3 +330,43 @@ fails the host gate; separate-provider results cannot substitute for it. All a13
 namespaces, borrowed authentication/history and paired control stores are removed.
 Normal a8 selection remains unchanged. A14's subsequent scheduling fingerprint
 repair is separately frozen; its native/resource acceptance remains pending.
+
+## A14 scheduling-filter acceptance subset
+
+Source `724b418`, wheel `283e1d1be5011814269e0d4e7e529c7d0f4bd9f90a56108a30bdc0939bb6394f`,
+and both installed profiles verify. Its 327 source tests and pure public API
+conformance pass. The [bounded receipt](a14-filter-and-host-cost.json) records
+three-turn state/activity, unchanged-age rename and reconnect checks on both
+Codex hosts and Snap Claude. Independent event-receipt runtime/history p95 is
+1.866/2.335 seconds for Snap Codex, 1.795/2.563 for Starship Codex and
+1.136/9.900 for Snap Claude. These are exact-ID event receipt measurements,
+separate from native-first-observation and provider transition time.
+
+Foreground Claude question/exit passes. The separately held background question
+reaches a cached `blocked/question` view 0.789 seconds after independent native
+detection and remains bracketed across three samples without answering it. This
+case makes no event-arrival latency claim. Paired Codex retirement with a held
+passive peer passes on both hosts: observed unload at 76.080/61.718 seconds,
+with the quiet control absent at its first delayed probe. The control establishes
+absence after unload plus a margin, not an exact matching retirement time.
+
+The matched two-provider Snap cost pair retains three scheduled native turns per
+provider, three healthy readers, one slow reader and 100 cached reads in each
+five-minute mode. Polling uses 2.338 percent of one core and hinted collection
+4.425 percent: **+2.086 percentage points**, still above one. Claude's measured
+runtime jobs fall to 15 versus polling's ten after startup; history jobs are
+nine versus two. Codex performs 16 runtime/eight history jobs versus ten/two.
+The fingerprint filter reduces redundant runtime wakeups but cannot eliminate
+required history refreshes. Sampled aggregate RSS is 83.578/131.402 MiB,
+an incremental 47.824 MiB. Both original resource gates remain unmet. RSS samples
+are not hard maxima, and different runs' brief peaks must not be compared as
+proof of a regression. All healthy readers report zero errors/gaps.
+
+All eight a14 native namespaces, their paired controls, borrowed authentication
+and native history stores are removed; physical store absence was independently
+checked. Both normal a8 unit PIDs, links and managed selection remain unchanged.
+Snap's late configuration bookend matches. Starship's formerly present Claude
+settings file is absent at the final bookend, an unattributed ordinary-state
+change; the proof performed no ordinary provider action or restore. It is not
+reported as unchanged preservation. P5 and P6 remain open, and the memory-budget
+question remains unanswered.

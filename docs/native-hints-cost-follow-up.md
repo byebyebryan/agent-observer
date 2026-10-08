@@ -115,6 +115,15 @@ foreground/background questions, activity/rename, reconnect and listener lifetim
 before accepting the filter. No normal hint-unit selection follows from source
 acceptance or the a13 results.
 
+The [a14 installed/native receipt](evidence/2026-10-07-native-delivery/a14-filter-and-host-cost.json)
+passes these focused state, question, activity, rename, reconnect and lifetime
+checks, including a held background question reaching cached blocked state in
+0.789 seconds. The matched Snap publisher still adds **2.086 CPU percentage
+points** and samples 131.402 MiB aggregate RSS (47.824 MiB incremental).
+Claude runtime collection counts fall, while both providers still require extra
+history jobs. All private stores/authentication are removed. A14 remains
+unselected; the original CPU and aggregate-memory gates are not accepted.
+
 ## Memory decision and host scope
 
 The pending budget question distinguishes two implementation directions. Neither
