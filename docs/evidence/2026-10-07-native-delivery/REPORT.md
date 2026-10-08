@@ -309,3 +309,24 @@ errors, and complete removal of private stores/authentication. CPU overhead is
 resource gates remain unmet, so selection stays a8 and P6 remains withheld.
 A13's subsequent anchored debounce is a separately tested producer repair;
 it has no native acceptance yet.
+
+## A13 debounce and combined host acceptance subset
+
+Source `521fb7a`, wheel `bf611f5ec99f1991257295a9dad964880b44f81d6f9261f5b633e43e5132d1d0`,
+and both installed profiles verify. Its 320 source tests and pure public API
+conformance pass. The [bounded receipt](a13-debounce-and-host-cost.json) includes
+three-turn independent event clocks on both Codex hosts and Snap Claude,
+foreground question/exit and paired passive-listener retirement on both hosts.
+All focused latency cases pass the unchanged runtime/history targets. The
+500 ms anchored debounce preserves periodic cadence, backoff and fairness.
+
+Matched five-minute Claude-only cost improves to +1.156 CPU percentage points,
+still above one; Starship Codex measures +0.685. The separate two-provider Snap
+case uses three scheduled native turns per provider, one publisher, three healthy
+readers and 100 cached reads per mode. It measures 2.323 versus 4.653 percent of
+one core: +2.330 points. Hinted sampled aggregate RSS is 109.289 MiB and polling
+67.043 MiB. No reader gaps/errors occur. This combined result independently
+fails the host gate; separate-provider results cannot substitute for it. All a13
+namespaces, borrowed authentication/history and paired control stores are removed.
+Normal a8 selection remains unchanged. A14's subsequent scheduling fingerprint
+repair is separately frozen; its native/resource acceptance remains pending.

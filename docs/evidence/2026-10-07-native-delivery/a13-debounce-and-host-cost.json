@@ -1,0 +1,2087 @@
+{
+  "artifact": {
+    "manifestVersion": 2,
+    "package": "agent-observer",
+    "version": "0.4.0a13",
+    "sourceRevision": "521fb7a35de20b72401099565ea1a18344e6d4ba",
+    "wheel": "agent_observer-0.4.0a13-py3-none-any.whl",
+    "wheelSha256": "bf611f5ec99f1991257295a9dad964880b44f81d6f9261f5b633e43e5132d1d0",
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "apiVersion": 1,
+    "schemas": {
+      "snapshot": 3,
+      "watch": 3,
+      "write": 1
+    },
+    "claudeHistorySdk": "0.2.163",
+    "nativeContracts": [
+      "codex_managed_metadata_v1",
+      "claude_registry_job_metadata_v1",
+      "codex_tty_entry_v1",
+      "claude_background_attach_v1"
+    ],
+    "service": {
+      "protocol": 1,
+      "schemas": {
+        "request": 1,
+        "frame": 1
+      }
+    }
+  },
+  "installation": {
+    "snap": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+      "wheelSha256": "bf611f5ec99f1991257295a9dad964880b44f81d6f9261f5b633e43e5132d1d0",
+      "sourceRevision": "521fb7a35de20b72401099565ea1a18344e6d4ba",
+      "profile": "claude-history",
+      "version": "0.4.0a13",
+      "sdk": "0.2.163",
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    },
+    "starship": {
+      "status": "accepted",
+      "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+      "wheelSha256": "bf611f5ec99f1991257295a9dad964880b44f81d6f9261f5b633e43e5132d1d0",
+      "sourceRevision": "521fb7a35de20b72401099565ea1a18344e6d4ba",
+      "profile": "core",
+      "version": "0.4.0a13",
+      "sdk": null,
+      "bundledExecutable": false,
+      "installedWheelBytesVerified": true,
+      "entrypointsVerified": true,
+      "schemaVersionsVerified": true,
+      "serviceProtocolVerified": true,
+      "providerInvocations": 0,
+      "selectedLinksChanged": false
+    }
+  },
+  "publicApiConformance": {
+    "status": "accepted",
+    "api": {
+      "apiVersion": 1,
+      "hostLocal": true,
+      "nativeEventReplay": false,
+      "readCommands": [
+        "snapshot",
+        "list",
+        "show",
+        "watch",
+        "schema"
+      ],
+      "schemas": {
+        "snapshot": 3,
+        "watch": 3,
+        "write": 1
+      },
+      "writeCommands": [
+        "prepare",
+        "execute",
+        "enter",
+        "schema"
+      ]
+    },
+    "selectedPrefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+    "independentReader": "jsonschema",
+    "readerVersion": "4.26.0",
+    "importsObserver": false,
+    "providerInvocations": 0,
+    "fixtureRows": {
+      "claude-ready": 5,
+      "partial": 3,
+      "snapshot": 5
+    },
+    "strictInputAndExactReference": true,
+    "maximumSerializedCliRows": 4096
+  },
+  "nativeAcceptance": {
+    "snap": {
+      "status": "accepted",
+      "hostScope": "snap",
+      "results": {
+        "events-0": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "codex",
+          "nativeId": "01a11946-bcd1-7852-b37e-e5f34632f618",
+          "runtimeP95Seconds": 1.304215193958953,
+          "historyP95Seconds": 0.40903822402469814,
+          "samples": [
+            {
+              "stage": "new",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.7358959470293485,
+              "activityAt": null,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 545,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "cwd"
+              ]
+            },
+            {
+              "stage": "initial_waiting",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.20966649800539017,
+              "activityAt": null,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 545,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ]
+            },
+            {
+              "stage": "working_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.284820559027139,
+              "activityAt": 1791425432000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 251,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.836,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.273900019004941,
+              "activityAt": 1791425444000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 526,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.315,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_0",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.40903822402469814,
+              "activityAt": 1791425444000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -8327,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 2.18,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.304215193958953,
+              "activityAt": 1791425446000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 502,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.89,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.2931871709879488,
+              "activityAt": 1791425460000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 502,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.478,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_1",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.4070946740102954,
+              "activityAt": 1791425460000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -3889,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 2.357,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.2919314170139842,
+              "activityAt": 1791425462000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 503,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.866,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.9626647279947065,
+              "activityAt": 1791425503000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 512,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.003,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_2",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.232338089030236,
+              "activityAt": 1791425503000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -9279,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 1.545,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "rename",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.2291203829809092,
+              "activityAt": 1791425503000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -160,
+              "nativeBracketStable": true,
+              "fields": [
+                "title",
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 0.338,
+              "correlatedNativeEvent": "thread/name/updated",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "reconnected",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.22210358298616484,
+              "activityAt": 1791425503000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -5681,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "activity"
+              ]
+            }
+          ],
+          "runtimeSamples": 8,
+          "historySamples": 5,
+          "sourceReconnectAccepted": true,
+          "passiveLoadedBookends": true,
+          "eventToViewLatencyClaimed": true,
+          "periodicIntervalsSeconds": [
+            30,
+            120
+          ],
+          "ordinaryProviderActions": false,
+          "nativeReferenceImportsObserver": false,
+          "terminalOutputPersisted": false,
+          "eventRuntimeP95Seconds": 1.89,
+          "eventHistoryP95Seconds": 2.357,
+          "eventRuntimeSamples": 6,
+          "eventHistorySamples": 4,
+          "eventClockScope": "independent exact-ID receipt; Claude file events bound by subsequent independent metadata; not provider transition time"
+        },
+        "events-1": {
+          "status": "accepted",
+          "hostScope": "snap",
+          "provider": "claude",
+          "nativeId": "c6f99614-5adb-446b-bf67-af76e6845e44",
+          "runtimeP95Seconds": 1.1257953019812703,
+          "historyP95Seconds": 7.605884835997131,
+          "samples": [
+            {
+              "stage": "new",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.044961097999475896,
+              "activityAt": null,
+              "phase": "unknown",
+              "latestHintRelativeToSampleMs": 351,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "cwd"
+              ]
+            },
+            {
+              "stage": "working_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.9530496090301313,
+              "activityAt": null,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 530,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 0.82,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1257953019812703,
+              "activityAt": 1791425519274,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 524,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.181,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_0",
+              "component": "history",
+              "nativeObservedToViewSeconds": 1.2730679959640838,
+              "activityAt": 1791425530540,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 1903,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 2.461,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.9608300409745425,
+              "activityAt": 1791425530540,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 545,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.028,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1190066889976151,
+              "activityAt": 1791425542973,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 515,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.128,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_1",
+              "component": "history",
+              "nativeObservedToViewSeconds": 7.605884835997131,
+              "activityAt": 1791425544276,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 8173,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 8.741,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.8341053510084748,
+              "activityAt": 1791425544276,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 503,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 0.909,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.9621461600181647,
+              "activityAt": 1791425559357,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 543,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.049,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_2",
+              "component": "history",
+              "nativeObservedToViewSeconds": 4.551351846021134,
+              "activityAt": 1791425567531,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 4995,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 5.605,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "rename",
+              "component": "history",
+              "nativeObservedToViewSeconds": 1.107381624984555,
+              "activityAt": 1791425567531,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -754,
+              "nativeBracketStable": true,
+              "fields": [
+                "title",
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 1.19,
+              "correlatedNativeEvent": "inotify_then_independent_metadata_binding",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "reconnected",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.04553664103150368,
+              "activityAt": 1791425567531,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -6687,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "activity"
+              ]
+            }
+          ],
+          "runtimeSamples": 7,
+          "historySamples": 5,
+          "sourceReconnectAccepted": true,
+          "passiveLoadedBookends": false,
+          "eventToViewLatencyClaimed": true,
+          "periodicIntervalsSeconds": [
+            30,
+            120
+          ],
+          "ordinaryProviderActions": false,
+          "nativeReferenceImportsObserver": false,
+          "terminalOutputPersisted": false,
+          "eventRuntimeP95Seconds": 1.181,
+          "eventHistoryP95Seconds": 8.741,
+          "eventRuntimeSamples": 6,
+          "eventHistorySamples": 4,
+          "eventClockScope": "independent exact-ID receipt; Claude file events bound by subsequent independent metadata; not provider transition time"
+        },
+        "foreground-0": {
+          "hostScope": "snap",
+          "provider": "claude",
+          "nativeId": "b3a20cc7-e488-43b5-8738-7c761eed4ba3",
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "question": "foreground_question_accepted",
+          "exit": "native_prompt_input_exit_accepted",
+          "filesystemWakeups": 9,
+          "filesystemOverflow": false,
+          "nativeForegroundRegistered": true,
+          "nativeQuestionObservedToCachedSeconds": 0.8268600330338813,
+          "heldQuestionSamples": [
+            {
+              "nativeStatus": "waiting",
+              "noJob": true,
+              "nativeWaitClass": "input_needed",
+              "phase": "blocked",
+              "phaseHealth": "current",
+              "phaseReason": "native_snapshot",
+              "runtime": "running",
+              "worker": "present",
+              "metadataIssues": [],
+              "blockedReason": "question",
+              "activityAt": 1791425593347,
+              "cachedPhase": "blocked",
+              "cachedBlockedReason": "question"
+            },
+            {
+              "nativeStatus": "waiting",
+              "noJob": true,
+              "nativeWaitClass": "input_needed",
+              "phase": "blocked",
+              "phaseHealth": "current",
+              "phaseReason": "native_snapshot",
+              "runtime": "running",
+              "worker": "present",
+              "metadataIssues": [],
+              "blockedReason": "question",
+              "activityAt": 1791425596945,
+              "cachedPhase": "blocked",
+              "cachedBlockedReason": "question"
+            },
+            {
+              "nativeStatus": "waiting",
+              "noJob": true,
+              "nativeWaitClass": "input_needed",
+              "phase": "blocked",
+              "phaseHealth": "current",
+              "phaseReason": "native_snapshot",
+              "runtime": "running",
+              "worker": "present",
+              "metadataIssues": [],
+              "blockedReason": "question",
+              "activityAt": 1791425596945,
+              "cachedPhase": "blocked",
+              "cachedBlockedReason": "question"
+            }
+          ],
+          "registryAfterExitPresent": false,
+          "metadataCallbacks": [
+            {
+              "event": "PreToolUse",
+              "nativeId": "b3a20cc7-e488-43b5-8738-7c761eed4ba3",
+              "askUserQuestion": true
+            },
+            {
+              "event": "SessionEnd",
+              "nativeId": "b3a20cc7-e488-43b5-8738-7c761eed4ba3",
+              "promptInputExit": true
+            }
+          ],
+          "status": "accepted",
+          "cachedServiceCompared": true,
+          "nativeHints": true
+        },
+        "lifetime-0": {
+          "hostScope": "snap",
+          "stage": "lifetime",
+          "status": "accepted"
+        }
+      },
+      "borrowedAuthAndHistoryRemoved": true,
+      "managedSelectionChanged": false
+    },
+    "starship": {
+      "status": "accepted",
+      "hostScope": "starship",
+      "results": {
+        "events-0": {
+          "status": "accepted",
+          "hostScope": "starship",
+          "provider": "codex",
+          "nativeId": "01a11936-5221-7a70-ae68-134ae596d304",
+          "runtimeP95Seconds": 1.8853233410045505,
+          "historyP95Seconds": 1.1236540210084058,
+          "samples": [
+            {
+              "stage": "new",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.0486162700108252,
+              "activityAt": null,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 515,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "cwd"
+              ]
+            },
+            {
+              "stage": "initial_waiting",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 0.18977258302038535,
+              "activityAt": null,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 515,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ]
+            },
+            {
+              "stage": "working_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1398146700230427,
+              "activityAt": 1791424356000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 150,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.703,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_0",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.144217777007725,
+              "activityAt": 1791424365000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 527,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.13,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_0",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.36782287299865857,
+              "activityAt": 1791424365000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -5359,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 1.911,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1417793959844857,
+              "activityAt": 1791424368000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 501,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.741,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_1",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.8853233410045505,
+              "activityAt": 1791424378000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 521,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.873,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_1",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.3514506999636069,
+              "activityAt": 1791424378000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -7838,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 2.638,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "working_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1268947270000353,
+              "activityAt": 1791424381000,
+              "phase": "working",
+              "latestHintRelativeToSampleMs": 501,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.712,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "completed_2",
+              "component": "runtime",
+              "nativeObservedToViewSeconds": 1.1276802780339494,
+              "activityAt": 1791424390000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 541,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "phase"
+              ],
+              "eventReceivedToViewSeconds": 1.082,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "activity_2",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.3621333360206336,
+              "activityAt": 1791424390000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": 892,
+              "nativeBracketStable": true,
+              "fields": [
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 1.859,
+              "correlatedNativeEvent": "thread/status/changed",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "rename",
+              "component": "history",
+              "nativeObservedToViewSeconds": 1.1236540210084058,
+              "activityAt": 1791424390000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -1639,
+              "nativeBracketStable": true,
+              "fields": [
+                "title",
+                "activity"
+              ],
+              "eventReceivedToViewSeconds": 1.231,
+              "correlatedNativeEvent": "thread/name/updated",
+              "eventBoundToNativeId": true
+            },
+            {
+              "stage": "reconnected",
+              "component": "history",
+              "nativeObservedToViewSeconds": 0.3680160809890367,
+              "activityAt": 1791424390000,
+              "phase": "waiting",
+              "latestHintRelativeToSampleMs": -8176,
+              "nativeBracketStable": true,
+              "fields": [
+                "runtime",
+                "activity"
+              ]
+            }
+          ],
+          "runtimeSamples": 8,
+          "historySamples": 5,
+          "sourceReconnectAccepted": true,
+          "passiveLoadedBookends": true,
+          "eventToViewLatencyClaimed": true,
+          "periodicIntervalsSeconds": [
+            20,
+            60
+          ],
+          "ordinaryProviderActions": false,
+          "nativeReferenceImportsObserver": false,
+          "terminalOutputPersisted": false,
+          "eventRuntimeP95Seconds": 1.873,
+          "eventHistoryP95Seconds": 2.638,
+          "eventRuntimeSamples": 6,
+          "eventHistorySamples": 4,
+          "eventClockScope": "independent exact-ID receipt; Claude file events bound by subsequent independent metadata; not provider transition time"
+        },
+        "lifetime-0": {
+          "hostScope": "starship",
+          "stage": "lifetime",
+          "status": "accepted"
+        }
+      },
+      "borrowedAuthAndHistoryRemoved": true,
+      "managedSelectionChanged": false
+    }
+  },
+  "pairedLifetime": {
+    "snap": {
+      "hostScope": "snap",
+      "provider": "codex",
+      "status": "accepted",
+      "observedId": "01a11949-9188-70f3-874c-8f9e2bc5b568",
+      "controlId": "01a11949-b470-7e10-a505-3becf104e0a0",
+      "observedUnloadedAtSeconds": 61.45086049003294,
+      "controlBookends": [
+        {
+          "elapsedSeconds": 92.08030668698484,
+          "probeReason": "observed_native_unload_plus_margin",
+          "loaded": false,
+          "pid": 451,
+          "startTicks": "46549693",
+          "artifact": {
+            "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+            "provider": "codex",
+            "version": "0.161.0",
+            "versionEvidence": "owned_release_path_and_inspected_sha256"
+          }
+        }
+      ],
+      "finalObserved": {
+        "loaded": false,
+        "pid": 82,
+        "startTicks": "46548131",
+        "artifact": {
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        }
+      },
+      "observerCadenceSeconds": 20,
+      "observedCompletedTurnAt": 1791425631000,
+      "controlCompletedTurnAt": 1791425637000,
+      "controlFirstProbeAfterNativeUnloadOrGrace": true,
+      "durationSeconds": 153.27708468801575,
+      "passiveListenerHeld": true,
+      "publisherNativeHints": true,
+      "listenerMessagesDiscarded": 9,
+      "ordinaryProviderActions": false,
+      "terminalOutputPersisted": false
+    },
+    "starship": {
+      "hostScope": "starship",
+      "provider": "codex",
+      "status": "accepted",
+      "observedId": "01a11937-3543-7902-9f08-d0299672a0f9",
+      "controlId": "01a11937-5705-7f01-94a3-89df05dd53cd",
+      "observedUnloadedAtSeconds": 61.83529102499597,
+      "controlBookends": [
+        {
+          "elapsedSeconds": 92.12377601198386,
+          "probeReason": "observed_native_unload_plus_margin",
+          "loaded": false,
+          "pid": 478,
+          "startTicks": "46470554",
+          "artifact": {
+            "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+            "provider": "codex",
+            "version": "0.161.0",
+            "versionEvidence": "owned_release_path_and_inspected_sha256"
+          }
+        }
+      ],
+      "finalObserved": {
+        "loaded": false,
+        "pid": 83,
+        "startTicks": "46469046",
+        "artifact": {
+          "sha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+          "provider": "codex",
+          "version": "0.161.0",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        }
+      },
+      "observerCadenceSeconds": 20,
+      "observedCompletedTurnAt": 1791424427000,
+      "controlCompletedTurnAt": 1791424432000,
+      "controlFirstProbeAfterNativeUnloadOrGrace": true,
+      "durationSeconds": 152.6871200389578,
+      "passiveListenerHeld": true,
+      "publisherNativeHints": true,
+      "listenerMessagesDiscarded": 8,
+      "ordinaryProviderActions": false,
+      "terminalOutputPersisted": false
+    }
+  },
+  "cost": {
+    "snapClaude": {
+      "status": "measured",
+      "evidenceClass": "installed_controlled_native_claude",
+      "cases": {
+        "polling": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_workload",
+          "hostScope": "snap",
+          "provider": "claude",
+          "mode": "polling",
+          "syntheticSavedRows": 31,
+          "liveNativeSessions": 1,
+          "scriptedNativeTurns": [
+            {
+              "scheduledOffsetSeconds": 40,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423535474
+            },
+            {
+              "scheduledOffsetSeconds": 120,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423613913
+            },
+            {
+              "scheduledOffsetSeconds": 200,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423695292
+            }
+          ],
+          "nativeId": "837abb3a-a65f-4f97-8e71-a9ef8c76573d",
+          "resources": {
+            "hostScope": "snap",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.106,
+            "serviceId": "63aed439-150c-4594-9f82-a7ee4d918cfc",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 60.68932800553739,
+            "readMaxMs": 66.18576199980453,
+            "readBatchMs": 5666,
+            "payloadBytes": 59258,
+            "serviceAndReapedChildrenCpuMs": 3830.0,
+            "oneCoreCpuPercent": 1.2762157371062224,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 67719168,
+            "peakAggregateFds": 18,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 40,
+                "views": 13,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 463436998,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 463346998
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 463707177,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 463347177
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-np/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:508b137eb9340d6648f76ea79d3196961a2b58a8749bf016417153a08d0686d9",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 463739219,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 463649219
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 463947753,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 463587753
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-np/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:508b137eb9340d6648f76ea79d3196961a2b58a8749bf016417153a08d0686d9",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        },
+        "hints": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_workload",
+          "hostScope": "snap",
+          "provider": "claude",
+          "mode": "hints",
+          "syntheticSavedRows": 31,
+          "liveNativeSessions": 1,
+          "scriptedNativeTurns": [
+            {
+              "scheduledOffsetSeconds": 40,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423856226
+            },
+            {
+              "scheduledOffsetSeconds": 120,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423935022
+            },
+            {
+              "scheduledOffsetSeconds": 200,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424016121
+            }
+          ],
+          "nativeId": "e519a622-e51a-4be5-9833-9b41415dbbfe",
+          "resources": {
+            "hostScope": "snap",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "claude"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.196,
+            "serviceId": "7e93b7dc-c88c-4c22-9624-705672677754",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 64.68176998896524,
+            "readMaxMs": 69.1818569903262,
+            "readBatchMs": 5895,
+            "payloadBytes": 59258,
+            "serviceAndReapedChildrenCpuMs": 7300.0,
+            "oneCoreCpuPercent": 2.4317445935322257,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 69201920,
+            "peakAggregateFds": 19,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 47,
+                "views": 27,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 47,
+                "views": 27,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 47,
+                "views": 27,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 463759837,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 463669837
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464028994,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 463668994
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-nh/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:ac9452b1a85135c65434696e467d19148637c491875e43ed4aadaa7077e0178f",
+                "provider": "claude"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 22,
+                    "attempts": 22,
+                    "expiresBoottimeMs": 464042479,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 463952479
+                  },
+                  {
+                    "accepted": 7,
+                    "attempts": 7,
+                    "expiresBoottimeMs": 464252352,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 463892352
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-nh/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:ac9452b1a85135c65434696e467d19148637c491875e43ed4aadaa7077e0178f",
+                "provider": "claude"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        }
+      },
+      "observedCpuDeltaPercentagePoints": 1.1555288564260033,
+      "observedRssDeltaBytes": 1482752,
+      "ownedNativeStoresAndAuthenticationRemoved": true,
+      "ordinaryProviderActions": false,
+      "managedSelectionChanged": false
+    },
+    "starshipCodex": {
+      "status": "measured",
+      "evidenceClass": "installed_controlled_native_workload",
+      "cases": {
+        "polling": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_workload",
+          "hostScope": "starship",
+          "provider": "codex",
+          "mode": "polling",
+          "syntheticSavedRows": 0,
+          "liveNativeSessions": 1,
+          "scriptedNativeTurns": [
+            {
+              "scheduledOffsetSeconds": 40,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423539000
+            },
+            {
+              "scheduledOffsetSeconds": 120,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423619000
+            },
+            {
+              "scheduledOffsetSeconds": 200,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423699000
+            }
+          ],
+          "nativeId": "01a11928-e999-75e2-8ec4-4a4ee5838322",
+          "resources": {
+            "hostScope": "starship",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "codex"
+            ],
+            "runtimeIntervalSeconds": 20.0,
+            "historyIntervalSeconds": 60.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.069,
+            "serviceId": "4031c15a-c698-4958-b8ea-12f12a655f33",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 39.30338198551908,
+            "readMaxMs": 40.40171601809561,
+            "readBatchMs": 3601,
+            "payloadBytes": 6041,
+            "serviceAndReapedChildrenCpuMs": 4120.0,
+            "oneCoreCpuPercent": 1.3730175392992945,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 45613056,
+            "peakAggregateFds": 15,
+            "peakOwnedProcesses": 2,
+            "independentReaders": [
+              {
+                "frames": 45,
+                "views": 21,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 45,
+                "views": 21,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 45,
+                "views": 21,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 463825815,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 463765815
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 463946012,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 463766012
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a13-cp/native-starship/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:4cbe0ab073f95468714c7f4e542ac34f1cd66b1b2ad981496282323afc17e28a",
+                "provider": "codex"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 16,
+                    "attempts": 16,
+                    "expiresBoottimeMs": 464130171,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464070171
+                  },
+                  {
+                    "accepted": 6,
+                    "attempts": 6,
+                    "expiresBoottimeMs": 464247518,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464067518
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a13-cp/native-starship/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:4cbe0ab073f95468714c7f4e542ac34f1cd66b1b2ad981496282323afc17e28a",
+                "provider": "codex"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        },
+        "hints": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_workload",
+          "hostScope": "starship",
+          "provider": "codex",
+          "mode": "hints",
+          "syntheticSavedRows": 0,
+          "liveNativeSessions": 1,
+          "scriptedNativeTurns": [
+            {
+              "scheduledOffsetSeconds": 40,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423869000
+            },
+            {
+              "scheduledOffsetSeconds": 120,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791423947000
+            },
+            {
+              "scheduledOffsetSeconds": 200,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424026000
+            }
+          ],
+          "nativeId": "01a1192d-e779-7eb3-92b4-9805c085bb26",
+          "resources": {
+            "hostScope": "starship",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "codex"
+            ],
+            "runtimeIntervalSeconds": 20.0,
+            "historyIntervalSeconds": 60.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.217,
+            "serviceId": "366c1df6-6024-4329-a0a1-8dc2cdd34a40",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 38.44178596045822,
+            "readMaxMs": 39.54923094715923,
+            "readBatchMs": 3625,
+            "payloadBytes": 6041,
+            "serviceAndReapedChildrenCpuMs": 6180.0,
+            "oneCoreCpuPercent": 2.058511010369166,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 68481024,
+            "peakAggregateFds": 20,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 49,
+                "views": 31,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 49,
+                "views": 31,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 49,
+                "views": 31,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 464153948,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464093948
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464273120,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464093120
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a13-ch/native-starship/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f70e0a4d254dc64df4d39226554e702c462cc1305bcd1293c1e77b8c3ca0559e",
+                "provider": "codex"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 22,
+                    "attempts": 22,
+                    "expiresBoottimeMs": 464455935,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464395935
+                  },
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 464557058,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464377058
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-starship-slEXv0HD/a13-ch/native-starship/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f70e0a4d254dc64df4d39226554e702c462cc1305bcd1293c1e77b8c3ca0559e",
+                "provider": "codex"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        }
+      },
+      "observedCpuDeltaPercentagePoints": 0.6854934710698717,
+      "observedRssDeltaBytes": 22867968,
+      "ownedNativeStoresAndAuthenticationRemoved": true,
+      "ordinaryProviderActions": false,
+      "managedSelectionChanged": false
+    },
+    "snapCombined": {
+      "status": "measured",
+      "evidenceClass": "installed_controlled_native_mixed_workload",
+      "cases": {
+        "polling": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_mixed_workload",
+          "hostScope": "snap",
+          "providers": [
+            "claude",
+            "codex"
+          ],
+          "mode": "polling",
+          "syntheticSavedRows": 31,
+          "liveNativeSessions": 2,
+          "scriptedNativeTurns": [
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 40,
+              "actualOffsetSeconds": 40.157,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424426746
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 60,
+              "actualOffsetSeconds": 60.156,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424448000
+            },
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 120,
+              "actualOffsetSeconds": 120.094,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424504638
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 140,
+              "actualOffsetSeconds": 140.031,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424526000
+            },
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 200,
+              "actualOffsetSeconds": 200.089,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424585180
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 220,
+              "actualOffsetSeconds": 220.114,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424605000
+            }
+          ],
+          "nativeIds": {
+            "claude": "47f7958b-fd6a-415b-98c2-9bd52747267c",
+            "codex": "01a11936-68d7-7621-846e-793e4ce01361"
+          },
+          "resources": {
+            "hostScope": "snap",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "claude",
+              "codex"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": false,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.069,
+            "serviceId": "9f8b9cbc-1024-4859-b525-a2d5326a8376",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 71.31849403958768,
+            "readMaxMs": 91.40407701488584,
+            "readBatchMs": 6236,
+            "payloadBytes": 64533,
+            "serviceAndReapedChildrenCpuMs": 6970.0,
+            "oneCoreCpuPercent": 2.3227990895427384,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 70299648,
+            "peakAggregateFds": 19,
+            "peakOwnedProcesses": 3,
+            "independentReaders": [
+              {
+                "frames": 46,
+                "views": 25,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 46,
+                "views": 25,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 46,
+                "views": 25,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464327536,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464237536
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464597725,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464237725
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mp/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f2014ddae5af0b6b36ada0b0cff58faa5ec26248db21e632e64055a69dc54e44",
+                "provider": "claude"
+              },
+              {
+                "components": [
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464327536,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464237536
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464597749,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464237749
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mp/native-snap/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:9b64a75b73706a2ef0238995fa0ffd61e07f4951900d1b3e9cb73d55a9265336",
+                "provider": "codex"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 464629890,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464539890
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 464838353,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464478353
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mp/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:f2014ddae5af0b6b36ada0b0cff58faa5ec26248db21e632e64055a69dc54e44",
+                "provider": "claude"
+              },
+              {
+                "components": [
+                  {
+                    "accepted": 11,
+                    "attempts": 11,
+                    "expiresBoottimeMs": 464630218,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464540218
+                  },
+                  {
+                    "accepted": 3,
+                    "attempts": 3,
+                    "expiresBoottimeMs": 464838353,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464478353
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mp/native-snap/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:9b64a75b73706a2ef0238995fa0ffd61e07f4951900d1b3e9cb73d55a9265336",
+                "provider": "codex"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        },
+        "hints": {
+          "status": "measured",
+          "evidenceClass": "installed_controlled_native_mixed_workload",
+          "hostScope": "snap",
+          "providers": [
+            "claude",
+            "codex"
+          ],
+          "mode": "hints",
+          "syntheticSavedRows": 31,
+          "liveNativeSessions": 2,
+          "scriptedNativeTurns": [
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 40,
+              "actualOffsetSeconds": 40.151,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424759669
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 60,
+              "actualOffsetSeconds": 60.005,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424781000
+            },
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 120,
+              "actualOffsetSeconds": 120.015,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424840759
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 140,
+              "actualOffsetSeconds": 140.018,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424860000
+            },
+            {
+              "provider": "claude",
+              "scheduledOffsetSeconds": 200,
+              "actualOffsetSeconds": 200.124,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424919799
+            },
+            {
+              "provider": "codex",
+              "scheduledOffsetSeconds": 220,
+              "actualOffsetSeconds": 220.168,
+              "workingIndependentlyObserved": true,
+              "completionIndependentlyObserved": true,
+              "activityAt": 1791424940000
+            }
+          ],
+          "nativeIds": {
+            "claude": "ca510616-ac00-4194-ba48-43cc40d0d88f",
+            "codex": "01a1193b-85e0-7220-a36f-da43497bf1ad"
+          },
+          "resources": {
+            "hostScope": "snap",
+            "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a13-bf611f5ec99f1991",
+            "providers": [
+              "claude",
+              "codex"
+            ],
+            "runtimeIntervalSeconds": 30.0,
+            "historyIntervalSeconds": 120.0,
+            "nativeHints": true,
+            "startupSettledSeconds": 12,
+            "status": "accepted",
+            "durationSeconds": 300.266,
+            "serviceId": "35fd74be-42d8-43ed-b666-32fe4b3b8920",
+            "serviceProtocol": 1,
+            "readSamples": 100,
+            "readP95Ms": 65.03003498073667,
+            "readMaxMs": 69.74884105147794,
+            "readBatchMs": 6103,
+            "payloadBytes": 64533,
+            "serviceAndReapedChildrenCpuMs": 13970.0,
+            "oneCoreCpuPercent": 4.6525414132802245,
+            "existingManagedUserUnit": false,
+            "unitMemoryPeakBytes": null,
+            "peakAggregateRssBytes": 114597888,
+            "peakAggregateFds": 29,
+            "peakOwnedProcesses": 5,
+            "independentReaders": [
+              {
+                "frames": 63,
+                "views": 51,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 63,
+                "views": 51,
+                "gaps": 0,
+                "errors": 0
+              },
+              {
+                "frames": 63,
+                "views": 51,
+                "gaps": 0,
+                "errors": 0
+              }
+            ],
+            "slowReaderConnectedWithoutReading": true,
+            "initialSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 464663743,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464573743
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464932905,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464572905
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mh/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:bf1bd78025e6b9c789c58e425f6a2d094187a408527e67caaed448a8efa18543",
+                "provider": "claude"
+              },
+              {
+                "components": [
+                  {
+                    "accepted": 2,
+                    "attempts": 2,
+                    "expiresBoottimeMs": 464663743,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464573743
+                  },
+                  {
+                    "accepted": 1,
+                    "attempts": 1,
+                    "expiresBoottimeMs": 464932942,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464572942
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mh/native-snap/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:8e0e7fe0502f3a0e71f9ea0e2b38fc8541d42d5f4b1615c4375529a5aab210ea",
+                "provider": "codex"
+              }
+            ],
+            "finalSources": [
+              {
+                "components": [
+                  {
+                    "accepted": 21,
+                    "attempts": 21,
+                    "expiresBoottimeMs": 464948078,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464858078
+                  },
+                  {
+                    "accepted": 8,
+                    "attempts": 8,
+                    "expiresBoottimeMs": 465166327,
+                    "health": "partial",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464806327
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mh/native-snap/claude",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:bf1bd78025e6b9c789c58e425f6a2d094187a408527e67caaed448a8efa18543",
+                "provider": "claude"
+              },
+              {
+                "components": [
+                  {
+                    "accepted": 18,
+                    "attempts": 18,
+                    "expiresBoottimeMs": 464965995,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "runtime",
+                    "sampledBoottimeMs": 464875995
+                  },
+                  {
+                    "accepted": 9,
+                    "attempts": 9,
+                    "expiresBoottimeMs": 465176522,
+                    "health": "current",
+                    "inFlight": false,
+                    "lastResult": "accepted",
+                    "name": "history",
+                    "sampledBoottimeMs": 464816522
+                  }
+                ],
+                "configHome": "/tmp/ao-native-delivery-snap-bgse933k/a13-mh/native-snap/codex",
+                "configHomeKind": "explicit",
+                "contextGeneration": 1,
+                "namespace": "sha256:8e0e7fe0502f3a0e71f9ea0e2b38fc8541d42d5f4b1615c4375529a5aab210ea",
+                "provider": "codex"
+              }
+            ],
+            "ordinaryProviderActions": false,
+            "selectedLinksChanged": false
+          },
+          "isolation": {
+            "privateTmp": true,
+            "ordinaryProviderPathsMasked": true,
+            "privateUserMountPidNamespaces": true
+          },
+          "ordinaryProviderActions": false,
+          "terminalOutputPersisted": false,
+          "managedSelectionChanged": false
+        }
+      },
+      "observedCpuDeltaPercentagePoints": 2.329742323737486,
+      "observedRssDeltaBytes": 44298240,
+      "ownedNativeStoresAndAuthenticationRemoved": true,
+      "ordinaryProviderActions": false,
+      "managedSelectionChanged": false
+    }
+  },
+  "managedSelectionChanged": false,
+  "originalResourceGatesAccepted": false,
+  "budgetQuestionAnswered": false,
+  "ownedProofCleanupVerified": true,
+  "ownedNativeStoresAndAuthenticationAbsenceVerified": true
+}
