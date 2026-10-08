@@ -15,6 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--provider", choices=("codex", "claude"), required=True)
     parser.add_argument("--turns", type=int, default=3)
+    parser.add_argument("--event-clock", action="store_true", help="correlate bounded independent native event receipt")
     args = parser.parse_args()
     assert 1 <= args.turns <= 4
     root, host = Path(os.environ["NATIVE_PROOF_ROOT"]), os.environ["NATIVE_PROOF_HOST"]
@@ -24,6 +25,8 @@ def main():
     reference = runpy.run_path(str(root / "evaluate-observation"))
     proof, service = Proof(args.provider), None
     image_cache, samples, target = {}, [], None
+    event_clock, boundary = None, None
+    clock = lambda: time.clock_gettime_ns(time.CLOCK_BOOTTIME) // 1_000_000
     path = proof.base / ("runtime/hints-" + args.provider) / "read.sock"
     diagnostic = path.parent / "hints.json"
 
@@ -49,6 +52,7 @@ def main():
                 continue
             observed = observed or time.monotonic()
             value = frame()
+            view_at = clock()
             row = next((r for r in (value["snapshot"] or {}).get("sessions", []) if r["identity"]["nativeId"] == target), None)
             after = native()["rows"].get(target)
             if not after or not native_predicate(after) or any(before.get(k) != after.get(k) for k in fields):
@@ -62,6 +66,11 @@ def main():
             receipt = next(c for s in value["sources"] if s["provider"] == args.provider for c in s["components"] if c["name"] == component)
             if receipt["health"] not in {"current", "partial"}:
                 continue
+            event = event_clock.match(boundary, component, after, stage) if event_clock and boundary is not None else None
+            if event_clock and boundary is not None and event is None:
+                continue
+            if event and event["receivedBoottimeMs"] > view_at:
+                continue
             delay = time.monotonic() - observed
             hints = json.loads(diagnostic.read_text())["providers"][args.provider]
             hint_at = hints["last" + component.title() + "HintBoottimeMs"]
@@ -72,6 +81,9 @@ def main():
                             # this signed diagnostic is not event/view latency.
                             "latestHintRelativeToSampleMs": receipt["sampledBoottimeMs"] - hint_at if hint_at is not None else None,
                             "nativeBracketStable": True, "fields": fields})
+            if event:
+                samples[-1].update(eventReceivedToViewSeconds=(view_at - event["receivedBoottimeMs"]) / 1000,
+                                   correlatedNativeEvent=event["nativeMethod"], eventBoundToNativeId=True)
             return row
         raise RuntimeError("native_hint_" + stage + "_pending")
 
@@ -103,6 +115,9 @@ def main():
         after = native()
         if args.provider == "codex":
             assert before["loaded"] == after["loaded"]
+        if args.event_clock:
+            EventClock = runpy.run_path(str(root / "native-event-clock"))["EventClock"]
+            event_clock = EventClock(args.provider, proof.base / args.provider, reference)
         created = proof.handoff()
         viewer = proof.spawn(created)
         if args.provider == "claude":
@@ -118,23 +133,32 @@ def main():
                     break
             assert target is not None
         row = await_view("new", ["runtime", "cwd"], lambda r: r.get("runtime") == "running")
+        if event_clock:
+            event_clock.target = target
         ref = row["identity"]
         proof.assert_native_client(viewer)
+        if args.provider == "codex":
+            row = await_view("initial_waiting", ["runtime", "phase"], lambda r: r.get("phase") == "waiting")
         for turn in range(args.turns):
+            previous_activity = row["activity"]["at"]
+            boundary = clock() if event_clock else None
             os.write(viewer[1], b"\x1b[200~Run a shell command that sleeps 5 seconds, then reply only OK.\x1b[201~\r")
             if args.provider == "codex":
                 proof.pause(viewer, .5)
                 os.write(viewer[1], b"\r")
             await_view("working_" + str(turn), ["runtime", "phase"], lambda r: r.get("phase") == "working")
+            boundary = clock() if event_clock else None
             row = await_view("completed_" + str(turn), ["runtime", "phase"], lambda r: r.get("phase") == "waiting")
-            row = await_view("activity_" + str(turn), ["activity"], lambda r: r.get("phase") == "waiting" and r.get("activity") is not None, component="history")
+            row = await_view("activity_" + str(turn), ["activity"], lambda r: r.get("phase") == "waiting" and r.get("activity") is not None and r.get("activity") != previous_activity, component="history")
         at = row["activity"]["at"]
+        boundary = clock() if event_clock else None
         if args.provider == "codex":
             proof.codex_metadata(ref, rename=True, touch=True)
         else:
             os.write(viewer[1], b"/rename Activity proof renamed\r")
         row = await_view("rename", ["title", "activity"], lambda r: r.get("title") == "Activity proof renamed" and r.get("activity") == at, component="history", timeout=30)
         assert row["activity"]["at"] == at
+        boundary = None
         # Kill only the exact publisher child feed, then prove a new owned feed
         # incarnation and unchanged conversation clock through reconnect.
         children = Path(f"/proc/{service.pid}/task/{service.pid}/children").read_text().split()
@@ -161,9 +185,17 @@ def main():
                    "runtimeP95Seconds": p95(runtime), "historyP95Seconds": p95(history),
                    "samples": samples, "runtimeSamples": len(runtime), "historySamples": len(history),
                    "sourceReconnectAccepted": True, "passiveLoadedBookends": args.provider == "codex",
-                   "eventToViewLatencyClaimed": False,
+                   "eventToViewLatencyClaimed": bool(args.event_clock),
                    "periodicIntervalsSeconds": interval, "ordinaryProviderActions": False,
                    "nativeReferenceImportsObserver": False, "terminalOutputPersisted": False}
+        if event_clock:
+            event_runtime = [s["eventReceivedToViewSeconds"] for s in samples if s["component"] == "runtime" and "eventReceivedToViewSeconds" in s]
+            event_history = [s["eventReceivedToViewSeconds"] for s in samples if s["component"] == "history" and "eventReceivedToViewSeconds" in s]
+            receipt.update(eventRuntimeP95Seconds=p95(sorted(event_runtime)), eventHistoryP95Seconds=p95(sorted(event_history)),
+                           eventRuntimeSamples=len(event_runtime), eventHistorySamples=len(event_history),
+                           eventClockScope="independent exact-ID receipt; Claude file events bound by subsequent independent metadata; not provider transition time")
+            if receipt["eventRuntimeP95Seconds"] > 5 or receipt["eventHistoryP95Seconds"] > 15:
+                receipt["status"] = "latency_target_missed"
         (root / ("hint-receipt-" + args.provider + ".json")).write_text(json.dumps(receipt, indent=2) + "\n")
         print(json.dumps(receipt))
     finally:
@@ -173,6 +205,8 @@ def main():
             if service.poll() is None:
                 service.send_signal(signal.SIGTERM)
             service.wait(timeout=15)
+        if event_clock:
+            event_clock.close()
 
 
 if __name__ == "__main__":
