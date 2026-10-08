@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from agent_observer import _claude_history_worker
 from agent_observer._claude_history_worker import (
     MAX_COMPANION_BYTES,
     _bounded_cwd,
@@ -21,6 +22,99 @@ from agent_observer.claude_history import SDK_VERSION, _run_worker, collect_save
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
 THIRD = "21234567-0123-4567-89ab-0123456789ab"
+
+
+class MetadataSdkLoadingTest(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory(prefix="ao-sdk-load-")
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.package = self.root / "claude_agent_sdk"
+        self.package.mkdir()
+        (self.package / "__init__.py").write_text("raise AssertionError('client initializer executed')\n")
+        (self.package / "_version.py").write_text("__version__ = " + repr(SDK_VERSION) + "\n")
+        (self.package / "types.py").write_text("SENTINEL = 'metadata fixture'\n")
+        (self.package / "_internal").mkdir()
+        (self.package / "_internal/__init__.py").write_text("\n")
+        (self.package / "_internal/sessions.py").write_text(
+            "from ..types import SENTINEL\n"
+            "def list_sessions(): return [SENTINEL]\n"
+            "def _read_session_lite(path): return None\n"
+            "def _parse_session_info_from_lite(sid, lite): return None\n"
+        )
+
+    def child(self, assertion):
+        worker = str(Path(_claude_history_worker.__file__).resolve())
+        source = (
+            "import json,runpy,sys\n"
+            "sys.path.insert(0," + repr(str(self.root)) + ")\n"
+            "worker=runpy.run_path(" + repr(worker) + ")\n"
+            "blocked=[]\nworker['_install_audit_guard'](blocked)\n" + assertion
+        )
+        return subprocess.run([os.sys.executable, "-I", "-B", "-c", source],
+                              capture_output=True, timeout=10)
+
+    def test_only_metadata_subtree_loads_without_client_initializer(self):
+        result = self.child(
+            "v,s=worker['_metadata_sdk']()\n"
+            "assert v==worker['SDK_VERSION']\n"
+            "assert s.list_sessions()==['metadata fixture']\n"
+            "assert 'claude_agent_sdk' not in sys.modules\n"
+            "assert '_observer_claude_metadata.types' in sys.modules\n"
+            "assert not blocked\nprint(json.dumps({'status':'loaded'}))\n"
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {"status": "loaded"})
+
+    def test_missing_function_and_changed_sdk_dependency_fail_explicitly(self):
+        for change in ("missing_function", "different_version"):
+            with self.subTest(change=change):
+                version_file = self.package / "_version.py"
+                version_file.write_text("__version__ = " + repr(SDK_VERSION if change == "missing_function" else "0.0.0") + "\n")
+                sessions = self.package / "_internal/sessions.py"
+                previous = sessions.read_text()
+                if change == "missing_function":
+                    sessions.write_text(previous + "\n_read_session_lite = None\n")
+                result = self.child(
+                    "try: worker['_metadata_sdk']()\n"
+                    "except ImportError: print(json.dumps({'status':'unavailable'}))\n"
+                    "else: raise AssertionError('invalid binding accepted')\n"
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout), {"status": "unavailable"})
+                sessions.write_text(previous)
+
+    def test_metadata_import_cannot_write_or_spawn(self):
+        forbidden = self.root / "forbidden"
+        for code in (
+            "from pathlib import Path\nPath(" + repr(str(forbidden)) + ").write_text('forbidden')\n",
+            "import subprocess\nsubprocess.run(['/usr/bin/true'])\n",
+            "import socket\nsocket.socket()\n",
+        ):
+            with self.subTest(code=code.splitlines()[0]):
+                (self.package / "types.py").write_text(code)
+                result = self.child(
+                    "try: worker['_metadata_sdk']()\n"
+                    "except PermissionError: print(json.dumps({'blocked':bool(blocked)}))\n"
+                    "else: raise AssertionError('mutating import accepted')\n"
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout), {"blocked": True})
+                self.assertFalse(forbidden.exists())
+
+    def test_ambiguous_package_location_and_existing_public_import_are_rejected(self):
+        for prefix in (
+            "import importlib.util,types\nimportlib.util.find_spec=lambda _:types.SimpleNamespace(origin='fixture',submodule_search_locations=['one','two'])\n",
+            "sys.modules['claude_agent_sdk']=object()\n",
+        ):
+            with self.subTest(prefix=prefix):
+                result = self.child(prefix +
+                    "try: worker['_metadata_sdk']()\n"
+                    "except ImportError: print(json.dumps({'status':'unavailable'}))\n"
+                    "else: raise AssertionError('ambiguous binding accepted')\n"
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout), {"status": "unavailable"})
 
 
 def worker_row(session_id, *, created_at, last_modified, cwd=None, title=None, activity_at=None):
