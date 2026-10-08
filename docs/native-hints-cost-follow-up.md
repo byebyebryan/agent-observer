@@ -78,6 +78,64 @@ remain, and failure backoff and provider fairness stay in force. Deterministic
 clock tests cover both bursts and late hints during an active job. The CPU and
 latency targets are unchanged; a new frozen native measurement is required.
 
+## Focused Claude scheduling filter
+
+A14 is a separate proposed repair following a13's measured CPU miss. The owned
+Claude feed may read bounded registry/job metadata solely to decide whether to
+request a full collection. It reuses the adapter's pure field parsers; it never
+calls the adapter's process/image or observation functions and publishes no
+metadata facts. The publisher still accepts only complete authoritative worker
+results with the existing scope/generation/lease checks.
+
+Keep only bounded in-memory SHA256 fingerprints, not raw payloads or session
+state caches. Ignore noncontributing detail/heartbeat fields and nonzero pending
+count churn. Busy/shell are one scheduling class because both project to working;
+retain attention changes, identity, user title/cwd, job state/tempo, pending versus
+zero work, question presence and terminal clocks. Registry clocks remain part of
+the fingerprint for unavailable, mismatched or failed/stopped linked-job
+contexts, where the clock relation can change an ambiguity predicate. Changed
+or unfamiliar kinds/waits and malformed metadata always wake reconciliation.
+These are wakeup predicates, never support or action authority.
+
+Open exact owned watched-directory descriptors and no-follow/nonblocking files;
+require regular owned/nonwritable bounded files with stable descriptor/path
+bookends. Limit each input to 128 KiB, depth 16 and 8192 decoded nodes. Read a
+unique runtime file once per inotify chunk, with at most 64 fingerprint reads;
+excess files force a conservative wakeup. Failed/deleted reads forget the old
+digest so recovery cannot be hidden. Bound fingerprints to 4096 entries; overflow,
+watch loss and runtime rearm clear them. Transcript files continue to produce
+history wakeups without being read by this filter. Periodic reconciliation and
+all runtime/history timing/resource gates remain unchanged.
+
+Controlled tests must cover unchanged metadata, identity/attention/title/cwd and
+terminal changes, unsupported shapes, failed-clock relations, read recovery,
+oversized files, FIFO/symlink rejection, overflow and bounds. Freeze separately
+and repeat matched single/mixed-provider native cost plus working/waiting,
+foreground/background questions, activity/rename, reconnect and listener lifetime
+before accepting the filter. No normal hint-unit selection follows from source
+acceptance or the a13 results.
+
+## Memory decision and host scope
+
+The pending budget question distinguishes two implementation directions. Neither
+choice has been accepted by elapsed time or by a suggested-answer default.
+
+| Decision | Consequence before selection |
+| --- | --- |
+| Keep 64 MiB aggregate RSS | Review a different collection/helper architecture. Current isolated Claude hints already exceed the limit, and the ordinary Snap polling baseline also exceeds it. Do not inline the guarded SDK into the publisher or discard process/deadline isolation as an incidental memory optimization. |
+| Set 64 MiB incremental RSS | Retain absolute RSS alongside polling-to-hints overhead and prove the revised limit on matched native workloads. This is an explicit new budget, not acceptance under the original target. CPU, latency, cleanup and rollout gates still apply. |
+
+The one-point CPU target applies to the configured host publisher and its owned
+live/reaped descendants. Separate successful Codex and Claude cases cannot clear
+Snap's combined-provider gate. The private `native-mixed-hint-cost-case` therefore
+uses both providers in one isolated publisher, 31 synthetic saved Claude rows,
+three scheduled native turns per provider, three healthy readers plus one slow
+reader and 100 cached reads per mode. Both modes use fresh owned stores and the
+same scripted population/schedule. Native durations may differ; record the
+observed workload rather than claim deterministic native events or a universal
+worst-case limit. Outer cleanup must remove both providers' borrowed auth/history
+even on a failed case. This proof introduces no public command or frontend work.
+
 ## Next bounded producer pass
 
 1. **Establish equivalent measurements.** Use owned isolated native stores and
