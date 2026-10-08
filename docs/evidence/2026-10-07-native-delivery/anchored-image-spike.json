@@ -1,0 +1,38 @@
+{
+  "evidenceClass": "private_read_only_anchored_descriptor_spike",
+  "installedPrefix": "/home/bryan/.local/share/agent-observer/0.4.0a14-283e1d1be5011814",
+  "provider": "claude",
+  "samplesPerMode": 5,
+  "historyObserved": false,
+  "sameBoundedInventoryAndKnownWorkAcrossSamples": true,
+  "modes": {
+    "baseline": {
+      "cpuSeconds": [
+        0.38876257799999997,
+        0.3986163760000001,
+        0.393039146,
+        0.38911527300000026,
+        0.39476887299999985
+      ],
+      "meanCpuSeconds": 0.3928604492,
+      "sha256Initializations": 20,
+      "anchorCount": 0
+    },
+    "anchored": {
+      "cpuSeconds": [
+        0.0013430100000002554,
+        0.0013579369999998647,
+        0.0012656060000000302,
+        0.0012132469999999174,
+        0.001211828999999831
+      ],
+      "meanCpuSeconds": 0.0012783257999999798,
+      "sha256Initializations": 5,
+      "anchorCount": 3
+    }
+  },
+  "ownedAnchorFdsClosed": true,
+  "ordinaryProviderActions": false,
+  "productionImplementation": false,
+  "noInstalledArtifactAcceptanceClaim": true
+}
