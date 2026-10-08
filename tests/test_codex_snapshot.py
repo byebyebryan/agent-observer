@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 from agent_observer.codex_endpoint import EndpointError, RuntimeIdentity
 from agent_observer.codex_snapshot import collect_codex
-from agent_observer.native_artifacts import CODEX, CODEX_DAEMON
 from agent_observer.codex_transport import TransportError
+from agent_observer.native_artifacts import CODEX, CODEX_DAEMON
 
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
@@ -21,6 +21,7 @@ def native(identifier):
         "cwd": "/project",
         "source": "vscode",
         "threadSource": "user",
+        "ephemeral": False,
         "status": {"type": "idle"},
     }
 
@@ -102,7 +103,7 @@ class SnapshotCollectionTest(unittest.TestCase):
         rows = {r["identity"]["nativeId"]: r for r in result["sessions"]}
         self.assertEqual(rows[SECOND]["threadKind"], "unknown")
         self.assertEqual(rows[FIRST]["presence"]["value"], "present")
-        self.assertEqual(result["coverage"]["saved"]["complete"], True)
+        self.assertEqual(result["coverage"]["saved"]["complete"], False)
         self.assertIn("saved_classification_unavailable", result["limitations"])
 
     def test_saved_detail_identity_conflict_invalidates_live_authority(self):

@@ -22,10 +22,10 @@ from agent_observer.service_state import ServiceState
 
 
 class Running:
-    def __init__(self, *, collect=False, timeout=1000, factory=None, scheduler=None, **hint_options):
+    def __init__(self, *, state=None, collect=False, timeout=1000, factory=None, scheduler=None, **hint_options):
         self.directory = tempfile.TemporaryDirectory(prefix="ao-service-test-")
         self.path = Path(self.directory.name) / "private" / "read.sock"
-        self.state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")})
+        self.state = state or ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")})
         self.runtime = Runtime(self.state, self.path, collect=collect, io_timeout_ms=timeout, heartbeat_ms=200, worker_factory=factory, scheduler=scheduler, **hint_options)
         self.stop = threading.Event()
         self.errors = []

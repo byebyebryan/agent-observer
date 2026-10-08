@@ -219,15 +219,17 @@ def codex_reference(client):
     saved = client.pages("thread/list")
     records = {r["id"]: r for r in saved}
     classification_gaps = []
+    readable = set()
     for sid in loaded:
         detail = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
         if detail.get("id") != sid or sid in records and detail.get("sessionId") != records[sid].get("sessionId"):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
+        readable.add(sid)
     saved_reads = 0
     unreadable_saved = set()
     for sid, record in records.items():
-        if sid in loaded or (record.get("status", {}).get("type") != "notLoaded" and (record.get("threadSource") in ("user", "subagent") or isinstance(record.get("source"), dict))):
+        if sid in loaded:
             continue
         if saved_reads >= 1000:
             classification_gaps.append("native_saved_classification_limit")
@@ -242,12 +244,13 @@ def codex_reference(client):
         if detail.get("id") != sid or detail.get("sessionId") != record.get("sessionId"):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
+        readable.add(sid)
     rows = {}
     saved_ids = {r["id"] for r in saved}
     for sid, r in records.items():
         if not UUID.fullmatch(sid):
             raise ValueError("native_id_invalid")
-        saved_identity = sid in saved_ids and sid not in unreadable_saved
+        saved_identity = sid in saved_ids and sid in readable
         source = r.get("source")
         sub = source.get("subAgent") if isinstance(source, dict) and set(source) == {"subAgent"} else None
         native_child = (isinstance(sub, str) and sub in {"review", "compact", "memory_consolidation"}
@@ -259,7 +262,9 @@ def codex_reference(client):
         classification = r.get("threadSource")
         regular = source is None or isinstance(source, str) and source in {"cli", "vscode", "exec", "appServer", "unknown"}
         kind = "child" if classification == "subagent" or native_child and classification != "user" else "user" if classification == "user" and regular else "unknown"
-        status = r.get("status", {}).get("type") if sid not in unreadable_saved else None
+        status = r.get("status", {}).get("type")
+        if status == "notLoaded" and not saved_identity:
+            status = None
         flags = r.get("status", {}).get("activeFlags", [])
         valid_waits = isinstance(flags, list) and all(isinstance(f, str) for f in flags) and len(flags) == len(set(flags)) and all(f in ("waitingOnApproval", "waitingOnUserInput") for f in flags)
         phase = "waiting" if status == "idle" else "blocked" if status == "active" and (
@@ -284,7 +289,7 @@ def codex_reference(client):
             reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
         except (ValueError, OSError, KeyError):
             reason = "native_turn_read_unavailable"
-        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if saved_identity and type(r.get("createdAt")) is int else None, "hasSavedHistory": saved_identity, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
+        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "hasSavedHistory": saved_identity, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
     loaded_after = set(client.pages("thread/loaded/list"))

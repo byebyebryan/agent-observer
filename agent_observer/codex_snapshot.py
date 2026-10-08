@@ -146,6 +146,7 @@ def collect_codex(
         "sourceHealth": "unavailable",
     }
     rows = {}
+    readable_ids = set()
     runtime_rows_read = False
 
     def remaining():
@@ -265,6 +266,7 @@ def collect_codex(
                     }
                     row["waitReason"] = "unknown"
                 rows[identifier] = row
+                readable_ids.add(identifier)
             result["coverage"]["work"]["supported"] = work_supported
             runtime_rows_read = True
             # State census is required even on the fast runtime component.
@@ -293,7 +295,9 @@ def collect_codex(
                     if identifier in saved_ids:
                         raise SnapshotError("saved_identity_ambiguous")
                     saved_ids.add(identifier)
-                    row["savedIdentity"] = True
+                    # Catalog membership is not a readable saved identity.
+                    # This must remain false if pagination aborts before detail.
+                    row["savedIdentity"] = identifier in readable_ids
                     existing = rows.get(identifier)
                     if existing and existing["nativeIds"] != row["nativeIds"]:
                         raise SnapshotError("native_identity_mapping_conflict")
@@ -342,7 +346,7 @@ def collect_codex(
             # Saved identity must be proved before retaining a parked fact.
             reads = 0
             for identifier, row in rows.items():
-                if identifier in loaded or (row["threadKind"] != "unknown" and row.get("nativeState", {}).get("type") != "notLoaded"):
+                if identifier in loaded:
                     continue
                 if reads >= MAX_SAVED_CLASSIFICATIONS or time.monotonic() >= deadline:
                     if "saved_classification_limit" not in result["limitations"]:
@@ -379,6 +383,9 @@ def collect_codex(
                         detail[name] = row[name]
                 rows[identifier] = detail
                 detail["savedIdentity"] = identifier in saved_ids
+            if any(not rows[identifier].get("savedIdentity") for identifier in saved_ids):
+                result["coverage"]["saved"] = {"complete": False, "reason": "saved_summary_unavailable"}
+                result["limitations"].append("saved_identity_unavailable")
             # Fetch a bounded metadata-only clock before applying the display
             # cap. Neither thread recency nor file modification substitutes for
             # conversation completion. A clock failure cannot erase live facts.
