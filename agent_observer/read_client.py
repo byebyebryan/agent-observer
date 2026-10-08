@@ -67,17 +67,22 @@ def diagnostic(snapshot):
     }
 
 
-def human_rows(snapshot, **options):
+def human_rows(snapshot, *, now_ms=None, **options):
+    # Callers supply display time; deterministic pure consumers may use the
+    # receipt time. Neither changes native evidence or the snapshot itself.
+    now_ms = snapshot["collectedAt"] if now_ms is None else now_ms
+    if type(now_ms) is not int or now_ms < 0:
+        raise ContractError("invalid_display_time")
     lines = ["HOST  PROVIDER  PHASE  RUNTIME  AGE  ID  TITLE"]
     for row in ordered_rows(snapshot, **options):
         identity = row["identity"]
         at = _activity_time(row)
         if at is None:
             activity = "unknown"
-        elif at > snapshot["collectedAt"]:
+        elif at > now_ms:
             activity = "clock-ahead"
         else:
-            seconds = (snapshot["collectedAt"] - at) // 1000
+            seconds = (now_ms - at) // 1000
             activity = next(
                 f"{seconds // unit}{label}"
                 for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s"))
@@ -85,7 +90,8 @@ def human_rows(snapshot, **options):
             )
         if at is not None and row["activity"]["health"] == "stale":
             activity = "stale:" + activity
-        lines.append(
-            f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value']}  {row['runtime']['value']}  {activity}  {identity['nativeId']}  {row['title']}"
-        )
+        runtime = row["runtime"]["value"]
+        if row["inventory"] == "saved" and runtime == "unknown":
+            runtime = "saved/unknown"
+        lines.append(f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value']}  {runtime}  {activity}  {identity['nativeId']}  {row['title']}")
     return "\n".join(lines)

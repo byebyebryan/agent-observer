@@ -103,3 +103,20 @@ does not scan saved history. Synthetic regressions cover root/child kinds,
 identity/source conflicts, unavailable detail and budget exhaustion. The
 independent evaluator also reads saved kind metadata and brackets the loaded
 inventory. Installed/native candidate acceptance remains a separate D5 gate.
+
+## D3 source repair: read/write diagnostics
+
+Human direct and cached list/show now supply display time to the pure renderer.
+This ages old inputs without updating any collection, native evidence, expiry or
+ordering clock. Stale ages retain their prefix, unavailable ages remain unknown,
+and future native clocks remain explicit. The evaluator independently brackets
+the rendering call, including age-unit boundaries. Saved inventory with unknown
+runtime is shown as `saved/unknown`; JSON enum values and API semantics are
+unchanged. `doctor` remains the explicit source coverage/freshness diagnostic.
+
+Write preparation rejects missing/inaccessible cwd as `cwd_unavailable` and
+missing/inaccessible configuration as `config_home_unavailable` before reading
+artifacts, observing or dispatching. Canonical-path and ownership guards remain
+in place. No historical directory is substituted or provider action retried.
+Regressions cover delayed/stale/skewed rendering and missing versus symlinked
+context. Selected artifact remains a15 until installed/native D5 acceptance.

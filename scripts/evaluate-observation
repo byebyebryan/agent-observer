@@ -598,15 +598,19 @@ def read_client_checks(cli, payload):
         at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
         r = row["identity"]
         return (attention[row["phase"]["value"]], at is None, -(at or 0), r["hostScope"], r["provider"], r["namespace"], r["nativeIdKind"], r["nativeId"])
+    display_before = clock()
     human = cli_call(cli, ["list", "--input", "-"], payload).decode().splitlines()
+    display_after = clock()
     age_ok = True
     for line, row in zip(human[1:], listed["sessions"], strict=True):
         at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
-        seconds = None if at is None else (snapshot["collectedAt"] - at) // 1000
-        age = "unknown" if seconds is None else "clock-ahead" if seconds < 0 else next(str(seconds // unit) + label for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
-        if at is not None and row["activity"]["health"] == "stale":
-            age = "stale:" + age
-        age_ok &= line.split("  ")[4] == age
+        def age_at(seconds):
+            age = "unknown" if seconds is None else "clock-ahead" if seconds < 0 else next(str(seconds // unit) + label for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
+            return "stale:" + age if at is not None and row["activity"]["health"] == "stale" else age
+        expected_ages = {"unknown"} if at is None else {
+            age_at(seconds) for seconds in range((display_before - at) // 1000, (display_after - at) // 1000 + 1)
+        }
+        age_ok &= line.split("  ")[4] in expected_ages
     shown = 0
     for row in listed["sessions"]:
         if row["runtime"]["value"] != "running":

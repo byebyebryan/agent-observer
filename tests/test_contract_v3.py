@@ -283,6 +283,28 @@ class ContractV3Test(unittest.TestCase):
         self.assertNotEqual(store_namespace(*args), store_namespace("claude", *args[1:]))
         self.assertNotEqual(store_namespace(*args), store_namespace(*args[:3], 1001))
 
+    def test_human_display_time_ages_evidence_without_refreshing_it(self):
+        value = fixture()
+        value["sessions"] = [value["sessions"][-2]]
+        row = value["sessions"][0]
+        row["activity"] = {"at": value["collectedAt"] - 10_000,
+                           "source": "codex_turn_metadata", "health": "current",
+                           "reason": "native_conversation_event"}
+        original = copy.deepcopy(value)
+        self.assertIn("  10s  ", human_rows(value))
+        self.assertIn("  2m  ", human_rows(value, now_ms=value["collectedAt"] + 120_000))
+        self.assertIn("clock-ahead", human_rows(value, now_ms=row["activity"]["at"] - 1))
+        self.assertEqual(value, original)
+        row["activity"].update(at=None, lastKnownAt=original["sessions"][0]["activity"]["at"], health="stale", reason="observation_gap")
+        self.assertIn("stale:2m", human_rows(value, now_ms=value["collectedAt"] + 120_000))
+
+    def test_human_saved_unknown_does_not_claim_parked(self):
+        value = fixture()
+        value["sessions"] = [value["sessions"][-1]]
+        value["sessions"][0]["inventory"] = "saved"
+        self.assertIn("saved/unknown", human_rows(value))
+        self.assertTrue(all(r["runtime"]["value"] == "unknown" for r in value["sessions"]))
+
     def test_watch_unchanged_poll_does_not_manufacture_change(self):
         watch = SampledWatch()
         value = fixture()
