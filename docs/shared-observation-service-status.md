@@ -13,6 +13,13 @@ earlier selection statements below; earlier resource results remain historical.
 The separately installed a10 repair scopes Claude hints to the authoritative
 history catalog and passes installed noise/primary-append and focused native
 regression checks. It also remains unselected with cost/operational gates pending.
+The newer a11 candidate loads only the reviewed SDK metadata subtree in its
+audited helper, with exact real/synthetic projection equivalence and both-profile
+installation. Three-turn independent event clocks, foreground Claude question/
+exit and both-host paired listener retirement pass. Its
+[receipt](evidence/2026-10-07-native-delivery/a11-sdk-and-native.json) keeps those
+subsets separate from resource and managed rollout acceptance. A8 stays selected;
+the aggregate-memory gate is not cleared by lower SDK startup cost.
 The regular goal loop began at `dc92725`; the [batch runbook](shared-observation-service-batch-plan.md)
 defines B0–B8. Producer work and client development remain separate.
 

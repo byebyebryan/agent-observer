@@ -216,3 +216,81 @@ The additional sixth native namespace is stopped and borrowed credentials/histor
 removed; both synthetic publisher processes and their owned history store are
 also removed. The current memory-budget clarification is pending; the original
 aggregate target remains in force and no hint-unit rollout occurs.
+
+## Follow-up: SDK initialization and correlated event clocks
+
+A11 is frozen from `28179263ea45d2315350aad0061f52d13bdefb33`, wheel SHA256
+`80b3f82e577b566656b4b3752e0057f89aa46baa23c9fa7742d0d7b9128bb923`,
+installed separately on both hosts at
+`~/.local/share/agent-observer/0.4.0a11-80b3f82e577b5666`.
+Its [manifest](../../../artifacts/observer-0.4.0a11.json) and
+[installed/native evidence](a11-sdk-and-native.json) bind SDK metadata-only
+initialization under the [reviewed boundary](../../sdk-metadata-loading-review.md).
+The existing SDK implementation, immutable audit guard, one-request helper,
+deadline, output cap and census stay intact. SDK dependency coupling is explicit;
+provider support remains contract based.
+
+Full and narrow loading return exactly the same 31 allowlisted rows from 34
+privately copied real history files, with stable copy bookends. The sample uses
+0.833 versus 0.184 CPU-seconds. Synthetic duplicate-companion and SDK-omitted
+meta-only cases also agree. Copied histories are removed, and neither prompts nor
+raw payloads are archived. Source checks pass 316 tests with one optional skip
+and 75 Markdown files; installed profile/bytes/entrypoints and pure schema/CLI
+consumer checks pass. API 1, snapshot/watch 3, write 1 and service 1 are unchanged.
+
+Three-turn native cases retain stable exact-ID native brackets, require each
+new activity clock to differ from the prior turn and separately correlate event
+receipt to the cached view. Runtime event p95 is 1.431 s for Snap Codex, 1.233 s
+for Starship Codex and 0.703 s for Snap Claude; history p95 is 2.299, 1.982 and
+10.164 s. Each provider has six correlated runtime and four history samples.
+Codex uses exact-ID status/name events. Claude binds file events through
+subsequent independent exact-ID metadata. These are receiver clocks, not exact
+provider transition times or lossless delivery claims. The original signed
+latest-hint/sample diagnostic remains distinct. Foreground Claude question/exit
+passes with three held samples and a 1.115 s cached question delay. Paired Codex
+retirement passes on both hosts with held native feeds and an extra initialized
+peer, observed unload at 61.448/60.787 s and a subsequent quiet-control probe.
+
+Ordinary a11 direct CLI/native comparisons agree on Snap's 50 Codex saved IDs /
+two active conversations and Starship's 93 / four. Snap Claude has three current
+workers and 31 projected saved rows; setup-only omission, unknown older kinds and
+other unproved dimensions remain explicit. The failed initial Claude test
+assumed an empty background job already had proved waiting state; that harness
+precondition was removed without changing producer predicates. All three native
+fixtures, control stores and borrowed authentication are removed.
+
+The [matched resource evidence](a11-resources.json) distinguishes saved-metadata,
+real native-turn and ordinary-traffic measurements. Five minutes per mode with
+31 identical synthetic histories, three healthy readers, one slow reader and
+100 cached CLI reads gives a10 incremental CPU +0.090 points quiet / +1.373 active,
+and a11 -0.004 / +0.513. The active workload appends seven primary records and
+700 nested records; all actions and reader errors are checked. Idle collection
+counts match after startup. A11 observed RSS is 87.3 MiB quiet / 82.2 active,
+with incremental RSS 42.5 / 37.6 MiB. Every synthetic history subtree is removed.
+
+Real native cost uses fresh, masked namespaces per mode and identical scheduled
+three-turn stimuli. Snap Claude adds **2.311 CPU percentage points**, still above
+the original one-point gate, with 87.3 MiB hinted RSS and 42.3 MiB incremental RSS.
+Starship Codex adds 0.766 points, with 65.3 MiB hinted RSS and 21.8 MiB incremental
+RSS. These are small finite workloads, not universal performance bounds. The
+native cases own one live session, and Claude additionally has 31 synthetic
+saved rows; real model timing can differ. Both modes' positive working/completion/
+new-activity predicates are independently checked. All native stores/auth are
+removed after each mode.
+
+Ordinary five-minute hinted runs measure Snap CPU 8.18 percent / RSS 129.1 MiB
+and Starship 2.77 percent / 67.5 MiB. They have no same-traffic polling pair and
+cannot establish an incremental CPU estimate. All six healthy readers report
+zero errors/gaps. Separate 180-second owned process/FD/inotify windows show bounded
+helper counts and stable 18 Claude directory watches; per-role maxima are not
+simultaneous sums. There are no persisted FD paths or raw process arguments.
+
+P5 remains open for **CPU and aggregate memory**, so P6 stays withheld. The local
+chezmoi flag support is committed as `7c15b3e`, defaults off and renders unchanged
+a8 unit bytes. Invalid boolean modes and unsupported a8 hint flags reject before
+selection; explicit true binds exact flags/private diagnostics to the artifact.
+No normal unit, provider policy, hook or frontend changes in this follow-up.
+The pending memory-budget choice does not waive the CPU gate. A further separately
+frozen a12 repair shares installed/resident image digests within one collection
+only, preserving ownership/signature/birth bookends; its native cost gate is still
+being measured and is not reassigned the a11 results.

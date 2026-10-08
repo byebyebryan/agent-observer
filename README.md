@@ -50,6 +50,10 @@ latency, feed recovery and lifetime cases pass; the resource target is not
 accepted, so a9 remains separately installed and normal units keep a8 polling.
 The separately installed a10 repair removes unnecessary scans from nested
 transcript traffic, with focused installed/native proof; cost acceptance remains pending.
+The newer a11 candidate reduces SDK initialization cost with reviewed guarded
+metadata loading and exact saved-history projection equivalence. Independent
+event-clock, foreground Claude and passive listener checks pass; aggregate
+memory and managed hint acceptance remain separate. Normal units still select a8.
 The
 [event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
 the remaining producer acceptance before hint rollout, separate from frontend work.
