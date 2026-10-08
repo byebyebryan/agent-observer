@@ -22,7 +22,7 @@ def report(error):
     code = str(error)
     if not code.replace("_", "").isalnum() or len(code) > 128:
         code = "service_io_unavailable"
-    print(canonical({"serviceProtocol": 1, "error": code}), file=sys.stderr)
+    print(canonical({"serviceProtocol": 2, "error": code}), file=sys.stderr)
     return 2
 
 
@@ -105,6 +105,8 @@ def serve(argv=None):
                         help="startup-only local root/project mapping JSON; restart to reload")
     args = parser.parse_args(argv)
     try:
+        if "claude" in args.provider:
+            raise ContractError("unsupported_provider")
         if len(set(args.provider)) != len(args.provider):
             raise ContractError("invalid_provider_selection")
         if args.hint_diagnostics and not args.native_hints:

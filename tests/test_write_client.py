@@ -5,8 +5,6 @@ import hashlib
 import io
 import json
 import os
-import signal
-import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,7 +12,7 @@ from unittest.mock import patch
 
 from agent_observer.contract import ContractError, store_namespace
 from agent_observer.native_artifacts import CODEX
-from agent_observer.write_client import _launch, execute, invocation, main, prepare, revalidate
+from agent_observer.write_client import execute, invocation, main, prepare, revalidate
 from agent_observer.write_contract import (
     schema_document,
     validate_plan,
@@ -56,7 +54,7 @@ class WriteClientTest(unittest.TestCase):
             else None
         )
         return {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "operation": operation,
             "hostScope": "fixture",
             "provider": provider,
@@ -94,22 +92,10 @@ class WriteClientTest(unittest.TestCase):
                     "kind": "unknown",
                     "metadataIssues": [],
                     "cwd": str(self.cwd),
-                    "nativeIds": {
-                        "threadId": reference["nativeId"]
-                        if request["provider"] == "codex"
-                        else None,
-                        "sessionId": reference["nativeId"],
-                        "jobId": None if saved or request["provider"] == "codex" else "abcd1234",
-                    },
-                    "phase": {"health": "current"},
+                    "nativeIds": {"threadId": reference["nativeId"], "sessionTreeRootId": reference["nativeId"]},
+                    "phase": None if saved else {"health": "current"},
                     "runtime": {"health": "current"},
-                    "worker": {"value": "unknown" if saved else "present", "health": "current"},
-                    "sessionKind": "unknown" if saved else "bg",
                     "inventory": "saved" if saved else "live",
-                    "history": {"source": "claude_sdk"} if saved else None,
-                    "job": None
-                    if saved or request["provider"] == "codex"
-                    else {"id": "abcd1234", "retained": True, "state": "working"},
                 }
             ],
         }
@@ -141,7 +127,7 @@ class WriteClientTest(unittest.TestCase):
                 request[field] = str(self.root / "missing")
                 with (patch("agent_observer.write_client._digest") as digest,
                       patch("agent_observer.write_client._collect") as collect,
-                      patch("agent_observer.write_client._launch") as launch):
+                      patch("agent_observer.write_client.os.execve") as launch):
                     with self.assertRaisesRegex(ContractError, "^" + expected + "$"):
                         prepare(request)
                     digest.assert_not_called()
@@ -157,7 +143,7 @@ class WriteClientTest(unittest.TestCase):
             prepare(request)
 
     def test_public_write_fixtures_and_false_effect_claims(self):
-        root = Path(__file__).parent / "fixtures/write-v1"
+        root = Path(__file__).parent / "fixtures/write-v2"
         request = json.loads((root / "request.json").read_text())
         plan = json.loads((root / "plan.json").read_text())
         output = json.loads((root / "result.json").read_text())
@@ -177,7 +163,7 @@ class WriteClientTest(unittest.TestCase):
     def test_new_without_any_rows_is_passive_until_native_tty_entry(self):
         with (
             patch("agent_observer.write_client._collect") as collect,
-            patch("agent_observer.write_client._launch") as launch,
+            patch("agent_observer.write_client.os.execve") as launch,
         ):
             plan = prepare(self.request())
             output = execute(plan)
@@ -191,41 +177,9 @@ class WriteClientTest(unittest.TestCase):
         self.assertEqual(argv, [str(self.binary)])
         self.assertEqual(env["CODEX_HOME"], str(self.home))
 
-    def test_ready_result_binds_copied_identity_to_exact_attach_handoff(self):
-        root = Path(__file__).parent / "fixtures/write-v1"
-        handoff = json.loads((root / "plan.json").read_text())
-        requested = self.request("claude", "resume")["reference"]
-        actual = {**requested, "nativeId": "00000000-0000-0000-0000-000000000002"}
-        handoff.update(route="claude_attach")
-        handoff["request"] = self.request("claude", "resume")
-        handoff["request"]["reference"] = actual
-        ready = {
-            "schemaVersion": 1, "operation": "resume", "status": "ready",
-            "reason": "native_identity_verified", "effect": "confirmed",
-            "requestedIdentity": requested, "resultingIdentity": actual,
-            "identityPending": False, "handoff": handoff,
-        }
-        validate_result(ready)
-        for mutate in (
-            lambda v: v["handoff"]["request"].update(reference=requested),
-            lambda v: v["resultingIdentity"].update(hostScope="other"),
-            lambda v: v["resultingIdentity"].update(namespace="sha256:" + "f" * 64),
-            lambda v: v["handoff"].update(route="claude_saved_resume"),
-            lambda v: v.update(operation="new"),
-            lambda v: v.update(identityPending=True),
-        ):
-            changed = copy.deepcopy(ready)
-            mutate(changed)
-            with self.assertRaises(ContractError):
-                validate_result(changed)
-        # Losing the viewer after a confirmed copy must preserve the identity.
-        confirmed = {**ready, "status": "uncertain", "reason": "handoff_unavailable", "handoff": None}
-        validate_result(confirmed)
-        unknown = {**confirmed, "effect": "uncertain", "resultingIdentity": None, "identityPending": True}
-        validate_result(unknown)
 
     def test_prepared_result_rejects_false_targets_and_inconsistent_routes(self):
-        root = Path(__file__).parent / "fixtures/write-v1"
+        root = Path(__file__).parent / "fixtures/write-v2"
         prepared = json.loads((root / "result.json").read_text())
         for mutate in (
             lambda v: v.update(resultingIdentity=self.request(operation="resume")["reference"]),
@@ -251,7 +205,7 @@ class WriteClientTest(unittest.TestCase):
             (self.home / "config.toml").unlink(missing_ok=True)
             plan = prepare(self.request())
             mutate()
-            with patch("agent_observer.write_client._launch") as launch:
+            with patch("agent_observer.write_client.os.execve") as launch:
                 with self.assertRaises(ContractError):
                     execute(plan)
                 launch.assert_not_called()
@@ -261,10 +215,9 @@ class WriteClientTest(unittest.TestCase):
         with self.assertRaises(ContractError):
             revalidate(plan)
 
-    def test_exact_codex_resume_uses_native_session_field_and_absolute_binary(self):
+    def test_exact_codex_resume_uses_thread_id(self):
         request = self.request(operation="resume")
         snapshot = self.snapshot(request)
-        snapshot["sessions"][0]["nativeIds"]["sessionId"] = "00000000-0000-0000-0000-000000000099"
         collect, select = self.targeted(request, snapshot)
         with collect, select:
             plan = prepare(request)
@@ -275,294 +228,22 @@ class WriteClientTest(unittest.TestCase):
                 str(self.binary),
                 "resume",
                 "--all",
-                snapshot["sessions"][0]["nativeIds"]["sessionId"],
+                snapshot["sessions"][0]["nativeIds"]["threadId"],
             ],
         )
 
-    def test_live_claude_attaches_typed_job_and_does_not_create(self):
-        request = self.request("claude", "resume")
-        collect, select = self.targeted(request)
-        with collect, select, patch("agent_observer.write_client._launch") as launch:
-            plan = prepare(request)
-            output = execute(plan)
-            argv, _ = invocation(plan)
-            self.assertEqual(argv[-2:], ["attach", "abcd1234"])
-            self.assertEqual(output["effect"], "none")
-            launch.assert_not_called()
 
-    def test_partial_sibling_does_not_block_exact_live_or_saved_resume(self):
-        for provider, saved in (("codex", True), ("claude", True), ("claude", False)):
-            with self.subTest(provider=provider, saved=saved):
-                request = self.request(provider, "resume")
-                snapshot = self.snapshot(request, saved=saved)
-                snapshot["sources"][0]["sourceHealth"] = "partial"
-                snapshot["sources"][0]["coverage"]["saved"]["status"] = "partial"
-                if provider == "claude" and not saved:
-                    snapshot["sessions"][0]["metadataIssues"] = ["unknown_job_state"]
-                    snapshot["sessions"][0]["phase"]["health"] = "unsupported"
-                collect, select = self.targeted(request, snapshot)
-                with collect, select:
-                    value = prepare(request)
-                expected = (
-                    "codex_resume"
-                    if provider == "codex"
-                    else "claude_saved_resume"
-                    if saved
-                    else "claude_attach"
-                )
-                self.assertEqual(value["route"], expected)
 
-    def test_live_attach_requires_matching_retained_job_despite_current_worker(self):
-        request = self.request("claude", "resume")
-        for job in (
-            None,
-            {"id": "abcd1234", "retained": None},
-            {"id": "eeeeeeee", "retained": True},
-        ):
-            with self.subTest(job=job):
-                snapshot = self.snapshot(request)
-                snapshot["sessions"][0]["job"] = job
-                collect, select = self.targeted(request, snapshot)
-                with collect, select:
-                    with self.assertRaisesRegex(ContractError, "unsupported_resume_route"):
-                        prepare(request)
 
-    def test_prepared_attach_rejects_a_replaced_native_job_before_entry(self):
-        request = self.request("claude", "resume")
-        snapshot = self.snapshot(request)
-        collect, select = self.targeted(request, snapshot)
-        with collect, select:
-            plan = prepare(request)
-            snapshot["sessions"][0]["nativeIds"]["jobId"] = "bbbb1234"
-            snapshot["sessions"][0]["job"]["id"] = "bbbb1234"
-            with self.assertRaisesRegex(ContractError, "handoff_context_changed"):
-                revalidate(plan)
 
-    def test_partial_health_never_overrides_target_identity_or_stale_evidence(self):
-        request = self.request("claude", "resume")
-        for mutate in (
-            lambda row: row.update(metadataIssues=["job_session_conflict"]),
-            lambda row: row.update(metadataIssues=["future_unknown_issue"]),
-            lambda row: row["runtime"].update(health="stale"),
-            lambda row: row["phase"].update(health="ambiguous"),
-        ):
-            snapshot = self.snapshot(request)
-            snapshot["sources"][0]["sourceHealth"] = "partial"
-            mutate(snapshot["sessions"][0])
-            collect, select = self.targeted(request, snapshot)
-            with collect, select:
-                with self.assertRaisesRegex(ContractError, "resume_evidence_unavailable"):
-                    prepare(request)
 
-    def test_background_timeout_or_post_launch_failure_is_uncertain_and_never_retried(self):
-        plan = prepare(self.request("claude"))
-        for outcome in (
-            (
-                0,
-                "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
-                "launcher_timeout",
-            ),
-            (1, b"", None),
-            (0, b"ambiguous", None),
-        ):
-            with patch("agent_observer.write_client._launch", return_value=outcome) as launch:
-                result = execute(plan, timeout=1)
-                self.assertEqual(result["status"], "uncertain")
-                self.assertEqual(result["effect"], "uncertain")
-                launch.assert_called_once()
-        with (
-            patch(
-                "agent_observer.write_client._launch",
-                return_value=(
-                    0,
-                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
-                    None,
-                ),
-            ) as launch,
-            patch(
-                "agent_observer.write_client._collect",
-                side_effect=ContractError("source_unavailable"),
-            ),
-        ):
-            result = execute(plan, timeout=1)
-            self.assertEqual(result["effect"], "uncertain")
-            launch.assert_called_once()
 
-    def test_saved_resume_preserves_requested_and_copied_result_identity(self):
-        request = self.request("claude", "resume")
-        saved = self.snapshot(request, saved=True)
-        collect, select = self.targeted(request, saved)
-        with collect, select:
-            plan = prepare(request)
-            self.assertEqual(plan["route"], "claude_saved_resume")
-            argv, _ = invocation(plan, background=True)
-            self.assertEqual(argv[-3:], ["--resume", request["reference"]["nativeId"], "--bg"])
-        actual = {**request["reference"], "nativeId": "abcd1234-0000-0000-0000-000000000099"}
-        created = self.snapshot(request, actual=actual)
-        with (
-            patch("agent_observer.write_client.revalidate", return_value=plan),
-            patch(
-                "agent_observer.write_client._launch",
-                return_value=(
-                    0,
-                    (
-                        "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n"
-                        f"note: session {request['reference']['nativeId']} is already running in the background, so this started a copy as {actual['nativeId']}. `claude attach 00000000` opens the original.\n"
-                    ).encode(),
-                    None,
-                ),
-            ) as launch,
-            patch("agent_observer.write_client._collect", return_value=created),
-            patch(
-                "agent_observer.write_client.select_session", return_value=created["sessions"][0]
-            ),
-        ):
-            result = execute(plan, timeout=1)
-            self.assertEqual(result["requestedIdentity"], request["reference"])
-            self.assertEqual(result["resultingIdentity"], actual)
-            self.assertEqual(result["effect"], "confirmed")
-            launch.assert_called_once()
 
-    def test_copy_receipt_cannot_verify_a_different_full_identity_with_the_same_job(self):
-        request = self.request("claude", "resume")
-        saved = self.snapshot(request, saved=True)
-        collect, select = self.targeted(request, saved)
-        with collect, select:
-            plan = prepare(request)
-        actual = {**request["reference"], "nativeId": "abcd1234-0000-0000-0000-000000000088"}
-        created = self.snapshot(request, actual=actual)
-        receipt = (
-            "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n"
-            f"note: session {request['reference']['nativeId']} is already running in the background, so this started a copy as abcd1234-0000-0000-0000-000000000099. `claude attach 00000000` opens the original.\n"
-        ).encode()
-        with (
-            patch("agent_observer.write_client.revalidate", return_value=plan),
-            patch("agent_observer.write_client._launch", return_value=(0, receipt, None)) as launch,
-            patch("agent_observer.write_client._collect", return_value=created),
-            patch("agent_observer.write_client.time.monotonic", side_effect=[0, 0, 2]),
-            patch("agent_observer.write_client.time.sleep"),
-        ):
-            output = execute(plan, timeout=1)
-        self.assertEqual(output["effect"], "uncertain")
-        self.assertIsNone(output["resultingIdentity"])
-        launch.assert_called_once()
 
-    def test_launcher_timeout_preserves_descendant_outside_launcher_ownership(self):
-        marker = self.root / "owned-child.pid"
-        program = "import subprocess,sys,time; from pathlib import Path; p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)']); Path(sys.argv[1]).write_text(str(p.pid)); time.sleep(30)"
-        code, _, reason = _launch(
-            [sys.executable, "-c", program, str(marker)], os.environ.copy(), str(self.cwd), 0.3
-        )
-        self.assertEqual(reason, "launcher_timeout")
-        child = int(marker.read_text())
-        try:
-            os.kill(child, 0)
-        finally:
-            os.kill(child, signal.SIGKILL)
 
-    def test_handoff_failure_after_verified_creation_keeps_confirmed_effect(self):
-        request = self.request("claude")
-        plan = prepare(request)
-        created = self.snapshot(request)
-        with (
-            patch("agent_observer.write_client.revalidate", return_value=plan),
-            patch(
-                "agent_observer.write_client._launch",
-                return_value=(
-                    0,
-                    "backgrounded · abcd1234\n  claude attach abcd1234  open in this terminal\n".encode(),
-                    None,
-                ),
-            ) as launch,
-            patch("agent_observer.write_client._collect", return_value=created),
-            patch(
-                "agent_observer.write_client.prepare", side_effect=ContractError("artifact_changed")
-            ),
-        ):
-            output = execute(plan, timeout=1)
-        self.assertEqual(output["effect"], "confirmed")
-        self.assertEqual(output["reason"], "handoff_unavailable")
-        self.assertEqual(output["resultingIdentity"], created["sessions"][0]["identity"])
-        self.assertIsNone(output["handoff"])
-        self.assertFalse(output["identityPending"])
-        launch.assert_called_once()
 
-    def test_io_failure_after_possible_dispatch_cannot_claim_no_effect(self):
-        plan = prepare(self.request("claude"))
-        with patch(
-            "agent_observer.write_client._launch",
-            side_effect=OSError("private output must not leak"),
-        ) as launch:
-            output = execute(plan, timeout=1)
-        self.assertEqual(output["effect"], "uncertain")
-        self.assertEqual(output["reason"], "launcher_io_failed")
-        launch.assert_called_once()
 
-    def test_transient_native_handoff_reobserves_without_a_second_launch(self):
-        request = self.request("claude")
-        plan = prepare(request)
-        created = self.snapshot(request)
-        created["sessions"][0]["phase"]["health"] = "ambiguous"
-        attached = {
-            **plan,
-            "route": "claude_attach",
-            "request": {
-                **request,
-                "operation": "resume",
-                "reference": created["sessions"][0]["identity"],
-            },
-        }
-        with (
-            patch("agent_observer.write_client.revalidate", return_value=plan),
-            patch(
-                "agent_observer.write_client._launch",
-                return_value=(
-                    0,
-                    b"backgrounded \xc2\xb7 abcd1234\n  claude attach abcd1234  open in this terminal\n",
-                    None,
-                ),
-            ) as launch,
-            patch("agent_observer.write_client._collect", return_value=created) as collect,
-            patch(
-                "agent_observer.write_client.prepare",
-                side_effect=[ContractError("resume_evidence_unavailable"), attached],
-            ),
-            patch("agent_observer.write_client.time.sleep"),
-        ):
-            output = execute(plan, timeout=1)
-        self.assertEqual(output["status"], "ready")
-        self.assertEqual(output["effect"], "confirmed")
-        self.assertEqual(collect.call_count, 2)
-        launch.assert_called_once()
 
-    def test_transient_handoff_deadline_preserves_confirmed_native_effect(self):
-        request = self.request("claude")
-        plan = prepare(request)
-        created = self.snapshot(request)
-        created["sessions"][0]["phase"]["health"] = "ambiguous"
-        with (
-            patch("agent_observer.write_client.revalidate", return_value=plan),
-            patch(
-                "agent_observer.write_client._launch",
-                return_value=(
-                    0,
-                    b"backgrounded \xc2\xb7 abcd1234\n  claude attach abcd1234  open in this terminal\n",
-                    None,
-                ),
-            ) as launch,
-            patch("agent_observer.write_client._collect", return_value=created),
-            patch(
-                "agent_observer.write_client.prepare",
-                side_effect=ContractError("resume_evidence_unavailable"),
-            ),
-            patch("agent_observer.write_client.time.monotonic", side_effect=[0, 0, 2]),
-            patch("agent_observer.write_client.time.sleep"),
-        ):
-            output = execute(plan, timeout=1)
-        self.assertEqual(output["effect"], "confirmed")
-        self.assertEqual(output["resultingIdentity"], created["sessions"][0]["identity"])
-        self.assertIsNone(output["handoff"])
-        launch.assert_called_once()
 
     def test_literal_json_public_prepare_execute_and_non_tty_entry(self):
         request = self.request()
@@ -571,7 +252,7 @@ class WriteClientTest(unittest.TestCase):
             self.assertEqual(main(["prepare", "--request-json", json.dumps(request)]), 0)
         plan = json.loads(output.getvalue())
         output = io.StringIO()
-        with patch("sys.stdout", output), patch("agent_observer.write_client._launch") as launch:
+        with patch("sys.stdout", output), patch("agent_observer.write_client.os.execve") as launch:
             self.assertEqual(main(["execute", "--plan-json", json.dumps(plan)]), 0)
             launch.assert_not_called()
         self.assertEqual(json.loads(output.getvalue())["effect"], "none")
@@ -584,3 +265,32 @@ class WriteClientTest(unittest.TestCase):
             self.assertEqual(main(["enter", "--plan-json", json.dumps(plan)]), 2)
             native.assert_not_called()
         self.assertEqual(json.loads(output.getvalue())["error"], "tty_required")
+
+    def test_distinct_tree_root_tui_target_requires_separate_native_proof(self):
+        request = self.request(operation="resume")
+        snapshot = self.snapshot(request)
+        snapshot["sessions"][0]["nativeIds"]["sessionTreeRootId"] = "00000000-0000-0000-0000-000000000099"
+        collect, select = self.targeted(request, snapshot)
+        with collect, select, patch("agent_observer.write_client.os.execve") as launch:
+            with self.assertRaisesRegex(ContractError, "^session_tree_entry_unproved$"):
+                prepare(request)
+            launch.assert_not_called()
+
+    def test_claude_and_old_writer_wire_are_rejected_before_observation(self):
+        with patch("agent_observer.write_client._collect") as collect:
+            with self.assertRaisesRegex(ContractError, "^unsupported_provider$"):
+                prepare(self.request("claude"))
+            old = self.request()
+            old["schemaVersion"] = 1
+            with self.assertRaises(ContractError):
+                prepare(old)
+            collect.assert_not_called()
+
+    def test_runtime_disposition_change_does_not_invalidate_exact_identity_guard(self):
+        request = self.request(operation="resume")
+        collect, select = self.targeted(request)
+        with collect, select:
+            plan = prepare(request)
+        collect, select = self.targeted(request, self.snapshot(request, saved=True))
+        with collect, select:
+            revalidate(plan)

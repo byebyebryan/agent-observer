@@ -12,7 +12,7 @@ from agent_observer import public
 
 class PublicApiTest(unittest.TestCase):
     def fixture(self):
-        return json.loads((Path(__file__).parent / "fixtures/contract-v3/snapshot.json").read_text())
+        return json.loads((Path(__file__).parent / "fixtures/contract-v4/snapshot.json").read_text())
 
     def test_pure_facade_and_cli_declare_the_same_interface_without_adapters(self):
         result = subprocess.run([sys.executable, "-I", "-c", """
@@ -27,7 +27,7 @@ print(public.canonical(public.interface()))
         self.assertEqual(json.loads(result.stdout), public.interface())
         cli = subprocess.run([sys.executable, "-m", "agent_observer.cli", "api"], capture_output=True, check=True)
         self.assertEqual(json.loads(cli.stdout), public.interface())
-        self.assertEqual(public.interface()["schemas"], {"snapshot": 3, "watch": 3, "write": 1})
+        self.assertEqual(public.interface()["schemas"], {"snapshot": 4, "watch": 4})
 
     def test_wrong_provider_scope_topology_and_metadata_are_rejected(self):
         mutations = (
@@ -47,5 +47,5 @@ print(public.canonical(public.interface()))
         value = self.fixture()
         row = value["sessions"][-1]
         row["job"] = {"id": "abcdef01", "retained": True, "state": "done", "tempo": "idle", "terminalObservedAt": 100}
-        with self.assertRaisesRegex(public.ContractError, "job_identity_conflict"):
+        with self.assertRaisesRegex(public.ContractError, "invalid_contract_fields"):
             public.parse_snapshot(public.canonical(value).encode())

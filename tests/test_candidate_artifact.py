@@ -25,6 +25,21 @@ class CandidateArtifactTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 HELPER["document"](path)
 
+    def test_breaking_manifest_declares_read_service_and_writer_separately(self):
+        manifest = HELPER["document"](ROOT / "artifacts/observer-0.3.0a2.json")
+        manifest.update(manifestVersion=3, apiVersion=2,
+                        entrypoints=["agent-observer", "agent-observer-write", "agent-observer-service"],
+                        schemas={"snapshot": 4, "watch": 4}, write={"schema": 2},
+                        service={"protocol": 2, "schemas": {"request": 2, "frame": 2}})
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "manifest.json"
+            path.write_text(json.dumps(manifest))
+            self.assertEqual(HELPER["document"](path)["apiVersion"], 2)
+            manifest["service"]["protocol"] = 1
+            path.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                HELPER["document"](path)
+
     def test_rejected_wheel_has_no_install_effect(self):
         with tempfile.TemporaryDirectory() as root:
             wheel = Path(root) / "invalid.whl"

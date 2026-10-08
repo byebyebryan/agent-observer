@@ -1,5 +1,15 @@
 # Observer CLI validation workflow
 
+The [2026-10-08 Codex authority plan](codex-daemon-authority-plan.md) changes the
+next acceptance target to daemon-authoritative runtime status across discovered
+threads. Correct the independent native oracle before implementing the producer:
+read explicit source scopes and preserve catalog/detail statuses outside loaded
+membership. Compare positive saved `notLoaded` against parked, loaded idle against
+running/waiting, and active/error status under the stated phase semantics. The
+selected a16 loaded-only acceptance below remains historical/current-baseline
+evidence, not a sufficient oracle for the new contract. TUI/tmux inspection is
+not runtime authority; post-TUI-closure and Claude acceptance are deferred.
+
 Date: 2026-10-05. This is the current Observer development workflow. Validate
 the public CLI against independent native evidence before starting a separate
 frontend checkpoint. Ordinary active sessions establish operational inventory;

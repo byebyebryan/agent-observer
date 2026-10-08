@@ -28,7 +28,7 @@ def ordered_rows(snapshot, *, include_children=False, providers=None, order="act
     def key(row):
         clock = _activity_time(row) if order == "activity" else row["createdAt"]
         return (
-            _ATTENTION[row["phase"]["value"]],
+            _ATTENTION[row["phase"]["value"] if row["phase"] else "unknown"],
             clock is None,
             -(clock or 0),
             identity_key(row["identity"]),
@@ -93,5 +93,5 @@ def human_rows(snapshot, *, now_ms=None, **options):
         runtime = row["runtime"]["value"]
         if row["inventory"] == "saved" and runtime == "unknown":
             runtime = "saved/unknown"
-        lines.append(f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value']}  {runtime}  {activity}  {identity['nativeId']}  {row['title']}")
+        lines.append(f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value'] if row['phase'] else '-'}  {runtime}  {activity}  {identity['nativeId']}  {row['title']}")
     return "\n".join(lines)

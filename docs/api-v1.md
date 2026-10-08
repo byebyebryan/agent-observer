@@ -1,5 +1,12 @@
 # Agent Observer API v1
 
+The [2026-10-08 Codex authority reconciliation](codex-daemon-authority-plan.md)
+defines the next breaking API 2/read wire 4/service 2 producer correction.
+API 1 remains the selected a16 operational baseline with the bounds documented
+here. It is not the target for complete daemon-authoritative running/parked
+discovery. The new design defers Claude and post-TUI-closure acceptance; no
+API 1 conversion/compatibility implementation is required.
+
 Date: 2026-10-06. Status: stable API v1 within the independently accepted
 [a2 packaged/native subset](evidence/2026-10-06-stable-api/REPORT.md). This is a compatibility
 policy for clients, separate from package versions and provider releases.

@@ -68,7 +68,7 @@ def _snapshot(args):
     )
     return collect(
         host_scope=args.host_scope,
-        providers=args.provider or ["codex", "claude"],
+        providers=args.provider or ["codex"],
         codex_home=args.codex_home,
         claude_home=args.claude_home,
         workspace_config=config,

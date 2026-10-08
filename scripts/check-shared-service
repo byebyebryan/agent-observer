@@ -61,7 +61,7 @@ def request(path, operation, host):
     peer = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     peer.settimeout(15)
     peer.connect(str(path))
-    peer.sendall((json.dumps({"serviceProtocol": 1, "operation": operation, "hostScope": host}) + "\n").encode())
+    peer.sendall((json.dumps({"serviceProtocol": 2, "operation": operation, "hostScope": host}) + "\n").encode())
     return peer
 
 
@@ -82,7 +82,7 @@ def read(peer, pending):
     if len(line) + 1 > MAX_FRAME:
         raise ValueError("reader_limit")
     value = json.loads(line)
-    if value.get("serviceProtocol") != 1:
+    if value.get("serviceProtocol") != 2:
         raise ValueError("reader_protocol")
     return value, bytearray(rest)
 
@@ -232,7 +232,7 @@ def main():
             "historyIntervalSeconds": args.history_interval,
             "nativeHints": args.native_hints, "startupSettledSeconds": args.settle_seconds,
             "status": "accepted", "durationSeconds": elapsed_ms / 1000,
-            "serviceId": initial["serviceId"], "serviceProtocol": 1,
+            "serviceId": initial["serviceId"], "serviceProtocol": 2,
             "readSamples": 100, "readP95Ms": sorted(latencies)[94], "readMaxMs": max(latencies),
             "readBatchMs": read_batch_ms, "payloadBytes": max(sizes),
             "publisherCgroupCpuMs" if args.unit else "serviceAndReapedChildrenCpuMs": cpu_ms,

@@ -404,7 +404,7 @@ class Runtime:
                 value = parse_snapshot(bytes(worker.buffer))
                 ttl = max(self.scheduler.timeout + 2 * self.scheduler.intervals[worker.job.component] + 1000, 3 * self.scheduler.intervals[worker.job.component])
                 if worker.job.generation == self.scheduler.generation[provider]:
-                    self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl)
+                    self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl, runtime_ttl_ms=max(self.scheduler.timeout + 2 * self.scheduler.intervals["runtime"] + 1000, 3 * self.scheduler.intervals["runtime"]))
                     success = True
             except (ValueError, OSError):
                 pass

@@ -27,7 +27,7 @@ def check(prefix, fixtures):
     schema = json.loads(command(prefix, ["schema"]))
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema)
-    snapshot = json.loads((fixtures / "contract-v3/snapshot.json").read_text())
+    snapshot = json.loads((fixtures / "contract-v4/snapshot.json").read_text())
     with tempfile.TemporaryDirectory(prefix="notification-reference-") as scratch:
         path = Path(scratch) / "snapshot.json"
         path.write_text(json.dumps(snapshot))

@@ -1,0 +1,37 @@
+{
+  "samples": [
+    {
+      "hostScope": "snap",
+      "evidenceKind": "ordinary_native_database_only_query_shape",
+      "sampleAtUtc": "2026-10-08T20:50:25.219237+00:00",
+      "useStateDbOnly": true,
+      "catalogRows": 89,
+      "catalogComplete": true,
+      "nativeStatusCounts": {
+        "active": 2,
+        "notLoaded": 87
+      },
+      "missingSessionTreeRootIds": 0,
+      "providerActionsIssued": false,
+      "filesystemPassivityAudited": false,
+      "controlledNativePassivityPending": true
+    },
+    {
+      "hostScope": "starship",
+      "evidenceKind": "ordinary_native_database_only_query_shape",
+      "sampleAtUtc": "2026-10-08T20:50:25.462908+00:00",
+      "useStateDbOnly": true,
+      "catalogRows": 353,
+      "catalogComplete": true,
+      "nativeStatusCounts": {
+        "active": 3,
+        "notLoaded": 348,
+        "idle": 2
+      },
+      "missingSessionTreeRootIds": 0,
+      "providerActionsIssued": false,
+      "filesystemPassivityAudited": false,
+      "controlledNativePassivityPending": true
+    }
+  ]
+}

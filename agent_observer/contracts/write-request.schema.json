@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agent-observer:write-request:1",
+  "$id": "urn:agent-observer:write-request:2",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 2
     },
     "operation": {
       "enum": [
@@ -20,8 +20,7 @@
     },
     "provider": {
       "enum": [
-        "codex",
-        "claude"
+        "codex"
       ]
     },
     "configHome": {

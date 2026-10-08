@@ -22,6 +22,8 @@ def main():
     parser.add_argument("--verify-source-isolation", action="store_true")
     parser.add_argument("--codex-outcome", action="store_true")
     args = parser.parse_args()
+    if args.claude_monitoring or args.verify_source_isolation:
+        parser.error("Claude API 2 reconciliation is a separate checkpoint")
     root = Path(os.environ["NATIVE_PROOF_ROOT"])
     host = os.environ["NATIVE_PROOF_HOST"]
     ready = json.loads((root / "ready.json").read_text())
@@ -168,7 +170,7 @@ def main():
             deadline = time.monotonic() + 15
             while time.monotonic() < deadline:
                 row = self.row(ref)
-                if row["runtime"]["value"] == "parked" and row["phase"]["value"] == "unknown":
+                if row["runtime"]["value"] == "parked" and row["phase"] is None:
                     return row
                 time.sleep(0.2)
             raise RuntimeError("service_parked_pending")
@@ -190,7 +192,7 @@ def main():
             proof = ServiceProof(provider)
             proofs.append(proof)
             result = proof.run()
-            receipts.append({**result, "readBackend": "installed_service", "serviceProtocol": 1})
+            receipts.append({**result, "readBackend": "installed_service", "serviceProtocol": 2})
             (root / "native-service-progress.json").write_text(json.dumps(receipts, indent=2) + "\n")
             print(json.dumps({"hostScope": host, "provider": provider, "stage": "entry_age_resume_accepted"}), flush=True)
         # Existing Codex proof establishes the exact owned daemon and saved
@@ -262,13 +264,13 @@ def main():
             print(json.dumps({"hostScope": host, "stage": "new_turn_outcome", "status": "accepted"}), flush=True)
         elif args.claude_monitoring:
             for method in (proof.claude_parked, proof.claude_question, proof.claude_approval):
-                receipts.append({**method(), "readBackend": "installed_service", "serviceProtocol": 1})
+                receipts.append({**method(), "readBackend": "installed_service", "serviceProtocol": 2})
                 (root / "native-monitoring-progress.json").write_text(json.dumps(receipts, indent=2) + "\n")
                 print(json.dumps({"hostScope": host, "stage": method.__name__, "status": "accepted"}), flush=True)
         else:
             isolation_armed = args.verify_source_isolation
             time.sleep(2)
-            receipts.append({**proof.recovery(), "readBackend": "installed_service", "serviceProtocol": 1})
+            receipts.append({**proof.recovery(), "readBackend": "installed_service", "serviceProtocol": 2})
             print(json.dumps({"hostScope": host, "stage": "owned_codex_recovery_accepted"}), flush=True)
             if args.verify_source_isolation:
                 assert isolated_samples

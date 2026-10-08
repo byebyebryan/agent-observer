@@ -1,4 +1,4 @@
-"""Public v3 contract and bounded validation; no provider or action imports."""
+"""API 2 observation wire 4; bounded pure validation without action imports."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 MAX_BYTES = 8 * 1024 * 1024
 MAX_SNAPSHOT_BYTES = MAX_BYTES - 1024
 MAX_NODES = 2_000_000
@@ -76,10 +76,8 @@ def evidence(*values):
 
 
 PHASE = evidence("working", "blocked", "waiting")
-PRESENCE = evidence("present", "absent")
 RUNTIME = evidence("running", "parked")
 OUTCOME = evidence("completed", "failed", "cancelled")
-ATTACHMENT = evidence("attached", "detached")
 COVERAGE = obj(
     status=choice("complete", "partial", "unavailable", "unsupported"),
     reason=text(128, pattern=CODE),
@@ -88,7 +86,7 @@ RUNTIME_COVERAGE = {
     **COVERAGE,
     "properties": {
         **COVERAGE["properties"],
-        "scope": choice("loaded_threads", "registered_workers"),
+        "scope": choice("daemon_threads", "provider_sessions"),
     },
     "required": [*COVERAGE["required"], "scope"],
 }
@@ -102,36 +100,13 @@ ACTIVITY["properties"]["lastKnownAt"] = TIME
 RUNTIME_INFO = obj(
     version=text(64),
     binarySha256=text(64, pattern=r"^[0-9a-f]{64}$"),
-    topology=choice("native_managed_endpoint", "private_session_registry_and_job_store"),
+    topology=text(128, pattern=CODE),
     bootId=text(36, pattern=UUID),
     pid={"type": ["integer", "null"], "minimum": 1},
     startTicks=TIME,
     endpoint=text(nullable=True),
 )
 RUNTIME_INFO = {"anyOf": [RUNTIME_INFO, {"type": "null"}]}
-HISTORY = {
-    "anyOf": [
-        obj(
-            source=choice("claude_sdk"),
-            sdkVersion=text(64),
-            createdAt=TIME,
-            fileModifiedAt=TIME,
-        ),
-        {"type": "null"},
-    ]
-}
-JOB = {
-    "anyOf": [
-        obj(
-            id=text(8, pattern=r"^[0-9a-f]{8}$", nullable=True),
-            retained={"type": ["boolean", "null"]},
-            state=choice("working", "done", "failed", "stopped", "unknown"),
-            tempo=choice("active", "blocked", "idle", "unknown"),
-            terminalObservedAt=TIME,
-        ),
-        {"type": "null"},
-    ]
-}
 WORKSPACE = {
     "anyOf": [
         obj(
@@ -151,6 +126,16 @@ WORKSPACE = {
         {"type": "null"},
     ]
 }
+DISCOVERY = {"anyOf": [obj(
+    catalogMode=text(128, pattern=CODE),
+    sourceKinds=array(text(128), 32),
+    catalogRows=INTEGER,
+    runtimeRows=INTEGER,
+    parkedRows=INTEGER,
+    pages=INTEGER,
+    nativeMessageBytes=INTEGER,
+    historyClocks=BOOL,
+), {"type": "null"}]}
 SOURCE = obj(
     provider=PROVIDER,
     namespace=text(71, pattern=DIGEST),
@@ -158,6 +143,7 @@ SOURCE = obj(
     configHome=text(),
     configHomeKind=choice("default", "explicit"),
     runtime=RUNTIME_INFO,
+    discovery=DISCOVERY,
     sourceHealth=choice("current", "partial", "stale", "unavailable"),
     coverage=obj(saved=COVERAGE, runtime=RUNTIME_COVERAGE),
     capabilities=obj(
@@ -165,35 +151,29 @@ SOURCE = obj(
         blockedReasons=array(choice("approval", "question"), 2),
         runtime=array(choice("running", "parked"), 2),
         activity=BOOL,
-        clientBinding=BOOL,
     ),
     errors=array(text(128, pattern=CODE), 128),
     limitations=array(text(128, pattern=CODE), 128),
 )
 SESSION = obj(
     identity=IDENTITY,
-    nativeIds=obj(
-        threadId=text(36, pattern=UUID, nullable=True),
-        sessionId=text(36, pattern=UUID),
-        jobId=text(8, pattern=r"^[0-9a-f]{8}$", nullable=True),
-    ),
+    nativeIds={"anyOf": [
+        obj(threadId=text(36, pattern=UUID), sessionTreeRootId=text(36, pattern=UUID)),
+        obj(sessionId=text(36, pattern=UUID)),
+    ]},
     title=text(256),
     kind=choice("user", "child", "unknown"),
     cwd=text(nullable=True),
     cwdSource=text(128, pattern=CODE, nullable=True),
-    inventory=choice("live", "saved", "retained_job", "registry"),
-    phase=PHASE,
+    inventory=choice("live", "saved"),
+    hasSavedHistory=BOOL,
+    phase={"anyOf": [PHASE, {"type": "null"}]},
     runtime=RUNTIME,
-    worker=PRESENCE,
-    attachment=ATTACHMENT,
     outcome=OUTCOME,
-    blockedReason=choice("approval", "question", "unknown"),
+    blockedReasons=array(choice("approval", "question"), 2),
     createdAt=TIME,
     activity=ACTIVITY,
     workspace=WORKSPACE,
-    sessionKind=choice("interactive", "bg", "unknown"),
-    job=JOB,
-    history=HISTORY,
     metadataIssues=array(text(128, pattern=CODE), 128),
 )
 SNAPSHOT = obj(
@@ -316,14 +296,11 @@ def validate_snapshot(value):
         ):
             raise ContractError("invalid_config_path")
         if source["coverage"]["runtime"]["scope"] != (
-            "loaded_threads" if source["provider"] == "codex" else "registered_workers"
+            "daemon_threads" if source["provider"] == "codex" else "provider_sessions"
         ):
             raise ContractError("runtime_scope_conflict")
         runtime_info = source["runtime"]
-        if runtime_info is not None and runtime_info["topology"] != (
-            "native_managed_endpoint" if source["provider"] == "codex"
-            else "private_session_registry_and_job_store"
-        ):
+        if runtime_info is not None and source["provider"] == "codex" and runtime_info["topology"] != "native_managed_endpoint":
             raise ContractError("runtime_topology_conflict")
         for capability in ("phase", "blockedReasons", "runtime"):
             values = source["capabilities"][capability]
@@ -350,20 +327,22 @@ def validate_snapshot(value):
             identity["provider"] == "codex"
             and (
                 identity["nativeIdKind"] != "thread"
-                or identity["nativeId"] != ids["threadId"]
-                or ids["jobId"] is not None
+                or set(ids) != {"threadId", "sessionTreeRootId"}
+                or identity["nativeId"] != ids.get("threadId")
             )
         ) or (
             identity["provider"] == "claude"
             and (
                 identity["nativeIdKind"] != "session"
-                or identity["nativeId"] != ids["sessionId"]
-                or ids["threadId"] is not None
+                or set(ids) != {"sessionId"}
+                or identity["nativeId"] != ids.get("sessionId")
             )
         ):
             raise ContractError("native_identity_conflict")
-        for dimension in ("phase", "runtime", "worker", "attachment", "outcome"):
+        for dimension in ("phase", "runtime", "outcome"):
             fact = row[dimension]
+            if fact is None:
+                continue
             if fact["value"] != "unknown" and (
                 fact["health"] != "current"
                 or fact["observedAt"] is None
@@ -381,18 +360,25 @@ def validate_snapshot(value):
             or row["activity"]["source"] is None
         ):
             raise ContractError("invalid_last_known_activity")
-        if row["runtime"]["value"] == "parked" and row["phase"]["value"] != "unknown":
+        phase = row["phase"]
+        if (row["runtime"]["value"] == "parked") != (phase is None):
             raise ContractError("parked_phase_conflict")
-        if row["phase"]["value"] == "blocked" and row["blockedReason"] == "unknown":
-            raise ContractError("missing_blocked_reason")
-        if row["phase"]["value"] != "blocked" and row["blockedReason"] != "unknown":
-            raise ContractError("unexpected_blocked_reason")
-        if row["job"] is not None and row["job"]["id"] != ids["jobId"]:
-            raise ContractError("job_identity_conflict")
-        if identity["provider"] == "codex" and (
-            row["job"] is not None or row["history"] is not None or row["sessionKind"] != "unknown"
+        if row["runtime"]["value"] == "parked" and not row["hasSavedHistory"]:
+            raise ContractError("parked_without_saved_identity")
+        if phase and phase["value"] != "unknown" and (
+            row["runtime"]["value"] != "running"
+            or phase["source"] != row["runtime"]["source"]
+            or phase["observedAt"] != row["runtime"]["observedAt"]
+            or phase["clock"] != row["runtime"]["clock"]
         ):
-            raise ContractError("provider_metadata_conflict")
+            raise ContractError("phase_runtime_conflict")
+        reasons = row["blockedReasons"]
+        if len(reasons) != len(set(reasons)):
+            raise ContractError("duplicate_blocked_reason")
+        if phase and phase["value"] == "blocked" and not reasons:
+            raise ContractError("missing_blocked_reason")
+        if (phase is None or phase["value"] != "blocked") and reasons:
+            raise ContractError("unexpected_blocked_reason")
     if value["collectedAt"] is None:
         raise ContractError("missing_collection_time")
     if len(canonical(value).encode()) > MAX_SNAPSHOT_BYTES:

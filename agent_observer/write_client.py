@@ -5,28 +5,20 @@ from __future__ import annotations
 import argparse
 import hashlib
 import os
-import selectors
 import stat
-import subprocess
 import sys
 import time
 from pathlib import Path
 
 from .bounded_json import WireError, decode_document
 from .contract import ContractError, canonical, store_namespace
-from .native_artifacts import CLAUDE, CODEX
-from .native_cues import background_receipt, trust_required
+from .native_artifacts import CODEX
 from .read_client import select as select_session
 from .write_contract import schema_document, validate_plan, validate_request, validate_result
 
-EXECUTABLES = {"codex": CODEX.path, "claude": CLAUDE.path}
-BG_SETTINGS = '{"worktree":{"bgIsolation":"none"}}'
+EXECUTABLES = {"codex": CODEX.path}
 _OBSERVATION_ONLY_ISSUES = frozenset(
     {
-        "unknown_job_state",
-        "native_blocked_phase_unproved",
-        "unknown_job_tempo",
-        "terminal_clock_unavailable",
         "native_history_time_unavailable",
     }
 )
@@ -80,14 +72,13 @@ def _directory(value, *, owned=False, unavailable_code="directory_unavailable"):
 
 
 def _collect(request):
-    from .collection import collect
+    from .codex_exact import collect_exact
 
-    return collect(
-        host_scope=request["hostScope"],
-        providers=[request["provider"]],
-        codex_home=Path(request["configHome"]),
-        claude_home=Path(request["configHome"]),
-    )
+    try:
+        return collect_exact(request["configHome"], host_scope=request["hostScope"],
+                             thread_id=request["reference"]["nativeId"])
+    except ValueError:
+        raise ContractError("resume_evidence_unavailable") from None
 
 
 def _target(request):
@@ -116,71 +107,38 @@ def _target(request):
     )
     if source["namespace"] != expected or row["cwd"] != request["cwd"]:
         raise ContractError("resume_context_changed")
-    if row["runtime"]["health"] in {"stale", "ambiguous"} or row["phase"]["health"] == "ambiguous":
+    if row["runtime"]["health"] in {"stale", "ambiguous"} or row["phase"] is not None and row["phase"]["health"] == "ambiguous":
         raise ContractError("resume_evidence_unavailable")
+    if row["nativeIds"]["threadId"] != row["nativeIds"]["sessionTreeRootId"]:
+        raise ContractError("session_tree_entry_unproved")
     return row, source
 
 
 def prepare(request):
     validate_request(request)
     provider = request["provider"]
+    if provider != "codex":
+        raise ContractError("unsupported_provider")
     cwd = _directory(request["cwd"], unavailable_code="cwd_unavailable")
     config = _directory(request["configHome"], owned=True, unavailable_code="config_home_unavailable")
     if provider == "codex" and request["configHomeKind"] != "explicit":
         raise ContractError("unsupported_config_selector")
-    if (
-        provider == "claude"
-        and request["configHomeKind"] == "default"
-        and (
-            request["configHome"] != str(Path.home() / ".claude")
-            or "CLAUDE_CONFIG_DIR" in os.environ
-        )
-    ):
-        raise ContractError("unsupported_config_selector")
     executable = EXECUTABLES[provider]
     binary_hash, binary = _digest(Path(executable), 512 * 1024 * 1024, executable=True)
-    settings = Path(request["configHome"]) / (
-        "config.toml" if provider == "codex" else "settings.json"
-    )
+    settings = Path(request["configHome"]) / "config.toml"
     settings_hash = _digest(settings, 1024 * 1024)[0] if settings.exists() else None
     runtime_token = None
     if request["operation"] == "new":
-        route = "codex_new" if provider == "codex" else "claude_new"
+        route = "codex_new"
     else:
         row, source = _target(request)
         runtime_token = hashlib.sha256(
             canonical([source["runtimeNamespace"], source["runtime"],
-                       row["nativeIds"], row["sessionKind"], row["inventory"]]).encode()
+                       row["identity"], row["cwd"]]).encode()
         ).hexdigest()
-        if provider == "codex":
-            route = "codex_resume"
-        elif (
-            row["sessionKind"] == "bg"
-            and row["worker"]["value"] == "present"
-            and row["worker"]["health"] == "current"
-            and row["nativeIds"]["jobId"]
-            and row["job"] is not None
-            and row["job"]["retained"] is True
-            and row["job"]["id"] == row["nativeIds"]["jobId"]
-        ):
-            route = "claude_attach"
-        elif (
-            row["history"] is not None
-            and source["coverage"]["saved"]["status"] in {"complete", "partial"}
-            and (
-                row["inventory"] == "saved"
-                or row["inventory"] == "retained_job"
-                and row["job"] is not None
-                and row["job"]["retained"] is True
-                and row["job"]["state"] in {"done", "failed", "stopped"}
-                and row["worker"]["value"] != "present"
-            )
-        ):
-            route = "claude_saved_resume"
-        else:
-            raise ContractError("unsupported_resume_route")
+        route = "codex_resume"
     plan = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "request": request,
         "guard": {
             "uid": os.geteuid(),
@@ -205,7 +163,7 @@ def revalidate(plan):
     return fresh
 
 
-def invocation(plan, *, background=False):
+def invocation(plan):
     """Derive native argv locally; caller cannot supply executable/arguments."""
     request = plan["request"]
     provider = request["provider"]
@@ -215,100 +173,14 @@ def invocation(plan, *, background=False):
         env["CODEX_HOME"] = request["configHome"]
         if plan["route"] == "codex_resume":
             row, _ = _target(request)
-            argv.extend(["resume", "--all", row["nativeIds"]["sessionId"]])
-    else:
-        if request["configHomeKind"] == "default":
-            env.pop("CLAUDE_CONFIG_DIR", None)
-        else:
-            env["CLAUDE_CONFIG_DIR"] = request["configHome"]
-        if plan["route"] == "claude_attach":
-            row, _ = _target(request)
-            argv.extend(["attach", row["nativeIds"]["jobId"]])
-        elif background:
-            argv.extend(["--settings", BG_SETTINGS])
-            if plan["route"] == "claude_saved_resume":
-                argv.extend(["--resume", request["reference"]["nativeId"]])
-            argv.append("--bg")
-        else:
-            raise ContractError("background_preparation_required")
+            argv.extend(["resume", "--all", row["nativeIds"]["threadId"]])
     return argv, env
-
-
-def _launch(argv, env, cwd, timeout):
-    """Own the launcher only. Never kill a group containing provider jobs."""
-    try:
-        process = subprocess.Popen(
-            argv,
-            env=env,
-            cwd=cwd,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            start_new_session=True,
-        )
-    except OSError:
-        raise ContractError("launcher_unavailable") from None
-    buffers = [bytearray(), bytearray()]
-    deadline = time.monotonic() + timeout
-    reason = None
-    try:
-        with selectors.DefaultSelector() as poller:
-            for index, stream in enumerate((process.stdout, process.stderr)):
-                os.set_blocking(stream.fileno(), False)
-                poller.register(stream, selectors.EVENT_READ, index)
-            while poller.get_map():
-                if time.monotonic() >= deadline:
-                    reason = "launcher_timeout"
-                    break
-                for key, _ in poller.select(max(0, min(0.2, deadline - time.monotonic()))):
-                    chunk = os.read(key.fileobj.fileno(), 8192)
-                    if not chunk:
-                        poller.unregister(key.fileobj)
-                        continue
-                    buffers[key.data].extend(chunk)
-                    if len(buffers[key.data]) > 64 * 1024:
-                        reason = "launcher_output_limit"
-                        break
-                if reason:
-                    break
-        if reason:
-            if process.poll() is None:
-                process.terminate()
-                try:
-                    process.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-            process.wait(timeout=1)
-        else:
-            try:
-                process.wait(timeout=max(0.01, deadline - time.monotonic()))
-            except subprocess.TimeoutExpired:
-                reason = "launcher_timeout"
-                process.terminate()
-                try:
-                    process.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait()
-        return process.returncode, bytes(buffers[0]) + b"\n" + bytes(buffers[1]), reason
-    except BaseException:
-        if process.poll() is None:
-            process.terminate()
-            try:
-                process.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-        raise
-    finally:
-        process.stdout.close()
-        process.stderr.close()
 
 
 def result(plan, status, reason, effect="none", resulting=None, handoff=None, pending=False):
     return validate_result(
         {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "operation": plan["request"]["operation"],
             "status": status,
             "reason": reason,
@@ -322,112 +194,10 @@ def result(plan, status, reason, effect="none", resulting=None, handoff=None, pe
 
 
 def execute(plan, *, timeout=30):
+    # Preparation has no provider effect. The foreground client owns entry.
     fresh = revalidate(plan)
-    if fresh["route"] not in {"claude_new", "claude_saved_resume"}:
-        return result(
-            fresh,
-            "prepared",
-            "tty_handoff_required",
-            handoff=fresh,
-            pending=fresh["route"] == "codex_new",
-        )
-    argv, env = invocation(fresh, background=True)
-    try:
-        code, output, failure = _launch(argv, env, fresh["request"]["cwd"], timeout)
-    except ContractError:
-        return result(fresh, "rejected", "launcher_unavailable")
-    except OSError:
-        return result(fresh, "uncertain", "launcher_io_failed", effect="uncertain", pending=True)
-    except KeyboardInterrupt:
-        return result(fresh, "uncertain", "launcher_interrupted", effect="uncertain", pending=True)
-    if failure is None and code == 1 and trust_required(output, fresh["request"]["cwd"]):
-        return result(fresh, "rejected", "trust_required")
-    if failure or code != 0:
-        return result(
-            fresh,
-            "uncertain",
-            failure or "native_launch_uncertain",
-            effect="uncertain",
-            pending=True,
-        )
-    try:
-        receipt = background_receipt(output)
-        if receipt.origin_id is not None and (
-            fresh["request"]["operation"] != "resume"
-            or receipt.origin_id
-            != fresh["request"]["reference"]["nativeId"][: len(receipt.origin_id)]
-        ):
-            raise ContractError("native_cue_identity_conflict")
-        job = receipt.job_id
-    except ContractError as exc:
-        return result(fresh, "uncertain", str(exc), effect="uncertain", pending=True)
-    deadline = time.monotonic() + min(timeout, 15)
-    confirmed = None
-    while time.monotonic() < deadline:
-        try:
-            snapshot = _collect(fresh["request"])
-            rows = [
-                row
-                for row in snapshot["sessions"]
-                if row["nativeIds"]["jobId"] == job
-                and (
-                    receipt.session_id is None
-                    or row["nativeIds"]["sessionId"] == receipt.session_id
-                )
-                and row["cwd"] == fresh["request"]["cwd"]
-                and row["worker"]["value"] == "present"
-                and not set(row["metadataIssues"]) - _OBSERVATION_ONLY_ISSUES
-            ]
-            if len(rows) == 1:
-                actual = rows[0]["identity"]
-                confirmed = actual
-                request = {**fresh["request"], "operation": "resume", "reference": actual}
-                try:
-                    handoff = prepare(request)
-                except (ContractError, ValueError, OSError) as error:
-                    if (
-                        isinstance(error, ContractError)
-                        and str(error) == "resume_evidence_unavailable"
-                        and rows[0]["phase"]["health"] == "ambiguous"
-                    ):
-                        # A native resumed worker can briefly retain the prior
-                        # terminal state during startup. Reobserve and validate
-                        # this one launched identity; never launch again.
-                        time.sleep(0.2)
-                        continue
-                    return result(
-                        fresh,
-                        "uncertain",
-                        "handoff_unavailable",
-                        effect="confirmed",
-                        resulting=actual,
-                    )
-                if handoff["route"] != "claude_attach":
-                    return result(
-                        fresh,
-                        "uncertain",
-                        "handoff_unavailable",
-                        effect="confirmed",
-                        resulting=actual,
-                    )
-                return result(
-                    fresh,
-                    "ready",
-                    "native_identity_verified",
-                    effect="confirmed",
-                    resulting=actual,
-                    handoff=handoff,
-                )
-        except (ContractError, ValueError, OSError):
-            break
-        time.sleep(0.2)
-    if confirmed is not None:
-        return result(
-            fresh, "uncertain", "handoff_unavailable", effect="confirmed", resulting=confirmed
-        )
-    return result(
-        fresh, "uncertain", "post_launch_identity_unavailable", effect="uncertain", pending=True
-    )
+    return result(fresh, "prepared", "tty_handoff_required", handoff=fresh,
+                  pending=fresh["route"] == "codex_new")
 
 
 def enter(plan):
@@ -482,10 +252,10 @@ def main(argv=None):
     except (ContractError, WireError):
         # Finite codes from the strictly controlled local exception classes.
         exc = sys.exc_info()[1]
-        print(canonical({"schemaVersion": 1, "error": str(exc)}), file=sys.stderr)
+        print(canonical({"schemaVersion": 2, "error": str(exc)}), file=sys.stderr)
         return 2
     except (OSError, ValueError):
-        print('{"schemaVersion":1,"error":"write_context_unavailable"}', file=sys.stderr)
+        print('{"schemaVersion":2,"error":"write_context_unavailable"}', file=sys.stderr)
         return 2
     except KeyboardInterrupt:
         return 130

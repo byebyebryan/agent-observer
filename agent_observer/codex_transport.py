@@ -20,6 +20,10 @@ from .bounded_json import WireError, decode_document
 _READ_METHODS = frozenset(
     {"initialize", "thread/list", "thread/loaded/list", "thread/read", "thread/turns/list"}
 )
+SOURCE_KINDS = (
+    "cli", "vscode", "exec", "appServer", "subAgent", "subAgentReview",
+    "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown",
+)
 _GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
 
@@ -288,7 +292,10 @@ class PassiveClient:
             raise TransportError("invalid_limit")
         if cursor is not None and (not isinstance(cursor, str) or len(cursor) > 4096):
             raise TransportError("invalid_cursor")
-        return self._request("thread/list", {"cursor": cursor, "limit": limit})
+        return self._request("thread/list", {
+            "cursor": cursor, "limit": limit, "useStateDbOnly": True,
+            "sourceKinds": list(SOURCE_KINDS),
+        })
 
     def loaded_threads(self, *, cursor=None):
         if cursor is not None and (not isinstance(cursor, str) or len(cursor) > 4096):

@@ -48,9 +48,11 @@ class Receipt:
 def stale_row(row, *, runtime=False, metadata=False):
     row = copy.deepcopy(row)
     if runtime:
-        row["blockedReason"] = "unknown"
-        for name in ("phase", "runtime", "worker", "attachment", "outcome"):
+        row["blockedReasons"] = []
+        for name in ("phase", "runtime", "outcome"):
             fact = row[name]
+            if fact is None:
+                row[name] = fact = {"value": "unknown", "observedAt": None, "source": None, "health": "stale", "reason": "service_source_expired", "clock": None}
             if fact["source"] is not None:
                 if fact["value"] != "unknown":
                     fact["lastKnownValue"] = fact["value"]
@@ -78,6 +80,7 @@ class ServiceState:
         self.receipts = {provider: {name: Receipt(name) for name in ("runtime", "history")} for provider in configs}
         self.generations = {provider: 0 for provider in configs}
         self.contexts = {provider: None for provider in configs}
+        self.context_samples = {provider: -1 for provider in configs}
         self.snapshot = None
         self.revision = 0
         # Validate immutable scope even before the first observation.
@@ -104,7 +107,7 @@ class ServiceState:
         receipt.health = "stale" if receipt.data else "unavailable"
         self.publish()
 
-    def accept(self, provider, component, value, *, sampled_ms, ttl_ms):
+    def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
         validate_snapshot(value)
         if value["host"]["authority"] != self.host_scope or value["host"]["uid"] != self.uid or len(value["sources"]) != 1:
             raise ContractError("service_worker_scope")
@@ -114,9 +117,14 @@ class ServiceState:
             raise ContractError("service_worker_store")
         if sampled_ms > self.clock() or ttl_ms < 1:
             raise ContractError("service_worker_clock")
+        receipt = self.receipts[provider][component]
+        if sampled_ms < self.context_samples[provider] or (receipt.sampledBoottimeMs is not None and sampled_ms < receipt.sampledBoottimeMs):
+            receipt.inFlight = False
+            return False
         context = canonical(source["runtime"]) if source["runtime"] else None
         if context is not None and context != self.contexts[provider]:
             self.contexts[provider] = context
+            self.context_samples[provider] = sampled_ms
             self.generations[provider] += 1
             for prior in self.receipts[provider].values():
                 if prior.data:
@@ -135,16 +143,13 @@ class ServiceState:
         if receipt.expiresBoottimeMs <= self.clock():
             receipt.health = "stale"
         # Retain evidence belonging to this component across an incomplete read.
-        # Claude history snapshots also contain currently registered workers;
-        # a runtime-only row is not saved evidence merely because the saved
-        # census is partial. Runtime retention remains independently governed
-        # by its own roster coverage. Codex has no public history object, so its
-        # existing conservative catalog retention stays unchanged.
+        # Only positive saved-history identity is retained by the metadata
+        # component. Runtime retention uses its own daemon census coverage.
         if previous and coverage != "complete":
             present = {identity_key(r["identity"]) for r in receipt.data["sessions"]}
             used_bytes = len(canonical(receipt.data).encode())
             for old in previous["sessions"]:
-                if component == "history" and provider == "claude" and old["history"] is None:
+                if component == "history" and not old["hasSavedHistory"]:
                     continue
                 if identity_key(old["identity"]) not in present and len(receipt.data["sessions"]) < MAX_SESSIONS:
                     retained = stale_row(old, runtime=True, metadata=True)
@@ -155,7 +160,14 @@ class ServiceState:
                         used_bytes += size
                     else:
                         receipt.data["errors"] = list(dict.fromkeys(receipt.data["errors"][:126] + ["service_retention_limit"]))
+        if component == "history" and source["coverage"]["runtime"]["status"] in {"complete", "partial"}:
+            runtime = self.receipts[provider]["runtime"]
+            if runtime.sampledBoottimeMs is None or sampled_ms >= runtime.sampledBoottimeMs:
+                self.attempt(provider, "runtime")
+                self.accept(provider, "runtime", value, sampled_ms=sampled_ms,
+                            ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000))
         self.publish()
+        return True
 
     def expire(self, now=None):
         now = self.clock() if now is None else now
@@ -174,10 +186,10 @@ class ServiceState:
         meta = self.source_meta(provider)
         return {
             **{k: meta[k] for k in ("provider", "namespace", "configHome", "configHomeKind")},
-            "runtimeNamespace": None, "runtime": None, "sourceHealth": "unavailable",
+            "runtimeNamespace": None, "runtime": None, "discovery": None, "sourceHealth": "unavailable",
             "coverage": {"saved": {"status": "unavailable", "reason": "not_observed"},
-                         "runtime": {"status": "unavailable", "reason": "not_observed", "scope": "loaded_threads" if provider == "codex" else "registered_workers"}},
-            "capabilities": {"phase": [], "blockedReasons": [], "runtime": [], "activity": False, "clientBinding": False},
+                         "runtime": {"status": "unavailable", "reason": "not_observed", "scope": "daemon_threads" if provider == "codex" else "provider_sessions"}},
+            "capabilities": {"phase": [], "blockedReasons": [], "runtime": [], "activity": False},
             "errors": [], "limitations": ["source_not_observed"],
         }
 
@@ -192,6 +204,8 @@ class ServiceState:
                 source["capabilities"].update(phase=[], blockedReasons=[], runtime=[])
             if history.data and history.current():
                 source["coverage"]["saved"] = copy.deepcopy(history.data["sources"][0]["coverage"]["saved"])
+                if source["discovery"] is not None:
+                    source["discovery"]["historyClocks"] = bool((history.data["sources"][0]["discovery"] or {}).get("historyClocks"))
             else:
                 source["coverage"]["saved"].update(status="unavailable", reason="service_history_expired")
             source["errors"] = list(dict.fromkeys(code for receipt in receipts.values() if receipt.data for code in receipt.data["sources"][0]["errors"]))[:128]
@@ -257,7 +271,6 @@ class ServiceState:
                         row["cwd"], row["cwdSource"] = saved["cwd"], saved["cwdSource"]
                     if history.current() and row["cwd"] == saved["cwd"]:
                         row["workspace"] = saved["workspace"]
-                    row["history"] = saved["history"]
                     if row["createdAt"] is None:
                         row["createdAt"] = saved["createdAt"]
                     row["metadataIssues"] = list(dict.fromkeys((row["metadataIssues"] + saved["metadataIssues"])[:128]))
@@ -265,7 +278,7 @@ class ServiceState:
             source["capabilities"]["activity"] = any(r["activity"]["health"] == "current" for r in rows if r["identity"]["provider"] == provider)
             sources.append(source)
         value = {
-            "schemaVersion": 3, "collectionId": str(uuid.uuid4()), "collectedAt": time.time_ns() // 1_000_000,
+            "schemaVersion": 4, "collectionId": str(uuid.uuid4()), "collectedAt": time.time_ns() // 1_000_000,
             "host": {"authority": self.host_scope, "authoritySource": "caller", "nativeHostname": socket.gethostname(), "uid": self.uid},
             "sourceHealth": "current" if all(s["sourceHealth"] == "current" for s in sources) else "partial" if rows or any(s["sourceHealth"] in {"current", "partial"} for s in sources) else "unavailable",
             "sources": sources, "sessions": [], "errors": [], "limitations": ["shared_sampled_service", "no_native_event_replay"],
@@ -296,7 +309,7 @@ class ServiceState:
         self.expire(now)
         snapshot = self.snapshot if (include_snapshot if include_snapshot is not None else kind in {"view", "resync", "status"}) else None
         return validate_frame({
-            "serviceProtocol": 1, "serviceId": self.service_id, "bootId": self.boot_id,
+            "serviceProtocol": 2, "serviceId": self.service_id, "bootId": self.boot_id,
             "uid": self.uid, "hostScope": self.host_scope, "sequence": sequence,
             "viewRevision": self.revision, "kind": kind,
             "state": "ready" if self.snapshot is not None else "warming",

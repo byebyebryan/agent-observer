@@ -21,7 +21,7 @@ def frames(path, *, host_scope, operation="watch", timeout=15.0):
     uid = os.geteuid()
     if directory.st_uid != uid or stat.S_IMODE(directory.st_mode) != 0o700 or node.st_uid != uid or not stat.S_ISSOCK(node.st_mode) or stat.S_IMODE(node.st_mode) != 0o600:
         raise ContractError("service_socket_ownership")
-    request = validate_request({"serviceProtocol": 1, "operation": operation, "hostScope": host_scope})
+    request = validate_request({"serviceProtocol": 2, "operation": operation, "hostScope": host_scope})
     boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
     domain = os.readlink("/proc/self/ns/time")
     guard = StreamGuard(expected_host=host_scope, expected_uid=uid)

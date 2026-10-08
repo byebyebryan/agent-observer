@@ -13,6 +13,19 @@ simplified.
 
 ## Status
 
+The current design checkpoint is the
+[Codex daemon authority reconciliation](docs/codex-daemon-authority-plan.md).
+Its [deep review](docs/codex-daemon-authority-review.md) traces collection,
+projection, strict validation, cached pull/push and action identity. Codex leads
+a clean breaking API 2/read wire 4/service 2 correction; Claude is the next
+provider checkpoint. The daemon owns running/parked state, while clients own
+TUI/tmux lifetime and attachment. Post-TUI-closure validation is deferred.
+The [ordinary evidence](docs/evidence/2026-10-08-codex-authority-review/REPORT.md)
+matches seven current running contexts and demonstrates discarded native
+`notLoaded` evidence. The [API 2 source contract](docs/api-v2.md) is implemented; final packaged
+native acceptance and operational selection remain separate. Normal commands
+still select a16/API 1/read wire 3 below.
+
 The [shared observation service design](docs/shared-observation-service-plan.md)
 captures first-class pull/push and one local collector for multiple clients.
 The [deep review](docs/shared-observation-service-review.md) includes passive

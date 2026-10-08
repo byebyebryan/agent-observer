@@ -27,100 +27,39 @@ from agent_observer.contract import (
 from agent_observer.read_client import human_rows, ordered_rows, select
 from agent_observer.watch import SampledWatch
 
-FIXTURES = Path(__file__).parent / "fixtures/contract-v3"
+FIXTURES = Path(__file__).parent / "fixtures/contract-v4"
 
 
 def fixture(name="snapshot"):
     return json.loads((FIXTURES / f"{name}.json").read_text())
 
 
-class ContractV3Test(unittest.TestCase):
-    def test_parked_runtime_requires_proved_source_and_preserves_turn_outcome(self):
-        value = fixture("claude-ready")
-        original = value["sessions"][-1]
-        source = copy.deepcopy(value["sources"][-1])
-        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
-                  "title": original["title"], "sessionKind": "bg", "job": original["job"],
-                  "work": {"value": "settled", "observedAt": 1000, "source": "claude_job_store",
-                           "health": "current", "reason": "native_snapshot"},
-                  "runtimeDisposition": {"value": "parked", "observedAt": 2000,
-                                         "source": "claude_job_store", "health": "current", "reason": "native_snapshot"}}
-        self.assertEqual(project_session(native, source)["runtime"]["value"], "unknown")
-        source["capabilities"]["runtime"].append("parked")
-        row = project_session(native, source)
-        self.assertEqual(row["runtime"]["value"], "parked")
-        self.assertEqual(row["runtime"]["clock"], "sample")
-        self.assertEqual(row["phase"]["value"], "unknown")
-        self.assertEqual(row["outcome"]["value"], "completed")
-        self.assertEqual(row["outcome"]["observedAt"], 1000)
-        native["runtimeDisposition"]["health"] = "stale"
-        self.assertEqual(project_session(native, source)["runtime"]["value"], "unknown")
-        native["runtimeDisposition"]["health"] = "current"
-        native["presence"] = {"value": "present", "observedAt": 2100, "source": "claude_registry",
-                              "health": "current", "reason": "native_snapshot"}
-        self.assertEqual(project_session(native, source)["runtime"]["value"], "running")
+class ContractV4Test(unittest.TestCase):
 
     def test_codex_question_requires_a_proved_runtime_source_capability(self):
         value = fixture()
         original = value["sessions"][0]
         source = copy.deepcopy(value["sources"][0])
-        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+        native = {"identity": original["identity"], "nativeIds": {"threadId": original["nativeIds"]["threadId"], "sessionId": original["nativeIds"]["sessionTreeRootId"]},
                   "title": original["title"], "waitReason": "user_input",
+                  "runtimeDisposition": {"value": "running", "observedAt": 123, "source": "codex_rpc", "health": "current", "reason": "native_snapshot"},
+                  "nativeState": {"type": "active", "activeFlags": ["waitingOnUserInput"]},
                   "work": {"value": "needs_input", "observedAt": 123,
                            "source": "codex_rpc", "health": "current", "reason": "native_snapshot"}}
         self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
         source["capabilities"]["blockedReasons"].append("question")
         row = project_session(native, source)
         self.assertEqual(row["phase"]["value"], "blocked")
-        self.assertEqual(row["blockedReason"], "question")
+        self.assertEqual(row["blockedReasons"], ["question"])
 
-    def test_claude_question_requires_the_verified_worker_contract(self):
-        value = fixture("claude-ready")
-        original = value["sessions"][-1]
-        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
-                  "title": original["title"], "waitReason": "question",
-                  "work": {"value": "needs_input", "observedAt": 123,
-                           "source": "claude_registry", "health": "current", "reason": "native_snapshot"}}
-        source = value["sources"][-1]
-        self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
-        native["phaseCapabilities"] = ["input_wait", "job_question"]
-        row = project_session(native, source)
-        self.assertEqual(row["phase"]["value"], "blocked")
-        self.assertEqual(row["blockedReason"], "question")
-        native["waitReason"] = "user_input"
-        generic = project_session(native, source)
-        self.assertEqual(generic["phase"]["value"], "unknown")
-        self.assertEqual(generic["blockedReason"], "unknown")
-        native.update(sessionKind="interactive", phaseCapabilities=["interactive_readiness"],
-                      presence={"value": "present", "observedAt": 123, "source": "claude_registry",
-                                "health": "current", "reason": "native_snapshot"})
-        native["nativeIds"] = {**native["nativeIds"], "jobId": None}
-        native["work"]["value"] = "settled"
-        self.assertEqual(project_session(native, source)["phase"]["value"], "waiting")
-        native["phaseCapabilities"] = []
-        self.assertEqual(project_session(native, source)["phase"]["value"], "unknown")
 
-    def test_foreground_claude_question_needs_explicit_worker_predicate(self):
-        value = fixture("claude-ready")
-        original = value["sessions"][-1]
-        native = {"identity": original["identity"], "nativeIds": {**original["nativeIds"], "jobId": None},
-                  "title": original["title"], "sessionKind": "interactive", "waitReason": "question",
-                  "phaseCapabilities": ["registry_phase", "input_wait", "foreground_question"],
-                  "presence": {"value": "present", "observedAt": 123, "source": "claude_registry", "health": "current", "reason": "native_snapshot"},
-                  "work": {"value": "needs_input", "observedAt": 123, "source": "claude_registry", "health": "current", "reason": "native_snapshot"}}
-        row = project_session(native, value["sources"][-1])
-        self.assertEqual((row["phase"]["value"], row["blockedReason"]), ("blocked", "question"))
-        native["phaseCapabilities"] = ["registry_phase", "input_wait"]
-        self.assertEqual(project_session(native, value["sources"][-1])["phase"]["value"], "unknown")
-        native["phaseCapabilities"].append("foreground_question")
-        native["waitReason"] = "user_input"
-        self.assertEqual(project_session(native, value["sources"][-1])["phase"]["value"], "unknown")
 
     def test_codex_outcome_does_not_settle_a_failed_runtime(self):
         value = fixture()
         original = value["sessions"][0]
-        native = {"identity": original["identity"], "nativeIds": original["nativeIds"],
+        native = {"identity": original["identity"], "nativeIds": {"threadId": original["nativeIds"]["threadId"], "sessionId": original["nativeIds"]["sessionTreeRootId"]},
                   "title": original["title"], "nativeState": {"type": "systemError"},
+                  "runtimeDisposition": {"value": "running", "observedAt": 123, "source": "codex_rpc", "health": "current", "reason": "native_snapshot"},
                   "outcome": {"value": "failed", "observedAt": 120000,
                               "source": "codex_turn_metadata", "health": "current",
                               "reason": "latest_terminal_turn"}}
@@ -145,15 +84,6 @@ class ContractV3Test(unittest.TestCase):
             "partial",
         )
 
-    def test_unavailable_claude_runtime_does_not_advertise_phase_or_running(self):
-        source = project_source({
-            "provider": "claude", "host": {"uid": os.geteuid()},
-            "configHome": "/tmp/fixture", "sessions": [], "runtime": None,
-            "sourceHealth": "unavailable", "coverage": {"sessionRegistry": "unavailable"},
-        })
-        self.assertEqual(source["capabilities"]["phase"], [])
-        self.assertEqual(source["capabilities"]["runtime"], [])
-        self.assertEqual(source["capabilities"]["blockedReasons"], [])
 
     def test_bundled_schemas_match_public_spec(self):
         root = Path(__file__).parent.parent / "agent_observer/contracts"
@@ -173,37 +103,6 @@ class ContractV3Test(unittest.TestCase):
         self.assertEqual(completed["runtime"]["value"], "unknown")
         self.assertTrue(all(row["activity"]["at"] is None for row in rows))
 
-    def test_claude_waiting_requires_proved_bg_completion_and_current_worker(self):
-        value = fixture("claude-ready")
-        ready = value["sessions"][-1]
-        source = value["sources"][-1]
-        native = {
-            "identity": ready["identity"],
-            "nativeIds": ready["nativeIds"],
-            "title": ready["title"],
-            "sessionKind": "bg",
-            "job": ready["job"],
-            "inventory": "live",
-            "history": ready["history"],
-            "presence": {k: v for k, v in ready["worker"].items() if k != "clock"},
-            "work": {
-                **{k: v for k, v in ready["outcome"].items() if k != "clock"},
-                "value": "settled",
-            },
-        }
-        row = project_session(native, source)
-        self.assertEqual(row["phase"]["value"], "waiting")
-        self.assertEqual(row["phase"]["clock"], "native")
-        self.assertEqual(row["worker"]["clock"], "sample")
-        self.assertEqual(row["phase"]["observedAt"], ready["outcome"]["observedAt"])
-        for change in (
-            lambda n: n["presence"].update(value="absent"),
-            lambda n: n.update(sessionKind="interactive"),
-            lambda n: n["job"].update(state="working"),
-        ):
-            changed = copy.deepcopy(native)
-            change(changed)
-            self.assertEqual(project_session(changed, source)["phase"]["value"], "unknown")
 
     def test_rejects_private_payloads_schema_and_identity_conflicts(self):
         mutations = [
@@ -224,45 +123,7 @@ class ContractV3Test(unittest.TestCase):
             with self.assertRaises(ContractError):
                 parse_snapshot(canonical(value).encode())
 
-    def test_claude_user_kind_requires_exact_non_sidechain_activity_evidence(self):
-        ready = fixture("claude-ready")["sessions"][-1]
-        source = fixture("claude-ready")["sources"][-1]
-        native = {
-            "identity": ready["identity"], "nativeIds": ready["nativeIds"],
-            "title": ready["title"], "sessionKind": "bg",
-            "activity": {"at": 123, "health": "current",
-                         "source": "claude_transcript_message",
-                         "reason": "native_conversation_event"},
-        }
-        self.assertEqual(project_session(native, source)["kind"], "user")
-        for change in (
-            {"at": None}, {"health": "stale"}, {"source": "file_mtime"},
-            {"reason": "unobserved"},
-        ):
-            changed = copy.deepcopy(native)
-            changed["activity"].update(change)
-            self.assertEqual(project_session(changed, source)["kind"], "unknown")
-        # A child transcript carries its parent's UUID. Runtime kind or that
-        # UUID alone must not classify the parent as a child.
-        native.update(sessionKind="subagent", activity={})
-        self.assertEqual(project_session(native, source)["kind"], "unknown")
 
-    def test_claude_unknown_phases_explain_bounded_native_source_limits(self):
-        value = fixture("claude-ready")
-        ready, source = value["sessions"][-1], value["sources"][-1]
-        native = {"identity": ready["identity"], "nativeIds": ready["nativeIds"],
-                  "title": ready["title"], "sessionKind": "bg",
-                  "nativeStatus": {"value": "idle"},
-                  "job": {"state": "working"}, "work": {"value": "unknown"},
-                  "presence": {"value": "present", "health": "current",
-                               "observedAt": 123, "source": "claude_registry",
-                               "reason": "native_snapshot"}}
-        phase = project_session(native, source)["phase"]
-        self.assertEqual(phase["reason"], "background_readiness_unproved")
-        self.assertEqual(phase["health"], "unsupported")
-        native["metadataIssues"] = ["native_blocked_phase_unproved"]
-        self.assertEqual(project_session(native, source)["phase"]["reason"],
-                         "native_blocked_phase_unproved")
 
     def test_default_order_attention_unknown_activity_and_child_filter(self):
         value = fixture()
@@ -360,9 +221,6 @@ class ContractV3Test(unittest.TestCase):
         value["schemaVersion"] = 2
         with self.assertRaises(ContractError):
             parse_snapshot(canonical(value).encode())
-        value = fixture("claude-ready")
-        value["sessions"][-1]["history"]["sdkVersion"] = "9.4.17"
-        validate_snapshot(value)
 
     def test_public_watch_reconciles_child_classification_before_filtering(self):
         from agent_observer.cli import main
@@ -396,7 +254,7 @@ class ContractV3Test(unittest.TestCase):
             row = copy.deepcopy(template)
             row["identity"]["nativeId"] = str(uuid.UUID(int=index))
             row["nativeIds"]["threadId"] = row["identity"]["nativeId"]
-            row["nativeIds"]["sessionId"] = row["identity"]["nativeId"]
+            row["nativeIds"]["sessionTreeRootId"] = row["identity"]["nativeId"]
             if bulky:
                 row["metadataIssues"] = ["m" * 120 + str(i) for i in range(128)]
             value["sessions"].append(row)

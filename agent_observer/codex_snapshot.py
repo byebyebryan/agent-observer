@@ -1,9 +1,6 @@
-"""Executable, provisional host-local Codex snapshot study.
+"""Passive owning-daemon census; the public projection supplies API 2.
 
-No provider is invoked or started. The output reports source facts and pending
-semantic coverage explicitly; public consumers use the separate v2 projection.
-Exact artifact/capability gates and independently proved saved-store reads remain
-enforced below.
+No provider startup, private-store discovery, terminal inspection or actions.
 """
 
 from __future__ import annotations
@@ -14,7 +11,6 @@ import json
 import os
 import re
 import socket
-import sqlite3
 import time
 import unicodedata
 import uuid
@@ -26,9 +22,8 @@ from .codex_endpoint import (
     inspect_managed_endpoint,
     validate_incarnation,
 )
-from .codex_metadata import MetadataError, live_thread_metadata, saved_thread_metadata
-from .codex_saved import collect_saved
-from .codex_transport import PassiveClient, TransportError
+from .codex_metadata import MetadataError, live_thread_metadata
+from .codex_transport import SOURCE_KINDS, PassiveClient, TransportError
 
 # Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
 # verified running disposable tool; all were active with an empty flags list.
@@ -39,7 +34,7 @@ from .codex_transport import PassiveClient, TransportError
 WORK_STATE_ACCEPTED = True
 ACCEPTED_WORK_VALUES = frozenset({"working", "settled", "needs_input"})
 ACCEPTED_WAIT_FLAGS = frozenset({"waitingOnApproval"})
-MAX_SAVED_CLASSIFICATIONS = 256
+MAX_SAVED_CLASSIFICATIONS = 1000
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _SCOPE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,255}\Z", re.ASCII)
 
@@ -84,7 +79,7 @@ def collect_codex(
     config_home: Path,
     *,
     host_scope: str,
-    history_limit: int = 100,
+    history_limit: int = 1000,
     live_limit: int = 512,
     timeout: float = 10.0,
     include_history: bool = True,
@@ -122,6 +117,11 @@ def collect_codex(
         "activitySupported": False,
         "configHome": str(config_home),
         "sessions": [],
+        "discovery": {
+            "catalogMode": "database_only", "sourceKinds": list(SOURCE_KINDS),
+            "catalogRows": 1000, "runtimeRows": live_limit, "parkedRows": history_limit,
+            "pages": 64, "nativeMessageBytes": 2 * 1024 * 1024, "historyClocks": include_history,
+        },
         "coverage": {
             "saved": {"complete": False, "reason": "not_observed"},
             "loaded": {"complete": False, "reason": "not_observed"},
@@ -134,13 +134,13 @@ def collect_codex(
                 "pendingWaitFlags": ["waitingOnUserInput"],
             },
             "workerPresence": {"supported": False, "reason": "not_observed"},
-            "clientBinding": {"supported": False, "reason": "source_not_established"},
         },
         "limitations": [
-            "study_contract",
             "one_configured_namespace",
-            "no_watch",
-            "loaded_thread_is_not_worker_or_client_presence",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_" + str(history_limit),
+            "runtime_limit_" + str(live_limit),
         ],
         "errors": [],
         "sourceHealth": "unavailable",
@@ -265,58 +265,126 @@ def collect_codex(
                     }
                     row["waitReason"] = "unknown"
                 rows[identifier] = row
-            result["coverage"]["work"]["supported"] = work_supported and any(
-                row["work"]["health"] == "current" for row in rows.values()
-            )
+            result["coverage"]["work"]["supported"] = work_supported
             runtime_rows_read = True
+            # State census is required even on the fast runtime component.
+            cursor = None
+            cursors = set()
+            saved_count = 0
             saved_ids = set()
-            if include_history:
-                cursor = None
-                cursors = set()
-                saved_count = 0
-                saved_ids = set()
-                catalog_limit = 1000
-                for _ in range(64):
+            catalog_limit = 1000
+            catalog_rows_unavailable = False
+            for _ in range(64):
+                client.timeout = remaining()
+                data, following = _page(
+                    client.list_threads(cursor=cursor, limit=min(100, catalog_limit - saved_count))
+                )
+                if len(data) > catalog_limit - saved_count:
+                    data = data[: catalog_limit - saved_count]
+                    following = following or "display_limit"
+                for payload in data:
+                    try:
+                        row = live_thread_metadata(payload, **scope, observed_at=_clock())
+                    except MetadataError as error:
+                        result["errors"].append({"code": str(error)})
+                        catalog_rows_unavailable = True
+                        continue
+                    identifier = row["identity"]["nativeId"]
+                    if identifier in saved_ids:
+                        raise SnapshotError("saved_identity_ambiguous")
+                    saved_ids.add(identifier)
+                    row["savedIdentity"] = True
+                    existing = rows.get(identifier)
+                    if existing and existing["nativeIds"] != row["nativeIds"]:
+                        raise SnapshotError("native_identity_mapping_conflict")
+                    if existing and row["threadKind"] == "unknown":
+                        row["threadKind"] = existing["threadKind"]
+                    rows[identifier] = row
+                saved_count += len(data)
+                if following is None:
+                    result["coverage"]["saved"] = {
+                        "complete": not catalog_rows_unavailable,
+                        "reason": "catalog_row_unavailable" if catalog_rows_unavailable else "native_snapshot",
+                    }
+                    break
+                if saved_count >= catalog_limit:
+                    result["coverage"]["saved"] = {
+                        "complete": False,
+                        "reason": "catalog_limit",
+                    }
+                    break
+                if following in cursors:
+                    raise SnapshotError("inventory_cursor_cycle")
+                cursors.add(following)
+                cursor = following
+            else:
+                raise SnapshotError("inventory_page_limit")
+            # Bracket catalog state with newer detail for loaded contexts. The
+            # loaded list itself is never a running predicate.
+            for identifier in loaded:
+                try:
                     client.timeout = remaining()
-                    data, following = _page(
-                        client.list_threads(cursor=cursor, limit=min(100, catalog_limit - saved_count))
-                    )
-                    if len(data) > catalog_limit - saved_count:
-                        data = data[: catalog_limit - saved_count]
-                        following = following or "display_limit"
-                    for payload in data:
-                        row = saved_thread_metadata(payload, **scope)
-                        identifier = row["identity"]["nativeId"]
-                        if identifier in saved_ids:
-                            raise SnapshotError("saved_identity_ambiguous")
-                        saved_ids.add(identifier)
-                        existing = rows.get(identifier)
-                        if existing and existing["nativeIds"] != row["nativeIds"]:
-                            raise SnapshotError("native_identity_mapping_conflict")
-                        rows.setdefault(identifier, row)
-                    saved_count += len(data)
-                    if following is None:
-                        result["coverage"]["saved"] = {
-                            "complete": True,
-                            "reason": "native_snapshot",
-                        }
-                        break
-                    if saved_count >= catalog_limit:
-                        result["coverage"]["saved"] = {
-                            "complete": False,
-                            "reason": "catalog_limit",
-                        }
-                        break
-                    if following in cursors:
-                        raise SnapshotError("inventory_cursor_cycle")
-                    cursors.add(following)
-                    cursor = following
-                else:
-                    raise SnapshotError("inventory_page_limit")
+                    response = client.read_thread(identifier)
+                    if not isinstance(response, dict):
+                        raise MetadataError("invalid_thread_metadata")
+                    payload = response.get("thread")
+                    detail = live_thread_metadata(payload, **scope, observed_at=_clock())
+                    if detail["identity"]["nativeId"] != identifier or identifier in rows and rows[identifier]["nativeIds"] != detail["nativeIds"]:
+                        raise SnapshotError("native_identity_mapping_conflict")
+                    rows[identifier] = detail
+                    detail["savedIdentity"] = identifier in saved_ids
+                except (TransportError, MetadataError) as error:
+                    result["errors"].append({"code": str(error)})
+                    if identifier in rows:
+                        rows[identifier]["runtimeDisposition"].update(value="unknown", health="unavailable", reason="native_detail_unavailable")
+            # thread/list may omit threadSource. A metadata-only read can
+            # establish kind without loading/resuming the saved conversation.
+            # Saved identity must be proved before retaining a parked fact.
+            reads = 0
+            for identifier, row in rows.items():
+                if identifier in loaded or (row["threadKind"] != "unknown" and row.get("nativeState", {}).get("type") != "notLoaded"):
+                    continue
+                if reads >= MAX_SAVED_CLASSIFICATIONS or time.monotonic() >= deadline:
+                    if "saved_classification_limit" not in result["limitations"]:
+                        result["limitations"].append("saved_classification_limit")
+                    if row.get("nativeState", {}).get("type") == "notLoaded":
+                        row["runtimeDisposition"].update(value="unknown", health="unavailable", reason="saved_summary_unavailable")
+                        row["savedIdentity"] = False
+                    continue
+                reads += 1
+                try:
+                    client.timeout = remaining()
+                    response = client.read_thread(identifier)
+                    if not isinstance(response, dict):
+                        raise MetadataError("invalid_thread_metadata")
+                    detail = live_thread_metadata(response.get("thread"), **scope, observed_at=_clock())
+                except (TransportError, MetadataError, SnapshotError):
+                    if "saved_classification_unavailable" not in result["limitations"]:
+                        result["limitations"].append("saved_classification_unavailable")
+                    # DB placeholders without a readable saved summary are not
+                    # positive saved identities, even when catalog status exists.
+                    if row.get("nativeState", {}).get("type") == "notLoaded":
+                        row["runtimeDisposition"].update(value="unknown", health="unavailable", reason="saved_summary_unavailable")
+                        row["savedIdentity"] = False
+                    continue
+                if detail["nativeIds"] != row["nativeIds"]:
+                    raise SnapshotError("native_identity_mapping_conflict")
+                if (row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]) or any(issue.startswith("thread_classification_") for issue in row["metadataIssues"]):
+                    detail["threadKind"] = "unknown"
+                    detail["metadataIssues"].append("thread_classification_conflict")
+                # Later native detail is a newer authoritative sample, not
+                # merely classification enrichment. Preserve separate clocks.
+                for name in ("activity", "outcome"):
+                    if name in row:
+                        detail[name] = row[name]
+                rows[identifier] = detail
+                detail["savedIdentity"] = identifier in saved_ids
             # Fetch a bounded metadata-only clock before applying the display
             # cap. Neither thread recency nor file modification substitutes for
             # conversation completion. A clock failure cannot erase live facts.
             for identifier, row in rows.items():
+                if not include_history and row.get("runtimeDisposition", {}).get("value") != "running":
+                    continue
                 try:
                     client.timeout = remaining()
                     turn_metadata = client.latest_turn(identifier)
@@ -333,49 +401,26 @@ def collect_codex(
             selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[
                 :history_limit
             ]
-            selected_ids = {row["identity"]["nativeId"] for row in selected} | set(loaded)
+            running_ids = {identifier for identifier, row in rows.items()
+                           if row.get("runtimeDisposition", {}).get("value") == "running"}
+            if len(running_ids) > live_limit:
+                raise SnapshotError("runtime_row_limit")
+            selected_ids = {row["identity"]["nativeId"] for row in selected} | running_ids | set(loaded)
             if len(saved_ids) > history_limit:
                 result["coverage"]["saved"] = {"complete": False, "reason": "history_limit"}
             rows = {
                 identifier: row for identifier, row in rows.items() if identifier in selected_ids
             }
-            # thread/list may omit threadSource. A metadata-only read can
-            # establish kind without loading/resuming the saved conversation.
-            # Keep this optional, bounded and separate from runtime evidence.
-            reads = 0
-            for identifier, row in rows.items():
-                if identifier in loaded or row["threadKind"] != "unknown":
-                    continue
-                if reads >= MAX_SAVED_CLASSIFICATIONS or time.monotonic() >= deadline:
-                    result["limitations"].append("saved_classification_limit")
-                    break
-                reads += 1
-                try:
-                    client.timeout = remaining()
-                    response = client.read_thread(identifier)
-                    if not isinstance(response, dict):
-                        raise MetadataError("invalid_thread_metadata")
-                    detail = saved_thread_metadata(response.get("thread"), **scope)
-                except (TransportError, MetadataError, SnapshotError):
-                    if "saved_classification_unavailable" not in result["limitations"]:
-                        result["limitations"].append("saved_classification_unavailable")
-                    continue
-                if detail["nativeIds"] != row["nativeIds"]:
-                    raise SnapshotError("native_identity_mapping_conflict")
-                issues = [issue for issue in detail["metadataIssues"] if issue.startswith("thread_classification_")]
-                if row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]:
-                    issues.append("thread_classification_conflict")
-                if any(issue.startswith("thread_classification_") for issue in row["metadataIssues"]):
-                    continue
-                if issues:
-                    row["metadataIssues"] = list(dict.fromkeys(row["metadataIssues"] + issues))
-                else:
-                    row["threadKind"] = detail["threadKind"]
-                    if row["sourceKind"] == "unknown":
-                        row["sourceKind"] = detail["sourceKind"]
+            unresolved = any(row["runtimeDisposition"]["value"] == "unknown" for row in rows.values())
+            if unresolved:
+                result["limitations"].append("unresolved_daemon_status")
+            result["coverage"]["daemon"] = {
+                "complete": result["coverage"]["loaded"]["complete"] and result["coverage"]["saved"]["complete"] and not unresolved,
+                "reason": "native_snapshot" if result["coverage"]["loaded"]["complete"] and result["coverage"]["saved"]["complete"] and not unresolved else "bounded_census",
+            }
             validate_incarnation(identity)
             result["ignoredMessages"] = client.ignored_messages
-            result["sourceHealth"] = "partial" if result["errors"] else "current"
+            result["sourceHealth"] = "partial" if result["errors"] or unresolved or not result["coverage"]["daemon"]["complete"] else "current"
     except (EndpointError, TransportError, MetadataError, SnapshotError) as error:
         if isinstance(error, EndpointError) and error.identity is not None:
             try:
@@ -402,7 +447,7 @@ def collect_codex(
                 preserve_runtime = False
         if not preserve_runtime:
             for row in rows.values():
-                for dimension in ("work", "presence", "attachment"):
+                for dimension in ("work", "presence", "runtimeDisposition"):
                     evidence = row[dimension]
                     if evidence["value"] != "unknown":
                         evidence["lastKnownValue"] = evidence["value"]
@@ -412,33 +457,17 @@ def collect_codex(
             "partial" if preserve_runtime else "stale" if rows else "unavailable"
         )
         result["coverage"]["saved"] = {"complete": False, "reason": "source_failed"}
-    if include_history and result["coverage"]["saved"].get("reason") == "source_failed":
-        # This is the current metadata store, not a spawned legacy backend.
-        # Its exact migration/schema/identity proof is independent of the peer.
-        try:
-            namespace = result.setdefault("namespace", "sha256:" + hashlib.sha256(
-                (str(config_home) + "\0saved_metadata\0" + str(os.geteuid())).encode()
-            ).hexdigest())
-            saved = collect_saved(config_home, host_scope=host_scope, namespace=namespace,
-                                  history_limit=history_limit)
-            for row in saved["sessions"]:
-                identifier = row["identity"]["nativeId"]
-                existing = rows.get(identifier)
-                if existing and existing["nativeIds"] != row["nativeIds"]:
-                    existing["metadataIssues"].append("saved_identity_conflict")
-                    continue
-                if existing:
-                    existing["activity"] = row["activity"]
-                else:
-                    rows[identifier] = row
-            result["coverage"]["saved"] = saved["coverage"]
-            result["activitySupported"] = saved["activitySupported"]
-            result["errors"].extend({"code": issue} for issue in saved["issues"])
-            if rows:
-                result["sourceHealth"] = "partial"
-        except (ValueError, OSError, sqlite3.Error):
-            result["errors"].append({"code": "saved_metadata_unavailable"})
+    result["coverage"].setdefault("daemon", {
+        "complete": False, "reason": "source_failed" if result["sourceHealth"] == "unavailable" else "bounded_census",
+    })
+    for row in rows.values():
+        if not WORK_STATE_ACCEPTED or row["work"]["value"] not in ACCEPTED_WORK_VALUES:
+            row["work"].update(value="unknown", health="unsupported", reason="unsupported")
+            row["waitReason"] = "unknown"
+        if row.get("runtimeDisposition", {}).get("value") == "parked" and not row.get("savedIdentity"):
+            row["runtimeDisposition"].update(value="unknown", health="unavailable", reason="saved_identity_unavailable")
     result["sessions"] = list(rows.values())
+    result["errors"] = list({item["code"]: item for item in result["errors"]}.values())
     result["collectedAt"] = _clock()
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)
     return result
@@ -452,7 +481,7 @@ def main():
         type=Path,
         default=Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))),
     )
-    parser.add_argument("--history-limit", type=int, default=100)
+    parser.add_argument("--history-limit", type=int, default=1000)
     parser.add_argument("--live-limit", type=int, default=512)
     arguments = parser.parse_args()
     try:
