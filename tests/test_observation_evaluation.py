@@ -93,12 +93,23 @@ class ObservationEvaluationTest(unittest.TestCase):
                 self.assertFalse(result["storeScopes"] and result["fullRowReferences"])
 
     def native(self, **fields):
-        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionTreeRootId": SID, "blockedReasons": [], "createdAt": 50}
+        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionTreeRootId": SID, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True}
         return {"rows": {SID: {**row, **fields}}}
 
     def public(self, **fields):
-        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionTreeRootId": SID}, "blockedReasons": [], "createdAt": 50, "outcome": {"value": "unknown", "observedAt": None}}
+        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionTreeRootId": SID}, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True, "outcome": {"value": "unknown", "observedAt": None}}
         return {"sessions": [{**row, **fields}]}
+
+    def test_runtime_only_missing_clock_is_unknown_and_remains_unproved(self):
+        native = self.native(hasSavedHistory=False, activity=None, createdAt=None)
+        public = self.public(hasSavedHistory=False, activity={"at": None}, createdAt=500)
+        result = evaluation.compare(native, public, native, "codex")
+        self.assertEqual(result["issues"], [])
+        self.assertEqual(result["checks"]["activity_unproved"], 1)
+        self.assertEqual(result["checks"]["createdAt_unproved"], 1)
+        invented = self.public(hasSavedHistory=False, activity={"at": 500})
+        result = evaluation.compare(native, invented, native, "codex")
+        self.assertTrue(any(i["field"] == "activity" for i in result["issues"]))
 
     def test_stable_missing_row_and_native_active_inventory_are_retained(self):
         result = evaluation.compare(self.native(), {"sessions": []}, self.native(), "codex")

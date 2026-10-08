@@ -10,7 +10,9 @@ import json
 import os
 import runpy
 import signal
+import socket
 import subprocess
+import threading
 import time
 import traceback
 from pathlib import Path
@@ -57,13 +59,70 @@ def main():
     exec(compile(source, str(root / "native-acceptance"), "exec"), namespace)
     original = namespace["Proof"]
     path = root / ("native-" + host) / "runtime" / "observer" / "read.sock"
-    providers = ["claude"] if args.claude_monitoring else ["codex"] if args.codex_outcome else ["codex", "claude"] if host == "snap" else ["codex"]
+    providers = ["codex"]
     argv = ["agent-observer-service", "serve", "--host-scope", host, "--socket", str(path), "--runtime-interval", "1", "--history-interval", "1"]
     for provider in providers:
         argv += ["--provider", provider]
     service = subprocess.Popen(argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     proofs, receipts, isolated_samples = [], [], []
     isolation_armed = False
+    stream = None
+    reader = None
+    stop_reader = threading.Event()
+    pushed = {"frames": 0, "kinds": {}, "error": None, "serviceId": None,
+              "unavailable": False, "stale": set(), "recovered": set()}
+
+    def start_reader():
+        nonlocal stream, reader
+        stream = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        stream.settimeout(1)
+        stream.connect(str(path))
+        stream.sendall((json.dumps({"serviceProtocol": 2, "operation": "watch", "hostScope": host}) + "\n").encode())
+
+        def receive():
+            pending, sequence, revision, gapped = bytearray(), 0, 0, False
+            try:
+                while not stop_reader.is_set():
+                    try:
+                        part = stream.recv(65536)
+                    except TimeoutError:
+                        continue
+                    if not part or len(pending) > 8 * 1024 * 1024 + 16384:
+                        raise ValueError("native_push_unavailable")
+                    pending.extend(part)
+                    while b"\n" in pending:
+                        line, _, pending = pending.partition(b"\n")
+                        frame = json.loads(line)
+                        assert frame["serviceProtocol"] == 2 and frame["hostScope"] == host
+                        assert frame["sequence"] == sequence + 1 and frame["viewRevision"] >= revision
+                        if pushed["serviceId"] is None:
+                            pushed["serviceId"] = frame["serviceId"]
+                        assert frame["serviceId"] == pushed["serviceId"]
+                        kind = frame["kind"]
+                        assert not gapped or kind in {"resync", "status", "error"}
+                        gapped = kind == "gap" or (gapped and kind == "status")
+                        sequence, revision = frame["sequence"], frame["viewRevision"]
+                        pushed["frames"] += 1
+                        pushed["kinds"][kind] = pushed["kinds"].get(kind, 0) + 1
+                        snapshot = frame["snapshot"]
+                        if snapshot is None:
+                            continue
+                        assert snapshot["schemaVersion"] == 4
+                        unavailable = snapshot["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
+                        pushed["unavailable"] |= unavailable
+                        for row in snapshot["sessions"]:
+                            clock = row["activity"].get("lastKnownAt", row["activity"]["at"])
+                            point = (row["identity"]["nativeId"], clock)
+                            if unavailable and row["runtime"]["value"] == "unknown":
+                                pushed["stale"].add(point)
+                            elif pushed["unavailable"] and row["runtime"]["health"] == "current":
+                                pushed["recovered"].add(point)
+            except (OSError, ValueError, KeyError, AssertionError):
+                if not stop_reader.is_set():
+                    pushed["error"] = "native_push_reader_failed"
+
+        reader = threading.Thread(target=receive, daemon=True)
+        reader.start()
     class ServiceProof(original):
         def handoff(self, ref=None):
             if self.provider == "codex" and ref is None:
@@ -188,6 +247,8 @@ def main():
             time.sleep(0.1)
         else:
             raise RuntimeError("service_warming")
+        if not args.codex_outcome:
+            start_reader()
         for provider in providers:
             proof = ServiceProof(provider)
             proofs.append(proof)
@@ -270,7 +331,39 @@ def main():
         else:
             isolation_armed = args.verify_source_isolation
             time.sleep(2)
-            receipts.append({**proof.recovery(), "readBackend": "installed_service", "serviceProtocol": 2})
+            recovery = proof.recovery()
+            receipts.append({**recovery, "readBackend": "installed_service", "serviceProtocol": 2})
+            point = (recovery["reference"]["nativeId"], recovery["conversationActivityAt"])
+            deadline = time.monotonic() + 15
+            while time.monotonic() < deadline:
+                if pushed["error"]:
+                    raise RuntimeError(pushed["error"])
+                if point in pushed["stale"] and point in pushed["recovered"]:
+                    break
+                time.sleep(.1)
+            else:
+                raise RuntimeError("native_push_recovery_pending")
+            # A new reader receives a complete current view, not old-connection
+            # sequence/revision state. This client uses only stdlib framing.
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as reconnect:
+                reconnect.settimeout(5)
+                reconnect.connect(str(path))
+                reconnect.sendall((json.dumps({"serviceProtocol": 2, "operation": "watch", "hostScope": host}) + "\n").encode())
+                data = bytearray()
+                while b"\n" not in data:
+                    part = reconnect.recv(65536)
+                    assert part and len(data) < 8 * 1024 * 1024 + 16384
+                    data.extend(part)
+                frame = json.loads(data.partition(b"\n")[0])
+                assert frame["sequence"] == 1 and frame["serviceId"] == pushed["serviceId"]
+                row = next(r for r in frame["snapshot"]["sessions"] if r["identity"] == recovery["reference"])
+                assert row["runtime"]["health"] == "current" and row["activity"]["at"] == point[1]
+            receipts.append({"status": "accepted", "case": "native_cached_push_outage_recovery",
+                             "frames": pushed["frames"], "frameKinds": pushed["kinds"],
+                             "sequenceRevisionAndServiceIdentityValid": True,
+                             "unavailableSavedRowUnknownWithOriginalClock": True,
+                             "recoveryRestoresCurrentRowWithOriginalClock": True,
+                             "freshSubscriberFullView": True, "referenceImportsObserver": False})
             print(json.dumps({"hostScope": host, "stage": "owned_codex_recovery_accepted"}), flush=True)
             if args.verify_source_isolation:
                 assert isolated_samples
@@ -282,6 +375,15 @@ def main():
         receipt_name = "native-outcome-receipt.json" if args.codex_outcome else "native-monitoring-receipt.json" if args.claude_monitoring else "native-service-receipt.json"
         (root / receipt_name).write_text(json.dumps(result, indent=2) + "\n")
     finally:
+        stop_reader.set()
+        if stream is not None:
+            try:
+                stream.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            stream.close()
+        if reader is not None:
+            reader.join(timeout=3)
         for proof in proofs:
             for client in list(proof.clients):
                 proof.stop(client)

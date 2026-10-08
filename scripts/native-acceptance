@@ -253,8 +253,23 @@ class Proof:
             self.base / "codex/packages"
         )
         validate_incarnation(owner)
+        daemon_executable = Path(os.readlink(f"/proc/{owner.pid}/exe"))
         os.kill(owner.pid, signal.SIGKILL)
         time.sleep(1)
+        # Exercise direct reads even when this proof's normal backend is the
+        # cache. Only explicit New may start the private replacement daemon.
+        for _ in range(3):
+            direct = self.command(
+                ["agent-observer", "snapshot", "--host-scope", self.host, "--provider", "codex"]
+            )
+            assert not direct["sessions"] and direct["sourceHealth"] == "unavailable"
+            assert direct["sources"][0]["coverage"]["runtime"]["status"] == "unavailable"
+            for path in Path("/proc").glob("[0-9]*/exe"):
+                try:
+                    executable = Path(os.readlink(path))
+                except OSError:
+                    continue
+                assert executable != daemon_executable
         failed = self.snapshot()
         saved = next((row for row in failed["sessions"] if row["identity"] == ref), None)
         assert failed["sourceHealth"] in {"partial", "unavailable"}
@@ -289,12 +304,16 @@ class Proof:
             "provider": "codex",
             "independentOfFrontend": True,
             "ownedDaemonFailureVisible": True,
+            "directUnavailableReads": 3,
+            "directReadsStartedNoDaemon": True,
             "cachedSavedMetadataSurvivesFailure": saved is not None,
             "privateSavedStoreFallback": False,
             "offlineSavedResumeRejected": True,
             "publicNewRestartsRuntime": True,
             "exactSavedResumeAfterRecovery": True,
             "recoveryPreservesConversationAge": True,
+            "reference": ref,
+            "conversationActivityAt": at,
             "offlineSavedResumeDirectly": "unsupported",
             "terminalOutputPersisted": False,
         }
