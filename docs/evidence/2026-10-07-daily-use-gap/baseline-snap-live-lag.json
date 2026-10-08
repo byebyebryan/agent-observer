@@ -1,0 +1,137 @@
+[
+  {
+    "sampleAt": 1791439505108,
+    "rows": [
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "title": "spare-gpus",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439457092,
+        "nativeBeforeActivityAt": 1791439457092,
+        "nativeAfterActivityAt": 1791439457092,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "title": "caos-models",
+        "cachedPhase": "working",
+        "nativeBeforePhase": "working",
+        "nativeAfterPhase": "working",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439450973,
+        "nativeBeforeActivityAt": 1791439502340,
+        "nativeAfterActivityAt": 1791439502340,
+        "knownActivityLagSeconds": 51.367,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "title": "embeddings-bf",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791409217582,
+        "nativeBeforeActivityAt": 1791409217582,
+        "nativeAfterActivityAt": 1791409217582,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      }
+    ],
+    "cachedClaudeCount": 42
+  },
+  {
+    "sampleAt": 1791439507801,
+    "rows": [
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "title": "spare-gpus",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439457092,
+        "nativeBeforeActivityAt": 1791439457092,
+        "nativeAfterActivityAt": 1791439457092,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "title": "caos-models",
+        "cachedPhase": "working",
+        "nativeBeforePhase": "working",
+        "nativeAfterPhase": "working",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439450973,
+        "nativeBeforeActivityAt": 1791439502340,
+        "nativeAfterActivityAt": 1791439502340,
+        "knownActivityLagSeconds": 51.367,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "title": "embeddings-bf",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791409217582,
+        "nativeBeforeActivityAt": 1791409217582,
+        "nativeAfterActivityAt": 1791409217582,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      }
+    ],
+    "cachedClaudeCount": 42
+  },
+  {
+    "sampleAt": 1791439510467,
+    "rows": [
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "title": "spare-gpus",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439457092,
+        "nativeBeforeActivityAt": 1791439457092,
+        "nativeAfterActivityAt": 1791439457092,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "title": "caos-models",
+        "cachedPhase": "working",
+        "nativeBeforePhase": "working",
+        "nativeAfterPhase": "working",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791439502340,
+        "nativeBeforeActivityAt": 1791439509718,
+        "nativeAfterActivityAt": 1791439509718,
+        "knownActivityLagSeconds": 7.378,
+        "cachedActivityHealth": "current"
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "title": "embeddings-bf",
+        "cachedPhase": "waiting",
+        "nativeBeforePhase": "waiting",
+        "nativeAfterPhase": "waiting",
+        "stableNativePhase": true,
+        "cachedActivityAt": 1791409217582,
+        "nativeBeforeActivityAt": 1791409217582,
+        "nativeAfterActivityAt": 1791409217582,
+        "knownActivityLagSeconds": 0.0,
+        "cachedActivityHealth": "current"
+      }
+    ],
+    "cachedClaudeCount": 42
+  }
+]

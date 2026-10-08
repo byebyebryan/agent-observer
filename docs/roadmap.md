@@ -8,6 +8,12 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
+The [daily-use gap execution](daily-use-gap-execution-plan.md) is the current
+Observer-only goal loop. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)
+prioritizes cached Claude retention, current saved-session evidence and first-party
+CLI diagnostics before separate native-entry and Observer operational gates.
+Tmux Plus is under active development; Agent Plus work remains deferred.
+
 The reviewed design/research checkpoint is the
 [shared observation service](shared-observation-service-plan.md): warm local
 reads and bounded push for Plus/dashboard clients, with one collection loop.

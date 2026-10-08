@@ -1,0 +1,16 @@
+[
+  {
+    "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+    "fullScan": true,
+    "bytes": 18882,
+    "recordTypes": {
+      "last-prompt": 2,
+      "mode": 1,
+      "permission-mode": 1,
+      "attachment": 1,
+      "system": 1,
+      "cost-state": 1
+    },
+    "conversationRecords": 0
+  }
+]

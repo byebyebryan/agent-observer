@@ -1,0 +1,1092 @@
+{
+  "host": "starship",
+  "sampleAt": 1791439232137,
+  "recentDefinition": "conversation activity in last 7 days, plus every active session",
+  "sources": [
+    {
+      "provider": "codex",
+      "runtimeDiagnostic": {
+        "binarySha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+        "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+        "pid": 3414244,
+        "startTicks": 43337316,
+        "topology": "native_managed_endpoint",
+        "version": "0.161.0"
+      },
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "loaded_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      }
+    }
+  ],
+  "providers": {
+    "codex": {
+      "allCount": 97,
+      "recentCount": 18,
+      "recentRuntime": {
+        "running": 4,
+        "unknown": 14
+      },
+      "recentKind": {
+        "user": 4,
+        "unknown": 14
+      },
+      "recentMissingClock": 0,
+      "recentFallbackTitle": 0,
+      "recentRows": [
+        {
+          "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+          "title": "fluid-2.5d",
+          "provider": "codex",
+          "ageHours": 0.0,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232335,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232335,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "waiting"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791439221000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/cubey",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/cubey/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/cubey"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "waiting",
+          "nativeStatus": "idle",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a0ca16-d486-7142-8170-c496b7419368",
+          "title": "pd-lab-next",
+          "provider": "codex",
+          "ageHours": 0.03,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232335,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232335,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "working"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791439125000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/powered-descent-lab",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/powered-descent-lab/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/powered-descent-lab"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "working",
+          "nativeStatus": "active",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+          "title": "raster90",
+          "provider": "codex",
+          "ageHours": 0.3,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232336,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232336,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "working"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791438157000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/raster90",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/raster90/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/raster90"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "working",
+          "nativeStatus": "active",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+          "title": "esp32-349",
+          "provider": "codex",
+          "ageHours": 0.53,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791437335000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32-349",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/esp32-349/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/esp32-349"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a1197f-1113-7261-bc5b-810100a74236",
+          "title": "devlog",
+          "provider": "codex",
+          "ageHours": 1.7,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232336,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232336,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "waiting"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791433114000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/devlog",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/devlog/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/devlog"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "waiting",
+          "nativeStatus": "idle",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a11985-48e2-7102-9637-7805a08c5782",
+          "title": "esp32-rlcd",
+          "provider": "codex",
+          "ageHours": 1.85,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791432585000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32-rlcd",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/esp32-rlcd/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/esp32-rlcd"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+          "title": "bookkeeper-retirement",
+          "provider": "codex",
+          "ageHours": 2.81,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791429119000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/homelab",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/homelab/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/homelab"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+          "title": "display",
+          "provider": "codex",
+          "ageHours": 5.14,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791420715000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+          "title": "bookkeeper",
+          "provider": "codex",
+          "ageHours": 9.23,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791405994000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/agent-bookkeeper",
+          "workspace": {
+            "health": "unavailable",
+            "projectKey": null,
+            "reason": "workspace_unavailable",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a1176c-6c90-7162-b420-422492c83d33",
+          "title": "system",
+          "provider": "codex",
+          "ageHours": 12.0,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791396024000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/.local/share/chezmoi",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/.local/share/chezmoi/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/.local/share/chezmoi"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0e9b9-d051-7be3-94b2-e517ab60d473",
+          "title": "hw",
+          "provider": "codex",
+          "ageHours": 93.14,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791103940000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/homelab",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/homelab/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/homelab"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a10586-9881-7463-904d-dd4af6f512d8",
+          "title": "audio",
+          "provider": "codex",
+          "ageHours": 95.5,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791095424000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0fd9c-08ca-7720-8af5-254efb23060a",
+          "title": "esp32-rlcd",
+          "provider": "codex",
+          "ageHours": 99.37,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791081508000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32-rlcd",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/esp32-rlcd/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/esp32-rlcd"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0fe45-3696-7f40-9a58-567bb4626bf7",
+          "title": "homelab",
+          "provider": "codex",
+          "ageHours": 101.85,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791072571000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/homelab",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/homelab/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/homelab"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0feab-ba2f-7020-bb61-b1149e7d11d3",
+          "title": "agent-observer",
+          "provider": "codex",
+          "ageHours": 127.05,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790981853000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/agent-observer",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/agent-observer/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/agent-observer"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0fd95-8c71-7611-ac0a-6e04314834a9",
+          "title": "system",
+          "provider": "codex",
+          "ageHours": 131.68,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790965175000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0fa57-0a8b-7ba1-b892-9edecebc665c",
+          "title": "wd75",
+          "provider": "codex",
+          "ageHours": 146.57,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790911580000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0d55a-b78f-71f0-8555-d1d046a0d224",
+          "title": "349-status-bar",
+          "provider": "codex",
+          "ageHours": 156.97,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790874148000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32",
+          "workspace": {
+            "health": "unavailable",
+            "projectKey": null,
+            "reason": "workspace_unavailable",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        }
+      ],
+      "cachedOnlyRows": []
+    }
+  },
+  "resumePreparation": [
+    {
+      "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+      "title": "fluid-2.5d",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a0ca16-d486-7142-8170-c496b7419368",
+      "title": "pd-lab-next",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+      "title": "raster90",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a1197f-1113-7261-bc5b-810100a74236",
+      "title": "devlog",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+      "title": "esp32-349",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a11985-48e2-7102-9637-7805a08c5782",
+      "title": "esp32-rlcd",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+      "title": "bookkeeper-retirement",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+      "title": "display",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+      "title": "bookkeeper",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 2,
+      "dispatched": false,
+      "error": "write_context_unavailable"
+    },
+    {
+      "operation": "new",
+      "provider": "codex",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_new"
+    }
+  ],
+  "codexFeatureSelection": {
+    "daemon_auto_start": true,
+    "api_key_model_discovery": "native_default"
+  },
+  "codexClientVersion": "codex-cli 0.160.1"
+}
