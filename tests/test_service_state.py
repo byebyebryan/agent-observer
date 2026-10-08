@@ -119,6 +119,76 @@ class ServiceStateTest(unittest.TestCase):
         self.assertEqual(row["runtime"]["lastKnownValue"], "running")
         self.assertIn("retained_after_gap", row["metadataIssues"])
 
+    def test_partial_claude_history_does_not_own_runtime_only_membership(self):
+        value = provider_snapshot("claude")
+        value["sessions"] = [value["sessions"][0]]
+        value["sessions"][0]["history"] = None
+        value["sources"][0]["coverage"]["saved"].update(status="partial", reason="metadata_scan")
+        self.accept("claude", "history", value=value)
+        self.accept("claude", "runtime", value=value)
+        missing = copy.deepcopy(value)
+        missing["sessions"] = []
+        self.now += 1
+        self.accept("claude", "history", value=missing)
+        # The current runtime still establishes this exact identity.
+        self.assertEqual(len(self.state.snapshot["sessions"]), 1)
+        self.assertEqual(self.state.snapshot["sessions"][0]["runtime"]["value"], "running")
+        self.now += 1
+        self.accept("claude", "runtime", value=missing)
+        # Complete runtime absence plus no saved evidence removes it from the
+        # sampled view, without claiming a logical end, deletion or child kind.
+        self.assertEqual(self.state.snapshot["sessions"], [])
+        self.assertEqual(self.state.snapshot["sources"][1]["coverage"]["saved"]["status"], "partial")
+
+    def test_partial_claude_history_keeps_saved_evidence_and_original_age(self):
+        value = provider_snapshot("claude")
+        value["sessions"] = [value["sessions"][0]]
+        value["sessions"][0]["activity"] = {
+            "at": 1700000040000, "source": "claude_transcript_message",
+            "health": "current", "reason": "native_conversation_event",
+        }
+        self.accept("claude", "history", value=value)
+        original = copy.deepcopy(value["sessions"][0])
+        missing = copy.deepcopy(value)
+        missing["sessions"] = []
+        missing["sources"][0]["coverage"]["saved"].update(status="partial", reason="metadata_scan")
+        self.now += 1
+        self.accept("claude", "history", value=missing)
+        row = self.state.snapshot["sessions"][0]
+        self.assertEqual(row["identity"], original["identity"])
+        self.assertEqual(row["history"], original["history"])
+        self.assertEqual(row["runtime"]["value"], "unknown")
+        self.assertIsNone(row["activity"]["at"])
+        self.assertEqual(row["activity"]["lastKnownAt"], original["activity"]["at"])
+        self.assertEqual(row["activity"]["health"], "stale")
+        self.assertIn("retained_after_gap", row["metadataIssues"])
+
+    def test_partial_claude_runtime_keeps_runtime_only_identity(self):
+        value = provider_snapshot("claude")
+        value["sessions"] = [value["sessions"][0]]
+        value["sessions"][0]["history"] = None
+        self.accept("claude", "runtime", value=value)
+        missing = copy.deepcopy(value)
+        missing["sessions"] = []
+        missing["sources"][0]["coverage"]["runtime"].update(status="partial", reason="bounded_inventory")
+        self.now += 1
+        self.accept("claude", "runtime", value=missing)
+        row = self.state.snapshot["sessions"][0]
+        self.assertEqual(row["identity"], value["sessions"][0]["identity"])
+        self.assertEqual(row["runtime"]["value"], "unknown")
+        self.assertEqual(row["runtime"]["lastKnownValue"], "running")
+        self.assertIn("retained_after_gap", row["metadataIssues"])
+
+    def test_partial_codex_history_retention_stays_conservative(self):
+        value = provider_snapshot("codex")
+        self.accept("codex", "history", value=value)
+        missing = copy.deepcopy(value)
+        missing["sessions"] = []
+        missing["sources"][0]["coverage"]["saved"].update(status="partial", reason="catalog_limit")
+        self.now += 1
+        self.accept("codex", "history", value=missing)
+        self.assertEqual(len(self.state.snapshot["sessions"]), len(value["sessions"]))
+
     def turn(self, status, start, end):
         value = provider_snapshot("codex")
         payload = {"data": [{"status": status, "startedAt": start, "completedAt": end,
