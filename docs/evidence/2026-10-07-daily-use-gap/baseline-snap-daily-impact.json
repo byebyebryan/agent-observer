@@ -1,0 +1,1677 @@
+{
+  "host": "snap",
+  "sampleAt": 1791439231833,
+  "recentDefinition": "conversation activity in last 7 days, plus every active session",
+  "sources": [
+    {
+      "provider": "codex",
+      "runtimeDiagnostic": {
+        "binarySha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+        "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+        "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+        "pid": 3345937,
+        "startTicks": 43188780,
+        "topology": "native_managed_endpoint",
+        "version": "0.161.0"
+      },
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "loaded_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      }
+    },
+    {
+      "provider": "claude",
+      "runtimeDiagnostic": {
+        "binarySha256": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3",
+        "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+        "endpoint": null,
+        "pid": null,
+        "startTicks": null,
+        "topology": "private_session_registry_and_job_store",
+        "version": "unknown"
+      },
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "registered_workers",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "metadata_scan",
+          "status": "partial"
+        }
+      }
+    }
+  ],
+  "providers": {
+    "codex": {
+      "allCount": 50,
+      "recentCount": 7,
+      "recentRuntime": {
+        "running": 2,
+        "unknown": 5
+      },
+      "recentKind": {
+        "user": 2,
+        "unknown": 5
+      },
+      "recentMissingClock": 0,
+      "recentFallbackTitle": 0,
+      "recentRows": [
+        {
+          "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+          "title": "agent-observer",
+          "provider": "codex",
+          "ageHours": 0.04,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232042,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232042,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "working"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791439077000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/agent-observer",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/agent-observer/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/agent-observer"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "working",
+          "nativeStatus": "active",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a113b3-adca-7b62-834f-262791c1c774",
+          "title": "tmux-plus",
+          "provider": "codex",
+          "ageHours": 1.24,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232044,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439232044,
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "working"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791434784000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/rofi-tmux-plus",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/rofi-tmux-plus/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/rofi-tmux-plus"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": "running",
+          "nativePhase": "working",
+          "nativeStatus": "active",
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "user"
+        },
+        {
+          "id": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+          "title": "codex-worker-kit",
+          "provider": "codex",
+          "ageHours": 31.24,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791326753000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/codex-worker-kit",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/codex-worker-kit/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/codex-worker-kit"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a10d42-4dac-7ee1-b846-210742296942",
+          "title": "esp32-rlcd",
+          "provider": "codex",
+          "ageHours": 31.25,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791326736000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32-rlcd",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/esp32-rlcd/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/esp32-rlcd"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0f87e-3524-7861-946e-e89005f07905",
+          "title": "esp32-349",
+          "provider": "codex",
+          "ageHours": 34.33,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791315659000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/esp32-349",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/esp32-349/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/esp32-349"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0f331-e655-7ff3-9594-7d080e0524b3",
+          "title": "remote-chrome",
+          "provider": "codex",
+          "ageHours": 100.98,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791075686000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/remote-chrome",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/remote-chrome/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/remote-chrome"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        },
+        {
+          "id": "01a0ee10-6625-7f61-9873-6150d279af66",
+          "title": "agent-plus",
+          "provider": "codex",
+          "ageHours": 124.91,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790989571000,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "codex_turn_metadata"
+          },
+          "cwd": "/home/bryan/code/rofi-agent-plus",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/rofi-agent-plus/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/rofi-agent-plus"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": "unknown"
+        }
+      ],
+      "cachedOnlyRows": []
+    },
+    "claude": {
+      "allCount": 31,
+      "recentCount": 10,
+      "recentRuntime": {
+        "running": 3,
+        "unknown": 6,
+        "parked": 1
+      },
+      "recentKind": {
+        "user": 10
+      },
+      "recentMissingClock": 0,
+      "recentFallbackTitle": 0,
+      "recentRows": [
+        {
+          "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+          "title": "spare-gpus",
+          "provider": "claude",
+          "ageHours": 0.0,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439233040,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "current",
+            "observedAt": 1791439215426,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "waiting"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": 1791439215262,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": "interactive",
+          "nativeRuntime": "running",
+          "nativePhase": "waiting",
+          "nativeStatus": "idle",
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+          "title": "caos-models",
+          "provider": "claude",
+          "ageHours": 0.0,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439233040,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "current",
+            "observedAt": 1791439135656,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "working"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": 1791439215120,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": "interactive",
+          "nativeRuntime": "running",
+          "nativePhase": "working",
+          "nativeStatus": "busy",
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "e8e76b76-b20a-46bf-8762-83383bf0bb86",
+          "title": "recap-2026-i8n",
+          "provider": "claude",
+          "ageHours": 7.09,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791413698615,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+          "title": "embeddings-bf",
+          "provider": "claude",
+          "ageHours": 8.34,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439233040,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "running"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "current",
+            "observedAt": 1791409217666,
+            "reason": "native_snapshot",
+            "source": "claude_registry",
+            "value": "waiting"
+          },
+          "kind": "user",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": 1791409217582,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": "interactive",
+          "nativeRuntime": "running",
+          "nativePhase": "waiting",
+          "nativeStatus": "idle",
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "423c5ec1-913e-452d-9502-42e76785da1e",
+          "title": "recap-2026-fill",
+          "provider": "claude",
+          "ageHours": 33.35,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791319183659,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+          "title": "caos-models",
+          "provider": "claude",
+          "ageHours": 36.4,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791308207564,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "bbe9d846-6f6d-4946-803d-fcfaef0a8656",
+          "title": "recap-2026-f2",
+          "provider": "claude",
+          "ageHours": 53.77,
+          "runtime": {
+            "clock": "sample",
+            "health": "current",
+            "observedAt": 1791439233296,
+            "reason": "native_snapshot",
+            "source": "claude_job_store",
+            "value": "parked"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unsupported",
+            "observedAt": null,
+            "reason": "runtime_parked",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "retained_job",
+          "sessionKind": "bg",
+          "activity": {
+            "at": 1791245657153,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": true,
+          "jobId": "bbe9d846",
+          "nativeRegistryKind": null,
+          "nativeRuntime": "parked",
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        },
+        {
+          "id": "d4cbd3c0-45d7-4680-a993-9898c81317c7",
+          "title": "oncall",
+          "provider": "claude",
+          "ageHours": 60.08,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791222940519,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/ctb-ops",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/ctb-ops/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/ctb-ops"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/ctb-ops",
+          "nativeKind": "user"
+        },
+        {
+          "id": "f4fc51e2-b69b-4904-a7aa-11bdef5fdd8a",
+          "title": "task-mgr",
+          "provider": "claude",
+          "ageHours": 60.77,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1791220475329,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": null,
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code",
+          "nativeKind": "user"
+        },
+        {
+          "id": "0767450b-fda2-4763-9fa1-f232ecfbd1c8",
+          "title": "recap-2026-wiring",
+          "provider": "claude",
+          "ageHours": 153.09,
+          "runtime": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": null,
+            "health": "unavailable",
+            "observedAt": null,
+            "reason": "unobserved",
+            "source": null,
+            "value": "unknown"
+          },
+          "kind": "user",
+          "inventory": "saved",
+          "sessionKind": "unknown",
+          "activity": {
+            "at": 1790888093004,
+            "health": "current",
+            "reason": "native_conversation_event",
+            "source": "claude_transcript_message"
+          },
+          "cwd": "/home/bryan/code/caos",
+          "workspace": {
+            "health": "current",
+            "projectKey": null,
+            "reason": "local_metadata",
+            "relativePath": null,
+            "repo": {
+              "commonDir": "/home/bryan/code/caos/.git",
+              "relativePath": ".",
+              "root": "/home/bryan/code/caos"
+            },
+            "root": null,
+            "rootKey": null
+          },
+          "metadataIssues": [],
+          "jobPresent": false,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": "/home/bryan/code/caos",
+          "nativeKind": "user"
+        }
+      ],
+      "cachedOnlyRows": [
+        {
+          "id": "159c11cc-d0bd-4cca-99bb-025935a4aac8",
+          "title": "Claude 159c11cc-d0bd-4cca-99bb-025935a4aac8",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791438141836,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791438123863,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "91b034e8-376d-4320-a5a9-ceef2d6b08bf",
+          "title": "Claude 91b034e8-376d-4320-a5a9-ceef2d6b08bf",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791439060618,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791439055762,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "a183d303-ee9f-4b76-8d43-4597169b4508",
+          "title": "Claude a183d303-ee9f-4b76-8d43-4597169b4508",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791435933810,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791435880551,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "a2210e2b-155a-41f8-9fe1-18b8f98fb0ee",
+          "title": "Claude a2210e2b-155a-41f8-9fe1-18b8f98fb0ee",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791438691574,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791438665257,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "bd5cbd7f-eec8-43ef-be8d-143fd2ca9bc9",
+          "title": "Claude bd5cbd7f-eec8-43ef-be8d-143fd2ca9bc9",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791435864821,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791435864601,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "cb3604e1-d840-4b01-875d-c8f4f0131a98",
+          "title": "Claude cb3604e1-d840-4b01-875d-c8f4f0131a98",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791438544200,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791438524704,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "ccb1cffb-5669-409a-a5ee-a80f1494fcdf",
+          "title": "Claude ccb1cffb-5669-409a-a5ee-a80f1494fcdf",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791438021572,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791438004110,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "d3eee36d-51b2-4230-8995-e80dd42328a5",
+          "title": "Claude d3eee36d-51b2-4230-8995-e80dd42328a5",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791437384937,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791437365823,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "e0103029-399a-4b19-b0e4-153f803c88f8",
+          "title": "Claude e0103029-399a-4b19-b0e4-153f803c88f8",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791436850471,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791436811832,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "f5a6899b-5f5c-4c5b-8de8-b85f999a85fe",
+          "title": "Claude f5a6899b-5f5c-4c5b-8de8-b85f999a85fe",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791436310336,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791436300019,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        },
+        {
+          "id": "fb597c4c-9fce-45fa-9c93-96b470b3ca6f",
+          "title": "Claude fb597c4c-9fce-45fa-9c93-96b470b3ca6f",
+          "provider": "claude",
+          "ageHours": null,
+          "runtime": {
+            "clock": "sample",
+            "health": "stale",
+            "lastKnownValue": "running",
+            "observedAt": 1791439190959,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "phase": {
+            "clock": "native",
+            "health": "stale",
+            "lastKnownValue": "working",
+            "observedAt": 1791439182725,
+            "reason": "service_source_expired",
+            "source": "claude_registry",
+            "value": "unknown"
+          },
+          "kind": "unknown",
+          "inventory": "live",
+          "sessionKind": "interactive",
+          "activity": {
+            "at": null,
+            "health": "unavailable",
+            "reason": "conversation_metadata_not_persisted",
+            "source": null
+          },
+          "cwd": "/tmp",
+          "workspace": null,
+          "metadataIssues": [
+            "service_history_stale",
+            "retained_after_gap"
+          ],
+          "jobPresent": true,
+          "jobId": null,
+          "nativeRegistryKind": null,
+          "nativeRuntime": null,
+          "nativePhase": null,
+          "nativeStatus": null,
+          "nativeLatestConversationCwd": null,
+          "nativeKind": null
+        }
+      ]
+    }
+  },
+  "resumePreparation": [
+    {
+      "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+      "title": "agent-observer",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a113b3-adca-7b62-834f-262791c1c774",
+      "title": "tmux-plus",
+      "provider": "codex",
+      "runtime": "running",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a112c7-f58c-7c70-922a-00a0989d1bd2",
+      "title": "codex-worker-kit",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a10d42-4dac-7ee1-b846-210742296942",
+      "title": "esp32-rlcd",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a0f87e-3524-7861-946e-e89005f07905",
+      "title": "esp32-349",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a0f331-e655-7ff3-9594-7d080e0524b3",
+      "title": "remote-chrome",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "id": "01a0ee10-6625-7f61-9873-6150d279af66",
+      "title": "agent-plus",
+      "provider": "codex",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_resume"
+    },
+    {
+      "operation": "new",
+      "provider": "codex",
+      "exit": 0,
+      "dispatched": false,
+      "route": "codex_new"
+    },
+    {
+      "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+      "title": "spare-gpus",
+      "provider": "claude",
+      "runtime": "running",
+      "exit": 2,
+      "dispatched": false,
+      "error": "unsupported_resume_route"
+    },
+    {
+      "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+      "title": "caos-models",
+      "provider": "claude",
+      "runtime": "running",
+      "exit": 2,
+      "dispatched": false,
+      "error": "unsupported_resume_route"
+    },
+    {
+      "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+      "title": "embeddings-bf",
+      "provider": "claude",
+      "runtime": "running",
+      "exit": 2,
+      "dispatched": false,
+      "error": "unsupported_resume_route"
+    },
+    {
+      "id": "e8e76b76-b20a-46bf-8762-83383bf0bb86",
+      "title": "recap-2026-i8n",
+      "provider": "claude",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_saved_resume"
+    },
+    {
+      "id": "423c5ec1-913e-452d-9502-42e76785da1e",
+      "title": "recap-2026-fill",
+      "provider": "claude",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_saved_resume"
+    },
+    {
+      "id": "c95a4e70-0081-4ee0-b6c9-3925f2baa8c3",
+      "title": "caos-models",
+      "provider": "claude",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_saved_resume"
+    },
+    {
+      "id": "bbe9d846-6f6d-4946-803d-fcfaef0a8656",
+      "title": "recap-2026-f2",
+      "provider": "claude",
+      "runtime": "parked",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_saved_resume"
+    },
+    {
+      "id": "d4cbd3c0-45d7-4680-a993-9898c81317c7",
+      "title": "oncall",
+      "provider": "claude",
+      "runtime": "unknown",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_saved_resume"
+    },
+    {
+      "operation": "new",
+      "provider": "claude",
+      "exit": 0,
+      "dispatched": false,
+      "route": "claude_new"
+    }
+  ],
+  "codexFeatureSelection": {
+    "daemon_auto_start": true,
+    "api_key_model_discovery": "native_default"
+  },
+  "codexClientVersion": "codex-cli 0.160.1"
+}
