@@ -95,6 +95,27 @@ service envelope and do not select native hints for ordinary use. Refer to the
 [cost follow-up](native-hints-cost-follow-up.md) before evaluating an unselected
 candidate; selected a8 remains the client handoff endpoint.
 
+A15 adds a private descriptor-anchored executable-image memo, with fresh native
+endpoint/process guards and no retained session state. Its separately installed
+tuple is `0.4.0a15` / source `193a929605b7dca0a03f57d4c672e3da439db5fd` /
+wheel `b359730d6a5435484513247ef9048cf109173a456fec5ef0ada16e6d6e2659d9`;
+the prefix on both hosts is
+`/home/bryan/.local/share/agent-observer/0.4.0a15-b359730d6a543548`.
+Public versions and profiles remain unchanged. Its controlled Snap combined and
+Starship Codex workloads pass the one-point incremental CPU gate at +0.946/+0.153
+points, with zero healthy reader errors or gaps. Aggregate RSS still fails the
+original 64 MiB limit: 109.281/64.094 MiB. Added RSS is 24.391/21.750 MiB, recorded
+without redefining the gate. No normal hint selection follows from these tests;
+the selected a8 endpoint and downstream deployment boundaries remain current.
+The [a15 receipt](evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
+also records ordinary cached/native comparisons, unloaded rename and isolated
+daemon replacement with unchanged conversation age. Runtime readiness after a
+new context can precede fresh history: retain explicit stale `lastKnownAt` until
+an accepted collection restores current activity. Reconnect is not permission
+to promote old history. The initial failed immediate-age test is retained, and
+the strengthened fresh-history proof passes on both hosts. All owned native
+stores/authentication and ordinary proof publishers are removed.
+
 ## Reproducible local entry
 
 The normal selected unit supplies the default endpoint:

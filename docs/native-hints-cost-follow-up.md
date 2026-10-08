@@ -223,7 +223,18 @@ SDK descriptor isolation, exact-generation/context acceptance and an outer
 deadline with a transferred anchor plus nested helper. The Codex endpoint test
 repeats birth and listener ownership failures after a warm memo. Source acceptance
 does not assign the earlier spike's performance to this implementation; frozen
-native/resource acceptance and normal selection remain pending.
+native/resource acceptance and normal selection have independent gates.
+
+The frozen installed a15 candidate now passes public conformance, three-turn
+native state/activity/rename/reconnect checks, foreground and background questions
+and paired passive-listener lifetime. Matched five-minute host workloads measure
+incremental CPU **+0.946 points on combined-provider Snap** and **+0.153 on
+Codex-only Starship**. Both meet the unchanged one-point target in these finite
+cases; Snap's margin is only 0.054 points, so this is not a universal cost bound.
+Sampled aggregate RSS is **109.281/64.094 MiB**, versus polling 84.891/42.344 MiB.
+Added RSS is 24.391/21.750 MiB; it does not replace the original aggregate limit.
+The CPU checkpoint is accepted for these workloads, while memory still fails
+and a8 polling remains selected. No budget answer has been received.
 
 Before a source checkpoint, independently exercise same-image reuse, mutation,
 replacement and surviving old workers, read-only descriptor validation, UID/mode
