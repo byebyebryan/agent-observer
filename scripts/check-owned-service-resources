@@ -18,7 +18,25 @@ def state(pid):
     return int(values[19]), int(values[1])
 
 
-def sample(pid, birth):
+def memory_usage(process):
+    """Read only finite kernel counters; never retain mapping names/addresses."""
+    fields = {}
+    text = (process / "smaps_rollup").read_text()
+    if len(text) > 16384:
+        raise ValueError("owned_memory_counter_limit")
+    for line in text.splitlines():
+        pieces = line.split()
+        if pieces and pieces[0] in {"Rss:", "Pss:", "Private_Clean:", "Private_Dirty:"}:
+            if len(pieces) != 3 or pieces[2] != "kB" or not pieces[1].isdigit() or pieces[0] in fields:
+                raise ValueError("owned_memory_counter_invalid")
+            fields[pieces[0]] = int(pieces[1]) * 1024
+    if len(fields) != 4:
+        raise ValueError("owned_memory_counter_unavailable")
+    return {"rssBytes": fields["Rss:"], "pssBytes": fields["Pss:"],
+            "privateBytes": fields["Private_Clean:"] + fields["Private_Dirty:"]}
+
+
+def sample(pid, birth, *, memory=False):
     pending, seen, result = [(pid, birth, None)], set(), []
     while pending and len(seen) < 64:
         current, expected, parent = pending.pop()
@@ -47,7 +65,15 @@ def sample(pid, birth):
             children = (process / "task" / str(current) / "children").read_text().split()
             if state(current) != (actual, ppid):
                 continue
-            result.append({"role": role, "rssBytes": rss, "fds": len(descriptors), "watches": watches})
+            row = {"role": role, "rssBytes": rss, "fds": len(descriptors), "watches": watches}
+            if memory:
+                try:
+                    row.update(memory_usage(process))
+                except (OSError, ValueError):
+                    row.update(pssBytes=None, privateBytes=None)
+                if state(current) != (actual, ppid):
+                    continue
+            result.append(row)
             for child in children:
                 try:
                     child_birth, child_parent = state(int(child))
@@ -68,8 +94,10 @@ def main():
     parser.add_argument("--measurement", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--duration", type=int, default=180)
+    parser.add_argument("--memory-breakdown", action="store_true",
+                        help="kernel RSS/PSS/private counters at one-second intervals, with collection/idle summaries")
     args = parser.parse_args()
-    assert 30 <= args.duration <= 300
+    assert 30 <= args.duration <= 1800
     marker = json.loads(args.measurement.read_text())
     pid, birth = marker["publisherPid"], marker["publisherBirth"]
     process = Path(f"/proc/{pid}")
@@ -79,9 +107,10 @@ def main():
     image, expected = (process / "exe").stat(), (args.prefix / "bin/python").stat()
     assert (image.st_dev, image.st_ino) == (expected.st_dev, expected.st_ino)
     begin, roles, windows, count = time.monotonic(), {}, {}, 0
+    phases, incomplete = {}, 0
     while time.monotonic() - begin < args.duration:
         assert state(pid)[0] == birth
-        values = sample(pid, birth)
+        values = sample(pid, birth, memory=args.memory_breakdown)
         count += 1
         aggregated = defaultdict(lambda: {"rssBytes": 0, "fds": 0, "watches": 0, "processes": 0})
         for value in values:
@@ -89,6 +118,12 @@ def main():
             for name in ("rssBytes", "fds", "watches"):
                 row[name] += value[name]
             row["processes"] += 1
+        if args.memory_breakdown:
+            for role, row in aggregated.items():
+                matches = [v for v in values if v["role"] == role]
+                for key in ("pssBytes", "privateBytes"):
+                    row[key] = sum(v[key] for v in matches if v[key] is not None)
+                row["memoryMeasuredProcesses"] = sum(v["pssBytes"] is not None for v in matches)
         for role, row in aggregated.items():
             previous = roles.setdefault(role, {k: 0 for k in row})
             for name, value in row.items():
@@ -97,11 +132,37 @@ def main():
         window = windows.setdefault(index, {"offsetSeconds": index * 20, "peakRssBytes": 0, "peakFds": 0, "peakProcesses": 0, "peakInotifyWatches": 0})
         for name, key in (("rssBytes", "peakRssBytes"), ("fds", "peakFds"), ("processes", "peakProcesses"), ("watches", "peakInotifyWatches")):
             window[key] = max(window[key], sum(r[name] for r in aggregated.values()))
-        time.sleep(.2)
+        if args.memory_breakdown:
+            complete = all(v["pssBytes"] is not None for v in values)
+            incomplete += not complete
+            window.setdefault("memoryCompleteSamples", 0)
+            if complete:
+                window["memoryCompleteSamples"] += 1
+                for key in ("pssBytes", "privateBytes"):
+                    peak = "peakPssBytes" if key == "pssBytes" else "peakPrivateBytes"
+                    window[peak] = max(window.get(peak, 0), sum(v[key] for v in values))
+                phase = "withCollectionWorker" if any(v["role"] in {"collector", "claude_metadata"} for v in values) else "withoutCollectionWorker"
+                summary = phases.setdefault(phase, {"samples": 0})
+                summary["samples"] += 1
+                for key in ("rssBytes", "pssBytes", "privateBytes"):
+                    total = sum(v[key] for v in values)
+                    summary["min" + key[0].upper() + key[1:]] = min(summary.get("min" + key[0].upper() + key[1:], total), total)
+                    summary["peak" + key[0].upper() + key[1:]] = max(summary.get("peak" + key[0].upper() + key[1:], 0), total)
+                    summary["sum" + key[0].upper() + key[1:]] = summary.get("sum" + key[0].upper() + key[1:], 0) + total
+        time.sleep(1 if args.memory_breakdown else .2)
     receipt = {"status": "measured", "evidenceClass": "independent_owned_proc_counters", "prefix": str(args.prefix),
                "serviceId": marker["serviceId"], "durationSeconds": time.monotonic() - begin,
                "samples": count, "roleMaximaNotSimultaneous": roles, "twentySecondWindows": list(windows.values()),
                "importsObserver": False, "providerIo": False, "managedSelectionChanged": False}
+    if args.memory_breakdown:
+        for summary in phases.values():
+            for key in ("RssBytes", "PssBytes", "PrivateBytes"):
+                summary["mean" + key] = summary.pop("sum" + key) / summary["samples"]
+        receipt.update(memoryBreakdown=True, samplingIntervalSeconds=1,
+                       memoryIncompleteSamples=incomplete, collectionPhaseSummaries=phases,
+                       pssIsProportionalShare=True, privateIsCleanPlusDirty=True,
+                       sampledPeaksAreNotHardMaxima=True,
+                       rolesWithIncompleteMemoryAreLowerBounds=True)
     args.output.write_text(json.dumps(receipt, indent=2) + "\n")
     print(json.dumps({"status": "measured", "samples": count, "output": str(args.output)}))
 
