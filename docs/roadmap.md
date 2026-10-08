@@ -28,45 +28,27 @@ added startup workspace mappings, selected a7 and enabled its user unit on both
 hosts after installed/native/managed acceptance. Normal-unit restart/crash and
 rollback/reselection pass; physical wake and downstream clients remain separate.
 
-The [remaining-gap loop](evidence/2026-10-07-gap-investigation/REPORT.md) froze
-and independently accepted a8 while retaining selected a7 at that checkpoint.
-It repairs exact
-foreground-question classification and slow polling intervals, narrows Codex
-default entry to client/server feature skew, and proves passive native hints,
-reader lifetime and SSH connection epochs. The
-[event-assisted implementation gate](event-assisted-monitoring-plan.md) is
-implemented in the [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md).
-That pass selects a8 through verified upgrade/restart/rollback/reselection on both
-hosts and freezes separately installed a9 passive runtime/history wakeups. Native
-latency, source recovery and listener lifetime cases pass. Its resource gate is
-not accepted; a8 polling remains selected, and a9 hint-unit rollout/30-minute
-soaks are withheld. The [cost follow-up](native-hints-cost-follow-up.md) precedes
-that rollout. Physical wake, notifications and downstream migrations stay separate.
-The a10 catalog-scope repair and newer a11 guarded SDK-initialization repair are
-separately installed. A11 passes projection equivalence, independent native
-event clocks, foreground Claude and paired listener retirement. The original
-aggregate-memory target remains unmet; lower import cost does not complete P5
-or authorize P6. See the latest delivery receipts and cost follow-up.
-The separately installed a14 scheduling filter passes both-host Codex and Snap
-Claude native state/activity, foreground/background questions, reconnect and
-paired listener lifetime. Its matched combined Snap workload still misses the
-original CPU and aggregate-memory gates. A descriptor-anchored image-digest
-spike identifies a further cost lead; the private transfer protocol and its
-ownership/failure proof were reviewed separately before a15 implementation.
-A15 passes 337 source tests, public conformance and focused native state, question,
-age, reconnect and lifetime proof. Matched host CPU overhead is +0.946 points on
-combined-provider Snap and +0.153 on Codex-only Starship, meeting the original
-one-point target in those controlled workloads. Sampled aggregate RSS remains
-109.281/64.094 MiB, above the unchanged 64 MiB limit. A15 remains separately
-installed; normal units select a8 polling while the memory decision is pending.
+The [next-delivery plan](observer-next-delivery-plan.md) sequences P0–P7:
+fresh native baseline, guarded managed upgrade, passive runtime/history hints,
+independent artifact/native/cost acceptance, operational rollout and client
+handoff. The [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
+preserves the a8 baseline and failed a9–a14 gates, then records a15 selection on
+both hosts. A15 retains API 1 and accepts supported native state, activity,
+questions, rename, feed recovery and listener retirement. Its descriptor-anchored
+image memo preserves fresh process/endpoint guards without caching session state.
 
-The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
-proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,
-both-provider artifact/native/cost acceptance and an independent client handoff.
-It includes source-derived upgrade guard work, provisional latency/resource
-targets and bounded native workflow investigations. Its execution report keeps
-the failed cost gate explicit. No provider-policy or frontend deployment follows
-from producer selection alone.
+Matched combined-provider Snap and Codex-only Starship CPU overhead meets the
+one-point target at +0.946/+0.153 percentage points. The user relaxed the original
+64 MiB aggregate RSS target to a review threshold without choosing a new cap.
+The [managed rollout receipt](evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
+records RSS/PSS by collection phase, longer stability/reader checks, exact artifact
+selection and restart/crash/rollback/reselection. Snap uses 30/120-second
+runtime/history reconciliation and Starship 20/60 seconds, with native hints on
+both. Provider policy, ordinary sessions and frontend selection are outside this
+rollout. Physical wake, notifications and downstream migrations stay separate.
+Bounded native workflow investigations retain explicit unsupported outcomes;
+arbitrary foreground attach, generic dialogs and general Codex parked inference
+are not inferred from process absence.
 
 The [API v1 contract](api-v1.md) is accepted within the independent
 [a2 producer gate](evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
@@ -79,7 +61,7 @@ are repaired with explicit unsupported capabilities.
 
 The [API v1 client handoff](api-v1-client-handoff.md) is the next consumer boundary.
 A2 remains a separately installed historical acceptance tuple. Normal links
-now select a8/wire 3; Plus retains its old frozen reader. Client/cache migration
+now select a15/wire 3; Plus retains its old frozen reader. Client/cache migration
 has its own gate. The separate notification source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older
 exact-image records below remain historical proof.

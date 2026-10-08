@@ -5,16 +5,13 @@ implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 
 The [current service handoff](shared-observation-service-handoff.md) supersedes
 this historical a2 installation tuple: normal Observer links and the user unit
-now select a8, while Agent Plus keeps its old frozen reader. API v1 is unchanged;
-service protocol 1 remains separately prerelease. The current handoff also records
-the selected a8 tuple and separately installed hint candidates; choose an
-explicit producer artifact/endpoint before client work. The later repairs preserve
-this API, but the resource/managed hint gate remains
-unaccepted. See the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md).
-The newest separately installed a15 candidate preserves API 1, snapshot/watch 3,
-write 1 and service 1. Its controlled host CPU gate passes, but the original
-aggregate-memory gate remains unmet. Use selected a8 for the normal endpoint;
-a15 evaluation and eventual managed selection retain separate acceptance.
+now select a15 with native hints, while Agent Plus keeps its old frozen reader.
+API 1, snapshot/watch 3 and write 1 remain unchanged; service protocol 1 is
+separately prerelease. The current handoff records the exact a15 artifact,
+endpoint, reconciliation cadences and client responsibilities. Choose that
+explicit producer artifact/endpoint before client work. Native/cost and managed
+rollout gates are recorded in the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md);
+producer selection does not accept a downstream migration.
 
 ## Historical accepted producer and selected baseline
 

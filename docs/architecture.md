@@ -17,8 +17,9 @@ determine compatibility. Release versions and hashes record provenance and
 incarnation changes; routine provider upgrades do not require allowlist entries.
 The [API v1 contract](api-v1.md) and [a2 acceptance](evidence/2026-10-06-stable-api/REPORT.md)
 implement this policy. The version-gated pilot description below is historical;
-the [operational baseline](observer-operations-execution.md) now selects a7 and
-its user unit; consumer migration retains a separate delivery gate.
+the [current service handoff](shared-observation-service-handoff.md) records a15
+selection with passive native hints and periodic reconciliation. Consumer
+migration retains a separate delivery gate.
 
 The [contract and clients plan](contract-and-clients-plan.md), captured
 2026-10-03, defines the next development track: a passive host-local core,

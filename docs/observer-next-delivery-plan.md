@@ -8,16 +8,16 @@ The [event design](event-assisted-monitoring-plan.md) supplies the source bounda
 This plan turns those findings into ordered, independently reviewable deliveries.
 
 Execution outcome: the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
-records P0/P1 selection of a8, bounded P2-P4 implementation and separately
-installed a9 native/artifact acceptance subsets. P5's resource gate is not
-accepted, so P6 hint selection and its 30-minute soaks are withheld. P7 hands off
-selected a8 and explicit candidate limits. The
-[cost follow-up](native-hints-cost-follow-up.md) retains the original targets;
-the table below remains the intended sequence, not a claim every gate passed.
-The user subsequently relaxed the 64 MiB aggregate memory target and resumed
-execution. It is a review threshold; P6 still requires exact artifact/native
-acceptance, recovery, rollback and 30-minute resource/reader checks. Retain
-absolute/added RSS and add idle/collection RSS/PSS without imposing a new cap.
+records P0/P1 selection of a8, P2–P4 native wakeups and the separately installed
+a9–a15 repair/acceptance sequence. Earlier missed targets remain historical.
+A15 meets the unchanged controlled one-point incremental CPU target. The user
+explicitly relaxed the 64 MiB aggregate memory target to a review threshold and
+resumed execution, without imposing a replacement cap. Absolute/added RSS and
+idle/collection RSS/PSS remain required evidence. The
+[managed rollout receipt](evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
+records P6's exact selection, recovery, rollback and 30-minute reader/resource
+checks. P7's [current client handoff](shared-observation-service-handoff.md) binds
+a15 and preserves explicit unsupported native workflows and separate client gates.
 
 ## Outcome and priorities
 
@@ -196,4 +196,6 @@ Finish with an accepted normally usable producer, measured hint/cadence behavior
 an updated limitations matrix and an independent client handoff. If a required
 gate fails, leave the last accepted baseline selected, fix or document the
 specific checkpoint, and use remaining time on independent Observer work.
-Never lower the gate or start frontend implementation to mask a producer defect.
+Do not silently relax acceptance targets or start frontend implementation to
+mask a producer defect. Explicit user changes to a target must retain the
+original measurements and a dated superseding decision.

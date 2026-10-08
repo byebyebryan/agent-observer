@@ -1,10 +1,18 @@
 # Native-assisted Observer delivery
 
-Date: 2026-10-07. Status: P0/P1 accepted; P2-P4 implemented with bounded
-controlled/native proof. Separately installed a9 passes native latency/recovery/
-lifetime subsets; P5's resource gate is not accepted. P6 hint rollout and its
-30-minute managed soaks are withheld. P7 hands off selected a8 with explicit limits.
+Date: 2026-10-07. Current status: scoped P0–P7 complete with a15 selected on
+Snap and Starship, passive native hints enabled and periodic reconciliation
+retained. The user explicitly relaxed the original 64 MiB aggregate RSS target
+to a review threshold; the controlled one-point incremental CPU target is
+unchanged. The [a15 managed receipt](a15-managed-rollout.json) records the later
+operational acceptance and limits. Earlier a9–a15 failures and unselected
+checkpoints below retain their original measurements and artifact bounds.
 Execution follows the [next delivery plan](../../observer-next-delivery-plan.md).
+
+The initial a9 checkpoint accepted P0/P1 and bounded P2–P4, but missed P5's
+resource gate; P6 hint rollout was withheld and P7 handed off a8. That historical
+verdict is superseded by the dated a15 operations section at the end of this
+report, rather than silently rewriting a failed target as passed.
 
 ## Baseline
 
@@ -477,3 +485,126 @@ starting bookends on both hosts. Earlier unattributed whole-loop drift remains
 documented and was not restored. The native branch's entry/attach/parked/dialog
 limits above remain current. The selected a8 client handoff is updated; P5's
 aggregate memory gate and P6 remain open pending the explicit budget decision.
+
+## A15 managed native-hint rollout after the explicit memory decision
+
+The user relaxed the provisional 64 MiB aggregate RSS target and resumed the
+existing Observer-only goal. It is a review threshold, with no replacement
+numeric cap. Absolute/added RSS and the failed historical measurements remain;
+idle/collection RSS, PSS and private memory plus sustained resource checks are
+added. The controlled CPU target, passivity, freshness, native and recovery
+gates are unchanged. This closes the scoped P5/P6/P7 delivery; it does not accept
+physical wake, provider-policy changes or downstream clients.
+
+The [managed receipt](a15-managed-rollout.json) re-verifies the exact a15 wheel,
+profiles, entrypoints and interfaces on both hosts. Source `193a929605b7dca0a03f57d4c672e3da439db5fd`
+and wheel `b359730d6a5435484513247ef9048cf109173a456fec5ef0ada16e6d6e2659d9`
+remain the frozen producer tuple. Normal read/write/service links and enabled
+user units now select `/home/bryan/.local/share/agent-observer/0.4.0a15-b359730d6a543548`.
+Both units use native hints; Snap retains Codex/Claude at 30/120 seconds and
+Starship Codex at 20/60. Private diagnostics are `%t/agent-observer/hints.json`,
+and the local read socket is `/run/user/1000/agent-observer/read.sock`. Snap's
+SDK history dependency remains source-only; Starship is core. No provider
+version/hash allowlist or public schema change accompanies selection.
+
+Both hosts pass exact owned restart, forced publisher failure, rollback to a8
+and reselection of a15. Persistent private rollback snapshots remain under
+`~/.local/state/agent-observer/operations/2026-10-07-a15`, alongside the earlier
+a8 snapshots. Initial attempts exposed two operations defects: restrictive caller
+umask produced a 0600 public unit, and rapid Starship recovery exhausted the
+unit's restart allowance before rollback. Copying projection modes alone did
+not fix the umask case. The final helper preserves source modes and explicitly
+uses umask 022 for its six-target scoped apply; verified rollback resets the
+owned unit's failed state before starting it. Actual disposable umask regression,
+foreign/drift rejection and both-host private-umask recovery reproof pass.
+Restart-rate policy and provider ownership guards are preserved. Snap commits
+are `ae101ce`, `2b65a4e`, `63f111b`; Starship commits are `741e3a2`, `c60b7e9`,
+`0dc2925`. Both managed-source checks pass; no public push occurred.
+
+Two full 30-minute normal-unit checks use three independent readers, one
+non-reading peer and an initial batch of 100 cached CLI reads. Both publisher
+incarnations stay unchanged throughout. All readers have zero sequence,
+incarnation, lease or transport errors. Snap records one gap per reader;
+Starship records none. The verified publisher's gap paths classify these as
+coalesced delivery, but individual gap reasons/resync counts were not archived
+by this harness. Controlled contract tests independently cover gap/resync; the
+normal soak does not claim zero gaps, lossless updates or per-gap recovery timing.
+
+| Host | Owned mean CPU, one core | Initial 100 reads p95 | Peak aggregate RSS, 200 ms samples | Reader frames / gaps per reader |
+| --- | --- | --- | --- | --- |
+| Snap | 2.761% | 88.864 ms | 131.812 MiB | 299 / 1 |
+| Starship | 1.044% | 79.674 ms | 70.836 MiB | 272 / 0 |
+
+These ordinary-store workloads are not paired with equal-traffic polling runs;
+their CPU percentages do not replace the matched incremental proof. Read p95
+covers the initial batch, not every minute of the soak. Cgroup MemoryPeak is
+retained separately and must not be equated with process RSS/PSS.
+
+An independent read-only kernel harness verifies publisher UID, birth,
+interpreter/entrypoint and descendant ancestry. It samples smaps RSS/PSS/private
+memory every second and descriptors/processes/inotify watches over 20-second
+windows. Between-collection values include all owned persistent helpers; they
+do not establish that native agents were idle.
+
+| Host | Between collections mean RSS / PSS | Collection sample peak RSS / PSS | Complete / incomplete memory samples |
+| --- | --- | --- | --- |
+| Snap | 67.491 / 34.154 MiB | 113.539 / 58.974 MiB | 1794 / 0 |
+| Starship | 46.220 / 23.898 MiB | 67.734 / 34.172 MiB | 1792 / 6 |
+
+PSS proportions shared mappings across the host; private means clean plus dirty
+private pages. Peak RSS and PSS are independently sampled maxima, not necessarily
+the same instant. The one-second harness misses Snap's larger 200-ms collection
+peak, so no corresponding PSS for that larger peak is claimed. Starship's six
+incomplete samples retain an explicit coverage limit; partial role counters are
+lower bounds. Role maxima are not simultaneous and cannot be summed as a peak.
+The short a8 baseline is retained as context, not an equal-workload comparison.
+
+Snap's stable owned helper set is publisher plus two hints, with transient
+collectors/SDK metadata helper; Starship has publisher plus one hint. Provider
+identity is carried through private worker input, so argv-only resource roles
+remain `unknown_hint` rather than guessed. Normal-soak peaks are six owned
+processes / 45 descriptors on Snap and three / 29 on Starship. One-second
+watch counts stay 18 on Snap and zero on Starship; late non-collection windows
+return to three processes / 23 descriptors and two / 15 respectively. The
+small between-collection memory variation and bounded windows show no sustained
+unexplained growth during this interval, without claiming indefinite stability
+or hard maxima. Collection peaks reflect the additional owned worker set.
+
+Closing direct and cached CLI comparisons independently bracket native facts:
+all 50 Codex saved rows / two active conversations on Snap and 97 / five on
+Starship agree on proved identity/state/activity. Claude's three active workers
+also agree. Direct Claude projects 31 of 32 native candidates, retaining the
+known setup-only omission. The cache projects 34: three previously seen live-only
+identities are retained after incomplete history as stale/unknown, with no
+conversation age or running claim. Their transient native origin is not
+attributed. This is an explicit conservative discovery limit, not complete
+catalog equivalence; the normal unit is not restarted to hide it.
+
+Early single-provider cached comparisons incorrectly marked sibling-provider
+references false in the evaluator. Commit `9b23b3c` validates every declared
+frame provider's host/store/native reference while recording the independently
+compared provider separately. Regressions reject bad sibling scope, duplicates
+and unsupported providers. Early false flags remain in the receipt; all closing
+identity-scope checks pass. This operator-harness repair changes neither the
+installed producer nor requested native coverage. The current source check runs
+339 tests with one optional schema skip; independent installed jsonschema
+conformance passes separately. SSH schema/sequence/reconnect checks pass in both
+directions using existing trusted host entries. Snap self-SSH host-key rejection
+is retained as a failed optional attempt; trust policy is unchanged.
+
+Closing hashes for provider settings and managed external/frontend pins match
+this resumed pass's starting values; Agent Plus links are unchanged. Authorized
+Observer links/unit incarnations change, and final exact artifact/live verification
+passes. Earlier whole-goal drift remains recorded above, without a preservation
+claim for that earlier interval. This resumed pass creates no native action
+namespace or borrowed authentication. Reader/resource proof processes exit;
+normal units/helpers and operator rollback snapshots remain intentionally active.
+
+The [current producer handoff](../../shared-observation-service-handoff.md) binds
+a15, API 1/snapshot-watch 3/write 1 and separate prerelease service 1. Existing
+canonical fixtures and pure consumer guards remain applicable. Agent Plus/RLCD/
+other clients can start their separate integration gates against this exact
+producer. Native default-entry coherence, arbitrary foreground attach, generic
+dialogs, general Codex parked inference, stale/partial history policy, physical
+suspend/wake and notification/network/device delivery retain their explicit
+boundaries. No frontend implementation is used to close this producer pass.

@@ -1,8 +1,13 @@
-# Native hints: remaining producer cost gate
+# Native hints: cost investigation and acceptance
 
-Date: 2026-10-07. The [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
-records separately installed a9; normal Snap/Starship units select a8 polling.
-This follow-up does not authorize provider-policy changes or frontend work.
+Date: 2026-10-07. Historical a9–a15 cost investigation, with current selection
+recorded in the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
+and [service handoff](shared-observation-service-handoff.md). A15 now runs with
+native hints on normal Snap/Starship units after the user's explicit memory-target
+relaxation. The [managed receipt](evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
+records the operational and idle/collection RSS/PSS checks. Earlier failures and
+unselected checkpoints below retain their original bounds. Provider-policy
+changes and frontend work remain separate.
 
 The [subsequent a10 repair](evidence/2026-10-07-native-delivery/a10-catalog-scope.json)
 removes unnecessary scans from nested transcript traffic. Identical installed
@@ -244,8 +249,9 @@ cases; Snap's margin is only 0.054 points, so this is not a universal cost bound
 Sampled aggregate RSS is **109.281/64.094 MiB**, versus polling 84.891/42.344 MiB.
 Added RSS is 24.391/21.750 MiB; it does not replace the original aggregate limit.
 The CPU checkpoint is accepted for these workloads. A15 still exceeds the
-historical aggregate target, now relaxed explicitly by the user. A8 polling is
-selected until P6's operational checks complete; there is no pending budget answer.
+historical aggregate target, now relaxed explicitly by the user. At this native
+checkpoint, a8 polling remained selected pending P6 operations; the subsequent
+managed receipt records a15 selection. There is no pending budget answer.
 
 Before a source checkpoint, independently exercise same-image reuse, mutation,
 replacement and surviving old workers, read-only descriptor validation, UID/mode
@@ -297,6 +303,6 @@ history refresh cannot casually renew old runtime or conversation evidence.
    preservation bookends and remove all owned native stores/authentication.
 
 No frontend migration is needed to investigate this cost. Agent Plus and other
-clients can independently consume selected a8's accepted read/write boundaries
+clients can independently consume selected a15's accepted read/write boundaries
 and explicit cached service. Native entry repair, graphical focus, remote/device
 transport, durable notifications and physical suspend/wake keep their own gates.

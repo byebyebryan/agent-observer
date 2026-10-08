@@ -8,113 +8,61 @@ and [evidence](evidence/2026-10-06-shared-service-implementation/REPORT.md) for
 case-by-case earlier acceptance. The [operational baseline](observer-operations-execution.md)
 and [earlier evidence](evidence/2026-10-07-observer-operations/REPORT.md) record the
 a7 baseline. The [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md)
-selects a8 on both hosts and records the unselected a9 hint candidate and cost gate.
+records the current a15 selection and preserves earlier failed candidate gates.
 
 ## Candidate and selection
 
-The selected producer is `0.4.0a8`, source
-`3c71f216a716a36f2403f7c71fa5935c41c9917f`, wheel SHA256
-`a8370b0f96d2669ff3bbf290ff01b9387cd7dfdacdf263c9f3baffbaf2343926`.
-Its [manifest](../artifacts/observer-0.4.0a8.json) verifies three entrypoints,
+The selected producer is `0.4.0a15`, source
+`193a929605b7dca0a03f57d4c672e3da439db5fd`, wheel SHA256
+`b359730d6a5435484513247ef9048cf109173a456fec5ef0ada16e6d6e2659d9`.
+Its [manifest](../artifacts/observer-0.4.0a15.json) verifies three entrypoints,
 API 1's existing schemas and the separate service extension. It is installed at
-`/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f` on Snap and
+`/home/bryan/.local/share/agent-observer/0.4.0a15-b359730d6a543548` on Snap and
 Starship. Snap includes the source-only Claude-history SDK; Starship uses core.
 The exact wheel and manifest are retained on both hosts under
-`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a8-a8370b0f96d2669f`,
+`/home/bryan/.local/share/agent-observer/artifacts/0.4.0a15-b359730d6a543548`,
 separate from the frozen installed prefix.
 Provider support depends on required native predicates and actual process/image/
 endpoint ownership, rather than native release allowlists.
 
-Normal Observer read/write/service links now select a8, and the persistent
+Normal Observer read/write/service links now select a15, and the persistent
 `agent-observer.service` user unit is enabled on both hosts. Agent Plus still
 binds its previous artifact and wire 2; its private venv can shadow normal
-commands. Use the explicit a8 prefix when validating or migrating a client.
+commands. Use the explicit a15 prefix when validating or migrating a client.
 No hook, networking component or frontend is selected by the Observer rollout.
 
-A8 repairs foreground Claude question detection and slow polling schedules.
-The old-to-new managed helper verifies prior and desired artifacts separately;
-restart, rollback and reselection passed on both hosts. Persistent private
-rollback snapshots are under `~/.local/state/agent-observer/operations/2026-10-07-a8`.
+A15 enables passive native wakeups alongside periodic reconciliation. Snap runs
+Codex and Claude at 30-second runtime / 120-second history cadences; Starship runs
+Codex at 20/60 seconds. Both normal units use `--native-hints` with private
+`%t/agent-observer/hints.json` diagnostics. The local endpoint is
+`/run/user/1000/agent-observer/read.sock`. Hints request authoritative reads; they
+do not supply session identity, phase or conversation clocks. Feed loss retains
+periodic reconciliation and explicit unavailable/stale semantics.
 
-The separate hint candidate is `0.4.0a9`, source
-`c2f3754353cb72cd9afc644d9aba1ab296987875`, wheel SHA256
-`8165f9400fadaa50f5d95e95f578630492791a74f81ba417cd5f6faf89a36497`.
-Its [manifest](../artifacts/observer-0.4.0a9.json), archive and installed prefix
-`0.4.0a9-8165f9400fadaa50` exist on both hosts under the same roots as a8.
-It adds opt-in `--native-hints` and optional private `--hint-diagnostics` alongside
-periodic reconciliation. API/wire/service versions and public fixtures remain
-unchanged. Native latency, helper recovery and paired retirement cases pass,
-but the provisional resource gate is not accepted. Do not treat its installation
-as normal selection or enable its hints in the managed unit. The
-[cost follow-up](native-hints-cost-follow-up.md) defines the remaining producer work.
+The [a15 native/cost receipt](evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
+accepts supported state, question, age, rename, reconnect and listener-lifetime
+cases. Controlled matched host CPU overhead is +0.946 percentage points on
+combined-provider Snap and +0.153 on Codex-only Starship. Sampled aggregate RSS
+is 109.281/64.094 MiB, with added RSS 24.391/21.750 MiB. The user subsequently
+relaxed the provisional 64 MiB target to a review threshold, without setting a
+new cap. Earlier failed CPU/memory gates remain in the delivery report.
 
-The catalog repair is separately installed `0.4.0a10`, source
-`2cd1bbc693c5c4553e61c0f177d2fe2a0e739271`, wheel SHA256
-`e57b3e947e731011ad1d470cb83740faf5057dc0a900458a759ed1d6688e2242`, prefix
-`0.4.0a10-e57b3e947e731011` on both hosts. Its
-[manifest](../artifacts/observer-0.4.0a10.json) and
-[focused receipt](evidence/2026-10-07-native-delivery/a10-catalog-scope.json) bind
-Claude watches to the project-level saved-history surface. Nested transcript
-noise no longer requests catalog scans; primary activity/title still wakes reads.
-Installed controlled comparison and one-turn native Claude regression pass.
-Broader cost/operational acceptance remains pending; a10 is also unselected.
+The [managed rollout receipt](evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
+records artifact/profile checks, restart, exact-publisher failure, rollback to a8,
+reselection, normal-unit reader/resource soaks and independent native comparisons.
+Persistent private rollback snapshots on both hosts are under
+`~/.local/state/agent-observer/operations/2026-10-07-a15`; the a8 snapshot remains
+available. The managed helper verifies prior and desired artifacts separately,
+including exact unit contents, interpreter, arguments and PID birth. Its scoped
+apply now preserves declared file modes under a private caller umask, and verified
+rollback clears the owned unit's restart-rate failure before starting it.
 
-The SDK-initialization candidate is separately installed `0.4.0a11`, source
-`28179263ea45d2315350aad0061f52d13bdefb33`, wheel SHA256
-`80b3f82e577b566656b4b3752e0057f89aa46baa23c9fa7742d0d7b9128bb923`, prefix
-`0.4.0a11-80b3f82e577b5666` on both hosts. Its
-[manifest](../artifacts/observer-0.4.0a11.json) and
-[installed/native receipt](evidence/2026-10-07-native-delivery/a11-sdk-and-native.json)
-bind a reviewed, guarded SDK metadata-only initialization and unchanged public
-schemas. Real copied-history and synthetic companion/omitted-kind projections
-match a10 exactly. The helper remains isolated, audited and deadline bounded;
-SDK files/parsers are not patched. The SDK lock is an Observer dependency.
-
-Three-turn event-to-view runtime p95 is 1.431 s on Snap Codex, 1.233 s on Starship
-Codex and 0.703 s on Snap Claude; history p95 is 2.299, 1.982 and 10.164 s.
-These are small controlled exact-ID samples, not native transition-time or
-lossless event guarantees. Foreground Claude question/exit and both-host paired
-retirement pass. Ordinary CLI/native comparisons retain known partial saved
-Claude coverage and unknown older Codex kinds. A11 remains unselected: the
-original aggregate-memory gate is unmet, and P6's managed restart/crash/rollback/
-30-minute acceptance is pending. Clients should keep the explicit selected a8
-endpoint unless intentionally evaluating an unselected candidate.
-
-The later a12/a13 runtime/scheduling repairs are separately installed and
-unselected. The [a13 receipt](evidence/2026-10-07-native-delivery/a13-debounce-and-host-cost.json)
-passes correlated native latency, foreground Claude question/exit and both-host
-listener retirement, but its matched two-provider Snap workload measures +2.330
-CPU percentage points and 109.289 MiB sampled aggregate RSS. Both original
-resource gates fail. A14 adds bounded metadata scheduling fingerprints to the
-owned Claude helper; its separately installed native subset passes, and its
-held background question reaches cached blocked state in 0.789 seconds. Its
-[combined cost receipt](evidence/2026-10-07-native-delivery/a14-filter-and-host-cost.json)
-still misses the original gates: +2.086 CPU points and 131.402 MiB sampled
-aggregate RSS. These repairs do not change API 1 or the
-service envelope and do not select native hints for ordinary use. Refer to the
-[cost follow-up](native-hints-cost-follow-up.md) before evaluating an unselected
-candidate; selected a8 remains the client handoff endpoint.
-
-A15 adds a private descriptor-anchored executable-image memo, with fresh native
-endpoint/process guards and no retained session state. Its separately installed
-tuple is `0.4.0a15` / source `193a929605b7dca0a03f57d4c672e3da439db5fd` /
-wheel `b359730d6a5435484513247ef9048cf109173a456fec5ef0ada16e6d6e2659d9`;
-the prefix on both hosts is
-`/home/bryan/.local/share/agent-observer/0.4.0a15-b359730d6a543548`.
-Public versions and profiles remain unchanged. Its controlled Snap combined and
-Starship Codex workloads pass the one-point incremental CPU gate at +0.946/+0.153
-points, with zero healthy reader errors or gaps. Aggregate RSS still fails the
-original 64 MiB limit: 109.281/64.094 MiB. Added RSS is 24.391/21.750 MiB, recorded
-without redefining the gate. No normal hint selection follows from these tests;
-the selected a8 endpoint and downstream deployment boundaries remain current.
-The [a15 receipt](evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
-also records ordinary cached/native comparisons, unloaded rename and isolated
-daemon replacement with unchanged conversation age. Runtime readiness after a
-new context can precede fresh history: retain explicit stale `lastKnownAt` until
-an accepted collection restores current activity. Reconnect is not permission
-to promote old history. The initial failed immediate-age test is retained, and
-the strengthened fresh-history proof passes on both hosts. All owned native
-stores/authentication and ordinary proof publishers are removed.
+Public versions remain API 1, snapshot/watch 3, write 1 and separate prerelease
+service 1. No new decoder fields are required. Runtime readiness after a new
+context can precede fresh history: retain explicit stale `lastKnownAt` until an
+accepted collection restores current activity. Reconnect cannot promote old
+history. Native hooks, provider policy and frontend selections are unchanged by
+this rollout. Historical a9–a14 candidate details are in the delivery report.
 
 ## Reproducible local entry
 
@@ -131,10 +79,11 @@ For a separately owned candidate endpoint, start an explicit foreground publishe
 and read it from another terminal:
 
 ```sh
-candidate=/home/bryan/.local/share/agent-observer/0.4.0a8-a8370b0f96d2669f
+candidate=/home/bryan/.local/share/agent-observer/0.4.0a15-b359730d6a543548
 "$candidate/bin/agent-observer-service" serve --host-scope snap \
   --provider codex --provider claude --runtime-interval 30 \
-  --history-interval 120 --socket /run/user/1000/ao-candidate/read.sock
+  --history-interval 120 --native-hints \
+  --socket /run/user/1000/ao-candidate/read.sock
 "$candidate/bin/agent-observer" service status --host-scope snap \
   --socket /run/user/1000/ao-candidate/read.sock
 "$candidate/bin/agent-observer" service list --host-scope snap \
@@ -188,17 +137,17 @@ it does not make a CLI-filtered row set a complete producer inventory. Use
 | Case | Boundary |
 | --- | --- |
 | Physical suspend/wake | Pending operator window. Fake BOOTTIME expiry tests establish logic only. |
-| Native signals/hooks | Selected a8 pushes shared views after scheduled pulls. A9 passes bounded native wakeup/recovery cases; a10 additionally removes nested-history noise with focused Claude proof. Cost acceptance and the 30-minute hint-unit rollout soak remain pending. No action-based subscription or hook replacement is used. |
+| Native signals/hooks | Selected a15 uses bounded passive Codex global-event and Claude filesystem wakeups with periodic authoritative reconciliation. Supported native latency/recovery/lifetime cases pass; this is sampled state delivery, with no action-based subscription or hook replacement. |
 | Notification events | No durable completion/attention publication here. Existing API v1 notification work is separate; source/view counters cannot substitute for native event correlation. |
 | Workspace mapping | A7 accepts startup-only `--workspace-config` root/project mappings on history jobs, with independent Git validation and history leases. Restart only the Observer unit to reload. Explicit grouping does not merge native identities. |
-| Claude coverage | SDK saved coverage stays partial; the omitted setup-only candidate has zero conversation records. A8 accepts verified interactive/no-job exact input waits as blocked/question. Generic dialogs remain unknown. Background questions/approvals and positive parked predicates retain native acceptance. |
+| Claude coverage | SDK saved coverage stays partial; the omitted setup-only candidate has zero conversation records. Cached views can retain previously seen live-only identities as stale/unknown after an incomplete history read, so direct and cached inventories can differ. This is not current running evidence. A8 accepts verified interactive/no-job exact input waits as blocked/question. Generic dialogs remain unknown. Background questions/approvals and positive parked predicates retain native acceptance. |
 | Claude foreground attach | The writer rejects a live foreground row with `unsupported_resume_route`; live attach requires a positively bound background job. Saved Resume is separately supported. Observation alone does not authorize terminal focus or attachment. |
 | Native default entry | Both-host private matrices isolate mixed Codex client/server feature defaults; matched pairs enter with defaults. Ordinary provider repair/reproof remains a separate delivery. Surface deferred TTY errors and never retry an uncertain write automatically. |
 | Native UI exit | Foreground prompt `/exit` is independently recognized and removes its registration. Attached-background recognition remains unproved and its worker stays live. Viewer detach and explicit native stop/parked remain separate cases. |
-| Resource/latency | Selected polling can lag 30/120 seconds on Snap and 20/60 on Starship plus bounded reads. A9 controlled native-to-view runtime p95 is 0.8–1.4 seconds; activity p95 is at most 9.5 seconds and saved unloaded rename about 10.2 seconds. Exact event-arrival latency is not claimed. Snap observed CPU delta +2.17 points needs equivalent-workload proof; aggregate RSS 167.2 MiB Snap / 67.6 MiB Starship exceeds the provisional 64 MiB target. |
-| Selection/clients | A8 upgrade/restart/rollback/reselection passes. SSH disconnect/reconnect with fresh connection sequence passes against selected a8; networking/bridge, Agent Plus and device migrations retain separate delivery gates. |
+| Resource/latency | A15 controlled event-receipt-to-view runtime p95 is 1.346 s Snap Codex / 1.724 s Starship Codex / 0.997 s Snap Claude; history p95 is 2.226 / 2.037 / 9.218 s. These finite samples do not establish provider-transition time or lossless events. Matched CPU overhead passes; RSS is reviewed without a hard cap. Feed loss falls back to configured polling plus bounded reads. See the native and managed receipts for actual workload, resource and timing limits. |
+| Selection/clients | A15 managed upgrade/restart/crash/rollback/reselection and both-host normal-unit checks are recorded separately. Earlier SSH disconnect/reconnect proof retains its a8 artifact bound; pure connection-epoch/expiry conformance is unchanged. Networking/bridge, Agent Plus and device migrations retain separate delivery gates. |
 
-The next Agent Plus pass should first bind the exact selected a8 artifact
+The next Agent Plus pass should first bind the exact selected a15 artifact
 and exercise envelope/freshness/reconnect fixtures independently of UI work,
 then validate installed local and remote reads against native evidence. Keep
 write actions and terminal/focus behavior as separate client acceptance. Producer
@@ -207,9 +156,9 @@ repairs. RLCD and other clients use the same read boundary with their own bridge
 transport and presentation gates. OpenCode remains deprecated.
 
 Before a client pass, read the [event-assisted monitoring plan](event-assisted-monitoring-plan.md)
-and [latest delivery verdict](evidence/2026-10-07-native-delivery/REPORT.md). Cached
-Claude conversation ages can lag the configured history cadence; current receipt
-health is not a promise of the latest native message. A8's question repair is
-available through the selected producer. A client can migrate now against this
-polling baseline; a9 hint acceptance is a later producer checkpoint and must not
-be closed through a simultaneous frontend repair.
+and [latest delivery verdict](evidence/2026-10-07-native-delivery/REPORT.md). Native
+hints improve supported monitoring latency, but cached conversation ages can
+still lag native activity. Current receipt health is not a promise of the latest
+message, and feed silence or reconnect never makes stale history current. Client
+acceptance must compare the installed public interface with independent native
+evidence and preserve the producer's unsupported/partial classifications.
