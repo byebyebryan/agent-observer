@@ -1,0 +1,20 @@
+{
+  "case": "claude-runtime-only",
+  "hostScope": "snap",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeReferenceImportsObserver": false,
+  "nativeId": "ec3229f6-5488-4dad-8a2d-96aafdc63e56",
+  "runtimeOnlyObserved": true,
+  "historySamplesWhileRunning": 9,
+  "foregroundResumeRejected": "unsupported_resume_route",
+  "nativeRegistryAbsent": true,
+  "runtimeOnlyAbsentAfterExit": false,
+  "oldArtifactRetainedNegativeControl": true,
+  "matchedRevisions": [
+    22,
+    23
+  ],
+  "providerDeletionClaimed": false,
+  "status": "accepted"
+}

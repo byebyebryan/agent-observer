@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c",
+  "serviceProtocol": 1,
+  "serviceId": "2adb70e8-6301-43ce-9cd6-da4e52001071",
+  "matchedIdentities": 97,
+  "unavailableCwds": 48,
+  "explicitlyMappedRows": 9,
+  "changedCwds": 0,
+  "directOnlyRows": 0,
+  "serviceOnlyRows": 0,
+  "independentGitReference": "git_rev_parse_read_only",
+  "importsObserver": false,
+  "ordinaryProviderActions": false,
+  "ownedPublisher": true
+}

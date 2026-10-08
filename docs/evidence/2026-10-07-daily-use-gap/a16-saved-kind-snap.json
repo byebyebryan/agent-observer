@@ -1,0 +1,18 @@
+{
+  "case": "codex-saved-kind",
+  "hostScope": "snap",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeReferenceImportsObserver": false,
+  "nativeId": "01a11a47-ab44-7282-b615-4746eb235540",
+  "nativeChildIds": [
+    "01a11a47-f232-7de3-a1aa-8ec784506f86"
+  ],
+  "savedUserClassified": true,
+  "savedChildClassified": 0,
+  "loadedInventoryPreserved": true,
+  "parkedInferred": false,
+  "ownedPrivateDaemonReincarnated": false,
+  "childSavedRosterCoverage": "provider_excluded",
+  "status": "accepted"
+}
