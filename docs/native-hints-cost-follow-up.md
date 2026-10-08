@@ -187,6 +187,32 @@ entries. Misses retain the current hard collection deadline and hashing limits.
 Public snapshots, service frames, component leases and native observation clocks
 remain unchanged. This is an implementation proposal, not an accepted protocol.
 
+The concrete private transfer uses one unnamed Unix sequenced-packet socket
+pair per positively spawned, isolated collection worker. Only that child's
+socket descriptor is inherited; the existing bounded stdin request carries its
+descriptor number. The publisher sends one initial packet and the worker sends
+one return packet. Each has an exact protocol/provider/records shape, at most
+16 KiB and 32 read-only image descriptors via `SCM_RIGHTS`. A record carries only
+the full file signature and digest; version diagnostics are reconstructed from
+that digest. Received descriptors are close-on-exec, regular owned/nonwritable
+images within the existing size bound, with a matching full descriptor signature
+and read-only access. Reject mismatched counts, duplicate signatures, unexpected
+ancillary records, truncation and malformed shapes, closing every received FD.
+
+Publisher send/receive must be nonblocking and never hash an image. Receive the
+return only after the exact worker has exited and its owned helper group has
+been stopped. Install returned entries only after the snapshot passes the
+existing schema/store/scope/generation checks and a known runtime context is
+unchanged; otherwise discard them. A failed optional transfer clears the memo,
+without changing an independently valid observation result. Child receive/send
+remain bounded by the outer collection deadline. The memo evicts least recently
+used entries at its fixed limit; changed signature or failed anchor checks close
+the old entry and perform a fresh inspection. All channels, queued descriptor
+rights and anchors close on rejection, failed spawn, worker failure/timeout and
+publisher shutdown. The SDK subprocess keeps `close_fds=True` and receives none
+of these descriptors. This protocol remains private; it is not a new consumer
+capability or a change to service protocol 1.
+
 Before a source checkpoint, independently exercise same-image reuse, mutation,
 replacement and surviving old workers, read-only descriptor validation, UID/mode
 changes, cache bounds/eviction, truncated or inconsistent transfer, worker and
