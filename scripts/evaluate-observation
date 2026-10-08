@@ -243,9 +243,11 @@ def codex_reference(client):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
     rows = {}
+    saved_ids = {r["id"] for r in saved}
     for sid, r in records.items():
         if not UUID.fullmatch(sid):
             raise ValueError("native_id_invalid")
+        saved_identity = sid in saved_ids and sid not in unreadable_saved
         source = r.get("source")
         sub = source.get("subAgent") if isinstance(source, dict) and set(source) == {"subAgent"} else None
         native_child = (isinstance(sub, str) and sub in {"review", "compact", "memory_consolidation"}
@@ -282,7 +284,7 @@ def codex_reference(client):
             reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
         except (ValueError, OSError, KeyError):
             reason = "native_turn_read_unavailable"
-        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
+        rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if saved_identity and type(r.get("createdAt")) is int else None, "hasSavedHistory": saved_identity, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
     loaded_after = set(client.pages("thread/loaded/list"))
@@ -578,7 +580,7 @@ def compare(before, snapshot, after, provider):
         checks["membership"] += 1
         comparisons = {"title": c["title"], "cwd": c["cwd"], "runtime": c["runtime"]["value"], "phase": c["phase"]["value"] if c["phase"] else None, "activity": c["activity"]["at"], "kind": c["kind"]}
         if provider == "codex":
-            comparisons.update(sessionTreeRootId=c["nativeIds"]["sessionTreeRootId"], blockedReasons=c["blockedReasons"], createdAt=c["createdAt"],
+            comparisons.update(sessionTreeRootId=c["nativeIds"]["sessionTreeRootId"], blockedReasons=c["blockedReasons"], createdAt=c["createdAt"], hasSavedHistory=c["hasSavedHistory"],
                                outcome=c["outcome"]["value"], outcomeAt=c["outcome"]["observedAt"])
         for field, observed in comparisons.items():
             expected = b.get(field)
@@ -592,7 +594,7 @@ def compare(before, snapshot, after, provider):
                         checks[field] += 1
                     continue
                 checks[field + "_unproved"] += 1
-                if field == "phase" and (b.get("runtime") == "running" or observed != "unknown") or field == "activity" and (b.get("runtime") == "running" or observed is not None):
+                if field == "phase" and (b.get("runtime") == "running" or observed != "unknown") or field == "activity" and (b.get("runtime") == "running" and b.get("hasSavedHistory", True) or observed is not None):
                     issues.append({"id": sid, "field": field, "result": "native_reference_unproved", "cli": observed})
             elif expected != observed:
                 issues.append({"id": sid, "field": field, "result": "mismatch", "native": expected, "cli": observed})

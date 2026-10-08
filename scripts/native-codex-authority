@@ -13,6 +13,7 @@ import signal
 import socket
 import sqlite3
 import subprocess
+import threading
 import time
 import traceback
 from pathlib import Path
@@ -52,6 +53,10 @@ def main():
     peer = ActionRPC(home)
     service = None
     stream = None
+    active_turn = None
+    reader = None
+    stop_reader = threading.Event()
+    latest = {"snapshot": None, "error": None}
     receipt = {"case": args.case, "hostScope": proof.host, "isolationEstablished": True,
                "ordinaryProviderActions": False, "terminalOutputPersisted": False,
                "referenceImportsObserver": False, "providerVersion": peer.artifact["version"]}
@@ -116,9 +121,11 @@ def main():
                            sessionTreeRootId=fork["sessionId"], distinctThreadAndTreeRoot=fork_id != fork["sessionId"])
         else:
             if args.case == "monitor":
-                identifier = next(r["id"] for r in peer.pages("thread/list") if r.get("name") == "Activity proof renamed")
-                ref = next(r["identity"] for r in proof.snapshot()["sessions"] if r["identity"]["nativeId"] == identifier)
-                viewer = proof.spawn(proof.handoff(ref))
+                # Independently gated TTY entry initializes real saved history,
+                # verifies its native turn clock, and leaves no owned viewers.
+                receipt["entry"] = proof.run()
+                identifier = proof.accepted_ref["nativeId"]
+                viewer = proof.spawn(proof.handoff(proof.accepted_ref))
                 proof.pause(viewer, 4)
                 proof.assert_native_client(viewer)
                 peer.action("thread/resume", {"threadId": identifier, "cwd": str(proof.base / "workspace")})
@@ -163,22 +170,52 @@ def main():
                 sequence = value["sequence"]
                 push_frames += 1
                 return value
+            stream.settimeout(1)
+            def receive():
+                while not stop_reader.is_set():
+                    try:
+                        frame = pushed()
+                    except TimeoutError:
+                        continue
+                    except (ValueError, OSError, KeyError):
+                        if not stop_reader.is_set():
+                            latest["error"] = "private_push_reader_failed"
+                        return
+                    if frame["snapshot"] is not None:
+                        latest["snapshot"] = frame["snapshot"]
+            reader = threading.Thread(target=receive, daemon=True)
+            reader.start()
             def independent():
                 return oracle["codex_reference"](peer)
-            before = independent()
-            direct = proof.snapshot()
-            cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
-            push = pushed()["snapshot"]
-            after = independent()
-            for value in (direct, cached, push):
-                if value is None or oracle["compare"](before, value, after, "codex")["issues"]:
-                    raise ValueError("private_read_parity_mismatch")
-            receipt.update(directCachedPushParity=True, nativeRows=len(after["rows"]),
+            # Startup may legitimately expose earlier leased samples. Prove
+            # convergence within the explicit bound instead of equating sample
+            # timestamps or rejecting a native transition as a producer defect.
+            deadline = time.monotonic() + 20
+            push = None
+            while time.monotonic() < deadline:
+                before = independent()
+                direct = proof.snapshot()
+                cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
+                if latest["error"] is not None:
+                    raise ValueError(latest["error"])
+                push = latest["snapshot"]
+                after = independent()
+                issues = [oracle["compare"](before, value, after, "codex")["issues"]
+                          if value is not None else [{"field": "view", "result": "missing"}]
+                          for value in (direct, cached, push)]
+                if not any(issues):
+                    break
+                time.sleep(.1)
+            else:
+                print(json.dumps({"comparisonIssues": issues}))
+                raise ValueError("private_read_parity_mismatch")
+            unproved = {field: count for field, count in oracle["compare"](before, direct, after, "codex")["checks"].items() if field.endswith("_unproved")}
+            receipt.update(directCachedPushParity=True, unprovedFields=unproved, nativeRows=len(after["rows"]),
                            nativeParkedRows=sum(r["runtime"] == "parked" for r in after["rows"].values()),
                            allParkedStartup=bool(after["rows"]) and all(r["runtime"] == "parked" for r in after["rows"].values()))
             if args.case == "monitor":
                 cases = [
-                    ("approval", "Run /bin/sleep 20 using exec_command with sandbox_permissions=require_escalated and a justification asking approval for this private monitoring test. Do not use other tools. Wait for the approval.", None),
+                    ("approval", "Run /bin/sleep 20 using exec_command with sandbox_permissions=require_escalated and a justification asking approval for this private monitoring test. Do not use other tools. Wait for the approval.", {"mode": "default", "settings": {"model": "gpt-6.1-sol", "reasoning_effort": "low", "developer_instructions": None}}),
                     ("question", "Use request_user_input to ask exactly one multiple choice question with two options, and wait for my answer. Do not run commands or edit files.", {"mode": "plan", "settings": {"model": "gpt-6.1-sol", "reasoning_effort": "low", "developer_instructions": None}}),
                 ]
                 held = []
@@ -188,6 +225,7 @@ def main():
                     if collaboration:
                         params["collaborationMode"] = collaboration
                     turn = peer.action("turn/start", params)["turn"]["id"]
+                    active_turn = (identifier, turn)
                     working = False
                     deadline = time.monotonic() + 75
                     while time.monotonic() < deadline:
@@ -204,15 +242,27 @@ def main():
                         raise ValueError("private_blocked_projection_mismatch")
                     deadline = time.monotonic() + 20
                     cached_seen = push_seen = False
+                    matching_push = None
                     while time.monotonic() < deadline and not (cached_seen and push_seen):
                         cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
                         cached_seen |= any(r["identity"]["nativeId"] == identifier and r["phase"] and r["phase"]["value"] == "blocked" and reason in r["blockedReasons"] for r in cached["sessions"])
-                        pushed_value = pushed()["snapshot"]
+                        if latest["error"] is not None:
+                            raise ValueError(latest["error"])
+                        pushed_value = latest["snapshot"]
                         if pushed_value:
-                            push_seen |= any(r["identity"]["nativeId"] == identifier and r["phase"] and r["phase"]["value"] == "blocked" and reason in r["blockedReasons"] for r in pushed_value["sessions"])
+                            if any(r["identity"]["nativeId"] == identifier and r["phase"] and r["phase"]["value"] == "blocked" and reason in r["blockedReasons"] for r in pushed_value["sessions"]):
+                                push_seen = True
+                                matching_push = pushed_value
                     if not cached_seen or not push_seen:
                         raise ValueError("private_blocked_cache_push_pending")
+                    native_before = independent()
+                    direct_held = proof.snapshot()
+                    native_after = independent()
+                    for value in (direct_held, cached, matching_push):
+                        if value is None or oracle["compare"](native_before, value, native_after, "codex")["issues"]:
+                            raise ValueError("private_held_identity_state_age_mismatch")
                     peer.action("turn/interrupt", {"threadId": identifier, "turnId": turn})
+                    active_turn = None
                     deadline = time.monotonic() + 15
                     while time.monotonic() < deadline:
                         proof.pause(viewer, .2)
@@ -224,10 +274,23 @@ def main():
                     else:
                         raise ValueError("private_waiting_pending")
                     held.append({"reason": reason, "workingObserved": working, "nativeHeldFlag": flag,
-                                 "directCachedPushBlocked": True, "nativeWaitingAfterInterrupt": True})
+                                 "directCachedPushBlocked": True, "nativeStateAgeParity": True, "nativeWaitingAfterInterrupt": True})
                 receipt["heldCases"] = held
             receipt["pushFrames"] = push_frames
     finally:
+        if active_turn is not None:
+            try:
+                peer.action("turn/interrupt", {"threadId": active_turn[0], "turnId": active_turn[1]})
+            except (ValueError, OSError):
+                pass
+        stop_reader.set()
+        if stream is not None:
+            try:
+                stream.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+        if reader is not None:
+            reader.join(2)
         if stream is not None:
             stream.close()
         if service is not None:
