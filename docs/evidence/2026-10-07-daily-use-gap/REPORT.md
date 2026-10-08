@@ -191,3 +191,44 @@ checks: zero gaps or reader errors, read p95 89/80 ms, peak aggregate RSS about
 that ordinary traffic, not a matched incremental cost comparison. Earlier a15
 30-minute and native cost receipts remain historical exact-artifact evidence.
 Selection/restart/rollback and normal-unit acceptance follow separately below.
+
+## D5 operational selection and D6 closure
+
+Completed 2026-10-08 local time. Chezmoi commit `fdeceaf` changes only the
+Observer operations tuple and its runbook; both host source checkouts have that
+commit. Full managed-source checks, both six-target dry runs and exact prior
+artifact/unit verification precede live selection. Both hosts now select a16
+for normal read/write/service commands, with enabled active user publishers and
+the existing root config and hint/reconciliation mode. Private a15 rollback
+snapshots are retained at
+`~/.local/state/agent-observer/operations/2026-10-08-a16`.
+
+Each host accepts restart, forced exact publisher failure, old-watch termination,
+new stream/sequence, rollback to a15 and reselection. Two post-selection native
+comparisons per host still match all nine ordinary active identities/phases;
+the only membership issue is the known setup-only Claude candidate. Public
+filtering, age/order, exact references and doctor counts pass. Both final normal
+units accept another three-minute, three-reader/slow-reader check with zero
+gaps/errors, p95 86/81 ms and peak aggregate RSS about 113/68 MiB. These finite
+checks do not establish a new thirty-minute or physical-wake predicate.
+
+Provider configuration hashes, frontend command selections and managed external
+pins match preservation bookends. All three private native namespaces are stopped
+and borrowed authentication/history removed. Only verified temporary publishers
+were cleaned up; normal services and ordinary native work remain running.
+No Agent Plus/Tmux Plus source, frontend deployment or provider policy changed.
+Current handoff/operations examples select a16, and API 1/read 3/write 1 plus
+prerelease service 1 remain unchanged.
+
+## Remaining limits by daily impact
+
+| Case | Current impact and next owner |
+| --- | --- |
+| Mixed Codex default-entry features | Concrete native cold-entry failure remains despite successful preparation. Provider configuration/install coherence needs its own isolated proof and scoped provider delivery; observation and writer preparation cannot repair it. |
+| Three foreground Claude workers | Discovery/phase works, but writer attach rejects their unsupported route. A terminal client may eventually focus an independently bound existing terminal; arbitrary native foreground attachment is not accepted. |
+| Two missing recent Starship cwd paths | Preparation now explains the issue precisely. Relocation requires a separate explicit write-client design or operator-provided replacement, never inference from title. |
+| Older Codex kinds | Twenty-one older Starship rows lack native classification. All 35 recent/active roots are proved user; unknown old kind stays visible rather than being guessed child. No legacy reader is added. |
+| Saved lifecycle | Positive Claude parked predicates remain accepted. Saved-only absence, unloaded Codex and unsupported topologies remain unknown; human diagnostics clarify saved inventory. Native end/parked support needs a positive all-scope predicate. |
+| Claude saved census | One setup-only candidate with zero conversation records is omitted; bounded SDK coverage remains partial. No ordinary missing conversation is demonstrated. Genuine saved evidence is still conservatively retained across gaps. |
+| Dialog/background exit/physical wake | Generic dialog holds and background viewer `/exit` lack independent proof; physical suspend needs an operator window. Existing narrower state/exit predicates are unchanged. |
+| Mesh/device/notification/frontend | Separate consumer/transport/action gates. Tmux Plus development currently blocks Agent Plus; this Observer pass does not reopen combined development. |

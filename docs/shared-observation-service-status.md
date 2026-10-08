@@ -1,6 +1,6 @@
 # Shared service implementation status
 
-Current selection: `0.4.0a15` on Snap and Starship, with native hints alongside
+Current selection: `0.4.0a16` on Snap and Starship, with native hints alongside
 periodic reconciliation. The [current handoff](shared-observation-service-handoff.md)
 records the exact artifact, endpoint, cadences and unchanged API/service versions.
 The [delivery report](evidence/2026-10-07-native-delivery/REPORT.md) separates
@@ -8,6 +8,12 @@ native/cost acceptance from the managed rollout and longer reader/resource check
 The provisional 64 MiB aggregate RSS target was relaxed by the user to a review
 threshold; the one-point controlled incremental CPU target remains unchanged.
 Provider policy, frontend selection and physical wake retain separate gates.
+
+The [daily-use report](evidence/2026-10-07-daily-use-gap/REPORT.md) records the a16
+retention/kind/CLI repairs, independent installed/native proof and scoped upgrade.
+All nine ordinary active contexts match; recent saved Codex roots now have native
+user classification. Older unknown kinds and unsupported lifecycle/entry routes
+remain explicit. API 1/read 3/write 1 and service 1 are unchanged.
 
 The B0–B8 table below is historical: its 2026-10-06 candidate evidence was
 collected on 2026-10-07 UTC. Later a7 operations, a8 promotion and a9–a15 repairs
@@ -42,7 +48,7 @@ unchanged; service protocol 1 is separately prerelease.
 At the earlier B8 closure, normal Observer links still selected a11. Agent Plus retains its previous artifact
 and wire 2. That B8 batch selected no persistent service, provider policy, hook, network
 bridge or frontend. The later operational gate selects only Observer. The [producer handoff](shared-observation-service-handoff.md)
-gives current a15 commands and client obligations.
+gives current a16 commands and client obligations.
 
 ## Repairs accepted during validation
 

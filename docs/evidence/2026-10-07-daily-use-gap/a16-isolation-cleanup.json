@@ -1,0 +1,17 @@
+[
+  {
+    "root": "/tmp/ao-daily-gap-native-snap-r_xa0g82",
+    "namespaceStopped": true,
+    "borrowedAuthenticationAndHistoryRemoved": true
+  },
+  {
+    "root": "/tmp/ao-daily-gap-negative-snap-sc8msdhn",
+    "namespaceStopped": true,
+    "borrowedAuthenticationAndHistoryRemoved": true
+  },
+  {
+    "root": "/tmp/ao-daily-gap-matched-snap-z_erbeyt",
+    "namespaceStopped": true,
+    "borrowedAuthenticationAndHistoryRemoved": true
+  }
+]

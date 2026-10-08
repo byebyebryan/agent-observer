@@ -5,13 +5,20 @@ implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 
 The [current service handoff](shared-observation-service-handoff.md) supersedes
 this historical a2 installation tuple: normal Observer links and the user unit
-now select a15 with native hints, while Agent Plus keeps its old frozen reader.
+now select a16 with native hints, while Agent Plus keeps its old frozen reader.
 API 1, snapshot/watch 3 and write 1 remain unchanged; service protocol 1 is
-separately prerelease. The current handoff records the exact a15 artifact,
+separately prerelease. The current handoff records the exact a16 artifact,
 endpoint, reconciliation cadences and client responsibilities. Choose that
 explicit producer artifact/endpoint before client work. Native/cost and managed
 rollout gates are recorded in the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md);
 producer selection does not accept a downstream migration.
+
+The [daily-use repair pass](evidence/2026-10-07-daily-use-gap/REPORT.md) updates
+the current producer without decoder changes: runtime-only Claude rows no longer
+stick in partial history, saved Codex kind uses bounded passive detail, human ages
+advance at display time, and missing cwd/config preparation has specific finite
+codes. Tmux Plus work blocks Agent Plus implementation; keep its source and
+installed reader untouched until the separate client gate resumes.
 
 ## Historical accepted producer and selected baseline
 

@@ -1,0 +1,40 @@
+{
+  "hostScope": "starship",
+  "providerConfigurationUnchanged": true,
+  "providerFiles": {
+    ".codex/config.toml": "b1cc554b13b9fb7e93cfaeb4fbd93940b59834114cd297819faffbbee2526bf3",
+    ".claude/settings.json": null,
+    ".claude/settings.local.json": null
+  },
+  "frontendSelectionsUnchanged": true,
+  "frontendSelections": {
+    ".local/bin/rofi-agent-plus": {
+      "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus"
+    },
+    ".local/bin/rofi-agent-plus-rofi": {
+      "link": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi"
+    },
+    ".local/bin/rofi-tmux-plus": {
+      "link": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus"
+    },
+    ".local/bin/rofi-tmux-plus-rofi": {
+      "link": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus-rofi"
+    }
+  },
+  "managedExternalPinsUnchanged": true,
+  "observerLinks": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+    "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-service"
+  },
+  "observerUnit": {
+    "ActiveState": "active",
+    "UnitFileState": "enabled",
+    "MainPID": "867926"
+  },
+  "serviceId": "51c3970c-adc3-49c4-acc9-fd6452b8c641",
+  "nativeHintsInExactUnitArgs": true,
+  "startupWorkspaceInExactUnitArgs": true,
+  "ordinaryProviderActions": 0,
+  "frontendTargets": 0
+}
