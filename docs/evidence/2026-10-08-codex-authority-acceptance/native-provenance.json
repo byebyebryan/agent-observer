@@ -1,0 +1,68 @@
+{
+  "hosts": [
+    {
+      "hostScope": "snap",
+      "owningDaemon": {
+        "pid": 3519017,
+        "startTicks": "52946647",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "isolatedOwningDaemonVersion": "0.162.0",
+      "isolatedDaemonSha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+      "isolatedTuiVersion": "0.161.0",
+      "isolatedTuiSha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+      "isolatedTuiBytesMatchCurrentHostImage": true,
+      "versionsAreDiagnosticNotAllowlists": true,
+      "requiredContracts": [
+        "codex_daemon_status_v2",
+        "codex_database_only_catalog_v1",
+        "codex_exact_tty_entry_v2"
+      ]
+    },
+    {
+      "hostScope": "starship",
+      "owningDaemon": {
+        "pid": 1566532,
+        "startTicks": "52740759",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "isolatedOwningDaemonVersion": "0.162.0",
+      "isolatedDaemonSha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+      "isolatedTuiVersion": "0.161.0",
+      "isolatedTuiSha256": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+      "isolatedTuiBytesMatchCurrentHostImage": true,
+      "versionsAreDiagnosticNotAllowlists": true,
+      "requiredContracts": [
+        "codex_daemon_status_v2",
+        "codex_database_only_catalog_v1",
+        "codex_exact_tty_entry_v2"
+      ]
+    }
+  ],
+  "artifactSourceRevision": "2818e1bd6ba03d7abb0c00f392740c94616f19ac",
+  "packageModulesChangedAfterArtifactFreeze": false,
+  "validationHelpers": {
+    "evaluate-observation": "b319aa59315912537ec21414a5704dbbce26878eb652fdd297d061e669bbf806",
+    "native-acceptance": "6cb4eedf2c1372c04ac4df1b82c4b32911df6eafadba705fefae43570adcf8a6",
+    "native-service-acceptance": "76ef4e6554ad9c5b37b0759049d5f16be821636796086ba28695117a2e671505",
+    "native-codex-authority": "3058481748a57cd5a754789d25fdf36e915106a4c499528254d2d4e40a3a3eff",
+    "native-isolation": "bf9363b9a51589f0c3b0193c2ed5ca315a7f35f7b1b1b3829912b364a11d64f8",
+    "check-service-lifecycle": "b162a4a67783a6de1e875f980c241472924005adcaa93bb5ef62462fe527e1ea",
+    "check-shared-service": "ae2dd371a7f85748d3891690341eca6de1447f6c01f0234eaa3e21b967be1983"
+  },
+  "helperHashesIdentifyFinalReviewedTools": true,
+  "rawTerminalAndNativePayloadsPersisted": false,
+  "executedNativeHelperSha256": {
+    "evaluate-observation": "b319aa59315912537ec21414a5704dbbce26878eb652fdd297d061e669bbf806",
+    "native-acceptance": "6cb4eedf2c1372c04ac4df1b82c4b32911df6eafadba705fefae43570adcf8a6",
+    "native-service-acceptance": "c421e3ffb848539c35f3354300ff61ad615b828b2fe284964afb95a59e0f9feb",
+    "native-codex-authority": "3058481748a57cd5a754789d25fdf36e915106a4c499528254d2d4e40a3a3eff"
+  },
+  "finalToolOnlyChangeAfterNativeRuns": "native_service_reader_shutdown_error_handling"
+}

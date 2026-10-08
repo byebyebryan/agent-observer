@@ -1,5 +1,10 @@
 # Shared service producer handoff
 
+This is the selected a16/protocol-1 handoff. New consumer work uses the explicit
+accepted a3 [API 2 handoff](api-v2-client-handoff.md) and
+[protocol 2](service-protocol-v2.md). Normal selection remains a16 until its
+own operational gate; this historical contract does not describe a3 source.
+
 Date: 2026-10-08. Producer and client development remain separate. This handoff
 adds explicit cached service access to the accepted [API v1 boundary](api-v1.md).
 The service envelope is separately prerelease protocol 1; direct snapshot/watch 3

@@ -1,0 +1,31 @@
+{
+  "status": "accepted",
+  "api": {
+    "apiVersion": 2,
+    "hostLocal": true,
+    "nativeEventReplay": false,
+    "readCommands": [
+      "snapshot",
+      "list",
+      "show",
+      "watch",
+      "schema"
+    ],
+    "schemas": {
+      "snapshot": 4,
+      "watch": 4
+    }
+  },
+  "selectedPrefix": "/home/bryan/.local/share/agent-observer/0.5.0a3-3cee9e01474be646",
+  "independentReader": "jsonschema",
+  "readerVersion": "4.26.0",
+  "importsObserver": false,
+  "providerInvocations": 0,
+  "fixtureRows": {
+    "claude-ready": 5,
+    "partial": 3,
+    "snapshot": 5
+  },
+  "strictInputAndExactReference": true,
+  "maximumSerializedCliRows": 4096
+}

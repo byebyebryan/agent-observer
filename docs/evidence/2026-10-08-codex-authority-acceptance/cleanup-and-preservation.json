@@ -1,0 +1,48 @@
+[
+  {
+    "hostScope": "snap",
+    "ownedNamespaceStopped": true,
+    "borrowedAuthAndHistoryRemoved": true,
+    "cleanupWindowBookendsIdentical": true,
+    "ordinaryDaemonMatchesInitialAcceptance": true,
+    "selectedVersion": "agent-observer 0.4.0a16",
+    "selectedObserverLinks": {
+      "agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+      "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+      "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-service"
+    },
+    "serviceProtocol": 1,
+    "serviceId": "d45e7908-b9ca-47b4-acd3-4a344b9e7a9c",
+    "unit": {
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "1607342"
+    },
+    "providerConfigurationAndFrontendSelectionComparedAtCleanupOnly": true,
+    "ordinaryProviderActions": false,
+    "acceptedCandidateSelected": false
+  },
+  {
+    "hostScope": "starship",
+    "ownedNamespaceStopped": true,
+    "borrowedAuthAndHistoryRemoved": true,
+    "cleanupWindowBookendsIdentical": true,
+    "ordinaryDaemonMatchesInitialAcceptance": true,
+    "selectedVersion": "agent-observer 0.4.0a16",
+    "selectedObserverLinks": {
+      "agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+      "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+      "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-service"
+    },
+    "serviceProtocol": 1,
+    "serviceId": "51c3970c-adc3-49c4-acc9-fd6452b8c641",
+    "unit": {
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "867926"
+    },
+    "providerConfigurationAndFrontendSelectionComparedAtCleanupOnly": true,
+    "ordinaryProviderActions": false,
+    "acceptedCandidateSelected": false
+  }
+]

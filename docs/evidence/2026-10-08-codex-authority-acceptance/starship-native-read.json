@@ -1,0 +1,16 @@
+{
+  "case": "read",
+  "hostScope": "starship",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "directCachedPushParity": true,
+  "unprovedFields": {},
+  "nativeRows": 5,
+  "nativeParkedRows": 5,
+  "allParkedStartup": true,
+  "pushFrames": 1,
+  "status": "accepted"
+}

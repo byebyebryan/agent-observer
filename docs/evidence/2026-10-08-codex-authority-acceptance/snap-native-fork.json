@@ -1,0 +1,15 @@
+{
+  "case": "fork",
+  "hostScope": "snap",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "exactThreadTargetVerified": true,
+  "rootUnchanged": true,
+  "nativeThreadId": "01a11d8f-c32e-76e3-9134-d5c87a625f4f",
+  "sessionTreeRootId": "01a11d8f-c32e-76e3-9134-d5c87a625f4f",
+  "distinctThreadAndTreeRoot": false,
+  "status": "accepted"
+}

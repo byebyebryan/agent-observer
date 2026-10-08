@@ -7,6 +7,11 @@ read/service contracts and Claude as a following checkpoint. This document
 retains the preceding design history; its Claude-first/common-contract and
 compatibility gates do not block that Codex checkpoint.
 
+The explicit a3 Codex candidate now has
+[packaged/native acceptance](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+and an [API 2 client handoff](api-v2-client-handoff.md). Normal selection remains
+a16; Claude and downstream delivery retain separate gates.
+
 Current 2026-10-06 status: [API v1](api-v1.md) is accepted within its a2 subset.
 The later [shared-service design](shared-observation-service-plan.md),
 [review](shared-observation-service-review.md) and

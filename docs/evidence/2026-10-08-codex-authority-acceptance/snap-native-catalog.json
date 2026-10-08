@@ -1,0 +1,14 @@
+{
+  "case": "catalog",
+  "hostScope": "snap",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "databaseOnlyOmittedUnindexedLog": true,
+  "databaseOnlyDidNotRepair": true,
+  "defaultRepairNegativeControl": true,
+  "nativeId": "01a11d8c-8122-7962-9994-3c4d2a817fd4",
+  "status": "accepted"
+}

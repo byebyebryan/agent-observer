@@ -1,0 +1,19 @@
+{
+  "case": "read",
+  "hostScope": "snap",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "directCachedPushParity": true,
+  "unprovedFields": {
+    "title_unproved": 1,
+    "kind_unproved": 1
+  },
+  "nativeRows": 7,
+  "nativeParkedRows": 7,
+  "allParkedStartup": true,
+  "pushFrames": 1,
+  "status": "accepted"
+}
