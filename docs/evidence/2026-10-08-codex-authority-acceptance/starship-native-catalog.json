@@ -1,0 +1,14 @@
+{
+  "case": "catalog",
+  "hostScope": "starship",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "databaseOnlyOmittedUnindexedLog": true,
+  "databaseOnlyDidNotRepair": true,
+  "defaultRepairNegativeControl": true,
+  "nativeId": "01a11d8c-86b6-7091-a61d-7d325be5bf6f",
+  "status": "accepted"
+}

@@ -13,18 +13,23 @@ simplified.
 
 ## Status
 
-The current design checkpoint is the
+The current accepted producer checkpoint is the
 [Codex daemon authority reconciliation](docs/codex-daemon-authority-plan.md).
 Its [deep review](docs/codex-daemon-authority-review.md) traces collection,
 projection, strict validation, cached pull/push and action identity. Codex leads
 a clean breaking API 2/read wire 4/service 2 correction; Claude is the next
 provider checkpoint. The daemon owns running/parked state, while clients own
 TUI/tmux lifetime and attachment. Post-TUI-closure validation is deferred.
-The [ordinary evidence](docs/evidence/2026-10-08-codex-authority-review/REPORT.md)
-matches seven current running contexts and demonstrates discarded native
-`notLoaded` evidence. The [API 2 source contract](docs/api-v2.md) is implemented; final packaged
-native acceptance and operational selection remain separate. Normal commands
-still select a16/API 1/read wire 3 below.
+The [a3 acceptance](docs/evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+matches all 89 Snap and 353 Starship rows, including seven running contexts and
+positive parked state. Held approval/question, direct/cached/pushed parity,
+no-repair catalog, outage/recovery and supported exact TTY entry passed on both
+hosts. [API 2](docs/api-v2.md) and its [client handoff](docs/api-v2-client-handoff.md)
+define the breaking interface. The a3 candidate is installed separately; normal
+commands and services still select a16/API 1/read wire 3. Claude and managed
+selection have separate next gates.
+
+## Previous checkpoints
 
 The [shared observation service design](docs/shared-observation-service-plan.md)
 captures first-class pull/push and one local collector for multiple clients.
@@ -182,8 +187,9 @@ Codex-only hosts need no SDK. Observer projects explicit saved titles, UUIDs,
 cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
-The [API v1 candidate](docs/api-v1.md) defines the public JSON/CLI and pure
-Python consumer surface. `agent-observer api` reports its wire versions.
+The selected a16 [API v1 candidate](docs/api-v1.md) retains its historical
+JSON/CLI and pure Python surface. New source and explicit a3 clients use
+[API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
 
@@ -195,8 +201,10 @@ agent-observer snapshot --host-scope starship --provider codex
 
 Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
-roots can be supplied explicitly. Observation reads existing endpoints/files;
-it never starts a missing daemon or invokes a provider action.
+roots can be supplied explicitly. The a3 Codex collector reads the existing
+owning daemon without private saved-store fallback. It never starts a missing
+daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
+for direct and cached commands against the explicit accepted candidate.
 
 ## Scope
 
@@ -235,7 +243,7 @@ The user's current workflows naturally separate Claude Code for work from
 Codex for mostly other activity, with occasional work use. Work context is a
 consumer organization concern, separate from provider and host identity.
 
-The proof covers Codex and Claude Code, including foreground and
+The historical proof covers Codex and Claude Code, including foreground and
 daemon/supervisor topologies where they can be isolated. Scoped policy changes
 apply to fresh launches; existing ordinary sessions remain intact. Codex and Claude Code are the only
 providers in the Agent Plus migration. OpenCode integration in Agent Plus is

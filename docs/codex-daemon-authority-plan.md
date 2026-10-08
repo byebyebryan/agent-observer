@@ -1,16 +1,18 @@
 # Codex daemon authority reconciliation
 
-Date: 2026-10-08. Status: user-directed design and reviewed correction plan;
-source implementation is in progress; final artifact acceptance and rollout
-remain pending. This document
-governs the next Observer checkpoint. The [review](codex-daemon-authority-review.md)
-and [current evidence](evidence/2026-10-08-codex-authority-review/REPORT.md)
-separate observed behavior from the proposed correction.
+Date: 2026-10-08. Status: D1–D4 and the supported separate writer subset are
+[accepted against 0.5.0a3](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+on Snap and Starship. Managed selection and Claude remain separate next gates.
+This document governs the Observer reconciliation. The
+[original review](codex-daemon-authority-review.md) and its
+[baseline evidence](evidence/2026-10-08-codex-authority-review/REPORT.md)
+retain the pre-correction findings.
 
 The selected a16/API 1/wire 3 implementation remains the operational baseline.
 Its documented loaded-thread and Claude parked predicates are historical
-acceptance bounds, not the target for this checkpoint. No provider sessions,
-configuration, hooks, services or consumer repositories change in this review.
+acceptance bounds, not the target for this checkpoint. Native actions were
+restricted to isolated disposable namespaces; ordinary provider settings/hooks,
+sessions, selected services and consumer repositories were preserved.
 
 ## Decisions and scope
 
@@ -77,7 +79,7 @@ flags preserve running if `active` itself is valid, but leave phase unknown.
 Native runtime errors and latest turn outcomes remain separate. Neither a
 completion callback nor an old completed turn establishes current waiting.
 
-The proposed wire represents phase as null when runtime is positively parked.
+Wire 4 represents phase as null when runtime is positively parked.
 For running/unknown runtime it carries phase evidence, including explicit
 unknown where needed. Expiring a parked runtime sample replaces null with
 unknown phase and stale runtime evidence; it does not claim current absence.
@@ -102,8 +104,10 @@ argument for distinct thread/root IDs before claiming that action case.
 Retain bounded native title, user/child/unknown classification, recorded cwd,
 local Git/workspace context, creation time, last conversation activity and
 latest turn outcome. Unknown classification stays visible; the normal read
-view excludes only positively classified children. Provider source kinds and
-session-tree relationships do not independently prove child classification.
+view excludes only positively classified children. Broad catalog source kinds
+and session-tree relationships do not independently prove child classification.
+Validated native threadSource or a proved typed SubAgentSource variant supplies
+classification; older unknown shapes stay unknown.
 
 Age stays based on last conversation activity, with the native turn-completion
 or in-progress turn-start clock. Polling, renaming, resuming, metadata enrichment
@@ -221,6 +225,15 @@ Codex's process or daemon topology. Networking, Agent Plus, Tmux Plus and device
 firmware are independent consumers, not producer implementation dependencies.
 
 ## Implementation and acceptance sequence
+
+D0–D4 are complete for the explicit a3 Codex candidate. The supported D5 writer
+subset accepts initialized saved/live Resume, repeated TTY entry and equal-ID
+fork targeting, with exact native identity and age checks. A native unequal
+thread/tree-root case was not obtained and remains explicitly guarded; blank
+runtime-only Resume is unaccepted. D5 normal selection/restart/rollback and D6
+Claude are not completed by source or isolated artifact acceptance. The
+[API 2 client handoff](api-v2-client-handoff.md) keeps consumer implementation
+and rollout separate.
 
 | Checkpoint | Work | Required exit |
 | --- | --- | --- |

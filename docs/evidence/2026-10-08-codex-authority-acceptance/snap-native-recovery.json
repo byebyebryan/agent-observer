@@ -1,0 +1,74 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 2
+    },
+    {
+      "status": "accepted",
+      "hostScope": "snap",
+      "provider": "codex",
+      "independentOfFrontend": true,
+      "ownedDaemonFailureVisible": true,
+      "directUnavailableReads": 3,
+      "directReadsStartedNoDaemon": true,
+      "cachedSavedMetadataSurvivesFailure": true,
+      "privateSavedStoreFallback": false,
+      "offlineSavedResumeRejected": true,
+      "publicNewRestartsRuntime": true,
+      "exactSavedResumeAfterRecovery": true,
+      "recoveryPreservesConversationAge": true,
+      "reference": {
+        "hostScope": "snap",
+        "namespace": "sha256:263a73e98e260b929408b6d65cb1d2427de9b8e486affbb1fb47cda790357278",
+        "nativeId": "01a11d95-c8de-7852-a203-4c000dfdb505",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "conversationActivityAt": 1791497727000,
+      "offlineSavedResumeDirectly": "unsupported",
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 2
+    },
+    {
+      "status": "accepted",
+      "case": "native_cached_push_outage_recovery",
+      "frames": 121,
+      "frameKinds": {
+        "view": 45,
+        "gap": 38,
+        "resync": 38
+      },
+      "sequenceRevisionAndServiceIdentityValid": true,
+      "unavailableSavedRowUnknownWithOriginalClock": true,
+      "recoveryRestoresCurrentRowWithOriginalClock": true,
+      "freshSubscriberFullView": true,
+      "referenceImportsObserver": false
+    }
+  ]
+}

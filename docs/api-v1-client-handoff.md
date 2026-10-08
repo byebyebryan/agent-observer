@@ -1,5 +1,10 @@
 # API v1 client handoff
 
+API 1 remains the selected a16 baseline. New clients target the breaking
+[API 2 handoff](api-v2-client-handoff.md), accepted against an independently
+installed but unselected a3 candidate. Do not combine its wire 4/protocol 2
+with the ordinary a16 endpoint.
+
 Date: 2026-10-06. The independent Observer gate is accepted; this handoff does not
 implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 

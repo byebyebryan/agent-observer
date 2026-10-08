@@ -1,8 +1,9 @@
 # Observer API 2
 
-Date: 2026-10-08. Prerelease producer contract. Source implementation is complete;
-final packaged native acceptance is tracked in the
-[reconciliation plan](codex-daemon-authority-plan.md). This document supersedes
+Date: 2026-10-08. Prerelease producer contract. The Codex a3 packaged/native gate
+is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
+Delivery and Claude follow the [reconciliation plan](codex-daemon-authority-plan.md).
+This document supersedes
 [API 1](api-v1.md) for new clients. Installed normal selection remains a16 until
 a separate operational gate. No old-wire converter is supplied.
 
@@ -70,7 +71,8 @@ unknown/parked, with newest conversation activity within each group.
 Each source declares namespace/config selector, authenticated runtime diagnostics,
 capabilities, independent saved/runtime coverage, errors, limitations and nullable
 `discovery` query metadata. Codex discovery declares database-only catalog mode,
-all ten source kinds, 1000 catalog rows, up to 512 loaded/runtime rows by default,
+all ten source kinds within the native non-archived catalog, 1000 catalog rows,
+up to 512 loaded/runtime rows by default,
 1000 parked-history rows, 64 pages, 2 MiB native message bound and whether parked
 conversation clocks are collected. Exact writer preflight declares its one-row
 query separately. Unavailable source placeholders may have discovery null.
@@ -92,7 +94,7 @@ adds conversation clocks and workspace enrichment. A native status obtained by
 metadata work is deliberately accepted under the short runtime lease and sample
 ordering rules; metadata-only refresh cannot renew state.
 
-Cached snapshot and watch share one published view. Protocol 2 preserves service
+Cached snapshot and watch share one published view. [Protocol 2](service-protocol-v2.md) preserves service
 identity, monotonic view revision, per-connection sequence, clock domain and
 component leases. Heartbeats do not renew collection facts. Gaps, expiry and
 incarnation changes preserve uncertainty and old clocks; clients reconnect and
@@ -111,7 +113,9 @@ entry. Saved/live disposition changes alone do not invalidate exact identity.
 A distinct thread/tree-root TUI route returns `session_tree_entry_unproved`
 until its native action target is independently accepted.
 
-Clients must rebuild against wire 4/protocol 2, treat parked phase as null,
+The [client handoff](api-v2-client-handoff.md) identifies the explicit installed
+candidate and separate consumer/selection gates. Clients must rebuild against
+wire 4/protocol 2, treat parked phase as null,
 consume blockedReasons as a set, distinguish saved existence from running state,
 and own attachment/action validation. Agent Plus implementation and managed
 consumer selection are separate gates. Tmux Plus is unchanged.

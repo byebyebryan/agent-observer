@@ -1,0 +1,34 @@
+[
+  {
+    "hostScope": "snap",
+    "schemaVersion": 4,
+    "kinds": [
+      "snapshot",
+      "heartbeat"
+    ],
+    "rows": 89,
+    "parkedPhaseNull": true,
+    "streamIdStable": true,
+    "revisions": [
+      1,
+      2
+    ],
+    "standaloneWatchOnly": true
+  },
+  {
+    "hostScope": "starship",
+    "schemaVersion": 4,
+    "kinds": [
+      "snapshot",
+      "heartbeat"
+    ],
+    "rows": 353,
+    "parkedPhaseNull": true,
+    "streamIdStable": true,
+    "revisions": [
+      1,
+      2
+    ],
+    "standaloneWatchOnly": true
+  }
+]

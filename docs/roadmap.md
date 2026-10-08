@@ -17,8 +17,12 @@ wire 4/service 2; D2 repairs Codex collection/projection; D3 reconciles the serv
 and read CLI; D4 independently accepts the packaged Codex producer on both hosts;
 D5 separately gates delivery/write identity; D6 restores Claude. TUI/tmux
 ownership remains client-side, and post-TUI-closure proof is deferred. No legacy
-reader/converter or provider fallback is required. The [API 2 source contract](api-v2.md) is implemented; final packaged native
-acceptance and selection remain pending, and a16 remains selected. Frontend work remains a separate checkpoint.
+reader/converter or provider fallback is required. D1–D4 and the supported exact
+writer subset are [accepted against a3](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) and
+the [client handoff](api-v2-client-handoff.md) describe the installed unselected
+candidate. D5 managed selection/restart/rollback and D6 Claude remain next;
+a16 remains selected. Frontend work remains a separate checkpoint.
 
 The preceding [daily-use gap execution](daily-use-gap-execution-plan.md)
 selected a16. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)

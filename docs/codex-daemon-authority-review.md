@@ -1,10 +1,21 @@
 # Codex daemon authority deep review
 
-Date: 2026-10-08. Status: source/design review with independent ordinary native
-samples and targeted synthetic checks; no corrected producer has been accepted.
+Date: 2026-10-08. Original source/design review with independent ordinary native
+samples and targeted synthetic checks. The findings below describe the a16
+baseline. The corrected a3 producer is now
+[independently accepted](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+on Snap and Starship, with normal selection still a16.
 The [reconciled plan](codex-daemon-authority-plan.md) defines the new target and
 the [evidence report](evidence/2026-10-08-codex-authority-review/REPORT.md)
-records current installed behavior.
+records the installed behavior at the original review.
+
+R1–R9 and R11–R13 have source, strict/synthetic, packaged and scoped native
+corrections as applicable. R10 now uses exact threadId and independently verifies
+equal-ID fork targeting; distinct thread/tree-root TUI entry remains explicitly
+unsupported until a native case is accepted. No old-wire/private-store fallback
+or terminal-state authority was retained. The
+[API 2 handoff](api-v2-client-handoff.md) records the accepted interface and next
+delivery/Claude gates; this historical review does not expand their acceptance.
 
 ## Conclusion and review boundary
 

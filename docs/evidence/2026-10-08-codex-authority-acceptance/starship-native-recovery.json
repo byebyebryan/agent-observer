@@ -1,0 +1,74 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "isolation": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "isolation": {
+        "privateTmp": true,
+        "ordinaryProviderPathsMasked": true,
+        "privateUserMountPidNamespaces": true
+      },
+      "independentOfFrontend": true,
+      "emptyActivityUnknown": true,
+      "nativeConversationActivity": true,
+      "readsRenameHousekeepingPreserveAge": true,
+      "savedOrLiveResumeExactIdentity": true,
+      "resumePreservesAge": true,
+      "repeatedNativeEntry": true,
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 2
+    },
+    {
+      "status": "accepted",
+      "hostScope": "starship",
+      "provider": "codex",
+      "independentOfFrontend": true,
+      "ownedDaemonFailureVisible": true,
+      "directUnavailableReads": 3,
+      "directReadsStartedNoDaemon": true,
+      "cachedSavedMetadataSurvivesFailure": true,
+      "privateSavedStoreFallback": false,
+      "offlineSavedResumeRejected": true,
+      "publicNewRestartsRuntime": true,
+      "exactSavedResumeAfterRecovery": true,
+      "recoveryPreservesConversationAge": true,
+      "reference": {
+        "hostScope": "starship",
+        "namespace": "sha256:49e4495e5cd5264ae301a67e7e7c635ecd71bdbf1116429095ca5eec02a97b5e",
+        "nativeId": "01a11d95-c7db-7770-aeb4-b7ed6eac544b",
+        "nativeIdKind": "thread",
+        "provider": "codex"
+      },
+      "conversationActivityAt": 1791497730000,
+      "offlineSavedResumeDirectly": "unsupported",
+      "terminalOutputPersisted": false,
+      "readBackend": "installed_service",
+      "serviceProtocol": 2
+    },
+    {
+      "status": "accepted",
+      "case": "native_cached_push_outage_recovery",
+      "frames": 127,
+      "frameKinds": {
+        "view": 45,
+        "gap": 41,
+        "resync": 41
+      },
+      "sequenceRevisionAndServiceIdentityValid": true,
+      "unavailableSavedRowUnknownWithOriginalClock": true,
+      "recoveryRestoresCurrentRowWithOriginalClock": true,
+      "freshSubscriberFullView": true,
+      "referenceImportsObserver": false
+    }
+  ]
+}

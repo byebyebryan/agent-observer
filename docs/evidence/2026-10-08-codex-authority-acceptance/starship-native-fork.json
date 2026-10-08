@@ -1,0 +1,15 @@
+{
+  "case": "fork",
+  "hostScope": "starship",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "exactThreadTargetVerified": true,
+  "rootUnchanged": true,
+  "nativeThreadId": "01a11d8f-c84c-7462-b645-c07dc4e51761",
+  "sessionTreeRootId": "01a11d8f-c84c-7462-b645-c07dc4e51761",
+  "distinctThreadAndTreeRoot": false,
+  "status": "accepted"
+}
