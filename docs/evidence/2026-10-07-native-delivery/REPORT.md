@@ -370,3 +370,20 @@ settings file is absent at the final bookend, an unattributed ordinary-state
 change; the proof performed no ordinary provider action or restore. It is not
 reported as unchanged preservation. P5 and P6 remain open, and the memory-budget
 question remains unanswered.
+
+The final [ordinary selected-CLI comparison](a14-closing-selected-baseline.json)
+uses two independent native brackets per provider/host. Selected a8 reports
+50 saved/two loaded Codex identities on Snap, 93/two on Starship and 31 projected/
+32 independently enumerated Claude rows with three active workers on Snap.
+Known active identity, work state and conversation age agree. The same one
+unresolved Claude saved-only membership candidate recorded in a11/a12 remains
+omitted by the SDK projection and explicitly reported; 30 Claude activity clocks
+are independently established. Older Codex saved rows retain unproved kind and
+inactive-runtime classifications. Attention/activity ordering, human age,
+child-filter options and exact-reference lookup pass. These are selected direct
+CLI checks, not new cache-cadence or hint-unit acceptance.
+
+A subsequent [private anchored-image spike](anchored-image-spike.json) isolates
+the next cost lead without modifying installed bytes. It is research, not a
+production memo or host resource gate. Its ownership/transfer/failure requirements
+and alternative history-collector concerns are captured in the cost follow-up.

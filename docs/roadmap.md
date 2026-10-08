@@ -47,6 +47,12 @@ separately installed. A11 passes projection equivalence, independent native
 event clocks, foreground Claude and paired listener retirement. The original
 aggregate-memory target remains unmet; lower import cost does not complete P5
 or authorize P6. See the latest delivery receipts and cost follow-up.
+The separately installed a14 scheduling filter passes both-host Codex and Snap
+Claude native state/activity, foreground/background questions, reconnect and
+paired listener lifetime. Its matched combined Snap workload still misses the
+original CPU and aggregate-memory gates. A descriptor-anchored image-digest
+spike identifies a further cost lead; the private transfer protocol and its
+ownership/failure proof remain proposed. Neither the spike nor a14 selects hints.
 
 The [next-delivery plan](observer-next-delivery-plan.md) orders a fresh baseline,
 proved a7-to-a8 operational upgrade, bounded native hints for runtime/history,

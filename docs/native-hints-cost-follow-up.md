@@ -147,6 +147,66 @@ even on a failed case. This proof introduces no public command or frontend work.
 
 ## Next bounded producer pass
 
+### Reviewed next cost boundary after a14
+
+A private read-only spike against the installed a14 Claude runtime collector
+compares five warmed samples per mode. Baseline mean process CPU is 0.393 seconds;
+reusing a previously hashed image with an open descriptor anchor is 0.00128
+seconds. The three image anchors are closed afterward. Exact bounded identity,
+known work/presence, wait reason and activity projections agree across samples.
+The [spike receipt](evidence/2026-10-07-native-delivery/anchored-image-spike.json)
+records this research separately from installed-artifact acceptance. It patches
+only the private proof process; it implements no production cache, worker
+transport, failure protocol or history changes. It has no causal host-budget
+claim and does not establish adversarial safety.
+
+The demonstrated remaining lead is repeated image hashing across independent
+collection jobs. Prefer reviewing a bounded **descriptor-anchored digest memo**
+before splitting history from runtime or extending runtime hint delays. The
+memo would retain only an open image descriptor, its full validated file
+signature and diagnostic digest. It must never retain session state, provider
+payloads, transcript metadata or work evidence. No provider/hash allowlist is
+introduced. Cache use cannot skip current executable-path/UID/process-birth,
+regular-file/mode/size or before/after descriptor checks. The still-open anchor
+prevents inode reuse from equating a different image with an old digest; changed
+signature, unsafe ownership/mode, missing anchor or unknown input forces a fresh
+inspection or explicit failure. An on-disk signature/digest cache without these
+anchors is outside this proposal.
+
+Existing owned workers are short-lived, so a production implementation needs a
+separately reviewed private descriptor-transfer protocol. Keep hashing/native
+I/O out of the publisher's IPC loop. Transfer only positively owned read-only
+image descriptors and bounded signature/digest records between the publisher
+and its exact spawned collection worker. Bound entries to 32 per provider,
+messages and inherited/received descriptors; close all rejected, evicted,
+failed-worker and shutdown descriptors. Never transfer these descriptors into
+the guarded SDK helper. Only a successful validated current-generation worker
+may return memo entries; timeout, malformed/truncated transfer, wrong scope,
+changed incarnation or publisher replacement must not preserve unverified
+entries. Misses retain the current hard collection deadline and hashing limits.
+Public snapshots, service frames, component leases and native observation clocks
+remain unchanged. This is an implementation proposal, not an accepted protocol.
+
+Before a source checkpoint, independently exercise same-image reuse, mutation,
+replacement and surviving old workers, read-only descriptor validation, UID/mode
+changes, cache bounds/eviction, truncated or inconsistent transfer, worker and
+publisher death, and generation/incarnation reset. Review exceptional cleanup
+as carefully as the hot path. Then freeze a new candidate and repeat public
+conformance, independent native state/age/title/questions/reconnect/lifetime
+and matched combined Snap plus Starship cost. The spike's CPU reduction must
+not be substituted for those host measurements. Retained descriptors add a
+bounded FD cost and do not solve the unanswered aggregate-memory decision.
+
+A history-only collector is an alternative architectural branch, not an
+incidental `include_runtime=False` change. Current history workers also establish
+live title/cwd, workspace association, identity ambiguity, new-turn outcome and
+runtime context. Dropping these reads requires a separate merge/freshness design
+and independent equivalence proof. Reusing runtime facts from a full history job
+also requires explicit component receipt and pending-hint coverage rules; a
+history refresh cannot casually renew old runtime or conversation evidence.
+
+### Acceptance sequence
+
 1. **Establish equivalent measurements.** Use owned isolated native stores and
    identical scripted activity, history population and readers. Compare quiet
    startup/steady state separately from active runtime/history workloads. Include

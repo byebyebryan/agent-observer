@@ -54,6 +54,12 @@ The newer a11 candidate reduces SDK initialization cost with reviewed guarded
 metadata loading and exact saved-history projection equivalence. Independent
 event-clock, foreground Claude and passive listener checks pass; aggregate
 memory and managed hint acceptance remain separate. Normal units still select a8.
+The subsequent a12-a14 runtime and scheduling repairs retain that selected
+baseline. The [a14 receipt](docs/evidence/2026-10-07-native-delivery/a14-filter-and-host-cost.json)
+passes focused native state/activity/questions/reconnect/lifetime checks, but
+matched combined Snap cost still adds 2.086 CPU points and samples 131.402 MiB
+aggregate RSS. The [cost follow-up](docs/native-hints-cost-follow-up.md) records
+the remaining architecture and explicit memory-budget decision before rollout.
 The
 [event-assisted monitoring gate](docs/event-assisted-monitoring-plan.md) defines
 the remaining producer acceptance before hint rollout, separate from frontend work.
