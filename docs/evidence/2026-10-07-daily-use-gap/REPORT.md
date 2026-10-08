@@ -64,3 +64,23 @@ finite issues. Daily-impact receipts record recent metadata and preparation-only
 routes. Activity brackets and setup-only counts contain no conversation bodies,
 native raw payloads, credentials or terminal captures. Acceptance and selection
 for repairs will be recorded separately below after their gates.
+
+## D1 source repair: history retention ownership
+
+A failing source regression reproduces the cached-row defect: a Claude history
+sample includes a runtime-only worker, a later partial history sample omits it,
+and a complete runtime sample no longer observes it. The former code retained
+that row indefinitely in history because saved coverage stayed partial.
+
+History gap retention now requires Claude's public saved-history evidence.
+Current runtime rows remain visible, and incomplete runtime rosters still retain
+missing identities as stale. Previously observed saved rows remain retained with
+their original activity as last-known. Codex's conservative catalog retention is
+unchanged because its public rows have no Claude-style history object. No row is
+classified from a fallback title, cwd, PID or age, and removal from a sampled view
+does not claim provider deletion, session end or child status.
+
+The focused regressions cover runtime-only removal after complete runtime
+absence, saved-history retention/age, partial-runtime retention and Codex
+non-regression. This is source acceptance only; the selected a15 artifact has
+not changed. Installed/native and operational gates follow at D5.

@@ -134,11 +134,18 @@ class ServiceState:
         receipt.health = "current" if coverage == "complete" else "partial" if coverage == "partial" else "unavailable"
         if receipt.expiresBoottimeMs <= self.clock():
             receipt.health = "stale"
-        # A bounded/incomplete roster cannot erase previously observed identities.
+        # Retain evidence belonging to this component across an incomplete read.
+        # Claude history snapshots also contain currently registered workers;
+        # a runtime-only row is not saved evidence merely because the saved
+        # census is partial. Runtime retention remains independently governed
+        # by its own roster coverage. Codex has no public history object, so its
+        # existing conservative catalog retention stays unchanged.
         if previous and coverage != "complete":
             present = {identity_key(r["identity"]) for r in receipt.data["sessions"]}
             used_bytes = len(canonical(receipt.data).encode())
             for old in previous["sessions"]:
+                if component == "history" and provider == "claude" and old["history"] is None:
+                    continue
                 if identity_key(old["identity"]) not in present and len(receipt.data["sessions"]) < MAX_SESSIONS:
                     retained = stale_row(old, runtime=True, metadata=True)
                     retained["metadataIssues"] = list(dict.fromkeys(retained["metadataIssues"][:125] + ["retained_after_gap"]))
