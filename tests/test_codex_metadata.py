@@ -145,8 +145,8 @@ class CodexMetadataTest(unittest.TestCase):
         for private_value in ("thread_spawn", "parent_thread_id", "root/worker", "reviewer"):
             self.assertNotIn(private_value, serialized)
 
-    def test_native_review_and_compact_sources_are_children_without_thread_source(self):
-        for variant in ("review", "compact"):
+    def test_native_typed_subagent_sources_are_children_without_thread_source(self):
+        for variant in ("review", "compact", "memory_consolidation", {"other": "provider_task"}):
             value = saved_thread_metadata(
                 {**self.row, "source": {"subAgent": variant}, "threadSource": None},
                 **self.scope,
@@ -159,6 +159,12 @@ class CodexMetadataTest(unittest.TestCase):
         )
         self.assertEqual("unknown", malformed["threadKind"])
         self.assertIn("thread_classification_unavailable", malformed["metadataIssues"])
+
+    def test_other_subagent_marker_must_be_bounded_and_exact(self):
+        for marker in ({"other": ""}, {"other": "private\ntext"}, {"other": None},
+                       {"other": "x" * 129}, {"other": "task", "extra": "value"}):
+            value = saved_thread_metadata({**self.row, "source": {"subAgent": marker}, "threadSource": None}, **self.scope)
+            self.assertEqual(value["threadKind"], "unknown")
 
     def test_unknown_history_classification_stays_visible_as_unknown(self):
         value = saved_thread_metadata(

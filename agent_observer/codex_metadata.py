@@ -58,9 +58,13 @@ def _subagent_source_state(source):
     if set(source) != {"subAgent"}:
         return False, True
     subagent = source["subAgent"]
-    if isinstance(subagent, str) and subagent in {"review", "compact"}:
+    if isinstance(subagent, str) and subagent in {"review", "compact", "memory_consolidation"}:
         return True, True
-    if not isinstance(subagent, dict) or "thread_spawn" not in subagent:
+    if isinstance(subagent, dict) and set(subagent) == {"other"}:
+        value = subagent["other"]
+        return (isinstance(value, str) and 0 < len(value) <= 128
+                and not any(unicodedata.category(c).startswith("C") for c in value)), True
+    if not isinstance(subagent, dict) or set(subagent) != {"thread_spawn"}:
         return False, True
     spawn = subagent["thread_spawn"]
     if not isinstance(spawn, dict):

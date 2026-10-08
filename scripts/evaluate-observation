@@ -18,6 +18,7 @@ import stat
 import struct
 import subprocess
 import time
+import unicodedata
 from pathlib import Path
 
 UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z")
@@ -246,8 +247,16 @@ def codex_reference(client):
         if not UUID.fullmatch(sid):
             raise ValueError("native_id_invalid")
         source = r.get("source")
-        child = r.get("threadSource") == "subagent" or isinstance(source, dict) and "subAgent" in source
-        kind = "child" if child else "user" if r.get("threadSource") == "user" else "unknown"
+        sub = source.get("subAgent") if isinstance(source, dict) and set(source) == {"subAgent"} else None
+        native_child = (isinstance(sub, str) and sub in {"review", "compact", "memory_consolidation"}
+                        or isinstance(sub, dict) and set(sub) == {"other"} and isinstance(sub["other"], str)
+                        and 0 < len(sub["other"]) <= 128 and not any(unicodedata.category(c).startswith("C") for c in sub["other"]))
+        if isinstance(sub, dict) and set(sub) == {"thread_spawn"}:
+            spawn = sub["thread_spawn"]
+            native_child = isinstance(spawn, dict) and isinstance(spawn.get("parent_thread_id"), str) and UUID.fullmatch(spawn["parent_thread_id"]) is not None
+        classification = r.get("threadSource")
+        regular = source is None or isinstance(source, str) and source in {"cli", "vscode", "exec", "appServer", "unknown"}
+        kind = "child" if classification == "subagent" or native_child and classification != "user" else "user" if classification == "user" and regular else "unknown"
         status = r.get("status", {}).get("type") if sid not in unreadable_saved else None
         flags = r.get("status", {}).get("activeFlags", [])
         valid_waits = isinstance(flags, list) and all(isinstance(f, str) for f in flags) and len(flags) == len(set(flags)) and all(f in ("waitingOnApproval", "waitingOnUserInput") for f in flags)
@@ -618,7 +627,7 @@ def read_client_checks(cli, payload):
     age_ok = True
     for line, row in zip(human[1:], listed["sessions"], strict=True):
         at = row["activity"]["at"] if row["activity"]["health"] == "current" else row["activity"].get("lastKnownAt")
-        def age_at(seconds):
+        def age_at(seconds, at=at, row=row):
             age = "unknown" if seconds is None else "clock-ahead" if seconds < 0 else next(str(seconds // unit) + label for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
             return "stale:" + age if at is not None and row["activity"]["health"] == "stale" else age
         expected_ages = {"unknown"} if at is None else {

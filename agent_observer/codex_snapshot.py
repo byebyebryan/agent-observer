@@ -369,7 +369,7 @@ def collect_codex(
                     continue
                 if detail["nativeIds"] != row["nativeIds"]:
                     raise SnapshotError("native_identity_mapping_conflict")
-                if (row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]) or any(issue.startswith("thread_classification_") for issue in row["metadataIssues"]):
+                if (row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]) or "thread_classification_conflict" in row["metadataIssues"]:
                     detail["threadKind"] = "unknown"
                     detail["metadataIssues"].append("thread_classification_conflict")
                 # Later native detail is a newer authoritative sample, not
