@@ -37,8 +37,8 @@ was enabled on Snap and Starship. At that a7 gate, restart/crash/rollback/
 reselection and both 30-minute normal-unit reader/resource checks passed. The report records
 remaining native entry, foreground attach and physical wake limits.
 
-The [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md) now
-selects `0.4.0a15` on Snap and Starship with passive native wakeups and periodic
+The [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md) selected
+`0.4.0a15` on Snap and Starship with passive native wakeups and periodic
 reconciliation. Snap supports Codex/Claude; Starship supports Codex. The
 [a15 receipt](docs/evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
 records supported state, question, age, rename, reconnect and listener-lifetime
@@ -51,6 +51,14 @@ and normal-unit reader/resource checks. Earlier failed candidates retain their
 original evidence in the delivery report. Physical suspend/wake, provider entry
 repair, notifications and downstream migrations remain separate.
 
+The [daily-use repair pass](docs/evidence/2026-10-07-daily-use-gap/REPORT.md)
+now selects `0.4.0a16` on both hosts with the same API and hint/reconciliation
+boundary. It repairs Claude runtime-only retention, classifies current saved
+Codex roots from passive detail and improves human age/runtime and missing-cwd
+diagnostics. Independent direct/cache comparisons match all nine ordinary active
+contexts. Saved lifecycle remains unknown where native evidence cannot establish
+parked. Tmux Plus development and Agent Plus migration remain separate.
+
 The [API v1 contract](docs/api-v1.md) is independently accepted against
 `0.3.0a2`, observation snapshot/watch wire 3 and write wire 1. The
 [packaged/native report](docs/evidence/2026-10-06-stable-api/REPORT.md) records
@@ -60,7 +68,7 @@ Required native contracts replace daily provider release/hash allowlists;
 actual executable identity and changed-context action guards remain enforced.
 
 The immutable a2 candidate is installed separately on both hosts. Normal
-Observer links now select a15/wire 3, and Agent Plus still uses its old frozen
+Observer links now select a16/wire 3, and Agent Plus still uses its old frozen
 wire-2 reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
 separate client migration; frontend and notification rollout have independent
 gates. No ordinary provider restart is needed for passive observation.

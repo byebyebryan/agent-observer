@@ -45,3 +45,18 @@ the service envelope remains separately prerelease protocol 1.
 The [validation workflow](observation-validation-workflow.md),
 [provider compatibility policy](provider-contract-compatibility-plan.md) and
 [service handoff](shared-observation-service-handoff.md) apply throughout.
+
+## Execution verdict
+
+D0–D6 complete on 2026-10-08. D1/D2/D3 have separate reviewed commits; frozen
+producer a16 passes installed/public/native gates before Observer-only selection.
+Both hosts accept restart/crash/a15-rollback/reselection, independent normal CLI
+comparisons and bounded reader checks. The report records historical versus
+current evidence and preservation/cleanup separately. No API decoder changes,
+provider policy change or frontend work was included.
+
+The [remaining-limit table](evidence/2026-10-07-daily-use-gap/REPORT.md) assigns
+concrete daily issues to separate provider coherence, foreground terminal
+binding and explicit cwd relocation passes. Older native kind/lifecycle,
+setup-only history, dialog/exit and physical wake cases retain honest bounds.
+These limits are not normalized to idle, parked, child or successful entry.
