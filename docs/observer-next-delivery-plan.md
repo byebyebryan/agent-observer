@@ -14,6 +14,10 @@ accepted, so P6 hint selection and its 30-minute soaks are withheld. P7 hands of
 selected a8 and explicit candidate limits. The
 [cost follow-up](native-hints-cost-follow-up.md) retains the original targets;
 the table below remains the intended sequence, not a claim every gate passed.
+The user subsequently relaxed the 64 MiB aggregate memory target and resumed
+execution. It is a review threshold; P6 still requires exact artifact/native
+acceptance, recovery, rollback and 30-minute resource/reader checks. Retain
+absolute/added RSS and add idle/collection RSS/PSS without imposing a new cap.
 
 ## Outcome and priorities
 
@@ -118,7 +122,7 @@ as gaps rather than changing them after observing results.
 | Activity/history latency | Supported conversation changes reach a current native activity clock at p95 within 15 seconds; rename/housekeeping must not advance conversation age |
 | Burst limits | Initially evaluate a 1-second minimum runtime gap and 10-second minimum history gap, with at most one pending wakeup per source/component; verify bounded trailing work and history fairness |
 | Idle collection | After startup, idle hints do not cause more authoritative reads than the polling baseline; unrelated native traffic is ignored |
-| Owned resource budget | Compare equivalent workloads/modes; provisional incremental mean CPU at most one percentage point and aggregate RSS at most 64 MiB per host; stable FD/process/watch counts over the soak |
+| Owned resource budget | Compare equivalent workloads/modes; incremental mean CPU at most one percentage point. User-relaxed 64 MiB aggregate RSS is a review threshold; report absolute/added RSS and idle/collection PSS, with bounded helper/FD/watch behavior and no sustained unexplained growth over the soak |
 | Failure recovery | With hints unavailable, convergence returns to the configured periodic interval plus collection bound; source health, expiry and old conversation clocks remain truthful |
 | Native passivity | Loaded-set bookends and paired quiet-control retirement with a long-lived peer, plus unchanged ordinary settings/hooks/native process ownership |
 | Reader behavior | Multiple readers share collection work, slow readers receive conservative gap/resync or disconnect, and remote silence/reconnect invalidates held claims correctly |
