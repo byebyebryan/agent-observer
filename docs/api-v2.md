@@ -110,6 +110,11 @@ native discovery. Exact Resume uses uncapped `thread/read` and passes threadId,
 never a catalog position, title, cwd guess or tree-root substitution. It guards
 cwd/config, executable/settings and owning incarnation between preparation and
 entry. Saved/live disposition changes alone do not invalidate exact identity.
+The [saved-evidence repair](codex-evidence-repair-plan.md) additionally requires
+an explicitly non-ephemeral summary and successful metadata-only stored-history
+pagination before Resume preparation/revalidation. Empty history is allowed;
+unproved persistence fails with `resume_saved_history_unproved`. Native path,
+title, cwd and an activity clock do not substitute for this proof.
 A distinct thread/tree-root TUI route returns `session_tree_entry_unproved`
 until its native action target is independently accepted.
 

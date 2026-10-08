@@ -17,6 +17,22 @@ from .codex_transport import PassiveClient, TransportError
 from .collection import compose_snapshot
 
 
+def _readable_saved_history(summary, turns):
+    """Positive stored-history proof, independent of nonempty turns or clocks.
+
+    A non-ephemeral summary may still be an unmaterialized blank context.
+    The exact metadata-only history RPC must also succeed with bounded items.
+    Neither the unstable native path nor a local file is an observation input.
+    """
+    if summary.get("ephemeral") is not False or not isinstance(turns, dict):
+        return False
+    data = turns.get("data")
+    return isinstance(data, list) and len(data) <= 1 and all(
+        isinstance(turn, dict) and turn.get("itemsView") == "notLoaded" and turn.get("items") == []
+        for turn in data
+    )
+
+
 def collect_exact(config_home, *, host_scope, thread_id):
     home = Path(config_home)
     peer = inspect_managed_endpoint(home, timeout=3)
@@ -33,13 +49,16 @@ def collect_exact(config_home, *, host_scope, thread_id):
                                    runtime_version=peer.version, observed_at=time.time_ns() // 1_000_000)
         if row["identity"]["nativeId"] != thread_id:
             raise MetadataError("native_identity_mapping_conflict")
-        row["savedIdentity"] = True
+        row["savedIdentity"] = False
         try:
             turns = client.latest_turn(thread_id)
+            row["savedIdentity"] = _readable_saved_history(payload, turns)
             row["activity"] = codex_activity(turns, completion_only=True)
             row["outcome"] = codex_outcome(turns, completion_only=True)
         except TransportError:
             row["activity"] = unavailable("native_turn_read_unavailable")
+        if row["runtimeDisposition"]["value"] == "parked" and not row["savedIdentity"]:
+            row["runtimeDisposition"].update(value="unknown", health="unavailable", reason="saved_identity_unavailable")
         validate_incarnation(peer)
     source = {
         "provider": "codex", "configHome": str(home), "configHomeKind": "explicit",

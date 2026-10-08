@@ -96,6 +96,7 @@ class WriteClientTest(unittest.TestCase):
                     "phase": None if saved else {"health": "current"},
                     "runtime": {"health": "current"},
                     "inventory": "saved" if saved else "live",
+                    "hasSavedHistory": True,
                 }
             ],
         }
@@ -231,6 +232,20 @@ class WriteClientTest(unittest.TestCase):
                 snapshot["sessions"][0]["nativeIds"]["threadId"],
             ],
         )
+
+    def test_unproved_saved_identity_is_rejected_before_entry_and_on_revalidation(self):
+        request = self.request(operation="resume")
+        collect, select = self.targeted(request)
+        with collect, select:
+            plan = prepare(request)
+        snapshot = self.snapshot(request)
+        snapshot["sessions"][0]["hasSavedHistory"] = False
+        collect, select = self.targeted(request, snapshot)
+        with collect, select, patch("agent_observer.write_client.os.execve") as launch:
+            for operation, value in ((prepare, request), (execute, plan)):
+                with self.assertRaisesRegex(ContractError, "^resume_saved_history_unproved$"):
+                    operation(value)
+            launch.assert_not_called()
 
 
 
