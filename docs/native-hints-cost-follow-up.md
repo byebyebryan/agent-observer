@@ -60,8 +60,23 @@ A12 shares the existing provider/full-descriptor-signature cache only within one
 collection. Opens, ownership, process birth, signature bookends and replacement/
 mutation rejection remain mandatory. There is no persisted/cross-request image
 cache or cached session state. Distinct surviving images are still independently
-hashed. Its 317 source tests and separate installation do not establish improved
-native cost; repeat the identical native workload before accepting that claim.
+hashed. Its 317 source tests, public conformance and separately installed
+ordinary Claude comparison pass. The [a12 native cost receipt](evidence/2026-10-07-native-delivery/a12-runtime-cost.json)
+measures three scripted turns in each fresh polling/hint store: 1.270 versus
+2.703 percent of one core, an incremental 1.433 points. Hinted peak aggregate
+RSS is 87.840 MiB, versus 65.340 MiB polling. The CPU gap shrinks but still misses
+one point; aggregate memory also misses 64 MiB. Native stores/authentication are
+removed, and a8 remains selected. This is measured workload evidence, not a
+universal worst-case bound.
+
+The next focused a13 repair implements the scheduler's already declared 500 ms
+settling window. Previously the first hint dispatched immediately; a hint during
+an active collection also lost that window. Anchor the delay to the first
+unconsumed hint so continued traffic cannot postpone work indefinitely. Periodic
+reads can still run earlier, one-second runtime/ten-second history minimum gaps
+remain, and failure backoff and provider fairness stay in force. Deterministic
+clock tests cover both bursts and late hints during an active job. The CPU and
+latency targets are unchanged; a new frozen native measurement is required.
 
 ## Next bounded producer pass
 
