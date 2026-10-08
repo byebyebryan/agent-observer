@@ -1,0 +1,71 @@
+{
+  "ordinaryProviderActions": false,
+  "hosts": [
+    {
+      "hostScope": "snap",
+      "fixtures": [
+        {
+          "root": "/tmp/ao-saved-spike-l5ltpgmu",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-accept-snap-aef5k4ub",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-accepted-snap-c2fxt7n3",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-final-snap-68bxecxg",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-proof-snap-4aq9kuhu",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        }
+      ],
+      "accepted": true
+    },
+    {
+      "hostScope": "starship",
+      "fixtures": [
+        {
+          "root": "/tmp/ao-saved-accept-starship-ZNkZLs",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-accepted-starship-5sj7lte_",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-final-starship-6mg6_wxf",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        },
+        {
+          "root": "/tmp/ao-saved-proof-starship-b779j0oo",
+          "ownedNamespaceStopped": true,
+          "privateProviderTreeRemoved": true,
+          "borrowedAuthAndHistoryRemoved": true
+        }
+      ],
+      "accepted": true
+    }
+  ]
+}

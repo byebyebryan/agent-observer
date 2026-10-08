@@ -255,12 +255,27 @@ def main():
                                 matching_push = pushed_value
                     if not cached_seen or not push_seen:
                         raise ValueError("private_blocked_cache_push_pending")
-                    native_before = independent()
-                    direct_held = proof.snapshot()
-                    native_after = independent()
-                    for value in (direct_held, cached, matching_push):
-                        if value is None or oracle["compare"](native_before, value, native_after, "codex")["issues"]:
-                            raise ValueError("private_held_identity_state_age_mismatch")
+                    # A native helper can materialize between the bracketing
+                    # reads, and cached views can precede its metadata update.
+                    # Retry all fields within a bound; never waive a mismatch.
+                    deadline = time.monotonic() + 20
+                    parity_attempts = 0
+                    while time.monotonic() < deadline:
+                        parity_attempts += 1
+                        native_before = independent()
+                        direct_held = proof.snapshot()
+                        cached = proof.command(["agent-observer", "service", "snapshot", "--host-scope", proof.host, "--socket", str(path)])["snapshot"]
+                        matching_push = latest["snapshot"]
+                        native_after = independent()
+                        issues = [oracle["compare"](native_before, value, native_after, "codex")["issues"]
+                                  if value is not None else [{"field": "view", "result": "missing"}]
+                                  for value in (direct_held, cached, matching_push)]
+                        if not any(issues):
+                            break
+                        time.sleep(.1)
+                    else:
+                        print(json.dumps({"case": reason, "comparisonIssues": issues}))
+                        raise ValueError("private_held_identity_state_age_mismatch")
                     peer.action("turn/interrupt", {"threadId": identifier, "turnId": turn})
                     active_turn = None
                     deadline = time.monotonic() + 15
@@ -274,7 +289,8 @@ def main():
                     else:
                         raise ValueError("private_waiting_pending")
                     held.append({"reason": reason, "workingObserved": working, "nativeHeldFlag": flag,
-                                 "directCachedPushBlocked": True, "nativeStateAgeParity": True, "nativeWaitingAfterInterrupt": True})
+                                 "directCachedPushBlocked": True, "nativeStateAgeParity": True,
+                                 "parityAttempts": parity_attempts, "nativeWaitingAfterInterrupt": True})
                 receipt["heldCases"] = held
             receipt["pushFrames"] = push_frames
     finally:

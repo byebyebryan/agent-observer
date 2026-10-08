@@ -2,6 +2,8 @@
 
 Date: 2026-10-08. Prerelease producer contract. The Codex a3 packaged/native gate
 is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
+The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
+is the current explicit candidate with the same API/wires.
 Delivery and Claude follow the [reconciliation plan](codex-daemon-authority-plan.md).
 This document supersedes
 [API 1](api-v1.md) for new clients. Installed normal selection remains a16 until

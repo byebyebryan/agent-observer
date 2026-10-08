@@ -1,7 +1,7 @@
 # API 2 client handoff
 
 Date: 2026-10-08. The Codex producer/read/service and supported separate writer
-subset are accepted against [0.5.0a3](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+subset are accepted against [0.5.0a4](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 on Snap and Starship. The candidate is installed separately; normal links/user
 services still select a16. This handoff does not select a consumer or authorize
 provider policy, frontend, terminal-runtime or networking changes.
@@ -10,7 +10,7 @@ provider policy, frontend, terminal-runtime or networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a3.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a4.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -44,7 +44,7 @@ Both API descriptors operate without a provider or service.
 - Own user intent, terminal/TUI lifetime, tmux/Kitty placement, routing and viewer
   association in the client. Observation supplies no attachment or worker fields.
 
-Codex is the sole native adapter in a3. Explicit Claude collection/service/write
+Codex is the sole native adapter in a4. Explicit Claude collection/service/write
 selection returns `unsupported_provider`. Reserved Claude schema examples are
 contract fixtures, not native acceptance. Claude is the next producer checkpoint.
 
@@ -53,7 +53,7 @@ contract fixtures, not native acceptance. Claude is the next producer checkpoint
 These examples leave normal CLI links and the a16 user service alone:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a3-3cee9e01474be646
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a4-28f5ad02a0312b36
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -78,7 +78,7 @@ an owned foreground Observer publisher in another terminal:
 
 The immediate endpoint directory must be canonical, same-user and private;
 the publisher creates it if absent. Use the owning UID's runtime path. Stop this
-explicit publisher with Ctrl-C; it owns only Observer work. Never pair the a3
+explicit publisher with Ctrl-C; it owns only Observer work. Never pair the a4
 client with the ordinary protocol-1 endpoint. Subscriber reads do not autostart
 a service or fall back to direct collection.
 
@@ -87,12 +87,18 @@ a service or fall back to direct collection.
 The separate writer prepares and revalidates an explicit local TTY handoff with
 `effect=none`; only `enter` performs native New/Resume. New identity is pending
 until native discovery. Exact Resume validates the requested reference through
-native `thread/read`, independently of listing caps. Consumer attachment/runtime
+native `thread/read` and metadata-only `thread/turns/list`, independently of
+listing caps. An explicitly non-ephemeral summary and readable stored history
+are required; failed/unsupported reads return `resume_saved_history_unproved`.
+Missing activity alone does not reject saved identity. Consumer attachment/runtime
 ownership remains external; remote routing belongs to the owning host/client.
 
 Initialized saved/live Resume, repeated native entry and equal-ID fork targeting
 are accepted. Blank runtime-only Resume and distinct thread/tree-root TUI entry
-are not accepted; the latter fails with `session_tree_entry_unproved`. Offline
+are not accepted; blank runtime-only Resume fails with
+`resume_saved_history_unproved` and distinct-ID entry fails with
+`session_tree_entry_unproved`. Positive empty-history responses have controlled
+coverage; native empty-saved TTY entry remains unaccepted. Offline
 Resume is unavailable until an explicit action restores the provider runtime.
 Do not convert observed running/parked state into automatic action permission.
 
@@ -100,5 +106,7 @@ Each consumer validates its own parsing/caches, ordering/age, uncertainty, exact
 references and action routing against the unchanged candidate, then performs
 its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
-there are no downstream repository edits in this handoff. Observer normal
+there are no downstream repository edits in this handoff. Future terminal
+observation/attachment can integrate tmux-observer through the client boundary.
+Observer normal
 selection needs an independent rollout/restart/crash/reconnect/rollback gate.

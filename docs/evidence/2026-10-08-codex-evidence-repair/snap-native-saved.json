@@ -1,0 +1,34 @@
+{
+  "hostScope": "snap",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "rawPayloadsPersisted": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "blank": {
+    "nativeId": "01a11dbf-a738-7290-b457-b9d1d0614fe6",
+    "nativeStatus": "idle",
+    "ephemeral": false,
+    "pathPresent": true,
+    "hasSavedHistory": false,
+    "resumeRejected": "resume_saved_history_unproved",
+    "loadedInventoryUnchanged": true
+  },
+  "initialized": {
+    "nativeId": "01a11dbf-a738-7290-b457-b9d1d0614fe6",
+    "nativeTurnId": "01a11dbf-c407-7543-b4dd-5ca693e46734",
+    "activityAt": 1791500472000,
+    "hasSavedHistory": true,
+    "nativeResumeEntered": true,
+    "ageUnchanged": true,
+    "prepareEffect": "none",
+    "loadedInventoryUnchanged": true
+  },
+  "provider": {
+    "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+    "provider": "codex",
+    "version": "0.162.0",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  },
+  "status": "accepted"
+}

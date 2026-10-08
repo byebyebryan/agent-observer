@@ -1,31 +1,25 @@
 #!/usr/bin/env python3
 """Explicit native-isolation proof of blank rejection and persisted Resume.
 
-Only bounded metadata is emitted. --seed-empty trims the owned proof's saved
-log to its native header as a controlled empty-history fixture, restores it
-from memory, and separately proves its native read/TTY behavior. This private
-fixture manipulation is never a core discovery or persistence input.
+Only bounded metadata is emitted. Empty stored-history response semantics are
+covered by controlled tests; this native proof uses an ordinary blank context
+and its initialized saved history without editing private provider stores.
 """
 
-import argparse
 import json
 import os
 import runpy
-import stat
 import time
 from pathlib import Path
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seed-empty", action="store_true")
-    args = parser.parse_args()
     root = Path(os.environ["NATIVE_PROOF_ROOT"])
     Proof = runpy.run_path(str(root / "native-acceptance"))["Proof"]
-    NativeRPC = runpy.run_path(str(root / "evaluate-observation"))["NativeRPC"]
+    oracle = runpy.run_path(str(root / "evaluate-observation"))
+    NativeRPC = oracle["NativeRPC"]
     proof = Proof("codex")
     peer = None
-    original, path = None, None
     receipt = {"hostScope": proof.host, "isolationEstablished": True,
                "ordinaryProviderActions": False, "rawPayloadsPersisted": False,
                "terminalOutputPersisted": False, "referenceImportsObserver": False}
@@ -94,34 +88,6 @@ def main():
                                   "prepareEffect": "none", "loadedInventoryUnchanged": True}
         for client in list(proof.clients):
             proof.stop(client)
-        if args.seed_empty:
-            # Explicit operator-owned fixture only; production paths do not
-            # read this file, its mtime, or its header to establish saved state.
-            summary = peer.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
-            path = Path(summary["path"])
-            info = path.lstat()
-            if path.resolve() != path or not path.is_relative_to(proof.base / "codex") or not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_size > 1024 * 1024:
-                raise ValueError("private_saved_fixture_rejected")
-            original = path.read_bytes()
-            header = original.splitlines(keepends=True)[0]
-            metadata = json.loads(header)
-            if metadata.get("type") != "session_meta" or metadata["payload"].get("id") != sid:
-                raise ValueError("private_saved_header_mismatch")
-            path.write_bytes(header)
-            turns = peer.call("thread/turns/list", {"threadId": sid, "limit": 1,
-                                                   "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
-            if turns:
-                raise ValueError("private_empty_history_unproved")
-            result = proof.handoff(ref)
-            empty = proof.spawn(result)
-            proof.pause(empty, 5)
-            proof.assert_native_client(empty)
-            summary = peer.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
-            if summary["id"] != sid or summary["status"]["type"] != "idle":
-                raise ValueError("private_empty_entry_identity_unproved")
-            receipt["seededEmpty"] = {"controlledPrivateFixture": True, "nativeId": sid,
-                                      "historyReadSucceeded": True, "turnCount": 0,
-                                      "nativeResumeEntered": True, "exactIdentityVerified": True}
         receipt["provider"] = peer.artifact
         receipt["status"] = "accepted"
         (root / "saved-evidence.json").write_text(json.dumps(receipt, indent=2) + "\n")
@@ -129,8 +95,6 @@ def main():
     finally:
         for client in list(proof.clients):
             proof.stop(client)
-        if original is not None:
-            path.write_bytes(original)
         if peer is not None:
             peer.close()
 

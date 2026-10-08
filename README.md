@@ -25,7 +25,11 @@ matches all 89 Snap and 353 Starship rows, including seven running contexts and
 positive parked state. Held approval/question, direct/cached/pushed parity,
 no-repair catalog, outage/recovery and supported exact TTY entry passed on both
 hosts. [API 2](docs/api-v2.md) and its [client handoff](docs/api-v2-client-handoff.md)
-define the breaking interface. The a3 candidate is installed separately; normal
+define the breaking interface. The following
+[saved-evidence repair](docs/evidence/2026-10-08-codex-evidence-repair/REPORT.md)
+accepts a4 with the same API/wires: interrupted catalog reads cannot promote
+unverified parked rows, and exact Resume requires readable native saved history.
+The a4 candidate is installed separately; normal
 commands and services still select a16/API 1/read wire 3. Claude and managed
 selection have separate next gates.
 
@@ -188,7 +192,7 @@ cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
 The selected a16 [API v1 candidate](docs/api-v1.md) retains its historical
-JSON/CLI and pure Python surface. New source and explicit a3 clients use
+JSON/CLI and pure Python surface. New source and explicit a4 clients use
 [API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
@@ -201,7 +205,7 @@ agent-observer snapshot --host-scope starship --provider codex
 
 Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
-roots can be supplied explicitly. The a3 Codex collector reads the existing
+roots can be supplied explicitly. The a4 Codex collector reads the existing
 owning daemon without private saved-store fallback. It never starts a missing
 daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
 for direct and cached commands against the explicit accepted candidate.

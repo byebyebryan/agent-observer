@@ -22,6 +22,25 @@ SID = "01234567-0123-4567-89ab-0123456789ab"
 
 
 class ObservationEvaluationTest(unittest.TestCase):
+    def test_catalog_status_cannot_supply_readable_saved_identity(self):
+        for status, expected in (("idle", "running"), ("notLoaded", "unknown")):
+            with self.subTest(status=status):
+                class Client:
+                    pid, start, artifact = 123, "456", {}
+                    def pages(self, method, status=status):
+                        return [] if method == "thread/loaded/list" else [
+                            {"id": SID, "sessionId": SID, "source": "vscode",
+                             "threadSource": "user", "status": {"type": status}}
+                        ]
+                    def call(self, method, params):
+                        if method == "thread/read":
+                            raise ValueError("native_read_failed")
+                        return {"data": []}
+                with patch.object(evaluation, "birth", return_value=("456", "S", 1)):
+                    row = evaluation.codex_reference(Client())["rows"][SID]
+                self.assertEqual(row["runtime"], expected)
+                self.assertFalse(row["hasSavedHistory"])
+
     def test_saved_native_reference_reads_metadata_only_and_checks_identity(self):
         class Client:
             pid, start, artifact = 123, "456", {}

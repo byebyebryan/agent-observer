@@ -1,7 +1,7 @@
 # Agent Observer architecture boundaries
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
-governs the accepted a3 producer correction. It supersedes earlier loaded-only
+governs the accepted producer correction. It supersedes earlier loaded-only
 discovery, terminal/job field scaffolding, compatibility obligations and the
 requirement to complete Claude proof before this common-contract checkpoint.
 Codex owns execution and native runtime disposition; Observer core/service own
@@ -9,10 +9,13 @@ passive reads, evidence, reconciliation and fan-out; clients own native entry,
 TUI lifetime and terminal attachment. The observation path has no TUI/tmux state
 authority. Claude follows independently; post-TUI-closure acceptance is deferred.
 The [review](codex-daemon-authority-review.md) led to API 2/read wire 4/service 2
-with clean rejection of the old wire. The explicit a3 candidate has
-[packaged/native acceptance](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+with clean rejection of the old wire. The following
+[saved-evidence repair](codex-evidence-repair-plan.md) accepts the a4 successor
+through [packaged/native acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 on both hosts. Normal selection remains a16/API 1; historical reports below
 retain their original bounds. See the [API 2 client handoff](api-v2-client-handoff.md).
+Future terminal discovery/attachment can consume tmux-observer through clients;
+it is not an Observer core implementation or acceptance dependency.
 
 The [shared observation service proposal](shared-observation-service-plan.md)
 adds a separately reviewed local runtime for collection, pull and push fan-out.
