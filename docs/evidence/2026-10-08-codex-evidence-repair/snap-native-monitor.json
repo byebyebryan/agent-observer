@@ -1,0 +1,60 @@
+{
+  "case": "monitor",
+  "hostScope": "snap",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "entry": {
+    "status": "accepted",
+    "hostScope": "snap",
+    "provider": "codex",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "independentOfFrontend": true,
+    "emptyActivityUnknown": true,
+    "nativeConversationActivity": true,
+    "readsRenameHousekeepingPreserveAge": true,
+    "savedOrLiveResumeExactIdentity": true,
+    "resumePreservesAge": true,
+    "repeatedNativeEntry": true,
+    "terminalOutputPersisted": false
+  },
+  "directCachedPushParity": true,
+  "unprovedFields": {
+    "title_unproved": 1,
+    "activity_unproved": 1,
+    "kind_unproved": 1,
+    "outcome_unproved": 1,
+    "outcomeAt_unproved": 1
+  },
+  "nativeRows": 5,
+  "nativeParkedRows": 3,
+  "allParkedStartup": false,
+  "heldCases": [
+    {
+      "reason": "approval",
+      "workingObserved": true,
+      "nativeHeldFlag": "waitingOnApproval",
+      "directCachedPushBlocked": true,
+      "nativeStateAgeParity": true,
+      "parityAttempts": 1,
+      "nativeWaitingAfterInterrupt": true
+    },
+    {
+      "reason": "question",
+      "workingObserved": true,
+      "nativeHeldFlag": "waitingOnUserInput",
+      "directCachedPushBlocked": true,
+      "nativeStateAgeParity": true,
+      "parityAttempts": 2,
+      "nativeWaitingAfterInterrupt": true
+    }
+  ],
+  "pushFrames": 24,
+  "status": "accepted"
+}

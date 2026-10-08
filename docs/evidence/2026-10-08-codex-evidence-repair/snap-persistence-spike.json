@@ -1,0 +1,32 @@
+{
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "rawPayloadsPersisted": false,
+  "blank": {
+    "nativeId": "01a11db1-06f2-72a3-9c9d-a738cdcb79d0",
+    "status": "idle",
+    "ephemeral": false,
+    "pathPresent": true,
+    "privateFileExists": false,
+    "catalogMember": false,
+    "turnReadSucceeded": false,
+    "turnCount": null
+  },
+  "initialized": {
+    "nativeId": "01a11db1-06f2-72a3-9c9d-a738cdcb79d0",
+    "status": "idle",
+    "ephemeral": false,
+    "pathPresent": true,
+    "privateFileExists": true,
+    "catalogMember": true,
+    "turnReadSucceeded": true,
+    "turnCount": 1
+  },
+  "provider": {
+    "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+    "provider": "codex",
+    "version": "0.162.0",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  }
+}

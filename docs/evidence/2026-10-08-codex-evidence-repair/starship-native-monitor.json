@@ -1,0 +1,58 @@
+{
+  "case": "monitor",
+  "hostScope": "starship",
+  "isolationEstablished": true,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "referenceImportsObserver": false,
+  "providerVersion": "0.162.0",
+  "entry": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "provider": "codex",
+    "isolation": {
+      "privateTmp": true,
+      "ordinaryProviderPathsMasked": true,
+      "privateUserMountPidNamespaces": true
+    },
+    "independentOfFrontend": true,
+    "emptyActivityUnknown": true,
+    "nativeConversationActivity": true,
+    "readsRenameHousekeepingPreserveAge": true,
+    "savedOrLiveResumeExactIdentity": true,
+    "resumePreservesAge": true,
+    "repeatedNativeEntry": true,
+    "terminalOutputPersisted": false
+  },
+  "directCachedPushParity": true,
+  "unprovedFields": {
+    "title_unproved": 1,
+    "activity_unproved": 1,
+    "kind_unproved": 1,
+    "outcome_unproved": 1,
+    "outcomeAt_unproved": 1
+  },
+  "nativeRows": 4,
+  "nativeParkedRows": 2,
+  "allParkedStartup": false,
+  "heldCases": [
+    {
+      "reason": "approval",
+      "workingObserved": true,
+      "nativeHeldFlag": "waitingOnApproval",
+      "directCachedPushBlocked": true,
+      "nativeStateAgeParity": true,
+      "nativeWaitingAfterInterrupt": true
+    },
+    {
+      "reason": "question",
+      "workingObserved": true,
+      "nativeHeldFlag": "waitingOnUserInput",
+      "directCachedPushBlocked": true,
+      "nativeStateAgeParity": true,
+      "nativeWaitingAfterInterrupt": true
+    }
+  ],
+  "pushFrames": 15,
+  "status": "accepted"
+}

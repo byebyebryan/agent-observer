@@ -233,7 +233,12 @@ thread/tree-root case was not obtained and remains explicitly guarded; blank
 runtime-only Resume is unaccepted. D5 normal selection/restart/rollback and D6
 Claude are not completed by source or isolated artifact acceptance. The
 [API 2 client handoff](api-v2-client-handoff.md) keeps consumer implementation
-and rollout separate.
+and rollout separate. The following
+[saved-evidence repair](codex-evidence-repair-plan.md) closes two reproduced
+failure-boundary gaps against the [a4 successor](evidence/2026-10-08-codex-evidence-repair/REPORT.md).
+It is the current explicit candidate, with the same API/wires. Blank runtime-only
+Resume now fails with `resume_saved_history_unproved`; positive empty-response
+semantics have controlled coverage only. Normal selection remains a16.
 
 | Checkpoint | Work | Required exit |
 | --- | --- | --- |

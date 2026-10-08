@@ -23,6 +23,12 @@ on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) 
 the [client handoff](api-v2-client-handoff.md) describe the installed unselected
 candidate. D5 managed selection/restart/rollback and D6 Claude remain next;
 a16 remains selected. Frontend work remains a separate checkpoint.
+The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
+and unproved exact-Resume gaps against the
+[a4 successor](evidence/2026-10-08-codex-evidence-repair/REPORT.md), with the same
+API/wires and fresh both-host read/write/native proof. It is the current explicit
+candidate. Future terminal integration belongs to tmux-observer and clients;
+normal selection and Claude retain their separate following gates.
 
 The preceding [daily-use gap execution](daily-use-gap-execution-plan.md)
 selected a16. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)

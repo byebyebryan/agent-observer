@@ -1,6 +1,8 @@
 # Codex saved-evidence repair pass
 
-Date: 2026-10-08. Scope: Observer-only producer/read/service correction and a
+Date: 2026-10-08. Status: R1-R4 accepted against the
+[a4 candidate](evidence/2026-10-08-codex-evidence-repair/REPORT.md), within its
+recorded native and controlled coverage. Scope: Observer-only producer/read/service correction and a
 separately accepted exact Resume preflight. The normal selected a16 installation,
 Claude, frontend work and terminal attachment remain separate gates. Future
 terminal discovery/attachment should consume tmux-observer rather than add a

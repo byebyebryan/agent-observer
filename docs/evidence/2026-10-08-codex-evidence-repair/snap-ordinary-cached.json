@@ -1,0 +1,411 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.5.0a4",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a4-28f5ad02a0312b36/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "service": {
+        "serviceProtocol": 2,
+        "serviceId": "2dfbc1b8-5013-4380-aa7c-d162c9a28691",
+        "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+        "hostScope": "snap",
+        "viewRevision": 3,
+        "emittedAt": 1791500262678,
+        "emittedBoottimeMs": 540137113,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 2,
+                "attempts": 2,
+                "expiresBoottimeMs": 540150802,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 540135802
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 540166802,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 540135802
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791500262627
+      },
+      "cliCollectedAt": 1791500262008,
+      "nativeAfterAt": {
+        "codex": 1791500262902
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 89,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 89,
+          "nativeAfterRows": 89,
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791499342000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791499503000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791499342000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791499503000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 2,
+        "doctorSessionCount": true,
+        "cliRows": 51,
+        "filteredChildren": 38
+      },
+      "nativeRuntime": {
+        "pid": 3519017,
+        "startTicks": "52946647",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "service": {
+        "serviceProtocol": 2,
+        "serviceId": "2dfbc1b8-5013-4380-aa7c-d162c9a28691",
+        "bootId": "5d60b1d7-389f-45dd-8ba5-c1a50185e848",
+        "hostScope": "snap",
+        "viewRevision": 4,
+        "emittedAt": 1791500263643,
+        "emittedBoottimeMs": 540138078,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 3,
+                "attempts": 3,
+                "expiresBoottimeMs": 540152879,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 540137879
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 540166802,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 540135802
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791500263576
+      },
+      "cliCollectedAt": 1791500263626,
+      "nativeAfterAt": {
+        "codex": 1791500263863
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 89,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 89,
+          "nativeAfterRows": 89,
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791499342000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791499503000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791499342000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791499503000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 2,
+        "doctorSessionCount": true,
+        "cliRows": 51,
+        "filteredChildren": 38
+      },
+      "nativeRuntime": {
+        "pid": 3519017,
+        "startTicks": "52946647",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}
