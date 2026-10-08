@@ -63,13 +63,19 @@ def _digest(path, limit, timeout=3, *, executable=False):
         os.close(fd)
 
 
-def _directory(value, *, owned=False):
+def _directory(value, *, owned=False, unavailable_code="directory_unavailable"):
     path = Path(value)
-    if not path.is_absolute() or ".." in path.parts or path.resolve(strict=True) != path:
+    if not path.is_absolute() or ".." in path.parts:
         raise ContractError("noncanonical_directory")
-    info = path.stat()
+    try:
+        resolved = path.resolve(strict=True)
+        info = path.stat()
+    except OSError:
+        raise ContractError(unavailable_code) from None
+    if resolved != path:
+        raise ContractError("noncanonical_directory")
     if not stat.S_ISDIR(info.st_mode) or (owned and info.st_uid != os.geteuid()):
-        raise ContractError("directory_unavailable")
+        raise ContractError(unavailable_code)
     return {"device": info.st_dev, "inode": info.st_ino}
 
 
@@ -118,8 +124,8 @@ def _target(request):
 def prepare(request):
     validate_request(request)
     provider = request["provider"]
-    cwd = _directory(request["cwd"])
-    config = _directory(request["configHome"], owned=True)
+    cwd = _directory(request["cwd"], unavailable_code="cwd_unavailable")
+    config = _directory(request["configHome"], owned=True, unavailable_code="config_home_unavailable")
     if provider == "codex" and request["configHomeKind"] != "explicit":
         raise ContractError("unsupported_config_selector")
     if (

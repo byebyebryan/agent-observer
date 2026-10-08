@@ -167,7 +167,7 @@ def main(argv=None):
                 include_children=args.include_children, providers=args.provider, order=args.order
             )
             print(
-                canonical(listing(value, **options)) if args.json else human_rows(value, **options)
+                canonical(listing(value, **options)) if args.json else human_rows(value, now_ms=time.time_ns() // 1_000_000, **options)
             )
         elif args.command == "show":
             reference = decode_document(args.ref.encode(), max_bytes=8192)
@@ -175,7 +175,7 @@ def main(argv=None):
             print(
                 canonical(row)
                 if args.json
-                else human_rows({**value, "sessions": [row]}, include_children=True)
+                else human_rows({**value, "sessions": [row]}, now_ms=time.time_ns() // 1_000_000, include_children=True)
             )
         elif args.command == "doctor":
             report = diagnostic(value)

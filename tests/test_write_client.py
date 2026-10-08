@@ -134,6 +134,28 @@ class WriteClientTest(unittest.TestCase):
         with self.assertRaises(ContractError):
             validate_request(request)
 
+    def test_missing_directories_report_exact_context_without_effects(self):
+        for field, expected in (("cwd", "cwd_unavailable"), ("configHome", "config_home_unavailable")):
+            with self.subTest(field=field):
+                request = self.request()
+                request[field] = str(self.root / "missing")
+                with (patch("agent_observer.write_client._digest") as digest,
+                      patch("agent_observer.write_client._collect") as collect,
+                      patch("agent_observer.write_client._launch") as launch):
+                    with self.assertRaisesRegex(ContractError, "^" + expected + "$"):
+                        prepare(request)
+                    digest.assert_not_called()
+                    collect.assert_not_called()
+                    launch.assert_not_called()
+
+    def test_missing_context_does_not_relax_canonical_directory_guard(self):
+        link = self.root / "alias"
+        link.symlink_to(self.cwd, target_is_directory=True)
+        request = self.request()
+        request["cwd"] = str(link)
+        with self.assertRaisesRegex(ContractError, "^noncanonical_directory$"):
+            prepare(request)
+
     def test_public_write_fixtures_and_false_effect_claims(self):
         root = Path(__file__).parent / "fixtures/write-v1"
         request = json.loads((root / "request.json").read_text())

@@ -5,6 +5,7 @@ import os
 import signal
 import sys
 import threading
+import time
 from pathlib import Path
 
 from . import __version__
@@ -65,7 +66,7 @@ def main(argv=None):
                         frame["snapshot"] = listing(frame["snapshot"], **options)
                         print(canonical(frame))
                     else:
-                        print(human_rows(frame["snapshot"], **options))
+                        print(human_rows(frame["snapshot"], now_ms=time.time_ns() // 1_000_000, **options))
                 elif args.command == "watch":
                     if frame["snapshot"] is not None:
                         from .read_client import listing
