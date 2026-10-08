@@ -7,26 +7,145 @@ from unittest.mock import patch
 
 import test_codex_snapshot as snapshot_test
 from test_codex_snapshot import FIRST, SECOND, FakeClient, native
+from test_service_runtime import Running
 from test_service_state import provider_snapshot
 
+from agent_observer.codex_transport import TransportError
 from agent_observer.collection import compose_snapshot, project_source
 from agent_observer.contract import ContractError, canonical, parse_snapshot, validate_snapshot
 from agent_observer.public import interface
+from agent_observer.service_contract import parse_frame
 from agent_observer.service_state import ServiceState
 from agent_observer.watch import SampledWatch
 
 
 class CodexAuthorityTest(unittest.TestCase):
+    def public(self, value):
+        value["namespace"] = "sha256:" + "a" * 64
+        for row in value["sessions"]:
+            row["identity"]["namespace"] = value["namespace"]
+        return compose_snapshot(host_scope="host-a", provider_snapshots=[value])
+
     def collect(self, statuses, *, loaded=(), **options):
         records = {sid: {**native(sid), "status": status} for sid, status in statuses.items()}
         client = FakeClient({"data": list(loaded), "nextCursor": None},
                             {"data": list(records.values()), "nextCursor": None})
         client.read_thread = lambda sid: {"thread": records[sid]}
         value = snapshot_test.SnapshotCollectionTest().collect(client, **options)
-        value["namespace"] = "sha256:" + "a" * 64
-        for row in value["sessions"]:
-            row["identity"]["namespace"] = value["namespace"]
-        return compose_snapshot(host_scope="host-a", provider_snapshots=[value]), client
+        return self.public(value), client
+
+    def test_aborted_catalog_cannot_promote_an_unread_saved_summary(self):
+        for failure in (TransportError("native_read_failed"), None,
+                        {"data": [], "nextCursor": "next"}):
+            with self.subTest(failure=type(failure).__name__):
+                class InterruptedCatalog(FakeClient):
+                    def list_threads(self, failure=failure, **params):
+                        if params.get("cursor") is not None:
+                            if isinstance(failure, Exception):
+                                raise failure
+                            return failure
+                        return self.saved
+
+                record = {**native(FIRST), "status": {"type": "notLoaded"}}
+                client = InterruptedCatalog({"data": [SECOND], "nextCursor": None},
+                                            {"data": [record], "nextCursor": "next"})
+                value = self.public(snapshot_test.SnapshotCollectionTest().collect(client))
+                rows = {r["identity"]["nativeId"]: r for r in value["sessions"]}
+                self.assertEqual(rows[FIRST]["runtime"]["value"], "unknown")
+                self.assertEqual(rows[FIRST]["phase"]["value"], "unknown")
+                self.assertFalse(rows[FIRST]["hasSavedHistory"])
+                self.assertEqual(rows[SECOND]["runtime"]["value"], "running")
+                self.assertFalse(rows[SECOND]["hasSavedHistory"])
+                self.assertEqual(value["sourceHealth"], "partial")
+                self.assertNotIn(("read", FIRST), client.calls)
+
+    def test_deadline_before_summary_cannot_promote_catalog_membership(self):
+        clock = [0]
+        class LateCatalog(FakeClient):
+            def list_threads(self, **params):
+                clock[0] = 11
+                return self.saved
+        client = LateCatalog({"data": [SECOND], "nextCursor": None},
+                             {"data": [{**native(FIRST), "status": {"type": "notLoaded"}}], "nextCursor": "next"})
+        with patch("agent_observer.codex_snapshot.time.monotonic", side_effect=lambda: clock[0]):
+            value = self.public(snapshot_test.SnapshotCollectionTest().collect(client))
+        rows = {r["identity"]["nativeId"]: r for r in value["sessions"]}
+        self.assertIn("collection_timeout", value["sources"][0]["errors"])
+        self.assertFalse(rows[FIRST]["hasSavedHistory"])
+        self.assertEqual(rows[FIRST]["runtime"]["value"], "unknown")
+        self.assertEqual(rows[SECOND]["runtime"]["value"], "running")
+
+    def test_catalog_running_fact_survives_unreadable_saved_summary(self):
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": [native(FIRST)], "nextCursor": None})
+        client.read_thread = lambda _: {"thread": None}
+        value = self.public(snapshot_test.SnapshotCollectionTest().collect(client))
+        row = value["sessions"][0]
+        self.assertEqual(row["runtime"]["value"], "running")
+        self.assertEqual(row["phase"]["value"], "waiting")
+        self.assertFalse(row["hasSavedHistory"])
+
+    def test_failed_sibling_summary_preserves_individually_verified_parked_row(self):
+        records = {sid: {**native(sid), "status": {"type": "notLoaded"}}
+                   for sid in (FIRST, SECOND)}
+        client = FakeClient({"data": [], "nextCursor": None},
+                            {"data": list(records.values()), "nextCursor": None})
+        def read(sid):
+            if sid == SECOND:
+                raise TransportError("native_read_failed")
+            return {"thread": records[sid]}
+        client.read_thread = read
+        rows = {r["identity"]["nativeId"]: r for r in
+                self.public(snapshot_test.SnapshotCollectionTest().collect(client))["sessions"]}
+        self.assertEqual(rows[FIRST]["runtime"]["value"], "parked")
+        self.assertTrue(rows[FIRST]["hasSavedHistory"])
+        self.assertEqual(rows[SECOND]["runtime"]["value"], "unknown")
+        self.assertFalse(rows[SECOND]["hasSavedHistory"])
+
+    def test_partial_catalog_watch_cache_pull_and_push_recover_without_retiming(self):
+        with patch.object(FakeClient, "latest_turn", return_value={"data": [
+            {"items": [], "itemsView": "notLoaded", "startedAt": 100, "completedAt": 200}
+        ]}):
+            healthy, _ = self.collect({FIRST: {"type": "notLoaded"}, SECOND: {"type": "notLoaded"}})
+        class InterruptedCatalog(FakeClient):
+            def list_threads(self, **params):
+                if params.get("cursor") is not None:
+                    raise TransportError("native_read_failed")
+                return self.saved
+        client = InterruptedCatalog({"data": [], "nextCursor": None},
+                                    {"data": [{**native(FIRST), "status": {"type": "notLoaded"}}], "nextCursor": "next"})
+        partial = self.public(snapshot_test.SnapshotCollectionTest().collect(client))
+        watch = SampledWatch()
+        watch.sample(healthy)
+        watched = watch.sample(partial)[-1]["snapshot"]
+        retained = next(r for r in watched["sessions"] if r["identity"]["nativeId"] == SECOND)
+        self.assertEqual(retained["runtime"]["lastKnownValue"], "parked")
+        self.assertEqual(retained["activity"]["lastKnownAt"], 200000)
+        self.assertEqual(retained["runtime"]["observedAt"], healthy["sessions"][1]["runtime"]["observedAt"])
+        restored = watch.sample(healthy)[-1]["snapshot"]
+        self.assertTrue(all(r["runtime"]["value"] == "parked" and r["activity"]["at"] == 200000 for r in restored["sessions"]))
+        source = healthy["sources"][0]
+        state = ServiceState(host_scope=healthy["host"]["authority"], uid=healthy["host"]["uid"],
+                             configs={"codex": (source["configHome"], source["configHomeKind"])})
+        with Running(state=state) as server:
+            for sample, expected in ((healthy, "parked"), (partial, "unknown"), (healthy, "parked")):
+                state.attempt("codex", "history")
+                state.accept("codex", "history", sample, sampled_ms=state.clock(), ttl_ms=60000)
+                request = {"serviceProtocol": 2, "hostScope": state.host_scope}
+                frames = []
+                for operation in ("snapshot", "watch"):
+                    with server.connect((canonical({**request, "operation": operation}) + "\n").encode()) as peer:
+                        with peer.makefile("rb") as reader:
+                            frames.append(parse_frame(reader.readline())["snapshot"])
+                self.assertEqual(canonical(frames[0]), canonical(frames[1]))
+                rows = {r["identity"]["nativeId"]: r for r in frames[0]["sessions"]}
+                self.assertEqual(rows[FIRST]["runtime"]["value"], expected)
+                if expected == "unknown":
+                    self.assertFalse(rows[FIRST]["hasSavedHistory"])
+                    self.assertEqual(rows[SECOND]["runtime"]["lastKnownValue"], "parked")
+                    self.assertEqual(rows[SECOND]["activity"]["lastKnownAt"], 200000)
+                else:
+                    self.assertTrue(all(r["activity"]["at"] == 200000 for r in rows.values()))
 
     def test_all_parked_startup_keeps_capabilities_and_not_applicable_phase(self):
         value, _ = self.collect({FIRST: {"type": "notLoaded"}})
