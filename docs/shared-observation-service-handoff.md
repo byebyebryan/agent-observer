@@ -59,7 +59,7 @@ noise no longer requests catalog scans; primary activity/title still wakes reads
 Installed controlled comparison and one-turn native Claude regression pass.
 Broader cost/operational acceptance remains pending; a10 is also unselected.
 
-The latest separately installed candidate is `0.4.0a11`, source
+The SDK-initialization candidate is separately installed `0.4.0a11`, source
 `28179263ea45d2315350aad0061f52d13bdefb33`, wheel SHA256
 `80b3f82e577b566656b4b3752e0057f89aa46baa23c9fa7742d0d7b9128bb923`, prefix
 `0.4.0a11-80b3f82e577b5666` on both hosts. Its
@@ -79,6 +79,18 @@ Claude coverage and unknown older Codex kinds. A11 remains unselected: the
 original aggregate-memory gate is unmet, and P6's managed restart/crash/rollback/
 30-minute acceptance is pending. Clients should keep the explicit selected a8
 endpoint unless intentionally evaluating an unselected candidate.
+
+The later a12/a13 runtime/scheduling repairs are separately installed and
+unselected. The [a13 receipt](evidence/2026-10-07-native-delivery/a13-debounce-and-host-cost.json)
+passes correlated native latency, foreground Claude question/exit and both-host
+listener retirement, but its matched two-provider Snap workload measures +2.330
+CPU percentage points and 109.289 MiB sampled aggregate RSS. Both original
+resource gates fail. A14 adds bounded metadata scheduling fingerprints to the
+owned Claude helper; its separately installed native subset passes, and its
+combined cost comparison is pending. These repairs do not change API 1 or the
+service envelope and do not select native hints for ordinary use. Refer to the
+[cost follow-up](native-hints-cost-follow-up.md) before evaluating an unselected
+candidate; selected a8 remains the client handoff endpoint.
 
 ## Reproducible local entry
 
