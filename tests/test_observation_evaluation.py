@@ -22,6 +22,31 @@ SID = "01234567-0123-4567-89ab-0123456789ab"
 
 
 class ObservationEvaluationTest(unittest.TestCase):
+    def test_saved_native_reference_reads_metadata_only_and_checks_identity(self):
+        class Client:
+            pid, start, artifact = 123, "456", {}
+            def __init__(self):
+                self.calls = []
+                self.returned_id = SID
+            def pages(self, method):
+                self.calls.append((method, {}))
+                return [] if method == "thread/loaded/list" else [{"id": SID, "sessionId": SID, "source": "vscode"}]
+            def call(self, method, params):
+                self.calls.append((method, params))
+                if method == "thread/read":
+                    return {"thread": {"id": self.returned_id, "sessionId": SID, "source": "vscode", "threadSource": "user"}}
+                return {"data": []}
+        client = Client()
+        with patch.object(evaluation, "birth", return_value=("456", "S", 1)):
+            result = evaluation.codex_reference(client)
+            self.assertEqual(result["rows"][SID]["kind"], "user")
+            self.assertIsNone(result["rows"][SID]["runtime"])
+            self.assertEqual(result["loaded"], result["loadedAfter"])
+            self.assertIn(("thread/read", {"threadId": SID, "includeTurns": False}), client.calls)
+            client.returned_id = "11234567-0123-4567-89ab-0123456789ab"
+            with self.assertRaisesRegex(ValueError, "native_detail_identity_conflict"):
+                evaluation.codex_reference(client)
+
     def scoped_snapshot(self):
         sources, sessions = [], []
         for provider, suffix, native_kind in (("codex", ".codex", "thread"), ("claude", ".claude", "session")):

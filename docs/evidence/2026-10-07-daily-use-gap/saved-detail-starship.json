@@ -1,0 +1,53 @@
+{
+  "host": "starship",
+  "loadedBefore": [
+    "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+    "01a0ca16-d486-7142-8170-c496b7419368",
+    "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+    "01a1197f-1113-7261-bc5b-810100a74236"
+  ],
+  "loadedAfter": [
+    "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+    "01a0ca16-d486-7142-8170-c496b7419368",
+    "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+    "01a1197f-1113-7261-bc5b-810100a74236"
+  ],
+  "loadedUnchanged": true,
+  "savedDetail": [
+    {
+      "id": "01a11985-e154-7d81-8098-9b2a1ea974f2",
+      "title": "esp32-349",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a11985-48e2-7102-9637-7805a08c5782",
+      "title": "esp32-rlcd",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a1181f-d2e7-7a13-9394-8e1a733000c1",
+      "title": "bookkeeper-retirement",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a09949-a04a-75c0-87af-7c02bcea9dfd",
+      "title": "display",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    },
+    {
+      "id": "01a11760-e42d-7cb2-8c71-957b6eca4a1f",
+      "title": "bookkeeper",
+      "threadSource": "user",
+      "nativeStatus": "notLoaded",
+      "sameNativeIds": true
+    }
+  ]
+}

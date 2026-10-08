@@ -214,8 +214,28 @@ def codex_reference(client):
     loaded = set(client.pages("thread/loaded/list"))
     saved = client.pages("thread/list")
     records = {r["id"]: r for r in saved}
+    classification_gaps = []
     for sid in loaded:
-        records[sid] = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
+        detail = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
+        if detail.get("id") != sid or sid in records and detail.get("sessionId") != records[sid].get("sessionId"):
+            raise ValueError("native_detail_identity_conflict")
+        records[sid] = detail
+    saved_reads = 0
+    for sid, record in records.items():
+        if sid in loaded or record.get("threadSource") in ("user", "subagent") or isinstance(record.get("source"), dict):
+            continue
+        if saved_reads >= 256:
+            classification_gaps.append("native_saved_classification_limit")
+            break
+        saved_reads += 1
+        try:
+            detail = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
+        except (ValueError, OSError, KeyError):
+            classification_gaps.append("native_saved_detail_unavailable:" + sid)
+            continue
+        if detail.get("id") != sid or detail.get("sessionId") != record.get("sessionId"):
+            raise ValueError("native_detail_identity_conflict")
+        records[sid] = {**record, "source": detail.get("source"), "threadSource": detail.get("threadSource")}
     rows = {}
     for sid, r in records.items():
         if not UUID.fullmatch(sid):
@@ -248,7 +268,10 @@ def codex_reference(client):
         rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "runtime": "running" if sid in loaded else None, "phase": phase, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
-    return {"sampleAt": clock(), "rows": rows, "loaded": sorted(loaded), "saved": sorted(r["id"] for r in saved), "runtime": {"pid": client.pid, "startTicks": client.start, **client.artifact}}
+    loaded_after = set(client.pages("thread/loaded/list"))
+    if loaded_after != loaded:
+        classification_gaps.append("native_loaded_inventory_changed_during_sample")
+    return {"sampleAt": clock(), "rows": rows, "loaded": sorted(loaded), "loadedAfter": sorted(loaded_after), "saved": sorted(r["id"] for r in saved), "runtimeGaps": classification_gaps, "runtime": {"pid": client.pid, "startTicks": client.start, **client.artifact}}
 
 
 def native_history(home):

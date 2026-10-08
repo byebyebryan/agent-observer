@@ -84,3 +84,22 @@ The focused regressions cover runtime-only removal after complete runtime
 absence, saved-history retention/age, partial-runtime retention and Codex
 non-regression. This is source acceptance only; the selected a15 artifact has
 not changed. Installed/native and operational gates follow at D5.
+
+## D2 source repair: saved Codex classification
+
+Independent passive probes of five recent saved threads on each host received
+explicit `threadSource: user` from `thread/read(includeTurns=false)`, whereas
+`thread/list` omitted that field. Exact thread/session mappings matched, and
+loaded inventories before and after were unchanged on both hosts. The sanitized
+receipts are `saved-detail-snap.json` and `saved-detail-starship.json`.
+
+Discovery now optionally reads that bounded metadata for unknown saved kinds
+after applying the display cap, with a 256-read ceiling and the existing total
+deadline. It copies only kind/source classification; saved inventory, activity,
+title, cwd and unknown runtime/work remain unchanged. Failed optional reads leave
+unknown kind with a source limitation; conflicting identities invalidate native
+authority, and conflicting classifications remain unknown. Runtime-only cadence
+does not scan saved history. Synthetic regressions cover root/child kinds,
+identity/source conflicts, unavailable detail and budget exhaustion. The
+independent evaluator also reads saved kind metadata and brackets the loaded
+inventory. Installed/native candidate acceptance remains a separate D5 gate.
