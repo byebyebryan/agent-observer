@@ -13,51 +13,47 @@ simplified.
 
 ## Status
 
-The current checkpoint is [a8 Claude observation](docs/evidence/2026-10-08-claude-observation/REPORT.md).
-Codex is accepted on Snap and Starship; Claude discovery/monitoring is accepted
-on Snap. Normal read CLI/services select a8 through the separate operational gate.
-The reusable core owns reconciliation and evidence; passive adapters own native
-reads; the local service owns helper lifetime and cached pull/push. Dependency
-checks enforce those boundaries. The normal writer retains a16 independently.
-Frontend migration, actions/attachment, networking and user-facing alerts remain
-separate.
+The current checkpoint is [a9 interactive observation](docs/evidence/2026-10-08-claude-interactive-observer/REPORT.md).
+Normal read CLI/services select a9 on Snap and Starship through the separate
+operational gate. Codex is accepted on both hosts; Claude interactive discovery
+and monitoring are accepted on Snap. The reusable core owns reconciliation and
+evidence, passive adapters own native reads, and the service owns helper lifetime
+and cached pull/push. The normal writer remains a16 independently.
 
 [API 2](docs/api-v2.md), snapshot/watch wire 4 and service protocol 2 are unchanged.
-The [client handoff](docs/api-v2-client-handoff.md) provides direct/cached commands
-and consumer obligations. Installed/native comparisons match all five ordinary
-Claude running sessions and three terminal parked jobs on Snap, alongside all
-89 Snap and 354 Starship Codex rows. Isolated native/direct/cache/push proofs
-cover working, waiting, approval/question, positive parked and source recovery.
-Age follows native conversation activity; coverage and stale evidence stay explicit.
+The [client handoff](docs/api-v2-client-handoff.md) supplies direct/cached commands,
+consumer obligations and current limits. Read-client development can proceed
+independently. Frontend migration, actions/attachment, networking and user-facing
+alerts remain separate.
 
 Codex queries its owning daemon for running/parked independently of TUI/tmux.
-Claude authenticates provider-owned native registrations/status and bounded
-retained-job evidence. Its mutating native roster CLI is never used for observation.
-Saved-only Claude absence and foreground exit remain unknown; terminal jobs have
-a positive parked predicate. One setup-only SDK omission and excluded nested child
-transcripts keep saved coverage partial. Generic dialogs, unregistered background
-runtime and Claude turn outcomes remain unproved.
+Claude authenticates provider-owned interactive registrations and status.
+Healthy bounded scans with positive saved identity and no live matching
+incarnation or relevant unresolved conflict report parked under the accepted
+native-registration assumption. Normal exit, forced kill, exact Resume, same-process
+UUID changes, duplicate live contexts and Observer cold start have native proof.
+Agent View on/off both pass; ordinary provider settings remain unchanged.
 
-The next [Claude interactive reconciliation](docs/claude-interactive-observation-plan.md)
-targets interactive-only discovery/monitoring from provider-owned evidence,
-including parked detection after normal exits, crashes and Observer restart.
-The user accepts the native-registration assumption: healthy bounded scans with
-no matching live incarnation can classify positively saved UUIDs as parked.
-A live session with missing registration can be falsely reported parked; this
-remains an explicit limitation with partial coverage. Client inventories and
-attachment are excluded. Implementation, artifact selection and Agent View opt-out
-retain separate gates; a8 remains the accepted installed baseline.
+A live Claude session with failed/missing registration can be missed or falsely
+parked; runtime coverage remains partial with explicit limitations. Background
+runtime and attachment are unsupported; native job metadata only vetoes unsafe
+negatives. Two old stopped recap background histories remain unknown. The
+setup-only SDK omission now has a saved row, while its cwd, kind and conversation
+age remain unavailable. Generic dialogs, excluded nested child history and
+Claude turn outcomes remain unproved.
 
-The [Claude read-contract review](docs/claude-read-contract-review.md) now settles
-API 2/wire 4/service 2 fit without new public fields. Read-client source work can
-start independently using a8 and synthetic target fixtures while the Claude
-successor completes its separate oracle/implementation/native gates.
+Installed native comparisons match all six ordinary Claude running contexts,
+35 saved UUIDs and 33 known conversation clocks on Snap within the documented
+metadata gap; one additional unsaved identity is retained only as stale unknown
+in the service. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
+cached pulls and pushed views pass independently. Age follows native conversation
+activity; leases, source faults, ambiguity and gaps remain explicit.
 
-The preceding [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-and earlier native reports retain their exact artifact bounds. Twenty-one older
-Starship kinds are an accepted forward-looking limit. Physical sleep/wake and
-Codex post-TUI-closure lifetime remain deferred. No provider configuration change
-or ordinary session restart is required for passive observation.
+The preceding [a8 Claude checkpoint](docs/evidence/2026-10-08-claude-observation/REPORT.md)
+and [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+retain their historical artifact bounds. Twenty-one older Starship kinds are an
+accepted forward-looking limit. Physical sleep/wake and Codex post-TUI-closure
+lifetime remain deferred. No ordinary session restart is required for observation.
 
 ## Previous checkpoints
 

@@ -17,7 +17,8 @@ selected a6 after its independent artifact/native and scoped operational gates.
 The [Claude execution pass](claude-observation-execution.md) independently accepts
 [a8 discovery/monitoring](evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
 preserving Codex on both hosts and the same read/service contracts. Normal
-read/service selection now uses a8 through its separate operational gate.
+read/service selection now uses the [a9 interactive successor](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+through its separate operational gate.
 The writer retains a16 independently. Core/model/adapter/engine, service hosting,
 mesh and read-client ownership are enforced; provider wakeups/read push remain
 separate from alert policy. `ObservationEngine` owns common reconciliation and
@@ -26,26 +27,24 @@ are accepted passive adapters within their documented native scopes. Public even
 frontend implementation retain their own gates. API 2 stays unchanged unless
 a separately reviewed semantic change requires otherwise.
 
-The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
-defines I0–I5: native source/scope proof; independent oracle and contract review;
-interactive adapter/model cleanup; immutable
-direct/cache/push acceptance; scoped Observer operations; then a separate provider
-policy/handoff gate. [I0 native validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
-proves positive registration/phase/Resume with Agent View on/off, including
-hookless observation, but finds a live-session registration-failure counterexample
-to exhaustive parked inference. The user now accepts the narrower registration
-assumption: positive saved identity plus a healthy bounded native scan with no
-matching live incarnation or relevant unresolved conflict may become parked.
-Normal exit, crash and cold start are targets. Missing live registration can
-cause false parked classification, including after source recovery; coverage
-must remain partial with the limitation declared. Client inventory/attachment
-and background runtime support are excluded. I1 is next; implementation and
-artifact/policy selection remain pending. The
-[read-contract alignment](claude-read-contract-review.md) accepts the public part
-of I1: API 2/wire 4/service 2 already fit the scoped semantics. Eight synthetic
-checks pass through source and installed a8 facades. Read-client source work may
-start independently; I1's native oracle/private sample design remains next.
-A8 retains its installed behavior and scope until successor acceptance.
+The [Claude interactive reconciliation](claude-interactive-observation-plan.md)
+accepts I0–I4: native source/scope proof, independent oracle/private sample and
+shared contract review, interactive adapter/model cleanup, immutable direct/cache/
+push native acceptance and scoped Observer read/service selection. A9 preserves
+API 2/wire 4/service 2. I5 provider-policy rollout stays separate and deferred;
+ordinary settings and sessions remain unchanged. The client handoff is current.
+
+Claude uses the accepted native-registration assumption: positively saved UUIDs
+with a healthy bounded scan and no live matching incarnation or relevant
+unresolved conflict can be parked. Normal exit, forced kill, exact Resume,
+same-process UUID switches, duplicate live contexts and Observer cold start
+have independent native proof with Agent View on/off. Missing live registration
+can cause false parked after source recovery; runtime coverage remains partial.
+Background lifecycle/attachment and client inventories are excluded. A minimal
+native background guard prevents known unsupported work from becoming parked.
+Two old incomplete background histories, one metadata-only cwd and service
+retention of disappeared unsaved rows as stale unknown remain known limits.
+Read-client work can proceed independently against the settled contract.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its

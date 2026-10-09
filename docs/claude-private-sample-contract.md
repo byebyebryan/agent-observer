@@ -45,8 +45,9 @@ The independent `scripts/evaluate-observation` oracle reads native metadata
 without importing adapter, model or engine code. Its expectations use the
 same documented assumption, independently implement ownership/incarnation and
 guard checks, and compare native-before / public-CLI / native-after samples.
-Synthetic tests establish oracle decisions; installed native acceptance remains
-I3 and operational selection remains I4.
+Synthetic tests establish oracle decisions. The subsequent
+[a9 report](evidence/2026-10-08-claude-interactive-observer/REPORT.md) accepts
+installed native I3 and scoped operational I4 separately from these decisions.
 
 The accepted invisible-registration limitation remains: a live interactive
 session whose native registration failed or disappeared can be missed or

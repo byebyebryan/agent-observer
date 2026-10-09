@@ -71,28 +71,25 @@ runtime authority: active is running, idle is running/waiting, and current
 and unsupported wait flags preserve the independently proved runtime fact
 while leaving phase uncertain as required by API 2.
 
-The [independent Claude gate](evidence/2026-10-08-claude-observation/REPORT.md)
-accepts passive observation on Snap. Exact provider registrations authenticated
-by native PID domain, process birth, source ownership and executable locator
-supply running and current status evidence. These authenticate provider-native
-records and do not inspect terminal attachment. Terminal retained jobs require
-positive lifecycle, no pending work and saved existence before parked. General
-saved-only absence remains unknown. The native roster CLI has initialization
-writes and is not invoked by observation.
+The [independent Claude gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+accepts interactive-only observation on Snap. Exact provider registrations
+are authenticated by PID domain, process birth, source ownership and executable
+locator; they supply running and status evidence. These are provider-native
+identity checks, never terminal/client discovery. The mutating roster CLI is not
+invoked. Native jobs only veto unsafe negatives; no job lifecycle or attachment
+projection remains in the observation model.
 
-The next [interactive-only Claude plan](claude-interactive-observation-plan.md)
-uses the user's accepted native-registration assumption: a healthy bounded scan
-with no matching live incarnation or relevant unresolved conflict can classify
-positively saved UUIDs as parked. Normal exit and crash are supported targets.
-A live missing registration can instead produce false parked, even after source
-recovery; declare partial coverage and that limitation. The implementation removes
-unused private attachment/job scaffolding and reconstructs state after Observer
-restart without a run ledger or client inventory. Provider-owned registration
-incarnation checks are permitted; generic process/terminal discovery is not.
-Implementation, artifact selection and Agent View opt-out retain separate gates.
+The [interactive Claude implementation](claude-interactive-observation-plan.md)
+uses the accepted registration assumption: a healthy bounded scan with no live
+matching incarnation or relevant unresolved conflict can classify positively
+saved UUIDs as parked. Normal exit, crash, cold start, UUID switches and duplicate
+contexts have native proof with Agent View on/off. Missing live registration can
+cause false parked after recovery; partial coverage declares that limit. No run
+ledger, hook dependency, client inventory or generic process census is required.
+Artifact/operational acceptance is independent of Agent View policy or clients.
 The [shared read alignment](claude-read-contract-review.md) now accepts contract
-fit in existing API 2/wire 4/service 2. Native implementation/selection remains
-pending; independent read-client source work can use the settled interface.
+fit in existing API 2/wire 4/service 2. Native and operational gates accept a9;
+independent read-client work can use that artifact and the settled interface.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing

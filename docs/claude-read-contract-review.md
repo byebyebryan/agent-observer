@@ -4,13 +4,14 @@ Date: 2026-10-08. Status: shared read interface settled for this pass. API 2,
 snapshot/watch wire 4 and service protocol 2 accommodate the
 [accepted interactive Claude design](claude-interactive-observation-plan.md).
 No public schema, descriptor, enum or validator changes are required by that
-design. Claude's production behavior changes remain future adapter work.
+design. The subsequent [a9 execution gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+now accepts the adapter and scoped read/service selection on both hosts.
 The contract remains prerelease; a future
 incompatible interface change still requires a versioned gate.
 
-This accepts public contract fit and permits independent read-client development.
-It does not complete I1's native oracle/private sample design, accept the Claude
-producer successor, select an artifact or change Agent View settings.
+This review accepts public contract fit and permits independent read-client
+development. Its original synthetic checks below remain distinct from the
+subsequent I1–I4 producer gates. Agent View settings remain unchanged.
 
 ## Findings and resolution
 
@@ -142,27 +143,31 @@ candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76
 
 The [native-source report](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 separately establishes tested registration/status/exit behavior and its failure
-counterexample. This review does not add native duplicate/switch/background-guard
-proof, implement runtime-only parked refresh or accept a successor's direct/cache/
-push behavior. Those remain I1 private/oracle work and I2–I5 execution gates.
+counterexample. This review's a8 conformance checks do not add native proof or
+accept a producer successor. The later
+[a9 report](evidence/2026-10-08-claude-interactive-observer/REPORT.md) supplies
+independent oracle/private-boundary acceptance, runtime-only parked refresh,
+duplicate/switch/background-guard native proof, direct/cache/push conformance
+and scoped operational selection. I5 provider-policy rollout remains deferred.
 
 ## Client readiness and next producer checkpoint
 
 Read clients can now implement parsing/validation, exact identity selection,
 mixed-provider presentation, age/attention ordering, unknown/stale/partial display,
 and cached pull/push with leases and resync against the settled interface.
-Use a8 for current installed behavior and the synthetic example for forthcoming
-Claude parked semantics. A8 still reports saved-only/foreground exit as unknown;
-clients must accept both forms as native evidence evolves.
+Use a9 for current installed behavior and the synthetic example for interface
+conformance. Preserve scoped parked facts, missing-registration limitations and
+stale unknown retention rather than reinterpreting native mechanisms in clients.
 
-Client source development can proceed independently while the Claude adapter is
-built. Selecting a future producer or rolling out a completed client still needs
+Client source development can proceed independently against the accepted
+[handoff](api-v2-client-handoff.md). Selecting a future producer or rolling out a completed client still needs
 the relevant artifact/native and consumer acceptance. New/Resume/attach, terminal
 matching, network forwarding and completion alerts are not settled by this review.
 Producer defects reopen an Observer-only checkpoint, not simultaneous frontend
 and adapter edits.
 
-Next on Observer: finish I1's independent native oracle and bounded private
-saved-identity/registration sample interface, then implement and independently
-accept the Claude successor. Do not reopen the shared wire for private adapter
-details unless implementation demonstrates a concrete missing public guarantee.
+Observer's I1–I4 work is complete within the declared bounds. Provider policy,
+consumer implementation/native acceptance, actions/attachment and network
+forwarding remain separate. Reopen an Observer-only checkpoint if a consumer
+finds a producer defect; reopen the shared wire only for a concrete missing
+public guarantee or incompatible semantic change.
