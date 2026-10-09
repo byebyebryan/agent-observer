@@ -86,7 +86,9 @@ def acceptance_class(root):
                         self.push["frames"] += 1
                         kind = frame["kind"]
                         self.push["kinds"][kind] = self.push["kinds"].get(kind, 0) + 1
-                        if frame["snapshot"] is not None:
+                        if kind == "gap":
+                            self.push["snapshot"] = None
+                        elif frame["snapshot"] is not None:
                             self.push["snapshot"] = frame["snapshot"]
             except (OSError, ValueError, AssertionError, KeyError):
                 if not self.stop_reader.is_set():

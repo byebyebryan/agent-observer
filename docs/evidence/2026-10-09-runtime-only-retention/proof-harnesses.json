@@ -1,0 +1,11 @@
+{
+  "harnessSha256": {
+    "native-runtime-only-retention": "0520d7c55ed1aaf34af64d5f7d68711e358912e3b91fd87d178f9ff26559afca",
+    "native-claude-interactive-acceptance": "679d742bca35017b248fbd38e9cd60924079f9568726bc6278bffc88b038346f",
+    "native-claude-interactive-proof": "437a268b4cd3e831eaae2e42853bb80c89ad188267c66c70a284c60441b26278",
+    "evaluate-observation": "02d1f4022ca5c2f85bab91379a1719e8c1dc07537ad04f0e3a25e4023f7196a9"
+  },
+  "nativeOracleImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false
+}

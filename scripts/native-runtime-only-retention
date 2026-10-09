@@ -98,6 +98,12 @@ def main():
                 for index, view in enumerate(views[1:]):
                     row = self.row(view, sid)
                     if row:
+                        # Forced exit precedes the next bounded collection.
+                        # A still-leased prior view may report running until
+                        # that sample arrives; await convergence, never require
+                        # native events to be replayed synchronously.
+                        if row["runtime"]["value"] == "running":
+                            return False
                         assert row["runtime"]["value"] == "unknown" and not row["hasSavedHistory"]
                         assert "retained_after_gap" in row["metadataIssues"]
                         stale_seen = True
@@ -125,7 +131,7 @@ def main():
                 self.start_service()
                 self.watch = DirectWatch(self.home)
                 sid = str(uuid.uuid4())
-                client = self.spawn(sid)
+                client = self.spawn(sid, name=None)
                 reference = self.until(lambda: self.running_unsaved(sid), "unsaved_new_unproved", 35)
                 self.until(lambda: all(c["accepted"] >= 2 for s in
                     self.command(["agent-observer", "service", "status", "--host-scope", "snap",
@@ -133,14 +139,14 @@ def main():
                     for c in s["components"]), "both_component_samples_unproved", 25)
                 exit_receipt = self.normal_exit(client)
                 self.stop(client)
-                assert exit_receipt["registrationRemoved"] and not exit_receipt["savedIdentityRetained"]
+                assert exit_receipt["processExited"] and not exit_receipt["savedIdentityRetained"]
                 result = self.retired(sid)
                 result.update(case="unsaved_normal_exit", normalExit=exit_receipt)
                 self.receipt["checks"].append(result)
                 print(json.dumps({"accepted": result["case"], "elapsedSeconds": result["elapsedSeconds"]}), flush=True)
 
                 # The exact UUID reappears with a new authenticated incarnation.
-                client = self.spawn(sid)
+                client = self.spawn(sid, name=None)
                 restored = self.until(lambda: self.running_unsaved(sid), "exact_reappearance_unproved", 35)
                 assert restored == reference
                 self.receipt["checks"].append({"case": "exact_unsaved_reappearance", "nativeId": sid,

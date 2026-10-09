@@ -1,9 +1,12 @@
 # Disappeared runtime-only identity retention
 
-Date: 2026-10-09. Status: authorized shared-core implementation checkpoint;
-native artifact and operational gates remain pending. The [Claude wrap-up](claude-observation-wrap-up.md) remains
+Date: 2026-10-09. Status: source and immutable a11 artifact/native acceptance
+complete; scoped operational selection remains pending. The
+[acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md) binds the
+implemented policy and proof. The [Claude wrap-up](claude-observation-wrap-up.md) remains
 complete within its declared scope. API 2/wire 4/service 2 and selected a9 stay
-unchanged. This work is independent of frontend implementation and provider policy.
+unchanged until its separate operational gate. This work is independent of
+frontend implementation and provider policy.
 
 ## Problem and current evidence
 
@@ -92,22 +95,20 @@ belongs to the passive Claude adapter; service/core retain no Claude predicate.
 1. R0 policy review is complete above: original runtime lease for service,
    fixed direct-watch bound, exact saved/current protection and no sliding
    deadlines. Source, artifact/native and operational proof remain separate.
-2. Implement in `observation_engine.py`, `observation_evidence.py` and sampled
-   watch as needed, with no provider-specific branch in the service/read client.
-   Prove deadlines do not slide, current rows survive, reappearance works and
-   saved metadata is not lost. Include runtime/history merge and delayed SDK cases.
-3. Validate unchanged descriptors/schemas and pure consumer conformance. If a
+2. Shared-core/watch implementation is complete, with no provider-specific branch
+   in service/read clients. Source and installed regressions prove fixed deadlines,
+   current/saved protection, reappearance, history merge and delayed SDK behavior.
+   The focused Claude native-admission repair remains in its passive adapter.
+3. Unchanged descriptors/schemas and pure consumer conformance pass. If a
    concrete public meaning or field must change, use its own versioned gate;
    do not silently extend wire 4 or infer that private cleanup requires a bump.
-4. Freeze a successor artifact and independently prove isolated unsaved
-   interactive New/normal exit and forced exit through direct/cache/push, along
-   with source faults/recovery, reappearance and saved Resume age preservation.
-   Reuse existing source facts within their bounds; do not rerun background
-   lifecycle compatibility or ordinary session actions.
-5. Compare the installed successor with ordinary native Claude on Snap and Codex
-   on both hosts. Check exact membership, runtime/phase, user history age and child
-   filtering. Only after producer acceptance perform its separate scoped
-   read/service selection, recovery/rollback and consumer handoff.
+4. Immutable a11 native acceptance is complete: isolated unsaved New/normal exit,
+   forced exit, direct/cache/push/watch retirement, source fault/recovery, exact
+   reappearance and saved Resume age preservation. Previous source proofs retain
+   their bounds; no background compatibility or ordinary provider action ran.
+5. Both-host installed ordinary comparisons and candidate reader checks pass.
+   Scoped read/service selection, recovery/rollback and the final selected-client
+   handoff are the remaining operational gate.
 
 Completion requires disappeared unsaved identities to retire by the accepted
 bound without false lifecycle claims, active/saved loss or refreshed stale age.
