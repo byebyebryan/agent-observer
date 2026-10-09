@@ -1,0 +1,176 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "clientInventoryQueried": false,
+  "isolationEstablished": true,
+  "modes": [
+    {
+      "disableAgentView": true,
+      "nativeId": "222d4c75-de14-486f-ad15-9c03ebc03653",
+      "samples": [
+        {
+          "status": "idle",
+          "statusUpdatedAt": 1791523299832
+        },
+        {
+          "status": "busy",
+          "statusUpdatedAt": 1791523301995
+        },
+        {
+          "status": "waiting",
+          "waitClass": "question",
+          "statusUpdatedAt": 1791523304285
+        },
+        {
+          "status": "waiting",
+          "waitClass": "approval",
+          "statusUpdatedAt": 1791523314265
+        }
+      ],
+      "registeredBeforeFirstAssistantEvent": true,
+      "newInteractiveRegistrationAuthenticated": true,
+      "heldQuestionStillRegistered": true,
+      "exit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "savedResume": {
+        "exactUuidRegistered": true,
+        "newIncarnation": true,
+        "activityUnchangedBeforeNewPrompt": true
+      },
+      "approvalNotExecuted": true,
+      "resumedExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "abnormalExit": {
+        "registrationRetained": true,
+        "oldIncarnationNotAuthenticated": true,
+        "savedIdentityRetained": true
+      },
+      "resumeAfterCrash": {
+        "exactUuidRegistered": true,
+        "differentPid": true
+      },
+      "finalExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "registrationFailure": {
+        "nativeId": "74ae07e2-77ad-4c86-bcdc-3f6068ae665d",
+        "nativeProcessStillAlive": true,
+        "positiveSavedIdentity": true,
+        "initialAndFollowupAssistantEvents": true,
+        "registryRestoredReadableDirectory": true,
+        "registryRecordCountAfterRecovery": 0,
+        "sessionRegistrationMissingAfterRecovery": true,
+        "runtimeVisibilityRecovered": false,
+        "jobsStateRecordCount": 0,
+        "naiveParkedPredicateWouldBeFalse": true,
+        "isolatedNativeRoster": {
+          "exitCode": 1,
+          "jsonArray": false
+        },
+        "nativeProcessStillAliveAfterRosterProbe": true,
+        "ownedProcessStoppedAfterCounterexample": true
+      },
+      "status": "completed"
+    },
+    {
+      "disableAgentView": false,
+      "nativeId": "3391596d-83e5-47f3-aecf-13422600587e",
+      "samples": [
+        {
+          "status": "idle",
+          "statusUpdatedAt": 1791523339676
+        },
+        {
+          "status": "busy",
+          "statusUpdatedAt": 1791523339889
+        },
+        {
+          "status": "waiting",
+          "waitClass": "question",
+          "statusUpdatedAt": 1791523342179
+        },
+        {
+          "status": "waiting",
+          "waitClass": "approval",
+          "statusUpdatedAt": 1791523351403
+        }
+      ],
+      "registeredBeforeFirstAssistantEvent": true,
+      "newInteractiveRegistrationAuthenticated": true,
+      "heldQuestionStillRegistered": true,
+      "exit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "savedResume": {
+        "exactUuidRegistered": true,
+        "newIncarnation": true,
+        "activityUnchangedBeforeNewPrompt": true
+      },
+      "approvalNotExecuted": true,
+      "resumedExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "abnormalExit": {
+        "registrationRetained": true,
+        "oldIncarnationNotAuthenticated": true,
+        "savedIdentityRetained": true
+      },
+      "resumeAfterCrash": {
+        "exactUuidRegistered": true,
+        "differentPid": true
+      },
+      "finalExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": true,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "registrationFailure": {
+        "nativeId": "c3b502af-22ad-4e51-83fd-c99b70624531",
+        "nativeProcessStillAlive": true,
+        "positiveSavedIdentity": true,
+        "initialAndFollowupAssistantEvents": true,
+        "registryRestoredReadableDirectory": true,
+        "registryRecordCountAfterRecovery": 0,
+        "sessionRegistrationMissingAfterRecovery": true,
+        "runtimeVisibilityRecovered": false,
+        "jobsStateRecordCount": 0,
+        "naiveParkedPredicateWouldBeFalse": true,
+        "isolatedNativeRoster": {
+          "exitCode": 0,
+          "jsonArray": true,
+          "containsUuid": false
+        },
+        "nativeProcessStillAliveAfterRosterProbe": true,
+        "ownedProcessStoppedAfterCounterexample": true
+      },
+      "status": "completed"
+    }
+  ],
+  "executableSha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+  "status": "completed"
+}

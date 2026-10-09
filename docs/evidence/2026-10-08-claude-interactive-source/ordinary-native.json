@@ -1,0 +1,139 @@
+{
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.5.0a8",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a/bin/agent-observer",
+  "nativeOracleImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "nativeBeforeAt": {
+    "claude": 1791523232230
+  },
+  "cliCollectedAt": 1791523232970,
+  "nativeAfterAt": {
+    "claude": 1791523233300
+  },
+  "identityScope": {
+    "hostProvenance": true,
+    "storeScopes": true,
+    "fullRowReferences": true,
+    "rowsChecked": 34,
+    "providersChecked": [
+      "claude"
+    ],
+    "nativeReferenceProviders": [
+      "claude"
+    ]
+  },
+  "referenceLimits": {
+    "claude": {
+      "historyGaps": [
+        "non_conversation_or_outside_tail:1f66423b-8c09-460a-951f-f4a22e353fec",
+        "non_conversation_or_outside_tail:6ee19683-ca62-4797-8efa-1ea995f07aa0",
+        "non_conversation_or_outside_tail:902dc359-dc83-4466-b888-7e1c4cc2553b",
+        "non_conversation_or_outside_tail:e0cba9dd-b642-4730-af4b-beb3b7e9c16c"
+      ],
+      "historyBytesScanned": 59947181,
+      "runtimeGaps": []
+    }
+  },
+  "comparison": {
+    "nativeBeforeRows": 35,
+    "nativeAfterRows": 35,
+    "cliRows": 34,
+    "nativeCounts": {
+      "running": 6,
+      "activityKnown": 33,
+      "classification": {
+        "unknown": 2,
+        "user": 33
+      }
+    },
+    "checks": {
+      "membership": 34,
+      "title": 31,
+      "cwd": 34,
+      "runtime": 9,
+      "phase": 9,
+      "activity": 32,
+      "kind": 33,
+      "runtime_unproved": 25,
+      "phase_unproved": 25,
+      "title_unproved": 3,
+      "activity_unproved": 1,
+      "kind_unproved": 1
+    },
+    "issues": [
+      {
+        "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+        "field": "activity",
+        "result": "sampling_race"
+      },
+      {
+        "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+        "field": "membership",
+        "result": "missing_cli_row"
+      }
+    ]
+  },
+  "active": [
+    {
+      "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+      "title": "a100-test",
+      "cliPhase": "working",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "working",
+      "nativeStatus": "busy",
+      "activityAt": 1791523232017
+    },
+    {
+      "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+      "title": "spare-gpus",
+      "cliPhase": "waiting",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "waiting",
+      "nativeStatus": "idle",
+      "activityAt": 1791499859289
+    },
+    {
+      "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+      "title": "pr-review",
+      "cliPhase": "waiting",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "waiting",
+      "nativeStatus": "idle",
+      "activityAt": 1791506319850
+    },
+    {
+      "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+      "title": "caos-models",
+      "cliPhase": "working",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "working",
+      "nativeStatus": "shell",
+      "activityAt": 1791522851936
+    },
+    {
+      "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+      "title": "2026-recap-dedup",
+      "cliPhase": "working",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "working",
+      "nativeStatus": "shell",
+      "activityAt": 1791523057578
+    },
+    {
+      "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+      "title": "embeddings-bf",
+      "cliPhase": "waiting",
+      "cliKind": "user",
+      "nativeKind": "user",
+      "nativePhase": "waiting",
+      "nativeStatus": "idle",
+      "activityAt": 1791512141316
+    }
+  ]
+}

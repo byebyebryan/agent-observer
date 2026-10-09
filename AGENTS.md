@@ -25,6 +25,12 @@
   unresolved noninteractive evidence must not be silently relabeled parked.
   I1–I5 separately gate contract, source, artifact, Observer operations and provider
   policy. This design plan alone authorizes no new public wire or deployment.
+  `docs/evidence/2026-10-08-claude-interactive-source/REPORT.md` accepts tested
+  positive on/off registration/phase/Resume evidence but disproves an exhaustive
+  census: a failed registration can remain missing after directory recovery while
+  the interactive session is usable. Do not implement generic parked from registry
+  absence or promote I0 negative lifecycle to accepted without a new reviewed
+  provider capability or narrower guarantee.
 - The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked
