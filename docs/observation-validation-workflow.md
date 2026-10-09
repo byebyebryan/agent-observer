@@ -1,38 +1,47 @@
 # Observer CLI validation workflow
 
-The [2026-10-08 Codex authority plan](codex-daemon-authority-plan.md) changes the
-next acceptance target to daemon-authoritative runtime status across discovered
-threads. Correct the independent native oracle before implementing the producer:
-read explicit source scopes and preserve catalog/detail statuses outside loaded
-membership. Compare positive saved `notLoaded` against parked, loaded idle against
-running/waiting, and active/error status under the stated phase semantics. The
-selected a16 loaded-only acceptance below remains historical/current-baseline
-evidence, not a sufficient oracle for the new contract. TUI/tmux inspection is
-not runtime authority; post-TUI-closure and Claude acceptance are deferred.
-
-Date: 2026-10-05. This is the current Observer development workflow. Validate
+Date: 2026-10-08. This is the current Observer development workflow. Validate
 the public CLI against independent native evidence before starting a separate
 frontend checkpoint. Ordinary active sessions establish operational inventory;
 isolated test sessions establish controlled transitions and failure behavior.
 Both forms of evidence are useful, but their coverage differs.
+
+[API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
+prerelease read contracts. The [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+records independent source/artifact/native and managed operational acceptance
+on Snap and Starship. Read/service commands select a5; the writer retains a16
+independently. A later receipt must record the exact selected artifact anew.
+Codex is the sole live adapter in this checkpoint. Claude has a separate future
+adapter/native gate; historical Claude receipts do not accept current support.
 
 ## Installed CLI and ordinary sessions
 
 1. Record the selected Observer artifact, schema, host, provider version and
    runtime topology. Run the installed entrypoint outside the source checkout;
    checkout tests do not establish installed behavior. Check Codex independently
-   on Snap and Starship, and Claude on Snap.
-2. Collect public `snapshot`, `list` and `doctor` results with explicit host and
-   provider selection. Record sample times and saved/runtime coverage as well as
-   aggregate health. The normal list excludes proved children and retains rows
-   whose classification is unknown.
+   on Snap and Starship. Record versions/hashes as provenance and incarnation
+   guards, not support allowlists. Validate another provider only after its own
+   adapter gate establishes a passive reference and supported semantics.
+2. Collect direct public `snapshot`, `list` and `doctor` results with explicit
+   host and provider selection. Also inspect installed `service snapshot`,
+   `service list` and bounded `service watch` against the explicit existing
+   socket. Record sample/emission times, source leases, saved/runtime coverage
+   and aggregate health. The normal list excludes proved children and retains
+   unknown kinds. Cached reads/subscribers must not start a publisher or silently
+   fall back to direct collection.
 3. Obtain an independent native inventory and state sample. Read provider-owned
    IDs, clocks and state metadata directly, rather than treating another
    Observer command or its normalized collector as the reference. Use existing
-   passive Codex RPCs on the verified owning endpoint and Claude's native
-   registry/job/history metadata. Verify worker birth and executable identity
-   where required. A native command that can adopt workers, write metadata or
-   auto-start a daemon is not an ordinary read probe.
+   passive Codex RPCs on the verified owning endpoint: `thread/list` with explicit
+   source kinds/database-only scope, `thread/loaded/list`, metadata-only
+   `thread/read` and `thread/turns/list` excluding items. Preserve each returned
+   thread's native status, including catalog/detail status outside loaded
+   membership. Authenticate the source's UID, namespace and daemon incarnation;
+   endpoint process identity does not determine any session's runtime or phase.
+   A native command that can write metadata, adopt workers or auto-start a daemon
+   is not an ordinary read probe. The standalone stdlib
+   [evaluation harness](../scripts/evaluate-observation) imports no Observer
+   collector and records bracketing native comparisons.
 4. Compare exact host/provider/store/native references, titles, child
    classification, runtime presence, work phase, conversation activity and
    working-directory/Git metadata where supported. Age is derived from native
@@ -42,23 +51,34 @@ Both forms of evidence are useful, but their coverage differs.
    sample. Separate a demonstrated mismatch from a native transition between
    reads, missing evidence or an unsupported topology. Report confirmed rows,
    missing/extra rows, conflicts and unresolved classifications separately.
+6. For push, validate sequence/incarnation/clock binding and leases. Compare full
+   view/resync snapshots with independent native samples. A heartbeat establishes
+   transport liveness only. A gap requires conservative invalidation until a
+   full resync; healthy readers may receive coalescing gaps. If a bounded frame
+   count stops on a gap, extend the probe through resync before accepting recovery.
+   Current-view agreement does not establish lossless transitions or alerts.
 
 For example, these selected commands are passive reads:
 
 ```sh
 cd /tmp
 /home/bryan/.local/bin/agent-observer --version
-/home/bryan/.local/bin/agent-observer snapshot --host-scope snap
-/home/bryan/.local/bin/agent-observer list --host-scope snap --json
-/home/bryan/.local/bin/agent-observer doctor --host-scope snap
+/home/bryan/.local/bin/agent-observer snapshot --host-scope snap --provider codex
+/home/bryan/.local/bin/agent-observer list --host-scope snap --provider codex --json
+/home/bryan/.local/bin/agent-observer doctor --host-scope snap --provider codex
+/home/bryan/.local/bin/agent-observer service snapshot --host-scope snap --socket /run/user/1000/agent-observer/read.sock
+/home/bryan/.local/bin/agent-observer service watch --host-scope snap --count 8
 ssh starship 'cd /tmp && /home/bryan/.local/bin/agent-observer list --host-scope starship --provider codex --json'
 ```
 
-Codex's accepted runtime inventory covers loaded daemon threads. Terminal
-clients, subagents and daemon processes are different units; their counts need
-not match. Process metadata can reveal an unobserved topology, but cannot bind
-a TUI to its current thread. Claude worker identity likewise requires native
-session metadata and verified birth, not a PID or title alone.
+Codex's runtime authority is the owning daemon's status across discovered threads.
+`idle` means running/waiting, `active` means running with a supported phase or
+explicitly unknown phase, and `systemError` preserves running while phase is
+unknown. Current `notLoaded` plus a positively readable saved identity means
+parked with phase null. Neither loaded-list absence nor terminal exit proves
+parked. Compare exact thread identity separately from session-tree-root metadata.
+TUI, tmux, window and process censuses are outside observation acceptance;
+attachment/context matching belongs to a separate client layer.
 
 Fresh source health means a source was observed successfully within its stated
 scope. It does not establish all-session coverage, a known phase for every
@@ -74,15 +94,17 @@ sessions, hooks and settings intact.
 Establish the expected native identity and event independently of the normalized
 Observer result, then compare the installed CLI before, during and after the
 affected transition. Choose cases appropriate to the change: working,
-held approval, completed-turn waiting, children, saved-only discovery,
+held approval/question, completed-turn waiting, children, positive parked discovery,
 conversation age preservation, missing metadata or owned-runtime recovery.
-Unsupported question/readiness/parked predicates remain explicit until proved.
+New native variants/topologies remain unknown/unsupported until independently
+proved. Physical sleep/wake and post-TUI-closure lifetime remain deferred.
 
 Test the separate write client only when its behavior is in scope. New/Resume
 acceptance must independently verify the provider effect and exact resulting or
 requested identity; successful observation alone does not accept the action.
-The existing [native acceptance report](evidence/2026-10-05-operational-resilience/REPORT.md)
-records bounded controlled cases; it does not replace a current ordinary check.
+The [current native acceptance report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+records bounded Codex state/recovery cases; it does not replace a fresh ordinary
+check or accept a successor artifact automatically.
 
 ## Review and delivery
 
@@ -99,7 +121,11 @@ documentation-only clarification does not require provider actions or rebuilding
 the unchanged artifact. See [artifact operations](artifact-operations.md) and
 the [execution gates](contract-and-clients-execution-plan.md).
 
-## Open observations from the 2026-10-05 ordinary check
+## Historical observations from the 2026-10-05 ordinary check
+
+These belonged to the earlier contract/provider selections. They are retained
+as historical evidence, not current adapter acceptance or open Codex runtime
+predicates. Use the current contract and a fresh independent comparison above.
 
 - Two Claude background sessions had verified live workers and native registry
   `idle`, while retained jobs reported `working` with tempo `blocked`. The CLI
