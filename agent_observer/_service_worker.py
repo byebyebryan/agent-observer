@@ -22,6 +22,7 @@ def main():
     signal.signal(signal.SIGALRM, deadline)
     signal.setitimer(signal.ITIMER_REAL, 1)
     from agent_observer.bounded_json import decode_document
+    from agent_observer.adapters import adapter_for
     from agent_observer.collection import compose_snapshot
     from agent_observer.contract import canonical
     from agent_observer.workspace import MAX_CONFIG_BYTES, enrich, validate_config
@@ -37,7 +38,8 @@ def main():
         raise ValueError("service_worker_ownership")
     signal.setitimer(signal.ITIMER_REAL, request["timeoutMs"] / 1000)
     provider, component = request["provider"], request["component"]
-    if provider not in {"codex", "claude"} or component not in {"runtime", "history"}:
+    adapter = adapter_for(provider)
+    if component not in {"runtime", "history"}:
         raise ValueError("service_worker_request")
     if component == "history":
         validate_config(request["workspaceConfig"])
@@ -48,6 +50,7 @@ def main():
     home = Path(request["configHome"])
     if request["configHomeKind"] not in {"explicit", "default"}:
         raise ValueError("service_worker_request")
+    adapter.validate_selector(home, request["configHomeKind"])
     memo, channel = None, None
     try:
         if "imageMemoFd" in request:
@@ -64,21 +67,8 @@ def main():
                 memo = receive(channel, provider)
             except (ValueError, OSError):
                 memo = ImageMemo(provider)
-        image_args = {"image_cache": memo} if memo is not None else {}
-        if provider == "codex":
-            if request["configHomeKind"] != "explicit":
-                raise ValueError("service_worker_selector")
-            from agent_observer.codex_snapshot import collect_codex
-            native = collect_codex(home, host_scope=request["hostScope"], include_history=component == "history", **image_args)
-        else:
-            if request["configHomeKind"] == "explicit":
-                os.environ["CLAUDE_CONFIG_DIR"] = str(home)
-            else:
-                if home != Path.home() / ".claude":
-                    raise ValueError("service_worker_selector")
-                os.environ.pop("CLAUDE_CONFIG_DIR", None)
-            from agent_observer.claude_snapshot import collect_claude
-            native = collect_claude(home, host_scope=request["hostScope"], include_history=component == "history", owned_worker_group=True, **image_args)
+        native = adapter.collect(home, host_scope=request["hostScope"],
+                                 include_history=component == "history", image_cache=memo)
         value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
         if component == "history":
             enrich(value, request["workspaceConfig"])
