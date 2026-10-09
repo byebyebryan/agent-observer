@@ -188,8 +188,9 @@ def main():
         receipt.update(heldApprovalPreservesAge=True, approvalAutomaticallyAnswered=False)
         # This background context exists only to prove a terminal native job.
         # No background launch/action route is added to the Observer.
-        bg_sid = str(uuid.uuid4())
-        launched = subprocess.run(["/opt/claude-code/bin/claude", "--bg", "--session-id", bg_sid,
+        requested_bg_sid = str(uuid.uuid4())
+        jobs_before = {p.parent.name for p in (base / "claude/jobs").glob("*/state.json")}
+        launched = subprocess.run(["/opt/claude-code/bin/claude", "--bg", "--session-id", requested_bg_sid,
                                    "--name", "Observer private parked proof", "Reply only with OK."],
                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
         assert launched.returncode == 0, "private_background_launch_failed"
@@ -199,12 +200,14 @@ def main():
             pause(0.1)
             for path in (base / "claude/jobs").glob("*/state.json"):
                 value = json.loads(path.read_text())
-                if value.get("sessionId") == bg_sid:
+                if path.parent.name not in jobs_before:
                     job = value
                     job_id = path.parent.name
+                    bg_sid = value["sessionId"]
             if job and job.get("state") == "done" and job.get("tempo") == "idle":
                 break
         assert job and job.get("state") == "done", "private_job_completion_unproved"
+        receipt["backgroundIdentityFromNativeJob"] = True
         stopped = subprocess.run(["/opt/claude-code/bin/claude", "stop", job_id],
                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
         assert stopped.returncode == 0
@@ -229,6 +232,7 @@ def main():
         assert receipt.get("terminalJobParkedDirectCachedPush"), "parked_not_delivered"
         moved = base / "claude/sessions-held"
         (base / "claude/sessions").rename(moved)
+        (base / "claude/sessions").write_text("private source fault\n")
         try:
             deadline = time.monotonic() + 35
             while time.monotonic() < deadline:
@@ -242,6 +246,7 @@ def main():
                 pause(0.1)
             assert receipt.get("sourceFaultPreservesUncertainty"), "source_fault_not_delivered"
         finally:
+            (base / "claude/sessions").unlink()
             moved.rename(base / "claude/sessions")
         wait_phase(approval_sid, "blocked", "approval", timeout=35)
         receipt.update(sourceRecoveryAccepted=True, status="accepted")

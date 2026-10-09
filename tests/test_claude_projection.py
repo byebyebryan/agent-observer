@@ -69,6 +69,8 @@ class ClaudeProjectionTest(unittest.TestCase):
         self.assertIsNone(projected["phase"])
         del row["history"]
         self.assertEqual(self.project(native)["sessions"][0]["runtime"]["value"], "unknown")
+        row["savedIdentity"] = True
+        self.assertEqual(self.project(native)["sessions"][0]["runtime"]["value"], "parked")
 
     def test_failed_work_and_identity_conflicts_remain_explicit(self):
         native = sample()

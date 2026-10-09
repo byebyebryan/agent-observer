@@ -50,7 +50,7 @@ def project_source(native):
 def project_session(native, source):
     identity = copy.deepcopy(native["identity"])
     identity["namespace"] = source["namespace"]
-    saved = isinstance(native.get("history"), dict)
+    saved = native.get("savedIdentity") is True or isinstance(native.get("history"), dict)
     presence = native.get("presence") or {}
     work = native.get("work") or {}
     runtime = unknown("native_runtime_unproved", "unsupported")

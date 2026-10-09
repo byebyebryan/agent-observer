@@ -441,11 +441,16 @@ def transcript_kind(path: Path, session_id: str) -> str:
             if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
                 return "unknown"
             data = os.read(fd, MAX_COMPANION_BYTES)
+            offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
+            os.lseek(fd, offset, os.SEEK_SET)
+            tail = os.read(fd, MAX_ACTIVITY_BYTES)
             if _file_stamp(before) != _file_stamp(os.fstat(fd)) or _file_stamp(before) != _file_stamp(path.lstat()):
                 return "unknown"
         finally:
             os.close(fd)
         lines = data.splitlines() if data.endswith(b"\n") else data.splitlines()[:-1]
+        tail_lines = tail.splitlines() if tail.endswith(b"\n") else tail.splitlines()[:-1]
+        lines += tail_lines[1:] if offset else tail_lines
         kinds = set()
         for line in lines:
             value = json.loads(line, object_pairs_hook=_unique_pairs)
@@ -664,6 +669,7 @@ def main() -> int:
     seen_ids: set[str] = set()
     rows: list[dict[str, object]] = []
     activity_bytes = 0
+    classification_bytes = 0
     for session in sessions:
         session_id = getattr(session, "session_id", None)
         if not isinstance(session_id, str) or not _UUID.fullmatch(session_id):
@@ -704,6 +710,11 @@ def main() -> int:
                 "reason": "activity_scan_limit",
             }
         )
+        try:
+            size = path.stat().st_size
+            classification_bytes += min(size, MAX_ACTIVITY_BYTES) + min(size, MAX_COMPANION_BYTES)
+        except OSError:
+            classification_bytes += MAX_ACTIVITY_BYTES + MAX_COMPANION_BYTES
         rows.append(
             {
                 "session_id": session_id,
@@ -714,7 +725,7 @@ def main() -> int:
                 "created_at": _valid_epoch(getattr(session, "created_at", None)),
                 "last_modified": _valid_epoch(getattr(session, "last_modified", None)),
                 "activity": activity,
-                "kind": transcript_kind(path, session_id),
+                "kind": transcript_kind(path, session_id) if classification_bytes <= MAX_ACTIVITY_TOTAL_BYTES else "unknown",
             }
         )
 
