@@ -72,7 +72,9 @@ Normal exit, forced kill, saved Resume, same-process UUID switches, simultaneous
 live contexts, conflicting phase and Observer cold start are independently proved
 with Agent View on/off. Background execution/attachment is unsupported. The two
 old stopped recap job histories remain unknown because their pending-work data
-is missing. The setup-only SDK candidate now has positive saved discovery, but
+is missing. They are outside the user's forward interactive workflow; no legacy
+background compatibility work is required. The setup-only SDK candidate now has
+positive saved discovery, but
 its cwd, kind and age remain unavailable. Generic dialogs, nested child history
 and Claude turn outcomes remain unproved. Source coverage stays partial.
 
@@ -82,6 +84,9 @@ read omits it. The selected-host comparison observed one such row. Its original
 sample clock and last-known value remain diagnostic; it is neither currently
 running nor proved parked. Retention has row/byte bounds, without time eviction.
 Clients preserve the uncertainty and can place these rows after current facts.
+The [shared-core retention follow-up](runtime-only-retention-follow-up.md)
+separately scopes retirement of disappeared unsaved identities; a9 still retains
+them. It does not block independent read-client development.
 
 Claude write selection remains unsupported by the new writer; the a16 writer is
 selected independently and read acceptance grants no new action capability.
@@ -178,13 +183,15 @@ its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
 there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
-The [completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
-records the separate Observer read/service operational gate.
+The [a9 acceptance report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+records the current separate Observer read/service operational gate.
 
 An independent read-client pass may now implement schema/semantic validation,
 exact-reference selection, age/attention presentation, mixed-provider views and
-cached pull/push with gap/resync/lease handling. Use the accepted a8 artifact for
-current behavior and the synthetic fixture for upcoming Claude states. Actual
-New/Resume/attach, cross-host clock/transport handling and user-facing completion
+cached pull/push with gap/resync/lease handling. Use the accepted a9 artifact for
+current behavior and the synthetic fixture for interface conformance. The
+[Claude wrap-up](claude-observation-wrap-up.md) records supported scope, completed
+gates and independent follow-ups. Actual New/Resume/attach, cross-host
+clock/transport handling and user-facing completion
 notifications require their separate contracts/proofs. Do not couple that client
 pass to simultaneous Observer adapter edits or select a future artifact early.

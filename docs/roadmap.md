@@ -1,6 +1,6 @@
 # Agent Observer roadmap
 
-Date: 2026-10-08. This document records status and delivery dependencies.
+Date: 2026-10-09. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
 [spike procedures](agent-session-spike-plan.md) and
@@ -42,9 +42,14 @@ have independent native proof with Agent View on/off. Missing live registration
 can cause false parked after source recovery; runtime coverage remains partial.
 Background lifecycle/attachment and client inventories are excluded. A minimal
 native background guard prevents known unsupported work from becoming parked.
-Two old incomplete background histories, one metadata-only cwd and service
-retention of disappeared unsaved rows as stale unknown remain known limits.
-Read-client work can proceed independently against the settled contract.
+Old background histories are outside the user's forward interactive workflow;
+legacy background compatibility is not a completion requirement. The metadata-only
+cwd omission and other accepted scope limits stay explicit.
+The [Claude wrap-up](claude-observation-wrap-up.md) closes the provider pass;
+read-client work can proceed independently against the settled contract.
+The [shared-core retention follow-up](runtime-only-retention-follow-up.md) separately
+scopes bounded retirement of disappeared unsaved rows, which a9 currently retains
+as stale unknown. It does not change the selected artifact or block read-client work.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
@@ -60,7 +65,7 @@ writer subset are [accepted against a3](evidence/2026-10-08-codex-authority-acce
 on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) and
 the [client handoff](api-v2-client-handoff.md) describe the current read contract.
 The completion loop supplied the following managed read/service gate; D6 Claude
-observation is now independently accepted at a8. Claude write/attachment and
+observation followed at a8 and the current interactive a9 checkpoint. Claude write/attachment and
 frontend delivery remain separate checkpoints.
 The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
 and unproved exact-Resume gaps against the

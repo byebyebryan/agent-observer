@@ -1,0 +1,633 @@
+{
+  "snap-direct-inventory": {
+    "host": "snap",
+    "delivery": "direct",
+    "collectedAt": 1791530827943,
+    "schemaVersion": 4,
+    "sources": [
+      {
+        "provider": "codex",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "errors": []
+      },
+      {
+        "provider": "claude",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "interactive_registration_assumed",
+            "scope": "provider_sessions",
+            "status": "partial"
+          },
+          "saved": {
+            "reason": "metadata_scan",
+            "status": "partial"
+          }
+        },
+        "errors": []
+      }
+    ],
+    "providers": {
+      "codex": {
+        "counts": {
+          "all": {
+            "rows": 89,
+            "runtime": {
+              "running": 2,
+              "parked": 87
+            },
+            "activityCurrent": 52,
+            "saved": 89
+          },
+          "user": {
+            "rows": 51,
+            "runtime": {
+              "running": 2,
+              "parked": 49
+            },
+            "activityCurrent": 51,
+            "saved": 51
+          },
+          "child": {
+            "rows": 38,
+            "runtime": {
+              "parked": 38
+            },
+            "activityCurrent": 1,
+            "saved": 38
+          },
+          "unknown": {
+            "rows": 0,
+            "runtime": {},
+            "activityCurrent": 0,
+            "saved": 0
+          }
+        },
+        "active": [
+          {
+            "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+            "title": "agent-observer",
+            "phase": "working",
+            "activityAt": 1791530654000
+          },
+          {
+            "id": "01a113b3-adca-7b62-834f-262791c1c774",
+            "title": "tmux-plus",
+            "phase": "working",
+            "activityAt": 1791528202000
+          }
+        ],
+        "unknown": []
+      },
+      "claude": {
+        "counts": {
+          "all": {
+            "rows": 35,
+            "runtime": {
+              "unknown": 2,
+              "parked": 27,
+              "running": 6
+            },
+            "activityCurrent": 33,
+            "saved": 35
+          },
+          "user": {
+            "rows": 33,
+            "runtime": {
+              "unknown": 2,
+              "parked": 25,
+              "running": 6
+            },
+            "activityCurrent": 33,
+            "saved": 33
+          },
+          "child": {
+            "rows": 0,
+            "runtime": {},
+            "activityCurrent": 0,
+            "saved": 0
+          },
+          "unknown": {
+            "rows": 2,
+            "runtime": {
+              "parked": 2
+            },
+            "activityCurrent": 0,
+            "saved": 2
+          }
+        },
+        "active": [
+          {
+            "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+            "title": "a100-test",
+            "phase": "waiting",
+            "activityAt": 1791529724215
+          },
+          {
+            "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+            "title": "spare-gpus",
+            "phase": "waiting",
+            "activityAt": 1791499859289
+          },
+          {
+            "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+            "title": "pr-review",
+            "phase": "waiting",
+            "activityAt": 1791506319850
+          },
+          {
+            "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+            "title": "caos-models",
+            "phase": "working",
+            "activityAt": 1791529335573
+          },
+          {
+            "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+            "title": "2026-recap-dedup",
+            "phase": "waiting",
+            "activityAt": 1791527010363
+          },
+          {
+            "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+            "title": "embeddings-bf",
+            "phase": "waiting",
+            "activityAt": 1791512141316
+          }
+        ],
+        "unknown": [
+          {
+            "id": "04ea305e-178c-470f-b3ab-97ab055fd1b4",
+            "title": "recap-2026-report",
+            "runtime": {
+              "clock": null,
+              "health": "unsupported",
+              "observedAt": null,
+              "reason": "background_runtime_unsupported",
+              "source": null,
+              "value": "unknown"
+            },
+            "issues": [
+              "noninteractive_conflict"
+            ],
+            "hasSavedHistory": true
+          },
+          {
+            "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+            "title": "recap-2026-f2",
+            "runtime": {
+              "clock": null,
+              "health": "unsupported",
+              "observedAt": null,
+              "reason": "background_runtime_unsupported",
+              "source": null,
+              "value": "unknown"
+            },
+            "issues": [
+              "noninteractive_conflict"
+            ],
+            "hasSavedHistory": true
+          }
+        ]
+      }
+    }
+  },
+  "snap-cache-inventory": {
+    "host": "snap",
+    "delivery": "cache",
+    "collectedAt": 1791530810247,
+    "schemaVersion": 4,
+    "sources": [
+      {
+        "provider": "codex",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "errors": []
+      },
+      {
+        "provider": "claude",
+        "health": "partial",
+        "coverage": {
+          "runtime": {
+            "reason": "interactive_registration_assumed",
+            "scope": "provider_sessions",
+            "status": "partial"
+          },
+          "saved": {
+            "reason": "metadata_scan",
+            "status": "partial"
+          }
+        },
+        "errors": []
+      }
+    ],
+    "providers": {
+      "codex": {
+        "counts": {
+          "all": {
+            "rows": 89,
+            "runtime": {
+              "running": 2,
+              "parked": 87
+            },
+            "activityCurrent": 52,
+            "saved": 89
+          },
+          "user": {
+            "rows": 51,
+            "runtime": {
+              "running": 2,
+              "parked": 49
+            },
+            "activityCurrent": 51,
+            "saved": 51
+          },
+          "child": {
+            "rows": 38,
+            "runtime": {
+              "parked": 38
+            },
+            "activityCurrent": 1,
+            "saved": 38
+          },
+          "unknown": {
+            "rows": 0,
+            "runtime": {},
+            "activityCurrent": 0,
+            "saved": 0
+          }
+        },
+        "active": [
+          {
+            "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+            "title": "agent-observer",
+            "phase": "working",
+            "activityAt": 1791530654000
+          },
+          {
+            "id": "01a113b3-adca-7b62-834f-262791c1c774",
+            "title": "tmux-plus",
+            "phase": "working",
+            "activityAt": 1791528202000
+          }
+        ],
+        "unknown": []
+      },
+      "claude": {
+        "counts": {
+          "all": {
+            "rows": 36,
+            "runtime": {
+              "running": 6,
+              "unknown": 3,
+              "parked": 27
+            },
+            "activityCurrent": 33,
+            "saved": 35
+          },
+          "user": {
+            "rows": 33,
+            "runtime": {
+              "running": 6,
+              "unknown": 2,
+              "parked": 25
+            },
+            "activityCurrent": 33,
+            "saved": 33
+          },
+          "child": {
+            "rows": 0,
+            "runtime": {},
+            "activityCurrent": 0,
+            "saved": 0
+          },
+          "unknown": {
+            "rows": 3,
+            "runtime": {
+              "parked": 2,
+              "unknown": 1
+            },
+            "activityCurrent": 0,
+            "saved": 2
+          }
+        },
+        "active": [
+          {
+            "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+            "title": "a100-test",
+            "phase": "waiting",
+            "activityAt": 1791529724215
+          },
+          {
+            "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+            "title": "spare-gpus",
+            "phase": "waiting",
+            "activityAt": 1791499859289
+          },
+          {
+            "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+            "title": "pr-review",
+            "phase": "waiting",
+            "activityAt": 1791506319850
+          },
+          {
+            "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+            "title": "caos-models",
+            "phase": "working",
+            "activityAt": 1791529335573
+          },
+          {
+            "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+            "title": "2026-recap-dedup",
+            "phase": "waiting",
+            "activityAt": 1791527010363
+          },
+          {
+            "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+            "title": "embeddings-bf",
+            "phase": "waiting",
+            "activityAt": 1791512141316
+          }
+        ],
+        "unknown": [
+          {
+            "id": "04ea305e-178c-470f-b3ab-97ab055fd1b4",
+            "title": "recap-2026-report",
+            "runtime": {
+              "clock": null,
+              "health": "unsupported",
+              "observedAt": null,
+              "reason": "background_runtime_unsupported",
+              "source": null,
+              "value": "unknown"
+            },
+            "issues": [
+              "noninteractive_conflict"
+            ],
+            "hasSavedHistory": true
+          },
+          {
+            "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+            "title": "recap-2026-f2",
+            "runtime": {
+              "clock": null,
+              "health": "unsupported",
+              "observedAt": null,
+              "reason": "background_runtime_unsupported",
+              "source": null,
+              "value": "unknown"
+            },
+            "issues": [
+              "noninteractive_conflict"
+            ],
+            "hasSavedHistory": true
+          },
+          {
+            "id": "4359adf3-32f1-49fb-ab95-cc780bfe68de",
+            "title": "Claude 4359adf3-32f1-49fb-ab95-cc780bfe68de",
+            "runtime": {
+              "clock": "sample",
+              "health": "stale",
+              "lastKnownValue": "running",
+              "observedAt": 1791529612980,
+              "reason": "service_source_expired",
+              "source": "claude_registry",
+              "value": "unknown"
+            },
+            "issues": [
+              "service_history_stale",
+              "retained_after_gap"
+            ],
+            "hasSavedHistory": false
+          }
+        ]
+      }
+    }
+  },
+  "starship-direct-inventory": {
+    "host": "starship",
+    "delivery": "direct",
+    "collectedAt": 1791530828892,
+    "schemaVersion": 4,
+    "sources": [
+      {
+        "provider": "codex",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "errors": []
+      }
+    ],
+    "providers": {
+      "codex": {
+        "counts": {
+          "all": {
+            "rows": 354,
+            "runtime": {
+              "running": 6,
+              "parked": 348
+            },
+            "activityCurrent": 106,
+            "saved": 354
+          },
+          "user": {
+            "rows": 81,
+            "runtime": {
+              "running": 6,
+              "parked": 75
+            },
+            "activityCurrent": 81,
+            "saved": 81
+          },
+          "child": {
+            "rows": 252,
+            "runtime": {
+              "parked": 252
+            },
+            "activityCurrent": 4,
+            "saved": 252
+          },
+          "unknown": {
+            "rows": 21,
+            "runtime": {
+              "parked": 21
+            },
+            "activityCurrent": 21,
+            "saved": 21
+          }
+        },
+        "active": [
+          {
+            "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+            "title": "fluid-2.5d",
+            "phase": "working",
+            "activityAt": 1791530603000
+          },
+          {
+            "id": "01a0ca16-d486-7142-8170-c496b7419368",
+            "title": "pd-lab-next",
+            "phase": "working",
+            "activityAt": 1791530796000
+          },
+          {
+            "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+            "title": "raster90",
+            "phase": "waiting",
+            "activityAt": 1791504900000
+          },
+          {
+            "id": "01a1197f-1113-7261-bc5b-810100a74236",
+            "title": "devlog",
+            "phase": "waiting",
+            "activityAt": 1791517878000
+          },
+          {
+            "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+            "title": "sleep",
+            "phase": "waiting",
+            "activityAt": 1791512205000
+          },
+          {
+            "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+            "title": "system",
+            "phase": "waiting",
+            "activityAt": 1791515423000
+          }
+        ],
+        "unknown": []
+      }
+    }
+  },
+  "starship-cache-inventory": {
+    "host": "starship",
+    "delivery": "cache",
+    "collectedAt": 1791530817981,
+    "schemaVersion": 4,
+    "sources": [
+      {
+        "provider": "codex",
+        "health": "current",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "errors": []
+      }
+    ],
+    "providers": {
+      "codex": {
+        "counts": {
+          "all": {
+            "rows": 354,
+            "runtime": {
+              "running": 6,
+              "parked": 348
+            },
+            "activityCurrent": 106,
+            "saved": 354
+          },
+          "user": {
+            "rows": 81,
+            "runtime": {
+              "running": 6,
+              "parked": 75
+            },
+            "activityCurrent": 81,
+            "saved": 81
+          },
+          "child": {
+            "rows": 252,
+            "runtime": {
+              "parked": 252
+            },
+            "activityCurrent": 4,
+            "saved": 252
+          },
+          "unknown": {
+            "rows": 21,
+            "runtime": {
+              "parked": 21
+            },
+            "activityCurrent": 21,
+            "saved": 21
+          }
+        },
+        "active": [
+          {
+            "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+            "title": "fluid-2.5d",
+            "phase": "working",
+            "activityAt": 1791530603000
+          },
+          {
+            "id": "01a0ca16-d486-7142-8170-c496b7419368",
+            "title": "pd-lab-next",
+            "phase": "working",
+            "activityAt": 1791530796000
+          },
+          {
+            "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+            "title": "raster90",
+            "phase": "waiting",
+            "activityAt": 1791504900000
+          },
+          {
+            "id": "01a1197f-1113-7261-bc5b-810100a74236",
+            "title": "devlog",
+            "phase": "waiting",
+            "activityAt": 1791517878000
+          },
+          {
+            "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+            "title": "sleep",
+            "phase": "waiting",
+            "activityAt": 1791512205000
+          },
+          {
+            "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+            "title": "system",
+            "phase": "waiting",
+            "activityAt": 1791515423000
+          }
+        ],
+        "unknown": []
+      }
+    }
+  }
+}

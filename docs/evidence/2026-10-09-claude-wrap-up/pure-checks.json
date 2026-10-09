@@ -1,0 +1,19 @@
+{
+  "ordinaryProviderActions": false,
+  "cases": [
+    {
+      "name": "sourceBoundary",
+      "status": "accepted",
+      "tests": 8,
+      "outsideCheckout": false,
+      "isolatedInstalledImports": false
+    },
+    {
+      "name": "installedContractAlignment",
+      "status": "accepted",
+      "tests": 8,
+      "outsideCheckout": true,
+      "isolatedInstalledImports": true
+    }
+  ]
+}

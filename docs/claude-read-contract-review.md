@@ -23,8 +23,9 @@ Three documentation issues could mislead a client implementer:
 2. The earlier plan proposed an `interactive_sessions` scope enum and automatic
    API/wire/service bumps. Existing `provider_sessions`, partial coverage and
    bounded reason/limitation fields represent the agreed scope without that change.
-3. The client handoff and service page retained a6/a5 selection examples while
-   describing a8 as current. Examples now match the accepted a8 manifest/prefix.
+3. At the original alignment checkpoint, the client handoff and service page
+   retained a6/a5 selection examples while describing a8 as current. That review
+   reconciled them with a8; the subsequent wrap-up updates current guides to a9.
 
 No blocking shared-interface mismatch was found. This conclusion rests on both
 semantic review and synthetic conformance through unchanged source and installed
@@ -130,7 +131,7 @@ the three Claude rows with blocked, null and unknown phase respectively.
 Descriptors report API 2/wire 4/service 2. These checks invoke no provider or
 publisher and make no ordinary configuration changes.
 
-Reproduce the installed consumer check without native collection:
+Reproduce that historical a8 consumer check without native collection:
 
 ```sh
 cd /tmp

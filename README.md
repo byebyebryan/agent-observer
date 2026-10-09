@@ -25,6 +25,8 @@ The [client handoff](docs/api-v2-client-handoff.md) supplies direct/cached comma
 consumer obligations and current limits. Read-client development can proceed
 independently. Frontend migration, actions/attachment, networking and user-facing
 alerts remain separate.
+The [Claude wrap-up](docs/claude-observation-wrap-up.md) closes the interactive
+observation pass and records independent follow-ups.
 
 Codex queries its owning daemon for running/parked independently of TUI/tmux.
 Claude authenticates provider-owned interactive registrations and status.
@@ -37,7 +39,8 @@ Agent View on/off both pass; ordinary provider settings remain unchanged.
 A live Claude session with failed/missing registration can be missed or falsely
 parked; runtime coverage remains partial with explicit limitations. Background
 runtime and attachment are unsupported; native job metadata only vetoes unsafe
-negatives. Two old stopped recap background histories remain unknown. The
+negatives. Two old stopped recap background histories remain unknown and are
+outside the user's forward interactive workflow. The
 setup-only SDK omission now has a saved row, while its cwd, kind and conversation
 age remain unavailable. Generic dialogs, excluded nested child history and
 Claude turn outcomes remain unproved.
@@ -48,6 +51,9 @@ metadata gap; one additional unsaved identity is retained only as stale unknown
 in the service. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
 cached pulls and pushed views pass independently. Age follows native conversation
 activity; leases, source faults, ambiguity and gaps remain explicit.
+The [shared-core retention follow-up](docs/runtime-only-retention-follow-up.md)
+separately scopes retirement of disappeared unsaved rows; a9 still retains them
+as stale unknown.
 
 The preceding [a8 Claude checkpoint](docs/evidence/2026-10-08-claude-observation/REPORT.md)
 and [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)

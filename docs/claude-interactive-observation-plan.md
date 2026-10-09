@@ -124,6 +124,8 @@ nor stopped during migration. Historical terminal job metadata alone is not a
 live conflict; guard current or unresolved potentially live work only.
 Saved user conversations remain discoverable;
 saved existence does not imply that their historical runtime route is supported.
+Old background histories are outside the user's forward workflow and do not
+require a legacy-compatibility repair for this completed interactive pass.
 Prove the minimal guard before accepting the candidate; do not hide a full
 background compatibility implementation inside it.
 
@@ -208,8 +210,10 @@ and ordinary both-host comparisons. I4 selects read/service a9 on both hosts,
 with restart, publisher failure/reconnect, rollback/reselection and sustained
 readers accepted. The independent writer remains a16. I5 provider-policy changes
 are deferred; [read-client handoff](api-v2-client-handoff.md) is complete.
-Reuse native I0 facts
-rather than repeating the entire spike for every daily provider update. Additional cases
+The [wrap-up](claude-observation-wrap-up.md) records completion within accepted
+limits; shared-core unsaved-row retention has a separate follow-up.
+Reuse native I0 facts rather than repeating the entire spike for every daily
+provider update. Additional cases
 establish the candidate's bounded behavior; they are not an attempt to prove
 away the already demonstrated missing-registration limitation. If a required
 normal-workflow predicate fails, report that specific capability gap and revise

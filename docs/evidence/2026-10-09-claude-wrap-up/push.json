@@ -1,0 +1,94 @@
+{
+  "snap-push": {
+    "host": "snap",
+    "frames": [
+      {
+        "kind": "view",
+        "sequence": 1,
+        "serviceId": "498ce3eb-8122-47ca-88af-9dfccb285981",
+        "viewRevision": 126,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 570773155,
+        "snapshotRows": 87
+      },
+      {
+        "kind": "view",
+        "sequence": 2,
+        "serviceId": "498ce3eb-8122-47ca-88af-9dfccb285981",
+        "viewRevision": 127,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 570775136,
+        "snapshotRows": 87
+      },
+      {
+        "kind": "view",
+        "sequence": 3,
+        "serviceId": "498ce3eb-8122-47ca-88af-9dfccb285981",
+        "viewRevision": 128,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 570783579,
+        "snapshotRows": 87
+      },
+      {
+        "kind": "heartbeat",
+        "sequence": 4,
+        "serviceId": "498ce3eb-8122-47ca-88af-9dfccb285981",
+        "viewRevision": 128,
+        "state": "ready",
+        "reason": "service_alive",
+        "emittedBoottimeMs": 570793636,
+        "snapshotRows": null
+      }
+    ],
+    "cliReturncode": 0
+  },
+  "starship-push": {
+    "host": "starship",
+    "frames": [
+      {
+        "kind": "view",
+        "sequence": 1,
+        "serviceId": "602f2e8e-e008-4336-9a1f-c044fde60469",
+        "viewRevision": 91,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 571186179,
+        "snapshotRows": 102
+      },
+      {
+        "kind": "view",
+        "sequence": 2,
+        "serviceId": "602f2e8e-e008-4336-9a1f-c044fde60469",
+        "viewRevision": 92,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 571187300,
+        "snapshotRows": 102
+      },
+      {
+        "kind": "heartbeat",
+        "sequence": 3,
+        "serviceId": "602f2e8e-e008-4336-9a1f-c044fde60469",
+        "viewRevision": 92,
+        "state": "ready",
+        "reason": "service_alive",
+        "emittedBoottimeMs": 571197352,
+        "snapshotRows": null
+      },
+      {
+        "kind": "view",
+        "sequence": 4,
+        "serviceId": "602f2e8e-e008-4336-9a1f-c044fde60469",
+        "viewRevision": 93,
+        "state": "ready",
+        "reason": "observed_view",
+        "emittedBoottimeMs": 571206723,
+        "snapshotRows": 102
+      }
+    ],
+    "cliReturncode": 0
+  }
+}

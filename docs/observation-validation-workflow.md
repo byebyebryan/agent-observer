@@ -1,24 +1,27 @@
 # Observer CLI validation workflow
 
-Date: 2026-10-08. This is the current Observer development workflow. Validate
+Date: 2026-10-09. This is the current Observer development workflow. Validate
 the public CLI against independent native evidence before starting a separate
 frontend checkpoint. Ordinary active sessions establish operational inventory;
 isolated test sessions establish controlled transitions and failure behavior.
 Both forms of evidence are useful, but their coverage differs.
 
 [API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
-prerelease read contracts. The [a8 Claude report](evidence/2026-10-08-claude-observation/REPORT.md)
+prerelease read contracts. The [a9 Claude report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 records independent artifact/native and scoped operational acceptance on Snap,
-with Codex preserved on Snap/Starship. Read/service commands select a8; the writer
+with Codex preserved on Snap/Starship. Read/service commands select a9; the writer
 retains a16 independently. A later receipt must record the selected artifact anew.
-The next [interactive Claude plan](claude-interactive-observation-plan.md) requires
-an independently implemented native oracle before producer changes. Existing a8
-receipts do not prove exhaustive interactive absence or Agent View mode-off.
-The [later native-source proof](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+The [interactive Claude plan](claude-interactive-observation-plan.md) accepts
+I0–I4 and retains an independent native oracle. Existing a8 receipts keep their
+historical bounds; a9 adds Observer-native on/off and lifecycle proof.
+The [native-source proof](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 establishes tested positive on/off flows and disproves exhaustive registration.
 Validate the user's accepted registration assumption explicitly: normal/crash
 parked and cold start within scope, detected faults as unknown, and a live missing
 registration as a documented possible false parked result with partial coverage.
+The [wrap-up review](evidence/2026-10-09-claude-wrap-up/REPORT.md) records ordinary
+active/history comparison bounds. Background execution remains unsupported and
+old background histories are outside the user's forward workflow.
 
 ## Installed CLI and ordinary sessions
 
@@ -47,7 +50,7 @@ registration as a documented possible false parked result with partial coverage.
    For Claude, read authenticated provider-owned registrations/status and bounded
    saved metadata independently. Native PID-domain/birth checks authenticate UUID
    records; they do not discover terminal clients. Independently validate the
-   adapter's reviewed parked predicate and declared assumptions. For the upcoming
+   adapter's reviewed parked predicate and declared assumptions. For the accepted
    interactive Claude target, positively saved UUIDs with a healthy bounded scan,
    no matching live incarnation and no relevant unresolved conflict may become
    parked under the accepted registration assumption. Missing registration alone
