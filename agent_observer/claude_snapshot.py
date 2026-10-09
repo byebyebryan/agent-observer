@@ -22,6 +22,7 @@ from .activity import unavailable
 from .claude_history import SDK_VERSION as CLAUDE_HISTORY_SDK_VERSION
 from .claude_history import collect_saved_history
 from .claude_metadata import snapshot
+from .claude_saved_identity import saved_ids
 from .native_artifacts import inspect_installed
 from .observation_model import bounded_native_title
 
@@ -235,6 +236,9 @@ def collect_claude(
     # Saved history has its own failure and coverage boundary. A missing SDK,
     # oversized history tree, or failed metadata scan must not stale live
     # registry/job evidence above.
+    identities = saved_ids(config_home, {r["identity"]["nativeId"] for r in result["sessions"]})
+    for row in result["sessions"]:
+        row["savedIdentity"] = row["identity"]["nativeId"] in identities
     if not include_history:
         history = {"rows": [], "coverage": {"complete": False, "reason": "not_observed"}, "errors": []}
     elif "namespace" in result:

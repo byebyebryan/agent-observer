@@ -367,6 +367,9 @@ class ClaudeHistoryTest(unittest.TestCase):
         path.write_text(json.dumps(value) + "\n")
         self.assertEqual(transcript_kind(path, FIRST), "user")
         self.assertIsNone(transcript_activity(path, FIRST)["at"])
+        housekeeping = json.dumps({"type": "system", "detail": "x" * 1000}) + "\n"
+        path.write_text(housekeeping * 80 + json.dumps(value) + "\n")
+        self.assertEqual(transcript_kind(path, FIRST), "user")
         value["isSidechain"] = True
         path.write_text(json.dumps(value) + "\n")
         self.assertEqual(transcript_kind(path, FIRST), "child")

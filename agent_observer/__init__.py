@@ -1,3 +1,3 @@
 """Study implementations; these are not a stable public Observer interface."""
 
-__version__ = "0.5.0a7"
+__version__ = "0.5.0a8"
