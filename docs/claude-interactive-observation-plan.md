@@ -5,6 +5,14 @@ Date: 2026-10-08. Status: proposed execution plan, requested after the
 This document accepts the ownership and interactive-only target, not a new
 runtime predicate, artifact, public wire or provider configuration rollout.
 
+The [I0 native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+accepts positive registration/phase/Resume evidence with Agent View on/off in
+the tested flows, including hookless observation. It disproves generic parked
+inference from registry absence: after a failed registration, a live session
+remains invisible even when the directory is restored. The negative lifecycle
+gate remains unaccepted. Revise that predicate before I1 locks a new contract;
+the implementation and API-version proposals below remain pending.
+
 ## Direction and baseline
 
 Observer is the upstream read authority for consumers. Provider-native evidence
@@ -164,6 +172,12 @@ running/phase/catalog improvements, but do not describe I3 as complete interacti
 discovery. Record the parked blocker and required provider capability. A long
 execution loop may investigate it autonomously within isolated fixtures; the
 plan does not authorize weakening its predicate.
+
+The initial I0 proof encountered exactly this limit. Its receipts establish a
+usable unregistered interactive context in both Agent View modes, and the native
+JSON roster also misses it when enabled. Additional registration-completeness
+tests cannot turn that source into an exhaustive census without a new required
+provider capability or an explicitly reviewed narrower observation guarantee.
 
 Mode-off selection is based on registration, waiting/working, held approval and
 question, saved Resume, exact UUID and child classification proof. Native roster

@@ -32,7 +32,11 @@ explicitly versioned scope review; interactive adapter/model cleanup; immutable
 direct/cache/push acceptance; scoped Observer operations; then a separate provider
 policy/handoff gate. Parked requires positive saved identity and a proved exhaustive
 native absence predicate. Client inventory/attachment and background runtime
-support are excluded. The plan remains unimplemented; a8 retains its original scope.
+support are excluded. [I0 native validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+proves positive registration/phase/Resume with Agent View on/off, including
+hookless observation, but finds a live-session registration-failure counterexample
+to general parked inference. The negative lifecycle gate and subsequent
+implementation remain pending; a8 retains its original scope.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its

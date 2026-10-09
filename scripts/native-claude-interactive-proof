@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""Explicit isolated native proof; no Observer imports or terminal captures.
+
+Exercises Agent View on/off and a registration-failure counterexample. Invoke
+only through native-isolation enter, after copying this script and the bounded
+capture-native-lifecycle helper into its owned root. No ordinary provider action.
+"""
+
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+import pty
+import select
+import signal
+import struct
+import subprocess
+import termios
+import time
+import uuid
+from datetime import datetime
+from pathlib import Path
+
+
+class NativeProof:
+    def __init__(self):
+        self.root = Path(os.environ["NATIVE_PROOF_ROOT"])
+        self.base = self.root / "native-snap"
+        self.home = self.base / "claude"
+        self.registry = self.home / "sessions"
+        assert os.getuid() == 0 and os.environ["NATIVE_PROOF_HOST"] == "snap"
+        assert all(json.loads((self.root / "ready.json").read_text()).values())
+        state = json.loads((self.root / "runtime.json").read_text())
+        assert not state.get("stopped")
+        assert all(os.readlink("/proc/self/ns/" + k) == v for k, v in state["namespaces"].items())
+        assert Path(os.environ["CLAUDE_CONFIG_DIR"]) == self.home
+        assert not os.environ.get("TMUX")
+        os.chdir(self.base / "workspace")
+        for name in ("CLAUDE_CODE_DISABLE_AGENT_VIEW", "CLAUDE_CODE_SESSION_KIND"):
+            os.environ.pop(name, None)
+        self.clients = []
+        self.receipt = {
+            "ordinaryProviderActions": False, "terminalOutputPersisted": False,
+            "nativeOracleImportsObserver": False, "clientInventoryQueried": False,
+            "isolationEstablished": True, "modes": [],
+        }
+
+    def pause(self, seconds):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            for client in self.clients:
+                fd = client["fd"]
+                if fd is None:
+                    continue
+                if select.select([fd], [], [], 0)[0]:
+                    try:
+                        data = os.read(fd, 65536)
+                        if b"\x1b[6n" in data:
+                            os.write(fd, b"\x1b[1;1R")
+                        if b"\x1b[c" in data:
+                            os.write(fd, b"\x1b[?1;2c")
+                    except OSError:
+                        pass
+            time.sleep(0.05)
+
+    def alive(self, client):
+        if client.get("exitCode") is not None:
+            return False
+        pid, status = os.waitpid(client["pid"], os.WNOHANG)
+        if pid:
+            client["exitCode"] = os.waitstatus_to_exitcode(status)
+            return False
+        return True
+
+    def records(self):
+        if not self.registry.is_dir():
+            return None
+        result = []
+        for path in sorted(self.registry.glob("*.json")):
+            value = json.loads(path.read_text())
+            value["_file"] = path.name
+            result.append(value)
+        return result
+
+    def record(self, sid):
+        candidates = [r for r in self.records() or [] if r.get("sessionId") == sid]
+        live = [r for r in candidates if self.authenticated(r)]
+        assert len(live) <= 1, "duplicate_current_native_contexts"
+        return live[0] if live else candidates[0] if candidates else None
+
+    def authenticated(self, record):
+        if not record:
+            return False
+        pid = record["pid"]
+        try:
+            birth = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+            domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
+            return (
+                birth == record.get("procStart") and domain == record.get("pidDomain")
+                and os.readlink(f"/proc/{pid}/exe") == "/opt/claude-code/bin/claude"
+                and Path(f"/proc/{pid}").stat().st_uid == os.getuid()
+                and record["_file"] == str(pid) + ".json"
+                and record.get("kind") == "interactive" and record.get("jobId") is None
+            )
+        except OSError:
+            return False
+
+    def metadata(self, sid):
+        counts = {"user": 0, "assistant": 0}
+        latest = None
+        paths = list((self.home / "projects").glob("*/" + sid + ".jsonl"))
+        for path in paths:
+            assert path.stat().st_size <= 2 * 1024 * 1024, "proof_transcript_bound"
+            for line in path.read_bytes().split(b"\n")[:-1]:
+                if not line:
+                    continue
+                value = json.loads(line)
+                role = value.get("type")
+                if (value.get("sessionId") == sid and role in counts
+                        and value.get("isSidechain") is False and value.get("isMeta") is not True
+                        and value.get("message", {}).get("role") == role):
+                    counts[role] += 1
+                    stamp = value.get("timestamp")
+                    if isinstance(stamp, str):
+                        at = int(datetime.fromisoformat(stamp.replace("Z", "+00:00")).timestamp() * 1000)
+                        latest = max(latest or 0, at)
+        return {"positiveSavedIdentity": bool(paths), "eventCounts": counts, "activityAt": latest}
+
+    def events(self, sid):
+        path = self.root / "lifecycle-events.jsonl"
+        return [r for line in path.read_text().splitlines() for r in [json.loads(line)]
+                if r["nativeId"] == sid] if path.exists() else []
+
+    def spawn(self, sid, *, resume=False, prompt=None):
+        argv = ["claude", *( ["--resume", sid] if resume else ["--session-id", sid, "--name", "Observer private interactive proof"])]
+        if prompt:
+            argv.append(prompt)
+        pid, fd = pty.fork()
+        if pid == 0:
+            os.execv("/opt/claude-code/bin/claude", argv)
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+        os.set_blocking(fd, False)
+        client = {"pid": pid, "fd": fd, "sid": sid, "exitCode": None}
+        self.clients.append(client)
+        return client
+
+    def send(self, client, text):
+        os.write(client["fd"], b"\x1b[200~" + text.encode() + b"\x1b[201~\r")
+
+    def until(self, predicate, reason, timeout=80):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            self.pause(0.1)
+            value = predicate()
+            if value:
+                return value
+        raise RuntimeError(reason)
+
+    def phase(self, client, status, waiting_for=None, timeout=80):
+        sid = client["sid"]
+        def matches():
+            assert self.alive(client), "owned_client_exited"
+            record = self.record(sid)
+            if (self.authenticated(record) and record.get("status") == status
+                    and (waiting_for is None or record.get("waitingFor") == waiting_for)):
+                assert type(record.get("statusUpdatedAt")) is int
+                return record
+            return None
+        return self.until(matches, "native_status_unproved_" + status, timeout)
+
+    def normal_exit(self, client):
+        before = len(self.events(client["sid"]))
+        record = self.record(client["sid"])
+        if record is None or record.get("status") != "idle":
+            for _ in range(2):
+                os.write(client["fd"], b"\x1b")
+                self.pause(0.4)
+            os.write(client["fd"], b"\x03")
+        self.pause(2)
+        os.write(client["fd"], b"/exit\r")
+        self.until(lambda: not self.alive(client), "native_exit_unproved", 25)
+        events = self.events(client["sid"])[before:]
+        return {
+            "processExited": True, "exitCode": client["exitCode"],
+            "promptInputExitHook": any(e.get("promptInputExit") for e in events),
+            "registrationRemoved": not (self.registry / (str(client["pid"]) + ".json")).exists(),
+            "savedIdentityRetained": self.metadata(client["sid"])["positiveSavedIdentity"],
+        }
+
+    def stop(self, client, sig=signal.SIGKILL):
+        if self.alive(client):
+            os.kill(client["pid"], sig)
+            self.until(lambda: not self.alive(client), "owned_cleanup_timeout", 10)
+        if client["fd"] is not None:
+            os.close(client["fd"])
+            client["fd"] = None
+
+    def config(self, disabled):
+        hook = str(Path(os.sys.executable)) + " " + str(self.root / "capture-native-lifecycle")
+        config = {
+            "disableAgentView": disabled, "disableAllHooks": False, "enabledPlugins": {},
+            "permissions": {"ask": ["Bash", "Write"]},
+            "hooks": {event: [{"matcher": "AskUserQuestion" if event == "PreToolUse" else "",
+                                "hooks": [{"type": "command", "command": hook, "timeout": 2}]}]
+                      for event in ("PreToolUse", "SessionEnd", "Notification")},
+        }
+        (self.home / "settings.json").write_text(json.dumps(config))
+
+    def mode(self, disabled):
+        self.config(disabled)
+        sid = str(uuid.uuid4())
+        result = {"disableAgentView": disabled, "nativeId": sid, "samples": []}
+        self.receipt["modes"].append(result)
+        client = self.spawn(sid, prompt="Reply only with OK.")
+        startup = self.until(lambda: self.record(sid), "startup_registration_unproved", 25)
+        result["registeredBeforeFirstAssistantEvent"] = self.metadata(sid)["eventCounts"]["assistant"] == 0
+        assert self.authenticated(startup)
+        idle = self.phase(client, "idle")
+        result["newInteractiveRegistrationAuthenticated"] = True
+        result["samples"].append({"status": "idle", "statusUpdatedAt": idle["statusUpdatedAt"]})
+        self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > 0, "initial_response_unproved")
+        self.send(client, "Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.")
+        busy = self.phase(client, "busy", timeout=30)
+        result["samples"].append({"status": "busy", "statusUpdatedAt": busy["statusUpdatedAt"]})
+        question = self.phase(client, "waiting", "input needed")
+        self.until(lambda: any(e.get("askUserQuestion") for e in self.events(sid)), "question_hook_unproved", 10)
+        result["samples"].append({"status": "waiting", "waitClass": "question", "statusUpdatedAt": question["statusUpdatedAt"]})
+        self.pause(2)
+        result["heldQuestionStillRegistered"] = self.authenticated(self.record(sid))
+        result["exit"] = self.normal_exit(client)
+        assert all(result["exit"][k] for k in ("processExited", "promptInputExitHook", "registrationRemoved", "savedIdentityRetained"))
+        self.stop(client)
+        saved = self.metadata(sid)
+        resumed = self.spawn(sid, resume=True)
+        resumed_record = self.phase(resumed, "idle", timeout=35)
+        self.pause(1)
+        result["savedResume"] = {
+            "exactUuidRegistered": resumed_record["sessionId"] == sid,
+            "newIncarnation": resumed_record["procStart"] != idle["procStart"] or resumed_record["pid"] != idle["pid"],
+            "activityUnchangedBeforeNewPrompt": self.metadata(sid)["activityAt"] == saved["activityAt"],
+        }
+        target = self.base / "workspace/approval-proof.txt"
+        assert not target.exists()
+        self.send(resumed, "Use Bash to write OK to approval-proof.txt.")
+        approval = self.phase(resumed, "waiting", "permission prompt")
+        self.pause(2)
+        result["samples"].append({"status": "waiting", "waitClass": "approval", "statusUpdatedAt": approval["statusUpdatedAt"]})
+        result["approvalNotExecuted"] = not target.exists()
+        result["resumedExit"] = self.normal_exit(resumed)
+        self.stop(resumed)
+        crash = self.spawn(sid, resume=True)
+        crash_record = self.phase(crash, "idle", timeout=35)
+        self.stop(crash)
+        stale = self.record(sid)
+        result["abnormalExit"] = {
+            "registrationRetained": stale is not None,
+            "oldIncarnationNotAuthenticated": not self.authenticated(stale),
+            "savedIdentityRetained": self.metadata(sid)["positiveSavedIdentity"],
+        }
+        # A stale native record can coexist with a later exact Resume. Observer
+        # must validate incarnation rather than treating every file as running.
+        after_crash = self.spawn(sid, resume=True)
+        fresh = self.phase(after_crash, "idle", timeout=35)
+        result["resumeAfterCrash"] = {"exactUuidRegistered": fresh["sessionId"] == sid,
+                                      "differentPid": fresh["pid"] != crash_record["pid"]}
+        result["finalExit"] = self.normal_exit(after_crash)
+        self.stop(after_crash)
+        # Remove only stale records of owned proof processes before the failure
+        # case; this is fixture maintenance, never a passive observer behavior.
+        for path in self.registry.glob("*.json"):
+            r = json.loads(path.read_text())
+            assert r.get("sessionId") == sid and not self.authenticated({**r, "_file": path.name})
+            path.unlink()
+        result["registrationFailure"] = self.registration_failure()
+        result["status"] = "completed"
+        print(json.dumps({"modeCompleted": "off" if disabled else "on", "registrationFailure": result["registrationFailure"]}), flush=True)
+
+    def registration_failure(self):
+        sid = str(uuid.uuid4())
+        assert self.records() == []
+        self.registry.rmdir()
+        self.registry.write_text("private native registration fault\n")
+        client = self.spawn(sid, prompt="Reply only with OK.")
+        try:
+            self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > 0,
+                       "failed_registration_native_session_not_usable")
+            assert self.alive(client)
+            initial = self.metadata(sid)
+            self.registry.unlink()
+            self.registry.mkdir(mode=0o700)
+            self.send(client, "Reply only with OK again.")
+            self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > initial["eventCounts"]["assistant"],
+                       "failed_registration_followup_not_usable")
+            self.pause(3)
+            current = self.metadata(sid)
+            record = self.record(sid)
+            result = {
+                "nativeId": sid, "nativeProcessStillAlive": self.alive(client),
+                "positiveSavedIdentity": current["positiveSavedIdentity"],
+                "initialAndFollowupAssistantEvents": current["eventCounts"]["assistant"] >= 2,
+                "registryRestoredReadableDirectory": self.registry.is_dir(),
+                "registryRecordCountAfterRecovery": len(self.records()),
+                "sessionRegistrationMissingAfterRecovery": record is None,
+                "runtimeVisibilityRecovered": self.authenticated(record),
+                "jobsStateRecordCount": len(list((self.home / "jobs").glob("*/state.json"))),
+                "naiveParkedPredicateWouldBeFalse": record is None and current["positiveSavedIdentity"] and self.alive(client),
+            }
+            # The CLI is deliberately tested only inside this namespace. Its
+            # output remains in memory, and no passivity acceptance is implied.
+            roster = subprocess.run(["/opt/claude-code/bin/claude", "agents", "--json", "--all"],
+                                    capture_output=True, timeout=25)
+            try:
+                rows = json.loads(roster.stdout)
+                result["isolatedNativeRoster"] = {"exitCode": roster.returncode, "jsonArray": isinstance(rows, list),
+                                                  "containsUuid": isinstance(rows, list) and any(r.get("sessionId") == sid for r in rows)}
+            except ValueError:
+                result["isolatedNativeRoster"] = {"exitCode": roster.returncode, "jsonArray": False}
+            result["nativeProcessStillAliveAfterRosterProbe"] = self.alive(client)
+            self.stop(client)
+            result["ownedProcessStoppedAfterCounterexample"] = True
+            return result
+        finally:
+            self.stop(client)
+            if not self.registry.is_dir():
+                self.registry.unlink(missing_ok=True)
+                self.registry.mkdir(mode=0o700)
+
+    def hookless_mode(self, disabled):
+        self.config(disabled)
+        settings = self.home / "settings.json"
+        config = json.loads(settings.read_text())
+        config.update(disableAllHooks=True)
+        config.pop("hooks")
+        settings.write_text(json.dumps(config))
+        sid = str(uuid.uuid4())
+        result = {"disableAgentView": disabled, "nativeId": sid, "hooksDisabled": True}
+        self.receipt["modes"].append(result)
+        client = self.spawn(sid, prompt="Reply only with OK.")
+        self.phase(client, "idle")
+        self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > 0, "hookless_response_unproved")
+        self.send(client, "Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.")
+        self.phase(client, "waiting", "input needed")
+        result["nativeRegistrationAndQuestionWithoutHooks"] = self.authenticated(self.record(sid))
+        result["exit"] = self.normal_exit(client)
+        self.stop(client)
+        assert not self.events(sid), "unexpected_proof_hook"
+        assert all(result["exit"][k] for k in ("processExited", "registrationRemoved", "savedIdentityRetained"))
+        result["status"] = "completed"
+
+    def run(self, *, hookless_only=False):
+        settings = self.home / "settings.json"
+        original = settings.read_bytes()
+        self.receipt["hooklessOnly"] = hookless_only
+        try:
+            self.receipt["executableSha256"] = hashlib.file_digest(Path("/opt/claude-code/bin/claude").open("rb"), "sha256").hexdigest()
+            self.receipt["harnessSha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+            for disabled in (True, False):
+                (self.hookless_mode if hookless_only else self.mode)(disabled)
+            self.receipt["status"] = "completed"
+        except Exception as error:
+            self.receipt.update(status="partial", failureCode=str(error))
+            raise
+        finally:
+            for client in self.clients:
+                self.stop(client)
+            settings.write_bytes(original)
+            name = "claude-interactive-hookless-receipt.json" if hookless_only else "claude-interactive-receipt.json"
+            (self.root / name).write_text(json.dumps(self.receipt, indent=2) + "\n")
+        print(json.dumps(self.receipt), flush=True)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--hookless-only", action="store_true", help="independent native registration/question/exit proof with all hooks disabled")
+    NativeProof().run(hookless_only=parser.parse_args().hookless_only)

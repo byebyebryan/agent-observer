@@ -1,0 +1,13 @@
+{
+  "ordinaryConfigurationHashesUnchanged": {
+    "/home/bryan/.claude/settings.json": true,
+    "/home/bryan/.claude.json": false
+  },
+  "preexistingNativeIncarnationsStillRegistered": 6,
+  "preexistingNativeIncarnationCount": 6,
+  "currentOrdinaryRegistrationCount": 6,
+  "additionalOrdinaryIncarnations": 0,
+  "privateNamespaceStopped": true,
+  "borrowedAuthenticationAndPrivateHistoryRemoved": true,
+  "nativeExecutableUnchanged": true
+}

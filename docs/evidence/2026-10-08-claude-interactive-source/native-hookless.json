@@ -1,0 +1,41 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "clientInventoryQueried": false,
+  "isolationEstablished": true,
+  "modes": [
+    {
+      "disableAgentView": true,
+      "nativeId": "36948307-e3dd-40a0-85d8-e5f1b8327c01",
+      "hooksDisabled": true,
+      "nativeRegistrationAndQuestionWithoutHooks": true,
+      "exit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": false,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "status": "completed"
+    },
+    {
+      "disableAgentView": false,
+      "nativeId": "e7ad6c50-0255-424f-ab3e-18ed6ece5f4f",
+      "hooksDisabled": true,
+      "nativeRegistrationAndQuestionWithoutHooks": true,
+      "exit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": false,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "status": "completed"
+    }
+  ],
+  "hooklessOnly": true,
+  "executableSha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+  "harnessSha256": "4e55bc74bad76daaf032503a882603f5022b63c8598ffbc56421f83a723b3d8e",
+  "status": "completed"
+}
