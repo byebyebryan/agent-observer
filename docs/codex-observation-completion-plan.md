@@ -13,7 +13,7 @@ adapter. API 2/read wire 4/service protocol 2 stay unchanged.
 | C0: boundary | Review/commit the ownership document and this bounded sequence | Repository/doc checks pass; ordinary deployment remains unchanged | Complete: a18258e |
 | C1: adapter authority | One passive adapter dispatch path for collection and feed helpers; reject unsupported legacy diagnostic/helper routes | Unsupported selection fails before native I/O/helper launch; read imports/actions/alerts/terminal boundaries enforced | Complete: 05b6a41 |
 | C2: reusable engine | Extract sample reconciliation, retention, expiry and refresh planning; service owns envelopes/runtime; direct watch reuses shared evidence rules | Fake-clock partial/outage/incarnation/order/hint tests and existing wire/transport checks pass | Source accepted; candidate/native follows |
-| C3: candidate/native | Freeze a successor wheel; separately install on both hosts; independently compare installed direct/cached/pushed discovery and monitoring | Exact identity/state/age/coverage agree; isolated state/recovery proofs pass; ordinary providers are preserved | Pending |
+| C3: candidate/native | Freeze a successor wheel; separately install on both hosts; independently compare installed direct/cached/pushed discovery and monitoring | Exact identity/state/age/coverage agree; isolated state/recovery proofs pass; ordinary providers are preserved | Accepted: a5; see report |
 | C4: operations | Review/render scoped managed read/service selection; restart/crash/reconnect/rollback/reselection; sustained normal-service reads/resource checks | Both hosts select the accepted Codex read/service tuple; recovery works; provider configuration/incarnations and separate writer/frontend selections are preserved | Pending |
 | C5: closeout | Review docs/artifact/evidence; commit source, acceptance and operational checkpoints | Clear installed/selected/native status, bounded limitations and a clean intended patch; no push requested | Pending |
 
@@ -72,3 +72,8 @@ prompt, response, tool payload, credentials or terminal capture is retained.
   (one skipped), including existing expiry, source order, incarnation, gap,
   history/runtime lease and native-hint controlled regressions. The successor
   package is a5; installed/native and normal rollout remain separate gates.
+- C3 [acceptance](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+  independently verifies the frozen a5 installation on both hosts. Ordinary
+  direct/cached views agree in all eight bracketing rounds (89/353 rows,
+  2/5 running), and isolated parked, held-input and cached/pushed outage/recovery
+  pass. All fixtures/auth/history are cleaned and ordinary bookends match exactly.

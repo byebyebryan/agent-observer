@@ -1,0 +1,11 @@
+{
+  "snap": {
+    "ownedNamespaceStopped": true,
+    "borrowedAuthAndHistoryRemoved": true
+  },
+  "starship": {
+    "ownedNamespaceStopped": true,
+    "borrowedAuthAndHistoryRemoved": true
+  },
+  "acceptancePublishersStopped": true
+}
