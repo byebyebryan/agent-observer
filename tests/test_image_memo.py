@@ -17,6 +17,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from test_service_runtime import Running, scoped_snapshot
+from test_service_owned_helpers import alive
 
 from agent_observer import native_artifacts
 from agent_observer._image_memo import MAX_ENTRIES, MAX_PACKET, ImageMemo, receive, send
@@ -299,14 +300,9 @@ class ImageMemoTest(unittest.TestCase):
                 proof = json.loads(marker.read_text())
                 self.assertTrue(proof["imageAnchorVerified"])
                 deadline = time.monotonic() + 1
-                while time.monotonic() < deadline:
-                    path = Path("/proc") / str(proof["childPid"]) / "stat"
-                    if not path.exists() or path.read_text().rsplit(")", 1)[1].split()[0] == "Z":
-                        break
+                while alive(proof["childPid"]) and time.monotonic() < deadline:
                     time.sleep(0.01)
-                self.assertTrue(
-                    not path.exists() or path.read_text().rsplit(")", 1)[1].split()[0] == "Z"
-                )
+                self.assertFalse(alive(proof["childPid"]), "owned helper survived its group deadline")
                 self.assertEqual(left.recv(MAX_PACKET), b"")
             finally:
                 if process.poll() is None:

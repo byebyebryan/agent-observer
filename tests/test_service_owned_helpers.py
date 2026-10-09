@@ -25,6 +25,19 @@ def alive(pid):
 
 
 class OwnedHelpersTest(unittest.TestCase):
+    def test_retirement_probe_handles_exit_during_proc_read(self):
+        for error in (FileNotFoundError, ProcessLookupError):
+            with self.subTest(error=error.__name__), patch.object(Path, "read_text", side_effect=error):
+                self.assertFalse(alive(123))
+        for state in ("R", "S", "D"):
+            with self.subTest(state=state), patch.object(Path, "read_text", return_value=f"123 (helper) {state} 1"):
+                self.assertTrue(alive(123))
+        with patch.object(Path, "read_text", return_value="123 (helper) Z 1"):
+            self.assertFalse(alive(123))
+        with patch.object(Path, "read_text", side_effect=PermissionError):
+            with self.assertRaises(PermissionError):
+                alive(123)
+
     def test_collection_has_its_own_deadline_without_a_publisher(self):
         with tempfile.TemporaryDirectory(prefix="ao-independent-deadline-") as directory:
             root = Path(directory)
