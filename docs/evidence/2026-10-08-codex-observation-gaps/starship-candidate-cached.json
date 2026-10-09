@@ -1,0 +1,599 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.5.0a6",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a6-9240493982e041c8/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "service": {
+        "serviceProtocol": 2,
+        "serviceId": "4d41b200-8444-483f-bc35-d9b9f6070789",
+        "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+        "hostScope": "starship",
+        "viewRevision": 4,
+        "emittedAt": 1791513769526,
+        "emittedBoottimeMs": 554056725,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 4,
+                "attempts": 4,
+                "expiresBoottimeMs": 554114000,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 554054000
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 554212694,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 554032694
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791513769495
+      },
+      "cliCollectedAt": 1791513767124,
+      "nativeAfterAt": {
+        "codex": 1791513769985
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 354,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 250,
+            "outcomeAt_unproved": 252,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 104,
+            "outcomeAt": 102
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791513387000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791513729000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513387000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513729000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 102,
+        "filteredChildren": 252
+      },
+      "nativeRuntime": {
+        "pid": 2266845,
+        "startTicks": "55391598",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "service": {
+        "serviceProtocol": 2,
+        "serviceId": "4d41b200-8444-483f-bc35-d9b9f6070789",
+        "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+        "hostScope": "starship",
+        "viewRevision": 4,
+        "emittedAt": 1791513771495,
+        "emittedBoottimeMs": 554058693,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 4,
+                "attempts": 4,
+                "expiresBoottimeMs": 554114000,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 554054000
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 554212694,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 554032694
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1791513771460
+      },
+      "cliCollectedAt": 1791513767124,
+      "nativeAfterAt": {
+        "codex": 1791513771935
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 354,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 250,
+            "outcomeAt_unproved": 252,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 104,
+            "outcomeAt": 102
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791513387000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791513729000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513630000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513387000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791513729000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 102,
+        "filteredChildren": 252
+      },
+      "nativeRuntime": {
+        "pid": 2266845,
+        "startTicks": "55391598",
+        "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+        "provider": "codex",
+        "version": "0.162.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}

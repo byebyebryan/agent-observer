@@ -1,0 +1,239 @@
+{
+  "host": "starship",
+  "readOnly": true,
+  "referenceImportsObserver": false,
+  "nativeBeforeAt": 1791513813582,
+  "nativeAfterAt": 1791513814089,
+  "cliVersion": "agent-observer 0.5.0a6",
+  "frame": {
+    "kind": "view",
+    "sequence": 1,
+    "viewRevision": 11,
+    "serviceId": "4d41b200-8444-483f-bc35-d9b9f6070789",
+    "emittedAt": 1791513813614,
+    "sources": [
+      {
+        "components": [
+          {
+            "accepted": 11,
+            "attempts": 11,
+            "expiresBoottimeMs": 554157757,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 554097757
+          },
+          {
+            "accepted": 4,
+            "attempts": 4,
+            "expiresBoottimeMs": 554277757,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 554097757
+          }
+        ],
+        "configHome": "/home/bryan/.codex",
+        "configHomeKind": "explicit",
+        "contextGeneration": 1,
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "provider": "codex"
+      }
+    ]
+  },
+  "sourceHealth": "current",
+  "errors": [],
+  "identityScope": {
+    "hostProvenance": true,
+    "storeScopes": true,
+    "fullRowReferences": true,
+    "rowsChecked": 354,
+    "providersChecked": [
+      "codex"
+    ],
+    "nativeReferenceProviders": [
+      "codex"
+    ]
+  },
+  "nativeReferenceLimits": [],
+  "codex": {
+    "nativeBeforeRows": 354,
+    "nativeAfterRows": 354,
+    "cliRows": 354,
+    "nativeCounts": {
+      "running": 6,
+      "activityKnown": 106,
+      "classification": {
+        "user": 81,
+        "child": 252,
+        "unknown": 21
+      }
+    },
+    "checks": {
+      "membership": 354,
+      "title_unproved": 276,
+      "cwd": 354,
+      "runtime": 354,
+      "phase": 354,
+      "activity_unproved": 248,
+      "kind": 333,
+      "sessionTreeRootId": 354,
+      "blockedReasons": 354,
+      "createdAt": 354,
+      "hasSavedHistory": 354,
+      "outcome_unproved": 250,
+      "outcomeAt_unproved": 253,
+      "title": 78,
+      "activity": 106,
+      "kind_unproved": 21,
+      "outcome": 104,
+      "outcomeAt": 101
+    },
+    "nativeActive": [
+      {
+        "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+        "title": "fluid-2.5d",
+        "cwd": "/home/bryan/code/cubey",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "working",
+        "nativeStatus": "active",
+        "activityAt": 1791513630000
+      },
+      {
+        "id": "01a0ca16-d486-7142-8170-c496b7419368",
+        "title": "pd-lab-next",
+        "cwd": "/home/bryan/code/powered-descent-lab",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "working",
+        "nativeStatus": "active",
+        "activityAt": 1791513630000
+      },
+      {
+        "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+        "title": "raster90",
+        "cwd": "/home/bryan/code/raster90",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "waiting",
+        "nativeStatus": "idle",
+        "activityAt": 1791504900000
+      },
+      {
+        "id": "01a1197f-1113-7261-bc5b-810100a74236",
+        "title": "devlog",
+        "cwd": "/home/bryan/code/devlog",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "waiting",
+        "nativeStatus": "idle",
+        "activityAt": 1791513387000
+      },
+      {
+        "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+        "title": "sleep",
+        "cwd": "/home/bryan/code/esp32-349",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "waiting",
+        "nativeStatus": "idle",
+        "activityAt": 1791512205000
+      },
+      {
+        "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+        "title": "system",
+        "cwd": "/home/bryan/.local/share/chezmoi",
+        "nativeKind": "user",
+        "nativePhaseCandidate": "working",
+        "nativeStatus": "active",
+        "activityAt": 1791513802000
+      }
+    ],
+    "active": [
+      {
+        "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+        "title": "fluid-2.5d",
+        "cwd": "/home/bryan/code/cubey",
+        "cliPhase": "working",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "working",
+        "nativeStatus": "active",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791513630000
+      },
+      {
+        "id": "01a0ca16-d486-7142-8170-c496b7419368",
+        "title": "pd-lab-next",
+        "cwd": "/home/bryan/code/powered-descent-lab",
+        "cliPhase": "working",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "working",
+        "nativeStatus": "active",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791513630000
+      },
+      {
+        "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+        "title": "raster90",
+        "cwd": "/home/bryan/code/raster90",
+        "cliPhase": "waiting",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "waiting",
+        "nativeStatus": "idle",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791504900000
+      },
+      {
+        "id": "01a1197f-1113-7261-bc5b-810100a74236",
+        "title": "devlog",
+        "cwd": "/home/bryan/code/devlog",
+        "cliPhase": "waiting",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "waiting",
+        "nativeStatus": "idle",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791513387000
+      },
+      {
+        "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+        "title": "sleep",
+        "cwd": "/home/bryan/code/esp32-349",
+        "cliPhase": "waiting",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "waiting",
+        "nativeStatus": "idle",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791512205000
+      },
+      {
+        "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+        "title": "system",
+        "cwd": "/home/bryan/.local/share/chezmoi",
+        "cliPhase": "working",
+        "cliKind": "user",
+        "nativeKind": "user",
+        "nativePhase": "working",
+        "nativeStatus": "active",
+        "nativeJobState": null,
+        "nativeTempo": null,
+        "workerVersion": null,
+        "activityAt": 1791513802000
+      }
+    ],
+    "contextDifferences": [],
+    "issues": []
+  }
+}
