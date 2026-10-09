@@ -5,13 +5,19 @@ is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPOR
 The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-removes redundant publication; normal read CLI/services select it after separate
-installed/native and scoped operational acceptance. The following
+removes redundant publication after separate installed/native and scoped
+operational acceptance. The following
 [a8 Claude gate](evidence/2026-10-08-claude-observation/REPORT.md) preserves these
-interfaces and adds passive Claude discovery/monitoring on Snap. The writer
-remains independently selected at a16.
+interfaces and adds passive Claude discovery/monitoring on Snap; normal read
+CLI/services select a8. The writer remains independently selected at a16.
 This document supersedes
 [API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
+
+The [Claude contract alignment review](claude-read-contract-review.md) settles
+the shared read contract for interactive Claude implementation and independent
+client development. API 2, snapshot/watch wire 4 and service protocol 2 fit the
+accepted scoped-registration design without new wire fields or enum values.
+This settles the interface, not the successor's native or operational acceptance.
 
 ## Interfaces and ownership
 
@@ -57,7 +63,20 @@ saved identity independently of runtime state. `inventory` records saved-catalog
 evidence or runtime-only membership; it does not classify lifecycle or grant action authority.
 There are no common worker, terminal attachment, client binding or Claude-job fields.
 
-| Positive current native status | Runtime | Phase | Blocked reasons |
+Shared row meanings are provider-independent:
+
+| Runtime | Phase | Meaning within the source's declared scope |
+| --- | --- | --- |
+| running | working | Current native runtime; agent is doing work |
+| running | blocked | Current native runtime; typed approval/question input is required |
+| running | waiting | Current native runtime; agent awaits the next prompt |
+| running | unknown | Runtime is established; work phase is not |
+| parked | null | Positive saved identity and the adapter's reviewed predicate establish no current runtime, subject to declared assumptions |
+| unknown | unknown | Runtime is unavailable, ambiguous, unsupported or stale; saved identity may still exist |
+
+The Codex adapter supplies these meanings through its owning daemon:
+
+| Current Codex native status | Runtime | Phase | Blocked reasons |
 | --- | --- | --- | --- |
 | active, empty valid flags | running | working | empty |
 | active, known wait flags | running | blocked | approval, question, or both |
@@ -71,8 +90,19 @@ reason and clock; stale records may keep lastKnownValue. Known phase requires
 current running evidence from the same native sample. Parked requires positive
 saved identity and phase null. A parked sample that expires becomes runtime
 unknown and phase unknown, preserving its original clock and last-known parked
-fact. Missing loaded membership and terminal exit never establish parked.
+fact. Missing loaded membership and terminal exit alone never establish parked.
 Unknown wait flags preserve known active runtime but leave phase unknown.
+
+Each adapter owns its native predicate; clients consume the normalized facts and
+declared limitations. They do not repeat daemon queries or native PID checks.
+The installed a8 Claude adapter uses authenticated registrations/status and a
+bounded terminal-job parked predicate; saved-only absence and foreground exit
+remain unknown. The interactive successor uses positive saved identity plus a
+healthy bounded native scan with no matching live incarnation or relevant
+unresolved conflict, under the user's accepted registration assumption. Normal
+exit, crash and cold start are targets. Failed/lost live registration can cause
+false parked, including after source recovery; declare that limitation. Native
+PID/birth checks remain private authentication, never public attachment handles.
 
 Conversation activity has its own native clock and health. Collection, rename,
 Resume, enrichment and lease renewal never move it. Empty conversations have no
@@ -100,13 +130,39 @@ Direct reads with an unavailable daemon return no current rows and finite source
 failure; they never fall back to a private store. Existing watch/service rows may
 remain stale under bounded retention.
 
+Claude keeps runtime scope `provider_sessions`. The interactive successor's
+runtime coverage is `partial`, with reason `interactive_registration_assumed`
+and limitations `interactive_runtime_only`, `native_registration_assumed`,
+`unregistered_interactive_runtime_unproved` and `background_runtime_unsupported`.
+These describe supported interactive observation rather than all Claude runtime
+contexts. A healthy bounded scan within that scope may support a parked fact;
+partial all-context coverage does not itself invalidate positive row evidence.
+Detected read faults, bounds, ambiguity and expiry still prevent an affected
+negative assertion. Source health, coverage and per-row evidence are separate.
+
+Capabilities declare usable evidence dimensions within the configured context;
+they are not exhaustive membership or action permission. Clients preserve
+unknown/stale facts and source coverage even when some dimensions are supported.
+Both a8's saved-only unknown rows and the successor's scoped parked rows use the
+same shared fields; consumers must handle both without provider-specific inference.
+
+Wire object fields, versions and enum values are closed and strictly validated.
+Evidence `source`/`reason`, coverage reasons, errors and limitation codes use the
+bounded code syntax rather than a closed enum. Clients tolerate unfamiliar valid
+codes, preserve them for diagnostics and branch on state/health/coverage fields.
+Adding a diagnostic code does not change runtime meaning or authorize a new
+predicate. New wire fields/enums or incompatible shared semantics require a
+versioned contract and clean rejection; no silent extension or converter.
+
 ## Pull and push
 
 Direct snapshots and sampled watch use the same projection as service workers.
-The service's fast cycle also samples saved-thread daemon state. Its slower cycle
-adds conversation clocks and workspace enrichment. A native status obtained by
-metadata work is deliberately accepted under the short runtime lease and sample
-ordering rules; metadata-only refresh cannot renew state.
+The fast runtime cycle and slower history/enrichment cycle have independent
+receipts. Codex's fast cycle also samples saved-thread daemon state. Claude's
+interactive successor must refresh disposition for known saved UUIDs without
+rerunning the whole history SDK scan. Native runtime evidence obtained during
+metadata work is accepted under the short runtime lease and sample ordering
+rules; metadata-only refresh cannot renew state.
 
 A history sample that also contains current runtime evidence updates both
 receipts before one published view. Their leases remain independent. View
@@ -143,3 +199,10 @@ wire 4/protocol 2, treat parked phase as null,
 consume blockedReasons as a set, distinguish saved existence from running state,
 and own attachment/action validation. Agent Plus implementation and managed
 consumer selection are separate gates. Tmux Plus is unchanged.
+
+Read-client implementation can begin against this settled contract and synthetic
+conformance examples while the Claude successor is developed independently.
+Native claims and consumer rollout use an accepted producer artifact; planned
+behavior in a fixture is not deployed behavior. Attachment/actions and public
+notification events remain separate contracts. API 2 remains prerelease; this
+review settles this pass, not an indefinite promise that future APIs cannot change.

@@ -1,7 +1,8 @@
 # Claude interactive observation reconciliation
 
 Date: 2026-10-08. Status: accepted design direction and registration assumption;
-implementation, artifact acceptance and rollout remain pending. This reconciles
+shared public contract fit is now [settled](claude-read-contract-review.md).
+Implementation, artifact acceptance and rollout remain pending. This reconciles
 the [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md) and subsequent
 [native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 with the user's accepted practical scope. It replaces the earlier requirement
@@ -152,8 +153,9 @@ Replace the private Claude read profile with required interactive registration,
 incarnation, status, saved-identity and scoped negative-lifecycle contracts.
 Versions/hashes remain provenance and incarnation guards, not support allowlists.
 
-The preferred public representation retains API 2, snapshot/watch wire 4 and
-service protocol 2: Claude keeps `scope=provider_sessions`, reports runtime
+The [read-contract alignment](claude-read-contract-review.md) accepts API 2,
+snapshot/watch wire 4 and service protocol 2: Claude keeps
+`scope=provider_sessions`, reports runtime
 coverage as partial, and declares finite reasons/limitations for the interactive
 scope, registration assumption and unsupported background runtime. Partial
 coverage does not invalidate independently established row facts. Scan health
@@ -161,13 +163,15 @@ and readiness for the scoped parked predicate are separate from all-context
 coverage; do not require `coverage=complete` to classify an otherwise qualified
 saved UUID.
 
-I1 must review and document these semantics and reason codes against strict
-validators/descriptors before implementation. Existing wire fields admit them,
-so an automatic API 3 / wire 5 / protocol 3 bump is not justified merely by
-private adapter cleanup. If that review finds a required public field, enum or
-incompatible shared semantic change, introduce a clean versioned contract there;
-do not silently extend wire 4 or add a legacy converter. The installed a8 contract
-and client handoff remain unchanged until a successor is independently accepted.
+The public part of I1 is settled: shared semantics and diagnostic codes fit the
+unchanged strict validators/descriptors, including the installed a8 reader.
+No automatic API 3 / wire 5 / protocol 3 bump is needed for private cleanup.
+Read-client source work can begin independently against the settled interface.
+I1's native oracle and bounded private sample interface remain unfinished.
+If implementation demonstrates a required new public field/enum or incompatible
+shared meaning, reopen a concrete versioned contract gate rather than silently
+extending wire 4 or adding a converter. The installed a8 behavior remains the
+baseline until a successor's separate artifact/native acceptance.
 
 | Area | Responsibility |
 | --- | --- |
@@ -175,7 +179,7 @@ and client handoff remain unchanged until a successor is independently accepted.
 | `claude_snapshot.py`, `claude_projection.py`, `claude_saved_identity.py`, `claude_history.py` | Exact saved/live join; parked under the declared assumption; independent history/age failures; honest coverage and finite reasons |
 | `observation_model.py` | Remove unused private attachment fields and serialization; preserve presence/work independence |
 | `observation_engine.py`, `observation_evidence.py`, adapter profiles | Bounded private scan evidence, runtime-only negative refresh, ordering, expiry and cold start; no Claude predicate in service/read clients |
-| Public descriptors, validators, CLI/service clients | Reviewed scope/limitations and consistent direct/cache/push conformance; version change only if required by I1 |
+| Public descriptors, validators, CLI/service clients | Settled API 2/wire 4/service 2 scope/limitations; consistent direct/cache/push conformance without new public fields |
 | `claude_hints.py`, service helpers | Native signals remain refresh hints, with periodic reconciliation and expiry |
 | Independent evaluation/native scripts | Independent oracle first; scoped lifecycle expectations and explicit accepted limitation cases |
 
@@ -184,14 +188,14 @@ and client handoff remain unchanged until a successor is independently accepted.
 | Gate | Work | Acceptance |
 | --- | --- | --- |
 | I0: native source and scope | Existing on/off, hookless, normal exit, crash, Resume and registration-failure receipts; retain remaining duplicate/switch/background cases for candidate proof | Positive source facts established; exhaustive guarantee disproved; narrower registration assumption accepted by the user; no artifact/policy selection |
-| I1: independent oracle and contract | Update `scripts/evaluate-observation` before producer changes; review private scan samples, public limitations and lifecycle/lease semantics | Oracle imports no Observer collector; fixtures distinguish healthy scoped absence, dead/live duplicate records, detected faults and accepted invisible-runtime limitation |
+| I1: independent oracle and contract | Public read alignment accepted; finish independent `scripts/evaluate-observation` changes and bounded private saved-identity/scan sample interface before producer changes | Oracle imports no Observer collector; fixtures distinguish healthy scoped absence, dead/live duplicate records, detected faults and accepted invisible-runtime limitation |
 | I2: producer implementation | Simplify adapter/model; implement scoped lifecycle and leased reconciliation; update read CLI/service delivery | Meaningful source checks and `./scripts/check` pass; no client/attachment dependency; Codex unchanged |
 | I3: immutable artifact/native proof | Explicit candidate; ordinary Snap Claude and both-host Codex comparisons; isolated transitions/faults through direct/cache/push | Exact identity/state/age agree within bracketing limits; normal/crash parked and cold start pass within declared scope; accepted limitations remain visible |
 | I4: Observer operational selection | Scoped read/service selection after I3; restart/failure/reconnect/rollback/reselection | Installed bytes and normal endpoints verified independently; writer remains separately selected |
 | I5: provider policy and handoff | Prefer Agent View off for the interactive-only workflow if I3 preserves required evidence; prepare managed Snap settings separately and validate fresh launches | Separate configuration gate; no forced restart of ordinary sessions; clients receive the accepted artifact/contract and registration limitation |
 
-I1 is the next implementation checkpoint. Reuse native I0 facts rather than
-repeating the entire spike for every daily provider update. Additional cases
+Remaining I1 oracle/private work is the next checkpoint. Reuse native I0 facts
+rather than repeating the entire spike for every daily provider update. Additional cases
 establish the candidate's bounded behavior; they are not an attempt to prove
 away the already demonstrated missing-registration limitation. If a required
 normal-workflow predicate fails, report that specific capability gap and revise

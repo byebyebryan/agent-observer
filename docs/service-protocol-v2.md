@@ -2,8 +2,11 @@
 
 Date: 2026-10-08. Prerelease read contract, accepted for the installed Codex
 [a5 candidate](evidence/2026-10-08-codex-observation-completion/REPORT.md).
-Normal read services select a5/protocol 2. Protocol 2 embeds API 2 snapshot wire 4
+The following [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md)
+selects normal read services with the same protocol. Protocol 2 embeds API 2 snapshot wire 4
 and rejects protocol 1; there is no converter or automatic direct fallback.
+The [Claude read-contract review](claude-read-contract-review.md) settles
+interactive Claude's fit within this envelope; its producer acceptance is pending.
 
 The pure `agent_observer.service_public` facade exports the descriptor,
 request/frame schemas, bounded parsers, validators and `StreamGuard`.
@@ -47,12 +50,21 @@ publication; failure, expiry or incarnation change preserves uncertainty and
 original native event clocks. Heartbeats, cached requests and reader arrival
 never renew collected evidence or conversation age.
 
-Native daemon status obtained during metadata work is deliberately accepted
-under the runtime lease/order rules. Metadata-only work cannot renew runtime.
-Parked phase is null only while positive saved identity and native notLoaded
-status are current; expiry produces unknown runtime/phase with last-known parked
-evidence. Direct, cached pull and cached push share the classifier described in
+Native runtime evidence obtained during metadata work is accepted under the
+runtime lease/order rules. Metadata-only work cannot renew runtime. Parked has
+phase null only while the adapter's reviewed native predicate and positive saved
+identity are established under a current runtime receipt. For Codex this uses
+current native `notLoaded`; Claude has its separately declared predicate/scope.
+Expiry produces unknown runtime/phase with last-known parked evidence. Direct,
+cached pull and cached push share the classifier described in
 [API 2](api-v2.md).
+
+Partial runtime coverage can coexist with current scoped row facts. No new
+service component or envelope is needed for Claude's registration assumption.
+Its runtime refresh may prove exact saved identity without renewing the slower
+catalog/title/activity receipt. A stale history component invalidates its current
+coverage/enrichment; it does not invalidate independently current runtime evidence.
+This does not let a consumer infer parked from a missing row, warming view or gap.
 
 Custom host-local consumers must account for elapsed BOOTTIME and matching
 boot/time scope, stop current claims on expired leases or transport silence,

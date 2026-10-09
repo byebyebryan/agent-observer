@@ -40,8 +40,12 @@ Normal exit, crash and cold start are targets. Missing live registration can
 cause false parked classification, including after source recovery; coverage
 must remain partial with the limitation declared. Client inventory/attachment
 and background runtime support are excluded. I1 is next; implementation and
-artifact/policy selection remain pending. Prefer existing public wire fields
-unless contract review requires an incompatible change; a8 retains its scope.
+artifact/policy selection remain pending. The
+[read-contract alignment](claude-read-contract-review.md) accepts the public part
+of I1: API 2/wire 4/service 2 already fit the scoped semantics. Eight synthetic
+checks pass through source and installed a8 facades. Read-client source work may
+start independently; I1's native oracle/private sample design remains next.
+A8 retains its installed behavior and scope until successor acceptance.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its

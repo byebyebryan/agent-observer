@@ -45,8 +45,13 @@ The user accepts the native-registration assumption: healthy bounded scans with
 no matching live incarnation can classify positively saved UUIDs as parked.
 A live session with missing registration can be falsely reported parked; this
 remains an explicit limitation with partial coverage. Client inventories and
-attachment are excluded. Implementation, contract review and Agent View opt-out
+attachment are excluded. Implementation, artifact selection and Agent View opt-out
 retain separate gates; a8 remains the accepted installed baseline.
+
+The [Claude read-contract review](docs/claude-read-contract-review.md) now settles
+API 2/wire 4/service 2 fit without new public fields. Read-client source work can
+start independently using a8 and synthetic target fixtures while the Claude
+successor completes its separate oracle/implementation/native gates.
 
 The preceding [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 and earlier native reports retain their exact artifact bounds. Twenty-one older

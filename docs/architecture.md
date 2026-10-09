@@ -21,6 +21,10 @@ parked classification, so coverage remains partial with that explicit limitation
 Client inventory and attachment are outside observation. Background runtime
 support is excluded; implementation and Agent View opt-out retain separate gates.
 This design does not change the accepted a8 artifact or wires.
+The [shared read-contract review](claude-read-contract-review.md) now settles
+Claude's fit within API 2/wire 4/service 2. Read clients may develop independently;
+successor producer selection, attachment/actions and frontend rollout retain
+their own acceptance gates.
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only

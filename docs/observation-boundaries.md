@@ -89,7 +89,10 @@ recovery; declare partial coverage and that limitation. The implementation remov
 unused private attachment/job scaffolding and reconstructs state after Observer
 restart without a run ledger or client inventory. Provider-owned registration
 incarnation checks are permitted; generic process/terminal discovery is not.
-Contract review, artifact selection and Agent View opt-out retain separate gates.
+Implementation, artifact selection and Agent View opt-out retain separate gates.
+The [shared read alignment](claude-read-contract-review.md) now accepts contract
+fit in existing API 2/wire 4/service 2. Native implementation/selection remains
+pending; independent read-client source work can use the settled interface.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing
