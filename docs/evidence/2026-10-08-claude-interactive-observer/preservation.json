@@ -1,0 +1,37 @@
+{
+  "ordinarySettingsUnchanged": true,
+  "nativeExecutableUnchanged": true,
+  "ordinaryNativeIncarnationsStillPresent": [
+    {
+      "nativeId": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    },
+    {
+      "nativeId": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    },
+    {
+      "nativeId": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    },
+    {
+      "nativeId": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    },
+    {
+      "nativeId": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    },
+    {
+      "nativeId": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+      "sameRegistration": true,
+      "sameLiveBirth": true
+    }
+  ],
+  "ordinaryProviderActions": false
+}

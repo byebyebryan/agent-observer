@@ -1,0 +1,304 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "clientInventoryQueried": false,
+  "isolationEstablished": true,
+  "modes": [
+    {
+      "disableAgentView": true,
+      "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+      "hooksDisabled": true,
+      "checks": [
+        {
+          "case": "new_waiting",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528560431,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 1.42
+        },
+        {
+          "case": "question",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "running",
+          "phase": "blocked",
+          "activityAt": 1791528562011,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.421
+        },
+        {
+          "case": "normal_exit",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528564785,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.404
+        },
+        {
+          "case": "saved_resume",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528564785,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.797
+        },
+        {
+          "case": "approval",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "running",
+          "phase": "blocked",
+          "activityAt": 1791528572139,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.392
+        },
+        {
+          "case": "forced_kill",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528572724,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 6.008
+        },
+        {
+          "case": "resume_with_dead_record",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528572724,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.415
+        },
+        {
+          "case": "final_exit",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528582827,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.809
+        },
+        {
+          "case": "registry_fault",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "unknown",
+          "phase": "unknown",
+          "activityAt": 1791528582827,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.815
+        },
+        {
+          "case": "registry_recovered",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528582827,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 1.202
+        },
+        {
+          "case": "observer_cold_start",
+          "nativeId": "547dbefb-4594-4015-acee-554d04e8087b",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528582827,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.399
+        }
+      ],
+      "normalExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": false,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "deadRecordRetained": true,
+      "status": "accepted"
+    },
+    {
+      "disableAgentView": false,
+      "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+      "hooksDisabled": true,
+      "checks": [
+        {
+          "case": "new_waiting",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528592795,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 1.667
+        },
+        {
+          "case": "question",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "running",
+          "phase": "blocked",
+          "activityAt": 1791528594661,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.822
+        },
+        {
+          "case": "normal_exit",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528598464,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.407
+        },
+        {
+          "case": "saved_resume",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528598464,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.416
+        },
+        {
+          "case": "approval",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "running",
+          "phase": "blocked",
+          "activityAt": 1791528606188,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 6.995
+        },
+        {
+          "case": "forced_kill",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528613335,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.433
+        },
+        {
+          "case": "resume_with_dead_record",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791528613335,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.425
+        },
+        {
+          "case": "final_exit",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528617882,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.417
+        },
+        {
+          "case": "registry_fault",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "unknown",
+          "phase": "unknown",
+          "activityAt": 1791528617882,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.817
+        },
+        {
+          "case": "registry_recovered",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528617882,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 1.228
+        },
+        {
+          "case": "observer_cold_start",
+          "nativeId": "7708279f-7034-4876-94c0-82e9334697ae",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791528617882,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.412
+        }
+      ],
+      "normalExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": false,
+        "registrationRemoved": true,
+        "savedIdentityRetained": true
+      },
+      "deadRecordRetained": true,
+      "status": "accepted"
+    }
+  ],
+  "wheel": {
+    "manifestVersion": 3,
+    "package": "agent-observer",
+    "version": "0.5.0a9",
+    "wheel": "agent_observer-0.5.0a9-py3-none-any.whl",
+    "wheelSha256": "d72cb6c360b35b42e96de2b56d0f85d909823ebb74a5abb1a4438809e6c04ef0",
+    "sourceRevision": "5f69c0e6adbb485a2176651cdf001bb791ac4188",
+    "apiVersion": 2,
+    "schemas": {
+      "snapshot": 4,
+      "watch": 4
+    },
+    "write": {
+      "schema": 2
+    },
+    "service": {
+      "protocol": 2,
+      "schemas": {
+        "request": 2,
+        "frame": 2
+      }
+    },
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "nativeContracts": [
+      "codex_daemon_status_v2",
+      "codex_database_only_catalog_v1",
+      "claude_interactive_registration_v1",
+      "claude_history_metadata_v1"
+    ],
+    "claudeHistorySdk": "0.2.163"
+  },
+  "harnessSha256": "8c097bc8e4f27f30b134e01553238127257bb5de5425bc8cb1d67dd2e44e6067",
+  "nativeOracleSha256": "02d1f4022ca5c2f85bab91379a1719e8c1dc07537ad04f0e3a25e4023f7196a9",
+  "status": "accepted",
+  "pushFrames": 101,
+  "pushKinds": {
+    "status": 3,
+    "view": 98
+  }
+}

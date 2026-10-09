@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+"""Owned native UUID-switch and duplicate-context probes; no ordinary actions."""
+
+import hashlib
+import json
+import os
+import runpy
+import subprocess
+import time
+import uuid
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    Proof = runpy.run_path(str(root / "native-claude-interactive-proof"))["NativeProof"]
+    oracle = runpy.run_path(str(root / "evaluate-observation"))["claude_reference"]
+    proof = Proof()
+    receipt = {"ordinaryProviderActions": False, "terminalOutputPersisted": False,
+               "nativeOracleImportsObserver": False, "harnessSha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+               "candidate": json.loads((root / "candidate.json").read_text()), "cases": []}
+    image_cache = {}
+
+    def sample(sid):
+        before = oracle(proof.home, image_cache)["rows"].get(sid)
+        process = subprocess.run(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude", "--claude-home", str(proof.home)],
+                                 capture_output=True, timeout=30, cwd="/tmp")
+        assert process.returncode == 0 and len(process.stdout) <= 8 * 1024 * 1024
+        view = json.loads(process.stdout)
+        after = oracle(proof.home, image_cache)["rows"].get(sid)
+        public = next((r for r in view["sessions"] if r["identity"]["nativeId"] == sid), None)
+        if before is None or after is None or public is None:
+            return None
+        if any(before.get(k) != after.get(k) for k in ("runtime", "phase", "activity")):
+            return None
+        phase = public["phase"]["value"] if public["phase"] else None
+        if public["runtime"]["value"] != after["runtime"] or phase != after["phase"]:
+            return None
+        return {"nativeId": sid, "runtime": after["runtime"], "phase": phase, "nativeBracketStable": True, "directAgrees": True}
+
+    original = (proof.home / "settings.json").read_bytes()
+    try:
+        for disabled in (True, False):
+            (proof.home / "settings.json").write_text(json.dumps({"disableAgentView": disabled, "disableAllHooks": True, "enabledPlugins": {}}))
+            sid = str(uuid.uuid4())
+            client = proof.spawn(sid, prompt="Reply only with OK.")
+            proof.phase(client, "idle")
+            proof.until(lambda: proof.metadata(sid)["eventCounts"]["assistant"] > 0, "initial_response_unproved")
+            proof.send(client, "/clear")
+            deadline = time.monotonic() + 20
+            changed = None
+            while time.monotonic() < deadline:
+                proof.pause(.1)
+                records = [r for r in proof.records() if r.get("pid") == client["pid"] and proof.authenticated(r)]
+                if records and records[0]["sessionId"] != sid:
+                    changed = records[0]
+                    break
+            switch = {"case": "same_process_uuid_switch", "disableAgentView": disabled, "oldNativeId": sid,
+                      "nativeSwitchObserved": changed is not None}
+            if changed:
+                client["sid"] = changed["sessionId"]
+                proof.send(client, "Reply only with OK.")
+                proof.phase(client, "idle")
+                proof.until(lambda: proof.metadata(client["sid"])["eventCounts"]["assistant"] > 0, "switch_response_unproved")
+                switch["old"] = proof.until(lambda: sample(sid), "old_switch_state_unproved")
+                switch["new"] = proof.until(lambda: sample(client["sid"]), "new_switch_state_unproved")
+                assert switch["old"]["runtime"] == "parked" and switch["new"]["runtime"] == "running"
+            else:
+                switch["coverage"] = "native_command_did_not_establish_switch"
+            receipt["cases"].append(switch)
+            proof.normal_exit(client)
+            proof.stop(client)
+            target = client["sid"]
+            first = proof.spawn(target, resume=True)
+            proof.phase(first, "idle", timeout=35)
+            second = proof.spawn(target, resume=True)
+            deadline = time.monotonic() + 20
+            live = []
+            while time.monotonic() < deadline:
+                proof.pause(.1)
+                live = [r for r in proof.records() if r.get("sessionId") == target and proof.authenticated(r)]
+                if len(live) >= 2 or not proof.alive(second):
+                    break
+            duplicate = {"case": "simultaneous_duplicate_context", "disableAgentView": disabled,
+                         "nativeId": target, "authenticatedLiveCount": len(live)}
+            if len(live) >= 2:
+                duplicate["sample"] = proof.until(lambda: sample(target), "duplicate_runtime_unproved")
+                assert duplicate["sample"]["runtime"] == "running"
+                proof.send(second, "Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.")
+                def held_second_question():
+                    return any(r.get("pid") == second["pid"] and r.get("status") == "waiting"
+                               and r.get("waitingFor") == "input needed" and proof.authenticated(r)
+                               for r in proof.records())
+                proof.until(held_second_question, "duplicate_question_unproved")
+                duplicate["conflictingPhase"] = proof.until(lambda: sample(target), "duplicate_phase_conflict_unproved")
+                assert duplicate["conflictingPhase"]["runtime"] == "running" and duplicate["conflictingPhase"]["phase"] == "unknown"
+            else:
+                duplicate["coverage"] = "native_launch_did_not_establish_duplicate"
+            proof.stop(second)
+            proof.stop(first)
+            duplicate["afterOwnedKills"] = proof.until(lambda: sample(target), "duplicate_exit_unproved")
+            assert duplicate["afterOwnedKills"]["runtime"] == "parked"
+            receipt["cases"].append(duplicate)
+            print(json.dumps({"extraModeCompleted": "off" if disabled else "on"}), flush=True)
+        receipt["status"] = "completed"
+    except Exception as error:
+        receipt.update(status="partial", failureCode=str(error))
+        raise
+    finally:
+        for client in proof.clients:
+            proof.stop(client)
+        (proof.home / "settings.json").write_bytes(original)
+        (root / "claude-interactive-extra.json").write_text(json.dumps(receipt, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main()

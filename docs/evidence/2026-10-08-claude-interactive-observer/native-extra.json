@@ -1,0 +1,138 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "harnessSha256": "27dee039180d263d8fcecfc471afb8dc5fe3fb41a278ac9701ea159313ae0550",
+  "candidate": {
+    "manifestVersion": 3,
+    "package": "agent-observer",
+    "version": "0.5.0a9",
+    "wheel": "agent_observer-0.5.0a9-py3-none-any.whl",
+    "wheelSha256": "d72cb6c360b35b42e96de2b56d0f85d909823ebb74a5abb1a4438809e6c04ef0",
+    "sourceRevision": "5f69c0e6adbb485a2176651cdf001bb791ac4188",
+    "apiVersion": 2,
+    "schemas": {
+      "snapshot": 4,
+      "watch": 4
+    },
+    "write": {
+      "schema": 2
+    },
+    "service": {
+      "protocol": 2,
+      "schemas": {
+        "request": 2,
+        "frame": 2
+      }
+    },
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "nativeContracts": [
+      "codex_daemon_status_v2",
+      "codex_database_only_catalog_v1",
+      "claude_interactive_registration_v1",
+      "claude_history_metadata_v1"
+    ],
+    "claudeHistorySdk": "0.2.163"
+  },
+  "cases": [
+    {
+      "case": "same_process_uuid_switch",
+      "disableAgentView": true,
+      "oldNativeId": "cbc1ed53-f624-430e-a265-42c320589a33",
+      "nativeSwitchObserved": true,
+      "old": {
+        "nativeId": "cbc1ed53-f624-430e-a265-42c320589a33",
+        "runtime": "parked",
+        "phase": null,
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "new": {
+        "nativeId": "0e1a6960-b87a-40e5-8c59-599b317884d4",
+        "runtime": "running",
+        "phase": "waiting",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      }
+    },
+    {
+      "case": "simultaneous_duplicate_context",
+      "disableAgentView": true,
+      "nativeId": "0e1a6960-b87a-40e5-8c59-599b317884d4",
+      "authenticatedLiveCount": 2,
+      "sample": {
+        "nativeId": "0e1a6960-b87a-40e5-8c59-599b317884d4",
+        "runtime": "running",
+        "phase": "waiting",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "conflictingPhase": {
+        "nativeId": "0e1a6960-b87a-40e5-8c59-599b317884d4",
+        "runtime": "running",
+        "phase": "unknown",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "afterOwnedKills": {
+        "nativeId": "0e1a6960-b87a-40e5-8c59-599b317884d4",
+        "runtime": "parked",
+        "phase": null,
+        "nativeBracketStable": true,
+        "directAgrees": true
+      }
+    },
+    {
+      "case": "same_process_uuid_switch",
+      "disableAgentView": false,
+      "oldNativeId": "ab57a5d6-0c21-46c8-ac63-5baf26d7af13",
+      "nativeSwitchObserved": true,
+      "old": {
+        "nativeId": "ab57a5d6-0c21-46c8-ac63-5baf26d7af13",
+        "runtime": "parked",
+        "phase": null,
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "new": {
+        "nativeId": "231e388d-77fa-49b4-b1dd-a025d839dfeb",
+        "runtime": "running",
+        "phase": "waiting",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      }
+    },
+    {
+      "case": "simultaneous_duplicate_context",
+      "disableAgentView": false,
+      "nativeId": "231e388d-77fa-49b4-b1dd-a025d839dfeb",
+      "authenticatedLiveCount": 2,
+      "sample": {
+        "nativeId": "231e388d-77fa-49b4-b1dd-a025d839dfeb",
+        "runtime": "running",
+        "phase": "waiting",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "conflictingPhase": {
+        "nativeId": "231e388d-77fa-49b4-b1dd-a025d839dfeb",
+        "runtime": "running",
+        "phase": "unknown",
+        "nativeBracketStable": true,
+        "directAgrees": true
+      },
+      "afterOwnedKills": {
+        "nativeId": "231e388d-77fa-49b4-b1dd-a025d839dfeb",
+        "runtime": "parked",
+        "phase": null,
+        "nativeBracketStable": true,
+        "directAgrees": true
+      }
+    }
+  ],
+  "status": "completed"
+}
