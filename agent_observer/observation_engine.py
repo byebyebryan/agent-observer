@@ -70,6 +70,15 @@ class ObservationEngine:
         self.publish()
 
     def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
+        accepted = self._accept_sample(provider, component, value, sampled_ms=sampled_ms,
+                                       ttl_ms=ttl_ms, runtime_ttl_ms=runtime_ttl_ms)
+        if accepted:
+            # A history read can refresh both receipts. Publish their reconciled
+            # view once so readers do not lose a revision within one acceptance.
+            self.publish()
+        return accepted
+
+    def _accept_sample(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
         validate_snapshot(value)
         if value["host"]["authority"] != self.host_scope or value["host"]["uid"] != self.uid or len(value["sources"]) != 1:
             raise ContractError("service_worker_scope")
@@ -113,9 +122,8 @@ class ObservationEngine:
             runtime = self.receipts[provider]["runtime"]
             if runtime.sampledBoottimeMs is None or sampled_ms >= runtime.sampledBoottimeMs:
                 self.attempt(provider, "runtime")
-                self.accept(provider, "runtime", value, sampled_ms=sampled_ms,
-                            ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000))
-        self.publish()
+                self._accept_sample(provider, "runtime", value, sampled_ms=sampled_ms,
+                                    ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000))
         return True
 
     def expire(self, now=None):
