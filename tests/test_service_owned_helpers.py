@@ -14,7 +14,7 @@ from test_service_runtime import Running
 
 from agent_observer.claude_history import _run_worker
 from agent_observer.service_runtime import Runtime, Worker
-from agent_observer.service_scheduler import Scheduler
+from agent_observer.observation_scheduler import Scheduler
 
 
 def alive(pid):

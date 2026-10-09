@@ -13,7 +13,7 @@ import unittest
 import uuid
 
 from agent_observer.service_hints import Hints, MAX_BUFFER, message, parse_message
-from agent_observer.service_scheduler import Scheduler
+from agent_observer.observation_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
 from test_service_runtime import Running
 

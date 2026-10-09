@@ -64,7 +64,7 @@ Source pointers:
   [sampled watch](../agent_observer/watch.py).
 - [Service worker](../agent_observer/_service_worker.py),
   [state/merge](../agent_observer/service_state.py),
-  [scheduler](../agent_observer/service_scheduler.py) and
+  [scheduler](../agent_observer/observation_scheduler.py) and
   [runtime](../agent_observer/service_runtime.py).
 - [Native evaluation](../scripts/evaluate-observation),
   [write client](../agent_observer/write_client.py) and

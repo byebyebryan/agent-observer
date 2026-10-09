@@ -20,7 +20,7 @@ from ._image_memo import ImageMemo, receive as receive_memo, send as send_memo
 from .bounded_json import decode_document
 from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
-from .service_scheduler import Scheduler
+from .observation_scheduler import Scheduler
 from .workspace import MAX_CONFIG_BYTES, validate_config
 
 

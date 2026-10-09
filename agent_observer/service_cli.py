@@ -110,7 +110,7 @@ def serve(argv=None):
         if args.hint_diagnostics and not args.native_hints:
             raise ContractError("service_hint_diagnostics_mode")
         from .service_runtime import Runtime
-        from .service_scheduler import Scheduler
+        from .observation_scheduler import Scheduler
         from .service_state import ServiceState
         from .workspace import load_config
         workspace_config = load_config(args.workspace_config) if args.workspace_config else None
