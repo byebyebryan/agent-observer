@@ -34,7 +34,7 @@ def owned(root):
         raise ValueError("fixture_ownership_changed")
 
 
-def prepare(root, host, prefix, release=None, disable_api_key_discovery=False, cli_release=None):
+def prepare(root, host, prefix, release=None, disable_api_key_discovery=False, cli_release=None, codex_only=False):
     owned(root)
     if (root / "fixture.json").exists() or (root / "runtime.json").exists():
         raise ValueError("fixture_already_prepared")
@@ -73,7 +73,7 @@ def prepare(root, host, prefix, release=None, disable_api_key_discovery=False, c
     images = {}
     for provider, source in (("codex", cli_source),
                              ("claude", Path("/opt/claude-code/bin/claude"))):
-        if provider == "claude" and host != "snap":
+        if provider == "claude" and (host != "snap" or codex_only):
             continue
         directory = cli / (provider + "-bin")
         directory.mkdir(mode=0o700)
@@ -104,7 +104,11 @@ def prepare(root, host, prefix, release=None, disable_api_key_discovery=False, c
         cache / "releases" / release,
     )
     (cache / "current").symlink_to("releases/" + release)
-    if host == "snap":
+    if host == "snap" and codex_only:
+        # Mask ordinary Claude paths without borrowing its image or credentials.
+        (cli / "claude-bin").mkdir(mode=0o700)
+        save(base / "home/.claude.json", {})
+    if host == "snap" and not codex_only:
         shutil.copyfile(ORDINARY / ".claude/.credentials.json", base / "claude/.credentials.json")
         (base / "claude/.credentials.json").chmod(0o600)
         original = json.loads((ORDINARY / ".claude.json").read_text())
@@ -141,6 +145,7 @@ def prepare(root, host, prefix, release=None, disable_api_key_discovery=False, c
     subprocess.run(["git", "init", "-q", str(base / "workspace")], check=True)
     save(root / "fixture.json", {"host": host, "prefix": str(prefix), "codexRelease": release,
                                 "daemonSha256": daemon_hash, "installedCliSha256": images,
+                                "codexOnly": codex_only,
                                 "apiKeyModelDiscoveryDisabledInFixture": disable_api_key_discovery,
                                 "codexCliSource": str(cli_source)})
 
@@ -331,11 +336,12 @@ def main():
     parser.add_argument("--codex-release", help="optional explicit cached proof release; default is the current cache target")
     parser.add_argument("--codex-cli-release", help="optional cached binary used only as the private fixture TUI; never selects an ordinary executable")
     parser.add_argument("--codex-disable-api-key-discovery", action="store_true", help="Explicit private fixture configuration; never changes ordinary provider settings")
+    parser.add_argument("--codex-only", action="store_true", help="Mask Claude paths without borrowing its credentials or executable")
     args, command = parser.parse_known_args()
     if args.operation == "prepare":
         if args.host is None or args.prefix is None:
             parser.error("prepare requires --host and --prefix")
-        prepare(args.root, args.host, args.prefix, args.codex_release, args.codex_disable_api_key_discovery, args.codex_cli_release)
+        prepare(args.root, args.host, args.prefix, args.codex_release, args.codex_disable_api_key_discovery, args.codex_cli_release, args.codex_only)
     elif args.operation == "enter":
         enter(args.root, command[1:] if command[:1] == ["--"] else command)
     else:
