@@ -1,0 +1,194 @@
+{
+  "cli": "0.5.0a9",
+  "publicWatchClientFrames": 3,
+  "sequences": [
+    1,
+    2,
+    3
+  ],
+  "revisions": [
+    42,
+    43,
+    44
+  ],
+  "schemaVersions": [
+    4
+  ],
+  "ordinaryProviderActions": false,
+  "boundedRunningSamples": [
+    [
+      {
+        "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791527010363
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791512141316
+      },
+      {
+        "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791506319850
+      },
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791499859289
+      },
+      {
+        "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528890270
+      },
+      {
+        "id": "01a113b3-adca-7b62-834f-262791c1c774",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528202000
+      },
+      {
+        "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791526881000
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791525181670
+      }
+    ],
+    [
+      {
+        "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791527010363
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791512141316
+      },
+      {
+        "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791506319850
+      },
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791499859289
+      },
+      {
+        "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528890270
+      },
+      {
+        "id": "01a113b3-adca-7b62-834f-262791c1c774",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528202000
+      },
+      {
+        "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791526881000
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791525181670
+      }
+    ],
+    [
+      {
+        "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791527010363
+      },
+      {
+        "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791512141316
+      },
+      {
+        "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791506319850
+      },
+      {
+        "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "waiting",
+        "activityAt": 1791499859289
+      },
+      {
+        "id": "1f5bf80d-accb-4b13-86e4-180e6da126b6",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528890270
+      },
+      {
+        "id": "01a113b3-adca-7b62-834f-262791c1c774",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791528202000
+      },
+      {
+        "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+        "provider": "codex",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791526881000
+      },
+      {
+        "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+        "provider": "claude",
+        "runtime": "running",
+        "phase": "working",
+        "activityAt": 1791525181670
+      }
+    ]
+  ]
+}

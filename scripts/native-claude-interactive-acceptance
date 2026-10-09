@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+"""Explicit isolated installed interactive Observer proof; bounded receipts only.
+
+Copy this, native-claude-interactive-proof and evaluate-observation into an owned
+native-isolation root. Provider operations affect only disposable test sessions.
+The native oracle imports no Observer implementation. Terminal output is drained
+by the native harness and discarded; public/native payloads stay in memory.
+"""
+
+import hashlib
+import json
+import os
+import runpy
+import signal
+import socket
+import subprocess
+import threading
+import time
+import uuid
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    NativeProof = runpy.run_path(str(root / "native-claude-interactive-proof"))["NativeProof"]
+    oracle = runpy.run_path(str(root / "evaluate-observation"))["claude_reference"]
+
+    class Acceptance(NativeProof):
+        def __init__(self):
+            super().__init__()
+            self.image_cache = {}
+            self.service, self.stream, self.reader = None, None, None
+            self.stop_reader = threading.Event()
+            self.push = {"snapshot": None, "frames": 0, "error": False, "kinds": {}}
+            self.path = self.base / "runtime/observer/read.sock"
+            self.receipt["wheel"] = json.loads((root / "candidate.json").read_text())
+            self.receipt["harnessSha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+            self.receipt["nativeOracleSha256"] = hashlib.sha256((root / "evaluate-observation").read_bytes()).hexdigest()
+
+        def command(self, argv):
+            process = subprocess.run(argv, capture_output=True, timeout=35, cwd="/tmp")
+            assert process.returncode == 0 and len(process.stdout) <= 8 * 1024 * 1024 + 16384, "public_read_failed"
+            return json.loads(process.stdout)
+
+        def native(self):
+            return oracle(self.home, self.image_cache)
+
+        def direct(self):
+            return self.command(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude", "--claude-home", str(self.home)])
+
+        def cached(self):
+            return self.command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(self.path)])["snapshot"]
+
+        def start_service(self):
+            self.service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", "snap", "--provider", "claude",
+                                             "--claude-home", str(self.home), "--socket", str(self.path), "--runtime-interval", "1",
+                                             "--history-interval", "2", "--native-hints"], stdout=subprocess.DEVNULL,
+                                            stderr=subprocess.DEVNULL, start_new_session=True)
+            self.until(lambda: self.path.exists(), "private_service_unavailable", 15)
+            self.stream = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            self.stream.settimeout(1)
+            self.stream.connect(str(self.path))
+            self.stream.sendall(b'{"serviceProtocol":2,"operation":"watch","hostScope":"snap"}\n')
+            self.reader = threading.Thread(target=self.receive, daemon=True)
+            self.reader.start()
+
+        def receive(self):
+            pending, sequence, revision, service_id = bytearray(), 0, 0, None
+            try:
+                while not self.stop_reader.is_set():
+                    try:
+                        data = self.stream.recv(65536)
+                    except TimeoutError:
+                        continue
+                    if not data:
+                        return
+                    pending.extend(data)
+                    assert len(pending) <= 8 * 1024 * 1024 + 16384
+                    while b"\n" in pending:
+                        line, _, pending = pending.partition(b"\n")
+                        frame = json.loads(line)
+                        assert frame["serviceProtocol"] == 2 and frame["sequence"] == sequence + 1
+                        assert frame["viewRevision"] >= revision and frame["hostScope"] == "snap"
+                        service_id = service_id or frame["serviceId"]
+                        assert frame["serviceId"] == service_id
+                        sequence, revision = frame["sequence"], frame["viewRevision"]
+                        self.push["frames"] += 1
+                        kind = frame["kind"]
+                        self.push["kinds"][kind] = self.push["kinds"].get(kind, 0) + 1
+                        if frame["snapshot"] is not None:
+                            self.push["snapshot"] = frame["snapshot"]
+            except (OSError, ValueError, AssertionError, KeyError):
+                if not self.stop_reader.is_set():
+                    self.push["error"] = True
+
+        @staticmethod
+        def row(view, sid):
+            return next((r for r in (view or {}).get("sessions", []) if r["identity"]["nativeId"] == sid), None)
+
+        def check(self, sid, runtime, phase, label, *, reason=None, timeout=30, age=None):
+            start = time.monotonic()
+            result = None
+            def match():
+                nonlocal result
+                before = self.native()["rows"].get(sid)
+                direct, cached, pushed = self.direct(), self.cached(), self.push["snapshot"]
+                after = self.native()["rows"].get(sid)
+                if before is None or after is None or any(before.get(k) != after.get(k) for k in ("runtime", "phase", "activity")):
+                    return False
+                if after["runtime"] != runtime or after["phase"] != phase:
+                    return False
+                if age is not None:
+                    assert after["activity"] == age, "native_resume_changed_conversation_age"
+                for view in (direct, cached, pushed):
+                    row = self.row(view, sid)
+                    if row is None or row["runtime"]["value"] != runtime or (row["phase"]["value"] if row["phase"] else None) != phase:
+                        return False
+                    if runtime != "unknown" and row["runtime"]["health"] != "current":
+                        return False
+                    if row["activity"]["at"] != after["activity"]:
+                        return False
+                    if reason is not None and row["blockedReasons"] != [reason]:
+                        return False
+                    source = view["sources"][0]
+                    assert source["coverage"]["runtime"]["status"] != "complete"
+                    assert "native_registration_assumed" in source["limitations"]
+                assert not self.push["error"], "push_reference_failed"
+                result = {"case": label, "nativeId": sid, "runtime": runtime, "phase": phase,
+                          "activityAt": after["activity"], "nativeBracketStable": True,
+                          "directCachedPushAgree": True, "elapsedSeconds": round(time.monotonic() - start, 3)}
+                return result
+            self.until(match, "observer_transition_unproved_" + label, timeout)
+            return result
+
+        def mode(self, disabled):
+            self.config(disabled)
+            settings = self.home / "settings.json"
+            config = json.loads(settings.read_text())
+            config.update(disableAllHooks=True)
+            config.pop("hooks")
+            settings.write_text(json.dumps(config))
+            sid = str(uuid.uuid4())
+            result = {"disableAgentView": disabled, "nativeId": sid, "hooksDisabled": True, "checks": []}
+            self.receipt["modes"].append(result)
+            client = self.spawn(sid, prompt="Reply only with OK.")
+            self.phase(client, "idle")
+            self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > 0, "initial_response_unproved")
+            result["checks"].append(self.check(sid, "running", "waiting", "new_waiting"))
+            self.send(client, "Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.")
+            self.phase(client, "waiting", "input needed")
+            result["checks"].append(self.check(sid, "running", "blocked", "question", reason="question"))
+            result["normalExit"] = self.normal_exit(client)
+            self.stop(client)
+            result["checks"].append(self.check(sid, "parked", None, "normal_exit"))
+            age = self.native()["rows"][sid]["activity"]
+            resumed = self.spawn(sid, resume=True)
+            self.phase(resumed, "idle", timeout=35)
+            result["checks"].append(self.check(sid, "running", "waiting", "saved_resume", age=age))
+            target = self.base / "workspace/approval-proof.txt"
+            assert not target.exists()
+            self.send(resumed, "Use Bash to write OK to approval-proof.txt.")
+            self.phase(resumed, "waiting", "permission prompt")
+            result["checks"].append(self.check(sid, "running", "blocked", "approval", reason="approval"))
+            assert not target.exists(), "owned_approval_tool_executed"
+            self.normal_exit(resumed)
+            self.stop(resumed)
+            crash = self.spawn(sid, resume=True)
+            self.phase(crash, "idle", timeout=35)
+            self.stop(crash)
+            result["checks"].append(self.check(sid, "parked", None, "forced_kill"))
+            stale_count = len([r for r in self.records() if r.get("sessionId") == sid])
+            fresh = self.spawn(sid, resume=True)
+            self.phase(fresh, "idle", timeout=35)
+            result["checks"].append(self.check(sid, "running", "waiting", "resume_with_dead_record"))
+            result["deadRecordRetained"] = stale_count > 0
+            self.normal_exit(fresh)
+            self.stop(fresh)
+            result["checks"].append(self.check(sid, "parked", None, "final_exit"))
+            # Fault only this fixture's native registry; saved metadata remains
+            # healthy and must not lend freshness to missing runtime evidence.
+            backup = self.home / "sessions-proof-backup"
+            self.registry.rename(backup)
+            self.registry.write_text("owned native source fault\n")
+            try:
+                result["checks"].append(self.check(sid, "unknown", "unknown", "registry_fault"))
+            finally:
+                self.registry.unlink()
+                backup.rename(self.registry)
+            result["checks"].append(self.check(sid, "parked", None, "registry_recovered"))
+            # A fresh service has no prior Observer incarnation ledger.
+            self.stop_service()
+            self.start_service()
+            result["checks"].append(self.check(sid, "parked", None, "observer_cold_start"))
+            result["status"] = "accepted"
+            print(json.dumps({"modeAccepted": "off" if disabled else "on", "checks": len(result["checks"])}), flush=True)
+
+        def stop_service(self):
+            self.stop_reader.set()
+            if self.stream is not None:
+                self.stream.close()
+            if self.reader is not None:
+                self.reader.join(timeout=2)
+            if self.service is not None:
+                if self.service.poll() is None:
+                    self.service.send_signal(signal.SIGTERM)
+                self.service.wait(timeout=15)
+            self.service, self.stream, self.reader = None, None, None
+            self.stop_reader.clear()
+            self.push.update(snapshot=None, error=False)
+
+        def run(self):
+            original = (self.home / "settings.json").read_bytes()
+            try:
+                self.start_service()
+                for disabled in (True, False):
+                    self.mode(disabled)
+                self.receipt.update(status="accepted", pushFrames=self.push["frames"], pushKinds=self.push["kinds"])
+            except Exception as error:
+                self.receipt.update(status="partial", failureCode=str(error))
+                raise
+            finally:
+                for client in self.clients:
+                    self.stop(client)
+                self.stop_service()
+                (self.home / "settings.json").write_bytes(original)
+                (root / "claude-interactive-acceptance.json").write_text(json.dumps(self.receipt, indent=2) + "\n")
+
+    Acceptance().run()
+
+
+if __name__ == "__main__":
+    main()

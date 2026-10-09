@@ -3,7 +3,8 @@
 Date: 2026-10-08. Status: accepted design direction and registration assumption;
 shared public contract fit is now [settled](claude-read-contract-review.md).
 I1 oracle/private boundary is accepted; the a9 producer is implemented in source.
-Immutable artifact/native acceptance and rollout remain pending. This reconciles
+The [a9 artifact/native gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+is accepted; operational selection and provider-policy rollout remain separate. This reconciles
 the [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md) and subsequent
 [native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 with the user's accepted practical scope. It replaces the earlier requirement
@@ -199,19 +200,20 @@ baseline until a successor's separate artifact/native acceptance.
 
 I1 oracle/private work is complete. I2 source checks cover interactive lifecycle,
 incarnation uncertainty, duplicates, source bounds, conflict guards and independent
-leases. The next checkpoint is I3 installed native acceptance. Reuse native I0 facts
+leases. I3 accepts the immutable a9 candidate through native direct/cache/push
+and ordinary both-host comparisons. The next checkpoint is I4 scoped operations. Reuse native I0 facts
 rather than repeating the entire spike for every daily provider update. Additional cases
 establish the candidate's bounded behavior; they are not an attempt to prove
 away the already demonstrated missing-registration limitation. If a required
 normal-workflow predicate fails, report that specific capability gap and revise
 it before selection.
 
-Native isolation does not establish source/native success for every planned
-case. Same-process UUID switches, simultaneous duplicate live contexts and the
-minimal background-conflict guard remain unproved. Use isolated native cases
-where safe; hazardous PID/domain/read variants may use synthetic fixtures with
-that coverage stated. Unresolved predicates remain explicit at I3 rather than
-being inferred from a passing schema or another Observer view.
+Native isolation now establishes same-process UUID switches, simultaneous live
+duplicates (including conflicting phase) and the minimal background-conflict
+guard. Hazardous PID/domain/read variants use synthetic fixtures with that
+coverage stated. The accepted invisible-registration limit and SDK-excluded
+metadata gap remain explicit; no exhaustive source claim is inferred from a
+passing schema or another Observer view.
 
 Agent View opt-out changes fresh launches; older workers can retain their prior
 mode. Validate mixed incarnations by required native contracts. On may remain
