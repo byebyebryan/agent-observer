@@ -1,0 +1,8 @@
+{
+  "cleanupExit": 0,
+  "cleanup": {
+    "ownedNamespaceStopped": true,
+    "borrowedAuthAndHistoryRemoved": true
+  },
+  "ordinaryConfigHashesUnchanged": true
+}

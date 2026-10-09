@@ -8,6 +8,18 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
+The [state/event design research](state-and-events-research-plan.md) is complete:
+[reviewed design](state-and-events-design.md),
+[deep review](state-and-events-design-review.md) and
+[native/model/current-read evidence](evidence/2026-10-09-state-and-events-design/REPORT.md).
+The next authorized implementation pass can follow
+[E0–E5](state-and-events-execution-plan.md): independent event contract, passive
+sources/neutral emitter, service intake/replay, read CLI, immutable native gate
+and separately scoped operations. No production event feed is implemented yet.
+State API 2/wire 4/Service 2 remain accepted. The 349 handoff supplies one client's
+requirements; downstream alert and frontend work stay separate. Networking
+development is in the user's separate mesh-plus repository/thread.
+
 The [observation boundary hardening](observation-boundaries.md) is implemented.
 The authorized [Codex completion loop](codex-observation-completion-plan.md)
 accepts the a5 source, installed artifact and native observation on both hosts.

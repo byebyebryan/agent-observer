@@ -1,0 +1,13 @@
+{
+  "daemonRelease": "0.162.1-x86_64-unknown-linux-musl",
+  "schemaFileCount": 317,
+  "subscriptionMethods": [
+    "thread/unsubscribe"
+  ],
+  "selectedEventMethods": [
+    "thread/started",
+    "thread/status/changed",
+    "turn/completed",
+    "turn/started"
+  ]
+}

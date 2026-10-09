@@ -1,0 +1,44 @@
+{
+  "hostScope": "snap",
+  "provider": "claude",
+  "status": "completed_source_study",
+  "fixture": {
+    "host": "snap",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "codexRelease": "0.162.1-x86_64-unknown-linux-musl",
+    "daemonSha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+    "installedCliSha256": {
+      "codex": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c",
+      "claude": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262"
+    },
+    "codexOnly": false,
+    "apiKeyModelDiscoveryDisabledInFixture": true,
+    "codexCliSource": "/opt/openai-codex/bin/codex"
+  },
+  "nativeId": "d847e484-8eae-4bd7-8a8e-93c86aa54033",
+  "agentViewDisabled": true,
+  "nativeAlertsDisabled": true,
+  "stopCount": 2,
+  "stopPromptIds": [
+    "6dfb506e-cde7-493e-837b-18888a7f7e61",
+    "6dfb506e-cde7-493e-837b-18888a7f7e61"
+  ],
+  "samePromptAcrossContinuation": true,
+  "parallelContinuationObserved": true,
+  "permissionRequestCount": 1,
+  "permissionNoticeCount": 1,
+  "permissionNoticeAfterRequestMs": 6017,
+  "heldApprovalNotExecuted": true,
+  "installedRowMatchesNativeBlocked": true,
+  "sourceEvents": {
+    "UserPromptSubmit": 2,
+    "Stop": 2,
+    "SubagentStop": 1,
+    "PermissionRequest": 1,
+    "Notification": 1
+  },
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "productionEventPublisherProved": false,
+  "graphicalDeliveryProved": false
+}

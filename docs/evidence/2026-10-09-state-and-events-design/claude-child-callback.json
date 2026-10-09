@@ -1,0 +1,19 @@
+{
+  "nativeActorFactOnly": true,
+  "parentReclassified": false,
+  "records": [
+    {
+      "source": "claude_hook",
+      "nativeEvent": "SubagentStop",
+      "nativeId": "d847e484-8eae-4bd7-8a8e-93c86aa54033",
+      "nativeTurnId": null,
+      "nativePromptId": "ceec4a60-e9b7-4123-9140-1117788ed9a5",
+      "nativeActorId": "a2143ea7226e350d5",
+      "notificationType": null,
+      "stopHookActive": false,
+      "receivedAt": 1791579309742,
+      "receivedBoottimeMs": 619184177,
+      "contentFieldsDiscarded": true
+    }
+  ]
+}

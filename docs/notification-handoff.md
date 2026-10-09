@@ -1,4 +1,13 @@
-# Agent notification handoff
+# Agent notification client request
+
+The user clarified on 2026-10-09 that this ESP32-349 handoff is **requirements
+input from one client, not a settled Observer contract**. Other clients may need
+different event evidence, child policies, formatting or transports. The reviewed
+[state/event design](state-and-events-design.md) separates reusable native facts
+from these requested alert behaviors; its
+[execution gates](state-and-events-execution-plan.md) leave production and
+client delivery independently pending. Nothing in this note installs hooks or
+selects an alert client.
 
 The subsequent [experimental source/client contract](notification-client-contract.md)
 and [a4 native report](evidence/2026-10-06-notifications/REPORT.md) implement the
@@ -11,7 +20,8 @@ this note does not implement or select a new notification client.
 
 ## Requested behavior
 
-Standardize desktop notifications from Codex and Claude Code:
+For the requested desktop/349 client, standardize notifications from Codex and
+Claude Code:
 
 | Field | Content |
 | --- | --- |
@@ -22,20 +32,23 @@ Standardize desktop notifications from Codex and Claude Code:
 The user cares most about sender and session title. Start with static state
 messages; response summaries are optional future work. Keep top-level
 notifications and suppress child/subagent completions. Unknown Codex child
-classification currently fails open; do not silently change that policy.
+classification currently fails open in that client; do not silently change its
+migration policy. Shared core events preserve child and unknown evidence instead
+of applying this suppression.
 
-Kitty is the only supported terminal for this work. Ghostty is deprecated;
+Kitty is the only supported terminal for this requested alert client. Ghostty is deprecated;
 no OSC 777 fallback, compatibility layer, or Ghostty action bridge is required.
 Preserve unfocused-only delivery and Kitty's native Open/focus behavior,
 including the originating pane when running under tmux.
 
 ## Ownership
 
-Implement reusable provider notification handling in the Agent Observer
-repository. Keep provider evidence and normalization in passive adapters;
-desktop publication, notification policy and formatting belong in a separate
-notification client alongside the core. Merely reading Observer must not emit
-notifications or perform provider actions.
+Reusable provider event handling can live in the Agent Observer repository.
+Core owns passive event normalization; the local service hosts sources, bounded
+intake and read publication. Desktop publication, notification policy and
+formatting belong in a separate client. Merely reading Observer must not emit
+notifications or perform provider actions. The implementation gate is separate
+from this client's requested sender/title/Open behavior.
 
 ESP32-349 remains downstream: its `notification-panel` mirrors desktop
 notifications from all applications, displays cards and handles device
@@ -93,8 +106,10 @@ repair loop to apply managed configuration changes.
   [source-event plan](contract-and-clients-plan.md#push-monitoring-and-source-events).
 - Claude's `Notification` hook suits existing attention/idle/permission
   notifications. Its optional `title` is the alert caption, not the session
-  name. A session-title lookup can use its exact `session_id` and
-  `transcript_path`; a `Stop` hook is not required just to supply a title.
+  name. The shared design enriches from Observer's exact-reference cache,
+  preserving unavailable titles explicitly. Earlier private transcript findings
+  below are source-investigation context, not a request for clients to perform
+  their own provider lookups. A `Stop` hook is not required just to supply a title.
 - `Stop` provides immediate response-end evidence and `last_assistant_message`,
   but other parallel Stop hooks can continue work. Snap has review/loop Stop
   hooks. Do not equate one Stop callback with successful task completion or

@@ -1,0 +1,13 @@
+{
+  "repositoryCheck": "passed",
+  "command": "./scripts/check",
+  "unitTestsRun": 399,
+  "unitTestsSkipped": 1,
+  "unitTestsDurationSeconds": 43.184,
+  "markdownFilesChecked": 107,
+  "studyScriptsParse": 3,
+  "metadataJsonFiles": 16,
+  "metadataPrivacyFieldAudit": true,
+  "replayModelStatus": "synthetic_design_feasibility",
+  "productionEventImplementation": false
+}

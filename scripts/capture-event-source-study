@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Study-only, neutral, metadata-only callback sink in native-isolation.
+
+No Observer imports, enrichment, policy, action or desktop output. This records
+native input facts for the research oracle; it is not a production hook emitter.
+"""
+
+import json
+import os
+import re
+import stat
+import sys
+import time
+from pathlib import Path
+
+
+def token(value):
+    return value if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,256}", value) else None
+
+
+def capture(source):
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    assert os.getuid() == 0 and root.resolve() == root and root.stat().st_uid == 0
+    assert all(json.loads((root / "ready.json").read_text()).values())
+    runtime = json.loads((root / "runtime.json").read_text())
+    assert not runtime.get("stopped")
+    assert all(os.readlink("/proc/self/ns/" + k) == v for k, v in runtime["namespaces"].items())
+    assert source in {"codex_notify", "codex_hook", "claude_hook"}
+    raw = sys.argv[2].encode() if source == "codex_notify" else sys.stdin.buffer.read(1024 * 1024 + 1)
+    assert len(raw) <= 1024 * 1024
+    payload = json.loads(raw)
+    assert isinstance(payload, dict)
+    event = payload.get("type") if source == "codex_notify" else payload.get("hook_event_name")
+    assert event in {"agent-turn-complete", "Stop", "SubagentStop", "UserPromptSubmit", "Notification", "PermissionRequest", "SessionStart", "SessionEnd"}
+    native = payload.get("thread-id") if source == "codex_notify" else payload.get("session_id")
+    assert token(native)
+    notice = payload.get("notification_type")
+    if notice not in {"permission_prompt", "idle_prompt", "elicitation_dialog", "elicitation_url_dialog"}:
+        notice = None
+    record = {
+        "source": source, "nativeEvent": event, "nativeId": native,
+        "nativeTurnId": token(payload.get("turn-id", payload.get("turn_id"))),
+        "nativePromptId": token(payload.get("prompt_id")),
+        "nativeActorId": token(payload.get("agent_id")),
+        "notificationType": notice,
+        "stopHookActive": payload.get("stop_hook_active") if type(payload.get("stop_hook_active")) is bool else None,
+        "receivedAt": time.time_ns() // 1_000_000,
+        "receivedBoottimeMs": int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000),
+        "contentFieldsDiscarded": True,
+    }
+    fd = os.open(root / "event-source-records.jsonl", os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+    try:
+        info = os.fstat(fd)
+        assert stat.S_ISREG(info.st_mode) and info.st_uid == 0 and info.st_size <= 512 * 1024
+        data = (json.dumps(record, separators=(",", ":")) + "\n").encode()
+        assert len(data) <= 2048 and os.write(fd, data) == len(data)
+    finally:
+        os.close(fd)
+
+
+source = sys.argv[1] if len(sys.argv) > 1 else "unknown"
+try:
+    capture(source)
+except Exception:
+    # Neutral output even on source failure; no raw callback or exception text.
+    pass
+if source in {"claude_hook", "codex_hook"}:
+    print("{}")

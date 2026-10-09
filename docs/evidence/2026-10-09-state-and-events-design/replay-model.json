@@ -1,0 +1,20 @@
+{
+  "status": "synthetic_design_feasibility",
+  "productionPublisherProved": false,
+  "nativeReplayProved": false,
+  "generatedOperations": 50000,
+  "readChecks": 19992,
+  "admissions": 20181,
+  "restarts": 4994,
+  "counterexamples": [
+    "consumer_filter_checkpoints_scanned_high_watermark",
+    "atomic_replay_high_watermark_preserves_later_admission",
+    "replay_preserves_event_record_identity",
+    "empty_expired_ring_retains_loss_floor",
+    "restart_fences_same_numeric_cursor",
+    "snapshot_diff_cannot_recover_native_turn_history",
+    "prompt_correlation_is_not_attention_event_identity",
+    "native_correlation_retains_full_host_and_store_scope",
+    "child_event_actor_does_not_reclassify_parent_or_renew_state"
+  ]
+}

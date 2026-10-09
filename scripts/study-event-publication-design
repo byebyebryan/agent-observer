@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Synthetic study model for proposed event delivery, not a runtime publisher.
+
+An independent audit list checks a bounded deque model after generated admit,
+expiry, read and restart operations. Counterexamples distinguish state resync
+from event replay and native correlation from notification policy.
+"""
+
+import collections
+import json
+import random
+
+
+class Ring:
+    def __init__(self, *, epoch=1, entries=8, byte_limit=96, ttl=30):
+        self.epoch, self.entries, self.byte_limit, self.ttl = epoch, entries, byte_limit, ttl
+        self.head, self.floor, self.bytes = 0, 0, 0
+        self.rows = collections.deque()
+
+    def expire(self, now):
+        while self.rows and self.rows[0]["received"] + self.ttl <= now:
+            self.evict()
+
+    def evict(self):
+        row = self.rows.popleft()
+        self.floor = row["sequence"]
+        self.bytes -= row["size"]
+
+    def admit(self, now, size, actor):
+        self.expire(now)
+        if size > self.byte_limit:
+            return None
+        self.head += 1
+        row = {"epoch": self.epoch, "sequence": self.head, "received": now, "size": size, "actor": actor}
+        self.rows.append(row)
+        self.bytes += size
+        while len(self.rows) > self.entries or self.bytes > self.byte_limit:
+            self.evict()
+        return dict(row)
+
+    def read(self, now, epoch, position):
+        self.expire(now)
+        if epoch != self.epoch:
+            return {"error": "restart"}
+        if position < 0 or position > self.head:
+            return {"error": "invalid_cursor"}
+        if position < self.floor:
+            return {"error": "delivery_gap", "floor": self.floor, "head": self.head}
+        return {"rows": [dict(r) for r in self.rows if r["sequence"] > position], "cursor": [self.epoch, self.head]}
+
+
+def check_generated():
+    reads, admitted, restarts = 0, 0, 0
+    for seed in range(100):
+        randomizer = random.Random(seed)
+        ring = Ring()
+        # Audit state is append-only and independent of the bounded queue.
+        audit, now, old_epochs = [], 0, []
+        for _ in range(500):
+            now += randomizer.randrange(4)
+            action = randomizer.randrange(10)
+            if action == 0:
+                old_epochs.append(ring.epoch)
+                ring = Ring(epoch=ring.epoch + 1)
+                audit = []
+                restarts += 1
+            elif action < 6:
+                value = ring.admit(now, randomizer.randrange(1, 120), randomizer.choice(["top_level", "child", "unknown"]))
+                if value:
+                    audit.append(value)
+                    admitted += 1
+            else:
+                position = randomizer.randrange(-1, ring.head + 3)
+                epoch = randomizer.choice([ring.epoch, *(old_epochs[-2:])])
+                reply = ring.read(now, epoch, position)
+                reads += 1
+                # Reference retention selects a suffix by age, count and bytes.
+                retained = [r for r in audit if r["received"] + ring.ttl > now]
+                while retained and (len(retained) > ring.entries or sum(r["size"] for r in retained) > ring.byte_limit):
+                    retained = retained[1:]
+                floor = retained[0]["sequence"] - 1 if retained else ring.head
+                if epoch != ring.epoch:
+                    assert reply == {"error": "restart"}
+                elif position < 0 or position > ring.head:
+                    assert reply == {"error": "invalid_cursor"}
+                elif position < floor:
+                    assert reply == {"error": "delivery_gap", "floor": floor, "head": ring.head}
+                else:
+                    assert reply["rows"] == [r for r in retained if r["sequence"] > position]
+                    assert reply["cursor"] == [ring.epoch, ring.head]
+                    assert sum(r["size"] for r in reply["rows"]) <= ring.byte_limit
+                assert len(ring.rows) <= ring.entries and ring.bytes <= ring.byte_limit
+    return {"generatedOperations": 50000, "readChecks": reads, "admissions": admitted, "restarts": restarts}
+
+
+def check_counterexamples():
+    checks = []
+    ring = Ring()
+    for actor in ["top_level", "child", "child", "unknown"]:
+        ring.admit(0, 8, actor)
+    reply = ring.read(0, 1, 0)
+    visible = [r for r in reply["rows"] if r["actor"] == "top_level"]
+    assert visible[-1]["sequence"] == 1 and reply["cursor"] == [1, 4]
+    assert not ring.read(0, *reply["cursor"])["rows"]
+    checks.append("consumer_filter_checkpoints_scanned_high_watermark")
+
+    row = ring.admit(0, 8, "top_level")
+    assert row["sequence"] == 5 and ring.read(0, *reply["cursor"])["rows"] == [row]
+    checks.append("atomic_replay_high_watermark_preserves_later_admission")
+    replay = ring.read(0, 1, 4)
+    assert replay["rows"] == ring.read(0, 1, 4)["rows"]
+    checks.append("replay_preserves_event_record_identity")
+
+    gap = ring.read(30, 1, 0)
+    assert gap == {"error": "delivery_gap", "floor": 5, "head": 5}
+    assert ring.read(30, 1, 5)["rows"] == []
+    checks.append("empty_expired_ring_retains_loss_floor")
+    assert Ring(epoch=2).read(0, 1, 5) == {"error": "restart"}
+    checks.append("restart_fences_same_numeric_cursor")
+
+    state_samples = ["working", "working"]
+    real_turn_ends_between_samples = 2
+    inferred_turn_ends = sum(a == "working" and b == "waiting" for a, b in zip(state_samples, state_samples[1:]))
+    assert inferred_turn_ends == 0 and real_turn_ends_between_samples == 2
+    checks.append("snapshot_diff_cannot_recover_native_turn_history")
+
+    repeated_attention = [{"receipt": n, "prompt": "same", "kind": "approval"} for n in [1, 2]]
+    assert len({r["receipt"] for r in repeated_attention}) == 2 and len({r["prompt"] for r in repeated_attention}) == 1
+    checks.append("prompt_correlation_is_not_attention_event_identity")
+    native_completion_keys = {("snap", "codex", "store-A", "thread", "turn"), ("starship", "codex", "store-A", "thread", "turn"), ("snap", "codex", "store-B", "thread", "turn")}
+    assert len(native_completion_keys) == 3
+    checks.append("native_correlation_retains_full_host_and_store_scope")
+
+    session = {"kind": "user", "runtime": "running", "phase": "working", "activity": 7, "expires": 30}
+    event = {"kind": "response_end", "actor": "child", "parent": "thread", "received": 40}
+    original = dict(session)
+    # Recording/enriching an event never writes observation evidence.
+    event["sessionKindAtEnrichment"] = session["kind"]
+    assert session == original and event["actor"] == "child"
+    checks.append("child_event_actor_does_not_reclassify_parent_or_renew_state")
+    return checks
+
+
+def main():
+    print(json.dumps({"status": "synthetic_design_feasibility", "productionPublisherProved": False,
+        "nativeReplayProved": False, **check_generated(), "counterexamples": check_counterexamples()}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

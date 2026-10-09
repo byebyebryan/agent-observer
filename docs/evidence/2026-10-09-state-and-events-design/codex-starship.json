@@ -1,0 +1,55 @@
+{
+  "hostScope": "starship",
+  "provider": "codex",
+  "status": "completed_source_study",
+  "fixture": {
+    "host": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "codexRelease": "0.162.1-x86_64-unknown-linux-musl",
+    "daemonSha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+    "installedCliSha256": {
+      "codex": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c"
+    },
+    "codexOnly": false,
+    "apiKeyModelDiscoveryDisabledInFixture": true,
+    "codexCliSource": "/opt/openai-codex/bin/codex"
+  },
+  "passiveListenerResumedLoadedOrSubscribed": false,
+  "nativeOracleImportsObserver": false,
+  "listenerMethods": {
+    "account/updated": 1,
+    "thread/started": 4,
+    "thread/status/changed": 8,
+    "thread/name/updated": 2
+  },
+  "targets": [
+    {
+      "nativeId": "01a12272-d4e9-7003-b4a6-9b79d9609436",
+      "nativeTurnId": "01a12273-0bbe-79f3-b1a2-908cd728c953",
+      "nativeOutcome": "completed",
+      "callbackMatchesIndependentThreadAndTurn": true,
+      "installedRowMatches": true,
+      "passiveMethodsForThread": {
+        "thread/started": 1,
+        "thread/status/changed": 2
+      },
+      "passiveTurnCompletedReceived": false
+    },
+    {
+      "nativeId": "01a12272-f255-78a3-8307-9171ab1f5784",
+      "nativeTurnId": "01a12273-0db3-7801-9c6b-2dc5ca0d16ab",
+      "nativeOutcome": "completed",
+      "callbackMatchesIndependentThreadAndTurn": true,
+      "installedRowMatches": true,
+      "passiveMethodsForThread": {
+        "thread/started": 1,
+        "thread/status/changed": 2
+      },
+      "passiveTurnCompletedReceived": false
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "graphicalDeliveryProved": false,
+  "productionEventPublisherProved": false
+}
