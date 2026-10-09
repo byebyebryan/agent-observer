@@ -68,7 +68,8 @@ def main():
             except (ValueError, OSError):
                 memo = ImageMemo(provider)
         native = adapter.collect(home, host_scope=request["hostScope"],
-                                 include_history=component == "history", image_cache=memo)
+                                 include_history=component == "history", image_cache=memo,
+                                 owned_worker_group=True)
         value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
         if component == "history":
             enrich(value, request["workspaceConfig"])

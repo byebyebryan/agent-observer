@@ -551,7 +551,7 @@ def identity_scope(snapshot, host, providers):
             checks.append(False)
             continue
         home = str(Path.home() / (".codex" if provider == "codex" else ".claude"))
-        selector = "explicit" if provider == "codex" or "CLAUDE_CONFIG_DIR" in os.environ else "default"
+        selector = "explicit"
         namespace = "sha256:" + hashlib.sha256(json.dumps([provider, home, selector, os.getuid()], separators=(",", ":")).encode()).hexdigest()
         expected[provider] = namespace
         source = sources.get(provider, {})

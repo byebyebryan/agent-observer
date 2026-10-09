@@ -432,6 +432,46 @@ def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
     }
 
 
+def transcript_kind(path: Path, session_id: str) -> str:
+    """Identity-bound conversation classification, independent of its clock."""
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        try:
+            before = os.fstat(fd)
+            if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+                return "unknown"
+            data = os.read(fd, MAX_COMPANION_BYTES)
+            if _file_stamp(before) != _file_stamp(os.fstat(fd)) or _file_stamp(before) != _file_stamp(path.lstat()):
+                return "unknown"
+        finally:
+            os.close(fd)
+        lines = data.splitlines() if data.endswith(b"\n") else data.splitlines()[:-1]
+        kinds = set()
+        for line in lines:
+            value = json.loads(line, object_pairs_hook=_unique_pairs)
+            if not isinstance(value, dict) or value.get("type") not in {"user", "assistant"}:
+                continue
+            if value.get("sessionId") != session_id:
+                return "unknown"
+            if value.get("isMeta") is True:
+                continue
+            message = value.get("message")
+            if not isinstance(message, dict) or message.get("role") != value["type"]:
+                return "unknown"
+            body = message.get("content")
+            if value["type"] == "user" and isinstance(body, str) and body.startswith(
+                ("<command-name>", "<local-command-stdout>", "<local-command-stderr>", "<local-command-caveat>")
+            ):
+                continue
+            if value.get("isSidechain") is False:
+                kinds.add("user")
+            elif value.get("isSidechain") is True:
+                kinds.add("child")
+        return next(iter(kinds)) if len(kinds) == 1 else "unknown"
+    except (OSError, ValueError, TypeError, RecursionError):
+        return "unknown"
+
+
 def _bounded_text(value: object, *, max_chars: int, max_utf8_bytes: int) -> str | None:
     if not isinstance(value, str):
         return None
@@ -674,6 +714,7 @@ def main() -> int:
                 "created_at": _valid_epoch(getattr(session, "created_at", None)),
                 "last_modified": _valid_epoch(getattr(session, "last_modified", None)),
                 "activity": activity,
+                "kind": transcript_kind(path, session_id),
             }
         )
 
