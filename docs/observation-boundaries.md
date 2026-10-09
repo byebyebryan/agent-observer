@@ -3,10 +3,10 @@
 Date: 2026-10-08. This captures the user's clarified ownership direction after
 the [a4 Codex acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md).
 The source audit below records the pre-extraction baseline. The
-[completion loop](codex-observation-completion-plan.md) now accepts the source
-extraction/enforcement; candidate/native and operational gates follow. This
-document does not accept new API fields,
-event guarantees, adapters or deployments. [API 2](api-v2.md), read wire 4 and
+[completion loop](codex-observation-completion-plan.md) now accepts source
+extraction/enforcement, installed/native proof and the separate read/service
+operational gate. This ownership document alone does not accept new API fields,
+event guarantees or adapters. [API 2](api-v2.md), read wire 4 and
 service protocol 2 remain the accepted prerelease read contracts.
 
 ## Component ownership
@@ -62,7 +62,7 @@ separate facts. Observed running or parked state never authorizes an action.
   children; the default read presentation hides confirmed children only.
   Unknown classification is preserved.
 
-Codex is the sole accepted adapter in a4. Its existing owning daemon is the
+Codex is the sole accepted live adapter. Its existing owning daemon is the
 runtime authority: active is running, idle is running/waiting, and current
 `notLoaded` plus positively readable saved identity is parked. Native error
 and unsupported wait flags preserve the independently proved runtime fact
@@ -148,7 +148,7 @@ Distinct thread/tree-root TUI entry remains unproved. Neither this boundary nor
 an observed running row promises provider lifetime after TUI closure. The user
 has deferred that acceptance while assuming ordinary TUI contexts remain alive.
 
-## Current source audit
+## Pre-hardening source audit
 
 This is an ownership audit, not a new native-state mismatch. a4's recorded
 Codex acceptance remains bounded by its existing report.
@@ -173,8 +173,10 @@ and `observation_evidence`; service state is the host/envelope wrapper. One
 passive adapter dispatch serves direct collection and owned helpers. Unsupported
 private routes are rejected, and the history-census diagnostic option is removed.
 Dependency tests enforce the read/action/alert boundary and core's independence
-from host I/O/service/native implementations. The steps below retain the
-acceptance sequence, including the pending installed/native and rollout gates.
+from host I/O/service/native implementations. The
+[a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+accepts the installed/native and separate managed operational gates on both
+hosts. The steps below retain the original acceptance sequence.
 
 1. Lock this ownership specification and add meaningful dependency/authority
    checks. Exercise transitive imports, rejection before unsupported provider

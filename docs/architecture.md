@@ -1,11 +1,14 @@
 # Agent Observer architecture boundaries
 
 The [observation ownership clarification](observation-boundaries.md) defines
-the next hardening pass: core contains the model, passive adapters and reusable
+the implemented boundary: core contains the model, passive adapters and reusable
 observation engine; the service hosts it and provides local IPC. Provider refresh
 signals, pushed read updates and user-facing alerts have separate ownership.
-Meshing and terminal/window matching remain external. Its source audit records
-the internal extraction work still needed without changing accepted API 2.
+Meshing and terminal/window matching remain external. The
+[a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+records source/artifact/native acceptance without changing API 2. Normal read
+CLI/service selection uses a5 after independent managed operational acceptance.
+The independently selected writer remains a16.
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only
@@ -19,8 +22,8 @@ The [review](codex-daemon-authority-review.md) led to API 2/read wire 4/service 
 with clean rejection of the old wire. The following
 [saved-evidence repair](codex-evidence-repair-plan.md) accepts the a4 successor
 through [packaged/native acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-on both hosts. Normal selection remains a16/API 1; historical reports below
-retain their original bounds. See the [API 2 client handoff](api-v2-client-handoff.md).
+on both hosts. It precedes the a5 core/operational checkpoint; historical reports
+below retain their original bounds. See the [API 2 client handoff](api-v2-client-handoff.md).
 Future terminal discovery/attachment can consume tmux-observer through clients;
 it is not an Observer core implementation or acceptance dependency.
 
@@ -41,7 +44,7 @@ determine compatibility. Release versions and hashes record provenance and
 incarnation changes; routine provider upgrades do not require allowlist entries.
 The [API v1 contract](api-v1.md) and [a2 acceptance](evidence/2026-10-06-stable-api/REPORT.md)
 implement this policy. The version-gated pilot description below is historical;
-the [current service handoff](shared-observation-service-handoff.md) records a16
+the [historical service handoff](shared-observation-service-handoff.md) records a16
 selection with passive native hints and periodic reconciliation. Consumer
 migration retains a separate delivery gate.
 

@@ -1,11 +1,16 @@
 # Provider contract compatibility
 
-Date: 2026-10-06. Status: user-selected support policy and Observer implementation
-plan. This supersedes the release-registration direction in the
+Date: 2026-10-06; current Codex scope clarified 2026-10-08. Status: accepted
+support policy, implemented for the API-2 Codex adapter. The
+[a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+records its installed/native proof. This supersedes the release-registration
+direction in the
 [discovery/monitoring review](discovery-monitoring-contract-review.md).
-The selected a11 artifact still has exact-image allowlists. The source candidate
-`0.3.0a1` replaces those runtime gates with required-field/protocol checks; its
-packaged/native acceptance and managed entrypoint selection remain separate.
+The original a11/`0.3.0a1` transition and execution table below are historical.
+Current Codex reads use the owning daemon only, including its database-only
+metadata catalog; private saved-store fallback is removed. Claude has no accepted
+live adapter in the current artifact. Its older registry/job/SDK requirements
+below are reference material for a separate provider checkpoint.
 
 ## Support policy
 
@@ -27,21 +32,21 @@ release number must not become an accepted-value domain in the public model.
 
 ## Required contract inventory
 
-These are current dependencies extracted from the implementation. The next
-checkpoint must formalize their minimal structures, meanings and validation,
-with internally versioned capability profiles independent of provider releases.
+The current Codex observation dependency is the daemon status-v2 and
+database-only-catalog-v1 contract recorded in the artifact manifest. Shape and
+semantic checks remain independent of release numbers. Writer requirements and
+historical Claude sources do not grant current observation capabilities.
 
 | Capability | Required contract | Independent conditions |
 | --- | --- | --- |
-| Codex managed discovery | Existing managed endpoint; `initialize` namespace; `thread/list`, `thread/loaded/list`, `thread/read` UUID/session/name/cwd and pagination metadata | Kernel peer/listener ownership, expected configuration scope and unchanged runtime birth; no daemon launch or thread load for discovery |
-| Codex phase and kind | Loaded-read status discriminator/active flags and explicit native child/user signals | Known values and their documented/accepted meanings; conflicting IDs/classifications or unknown values remain unresolved per row |
+| Codex managed discovery | Existing owning endpoint; `initialize` namespace; database-only `thread/list`, `thread/loaded/list`, `thread/read` UUID/tree-root/name/cwd/status and pagination metadata | Kernel peer/listener ownership, expected configuration scope and unchanged runtime birth; no daemon launch, private-store fallback or thread load for discovery |
+| Codex runtime, phase and kind | Native idle/active/notLoaded status, active flags and explicit native child/user signals | Idle/active establishes running; positive notLoaded plus readable non-ephemeral saved identity establishes parked; loaded-list absence does not. Unknown/conflicting values remain unresolved per row |
 | Codex activity/outcome | Latest `thread/turns/list` metadata with unloaded/empty items; native start/completion clock units and explicit terminal status | No conversation content; outcome, phase and runtime remain independent; a missing optional clock or outcome does not disable discovery |
-| Codex saved fallback | Required catalog/history tables, columns, native-ID relation, session header and timestamp representation | Existing-only coherent read transactions, WAL/ownership rules and bounded metadata; irrelevant migration/column additions do not invalidate a compatible required projection |
-| Claude discovery/presence | Registry UUID, worker PID/birth/PID-domain/kind/cwd; exact job short-ID/UUID relation | Verified provider executable provenance and kernel identity, complete declared inventory scopes; installed CLI release cannot gate a surviving worker's otherwise compatible read contract |
-| Claude phase/parked | Registry state/time/wait discriminator, job terminal state/time/tempo, typed questions and in-flight counters used by the accepted predicates | Known semantic profiles; current worker/registry/job correlation, no conflicting identities or pending work; terminal job plus proven absence for parked |
-| Claude saved history | SDK session-list API and required metadata fields; exact non-sidechain transcript envelope ID/type/time contract | Isolated bounded reader; no bundled CLI launch, conversation content export or mtime substitution; SDK version is diagnostic metadata |
+| Historical Claude discovery/presence | Registry UUID, worker PID/birth/PID-domain/kind/cwd; exact job short-ID/UUID relation | Reference only; current Claude selection rejects before native I/O |
+| Historical Claude phase/parked | Registry state/time/wait discriminator, job terminal state/time/tempo, typed questions and in-flight counters | Reference only; restoration needs a separately reviewed source/runtime model and proof |
+| Historical Claude saved history | SDK session-list API and required metadata fields; exact non-sidechain transcript envelope ID/type/time contract | Reference only; no current adapter or SDK dependency in the core artifact |
 | Codex New/Resume | Native TTY entry; configured store selection; exact Resume session-ID argument and normal native permission/trust handling | Current cwd/config/executable/endpoint context, exact refreshed Resume reference and entry revalidation |
-| Claude New/live attach/saved Resume | Background launch and bounded receipt identity, exact typed job attach, saved Resume identity behavior and settings/context selectors | Launch/receipt/registry/job correlation, explicit requested/resulting UUIDs, confirmed versus uncertain effects and no redispatch after a possible write |
+| Historical Claude New/live attach/saved Resume | Background launch and bounded receipt identity, exact typed job attach, saved Resume identity behavior and settings/context selectors | Reference only; action/attachment and the Claude runtime decision are deferred |
 
 Compatibility includes behavior, not only JSON shape. A field named `idle` does
 not establish prompt readiness on its own. A terminal job does not establish
@@ -50,8 +55,9 @@ semantic requirements expressed in the profiles and checked against available
 native evidence. New predicates or actual contract changes require focused native
 proof; a different release label alone does not require that proof.
 
-Claude private registry/job fields and Codex saved-store fallback are internal
-provider interfaces. Contract checks reduce needless upgrade failures, but
+Historical Claude private registry/job fields and the removed Codex saved-store
+fallback are internal provider interfaces. Contract checks reduce needless
+upgrade failures, but
 cannot guarantee detection of every upstream semantic change. Prefer a passive
 public interface when it supplies the required information. Keep independent
 ordinary comparisons and controlled lifecycle/clock tests as ongoing validation,

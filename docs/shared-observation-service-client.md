@@ -1,9 +1,10 @@
 # Explicit local service client
 
 This guide records the historical protocol-1/a16 workflow. New source and the
-explicit accepted a3 candidate use [API 2 client commands](api-v2-client-handoff.md)
+selected a5 read/service artifact use [API 2 client commands](api-v2-client-handoff.md)
 and [service protocol 2](service-protocol-v2.md), with Codex as the sole native
-adapter. The normal a16 service remains protocol 1 until a separate rollout.
+adapter. Normal read/service selection now uses protocol 2; the examples below
+retain their historical protocol-1 artifact bounds.
 
 The service is a separate prerelease protocol 1 carrying unchanged API 1
 snapshot 3. Direct `snapshot/list/show/watch` and the pure `public` facade retain

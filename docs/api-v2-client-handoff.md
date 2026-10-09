@@ -1,16 +1,18 @@
 # API 2 client handoff
 
-Date: 2026-10-08. The Codex producer/read/service and supported separate writer
-subset are accepted against [0.5.0a4](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-on Snap and Starship. The candidate is installed separately; normal links/user
-services still select a16. This handoff does not select a consumer or authorize
-provider policy, frontend, terminal-runtime or networking changes.
+Date: 2026-10-08. The Codex observation core/read/service are accepted against
+[0.5.0a5](evidence/2026-10-08-codex-observation-completion/REPORT.md) on Snap and
+Starship. Normal read CLI links and user services select a5 after independent
+managed recovery, rollback/reselection and 30-minute reader/resource acceptance.
+The normal writer retains a16. This handoff does not
+select a consumer or authorize provider policy, frontend, terminal-runtime or
+networking changes.
 
 ## Bind to the contract
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a4.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a5.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -44,16 +46,31 @@ Both API descriptors operate without a provider or service.
 - Own user intent, terminal/TUI lifetime, tmux/Kitty placement, routing and viewer
   association in the client. Observation supplies no attachment or worker fields.
 
-Codex is the sole native adapter in a4. Explicit Claude collection/service/write
+Codex is the sole native adapter in a5. Explicit Claude collection/service/write
 selection returns `unsupported_provider`. Reserved Claude schema examples are
 contract fixtures, not native acceptance. Claude is the next producer checkpoint.
 
-## Inspect the explicit candidate
+## Inspect the observation service
 
-These examples leave normal CLI links and the a16 user service alone:
+Use the selected read CLI for ordinary discovery and monitoring:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a4-28f5ad02a0312b36
+agent-observer api
+agent-observer service api
+agent-observer service list --host-scope snap
+agent-observer service watch --host-scope snap --count 3
+```
+
+The managed publisher is already running on each host. Cached pull and push use
+the same view at `/run/user/1000/agent-observer/read.sock`. No subscriber starts
+the publisher or falls back to direct native collection. For an independent
+direct read, invoke `list` or `snapshot` without the `service` prefix. Direct
+reads collect metadata anew and can take longer than cached reads.
+
+For explicit artifact checks, use its immutable prefix:
+
+```sh
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a5-9e116932e007b0bf
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -78,13 +95,19 @@ an owned foreground Observer publisher in another terminal:
 
 The immediate endpoint directory must be canonical, same-user and private;
 the publisher creates it if absent. Use the owning UID's runtime path. Stop this
-explicit publisher with Ctrl-C; it owns only Observer work. Never pair the a4
-client with the ordinary protocol-1 endpoint. Subscriber reads do not autostart
+explicit publisher with Ctrl-C; it owns only Observer work. Never pair a protocol-2
+client with a historical protocol-1 endpoint. Subscriber reads do not autostart
 a service or fall back to direct collection.
 
 ## Actions and acceptance boundaries
 
-The separate writer prepares and revalidates an explicit local TTY handoff with
+Actions and attachment are deferred from the completed observation scope. The
+normal `agent-observer-write` still selects the historical a16 artifact and is
+not this API-2 read handoff. A future action client must select and validate its
+own accepted writer tuple; it must not infer writer compatibility from the
+reader's version or link.
+
+The separate API-2 writer prepares and revalidates an explicit local TTY handoff with
 `effect=none`; only `enter` performs native New/Resume. New identity is pending
 until native discovery. Exact Resume validates the requested reference through
 native `thread/read` and metadata-only `thread/turns/list`, independently of
@@ -93,8 +116,10 @@ are required; failed/unsupported reads return `resume_saved_history_unproved`.
 Missing activity alone does not reject saved identity. Consumer attachment/runtime
 ownership remains external; remote routing belongs to the owning host/client.
 
-Initialized saved/live Resume, repeated native entry and equal-ID fork targeting
-are accepted. Blank runtime-only Resume and distinct thread/tree-root TUI entry
+The earlier [a4 writer acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
+accepts initialized saved/live Resume, repeated native entry and equal-ID fork
+targeting. This a5 observation pass adds no writer capability or selection gate.
+Blank runtime-only Resume and distinct thread/tree-root TUI entry
 are not accepted; blank runtime-only Resume fails with
 `resume_saved_history_unproved` and distinct-ID entry fails with
 `session_tree_entry_unproved`. Positive empty-history responses have controlled
@@ -108,5 +133,5 @@ its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
 there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
-Observer normal
-selection needs an independent rollout/restart/crash/reconnect/rollback gate.
+The [completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+records the separate Observer read/service operational gate.

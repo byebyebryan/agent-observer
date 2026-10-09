@@ -3,17 +3,18 @@
 Date: 2026-10-08. Prerelease producer contract. The Codex a3 packaged/native gate
 is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
 The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-is the current explicit candidate with the same API/wires.
-Delivery and Claude follow the [reconciliation plan](codex-daemon-authority-plan.md).
+precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+with the same API/wires. Normal read CLI and services select a5 after independent
+managed operational acceptance. The writer remains independently selected
+at a16. Claude follows the [reconciliation plan](codex-daemon-authority-plan.md).
 This document supersedes
-[API 1](api-v1.md) for new clients. Installed normal selection remains a16 until
-a separate operational gate. No old-wire converter is supplied.
+[API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
 
 ## Interfaces and ownership
 
 The [ownership specification and source audit](observation-boundaries.md)
 clarify core/model/adapter/engine, local service, mesh and read-client boundaries.
-The planned internal extraction preserves this contract. Native refresh hints,
+The implemented internal extraction preserves this contract. Native refresh hints,
 read push and user-facing notification delivery are separate concerns; this
 read API supplies no terminal/window matching or public attention-event stream.
 

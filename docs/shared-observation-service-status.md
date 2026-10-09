@@ -1,8 +1,14 @@
 # Shared service implementation status
 
-Current selection: `0.4.0a16` on Snap and Starship, with native hints alongside
-periodic reconciliation. The [current handoff](shared-observation-service-handoff.md)
-records the exact artifact, endpoint, cadences and unchanged API/service versions.
+Current read/service selection: `0.5.0a5` on Snap and Starship, with native hints
+alongside periodic reconciliation. The [API 2 handoff](api-v2-client-handoff.md)
+and [completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+record core/artifact/native and separate managed operational acceptance.
+Read wire 4/service protocol 2 are current; the writer retains a16 separately.
+
+The preceding a16/protocol-1 checkpoint follows below. Its
+[historical handoff](shared-observation-service-handoff.md) records the exact
+artifact, endpoint, cadences and then-current API/service versions.
 The [delivery report](evidence/2026-10-07-native-delivery/REPORT.md) separates
 native/cost acceptance from the managed rollout and longer reader/resource checks.
 The provisional 64 MiB aggregate RSS target was relaxed by the user to a review
