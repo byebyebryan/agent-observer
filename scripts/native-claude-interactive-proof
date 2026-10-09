@@ -132,8 +132,10 @@ class NativeProof:
         return [r for line in path.read_text().splitlines() for r in [json.loads(line)]
                 if r["nativeId"] == sid] if path.exists() else []
 
-    def spawn(self, sid, *, resume=False, prompt=None):
-        argv = ["claude", *( ["--resume", sid] if resume else ["--session-id", sid, "--name", "Observer private interactive proof"])]
+    def spawn(self, sid, *, resume=False, prompt=None, name="Observer private interactive proof"):
+        argv = ["claude", *( ["--resume", sid] if resume else ["--session-id", sid])]
+        if not resume and name is not None:
+            argv += ["--name", name]
         if prompt:
             argv.append(prompt)
         pid, fd = pty.fork()

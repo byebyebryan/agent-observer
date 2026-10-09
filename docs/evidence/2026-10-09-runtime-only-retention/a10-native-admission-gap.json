@@ -1,0 +1,17 @@
+{
+  "status": "rejected",
+  "artifact": "0.5.0a10",
+  "nativeId": "2eecc22e-b14f-4ae9-a482-6435580542d5",
+  "case": "unsaved_forced_kill",
+  "nativeNegativeScanHealthy": true,
+  "nativeInventoryPresent": false,
+  "positiveSavedIdentity": false,
+  "nativeRecordCount": 1,
+  "authenticatedNativeRecord": false,
+  "directRuntime": "unknown",
+  "directRuntimeReason": "interactive_runtime_unproved",
+  "directHasSavedHistory": false,
+  "cause": "dead_unsaved_registration_returned_as_current_candidate",
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false
+}
