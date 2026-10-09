@@ -609,6 +609,16 @@ def snapshot(config_root, *, host_scope, namespace, runtime_version, binary_sha2
         unknown_worker = any(p.effective_value == "unknown" for _, p in group)
         excluded_live = any(p.effective_value == "present" and (r["kind"] != "interactive" or r["jobId"] is not None
                             or "invalid_job_reference" in r["issues"]) for r, p in group)
+        # A dead, unsaved registration is neither current runtime membership
+        # nor saved discovery. Omit this metadata residue only after the full
+        # native bracket/guard and every matching incarnation prove absence.
+        # Faults, ambiguous incarnations and unsupported work still stay explicit.
+        if (sid not in saved and sid not in unresolved and sid not in conflicts
+                and negative_healthy and group
+                and all(p.effective_value == "absent" and r["kind"] == "interactive"
+                        and r["jobId"] is None and "invalid_job_reference" not in r["issues"]
+                        for r, p in group)):
+            continue
         presence, work, wait = Evidence("presence"), Evidence("work"), "unknown"
         disposition = {"value": "unknown", "observedAt": None, "source": None, "health": "unsupported", "reason": "interactive_runtime_unproved"}
         if not stable or sid in unresolved:
