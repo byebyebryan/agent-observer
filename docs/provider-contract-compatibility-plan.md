@@ -1,16 +1,19 @@
 # Provider contract compatibility
 
-Date: 2026-10-06; current Codex scope clarified 2026-10-08. Status: accepted
-support policy, implemented for the API-2 Codex adapter. The
+Date: 2026-10-06; current provider scope clarified 2026-10-08. Status: accepted
+support policy, implemented for the API-2 Codex and passive Claude adapters. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records its installed/native proof. This supersedes the release-registration
 direction in the
 [discovery/monitoring review](discovery-monitoring-contract-review.md).
 The original a11/`0.3.0a1` transition and execution table below are historical.
 Current Codex reads use the owning daemon only, including its database-only
-metadata catalog; private saved-store fallback is removed. Claude has no accepted
-live adapter in the current artifact. Its older registry/job/SDK requirements
-below are reference material for a separate provider checkpoint.
+metadata catalog; private saved-store fallback is removed. The independent
+[a8 Claude gate](evidence/2026-10-08-claude-observation/REPORT.md) accepts passive
+registration/status, bounded terminal-job and saved metadata reads on Snap.
+The next [interactive-only plan](claude-interactive-observation-plan.md) requires
+new census/absence and mode-off proof; it does not inherit those capabilities
+from a8 or provider release labels.
 
 ## Support policy
 
@@ -34,17 +37,19 @@ release number must not become an accepted-value domain in the public model.
 
 The current Codex observation dependency is the daemon status-v2 and
 database-only-catalog-v1 contract recorded in the artifact manifest. Shape and
-semantic checks remain independent of release numbers. Writer requirements and
-historical Claude sources do not grant current observation capabilities.
+semantic checks remain independent of release numbers. Current Claude reads bind
+the registry/job metadata contract plus independent saved identity/history reads.
+Writer requirements and historical receipts do not grant extra observation
+capabilities. The interactive census contract is proposed, not accepted.
 
 | Capability | Required contract | Independent conditions |
 | --- | --- | --- |
 | Codex managed discovery | Existing owning endpoint; `initialize` namespace; database-only `thread/list`, `thread/loaded/list`, `thread/read` UUID/tree-root/name/cwd/status and pagination metadata | Kernel peer/listener ownership, expected configuration scope and unchanged runtime birth; no daemon launch, private-store fallback or thread load for discovery |
 | Codex runtime, phase and kind | Native idle/active/notLoaded status, active flags and explicit native child/user signals | Idle/active establishes running; positive notLoaded plus readable non-ephemeral saved identity establishes parked; loaded-list absence does not. Unknown/conflicting values remain unresolved per row |
 | Codex activity/outcome | Latest `thread/turns/list` metadata with unloaded/empty items; native start/completion clock units and explicit terminal status | No conversation content; outcome, phase and runtime remain independent; a missing optional clock or outcome does not disable discovery |
-| Historical Claude discovery/presence | Registry UUID, worker PID/birth/PID-domain/kind/cwd; exact job short-ID/UUID relation | Reference only; current Claude selection rejects before native I/O |
-| Historical Claude phase/parked | Registry state/time/wait discriminator, job terminal state/time/tempo, typed questions and in-flight counters | Reference only; restoration needs a separately reviewed source/runtime model and proof |
-| Historical Claude saved history | SDK session-list API and required metadata fields; exact non-sidechain transcript envelope ID/type/time contract | Reference only; no current adapter or SDK dependency in the core artifact |
+| Claude discovery/presence at a8 | Provider registry UUID, worker PID/birth/PID-domain/kind/cwd; exact job short-ID/UUID relation where used | Authenticated stable native registration establishes running; no terminal/client inventory or mutating roster CLI |
+| Claude phase/parked at a8 | Registry state/time/wait discriminator, job terminal state/time/tempo, typed questions and in-flight counters | Independently proved interactive status/waits; terminal jobs need saved identity, no pending work and complete stable native inventories; saved-only absence/foreground exit remain unknown |
+| Claude saved history at a8 | SDK session-list API and required metadata fields; exact non-sidechain transcript envelope ID/type/time contract; bounded positive UUID proof | Independent saved coverage/clock failure; optional history dependency on Snap; no negative lifecycle from saved existence |
 | Codex New/Resume | Native TTY entry; configured store selection; exact Resume session-ID argument and normal native permission/trust handling | Current cwd/config/executable/endpoint context, exact refreshed Resume reference and entry revalidation |
 | Historical Claude New/live attach/saved Resume | Background launch and bounded receipt identity, exact typed job attach, saved Resume identity behavior and settings/context selectors | Reference only; action/attachment and the Claude runtime decision are deferred |
 
@@ -55,7 +60,7 @@ semantic requirements expressed in the profiles and checked against available
 native evidence. New predicates or actual contract changes require focused native
 proof; a different release label alone does not require that proof.
 
-Historical Claude private registry/job fields and the removed Codex saved-store
+Claude private registry/job fields and the removed Codex saved-store
 fallback are internal provider interfaces. Contract checks reduce needless
 upgrade failures, but
 cannot guarantee detection of every upstream semantic change. Prefer a passive
@@ -108,7 +113,7 @@ reference coverage remain explicit.
 | P3: conformance and diagnostics | Test a changed version/hash with an unchanged required contract, irrelevant native additions, missing required methods/fields, new state variants, mixed worker generations, duplicate IDs and a real executable replacement during a prepared handoff. Diagnostics identify the contract/capability/reason alongside observed release provenance. |
 | P4: independent artifact acceptance | Build an Observer candidate, exercise public read/write and independent native comparisons on Snap/Starship, verify affected New/Resume/phase/age/parked routes in isolated contexts and check passivity/cleanup. This accepts the contract-based adapter and writer; it does not create a new daily release allowlist. |
 
-The currently observed Codex 0.160.1 and Claude 2.1.291 are useful test points,
+The Codex 0.160.1 and Claude 2.1.291 images recorded in the original pass are test points,
 not the next hardcoded supported versions. Older surviving contexts should be
 recognized by their required contracts, with conflicting/missing evidence still
 explicit. Public SDK-version representation and any capability metadata shape

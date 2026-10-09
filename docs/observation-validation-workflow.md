@@ -7,12 +7,13 @@ isolated test sessions establish controlled transitions and failure behavior.
 Both forms of evidence are useful, but their coverage differs.
 
 [API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
-prerelease read contracts. The [a6 gap-closure report](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-records independent source/artifact/native and managed operational acceptance
-on Snap and Starship. Read/service commands select a6; the writer retains a16
-independently. A later receipt must record the exact selected artifact anew.
-Codex is the sole live adapter in this checkpoint. Claude has a separate future
-adapter/native gate; historical Claude receipts do not accept current support.
+prerelease read contracts. The [a8 Claude report](evidence/2026-10-08-claude-observation/REPORT.md)
+records independent artifact/native and scoped operational acceptance on Snap,
+with Codex preserved on Snap/Starship. Read/service commands select a8; the writer
+retains a16 independently. A later receipt must record the selected artifact anew.
+The next [interactive Claude plan](claude-interactive-observation-plan.md) requires
+an independently implemented native oracle before producer changes. Existing a8
+receipts do not prove exhaustive interactive absence or Agent View mode-off.
 
 ## Installed CLI and ordinary sessions
 
@@ -38,6 +39,10 @@ adapter/native gate; historical Claude receipts do not accept current support.
    thread's native status, including catalog/detail status outside loaded
    membership. Authenticate the source's UID, namespace and daemon incarnation;
    endpoint process identity does not determine any session's runtime or phase.
+   For Claude, read authenticated provider-owned registrations/status and bounded
+   saved metadata independently. Native PID-domain/birth checks authenticate UUID
+   records; they do not discover terminal clients. A parked predicate must have
+   its own independent completeness/lifecycle proof, not a missing registration.
    A native command that can write metadata, adopt workers or auto-start a daemon
    is not an ordinary read probe. The standalone stdlib
    [evaluation harness](../scripts/evaluate-observation) imports no Observer

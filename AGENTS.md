@@ -16,7 +16,16 @@
   unknown. The earlier Codex-only correction below is historical scope, not a
   prohibition on this independently accepted passive adapter. Claude actions,
   attachment and generic background lifetime remain separate gates.
-- The active correction track is `docs/codex-daemon-authority-plan.md` and
+- The next Claude track is `docs/claude-interactive-observation-plan.md`.
+  Interactive-only observation must use provider-owned evidence without client
+  inventory, tmux/TUI/window matching or attachment queries. Native process checks
+  authenticate exact provider registrations only. Parked from a native census
+  and Agent View opt-out require I0 independent completeness/mode proof; missing
+  registrations alone remain unknown. Background runtime is outside the target;
+  unresolved noninteractive evidence must not be silently relabeled parked.
+  I1–I5 separately gate contract, source, artifact, Observer operations and provider
+  policy. This design plan alone authorizes no new public wire or deployment.
+- The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked
   or work phase. Clients own terminal lifetime/attachment. Codex-only acceptance
