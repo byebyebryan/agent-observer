@@ -12,8 +12,13 @@ metadata catalog; private saved-store fallback is removed. The independent
 [a8 Claude gate](evidence/2026-10-08-claude-observation/REPORT.md) accepts passive
 registration/status, bounded terminal-job and saved metadata reads on Snap.
 The next [interactive-only plan](claude-interactive-observation-plan.md) requires
-new census/absence and mode-off proof; it does not inherit those capabilities
-from a8 or provider release labels.
+an independently accepted successor for scoped parked detection. Native on/off,
+hookless, normal-exit/crash and Resume evidence is recorded; the user accepts a
+healthy-registration assumption despite the demonstrated invisible-runtime
+limitation. The new private contract must authenticate all matching incarnations,
+declare partial coverage and avoid false exhaustive claims. Source/artifact and
+mode-off selection still need their gates; they do not inherit acceptance from
+a8 or provider release labels.
 
 ## Support policy
 

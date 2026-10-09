@@ -47,10 +47,11 @@ existence, running disposition, phase, conversation age and source health are
 separate facts. Observed running or parked state never authorizes an action.
 
 - Discovery reports `running`, `parked` or `unknown`, with declared scope,
-  bounds and coverage. Parked requires positive provider evidence; absence
-  from an ordinary list, terminal exit and an unavailable endpoint do not
-  establish it. A future exhaustive native census predicate needs independent
-  completeness/absence proof before it can establish parked for saved identities.
+  bounds and coverage. Parked requires positive saved identity and the adapter's
+  reviewed native lifecycle predicate. Absence from an ordinary list, terminal
+  exit and an unavailable endpoint alone do not establish it. A scoped negative
+  predicate must declare its registration/completeness assumptions and failure
+  limits; exhaustive coverage requires independent completeness proof.
 - A running session's phase is `working`, `blocked`, `waiting` or `unknown`.
   Parked has no applicable phase. Blocked reasons preserve approval/question
   evidence without approving or answering anything.
@@ -80,11 +81,15 @@ saved-only absence remains unknown. The native roster CLI has initialization
 writes and is not invoked by observation.
 
 The next [interactive-only Claude plan](claude-interactive-observation-plan.md)
-proposes a native census predicate and removes unused private attachment/job
-scaffolding. Observer must reconstruct supported lifecycle with client inventories
-absent, including after its own restart. Provider-owned registration incarnation
-checks are permitted; generic terminal/process discovery is not. Agent View
-disabling and the narrower public scope remain pending independent gates.
+uses the user's accepted native-registration assumption: a healthy bounded scan
+with no matching live incarnation or relevant unresolved conflict can classify
+positively saved UUIDs as parked. Normal exit and crash are supported targets.
+A live missing registration can instead produce false parked, even after source
+recovery; declare partial coverage and that limitation. The implementation removes
+unused private attachment/job scaffolding and reconstructs state after Observer
+restart without a run ledger or client inventory. Provider-owned registration
+incarnation checks are permitted; generic process/terminal discovery is not.
+Contract review, artifact selection and Agent View opt-out retain separate gates.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing

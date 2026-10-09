@@ -19,18 +19,27 @@
 - The next Claude track is `docs/claude-interactive-observation-plan.md`.
   Interactive-only observation must use provider-owned evidence without client
   inventory, tmux/TUI/window matching or attachment queries. Native process checks
-  authenticate exact provider registrations only. Parked from a native census
-  and Agent View opt-out require I0 independent completeness/mode proof; missing
-  registrations alone remain unknown. Background runtime is outside the target;
-  unresolved noninteractive evidence must not be silently relabeled parked.
+  authenticate exact provider registrations only. The user accepts the normal
+  native-registration assumption: positive saved UUID plus a healthy bounded
+  native scan with no live matching incarnation or relevant unresolved conflict
+  may become parked. Normal exit, crash and forced kill are supported targets;
+  check every matching registration so a stale record cannot hide a live one.
+  A live session with failed/lost registration can be falsely reported parked,
+  including after source recovery; this is an explicit accepted limitation,
+  never an exhaustive census claim. Detected source faults still prevent negative
+  assertions. Background runtime is unsupported; use only a minimal native
+  conflict guard, not full job lifecycle compatibility. No run ledger or mandatory
+  hook source is required. Report partial runtime coverage and the assumption.
   I1–I5 separately gate contract, source, artifact, Observer operations and provider
-  policy. This design plan alone authorizes no new public wire or deployment.
+  policy. Prefer existing API 2/wire 4/service 2 fields if strict contract review
+  accepts the declared semantics; version only a required incompatible change.
+  This design plan alone authorizes no new public wire or deployment.
   `docs/evidence/2026-10-08-claude-interactive-source/REPORT.md` accepts tested
   positive on/off registration/phase/Resume evidence but disproves an exhaustive
   census: a failed registration can remain missing after directory recovery while
-  the interactive session is usable. Do not implement generic parked from registry
-  absence or promote I0 negative lifecycle to accepted without a new reviewed
-  provider capability or narrower guarantee.
+  the interactive session is usable. Its original negative-gate rejection is
+  superseded by the user's narrower design acceptance, not by new completeness
+  evidence. The installed a8 behavior remains unchanged pending implementation.
 - The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked

@@ -14,6 +14,11 @@ retains a16 independently. A later receipt must record the selected artifact ane
 The next [interactive Claude plan](claude-interactive-observation-plan.md) requires
 an independently implemented native oracle before producer changes. Existing a8
 receipts do not prove exhaustive interactive absence or Agent View mode-off.
+The [later native-source proof](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+establishes tested positive on/off flows and disproves exhaustive registration.
+Validate the user's accepted registration assumption explicitly: normal/crash
+parked and cold start within scope, detected faults as unknown, and a live missing
+registration as a documented possible false parked result with partial coverage.
 
 ## Installed CLI and ordinary sessions
 
@@ -41,8 +46,12 @@ receipts do not prove exhaustive interactive absence or Agent View mode-off.
    endpoint process identity does not determine any session's runtime or phase.
    For Claude, read authenticated provider-owned registrations/status and bounded
    saved metadata independently. Native PID-domain/birth checks authenticate UUID
-   records; they do not discover terminal clients. A parked predicate must have
-   its own independent completeness/lifecycle proof, not a missing registration.
+   records; they do not discover terminal clients. Independently validate the
+   adapter's reviewed parked predicate and declared assumptions. For the upcoming
+   interactive Claude target, positively saved UUIDs with a healthy bounded scan,
+   no matching live incarnation and no relevant unresolved conflict may become
+   parked under the accepted registration assumption. Missing registration alone
+   is not a universal absence proof; retain the invisible-live-runtime limitation.
    A native command that can write metadata, adopt workers or auto-start a daemon
    is not an ordinary read probe. The standalone stdlib
    [evaluation harness](../scripts/evaluate-observation) imports no Observer
