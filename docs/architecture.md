@@ -13,11 +13,14 @@ and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16.
 
 The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
-keeps Observer upstream of all clients. Provider-native interactive registration
-and a separately proved complete census are the candidate lifecycle authority;
-terminal inventory and attachment cannot fill missing evidence. Background
-runtime support is excluded from the target, and Agent View opt-out is conditional
-on isolated proof. This proposal does not change the accepted a8 artifact or wires.
+keeps Observer upstream of all clients. Under the user's accepted native-registration
+assumption, healthy provider-owned scans and authenticated incarnation checks
+classify positively saved interactive UUIDs with no live context as parked,
+including after normal exit or crash. Missing live registration can cause false
+parked classification, so coverage remains partial with that explicit limitation.
+Client inventory and attachment are outside observation. Background runtime
+support is excluded; implementation and Agent View opt-out retain separate gates.
+This design does not change the accepted a8 artifact or wires.
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only

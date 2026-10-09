@@ -40,9 +40,13 @@ runtime and Claude turn outcomes remain unproved.
 
 The next [Claude interactive reconciliation](docs/claude-interactive-observation-plan.md)
 targets interactive-only discovery/monitoring from provider-owned evidence,
-including restart-safe parked detection. Client inventories and attachment are
-excluded. Agent View opt-out, a narrower runtime scope and a breaking read
-contract require their own native/contract gates; a8 remains the accepted baseline.
+including parked detection after normal exits, crashes and Observer restart.
+The user accepts the native-registration assumption: healthy bounded scans with
+no matching live incarnation can classify positively saved UUIDs as parked.
+A live session with missing registration can be falsely reported parked; this
+remains an explicit limitation with partial coverage. Client inventories and
+attachment are excluded. Implementation, contract review and Agent View opt-out
+retain separate gates; a8 remains the accepted installed baseline.
 
 The preceding [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 and earlier native reports retain their exact artifact bounds. Twenty-one older

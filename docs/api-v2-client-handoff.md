@@ -56,6 +56,13 @@ one observed SDK setup-only omission and excluded nested child transcripts.
 Claude write selection remains unsupported by the new writer; the a16 writer is
 selected independently and this read acceptance grants no new action capability.
 
+The next [interactive Claude reconciliation](claude-interactive-observation-plan.md)
+changes the target parked predicate under an explicit native-registration
+assumption. Missing live registration can cause false parked classification;
+partial coverage and this limitation must reach consumers. That successor still
+needs contract/artifact acceptance. The a8 behavior described above remains the
+installed baseline; this plan grants no attachment or action authority.
+
 ## Inspect the observation service
 
 Use the selected read CLI for ordinary discovery and monitoring:

@@ -15,6 +15,10 @@ The negative lifecycle part of I0 is not accepted. Keep the accepted a8 runtime
 behavior until the parked design is revised; this validation does not select a
 new artifact, change settings or accept API 3.
 
+This was the original exhaustive-guarantee decision. The
+[subsequent scoped design decision](#subsequent-design-decision) below records
+the user's accepted registration assumption without changing these findings.
+
 | Native case | Agent View on | Agent View off |
 | --- | --- | --- |
 | New interactive UUID registration before first assistant event | Authenticated | Authenticated |
@@ -138,7 +142,7 @@ round establishes this sample only; it does not establish exhaustive coverage
 of unregistered runtimes or mode-off ordinary deployment. Current runtime
 comparison also retains a8's three bounded terminal-job parked facts.
 
-## Consequences for the next pass
+## Original consequences before scope reconciliation
 
 Proceed with the provider-owned boundary and interactive-only target. Agent
 View disabling remains a viable candidate for tested interactive observation;
@@ -157,3 +161,15 @@ conflict coverage, and current artifact direct/cache/push behavior in ordinary
 mode-off deployment. No controlled duplicate or same-process UUID-switch case
 was run here. Failure/PID-domain variants from the execution plan retain their
 later source/native gates. The positive tests do not accept those broader claims.
+
+## Subsequent design decision
+
+Following this proof, the user accepted the narrower native-registration
+assumption in the [reconciled plan](../../claude-interactive-observation-plan.md).
+Healthy bounded native scans with no matching live incarnation or relevant
+unresolved conflict may classify positively saved interactive UUIDs as parked.
+Normal exit and crash are supported targets. A live session with failed/lost
+registration can be falsely reported parked, including after source recovery;
+this is an accepted limitation, with partial coverage rather than an exhaustive
+census claim. This supersedes the original negative-gate blocker above; it does
+not change the measured counterexample or accept a new Observer artifact.

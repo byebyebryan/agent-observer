@@ -1,222 +1,249 @@
 # Claude interactive observation reconciliation
 
-Date: 2026-10-08. Status: proposed execution plan, requested after the
-[a8 Claude checkpoint](evidence/2026-10-08-claude-observation/REPORT.md).
-This document accepts the ownership and interactive-only target, not a new
-runtime predicate, artifact, public wire or provider configuration rollout.
+Date: 2026-10-08. Status: accepted design direction and registration assumption;
+implementation, artifact acceptance and rollout remain pending. This reconciles
+the [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md) and subsequent
+[native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+with the user's accepted practical scope. It replaces the earlier requirement
+for an exhaustive interactive census. It does not select a new artifact, wire,
+provider configuration or consumer.
 
-The [I0 native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
-accepts positive registration/phase/Resume evidence with Agent View on/off in
-the tested flows, including hookless observation. It disproves generic parked
-inference from registry absence: after a failed registration, a live session
-remains invisible even when the directory is restored. The negative lifecycle
-gate remains unaccepted. Revise that predicate before I1 locks a new contract;
-the implementation and API-version proposals below remain pending.
+## Direction and current baseline
 
-## Direction and baseline
+Observer is upstream of its clients. Core owns discovery and monitoring through
+passive provider adapters and a reusable reconciliation engine. The service
+hosts collection and local pull/push; networking composes host observations;
+the read CLI consumes them. None queries client inventory, tmux-observer, tmux,
+TUI attachment or windows to classify sessions. Context matching and actions
+remain a separate client layer.
 
-Observer is the upstream read authority for consumers. Provider-native evidence
-is its source of truth. Core owns discovery and monitoring through passive
-adapters; service hosts collection and local pull/push; networking composes host
-observations; the CLI reads them. None queries client inventory, tmux-observer,
-tmux, TUI attachment, terminal processes or windows to classify sessions.
-Clients separately match Observer references to contexts and perform actions.
+Codex continues querying its owning daemon unchanged. Claude's supported target
+is ordinary interactive New and saved Resume, with or without Agent View.
+Background jobs, supervised continuation and background attachment are outside
+support. No legacy adapter, Observer session manager or terminal fallback is
+required. Native process checks are permitted to authenticate provider-owned
+UUID registrations; they are not generic process discovery or attachment.
 
-Codex continues using its owning daemon unchanged. Claude's target is ordinary
-interactive sessions, including native New and saved Resume. Background jobs,
-supervised continuation and background attachment are outside supported runtime
-scope. Agent View is a candidate for disabling, subject to native proof below.
-There is no legacy adapter, session manager or client-inventory fallback.
+The selected a8 adapter already authenticates native running registrations and
+supported status, with saved metadata collected independently. Its parked
+predicate applies only to bounded terminal retained jobs. Saved-only rows and
+foreground `/exit` still report unknown. This plan changes that lifecycle policy
+and removes background/attachment scaffolding; the new rule is not implemented.
 
-The accepted a8 adapter already reads Claude-owned files without terminal
-matching. It authenticates running UUID registrations, maps supported status
-to work phase and reads saved metadata independently. It only proves parked
-for a bounded terminal-job predicate. Saved-only rows and foreground exit stay
-unknown. The remaining change is native interactive lifecycle authority and
-scope cleanup, not moving a current terminal classifier into core.
+Native evidence now establishes:
 
-Current audit leads, not mode-off acceptance:
+- Interactive registration, supported phase and exact saved Resume work with
+  Agent View on and off in the tested flows, including observation without hooks.
+- Normal `/exit` ends the incarnation, removes its registration and retains saved
+  identity. A forced exit retains a stale record with its last status; native
+  incarnation checks distinguish that dead worker from a current one.
+- Resume after forced exit can leave stale and live registrations for the same
+  UUID. Every matching record must be considered before asserting parked.
+- A registration write failure can leave a usable session invisible even after
+  the registry becomes readable again. The native JSON roster also misses it.
+  An exhaustive interactive inventory is therefore not established.
+- `claude agents --json` has initialization writes and is not an accepted passive
+  source. Its availability is not required by this design.
 
-- Installed source appears to write interactive registration files independently
-  of the Agent View flag, and to update UUID/status and remove records on exit.
-  Registration writes can fail without necessarily aborting the native session.
-- `claude agents --json` is gated by Agent View and its isolated a8 probe made
-  preferences/job-store writes. It is not an accepted passive source or a saved
-  interactive catalog. Direct provider-owned metadata remains the first candidate.
-- Public session rows have no attachment fields, but `SessionObservation` and
-  Claude's private samples still carry unused attachment scaffolding. Remove it.
-- The required read contract and source coverage still include job-store
-  predicates. Replace that dependency with the independently proved interactive
-  contract; do not copy background lifecycle into the new target.
+The [native report](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+retains exact artifact/topology bounds. Source facts are established; the later
+Observer implementation and normal Agent View opt-out still need their gates.
 
-The [official Agent View documentation](https://code.claude.com/docs/en/agent-view#turn-off-agent-view)
-describes the opt-out and distinction between ordinary interactive sessions and
-supervised background sessions. Documentation and static call sites do not
-establish installed mode-off registration or monitoring behavior.
+## Accepted assumption and lifecycle rule
 
-## Required evidence and predicates
+Assume supported ordinary interactive sessions create and retain their native
+UUID registration while running. Under that explicit assumption, a healthy
+bounded provider-owned registry scan, native incarnation checks and positive
+saved identity are enough to classify running or parked without client evidence.
+This is a registered-interactive guarantee, not proof of every possible context.
 
-Private process checks authenticate exact provider-owned registrations. They
-use native UUID, UID, PID domain, birth token, executable locator and stable
-record reads. They are not generic process discovery, terminal matching or
-public attachment handles. Ignore native tmux/terminal fields entirely.
-
-| Native evidence | Proposed public result |
+| Native evidence | Target public result |
 | --- | --- |
-| Exact interactive UUID registration with authenticated current incarnation | Running; phase from supported native status evidence |
-| Positive saved UUID plus a validated exhaustive native interactive census proving no live context for that UUID, with no unresolved noninteractive conflict | Parked; phase null |
-| One bound incarnation ended, but another context or census completeness is unresolved | Unknown runtime; ending one worker does not end the logical session |
-| Missing/malformed PID, denied process read, foreign PID domain, torn record, conflicting UUID or unsupported native kind | Unknown for affected identity or scope, with a finite reason |
-| Runtime read failed, exceeded bounds or expired | No current negative lifecycle assertion; retain bounded last-known evidence only |
+| Exact interactive UUID registration with authenticated current incarnation | Running; supported native status supplies phase |
+| Positive saved UUID; healthy bounded registry scan; no matching live incarnation; no relevant unresolved or unsupported-context conflict | Parked; phase null, under the registration assumption |
+| Old registration is definitively dead or its birth token no longer matches, with another authenticated live registration for the same UUID | Running; the old record cannot override the live incarnation |
+| Multiple live registrations for one UUID | Running; preserve phase ambiguity if their work evidence conflicts |
+| No positive live evidence, but a relevant record is malformed, torn, unreadable, foreign-domain or cannot be authenticated | Unknown runtime with a finite reason |
+| Runtime scan failed, exceeded bounds, raced without resolution or expired | No current negative lifecycle assertion; retain bounded last-known evidence only |
+| Saved identity is not positively established | No parked assertion; live runtime may still be reported independently |
 
-The parked predicate is a conjunction of positive saved identity and a proved
-native absence contract. A readable directory, an empty list, PID-file removal,
-an invalid old PID or `/exit` alone is insufficient. PID reuse proves the old
-incarnation ended; it must never authenticate the replacement process.
+Authenticate records using native UUID, source ownership, UID, PID domain, birth
+token and configured executable locator. Ignore native terminal/tmux fields.
+A numeric PID is insufficient. A confirmed birth mismatch proves the old
+incarnation ended; it does not authenticate an unrelated replacement process.
+Permission failures and unavailable process reads are not proof of death.
 
-The native gate must establish when registration is created relative to session
-availability, how UUID switches/resumes are committed, whether every supported
-interactive context registers, and what failed writes mean. Include a controlled
-unwritable-registry case: if a session can remain usable but invisible, that
-topology cannot advertise exhaustive runtime coverage or generic parked truth.
-Stable bracketing reads bound races; they do not create an atomic inventory.
-Startup, UUID changes, duplicate contexts and unresolved reads remain explicit.
+Normal exit, crash and forced kill are all supported target transitions.
+Neither an exit event nor death of one worker proves that all contexts for its
+UUID ended: check the current native registrations before parked. File existence
+alone also fails because crash records can remain. A healthy empty registry can
+classify positively saved UUIDs under the accepted assumption, including after
+Observer restart. No remembered Observer run ledger or mandatory hook receipt
+is needed.
 
-If the installed native contract cannot establish completeness without client
-inventory, keep parked unsupported for that scope and report the precise gap.
-Investigate another passive provider source before accepting a narrower predicate.
-Do not implement optimistic absence or a hidden client/process scan to pass the
-gate. Optional hooks may corroborate exact lifecycle events and trigger refresh;
-they are not the first implementation, an exhaustive inventory, or a way to
-classify unseen saved history after restart.
+### Accepted limitation: live registration missing
+
+A live interactive session whose registration failed or disappeared may be
+omitted from running discovery and reported as parked if its saved UUID exists.
+This can persist after registry recovery and after Observer restart. The native
+failure probe demonstrates this risk; stable repeated scans cannot eliminate it.
+It is accepted for this scope, rather than a blocker requiring another session
+manager or an exhaustive native source.
+
+Detected source faults still prevent negative assertions. A recovered directory
+does not retrospectively prove that every surviving session registered. Report
+the registration assumption and partial coverage consistently; never advertise
+an exhaustive census. Keep the induced failure as a documented limitation test,
+distinct from tests requiring unknown for faults the adapter actually detects.
+Hooks may later improve corroboration and refresh latency, with their own gate;
+they are not required for this implementation or cold-start discovery.
 
 ### Unsupported background contexts
 
-Dropping background support must not turn excluded live work into parked rows.
-Prove a bounded provider-native conflict guard for noninteractive registrations
-and processless continuation evidence. It only prevents false interactive
-classification; it does not project background phase, lifecycle or attachment.
-Conflicting saved UUIDs remain unknown/unsupported. If a conflicting record has
-no usable UUID, declare the resulting census limitation rather than assuming
-the rest of the catalog is safely parked.
+Removing background support must not silently classify known excluded work as
+parked. Use a bounded minimal provider-native conflict guard for noninteractive
+registrations and processless continuation evidence. Without a positive live
+interactive incarnation, an affected saved UUID stays unknown/unsupported
+rather than parked. A positive interactive incarnation still proves running;
+keep phase uncertain when mixed work evidence cannot be attributed safely.
+If malformed or unbound conflict evidence prevents a safe negative assertion,
+invalidate the affected negative scope explicitly.
 
-Existing retained job data is not deleted or stopped during observation. Remove
-the full job projection and terminal-job parked predicate once the narrower
-guard is proved. If the guard requires the existing full job classifier, return
-that design issue at the source gate instead of preserving it as compatibility.
-Saved user conversations remain discoverable regardless of their historical
-entry route; saved existence never proves an interactive runtime.
+The guard does not project background phase, reconstruct job lifecycle or
+provide attachment. Remove the full job projection and terminal-job parked
+predicate from the new adapter. Retained ordinary job data is neither deleted
+nor stopped during migration. Historical terminal job metadata alone is not a
+live conflict; guard current or unresolved potentially live work only.
+Saved user conversations remain discoverable;
+saved existence does not imply that their historical runtime route is supported.
+Prove the minimal guard before accepting the candidate; do not hide a full
+background compatibility implementation inside it.
 
-### Monitoring, age and freshness
+## Monitoring, age and freshness
 
-Keep `working`, `blocked`, `waiting` and unknown phase, with separately proved
-approval/question reasons. Unsupported dialogs retain running with unknown
-phase. A process liveness check or filesystem hint cannot renew old work-state
-evidence. Conversation activity remains a native conversation clock; entry,
-Resume, registration updates, title changes and collection do not advance age.
+Keep working, blocked, waiting and unknown phase, with typed approval/question
+reasons where proved. Unsupported dialogs preserve running with unknown phase.
+Incarnation liveness and filesystem hints cannot renew old work-state evidence.
+Conversation age follows native conversation activity; Resume, registration,
+rename, collection and delivery do not advance it.
 
-Parked assertions use the runtime census lease, independently of saved catalog
-metadata. Runtime refresh must update lifecycle for known saved UUIDs even when
-the slower history scan has not run. A failed/expired census invalidates its
-negative assertions. A service restart reconstructs state from native sources;
-it needs neither prior Observer receipts nor an attached client. History failure
-does not erase positive live evidence; missing positive saved identity prevents
-parked. Recovery must not restore an older parked sample over a newer running
-sample or refresh stale activity by implication.
+Negative lifecycle evidence has the short runtime lease, separate from saved
+catalog/title/activity leases. Runtime-only refresh must update lifecycle for
+known saved UUIDs without rerunning the whole history SDK scan. A cold start
+obtains positive saved identities and native runtime evidence afresh; no prior
+Observer state or client is required. History failure does not erase positive
+live evidence, and an expired negative sample cannot remain current parked.
+Never restore an older parked sample over a newer running one or renew a stale
+conversation clock through runtime recovery.
 
-## Contract and implementation changes
+The adapter owns the Claude predicate and a bounded private registration-scan
+sample. The engine owns provider-neutral ordering, reconciliation and leases.
+The service hosts these operations; neither service nor read client contains a
+second Claude classifier. Direct pull, cached pull and push use the same rule.
+Define how bounded known saved identities reach an adapter runtime refresh and
+how scoped negative evidence crosses back before implementing that interface;
+do not move the native predicate into engine code or pass raw native payloads.
 
-Preserve shared identity, runtime, phase, activity and uncertainty semantics.
-Do not add PID, worker, terminal or background-job fields to session rows.
-Replace the private Claude read profile with an interactive registration/census
-contract, separating live presence, phase, saved metadata and negative lifecycle
-capabilities. Required contracts select support; provider versions/hashes remain
-diagnostics and incarnation guards.
+## Contract changes and implementation ownership
 
-Propose explicit `interactive_sessions` runtime coverage for Claude. Current
-wire 4 only permits `daemon_threads` and `provider_sessions`, so this is a strict
-schema change. At the contract gate, review API 3 / snapshot-watch wire 5 /
-service protocol 3 together, including scope validation and lease semantics.
-Do not silently extend wire 4 or ship a converter. Codex predicates remain
-unchanged; both-host Codex reads must pass the new envelope conformance gate.
-The independently selected writer and its wire are outside this change.
+Preserve shared identity, running/parked/unknown, work phase, activity clocks and
+uncertainty. Add no public PID, worker, terminal, attachment or job fields.
+Replace the private Claude read profile with required interactive registration,
+incarnation, status, saved-identity and scoped negative-lifecycle contracts.
+Versions/hashes remain provenance and incarnation guards, not support allowlists.
+
+The preferred public representation retains API 2, snapshot/watch wire 4 and
+service protocol 2: Claude keeps `scope=provider_sessions`, reports runtime
+coverage as partial, and declares finite reasons/limitations for the interactive
+scope, registration assumption and unsupported background runtime. Partial
+coverage does not invalidate independently established row facts. Scan health
+and readiness for the scoped parked predicate are separate from all-context
+coverage; do not require `coverage=complete` to classify an otherwise qualified
+saved UUID.
+
+I1 must review and document these semantics and reason codes against strict
+validators/descriptors before implementation. Existing wire fields admit them,
+so an automatic API 3 / wire 5 / protocol 3 bump is not justified merely by
+private adapter cleanup. If that review finds a required public field, enum or
+incompatible shared semantic change, introduce a clean versioned contract there;
+do not silently extend wire 4 or add a legacy converter. The installed a8 contract
+and client handoff remain unchanged until a successor is independently accepted.
 
 | Area | Responsibility |
 | --- | --- |
-| `claude_metadata.py`, `native_contracts.py` | Bounded authenticated interactive census, native work-state predicates, minimal unsupported-context guard; remove background projection and stale version-gated declarations |
-| `claude_snapshot.py`, `claude_projection.py`, `claude_saved_identity.py`, `claude_history.py` | Exact saved/live identity join, lifecycle evidence for saved UUIDs, independent metadata failure/age handling and explicit scope |
-| `observation_model.py` | Remove unused attachment dimension and private serialization; preserve work/presence independence |
-| `observation_engine.py`, `observation_evidence.py`, adapter profiles | Reconcile leased native census evidence with saved identities, including runtime-only refresh and cold start; no Claude classifier in service/read clients |
-| Public schemas, validators, descriptors and read/service clients | Explicit scope and version rejection; one classification across direct pull, cached pull and pushed views |
-| `claude_hints.py`, service helpers | Native filesystem signals remain refresh hints; periodic reconciliation and expiry remain authoritative |
-| Independent evaluation/native scripts | Implement expected predicates independently before producer changes; explicit private Agent View on/off fixtures |
-
-Keep evidence production in the adapter and provider-neutral reconciliation in
-the engine. If whole-census evidence must cross the adapter/engine boundary,
-define a bounded private sample contract instead of passing raw provider data
-or introducing a service-side Claude classifier.
+| `claude_metadata.py`, `native_contracts.py` | Healthy bounded native scans; exact incarnation authentication; status predicates and minimal unsupported-context guard; remove background projection and version-based support declarations |
+| `claude_snapshot.py`, `claude_projection.py`, `claude_saved_identity.py`, `claude_history.py` | Exact saved/live join; parked under the declared assumption; independent history/age failures; honest coverage and finite reasons |
+| `observation_model.py` | Remove unused private attachment fields and serialization; preserve presence/work independence |
+| `observation_engine.py`, `observation_evidence.py`, adapter profiles | Bounded private scan evidence, runtime-only negative refresh, ordering, expiry and cold start; no Claude predicate in service/read clients |
+| Public descriptors, validators, CLI/service clients | Reviewed scope/limitations and consistent direct/cache/push conformance; version change only if required by I1 |
+| `claude_hints.py`, service helpers | Native signals remain refresh hints, with periodic reconciliation and expiry |
+| Independent evaluation/native scripts | Independent oracle first; scoped lifecycle expectations and explicit accepted limitation cases |
 
 ## Execution gates
 
 | Gate | Work | Acceptance |
 | --- | --- | --- |
-| I0: independent native source proof | Reinspect Snap; isolated Agent View on/off; registration/status/UUID/exit/completeness and background-conflict probes | Required interactive predicates and failure scope recorded independently; no ordinary provider settings or sessions changed |
-| I1: oracle and read contract | Update `scripts/evaluate-observation` independently; review explicit coverage, private census sample and versioned public descriptors | Oracle imports no Observer collector; strict conformance fixtures distinguish healthy empty census from unavailable/incomplete source |
-| I2: producer implementation | Simplify adapter/model, implement lifecycle/lease reconciliation, update CLI/service delivery | Meaningful source tests and `./scripts/check` pass; no attachment or client-inventory dependency; Codex semantics preserved |
-| I3: immutable artifact/native proof | Install an explicit candidate; ordinary Snap Claude and both-host Codex comparisons; isolated transitions and failures via direct/cache/push | Exact identities, runtime, phase and age agree within bracketed sampling limits; cold-start parked proof succeeds within declared scope |
-| I4: Observer operational selection | Scoped read/service selection after artifact acceptance; restart/failure/reconnect/rollback/reselection | Installed bytes and normal endpoints independently verified; writer remains separately selected |
-| I5: provider policy and handoff | Decide Agent View opt-out from I0/I3 evidence; prepare managed Snap settings separately, then validate fresh launches | Provider configuration gate has explicit launch-mode evidence; no forced restart of ordinary sessions; clients receive the accepted read contract |
+| I0: native source and scope | Existing on/off, hookless, normal exit, crash, Resume and registration-failure receipts; retain remaining duplicate/switch/background cases for candidate proof | Positive source facts established; exhaustive guarantee disproved; narrower registration assumption accepted by the user; no artifact/policy selection |
+| I1: independent oracle and contract | Update `scripts/evaluate-observation` before producer changes; review private scan samples, public limitations and lifecycle/lease semantics | Oracle imports no Observer collector; fixtures distinguish healthy scoped absence, dead/live duplicate records, detected faults and accepted invisible-runtime limitation |
+| I2: producer implementation | Simplify adapter/model; implement scoped lifecycle and leased reconciliation; update read CLI/service delivery | Meaningful source checks and `./scripts/check` pass; no client/attachment dependency; Codex unchanged |
+| I3: immutable artifact/native proof | Explicit candidate; ordinary Snap Claude and both-host Codex comparisons; isolated transitions/faults through direct/cache/push | Exact identity/state/age agree within bracketing limits; normal/crash parked and cold start pass within declared scope; accepted limitations remain visible |
+| I4: Observer operational selection | Scoped read/service selection after I3; restart/failure/reconnect/rollback/reselection | Installed bytes and normal endpoints verified independently; writer remains separately selected |
+| I5: provider policy and handoff | Prefer Agent View off for the interactive-only workflow if I3 preserves required evidence; prepare managed Snap settings separately and validate fresh launches | Separate configuration gate; no forced restart of ordinary sessions; clients receive the accepted artifact/contract and registration limitation |
 
-If I0 cannot prove exhaustive negative lifecycle, continue accepting independent
-running/phase/catalog improvements, but do not describe I3 as complete interactive
-discovery. Record the parked blocker and required provider capability. A long
-execution loop may investigate it autonomously within isolated fixtures; the
-plan does not authorize weakening its predicate.
+I1 is the next implementation checkpoint. Reuse native I0 facts rather than
+repeating the entire spike for every daily provider update. Additional cases
+establish the candidate's bounded behavior; they are not an attempt to prove
+away the already demonstrated missing-registration limitation. If a required
+normal-workflow predicate fails, report that specific capability gap and revise
+it before selection.
 
-The initial I0 proof encountered exactly this limit. Its receipts establish a
-usable unregistered interactive context in both Agent View modes, and the native
-JSON roster also misses it when enabled. Additional registration-completeness
-tests cannot turn that source into an exhaustive census without a new required
-provider capability or an explicitly reviewed narrower observation guarantee.
+Native isolation does not establish source/native success for every planned
+case. Same-process UUID switches, simultaneous duplicate live contexts and the
+minimal background-conflict guard remain unproved. Use isolated native cases
+where safe; hazardous PID/domain/read variants may use synthetic fixtures with
+that coverage stated. Unresolved predicates remain explicit at I3 rather than
+being inferred from a passing schema or another Observer view.
 
-Mode-off selection is based on registration, waiting/working, held approval and
-question, saved Resume, exact UUID and child classification proof. Native roster
-CLI availability is not a requirement. A settings edit only changes fresh
-launches; pre-existing workers may retain their earlier mode. Validate mixed
-incarnations by contract, not by assuming a global mode from settings. Agent View
-on can remain if off removes required evidence. Neither option introduces
-background-session support or terminal observation.
+Agent View opt-out changes fresh launches; older workers can retain their prior
+mode. Validate mixed incarnations by required native contracts. On may remain
+if off removes required evidence in a new context. Neither mode grants background
+support, passive roster-CLI use or terminal observation.
 
-## Validation matrix and completion
+## Validation and completion
 
-- Native isolated lifecycle: startup, New, exact saved Resume, waiting, working,
-  approval, question, normal `/exit`, abnormal process exit, same-process UUID
-  switch, duplicate UUID contexts and observer/service restart while parked.
-- Faults: native registration write failure, missing/unreadable/torn/oversized
-  census records, denied process reads, PID reuse/birth mismatch, foreign domain,
-  unknown kind/status, history failure, source expiry and recovery. Synthetic
-  cases cover hazardous process/identity variants without altering ordinary work.
-- Unsupported background conflict: registered background worker and processless
-  continuation cannot become interactive running or parked. Retained historical
-  metadata does not grant a supported background capability.
-- Metadata: exact titles/UUIDs, native child filtering, positive saved identity,
-  activity unchanged by Resume/rename/heartbeat, separate saved coverage limits.
-- Delivery: compare installed direct reads, cached pull and pushed full/resync
-  views with independent native evidence; validate lease expiry, collection
-  races, delayed history, runtime-only refresh and cold-start reconstruction.
-- Regression: ordinary Claude sessions on Snap and Codex on Snap/Starship, plus
-  dependency checks proving observation can run with all client inventories and
-  attachment services absent. Provider-native process authentication still works.
+- Lifecycle: startup/New, exact saved Resume, waiting/working, held approval and
+  question, normal `/exit`, crash/forced kill, stale-plus-live duplicate UUIDs,
+  conflicting live phases, same-process UUID switch and Observer restart parked.
+  Validate the candidate in isolated Agent View on/off launches before selecting
+  a mode-off policy; earlier native-only receipts do not accept the new artifact.
+- Detected faults: unreadable/torn/oversized registry, denied process reads,
+  PID reuse/birth mismatch, foreign domain, unknown kind/status, source bounds,
+  sampling races, lease expiry and recovery. No detected uncertainty becomes
+  parked; healthy positive sibling facts remain usable.
+- Accepted limitation: failed/lost native registration with a live saved UUID,
+  including readable-source recovery and cold start. Record the possible false
+  parked result explicitly, without claiming the adapter can detect hidden loss.
+- Unsupported-context guard: registered background work and processless pending
+  continuation cannot become supported interactive running or parked. Prove the
+  guard's bounds without retaining full job lifecycle compatibility.
+- Metadata: exact UUID/title, child filtering, positive saved identity, existing
+  SDK omissions, and conversation activity unchanged by Resume/rename/heartbeat.
+- Delivery: installed direct/cache/push compared with independent native evidence;
+  runtime-only refresh with delayed history, independent expiry, cold-start
+  reconstruction and retained-fact ordering. Push remains sampled delivery.
+- Regression: ordinary Claude on Snap and Codex on Snap/Starship; observation
+  succeeds with client inventories and attachment services absent. Preserve
+  ordinary settings/hooks/processes; isolate and clean up only owned fixtures.
 
-Record versions and topology as provenance, bounded UUID/state/time comparisons,
-finite reasons and coverage limits. Preserve ordinary settings/hooks/processes;
-isolate before launching native tests and clean up only owned fixtures. Retain
-no prompts, responses, credentials, tool payloads, raw native records or terminal
-captures in repository evidence. Another Observer result is not a native oracle.
+Record bounded UUID/state/time comparisons, finite reasons, provenance and limits.
+Keep prompts, responses, credentials, tool payloads, raw provider records and
+terminal captures out of repository evidence. Another Observer result is not
+an independent native oracle.
 
-Completion means clients can obtain the supported interactive catalog, current
-running/parked disposition and supported work phase from Observer alone, with
-honest scope/freshness, including after Observer restart. Background work,
-attachment/actions, networking, notifications and frontend migration retain
-their separate gates. Historical a8 evidence remains valid within its original
-scope and is not rewritten as acceptance of this plan.
+Completion means Observer alone supplies the supported interactive catalog,
+running/parked disposition and work phase with honest scope/freshness, including
+after its own restart, under the accepted registration assumption. Missing live
+registration, saved SDK coverage gaps and unsupported status variants remain
+declared limits. Background support, attachment/actions, networking, public
+notification events and frontend migration retain independent gates. Historical
+a8 receipts are not retroactively promoted to acceptance of this successor.

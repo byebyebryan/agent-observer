@@ -70,8 +70,11 @@ downstream clients retain their separate gates.
 
 The [interactive reconciliation plan](claude-interactive-observation-plan.md)
 supersedes this pass as the next execution track. It narrows supported runtime to
-interactive sessions, separates a complete native census from client inventory,
-and gates saved-session parked detection and Agent View opt-out independently.
+interactive sessions and uses native incarnation checks under the user's accepted
+registration assumption, without client inventory. Normal/crash parked and
+Observer cold start are targets; live missing registration can cause false parked
+and must remain an explicit partial-coverage limit. Implementation, artifact
+acceptance and Agent View opt-out remain separately gated.
 The accepted a8 terminal-job predicate is historical baseline evidence, not
 acceptance of the new scope or lifecycle rule. No background compatibility
 adapter or attachment dependency is required by the following target.

@@ -27,16 +27,21 @@ frontend implementation retain their own gates. API 2 stays unchanged unless
 a separately reviewed semantic change requires otherwise.
 
 The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
-defines I0–I5: independent Agent View on/off and native census proof; oracle and
-explicitly versioned scope review; interactive adapter/model cleanup; immutable
+defines I0–I5: native source/scope proof; independent oracle and contract review;
+interactive adapter/model cleanup; immutable
 direct/cache/push acceptance; scoped Observer operations; then a separate provider
-policy/handoff gate. Parked requires positive saved identity and a proved exhaustive
-native absence predicate. Client inventory/attachment and background runtime
-support are excluded. [I0 native validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
+policy/handoff gate. [I0 native validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 proves positive registration/phase/Resume with Agent View on/off, including
 hookless observation, but finds a live-session registration-failure counterexample
-to general parked inference. The negative lifecycle gate and subsequent
-implementation remain pending; a8 retains its original scope.
+to exhaustive parked inference. The user now accepts the narrower registration
+assumption: positive saved identity plus a healthy bounded native scan with no
+matching live incarnation or relevant unresolved conflict may become parked.
+Normal exit, crash and cold start are targets. Missing live registration can
+cause false parked classification, including after source recovery; coverage
+must remain partial with the limitation declared. Client inventory/attachment
+and background runtime support are excluded. I1 is next; implementation and
+artifact/policy selection remain pending. Prefer existing public wire fields
+unless contract review requires an incompatible change; a8 retains its scope.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
