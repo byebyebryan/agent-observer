@@ -191,11 +191,11 @@ class ObservationEvaluationTest(unittest.TestCase):
             with patch.object(evaluation, "worker_image", return_value={"provider": "claude",
                                                                        "version": "unknown", "sha256": "f" * 64}):
                 for changes, expected in (
-                    ({}, "blocked"), ({"kind": "bg"}, None),
+                    ({}, "blocked"), ({"kind": "bg"}, "unknown"),
                     ({"waitingFor": "input needed"}, "blocked"),
-                    ({"waitingFor": "dialog:settings"}, None),
-                    ({"waitingFor": "input needed", "kind": "bg"}, None),
-                    ({"waitingFor": "input needed", "jobId": "abcdef12"}, None),
+                    ({"waitingFor": "dialog:settings"}, "unknown"),
+                    ({"waitingFor": "input needed", "kind": "bg"}, "unknown"),
+                    ({"waitingFor": "input needed", "jobId": "abcdef12"}, "unknown"),
                     ({"status": "idle"}, "waiting"),
                 ):
                     registry.write_text(json.dumps({**record, **changes}))
@@ -218,8 +218,8 @@ class ObservationEvaluationTest(unittest.TestCase):
                 native = evaluation.claude_reference(home, {})
             self.assertEqual(len(native["workers"]), 2)
             self.assertTrue(native["rows"][SID]["ambiguousWorkers"])
-            self.assertIsNone(native["rows"][SID]["phase"])
-            self.assertIsNone(native["rows"][SID]["runtime"])
+            self.assertEqual(native["rows"][SID]["phase"], "unknown")
+            self.assertEqual(native["rows"][SID]["runtime"], "running")
             self.assertIn("duplicate_live_workers:" + SID, native["runtimeGaps"])
 
     def test_local_command_only_history_does_not_prove_conversation_kind_or_age(self):
@@ -245,6 +245,67 @@ class ObservationEvaluationTest(unittest.TestCase):
             rows, _, _ = evaluation.native_history(home)
             self.assertEqual(rows[SID]["kind"], "user")
             self.assertEqual(rows[SID]["activity"], 1791158400000)
+
+    def test_interactive_negative_reference_requires_healthy_scan_and_saved_identity(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            sessions = home / "sessions"
+            sessions.mkdir()
+            project = home / "projects" / "synthetic"
+            project.mkdir(parents=True)
+            (project / (SID + ".jsonl")).write_text(json.dumps({"type": "mode", "sessionId": SID}) + "\n")
+            reference = evaluation.claude_reference(home, {})
+            self.assertTrue(reference["negativeScanHealthy"])
+            self.assertEqual(reference["rows"][SID]["runtime"], "parked")
+            self.assertIsNone(reference["rows"][SID]["phase"])
+            (sessions / "12.json").write_text("invalid")
+            reference = evaluation.claude_reference(home, {})
+            self.assertFalse(reference["negativeScanHealthy"])
+            self.assertEqual(reference["rows"][SID]["runtime"], "unknown")
+            (sessions / "12.json").unlink()
+            sessions.rmdir()
+            self.assertEqual(evaluation.claude_reference(home, {})["rows"][SID]["runtime"], "unknown")
+
+    def test_dead_registration_and_pid_reuse_are_not_live_foreign_domain_is_unresolved(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            (home / "sessions").mkdir()
+            domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
+            history = {SID: {"title": None, "cwd": None, "activity": None, "kind": "unknown"}}
+            record = {"sessionId": SID, "pid": 123, "procStart": "456", "pidDomain": domain,
+                      "kind": "interactive", "jobId": None, "status": "idle", "statusUpdatedAt": 100}
+            path = home / "sessions/123.json"
+            for probe, extra, expected in ((FileNotFoundError(), {}, "parked"),
+                                           (("789", "S", 1), {}, "parked"),
+                                           (("456", "Z", 1), {}, "parked"),
+                                           (("456", "S", 1), {"pidDomain": "foreign"}, "unknown"),
+                                           (PermissionError(), {}, "unknown")):
+                with self.subTest(expected=expected, extra=extra):
+                    path.write_text(json.dumps({**record, **extra}))
+                    with (patch.object(evaluation, "native_history", return_value=(history, [], 0)),
+                          patch.object(evaluation, "birth", side_effect=probe if isinstance(probe, Exception) else None,
+                                       return_value=probe if isinstance(probe, tuple) else None)):
+                        self.assertEqual(evaluation.claude_reference(home, {})["rows"][SID]["runtime"], expected)
+
+    def test_background_guard_only_vetoes_negatives_and_does_not_project_jobs(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            home = Path(scratch)
+            (home / "sessions").mkdir()
+            job_dir = home / "jobs/abcdef12"
+            job_dir.mkdir(parents=True)
+            history = {SID: {"title": None, "cwd": None, "activity": None, "kind": "unknown"}}
+            zero = {"tasks": 0, "queued": 0, "drainableMonitors": 0}
+            for job, expected in (({"state": "done", "tempo": "idle", "inFlight": zero}, "parked"),
+                                  ({"state": "working", "tempo": "active", "inFlight": zero}, "unknown"),
+                                  ({"state": "done", "tempo": "idle", "inFlight": {**zero, "queued": 1}}, "unknown"),
+                                  ({"state": "stopped", "tempo": "idle"}, "unknown")):
+                (job_dir / "state.json").write_text(json.dumps({"sessionId": SID, **job}))
+                with patch.object(evaluation, "native_history", return_value=(history, [], 0)):
+                    row = evaluation.claude_reference(home, {})["rows"][SID]
+                self.assertEqual(row["runtime"], expected)
+                self.assertNotIn("nativeJobState", row)
+            with patch.object(evaluation, "native_history", return_value=({}, [], 0)):
+                self.assertEqual(evaluation.claude_reference(home, {})["rows"], {})
 
     def test_metadata_companion_preserves_conversation_in_either_path_order(self):
         for conversation_directory in ("a", "z"):
