@@ -46,5 +46,10 @@ does not establish native event replay, completion alerts or lossless delivery.
 - G3: independent native queries prove all missing clocks belong to parked
   children with no native turn, and all unknown kinds are older/non-running.
   [Investigation evidence](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-  distinguishes native omissions from producer defects. Source version a6
-  prepares the successor; installed/native and managed selection remain pending.
+  distinguishes native omissions from producer defects.
+- G4: a6 is separately installed and byte/API verified on both hosts. Eight
+  direct/cached native rounds and two independently bracketed pushed views have
+  zero issues. Both owned three-minute checks have zero reader errors/coalescing
+  gaps. The new Starship daemon is authenticated explicitly; source/normal
+  selection and provider configuration remain unchanged. Managed selection is
+  still pending.
