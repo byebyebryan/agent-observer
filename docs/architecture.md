@@ -7,7 +7,9 @@ signals, pushed read updates and user-facing alerts have separate ownership.
 Meshing and terminal/window matching remain external. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records source/artifact/native acceptance without changing API 2. Normal read
-CLI/service selection uses a5 after independent managed operational acceptance.
+CLI/service selection uses the [a6 gap-closure successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+after independent artifact/native and scoped operational acceptance. History
+and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16.
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)

@@ -4,9 +4,11 @@ Date: 2026-10-08. Prerelease producer contract. The Codex a3 packaged/native gat
 is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
 The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
-with the same API/wires. Normal read CLI and services select a5 after independent
-managed operational acceptance. The writer remains independently selected
-at a16. Claude follows the [reconciliation plan](codex-daemon-authority-plan.md).
+with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+removes redundant publication; normal read CLI/services select it after separate
+installed/native and scoped operational acceptance. The writer remains
+independently selected at a16. Claude follows the
+[reconciliation plan](codex-daemon-authority-plan.md).
 This document supersedes
 [API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
 
@@ -102,6 +104,11 @@ The service's fast cycle also samples saved-thread daemon state. Its slower cycl
 adds conversation clocks and workspace enrichment. A native status obtained by
 metadata work is deliberately accepted under the short runtime lease and sample
 ordering rules; metadata-only refresh cannot renew state.
+
+A history sample that also contains current runtime evidence updates both
+receipts before one published view. Their leases remain independent. View
+revision counts publications, not native events; genuine coalescing still
+requires gap/resync handling.
 
 Cached snapshot and watch share one published view. [Protocol 2](service-protocol-v2.md) preserves service
 identity, monotonic view revision, per-connection sequence, clock domain and

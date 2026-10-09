@@ -14,21 +14,23 @@ simplified.
 ## Status
 
 The current Codex observation checkpoint is
-[a5 core/artifact/native acceptance](docs/evidence/2026-10-08-codex-observation-completion/REPORT.md)
+[a6 gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 on Snap and Starship. The reusable core owns reconciliation and evidence;
 one passive adapter owns authoritative native reads; the local service owns
 helper lifetime and cached pull/push. Dependency checks enforce those boundaries.
-Normal read CLI and services select a5 after both-host managed recovery,
-rollback/reselection and 30-minute reader/resource acceptance. The normal writer
-retains a16 independently. Frontend migration,
+Normal read CLI and services select a6 after independent installed/native and
+scoped operational acceptance. a5's preceding 30-minute reader/resource proof
+retains its exact-artifact bounds; a6 adds focused successor reader checks.
+The normal writer retains a16 independently. Frontend migration,
 actions/attachment, Claude, networking and user-facing alerts remain separate.
 
 [API 2](docs/api-v2.md), snapshot/watch wire 4 and service protocol 2 are unchanged.
 The [client handoff](docs/api-v2-client-handoff.md) provides current direct/cached
-commands and consumer obligations. Independent installed reads match all 89 Snap
-and 353 Starship rows, including seven running contexts. Isolated working,
-approval/question, waiting, positive parked and outage/recovery cases agree across
-native/direct/cache/push. Age follows native conversation activity; uncertainty,
+commands and consumer obligations. a6 installed comparisons match all 89 Snap
+and 354 Starship rows, including eight running contexts at that checkpoint.
+The preceding a5 proof establishes isolated working, approval/question, waiting,
+positive parked and outage/recovery agreement across native/direct/cache/push.
+Age follows native conversation activity; uncertainty,
 coverage limits and stale evidence stay explicit.
 
 The [daemon authority reconciliation](docs/codex-daemon-authority-plan.md) and
@@ -201,7 +203,7 @@ cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
 The retained a16 [API v1 candidate](docs/api-v1.md) keeps its historical
-JSON/CLI and pure Python surface. Current a5 read clients use
+JSON/CLI and pure Python surface. Current a6 read clients use
 [API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
@@ -214,7 +216,7 @@ agent-observer snapshot --host-scope starship --provider codex
 
 Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
-roots can be supplied explicitly. The a5 Codex collector reads the existing
+roots can be supplied explicitly. The a6 Codex collector reads the existing
 owning daemon without private saved-store fallback. It never starts a missing
 daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
 for direct and cached commands against the accepted candidate and normal service.

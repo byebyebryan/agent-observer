@@ -51,5 +51,14 @@ does not establish native event replay, completion alerts or lossless delivery.
   direct/cached native rounds and two independently bracketed pushed views have
   zero issues. Both owned three-minute checks have zero reader errors/coalescing
   gaps. The new Starship daemon is authenticated explicitly; source/normal
-  selection and provider configuration remain unchanged. Managed selection is
-  still pending.
+  selection and provider configuration remain unchanged at that gate.
+- G5: both normal read/service selections now use a6 after upgrade, a5 rollback,
+  reselection, restart and forced-failure recovery. Eight ordinary direct/cached
+  native rounds and two pushed views have zero issues. Both existing units pass
+  three-minute reader checks with zero healthy-reader gaps/errors. The writer,
+  frontend, provider configuration and new-epoch daemon incarnations are preserved.
+- G6: current contract/handoff and archive-layout documentation are reconciled;
+  the final source check and scoped managed checks pass. The managed full check
+  retains its unrelated Rofi Tmux Plus archive-pin failure. Accepted changes are
+  committed locally; no push is performed. The report states remaining native
+  metadata and validation bounds.
