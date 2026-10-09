@@ -7,9 +7,9 @@ isolated test sessions establish controlled transitions and failure behavior.
 Both forms of evidence are useful, but their coverage differs.
 
 [API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
-prerelease read contracts. The [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+prerelease read contracts. The [a6 gap-closure report](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 records independent source/artifact/native and managed operational acceptance
-on Snap and Starship. Read/service commands select a5; the writer retains a16
+on Snap and Starship. Read/service commands select a6; the writer retains a16
 independently. A later receipt must record the exact selected artifact anew.
 Codex is the sole live adapter in this checkpoint. Claude has a separate future
 adapter/native gate; historical Claude receipts do not accept current support.
@@ -102,9 +102,10 @@ proved. Physical sleep/wake and post-TUI-closure lifetime remain deferred.
 Test the separate write client only when its behavior is in scope. New/Resume
 acceptance must independently verify the provider effect and exact resulting or
 requested identity; successful observation alone does not accept the action.
-The [current native acceptance report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
-records bounded Codex state/recovery cases; it does not replace a fresh ordinary
-check or accept a successor artifact automatically.
+The [a5 native state/recovery report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
+and [a6 successor comparisons](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+retain their own bounds. Neither replaces a fresh ordinary check or accepts a
+future artifact automatically.
 
 ## Review and delivery
 

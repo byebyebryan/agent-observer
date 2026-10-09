@@ -1,9 +1,10 @@
 # API 2 client handoff
 
 Date: 2026-10-08. The Codex observation core/read/service are accepted against
-[0.5.0a5](evidence/2026-10-08-codex-observation-completion/REPORT.md) on Snap and
-Starship. Normal read CLI links and user services select a5 after independent
-managed recovery, rollback/reselection and 30-minute reader/resource acceptance.
+[0.5.0a6](evidence/2026-10-08-codex-observation-gaps/REPORT.md) on Snap and
+Starship. Normal read CLI links and user services select a6 after independent
+installed/native, managed recovery, rollback/reselection and focused reader checks.
+The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
 select a consumer or authorize provider policy, frontend, terminal-runtime or
 networking changes.
@@ -12,7 +13,7 @@ networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a5.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a6.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -46,7 +47,7 @@ Both API descriptors operate without a provider or service.
 - Own user intent, terminal/TUI lifetime, tmux/Kitty placement, routing and viewer
   association in the client. Observation supplies no attachment or worker fields.
 
-Codex is the sole native adapter in a5. Explicit Claude collection/service/write
+Codex is the sole native adapter in a6. Explicit Claude collection/service/write
 selection returns `unsupported_provider`. Reserved Claude schema examples are
 contract fixtures, not native acceptance. Claude is the next producer checkpoint.
 
@@ -70,7 +71,7 @@ reads collect metadata anew and can take longer than cached reads.
 For explicit artifact checks, use its immutable prefix:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a5-9e116932e007b0bf
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a6-9240493982e041c8
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -118,7 +119,7 @@ ownership remains external; remote routing belongs to the owning host/client.
 
 The earlier [a4 writer acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 accepts initialized saved/live Resume, repeated native entry and equal-ID fork
-targeting. This a5 observation pass adds no writer capability or selection gate.
+targeting. This observation pass adds no writer capability or selection gate.
 Blank runtime-only Resume and distinct thread/tree-root TUI entry
 are not accepted; blank runtime-only Resume fails with
 `resume_saved_history_unproved` and distinct-ID entry fails with

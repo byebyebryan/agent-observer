@@ -10,8 +10,10 @@ The [architecture](architecture.md),
 
 The [observation boundary hardening](observation-boundaries.md) is implemented.
 The authorized [Codex completion loop](codex-observation-completion-plan.md)
-accepts the a5 source, installed artifact and native observation on both hosts;
-normal read CLI and services select a5 after independent operational acceptance.
+accepts the a5 source, installed artifact and native observation on both hosts.
+The following [gap-closure pass](codex-observation-gap-closure-plan.md) accepts
+a6's atomic publication and retirement-probe repair. Normal read CLI/services
+select a6 after its independent artifact/native and scoped operational gates.
 The writer retains a16 independently. Core/model/adapter/engine, service hosting,
 mesh and read-client ownership are enforced; provider wakeups/read push remain
 separate from alert policy. `ObservationEngine` owns common reconciliation and
@@ -109,7 +111,7 @@ explicitly. Tmux Plus work blocks Agent Plus implementation, not Observer delive
 
 The [API v1 client handoff](api-v1-client-handoff.md) retains its historical bounds.
 A2 remains a separately installed historical acceptance tuple. That pass selected
-a16/wire 3; current read/service links use a5/API 2. Plus retains its old frozen
+a16/wire 3; current read/service links use a6/API 2. Plus retains its old frozen
 reader. Client/cache migration has its own gate. The separate notification
 source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older

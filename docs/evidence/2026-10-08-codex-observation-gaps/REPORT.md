@@ -1,7 +1,7 @@
 # Codex observation gap closure
 
-Date: 2026-10-08. Source gap repairs and the separately installed a6
-artifact/native gate are accepted; managed operational selection is pending. The
+Date: 2026-10-08. Source gap repairs, the separately installed a6
+artifact/native gate and scoped managed operational selection are accepted. The
 [execution plan](../../codex-observation-gap-closure-plan.md) keeps those gates
 separate from consumers, actions, Claude and provider policy. API 2, read wire 4
 and service protocol 2 are unchanged.
@@ -61,7 +61,8 @@ Both hosts independently verify the core installation at
 `/home/bryan/.local/share/agent-observer/0.5.0a6-9240493982e041c8`:
 [Snap artifact](snap-artifact.json), [Starship artifact](starship-artifact.json).
 The immutable archive retains the wheel, manifest and passive verifier. No SDK
-or provider executable is bundled. Normal read/service selection still uses a5.
+or provider executable is bundled. Normal read/service selection now uses a6;
+the candidate gate below preceded that separate operational change.
 
 | Host | Direct / owned cached / pushed view | Rows | Running | Result |
 | --- | --- | --- | --- | --- |
@@ -103,10 +104,78 @@ candidate publishers exit and remove their sockets. An attempted late cached
 probe against the already-finished first candidate was unavailable by design;
 the fresh owned publisher supplies the accepted new-epoch comparisons.
 
-## Remaining gates
+## Scoped operational acceptance
 
-Perform the separate scoped read/service upgrade, recovery, a5 rollback/reselection
-and sustained readers. Retain ordinary providers, workspace and writer/frontend
-selections. The a5
+Managed commit `96deea5` selects the exact accepted a6 read/service artifact on
+both hosts. The separate a16 writer, frontend links, workspace configuration,
+provider settings and ordinary hooks retain their selections. Snap keeps its
+ordinary daemon incarnation; Starship keeps the new incarnation authenticated
+above. Only the Observer read/service links and unit bytes differ from their
+preservation bookends. Final units are active/enabled, source leases are current,
+and service IDs match the reader-check incarnations:
+[Snap final bookend](snap-selected-final-bookend.json),
+[Starship final bookend](starship-selected-final-bookend.json),
+[Snap exact live verification](snap-selected-final-verify.json),
+[Starship exact live verification](starship-selected-final-verify.json).
+
+Upgrade dry-runs and actual selections are accepted on
+[Snap](snap-upgrade.json) and [Starship](starship-upgrade.json). Initial preflight
+rejected a missing canonical archive `manifest.json` before either unit stopped.
+Copying the exact frozen manifest to that name satisfied the existing archive
+contract; the versioned repository filename alone is insufficient. The operations
+guide now states the required layout. No validation guard was relaxed.
+
+Both hosts restore all six original targets to a5 and reselect a6:
+[Snap rollback](snap-rollback.json) / [reselection](snap-reselected.json),
+[Starship rollback](starship-rollback.json) / [reselection](starship-reselected.json).
+Private same-user rollback snapshots remain at
+`~/.local/state/agent-observer/rollback/20261008-a6-snap` and
+`~/.local/state/agent-observer/rollback/20261008-a6-starship` on their hosts.
+[Snap recovery](snap-managed-recovery.json) and
+[Starship recovery](starship-managed-recovery.json) independently prove Observer
+restart, forced publisher failure, old-watch EOF, a new service identity and
+reconnection. Restart takes 1.19/1.53 seconds and forced-failure recovery
+6.19/6.60 seconds, respectively. These are Observer operations, not provider
+recovery claims.
+
+| Host | Normal selected direct / cached / pushed view | Rows | Running | Issues |
+| --- | --- | --- | --- | --- |
+| Snap | [direct](snap-selected-direct.json), [cached](snap-selected-cached.json), [push](snap-selected-push.json) | 89 | 2 | 0 |
+| Starship | [direct](starship-selected-direct.json), [cached](starship-selected-cached.json), [push](starship-selected-push.json) | 354 | 6 | 0 |
+
+Each direct/cached mode has two independently bracketed native rounds. Both
+pushed initial views are independently bracketed. Identity, runtime/phase,
+native conversation clocks/outcomes, saved identity, classification and read-client
+age/order/filter/show/doctor checks agree within those bounded observations.
+
+Existing managed units then pass three-minute checks with three healthy readers,
+100 cached CLI reads and an unread subscriber:
+[Snap](snap-selected-soak.json), [Starship](starship-selected-soak.json).
+Each Snap reader sees 24 frames / 9 views; each Starship reader sees 27 / 15.
+All have zero gaps and errors. Runtime/history leases stay current. Cached read
+p95 is 95.1/159.9 ms; peak aggregate RSS is 66.4/74.6 MiB, descriptor counts
+23/24 and owned process counts three. Measured publisher-cgroup CPU is
+1.65/4.96 percent of one core. These are absolute measurements of a short
+active workload, not matched incremental provider cost or a new long-duration
+resource acceptance. Genuine slow-reader coalescing still requires gap/resync.
+
+The final Observer source check passes 383 tests (one skip), 91 Markdown documents
+and schema/dependency checks. Scoped managed ownership/rollback self-tests and
+exact live verification pass on both hosts. The managed repository-wide check
+still stops at the inherited `Rofi Tmux Plus archive pin drifted` assertion;
+this Observer-only pass does not alter that consumer. Source and managed changes
+are committed locally; no push is performed. Starship's Observer checkout is
+unchanged; installed immutable artifacts and standalone harnesses supply its proof.
+
+## Remaining bounds
+
+The 21 old unknown native kinds remain explicit and visible; empty-turn parked
+children retain unknown activity clocks. Neither affects visible-user age in
+these inventories. The earlier helper boolean assertion cause remains unproved;
+only the reproduced exit/read races are fixed. Watch remains sampled current-view
+delivery with genuine gap/resync, without lossless event replay or alert authority.
+Claude, frontend migration, networking, attachment/actions, alerts, physical wake
+and post-TUI-closure lifetime remain separate work. The preceding a5
 [completion report](../2026-10-08-codex-observation-completion/REPORT.md) retains
-its historical exact-artifact evidence and thirty-minute acceptance bounds.
+its historical exact-artifact native state and thirty-minute acceptance bounds;
+those isolated state proofs were not rerun under a6.
