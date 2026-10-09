@@ -28,8 +28,7 @@ from .observation_model import bounded_native_title
 
 _SCOPE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,255}\Z", re.ASCII)
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
-# Separate native BG work/completion and held-approval cases passed; general
-# questions, worker requests, failure and cancellation have their own gates.
+# Interactive registry status only; background execution is unsupported.
 ACCEPTED_WORK_VALUES = frozenset({"working", "settled", "needs_input"})
 ACCEPTED_WAIT_REASONS = frozenset({"approval"})
 
@@ -138,8 +137,9 @@ def collect_claude(
             "versionEvidence": "verified_installed_executable_sha256",
             "binarySha256": artifact_identity.artifact.sha256,
             "bootId": boot_id,
-            "topology": "private_session_registry_and_job_store",
+            "topology": "private_interactive_registration",
         } if artifact_identity is not None else None
+        identities = saved_ids(config_home)
         native = snapshot(
             config_home,
             host_scope=host_scope,
@@ -147,6 +147,7 @@ def collect_claude(
             runtime_version=artifact_identity.artifact.version if artifact_identity is not None else "unknown",
             binary_sha256=artifact_identity.artifact.sha256 if artifact_identity is not None else None,
             image_cache=image_cache,
+            saved_session_ids=identities,
         )
         result["sessions"] = native["observations"]
         result["parkedSupported"] = native.get("parkedSupported") is True
@@ -158,9 +159,7 @@ def collect_claude(
             row["inventory"] = (
                 "live"
                 if row["presence"].get("value") == "present"
-                else "retained_job"
-                if row.get("job", {}).get("retained") is True
-                else "registry"
+                else "saved" if row.get("savedIdentity") else "registry"
             )
             if row["work"].get("value") not in ACCEPTED_WORK_VALUES | {"unknown"} or (
                 row["work"].get("value") == "needs_input"
@@ -206,7 +205,7 @@ def collect_claude(
                 result["runtime"] = None
                 result["errors"].append({"code": "installed_image_changed"})
         complete = native["supported"] and all(
-            native["coverage"][name] == "complete" for name in ("sessionRegistry", "jobStore")
+            native["coverage"][name] == "complete" for name in ("sessionRegistry", "backgroundGuard")
         )
         result["sourceHealth"] = (
             "current"
@@ -215,7 +214,7 @@ def collect_claude(
             if native["supported"]
             and any(
                 native["coverage"][name] in {"complete", "partial"}
-                for name in ("sessionRegistry", "jobStore")
+                for name in ("sessionRegistry", "backgroundGuard")
             )
             else "unavailable"
         )
@@ -226,7 +225,7 @@ def collect_claude(
         if result["sessions"]:
             result["sourceHealth"] = "stale"
             for row in result["sessions"]:
-                for dimension in ("work", "presence", "attachment", "runtimeDisposition"):
+                for dimension in ("work", "presence", "runtimeDisposition"):
                     evidence = row.get(dimension)
                     if isinstance(evidence, dict) and evidence.get("health") == "current":
                         if evidence.get("value") != "unknown":
@@ -235,10 +234,7 @@ def collect_claude(
 
     # Saved history has its own failure and coverage boundary. A missing SDK,
     # oversized history tree, or failed metadata scan must not stale live
-    # registry/job evidence above.
-    identities = saved_ids(config_home, {r["identity"]["nativeId"] for r in result["sessions"]})
-    for row in result["sessions"]:
-        row["savedIdentity"] = row["identity"]["nativeId"] in identities
+    # registration evidence above.
     if not include_history:
         history = {"rows": [], "coverage": {"complete": False, "reason": "not_observed"}, "errors": []}
     elif "namespace" in result:
@@ -316,6 +312,10 @@ def collect_claude(
             }
             if native is not None:
                 native["history"] = history_metadata
+                native["savedIdentity"] = True
+                if not native.get("cwd") and isinstance(history_row.get("cwd"), str):
+                    native["cwd"] = history_row["cwd"]
+                    native["cwdSource"] = "claude_history"
                 native["threadKind"] = history_row.get("kind", "unknown")
                 native["activity"] = history_row.get(
                     "activity", unavailable("activity_clock_unavailable")
@@ -352,18 +352,8 @@ def collect_claude(
                         "health": "unavailable",
                         "reason": "unobserved",
                     },
-                    "attachment": {
-                        "value": "unknown",
-                        "observedAt": None,
-                        "source": None,
-                        "health": "unsupported",
-                        "reason": "unsupported",
-                    },
-                    "nativeIds": {"sessionId": session_id, "jobId": None},
+                    "nativeIds": {"sessionId": session_id},
                     "title": title,
-                    "sessionKind": "unknown",
-                    "nativeStatus": {"value": "unknown", "observedAt": None},
-                    "job": None,
                     "waitReason": "unknown",
                     "cwd": cwd,
                     "cwdSource": "claude_history" if isinstance(cwd, str) else None,

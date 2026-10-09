@@ -15,7 +15,7 @@ def project_source(native):
     if health == "current" and errors:
         health = "partial"
     coverage = native.get("coverage", {})
-    components = [coverage.get(k) for k in ("sessionRegistry", "jobStore", "workerPresence")]
+    components = [coverage.get(k) for k in ("sessionRegistry", "backgroundGuard", "workerPresence")]
     complete = all(c == "complete" for c in components)
     raw_runtime = native.get("runtime")
     runtime = {k: raw_runtime.get(k) for k in (
@@ -29,9 +29,8 @@ def project_source(native):
         "discovery": None,
         "coverage": {
             "saved": _coverage(coverage.get("saved"), health),
-            "runtime": {"status": "complete" if complete else "partial" if any(
-                c in {"complete", "partial"} for c in components
-            ) else "unavailable", "reason": "native_registered_scope" if complete else "source_incomplete",
+            "runtime": {"status": "partial" if coverage.get("sessionRegistry") in {"complete", "partial"}
+                        else "unavailable", "reason": "interactive_registration_assumed" if complete else "source_incomplete",
                         "scope": "provider_sessions"},
         },
         "capabilities": {"phase": ["working", "blocked", "waiting"],
@@ -40,7 +39,8 @@ def project_source(native):
                          "activity": native.get("activitySupported") is True},
         "errors": errors,
         "limitations": ["one_configured_namespace", "private_required_contract",
-                        "saved_only_runtime_unproved", "unregistered_background_runtime_unproved",
+                        "interactive_runtime_only", "native_registration_assumed",
+                        "unregistered_interactive_runtime_unproved", "background_runtime_unsupported",
                         "generic_dialog_unproved", "saved_child_roster_provider_excluded"],
     }
     validate_shape(value, SOURCE)
@@ -56,10 +56,7 @@ def project_session(native, source):
     runtime = unknown("native_runtime_unproved", "unsupported")
     phase = unknown("runtime_unavailable", "unsupported")
     reasons = []
-    conflicts = {"job_session_conflict", "duplicate_session_job_pair", "invalid_job_reference"}
-    if conflicts.intersection(native.get("metadataIssues", [])):
-        runtime = unknown("identity_ambiguous", "ambiguous")
-    elif presence.get("value") == "present" and presence.get("health") == "current":
+    if presence.get("value") == "present" and presence.get("health") == "current":
         # A stable authenticated registration supplies the current native read,
         # including its status. Process liveness alone cannot refresh phase.
         runtime = fact({**presence, "value": "running"}, {"running": "running"}, sampled=True)
@@ -77,6 +74,9 @@ def project_session(native, source):
                 phase = unknown("unsupported_wait_reason", "unsupported")
     elif saved and (native.get("runtimeDisposition") or {}).get("value") == "parked":
         runtime = fact(native["runtimeDisposition"], {"parked": "parked"}, sampled=True)
+    elif (native.get("runtimeDisposition") or {}).get("value") == "unknown":
+        disposition = native["runtimeDisposition"]
+        runtime = unknown(disposition.get("reason", "native_runtime_unproved"), disposition.get("health", "unsupported"))
     if runtime["value"] == "parked":
         phase = None
     activity = copy.deepcopy(native.get("activity", unavailable("activity_source_unproved")))

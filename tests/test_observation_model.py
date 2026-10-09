@@ -15,16 +15,14 @@ class ObservationInvariantTest(unittest.TestCase):
     def setUp(self):
         self.identity = NativeIdentity("host-a", "codex", "namespace-a", "thread", "native-a")
 
-    def test_liveness_refresh_preserves_work_and_attachment_clocks(self):
+    def test_liveness_refresh_preserves_work_clock(self):
         work = Evidence("work", "working", 10, "synthetic", "current", "synthetic")
-        attachment = Evidence("attachment", "attached", 12, "synthetic", "current", "synthetic")
-        before = SessionObservation(self.identity, work=work, attachment=attachment)
+        before = SessionObservation(self.identity, work=work)
         after = before.refresh_presence(
             Evidence("presence", "present", 10000, "synthetic", "current", "synthetic")
         )
         self.assertEqual(after.work.observed_at, 10)
         self.assertIs(after.work, work)
-        self.assertIs(after.attachment, attachment)
         self.assertEqual(after.presence.observed_at, 10000)
 
     def test_observation_gap_exposes_unknown_and_retains_original_age(self):
@@ -35,13 +33,13 @@ class ObservationInvariantTest(unittest.TestCase):
         self.assertEqual(stale.metadata()["lastKnownValue"], "needs_input")
         self.assertEqual(stale.metadata()["value"], "unknown")
 
-    def test_worker_absence_does_not_end_work_or_establish_detachment(self):
+    def test_worker_absence_does_not_end_work(self):
         work = Evidence("work", "needs_input", 20, "synthetic", "current", "synthetic")
         row = SessionObservation(self.identity, work=work).refresh_presence(
             Evidence("presence", "absent", 21, "synthetic", "current", "synthetic")
         )
         self.assertEqual(row.work.effective_value, "needs_input")
-        self.assertEqual(row.attachment.effective_value, "unknown")
+        self.assertNotIn("attachment", row.metadata())
 
     def test_unavailable_evidence_never_becomes_idle(self):
         row = SessionObservation(self.identity)

@@ -92,32 +92,23 @@ class ClaudeHintsTest(unittest.TestCase):
         self.assertNotIn("private discarded detail", str(self.watcher.fingerprints))
         self.assertNotIn("Renamed", str(self.watcher.fingerprints))
 
-    def test_job_projection_ignores_nonzero_count_churn_but_preserves_pending_question_and_terminal_fields(self):
+    def test_job_guard_fingerprint_tracks_only_conflicts_not_background_phase(self):
         value = self.job()
         first = scheduling_projection("jobs", "12345678", value)
-        noisy = copy.deepcopy(value)
-        noisy["inFlight"]["tasks"] = 12
-        noisy["detail"] = "private discarded detail"
-        self.assertEqual(first, scheduling_projection("jobs", "12345678", noisy))
-        for changes in ({"inFlight": {"tasks": 0, "queued": 0, "drainableMonitors": 0}},
-                        {"tempo": "blocked", "block": {"questions": [{}]}},
-                        {"lastTerminalAt": "2026-10-07T00:00:01.000Z"},
-                        {"cwd": "/another"},
-                        {"state": "done", "tempo": "idle", "lastTerminalAt": "2026-10-07T00:00:02.000Z"}):
-            changed = copy.deepcopy(value)
-            changed.update(changes)
-            self.assertNotEqual(first, scheduling_projection("jobs", "12345678", changed))
+        for changes in ({"tempo": "blocked", "block": {"questions": [{}]}},
+                        {"lastTerminalAt": "2026-10-07T00:00:01.000Z"}, {"cwd": "/another"},
+                        {"inFlight": {"tasks": 12, "queued": 0, "drainableMonitors": 0}}):
+            self.assertEqual(first, scheduling_projection("jobs", "12345678", {**value, **changes}))
+        quiet = {**value, "state": "done", "tempo": "idle", "inFlight":
+                 {"tasks": 0, "queued": 0, "drainableMonitors": 0}}
+        self.assertNotEqual(first, scheduling_projection("jobs", "12345678", quiet))
+        self.assertEqual(first, scheduling_projection("jobs", "12345678", {**quiet, "inFlight": None}))
 
-    def test_failed_job_keeps_registry_terminal_clock_relation_and_unfamiliar_records_wake(self):
-        from agent_observer.claude_metadata import _job_record
-        registry = self.registry()
-        registry["jobId"] = "12345678"
-        job = self.job()
-        job.update(state="failed", tempo="idle", lastTerminalAt="2026-10-07T00:00:01.000Z")
-        linked = _job_record("12345678", job)
-        original = scheduling_projection("sessions", "123.json", registry, linked_job=linked)
+    def test_registry_fingerprint_has_no_job_projection_and_unfamiliar_records_wake(self):
+        registry = {**self.registry(), "jobId": "12345678"}
+        original = scheduling_projection("sessions", "123.json", registry)
         registry["statusUpdatedAt"] = 2000
-        self.assertNotEqual(original, scheduling_projection("sessions", "123.json", registry, linked_job=linked))
+        self.assertEqual(original, scheduling_projection("sessions", "123.json", registry))
         path = self.home / "sessions/123.json"
         for payload in ({}, {**self.registry(), "status": "new_phase"},
                         {**self.registry(), "kind": "daemon-worker"},
@@ -219,6 +210,9 @@ class ClaudeHintsTest(unittest.TestCase):
         with (project / "fixture.jsonl").open("w") as stream:
             stream.write("fixture\n")
             stream.flush()
+            self.assertEqual(self.events(), {"runtime", "history"})
+            stream.write("another event\n")
+            stream.flush()
             self.assertEqual(self.events(), {"history"})
         self.watcher.read()
 
@@ -257,7 +251,7 @@ class ClaudeHintsTest(unittest.TestCase):
                 stream.flush()
         self.assertFalse(self.events())
         (project / "primary.jsonl").write_text("bounded fixture\n")
-        self.assertEqual(self.events(), {"history"})
+        self.assertEqual(self.events(), {"runtime", "history"})
 
     def test_watch_limit_permission_and_symlink_failures_recover(self):
         with self.assertRaisesRegex(ValueError, "watch_limit"):

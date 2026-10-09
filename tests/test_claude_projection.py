@@ -24,7 +24,7 @@ def sample():
             "namespace": NAMESPACE, "host": {"authority": "fixture", "uid": 1000},
             "sourceHealth": "current", "runtime": None, "parkedSupported": True,
             "activitySupported": True, "errors": [],
-            "coverage": {"sessionRegistry": "complete", "jobStore": "complete",
+            "coverage": {"sessionRegistry": "complete", "backgroundGuard": "complete",
                          "workerPresence": "complete", "saved": {"complete": False, "reason": "metadata_scan"}},
             "sessions": [row]}
 
@@ -63,7 +63,7 @@ class ClaudeProjectionTest(unittest.TestCase):
         row = native["sessions"][0]
         row["presence"]["value"] = "absent"
         self.assertEqual(self.project(native)["sessions"][0]["runtime"]["value"], "unknown")
-        row["runtimeDisposition"] = {**row["presence"], "value": "parked", "source": "claude_job_store"}
+        row["runtimeDisposition"] = {**row["presence"], "value": "parked", "source": "claude_registry"}
         projected = self.project(native)["sessions"][0]
         self.assertEqual(projected["runtime"]["value"], "parked")
         self.assertIsNone(projected["phase"])
@@ -75,9 +75,10 @@ class ClaudeProjectionTest(unittest.TestCase):
     def test_failed_work_and_identity_conflicts_remain_explicit(self):
         native = sample()
         row = native["sessions"][0]
-        row["metadataIssues"] = ["job_session_conflict"]
+        row["presence"].update(value="unknown", health="ambiguous")
+        row["runtimeDisposition"] = {"value": "unknown", "reason": "native_incarnation_unproved", "health": "ambiguous"}
         self.assertEqual(self.project(native)["sessions"][0]["runtime"]["health"], "ambiguous")
-        row["metadataIssues"] = []
+        row["presence"].update(value="present", health="current")
         native["sessions"].append(copy.deepcopy(row))
         value = self.project(native)
         self.assertEqual(len(value["sessions"]), 1)
@@ -89,7 +90,7 @@ class ClaudeProjectionTest(unittest.TestCase):
         native["coverage"]["saved"] = {"complete": False, "reason": "source_failed"}
         value = self.project(native)
         self.assertEqual(value["sources"][0]["coverage"]["saved"]["status"], "unavailable")
-        self.assertEqual(value["sources"][0]["coverage"]["runtime"]["status"], "complete")
+        self.assertEqual(value["sources"][0]["coverage"]["runtime"]["status"], "partial")
         self.assertEqual(value["sessions"][0]["phase"]["value"], "working")
 
     def test_future_phase_clock_does_not_borrow_runtime_freshness(self):

@@ -41,7 +41,7 @@ class ClaudeCollectionTest(unittest.TestCase):
             "supported": True,
             "coverage": {
                 "sessionRegistry": "complete",
-                "jobStore": "partial" if partial else "complete",
+                "backgroundGuard": "partial" if partial else "complete",
                 "workerPresence": "complete",
                 "attachment": "unsupported",
             },
@@ -121,7 +121,7 @@ class ClaudeCollectionTest(unittest.TestCase):
             }
         ]
         unavailable = {"supported": False, "observations": [], "limitations": [],
-                       "coverage": {"sessionRegistry": "unavailable", "jobStore": "unavailable"},
+                       "coverage": {"sessionRegistry": "unavailable", "backgroundGuard": "unavailable"},
                        "errors": [{"code": "session_registry_unavailable"}]}
         with patch("agent_observer.claude_snapshot.snapshot", return_value=unavailable) as native:
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
@@ -190,7 +190,7 @@ class ClaudeCollectionTest(unittest.TestCase):
             value = collect_claude(self.config, host_scope="snap", executable=self.binary)
         self.assertEqual(value["sourceHealth"], "partial")
         self.assertEqual(value["sessions"][0]["work"]["value"], "working")
-        self.assertEqual(value["coverage"]["jobStore"], "partial")
+        self.assertEqual(value["coverage"]["backgroundGuard"], "partial")
 
     def test_schema_failure_mapping_cannot_bypass_native_proof_gate(self):
         native = self.native()
@@ -278,15 +278,14 @@ class ClaudeCollectionTest(unittest.TestCase):
 
         saved = rows[saved_id]
         self.assertEqual(saved["inventory"], "saved")
-        self.assertEqual(saved["nativeIds"], {"sessionId": saved_id, "jobId": None})
-        self.assertIsNone(saved["job"])
-        self.assertEqual(saved["sessionKind"], "unknown")
+        self.assertEqual(saved["nativeIds"], {"sessionId": saved_id})
+        self.assertNotIn("job", saved)
         self.assertEqual(saved["title"], "Claude " + saved_id)
         self.assertEqual(saved["cwd"], "/saved/path ")
         self.assertEqual(saved["cwdSource"], "claude_history")
         self.assertEqual(saved["work"]["value"], "unknown")
         self.assertEqual(saved["presence"]["value"], "unknown")
-        self.assertEqual(saved["attachment"]["health"], "unsupported")
+        self.assertNotIn("attachment", saved)
         self.assertIsNone(saved["presence"]["observedAt"])
         self.assertEqual(value["sourceHealth"], "current")
 

@@ -1,13 +1,11 @@
-"""Version-gated, read-only projection of Claude 2.1.287 private metadata.
+"""Passive interactive registrations and scoped lifecycle; no provider actions.
 
-This is a provisional spike source. It reads only bounded session-registry and
-job-state JSON files. It never invokes Claude, its roster command, a socket, or
-any provider action. The on-disk schema is private and is not a stable API.
+Native job metadata is a negative conflict guard only. Private required
+contracts select support; executable versions/hashes are diagnostic identity.
 """
 
 from __future__ import annotations
 
-import calendar
 import errno
 import os
 import re
@@ -15,12 +13,10 @@ import stat
 import sys
 import time
 import unicodedata
-from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Any
 
 from .bounded_json import WireError, decode_document
-from .native_artifacts import CLAUDE, inspect_process
+from .native_artifacts import inspect_process
 from .native_contracts import CLAUDE_READ, claude_registry_capabilities
 from .observation_model import (
     Evidence,
@@ -29,27 +25,15 @@ from .observation_model import (
     bounded_native_title,
 )
 
-SUPPORTED_VERSION = CLAUDE.version
-SUPPORTED_SHA256 = CLAUDE.sha256
-SUPPORTED_BINARY_PATH = CLAUDE.path
-
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _PID_NAME = re.compile(r"([1-9][0-9]{0,9})\.json\Z", re.ASCII)
-_PID = re.compile(r"[1-9][0-9]{0,9}\Z", re.ASCII)
 _PROC_START = re.compile(r"[0-9]{1,20}\Z", re.ASCII)
 _JOB_ID = re.compile(r"[a-f0-9]{8}\Z", re.ASCII)
 _SHA256 = re.compile(r"[a-f0-9]{64}\Z", re.ASCII)
 _MACHINE_ID = re.compile(r"[a-fA-F0-9]{32}\Z", re.ASCII)
 _PID_NAMESPACE = re.compile(r"pid:\[[0-9]{1,20}\]\Z", re.ASCII)
-_ISO_UTC_MILLIS = re.compile(
-    r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z\Z",
-    re.ASCII,
-)
-
 _SESSION_KINDS = frozenset({"interactive", "bg", "daemon", "daemon-worker"})
 _SESSION_STATUSES = frozenset({"busy", "shell", "idle", "waiting"})
-_JOB_STATES = frozenset({"working", "done", "failed", "stopped"})
-_JOB_TEMPOS = frozenset({"active", "idle", "blocked"})
 _WAIT_REASON_MAP = {
     "input needed": "user_input",
     "permission prompt": "approval",
@@ -62,27 +46,11 @@ _MAX_REGISTRY_ROWS = 256
 _MAX_REGISTRY_FILE_BYTES = 256 * 1024
 _MAX_REGISTRY_TOTAL_BYTES = 4 * 1024 * 1024
 _MAX_JOB_ROWS = 128
-_MAX_JOB_FILE_BYTES = 8 * 1024 * 1024
+_MAX_JOB_FILE_BYTES = 4 * 1024 * 1024
 _MAX_JOB_TOTAL_BYTES = 24 * 1024 * 1024
 _MAX_DIRECTORY_ENTRIES = 4096
 _MAX_ERRORS = 128
 _MAX_TIME_MS = 4_000_000_000_000
-
-
-@dataclass(frozen=True)
-class _Job:
-    job_id: str
-    session_id: str | None
-    state: str
-    tempo: str
-    terminal_at: int | None
-    cwd: str | None = None
-    issues: tuple[str, ...] = ()
-    title: str | None = field(default=None, compare=False)
-    in_flight: tuple[int, int, int] | None = None
-    last_terminal_at: int | None = None
-    question_wait: bool = False
-    in_flight_invalid: bool = False
 
 
 class _ReadFailure(Exception):
@@ -159,7 +127,7 @@ def _linux_proc_start_token(pid: int) -> tuple[str | None, str]:
     token = fields_after_comm[19]
     if not _PROC_START.fullmatch(token):
         return None, "malformed"
-    return token, "present"
+    return token, "absent" if fields_after_comm[0] in {"Z", "X"} else "present"
 
 
 def _linux_process_uses_supported_binary(pid: int, cache=None) -> tuple[bool | None, str]:
@@ -175,24 +143,14 @@ def _linux_process_uses_supported_binary(pid: int, cache=None) -> tuple[bool | N
     return True, "matched"
 
 
-def _phase_capabilities(record, presence, cache):
-    """Match required registry semantics after verifying the same worker birth."""
-    if presence.effective_value != "present":
-        return []
-    try:
-        inspect_process(record["pid"], "claude", cache=cache)
-        start, state = _linux_proc_start_token(record["pid"])
-        if state != "present" or start != record["procStart"]:
-            return []
-        return claude_registry_capabilities(record)
-    except (OSError, ValueError):
-        return []
-
-
 def _open_directory_at(parent_fd: int, name: str) -> int:
     flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
     flags |= getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
-    return os.open(name, flags, dir_fd=parent_fd)
+    fd = os.open(name, flags, dir_fd=parent_fd)
+    if os.fstat(fd).st_uid != os.geteuid():
+        os.close(fd)
+        raise OSError("directory_ownership_mismatch")
+    return fd
 
 
 def _directory_names(directory_fd: int) -> tuple[list[str], bool]:
@@ -223,7 +181,7 @@ def _read_json_at(directory_fd: int, name: str, limit: int) -> tuple[Any, int]:
         raise _ReadFailure("file_unavailable") from exc
     try:
         before = os.fstat(fd)
-        if not stat.S_ISREG(before.st_mode):
+        if not stat.S_ISREG(before.st_mode) or before.st_uid != os.geteuid():
             raise _ReadFailure("not_regular_file")
         if before.st_size < 0 or before.st_size > limit:
             raise _ReadFailure("byte_limit")
@@ -244,6 +202,7 @@ def _read_json_at(directory_fd: int, name: str, limit: int) -> tuple[Any, int]:
             or before.st_mtime_ns != after.st_mtime_ns
             or before.st_ctime_ns != after.st_ctime_ns
             or before.st_ino != after.st_ino
+            or (before.st_dev, before.st_ino) != (lambda v: (v.st_dev, v.st_ino))(os.stat(name, dir_fd=directory_fd, follow_symlinks=False))
         ):
             raise _ReadFailure("torn_or_oversized_file")
     finally:
@@ -267,6 +226,7 @@ def _cwd(value: object) -> str | None:
         and 0 < len(value) <= 4096
         and value.startswith("/")
         and not value.startswith("//")
+        and ".." not in value.split("/")
         and not any(unicodedata.category(c).startswith("C") for c in value)
     ):
         return value
@@ -290,76 +250,6 @@ def _bounded_time(value: object) -> int | None:
     if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= _MAX_TIME_MS:
         return None
     return value
-
-
-def _terminal_time(value: object) -> int | None:
-    """Parse the installed writer's Date.toISOString() millisecond value."""
-    if not isinstance(value, str) or not _ISO_UTC_MILLIS.fullmatch(value):
-        return None
-    try:
-        parsed = datetime.fromisoformat(value[:-1] + "+00:00")
-        millis = calendar.timegm(parsed.timetuple()) * 1000 + parsed.microsecond // 1000
-    except (OverflowError, ValueError):
-        return None
-    return millis if 0 <= millis <= _MAX_TIME_MS else None
-
-
-def _job_record(job_id: str, payload: object) -> _Job:
-    if not isinstance(payload, dict):
-        raise _ReadFailure("invalid_job_record")
-    session_id = _uuid(payload.get("sessionId"))
-    state_value = payload.get("state")
-    state = (
-        state_value if isinstance(state_value, str) and state_value in _JOB_STATES else "unknown"
-    )
-    tempo_value = payload.get("tempo")
-    tempo = (
-        tempo_value if isinstance(tempo_value, str) and tempo_value in _JOB_TEMPOS else "unknown"
-    )
-    terminal_at = None
-    if state in {"done", "failed", "stopped"}:
-        terminal_at = _terminal_time(payload.get("lastTerminalAt"))
-        if terminal_at is None:
-            terminal_at = _terminal_time(payload.get("firstTerminalAt"))
-    issues = []
-    if session_id is None:
-        issues.append("job_session_id_unavailable")
-    if state == "unknown":
-        issues.append(
-            "native_blocked_phase_unproved" if state_value == "blocked" else "unknown_job_state"
-        )
-    if tempo == "unknown":
-        issues.append("unknown_job_tempo")
-    if state in {"done", "failed", "stopped"} and terminal_at is None:
-        issues.append("terminal_clock_unavailable")
-    return _Job(
-        job_id,
-        session_id,
-        state,
-        tempo,
-        terminal_at,
-        _cwd(payload.get("cwd")),
-        tuple(issues),
-        _user_title(payload),
-        _in_flight(payload.get("inFlight")),
-        _terminal_time(payload.get("lastTerminalAt")),
-        _question_wait(payload.get("block")),
-        payload.get("inFlight") is not None and _in_flight(payload.get("inFlight")) is None,
-    )
-
-
-def _question_wait(value):
-    if not isinstance(value, dict):
-        return False
-    questions = value.get("questions")
-    return isinstance(questions, list) and 1 <= len(questions) <= 32 and all(isinstance(q, dict) for q in questions)
-
-
-def _in_flight(value):
-    if not isinstance(value, dict):
-        return None
-    counts = tuple(value.get(k) for k in ("tasks", "queued", "drainableMonitors"))
-    return counts if all(type(n) is int and 0 <= n <= 100000 for n in counts) else None
 
 
 def _session_record(filename: str, payload: object) -> dict[str, Any]:
@@ -453,18 +343,7 @@ def _presence(record: dict[str, Any], pid_domain: str | None, observed_at: int, 
             "current",
             "native_snapshot",
         )
-    image_matches, image_state = _linux_process_uses_supported_binary(record["pid"], image_cache)
-    if image_state == "process_unavailable":
-        return Evidence(
-            "presence",
-            "absent",
-            observed_at,
-            "claude_registry",
-            "current",
-            "native_snapshot",
-        )
-    if image_matches is None:
-        return Evidence("presence", health="unavailable", reason="source_unavailable")
+    image_matches, _ = _linux_process_uses_supported_binary(record["pid"], image_cache)
     # Bind the executable check to the same process instance. The PID could
     # exit and be reused after the first /proc stat read but before /proc/PID/exe.
     final_start, final_state = _linux_proc_start_token(record["pid"])
@@ -491,7 +370,8 @@ def _presence(record: dict[str, Any], pid_domain: str | None, observed_at: int, 
     if not image_matches:
         # An extant birth with a different image can be an older upgraded
         # runtime or an exec transition. Unsupported image is not worker exit.
-        return Evidence("presence", health="unsupported", reason="unsupported")
+        return Evidence("presence", health="unavailable" if image_matches is None else "unsupported",
+                        reason="source_unavailable" if image_matches is None else "unsupported")
     return Evidence(
         "presence",
         "present",
@@ -513,676 +393,253 @@ def _wait_reason(value: object) -> str:
     return "unknown"
 
 
-def _status_work(
-    record: dict[str, Any], *, job: _Job | None, presence: Evidence
-) -> tuple[Evidence, str]:
-    status = record["status"]
+
+def _status_work(record, presence, observed_at):
     clock = record["statusUpdatedAt"]
-    if status not in _SESSION_STATUSES or clock is None:
-        return Evidence("work"), "unknown"
     if presence.effective_value != "present":
         return Evidence("work"), "unknown"
-    if "invalid_job_reference" in record["issues"]:
-        return Evidence("work", health="ambiguous", reason="identity_ambiguous"), "unknown"
-    if job is not None:
-        if job.state == "unknown" or job.tempo == "unknown":
-            return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
-        if job.state in {"done", "failed", "stopped"}:
-            return Evidence("work", health="ambiguous", reason="native_state_conflict"), "unknown"
-        if status == "idle":
-            # Native background roster idle is activity/status, not job completion.
-            return Evidence("work"), "unknown"
-        if job.state == "working":
-            if status == "waiting" and job.tempo in {"active", "blocked"}:
-                return (
-                    Evidence(
-                        "work",
-                        "needs_input",
-                        clock,
-                        "claude_registry",
-                        "current",
-                        "native_snapshot",
-                    ),
-                    "needs_input",
-                )
-            if status in {"busy", "shell"} and job.tempo == "active":
-                return (
-                    Evidence(
-                        "work",
-                        "working",
-                        clock,
-                        "claude_registry",
-                        "current",
-                        "native_snapshot",
-                    ),
-                    "working",
-                )
-            return Evidence("work", health="ambiguous", reason="native_state_conflict"), "unknown"
+    if clock is None or clock > observed_at:
         return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
-    elif record["jobId"] is not None or record["kind"] != "interactive":
-        return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
+    status, wait = record["status"], "unknown"
     if status in {"busy", "shell"}:
         value = "working"
-    elif status == "waiting":
-        value = "needs_input"
-    else:
+    elif status == "idle":
         value = "settled"
-    work = Evidence("work", value, clock, "claude_registry", "current", "native_snapshot")
-    return work, value
-
-
-def _job_work(job: _Job, *, conflicted: bool) -> Evidence:
-    if conflicted:
-        return Evidence("work", health="ambiguous", reason="identity_ambiguous")
-    if job.state == "unknown" or job.tempo == "unknown":
-        return Evidence("work", health="unsupported", reason="unsupported")
-    if job.state in {"done", "failed", "stopped"}:
-        if job.tempo == "active":
-            return Evidence("work", health="ambiguous", reason="identity_ambiguous")
-        if job.terminal_at is None:
-            return Evidence("work", health="unavailable", reason="unobserved")
-        value = {"done": "settled", "failed": "error", "stopped": "interrupted"}[job.state]
-        return Evidence(
-            "work",
-            value,
-            job.terminal_at,
-            "claude_job_store",
-            "current",
-            "native_snapshot",
-        )
-    return Evidence("work")
-
-
-def _observation(
-    *,
-    session_id: str,
-    host_scope: str,
-    namespace: str,
-    registry: dict[str, Any] | None,
-    job: _Job | None,
-    pid_domain: str | None,
-    observed_at: int,
-    job_store_complete: bool,
-    conflicted: bool = False,
-    issues: tuple[str, ...] = (),
-    image_cache=None,
-) -> dict[str, Any]:
-    identity = NativeIdentity(host_scope, "claude", namespace, "session", session_id)
-    attachment = Evidence("attachment", health="unsupported", reason="unsupported")
-    metadata_issues = list(issues)
-    phase_capabilities = []
-    if job is not None:
-        metadata_issues.extend(job.issues)
-    if registry is not None:
-        metadata_issues.extend(registry["issues"])
-
-    if registry is None:
-        presence = Evidence("presence")
-        work = _job_work(job, conflicted=conflicted) if job is not None else Evidence("work")
-        native_status = {"value": "unknown", "observedAt": None}
-        session_kind = "unknown"
-        linked_job_id = job.job_id if job is not None else None
+    elif status == "waiting" and (record["waitReason"] == "approval" or record["questionWait"]):
+        value = "needs_input"
+        wait = "question" if record["questionWait"] else "approval"
     else:
-        presence = _presence(registry, pid_domain, observed_at, image_cache)
-        phase_capabilities = _phase_capabilities(registry, presence, image_cache)
-        session_kind = registry["kind"]
-        native_status = {
-            "value": registry["status"],
-            "observedAt": registry["statusUpdatedAt"],
-        }
-        linked_job_id = registry["jobId"]
-        if conflicted:
-            work = Evidence("work", health="ambiguous", reason="identity_ambiguous")
-        elif job is not None and job.job_id != linked_job_id:
-            work = Evidence("work", health="ambiguous", reason="identity_ambiguous")
-            metadata_issues.append("job_session_conflict")
-        elif "registry_phase" in phase_capabilities and registry["statusUpdatedAt"] is not None and (
-            job is None and linked_job_id is None and registry["kind"] == "interactive"
-            or job is not None and job.state in {"working", "done"}
-        ):
-            # Current-image registry activity overrides an older retained turn.
-            # Idle alone cannot settle queued or background work.
-            status = registry["status"]
-            if status in {"busy", "shell", "waiting"}:
-                work = Evidence("work", "needs_input" if status == "waiting" else "working",
-                                registry["statusUpdatedAt"], "claude_registry", "current", "native_snapshot")
-            elif job is None and "interactive_readiness" in phase_capabilities:
-                work = Evidence("work", "settled", registry["statusUpdatedAt"],
-                                "claude_registry", "current", "native_snapshot")
-            elif (job is not None and job.state == "done" and job.tempo == "idle"
-                  and job.in_flight == (0, 0, 0) and job.last_terminal_at is not None):
-                work = Evidence("work", "settled", job.last_terminal_at,
-                                "claude_job_store", "current", "native_snapshot")
-            elif job is not None and job.in_flight is not None and any(job.in_flight):
-                work = Evidence("work", health="unsupported", reason="native_pending_work")
-            else:
-                work = Evidence("work", health="unsupported", reason="native_readiness_unproved")
-        elif job is not None and job.state in {"done", "failed", "stopped"}:
-            if (
-                registry["status"] in {"busy", "shell", "waiting"}
-                and job.terminal_at is not None
-                and registry["statusUpdatedAt"] is not None
-                and registry["statusUpdatedAt"] > job.terminal_at
-            ):
-                work = Evidence("work", health="ambiguous", reason="identity_ambiguous")
-                metadata_issues.append("status_after_terminal_clock")
-            else:
-                work = _job_work(job, conflicted=False)
-        else:
-            work, _ = _status_work(registry, job=job, presence=presence)
-
-    if linked_job_id is None:
-        retained: bool | None = False if job_store_complete else None
-    else:
-        retained = job is not None and job.job_id == linked_job_id
-        if not retained and not job_store_complete:
-            retained = None
-    wait_reason = registry["waitReason"] if registry is not None else "unknown"
-    if (registry is not None and registry.get("questionWait")
-            and job is not None and job.state == "working" and job.tempo == "blocked"
-            and job.question_wait and "job_question" in phase_capabilities):
-        wait_reason = "question"
-    elif (registry is not None and registry.get("questionWait")
-          and registry["kind"] == "interactive" and linked_job_id is None and job is None
-          and "foreground_question" in phase_capabilities):
-        wait_reason = "question"
-    title = registry["title"] if registry is not None else None
-    if (
-        title is None
-        and job is not None
-        and job.session_id == session_id
-        and job.job_id == linked_job_id
-        and not conflicted
-    ):
-        title = job.title
-    item = SessionObservation(identity, work, presence, attachment).metadata()
-    item.update(
-        {
-            "nativeIds": {"sessionId": session_id, "jobId": linked_job_id},
-            "title": bounded_native_title(title, "Claude " + session_id),
-            "sessionKind": session_kind,
-            "nativeStatus": native_status,
-            "job": {
-                "id": linked_job_id,
-                "retained": retained,
-                "state": job.state
-                if job is not None and job.job_id == linked_job_id
-                else "unknown",
-                "tempo": job.tempo
-                if job is not None and job.job_id == linked_job_id
-                else "unknown",
-                "terminalObservedAt": (
-                    job.terminal_at if job is not None and job.job_id == linked_job_id else None
-                ),
-            },
-            "waitReason": wait_reason,
-            "cwd": registry["cwd"]
-            if registry is not None
-            else job.cwd
-            if job is not None
-            else None,
-            "cwdSource": "claude_registry"
-            if registry is not None and registry["cwd"] is not None
-            else "claude_job_store"
-            if registry is None and job is not None and job.cwd is not None
-            else None,
-            "metadataIssues": list(dict.fromkeys(metadata_issues)),
-            "phaseCapabilities": phase_capabilities,
-        }
-    )
-    return item
+        return Evidence("work", health="unsupported", reason="unsupported"), "unknown"
+    return Evidence("work", value, clock, "claude_registry", "current", "native_snapshot"), wait
 
 
-def _error(errors: list[dict[str, str]], code: str, *, job_id: str | None = None) -> None:
-    if len(errors) >= _MAX_ERRORS:
-        return
+def _stamp(info):
+    return info.st_dev, info.st_ino
+
+
+def _error(errors, code):
     item = {"code": code}
-    if job_id is not None and _JOB_ID.fullmatch(job_id):
-        item["jobId"] = job_id
-    errors.append(item)
+    if len(errors) < _MAX_ERRORS and item not in errors:
+        errors.append(item)
 
 
-def snapshot(
-    config_root: str | os.PathLike[str],
-    *,
-    host_scope: str,
-    namespace: str,
-    runtime_version: str,
-    binary_sha256: str | None,
-    image_cache=None,
-) -> dict[str, Any]:
-    """Read an allowlisted Claude metadata snapshot from an explicit config root.
+def _background_guard(root_fd):
+    """UUID conflicts and a final bracket check, never job observations."""
+    try:
+        fd = _open_directory_at(root_fd, "jobs")
+    except FileNotFoundError:
+        def unchanged():
+            try:
+                os.stat("jobs", dir_fd=root_fd, follow_symlinks=False)
+            except FileNotFoundError:
+                return True
+            return False
+        return set(), unchanged, []
+    conflicts, records, job_fds = set(), [], []
+    try:
+        stamp = _stamp(os.fstat(fd))
+        names, capped = _directory_names(fd)
+        ids = sorted(name for name in names if _JOB_ID.fullmatch(name))
+        if capped or len(ids) > _MAX_JOB_ROWS:
+            raise _ReadFailure("background_guard_limit")
+        total = 0
+        for jid in ids:
+            job_fd = _open_directory_at(fd, jid)
+            job_fds.append(job_fd)
+            job, size = _read_json_at(job_fd, "state.json", _MAX_JOB_FILE_BYTES)
+            total += size
+            if total > _MAX_JOB_TOTAL_BYTES:
+                raise _ReadFailure("background_guard_byte_limit")
+            if not isinstance(job, dict) or _uuid(job.get("sessionId")) is None:
+                raise _ReadFailure("background_guard_identity_unavailable")
+            fields = {key: job.get(key) for key in ("sessionId", "state", "tempo", "inFlight")}
+            counts = fields["inFlight"]
+            quiet = (fields["state"] in {"done", "failed", "stopped"} and fields["tempo"] == "idle"
+                     and isinstance(counts, dict) and all(type(counts.get(k)) is int and counts[k] == 0
+                                                         for k in ("tasks", "queued", "drainableMonitors")))
+            if not quiet:
+                conflicts.add(_uuid(fields["sessionId"]))
+            records.append((jid, job_fd, _stamp(os.fstat(job_fd)), fields))
 
-    No environment variable or default home is consulted. The caller must pass
-    the exact disposable or otherwise authorized config root to inspect.
-    """
-    result: dict[str, Any] = {
-        "source": "claude_private_metadata",
-        "schema": CLAUDE_READ.name,
-        "supported": False,
-        "runtime": {"version": "unknown", "sha256": "unknown"},
-        "coverage": {
-            "sessionRegistry": "unavailable",
-            "jobStore": "unavailable",
-            "workerPresence": "unavailable",
-            "attachment": "unsupported",
-        },
-        "errors": [],
-        "observations": [],
-        "limitations": [
-            "private_required_contract",
-            "direct_metadata_reads_only",
-            "attachment_not_observed",
-            "hooks_and_current_client_not_observed",
-            "job_roster_state_is_not_a_liveness_clock",
-        ],
+        def unchanged():
+            later, capped = _directory_names(fd)
+            if capped or sorted(later) != sorted(names) or _stamp(os.stat("jobs", dir_fd=root_fd, follow_symlinks=False)) != stamp:
+                return False
+            for jid, job_fd, job_stamp, fields in records:
+                job, _ = _read_json_at(job_fd, "state.json", _MAX_JOB_FILE_BYTES)
+                if (not isinstance(job, dict) or any(job.get(k) != v for k, v in fields.items())
+                        or _stamp(os.stat(jid, dir_fd=fd, follow_symlinks=False)) != job_stamp):
+                    return False
+            return True
+        return conflicts, unchanged, [fd, *job_fds]
+    except BaseException:
+        for opened in [fd, *job_fds]:
+            os.close(opened)
+        raise
+
+
+def snapshot(config_root, *, host_scope, namespace, runtime_version, binary_sha256,
+             image_cache=None, saved_session_ids=()):
+    """Bracket provider-native registrations; project one interactive UUID row."""
+    result = {
+        "source": "claude_private_metadata", "schema": CLAUDE_READ.name, "supported": False,
+        "runtime": {"version": runtime_version, "sha256": binary_sha256},
+        "coverage": {"sessionRegistry": "unavailable", "backgroundGuard": "unavailable", "workerPresence": "unavailable"},
+        "errors": [], "observations": [], "parkedSupported": False,
+        "limitations": ["private_required_contract", "interactive_runtime_only", "native_registration_assumed",
+                        "unregistered_interactive_runtime_unproved", "background_runtime_unsupported"],
     }
-    errors: list[dict[str, str]] = result["errors"]
-    if not isinstance(runtime_version, str) or not 0 < len(runtime_version) <= 64:
-        _error(errors, "invalid_runtime_version_metadata")
-        return result
-    if binary_sha256 is not None and (not isinstance(binary_sha256, str) or not _SHA256.fullmatch(binary_sha256)):
-        _error(errors, "invalid_runtime_digest")
+    errors = result["errors"]
+    try:
+        NativeIdentity(host_scope, "claude", namespace, "session", "00000000-0000-0000-0000-000000000000")
+        root_path = os.fspath(config_root)
+        if not isinstance(root_path, str) or not os.path.isabs(root_path):
+            raise ValueError("invalid_source_scope")
+        if not isinstance(runtime_version, str) or not 0 < len(runtime_version) <= 64:
+            raise ValueError("invalid_runtime_version_metadata")
+        if binary_sha256 is not None and (not isinstance(binary_sha256, str) or not _SHA256.fullmatch(binary_sha256)):
+            raise ValueError("invalid_runtime_digest")
+        if not isinstance(saved_session_ids, (set, frozenset, tuple, list)) or len(saved_session_ids) > 4096:
+            raise ValueError("invalid_saved_identity_sample")
+        saved = {_uuid(sid) for sid in saved_session_ids}
+        if None in saved:
+            raise ValueError("invalid_saved_identity_sample")
+    except (ValueError, TypeError) as error:
+        _error(errors, str(error) if isinstance(error, ValueError) else "invalid_source_scope")
         return result
     if not sys.platform.startswith("linux"):
         _error(errors, "unsupported_platform")
-        result["coverage"]["sessionRegistry"] = "unsupported"
-        result["coverage"]["jobStore"] = "unsupported"
         return result
-    # Exercise the identity constructor before filesystem access so invalid
-    # caller scope cannot produce partial provider reads.
+    root_fd, registry_fd, guard_fds = None, None, []
+    records, groups, unresolved, conflicts = [], {}, set(), set()
+    registry_complete, guard_complete, stable = False, False, False
+    domain = _current_pid_domain()
+    observed = time.time_ns() // 1_000_000
     try:
-        NativeIdentity(
-            host_scope,
-            "claude",
-            namespace,
-            "session",
-            "00000000-0000-0000-0000-000000000000",
-        )
-        root_path = os.fspath(config_root)
-        if not isinstance(root_path, str) or not root_path:
-            raise ValueError("invalid_config_root")
-    except (TypeError, ValueError):
-        _error(errors, "invalid_source_scope")
-        return result
-
-    try:
-        root_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
-        root_flags |= getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
-        root_fd = os.open(root_path, root_flags)
-    except OSError:
-        _error(errors, "config_root_unavailable")
-        return result
-
-    pid_domain = _current_pid_domain()
-    observed_at = time.time_ns() // 1_000_000
-    jobs: dict[str, _Job] = {}
-    registry_rows: list[dict[str, Any]] = []
-    unstable_job_ids: set[str] = set()
-    session_complete = False
-    job_complete = False
-    sessions_fd = None
-    jobs_fd = None
-    directory_ids = {"root": (os.fstat(root_fd).st_dev, os.fstat(root_fd).st_ino)}
-    try:
+        root_fd = os.open(root_path, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
+        if os.fstat(root_fd).st_uid != os.geteuid():
+            raise _ReadFailure("config_ownership_mismatch")
+        root_stamp = _stamp(os.fstat(root_fd))
+        result["supported"] = True
         try:
-            sessions_fd = _open_directory_at(root_fd, "sessions")
-            info = os.fstat(sessions_fd)
-            directory_ids["sessions"] = (info.st_dev, info.st_ino)
-        except OSError:
-            _error(errors, "sessions_unavailable")
-        try:
-            jobs_fd = _open_directory_at(root_fd, "jobs")
-            info = os.fstat(jobs_fd)
-            directory_ids["jobs"] = (info.st_dev, info.st_ino)
-        except OSError:
-            _error(errors, "jobs_unavailable")
-
-        if jobs_fd is not None:
-            try:
-                names, overflow = _directory_names(jobs_fd)
-                if overflow:
-                    _error(errors, "job_directory_limit")
-                    result["coverage"]["jobStore"] = "partial"
-                elif len(names) > _MAX_JOB_ROWS:
-                    _error(errors, "job_row_limit")
-                    result["coverage"]["jobStore"] = "partial"
-                else:
-                    total = 0
-                    job_issue = False
-                    for name in sorted(names):
-                        if not _JOB_ID.fullmatch(name):
-                            continue
-                        try:
-                            job_dir_fd = _open_directory_at(jobs_fd, name)
-                        except OSError:
-                            _error(errors, "job_directory_unavailable", job_id=name)
-                            job_issue = True
-                            continue
-                        try:
-                            payload, size = _read_json_at(
-                                job_dir_fd, "state.json", _MAX_JOB_FILE_BYTES
-                            )
-                        except _ReadFailure as exc:
-                            _error(errors, exc.code, job_id=name)
-                            job_issue = True
-                            continue
-                        finally:
-                            os.close(job_dir_fd)
-                        total += size
-                        if total > _MAX_JOB_TOTAL_BYTES:
-                            _error(errors, "job_total_byte_limit")
-                            job_issue = True
-                            break
-                        try:
-                            job = _job_record(name, payload)
-                        except _ReadFailure as exc:
-                            _error(errors, exc.code, job_id=name)
-                            job_issue = True
-                            continue
-                        jobs[name] = job
-                        if job.issues:
-                            job_issue = True
-                            for issue in job.issues:
-                                _error(errors, issue, job_id=name)
-                    job_complete = not overflow and len(names) <= _MAX_JOB_ROWS and not job_issue
-                    result["coverage"]["jobStore"] = "complete" if job_complete else "partial"
-            except _ReadFailure as exc:
-                _error(errors, exc.code)
-                result["coverage"]["jobStore"] = "partial"
-
-        if sessions_fd is not None:
-            try:
-                names, overflow = _directory_names(sessions_fd)
-                candidates = sorted(name for name in names if _PID_NAME.fullmatch(name))
-                registry_issue = overflow or len(candidates) > _MAX_REGISTRY_ROWS
-                if overflow:
-                    _error(errors, "session_directory_limit")
-                if len(candidates) > _MAX_REGISTRY_ROWS:
-                    _error(errors, "session_row_limit")
-                    candidates = candidates[:_MAX_REGISTRY_ROWS]
-                total = 0
-                for name in candidates:
-                    try:
-                        payload, size = _read_json_at(sessions_fd, name, _MAX_REGISTRY_FILE_BYTES)
-                    except _ReadFailure as exc:
-                        _error(errors, exc.code)
-                        registry_issue = True
-                        continue
+            registry_fd = _open_directory_at(root_fd, "sessions")
+            registry_stamp = _stamp(os.fstat(registry_fd))
+            names, capped = _directory_names(registry_fd)
+            files = sorted(name for name in names if name.endswith(".json"))
+            registry_complete = not capped and len(files) <= _MAX_REGISTRY_ROWS
+            if not registry_complete:
+                _error(errors, "registry_limit")
+            total = 0
+            for name in files[:_MAX_REGISTRY_ROWS]:
+                try:
+                    raw, size = _read_json_at(registry_fd, name, _MAX_REGISTRY_FILE_BYTES)
                     total += size
                     if total > _MAX_REGISTRY_TOTAL_BYTES:
-                        _error(errors, "session_total_byte_limit")
-                        registry_issue = True
+                        raise _ReadFailure("registry_byte_limit")
+                    record = _session_record(name, raw)
+                    records.append((name, record))
+                    sid = record["sessionId"]
+                    presence = _presence(record, domain, observed, image_cache)
+                    groups.setdefault(sid, []).append((record, presence))
+                except (_ReadFailure, OSError) as error:
+                    registry_complete = False
+                    _error(errors, error.code if isinstance(error, _ReadFailure) else "registry_read_unavailable")
+                    if total > _MAX_REGISTRY_TOTAL_BYTES:
                         break
-                    try:
-                        record = _session_record(name, payload)
-                    except _ReadFailure as exc:
-                        _error(errors, exc.code)
-                        registry_issue = True
-                        continue
-                    registry_rows.append(record)
-                session_complete = not registry_issue
-                result["coverage"]["sessionRegistry"] = (
-                    "complete" if session_complete else "partial"
-                )
-            except _ReadFailure as exc:
-                _error(errors, exc.code)
-                result["coverage"]["sessionRegistry"] = "partial"
-
-        # Recheck only fields that contribute to identity or projected state.
-        # Names can refresh without invalidating stable identity/work facts.
-        # Native updatedAt/detail/environment are not work clocks.
-        if sessions_fd is not None:
-            stable_rows: list[dict[str, Any]] = []
-            for record in registry_rows:
-                filename = f"{record['pid']}.json"
-                try:
-                    payload, _size = _read_json_at(sessions_fd, filename, _MAX_REGISTRY_FILE_BYTES)
-                    current_record = _session_record(filename, payload)
-                except _ReadFailure:
-                    session_complete = False
-                    _error(errors, "metadata_changed_during_snapshot")
-                    continue
-                if {key: value for key, value in current_record.items() if key != "title"} != {
-                    key: value for key, value in record.items() if key != "title"
-                }:
-                    session_complete = False
-                    _error(errors, "metadata_changed_during_snapshot")
-                    continue
-                stable_rows.append(current_record)
-            registry_rows = stable_rows
-        if jobs_fd is not None:
-            for job_id in tuple(jobs):
-                try:
-                    job_dir_fd = _open_directory_at(jobs_fd, job_id)
-                except OSError:
-                    unstable_job_ids.add(job_id)
-                    continue
-                try:
-                    payload, _size = _read_json_at(job_dir_fd, "state.json", _MAX_JOB_FILE_BYTES)
-                    current_job = _job_record(job_id, payload)
-                except _ReadFailure:
-                    unstable_job_ids.add(job_id)
-                    current_job = None
-                finally:
-                    os.close(job_dir_fd)
-                if current_job != jobs.get(job_id):
-                    unstable_job_ids.add(job_id)
-                elif current_job is not None:
-                    # Title is presentation metadata, excluded from _Job equality.
-                    jobs[job_id] = current_job
-            for job_id in unstable_job_ids:
-                jobs.pop(job_id, None)
-                job_complete = False
-                _error(errors, "metadata_changed_during_snapshot", job_id=job_id)
-    finally:
-        if sessions_fd is not None:
-            os.close(sessions_fd)
-        if jobs_fd is not None:
-            os.close(jobs_fd)
-        os.close(root_fd)
-
-    # Exact jobId/sessionId links only. Cwd, title, and PID are never join keys.
-    registry_by_job: dict[str, set[str]] = {}
-    pair_counts: dict[tuple[str, str | None], int] = {}
-    for record in registry_rows:
-        pair = (record["sessionId"], record["jobId"])
-        pair_counts[pair] = pair_counts.get(pair, 0) + 1
-        if record["jobId"] is not None:
-            registry_by_job.setdefault(record["jobId"], set()).add(record["sessionId"])
-    duplicate_pairs = {pair for pair, count in pair_counts.items() if count > 1}
-    duplicate_jobs = {job_id for _session_id, job_id in duplicate_pairs if job_id is not None}
-    conflicted_jobs = {
-        job_id
-        for job_id, session_ids in registry_by_job.items()
-        if len(session_ids) > 1 or (job_id in jobs and jobs[job_id].session_id not in session_ids)
-    }
-    conflicted_jobs.update(duplicate_jobs)
-
-    observations: list[dict[str, Any]] = []
-    image_cache = {} if image_cache is None else image_cache
-    paired_jobs: set[str] = set()
-    for record in registry_rows:
-        job_id = record["jobId"]
-        job = jobs.get(job_id) if job_id is not None else None
-        pair = (record["sessionId"], job_id)
-        duplicate_pair = pair in duplicate_pairs
-        conflicted = (job_id in conflicted_jobs if job_id is not None else False) or duplicate_pair
-        row_issues = list(record["issues"])
-        if job_id is not None and job_id in conflicted_jobs:
-            row_issues.append("job_session_conflict")
-        if duplicate_pair:
-            row_issues.append("duplicate_session_job_pair")
-            _error(errors, "duplicate_session_job_pair", job_id=job_id)
-        if job_id in unstable_job_ids:
-            row_issues.append("metadata_changed_during_snapshot")
-        if job is not None and job.session_id == record["sessionId"]:
-            paired_jobs.add(job_id)
-        observations.append(
-            _observation(
-                session_id=record["sessionId"],
-                host_scope=host_scope,
-                namespace=namespace,
-                registry=record,
-                job=job,
-                pid_domain=pid_domain,
-                observed_at=observed_at,
-                job_store_complete=job_complete,
-                conflicted=conflicted,
-                issues=tuple(row_issues),
-                image_cache=image_cache,
-            )
-        )
-
-    for job_id, job in sorted(jobs.items()):
-        if job_id in paired_jobs:
-            continue
-        conflict = job_id in conflicted_jobs
-        if conflict:
-            _error(errors, "job_session_conflict", job_id=job_id)
-        if job.session_id is None:
-            continue
-        observations.append(
-            _observation(
-                session_id=job.session_id,
-                host_scope=host_scope,
-                namespace=namespace,
-                registry=None,
-                job=job,
-                pid_domain=pid_domain,
-                observed_at=observed_at,
-                job_store_complete=job_complete,
-                conflicted=conflict,
-                issues=("job_session_conflict",) if conflict else (),
-            )
-        )
-
-    parked_supported = bool(jobs) and session_complete and job_complete and pid_domain is not None
-    if parked_supported and session_complete and job_complete and pid_domain is not None:
-        try:
-            _parked_runtimes(root_path, directory_ids, registry_rows, jobs, observations,
-                             pid_domain, image_cache)
+            stable = True
         except (OSError, _ReadFailure):
-            _error(errors, "parked_runtime_recheck_unavailable")
-    result["parkedSupported"] = parked_supported
-    result["supported"] = True
-    result["runtime"] = {"version": runtime_version, "sha256": binary_sha256}
-    result["observations"] = observations
-    result["coverage"]["sessionRegistry"] = (
-        "complete" if session_complete else "partial" if sessions_fd is not None else "unavailable"
-    )
-    result["coverage"]["jobStore"] = (
-        "complete" if job_complete else "partial" if jobs_fd is not None else "unavailable"
-    )
-    result["coverage"]["workerPresence"] = (
-        "unsupported"
-        if pid_domain is None
-        else "complete"
-        if all(item["presence"]["health"] in {"current", "stale"} for item in observations)
-        else "partial"
-    )
-    if not session_complete or not job_complete or errors:
-        result["limitations"].append("one_or_more_metadata_reads_incomplete")
-    if pid_domain is None:
-        result["limitations"].append("linux_pid_domain_unavailable")
-    return result
-
-
-def _parked_runtimes(root_path, directory_ids, registry_rows, jobs, observations,
-                     pid_domain, image_cache):
-    """Prove terminal job inactivity within the complete registered-worker scope.
-
-    Worker absence alone is insufficient. Require one exact-UUID terminal job,
-    no conflicting/unsupported context, and stable inventory/identity after all
-    process checks. Working changes in unrelated sessions do not renew old clocks
-    or invalidate this session's negative runtime evidence.
-    """
-    by_session = {}
-    for row in observations:
-        by_session.setdefault(row["identity"]["nativeId"], []).append(row)
-    job_counts = {}
-    for job in jobs.values():
-        job_counts[job.session_id] = job_counts.get(job.session_id, 0) + 1
-    candidates = {}
-    now = time.time_ns() // 1_000_000
-    for job in jobs.values():
-        rows = by_session.get(job.session_id, [])
-        if (job.state not in {"stopped", "done"} or job.tempo != "idle" or job.issues
-                or job.terminal_at is None or job.terminal_at > now
-                or job.in_flight_invalid or job.in_flight is not None and any(job.in_flight)
-                or job_counts[job.session_id] != 1 or len(rows) != 1):
-            continue
-        row = rows[0]
-        if row["metadataIssues"] or row["job"]["retained"] is not True:
-            continue
-        matching = [r for r in registry_rows if r["sessionId"] == job.session_id]
-        if any(_presence(r, pid_domain, now, image_cache).effective_value != "absent"
-               for r in matching):
-            continue
-        candidates[job.job_id] = row
-    if not candidates:
-        return
-
-    descriptors = {}
-    try:
-        descriptors["root"] = os.open(root_path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-        for name in ("sessions", "jobs"):
-            descriptors[name] = _open_directory_at(descriptors["root"], name)
-        for name, fd in descriptors.items():
-            info = os.fstat(fd)
-            if (info.st_dev, info.st_ino) != directory_ids[name]:
-                raise _ReadFailure("directory_changed")
-        expected_names = {
-            "sessions": sorted(f"{r['pid']}.json" for r in registry_rows),
-            "jobs": sorted(jobs),
-        }
-
-        def check_names():
-            for name, pattern in (("sessions", _PID_NAME), ("jobs", _JOB_ID)):
-                names, overflow = _directory_names(descriptors[name])
-                if overflow or sorted(n for n in names if pattern.fullmatch(n)) != expected_names[name]:
-                    raise _ReadFailure("inventory_changed")
-
-        check_names()
-        identity_fields = ("pid", "sessionId", "procStart", "pidDomain", "jobId", "kind")
-        for original in registry_rows:
-            filename = f"{original['pid']}.json"
-            payload, _size = _read_json_at(descriptors["sessions"], filename, _MAX_REGISTRY_FILE_BYTES)
-            current = _session_record(filename, payload)
-            if any(current[k] != original[k] for k in identity_fields):
-                raise _ReadFailure("registry_identity_changed")
-            if current["sessionId"] in {jobs[k].session_id for k in candidates}:
-                if current["issues"] or _presence(current, pid_domain, now, image_cache).effective_value != "absent":
-                    raise _ReadFailure("worker_changed")
-        for job_id, original in jobs.items():
-            fd = _open_directory_at(descriptors["jobs"], job_id)
-            try:
-                payload, _size = _read_json_at(fd, "state.json", _MAX_JOB_FILE_BYTES)
-                current = _job_record(job_id, payload)
-            finally:
-                os.close(fd)
-            if current.session_id != original.session_id or job_id in candidates and current != original:
-                raise _ReadFailure("job_changed")
-        check_names()
-        current_root = os.stat(root_path, follow_symlinks=False)
-        if (current_root.st_dev, current_root.st_ino) != directory_ids["root"]:
-            raise _ReadFailure("directory_changed")
-        for name in ("sessions", "jobs"):
-            info = os.stat(name, dir_fd=descriptors["root"], follow_symlinks=False)
-            if (info.st_dev, info.st_ino) != directory_ids[name]:
-                raise _ReadFailure("directory_changed")
+            _error(errors, "sessions_unavailable")
+        try:
+            conflicts, guard_check, guard_fds = _background_guard(root_fd)
+            guard_complete = guard_check()
+            if not guard_complete:
+                _error(errors, "background_guard_changed")
+        except (OSError, _ReadFailure):
+            _error(errors, "background_guard_unavailable")
+        if registry_fd is not None:
+            later_names, capped = _directory_names(registry_fd)
+            if (capped or sorted(later_names) != sorted(names)
+                    or _stamp(os.stat("sessions", dir_fd=root_fd, follow_symlinks=False)) != registry_stamp
+                    or _stamp(os.stat(root_path, follow_symlinks=False)) != root_stamp):
+                stable = registry_complete = False
+                _error(errors, "registry_changed")
+            for name, original in records:
+                try:
+                    raw, _ = _read_json_at(registry_fd, name, _MAX_REGISTRY_FILE_BYTES)
+                    if _session_record(name, raw) != original:
+                        raise _ReadFailure("registry_record_changed")
+                except (OSError, _ReadFailure):
+                    unresolved.add(original["sessionId"])
+                    registry_complete = False
+                    _error(errors, "registry_record_changed")
+            # Authenticate at the end of the bounded native bracket too. A
+            # crash may leave the record unchanged while the worker dies.
+            observed = time.time_ns() // 1_000_000
+            groups = {}
+            for _, record in records:
+                groups.setdefault(record["sessionId"], []).append(
+                    (record, _presence(record, domain, observed, image_cache)))
+            if guard_complete and not guard_check():
+                guard_complete = False
+                _error(errors, "background_guard_changed")
+            final_names, capped = _directory_names(registry_fd)
+            if capped or sorted(final_names) != sorted(names):
+                stable = registry_complete = False
+                _error(errors, "registry_changed")
+    except (OSError, _ReadFailure):
+        stable = registry_complete = False
+        _error(errors, "source_unavailable")
     finally:
-        for fd in descriptors.values():
-            os.close(fd)
-    observed_at = time.time_ns() // 1_000_000
-    for row in candidates.values():
-        row["runtimeDisposition"] = {
-            "value": "parked", "observedAt": observed_at, "source": "claude_job_store",
-            "health": "current", "reason": "native_snapshot",
-        }
-        row["presence"] = Evidence("presence", "absent", observed_at, "claude_registry",
-                                   "current", "native_snapshot").metadata()
-        row["sessionKind"] = "bg"
-
-
-__all__ = ["SUPPORTED_SHA256", "SUPPORTED_VERSION", "linux_pid_domain", "snapshot"]
+        for fd in [*guard_fds, registry_fd, root_fd]:
+            if fd is not None:
+                os.close(fd)
+    if domain is None:
+        registry_complete = False
+        _error(errors, "pid_domain_unavailable")
+    result["coverage"]["sessionRegistry"] = "complete" if registry_complete and stable else "partial" if records else "unavailable"
+    result["coverage"]["backgroundGuard"] = "complete" if guard_complete else "partial" if result["supported"] else "unavailable"
+    result["coverage"]["workerPresence"] = "complete" if registry_complete and stable and all(p.health == "current" for g in groups.values() for _, p in g) else "partial" if records else "unavailable"
+    negative_healthy = registry_complete and stable and guard_complete and domain is not None
+    result["parkedSupported"] = negative_healthy
+    for sid in sorted(saved | set(groups)):
+        group = groups.get(sid, [])
+        issues = list(dict.fromkeys(issue for record, _ in group for issue in record["issues"]))
+        live = [(r, p) for r, p in group if p.effective_value == "present" and r["kind"] == "interactive"
+                and r["jobId"] is None and "invalid_job_reference" not in r["issues"]]
+        unknown_worker = any(p.effective_value == "unknown" for _, p in group)
+        excluded_live = any(p.effective_value == "present" and (r["kind"] != "interactive" or r["jobId"] is not None
+                            or "invalid_job_reference" in r["issues"]) for r, p in group)
+        presence, work, wait = Evidence("presence"), Evidence("work"), "unknown"
+        disposition = {"value": "unknown", "observedAt": None, "source": None, "health": "unsupported", "reason": "interactive_runtime_unproved"}
+        if not stable or sid in unresolved:
+            disposition["reason"] = "native_registration_unstable"
+        elif live:
+            presence = live[0][1]
+            work_values = [_status_work(r, p, observed) for r, p in live]
+            work, wait = work_values[0]
+            if any((w.effective_value, wr) != (work.effective_value, wait) for w, wr in work_values[1:]):
+                work, wait = Evidence("work", health="ambiguous", reason="native_state_conflict"), "unknown"
+            if len(live) > 1:
+                issues.append("duplicate_live_incarnations")
+        elif sid in saved and negative_healthy and not unknown_worker and not excluded_live and sid not in conflicts:
+            presence = Evidence("presence", "absent", observed, "claude_registry", "current", "native_snapshot")
+            disposition = {"value": "parked", "observedAt": observed, "source": "claude_registry", "health": "current",
+                           "reason": "interactive_registration_assumed"}
+        elif excluded_live or sid in conflicts:
+            disposition["reason"] = "background_runtime_unsupported"
+            issues.append("noninteractive_conflict")
+        elif unknown_worker:
+            disposition.update(health="ambiguous", reason="native_incarnation_unproved")
+        elif not negative_healthy:
+            disposition.update(health="unavailable", reason="native_registration_scan_incomplete")
+        selected = live if stable and sid not in unresolved else []
+        cwd_values = {r["cwd"] for r, _ in selected if r["cwd"] is not None}
+        titles = {r["title"] for r, _ in selected if r["title"] is not None}
+        cwd = next(iter(cwd_values)) if len(cwd_values) == 1 else None
+        title = next(iter(titles)) if len(titles) == 1 else "Claude " + sid
+        item = SessionObservation(NativeIdentity(host_scope, "claude", namespace, "session", sid), work, presence).metadata()
+        item.update(nativeIds={"sessionId": sid}, title=title, cwd=cwd, cwdSource="claude_registry" if cwd else None,
+                    waitReason=wait, phaseCapabilities=claude_registry_capabilities(live[0][0]) if live and stable and sid not in unresolved else [],
+                    metadataIssues=issues, savedIdentity=sid in saved, runtimeDisposition=disposition)
+        result["observations"].append(item)
+    return result

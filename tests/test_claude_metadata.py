@@ -1,4 +1,4 @@
-"""Synthetic tests for the provisional, private Claude metadata projection."""
+"""Synthetic interactive lifecycle, provenance and conflict-guard regressions."""
 
 import json
 import os
@@ -7,822 +7,228 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_observer import claude_metadata
-from agent_observer.claude_metadata import (
-    SUPPORTED_SHA256,
-    SUPPORTED_VERSION,
-    linux_pid_domain,
-    snapshot,
-)
+from agent_observer import claude_metadata as module
+from agent_observer.claude_metadata import snapshot
+
+SID = "11234567-0123-4567-89ab-0123456789ab"
+OTHER = "21234567-0123-4567-89ab-0123456789ab"
+DOMAIN = "linux:0123456789abcdef0123456789abcdef:pid:[4026531836]"
 
 
 class ClaudeMetadataTest(unittest.TestCase):
-    def terminal_job(self, *, state="stopped", **extra):
-        return self.write_job(state=state, tempo="idle",
-                              lastTerminalAt="1970-01-01T00:00:01.000Z", **extra)
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.root = Path(temp.name)
+        (self.root / "sessions").mkdir()
+        (self.root / "jobs").mkdir()
 
-    def test_terminal_job_and_complete_stable_absence_establish_parked(self):
-        job = self.terminal_job()
+    def record(self, pid=123, **extra):
+        record = {"pid": pid, "sessionId": SID, "procStart": "456", "pidDomain": DOMAIN,
+                  "kind": "interactive", "jobId": None, "status": "idle", "statusUpdatedAt": 100,
+                  "cwd": "/same/checkout", "nameSource": "user", "name": "Native title",
+                  "prompt": "PRIVATE_PROMPT", "detail": "PRIVATE_DETAIL", **extra}
+        (self.root / "sessions" / f"{pid}.json").write_text(json.dumps(record))
+        return record
+
+    def job(self, **extra):
+        directory = self.root / "jobs/abcdef12"
+        directory.mkdir(exist_ok=True)
+        record = {"sessionId": SID, "state": "done", "tempo": "idle",
+                  "inFlight": {"tasks": 0, "queued": 0, "drainableMonitors": 0},
+                  "prompt": "PRIVATE_PROMPT", "output": "PRIVATE_OUTPUT", **extra}
+        (directory / "state.json").write_text(json.dumps(record))
+
+    def read(self, saved=(SID,), probe=("456", "present"), image=(True, "matched"), **extra):
+        with (patch.object(module, "_current_pid_domain", return_value=DOMAIN),
+              patch.object(module.time, "time_ns", return_value=5_000_000_000),
+              patch.object(module, "_linux_proc_start_token", return_value=probe),
+              patch.object(module, "_linux_process_uses_supported_binary", return_value=image)):
+            return snapshot(self.root, host_scope="snap", namespace="private", runtime_version="2.999.0",
+                            binary_sha256="f" * 64, saved_session_ids=saved, **extra)
+
+    def row(self, **kwargs):
+        return self.read(**kwargs)["observations"][0]
+
+    def test_empty_healthy_scan_supports_saved_parked_without_terminal_jobs(self):
         result = self.read()
         row = result["observations"][0]
         self.assertTrue(result["parkedSupported"])
         self.assertEqual(row["runtimeDisposition"]["value"], "parked")
-        self.assertEqual(row["runtimeDisposition"]["observedAt"], 5000)
+        self.assertEqual(row["runtimeDisposition"]["reason"], "interactive_registration_assumed")
         self.assertEqual(row["presence"]["value"], "absent")
-        self.assertEqual(row["job"]["terminalObservedAt"], 1000)
-        job["state"] = "done"
-        self.write_json(self.root / "jobs/abcdef01/state.json", job)
-        row = self.read()["observations"][0]
-        self.assertEqual(row["runtimeDisposition"]["value"], "parked")
-        self.assertEqual(row["work"]["value"], "settled")
-        self.assertEqual(row["work"]["observedAt"], 1000)
+        self.assertEqual(row["work"]["value"], "unknown")
+        self.assertEqual(self.read(saved=())["observations"], [])
+        self.assertNotIn("jobStore", result["coverage"])
 
-    def test_terminal_job_never_overrides_a_live_or_unproved_worker(self):
-        self.terminal_job()
-        self.write_session(job_id="abcdef01", status="idle")
-        for supported in (True, False):
-            with patch("agent_observer.claude_metadata._linux_proc_start_token",
-                       return_value=("67890", "present")):
-                row = self.read(executable_match=supported)["observations"][0]
-                self.assertNotIn("runtimeDisposition", row)
-        with patch("agent_observer.claude_metadata._linux_proc_start_token",
-                   return_value=(None, "unavailable")):
-            self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
-        with patch("agent_observer.claude_metadata._linux_proc_start_token",
-                   return_value=(None, "absent")):
-            self.assertEqual(self.read()["observations"][0]["runtimeDisposition"]["value"], "parked")
+    def test_running_and_native_work_clocks_are_independent(self):
+        for status, expected in (("busy", "working"), ("shell", "working"), ("idle", "settled")):
+            self.record(status=status)
+            row = self.row()
+            self.assertEqual(row["presence"]["value"], "present")
+            self.assertEqual(row["presence"]["observedAt"], 5000)
+            self.assertEqual(row["work"]["value"], expected)
+            self.assertEqual(row["work"]["observedAt"], 100)
+            self.assertEqual(row["nativeIds"], {"sessionId": SID})
+            self.assertFalse({"worker", "job", "attachment", "sessionKind"}.intersection(row))
+            self.assertNotIn("PRIVATE", json.dumps(row))
 
-    def test_parked_requires_terminal_clock_and_no_pending_work(self):
-        job = self.terminal_job()
-        path = self.root / "jobs/abcdef01/state.json"
-        changes = ({"state": "failed"}, {"state": "working"}, {"tempo": "active"},
-                   {"lastTerminalAt": None}, {"lastTerminalAt": "2026-10-02T00:00:00.000Z"},
-                   {"inFlight": {"tasks": 0, "queued": 1, "drainableMonitors": 0}},
-                   {"inFlight": {"tasks": True, "queued": 0, "drainableMonitors": 0}})
-        for change in changes:
-            with self.subTest(change=change):
-                self.write_json(path, {**job, **change})
-                self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
-        self.write_json(path, job)
-        from agent_observer.native_artifacts import CLAUDE_PREVIOUS
-        with patch.dict(self.scope, runtime_version=CLAUDE_PREVIOUS.version,
-                        binary_sha256=CLAUDE_PREVIOUS.sha256):
-            result = self.read()
-            self.assertTrue(result["parkedSupported"])
-            self.assertEqual(result["observations"][0]["runtimeDisposition"]["value"], "parked")
+    def test_only_exact_question_and_approval_waits_are_supported(self):
+        for wait, expected in (("input needed", "question"), ("permission prompt", "approval"),
+                               ("dialog:settings", "unknown"), ("dialog open", "unknown"),
+                               ("worker request", "unknown")):
+            self.record(status="waiting", waitingFor=wait)
+            row = self.row()
+            self.assertEqual(row["waitReason"], expected)
+            self.assertEqual(row["work"]["value"], "needs_input" if expected != "unknown" else "unknown")
 
-    def test_duplicate_jobs_or_workers_and_partial_registry_do_not_prove_parked(self):
-        job = self.terminal_job()
-        self.write_job("abcdef02", **{k: v for k, v in job.items() if k not in
-                       {"sessionId", "state", "tempo"}}, session_id=job["sessionId"],
-                       state="done", tempo="idle")
-        result = self.read()
-        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
-        (self.root / "jobs/abcdef02/state.json").unlink()
-        (self.root / "jobs/abcdef02").rmdir()
-        self.write_session(pid=123, job_id="abcdef01", status="idle")
-        self.write_session(pid=124, job_id="abcdef01", status="idle")
-        with patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=(None, "absent")):
-            self.assertTrue(all("runtimeDisposition" not in r for r in self.read()["observations"]))
-        (self.root / "sessions/123.json").unlink()
+    def test_invalid_status_or_clock_preserves_running(self):
+        for changed in ({"status": "new"}, {"statusUpdatedAt": None}, {"statusUpdatedAt": True},
+                        {"statusUpdatedAt": 5001}, {"statusUpdatedAt": -1}):
+            self.record(**changed)
+            row = self.row()
+            self.assertEqual(row["presence"]["value"], "present")
+            self.assertEqual(row["work"]["value"], "unknown")
+
+    def test_dead_or_reused_incarnation_is_parked_only_with_saved_identity(self):
+        self.record()
+        for probe in ((None, "absent"), ("789", "present")):
+            self.assertEqual(self.row(probe=probe)["runtimeDisposition"]["value"], "parked")
+            self.assertEqual(self.row(probe=probe, saved=())["runtimeDisposition"]["value"], "unknown")
+        for probe in ((None, "unavailable"), (None, "malformed")):
+            self.assertEqual(self.row(probe=probe)["runtimeDisposition"]["value"], "unknown")
+
+    def test_pid_domain_birth_and_image_uncertainty_never_prove_exit(self):
+        for extra in ({"pidDomain": "foreign"}, {"pidDomain": None}, {"procStart": None}):
+            self.record(**extra)
+            self.assertEqual(self.row()["presence"]["value"], "unknown")
+            self.assertEqual(self.row()["runtimeDisposition"]["value"], "unknown")
+        self.record()
+        for image in ((False, "different_binary"), (None, "unavailable"), (None, "process_unavailable")):
+            self.assertEqual(self.row(image=image)["runtimeDisposition"]["value"], "unknown")
+
+    def test_resume_ignores_dead_old_incarnation_and_duplicates_only_conflict_phase(self):
+        self.record(123, status="busy")
+        self.record(124, status="idle")
+        real = module._presence
+        def dead_old(r, domain, observed, cache):
+            if r["pid"] == 123:
+                return module.Evidence("presence", "absent", observed, "claude_registry", "current", "native_snapshot")
+            return real(r, domain, observed, cache)
+        with patch.object(module, "_presence", side_effect=dead_old):
+            self.assertEqual(self.row()["work"]["value"], "settled")
+        row = self.row()
+        self.assertEqual(row["presence"]["value"], "present")
+        self.assertEqual(row["work"]["health"], "ambiguous")
+        self.assertIn("duplicate_live_incarnations", row["metadataIssues"])
+        self.record(123, status="idle")
+        self.assertEqual(self.row()["work"]["value"], "settled")
+
+    def test_background_records_do_not_supply_supported_runtime(self):
+        for extra in ({"kind": "bg"}, {"kind": "daemon"}, {"jobId": "abcdef12"}, {"jobId": "invalid"}):
+            self.record(**extra)
+            row = self.row()
+            self.assertEqual(row["presence"]["value"], "unknown")
+            self.assertEqual(row["runtimeDisposition"]["value"], "unknown")
+            self.assertIn("noninteractive_conflict", row["metadataIssues"])
+        self.assertEqual(self.row(probe=(None, "absent"))["runtimeDisposition"]["value"], "parked")
+
+    def test_background_guard_only_vetoes_negatives(self):
+        for extra, parked in (({}, True), ({"state": "working"}, False), ({"tempo": "active"}, False),
+                              ({"inFlight": None}, False), ({"inFlight": {"tasks": 0, "queued": 1, "drainableMonitors": 0}}, False)):
+            self.job(**extra)
+            self.assertEqual(self.row()["runtimeDisposition"]["value"], "parked" if parked else "unknown")
+            self.assertEqual(self.read(saved=())["observations"], [])
+        self.record()
+        self.assertEqual(self.row()["presence"]["value"], "present")
+
+    def test_unreadable_guard_or_registry_invalidates_negatives_preserving_valid_positive(self):
+        self.record()
+        (self.root / "sessions/124.json").write_text("invalid")
+        result = self.read(saved=(SID, OTHER))
+        rows = {r["identity"]["nativeId"]: r for r in result["observations"]}
+        self.assertEqual(rows[SID]["presence"]["value"], "present")
+        self.assertEqual(rows[OTHER]["runtimeDisposition"]["value"], "unknown")
+        self.assertFalse(result["parkedSupported"])
         (self.root / "sessions/124.json").unlink()
-        (self.root / "sessions/125.json").write_text("invalid")
-        self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
+        self.job()
+        (self.root / "jobs/abcdef12/state.json").write_text("invalid")
+        self.assertEqual(self.row()["presence"]["value"], "present")
+        self.assertFalse(self.read()["parkedSupported"])
 
-    def test_new_registry_membership_after_worker_checks_prevents_parked(self):
-        self.terminal_job()
-        original = claude_metadata._directory_names
-        calls = 0
-
-        def changing(fd):
-            nonlocal calls
-            calls += 1
-            if calls == 3:
-                self.write_session(pid=123, job_id="abcdef01")
-            return original(fd)
-
-        with patch("agent_observer.claude_metadata._directory_names", side_effect=changing):
-            result = self.read()
-        self.assertNotIn("runtimeDisposition", result["observations"][0])
-        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
-
-    def test_resume_during_final_job_recheck_prevents_parked(self):
-        job = self.terminal_job()
-        original = claude_metadata._read_json_at
-        calls = 0
-
-        def changing(fd, name, limit):
-            nonlocal calls
-            if name == "state.json":
-                calls += 1
-                if calls == 3:
-                    self.write_json(self.root / "jobs/abcdef01/state.json",
-                                    {**job, "state": "working", "tempo": "active"})
-            return original(fd, name, limit)
-
-        with patch("agent_observer.claude_metadata._read_json_at", side_effect=changing):
-            result = self.read()
-        self.assertNotIn("runtimeDisposition", result["observations"][0])
-        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
-
-    def test_capped_or_unavailable_inventory_keeps_terminal_runtime_unknown(self):
-        self.terminal_job()
-        self.write_session(job_id="abcdef01", status="idle")
-        with patch("agent_observer.claude_metadata._MAX_REGISTRY_ROWS", 0):
-            result = self.read()
-        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
-        (self.root / "sessions/23145.json").unlink()
+    def test_missing_registry_is_not_healthy_empty_but_missing_jobs_is_safe(self):
         (self.root / "sessions").rmdir()
-        self.assertNotIn("runtimeDisposition", self.read()["observations"][0])
-
-    def test_registry_identity_change_in_final_recheck_prevents_parked(self):
-        self.terminal_job()
-        registry = self.write_session(pid=123, session_id="21234567-0123-4567-89ab-0123456789ab")
-        original = claude_metadata._read_json_at
-        calls = 0
-
-        def changing(fd, name, limit):
-            nonlocal calls
-            if name == "123.json":
-                calls += 1
-                if calls == 3:
-                    self.write_json(self.root / "sessions/123.json",
-                                    {**registry, "sessionId": "11234567-0123-4567-89ab-0123456789ab"})
-            return original(fd, name, limit)
-
-        with (patch("agent_observer.claude_metadata._read_json_at", side_effect=changing),
-              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
-            result = self.read()
-        self.assertTrue(all("runtimeDisposition" not in r for r in result["observations"]))
-        self.assertIn({"code": "parked_runtime_recheck_unavailable"}, result["errors"])
-
-    def test_current_registry_phase_overrides_old_turn_but_not_pending_idle(self):
-        sid = "01234567-0123-4567-89ab-0123456789ab"
-        row = self.write_session(pid=123, session_id=sid, status="busy", kind="bg", job_id="abcdef12")
-        job = self.write_job(job_id="abcdef12", session_id=sid, state="done", tempo="idle",
-                       lastTerminalAt="2026-10-02T00:00:00.000Z",
-                       inFlight={"tasks": 0, "queued": 0, "drainableMonitors": 0}, block={"questions": [{}]})
-        with (patch("agent_observer.claude_metadata._phase_capabilities", return_value=["registry_phase", "input_wait", "job_question"]),
-              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
-            self.assertEqual(self.read()["observations"][0]["work"]["value"], "working")
-            row.update(status="waiting", waitingFor="input needed")
-            job.update(state="working", tempo="blocked")
-            self.write_json(self.root / "jobs/abcdef12/state.json", job)
-            self.write_json(self.root / "sessions/123.json", row)
-            item = self.read()["observations"][0]
-            self.assertEqual(item["work"]["value"], "needs_input")
-            self.assertEqual(item["waitReason"], "question")
-            row.update(status="idle", waitingFor=None)
-            job.update(state="done", tempo="idle")
-            self.write_json(self.root / "jobs/abcdef12/state.json", job)
-            self.write_json(self.root / "sessions/123.json", row)
-            self.assertEqual(self.read()["observations"][0]["work"]["value"], "settled")
-            for changes in ({"queued": 1}, {"tasks": 1}, {"drainableMonitors": 1}, {"tasks": True}):
-                job["inFlight"] = {"tasks": 0, "queued": 0, "drainableMonitors": 0, **changes}
-                self.write_json(self.root / "jobs/abcdef12/state.json", job)
-                self.assertEqual(self.read()["observations"][0]["work"]["value"], "unknown")
-
-    def test_foreground_input_needed_is_question_only_with_verified_predicate(self):
-        row = self.write_session(pid=123, kind="interactive", status="waiting", waitingFor="input needed")
-        caps = ["registry_phase", "input_wait", "foreground_question"]
-        with (patch("agent_observer.claude_metadata._phase_capabilities", return_value=caps),
-              patch("agent_observer.claude_metadata._linux_proc_start_token", return_value=("67890", "present"))):
-            item = self.read()["observations"][0]
-            self.assertEqual(item["work"]["value"], "needs_input")
-            self.assertEqual(item["waitReason"], "question")
-            row["waitingFor"] = "dialog:other"
-            self.write_json(self.root / "sessions/123.json", row)
-            self.assertEqual(self.read()["observations"][0]["waitReason"], "user_input")
-        row["waitingFor"] = "input needed"
-        self.write_json(self.root / "sessions/123.json", row)
-        with patch("agent_observer.claude_metadata._phase_capabilities", return_value=[]):
-            self.assertNotEqual(self.read()["observations"][0]["waitReason"], "question")
-
-    def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
-        self.root = Path(self.temp.name)
+        self.assertEqual(self.row()["runtimeDisposition"]["value"], "unknown")
         (self.root / "sessions").mkdir()
-        (self.root / "jobs").mkdir()
-        self.scope = {
-            "host_scope": "snap-host",
-            "namespace": "private-config",
-            "runtime_version": SUPPORTED_VERSION,
-            "binary_sha256": SUPPORTED_SHA256,
-        }
-        self.domain = "linux:0123456789abcdef0123456789abcdef:pid:[4026531836]"
+        (self.root / "jobs").rmdir()
+        self.assertEqual(self.row()["runtimeDisposition"]["value"], "parked")
 
-    def tearDown(self):
-        self.temp.cleanup()
+    def test_registry_membership_or_content_change_invalidates_sample(self):
+        self.record()
+        original = module._directory_names
+        reads = 0
+        def change(fd):
+            nonlocal reads
+            reads += 1
+            if reads == 3:
+                self.record(124)
+            return original(fd)
+        with patch.object(module, "_directory_names", side_effect=change):
+            self.assertEqual(self.row()["presence"]["value"], "unknown")
+        (self.root / "sessions/124.json").unlink()
+        original_read = module._read_json_at
+        reads = 0
+        def changed_record(fd, name, limit):
+            nonlocal reads
+            if name == "123.json":
+                reads += 1
+                if reads == 2:
+                    self.record(status="busy")
+            return original_read(fd, name, limit)
+        with patch.object(module, "_read_json_at", side_effect=changed_record):
+            self.assertEqual(self.row()["presence"]["value"], "unknown")
 
-    def write_session(
-        self,
-        *,
-        pid=23145,
-        session_id="11234567-0123-4567-89ab-0123456789ab",
-        job_id=None,
-        status="busy",
-        status_updated_at=111,
-        proc_start="67890",
-        pid_domain=None,
-        **extra,
-    ):
-        row = {
-            "pid": pid,
-            "sessionId": session_id,
-            "procStart": proc_start,
-            "pidDomain": pid_domain or self.domain,
-            "kind": "interactive" if job_id is None else "bg",
-            "status": status,
-            "statusUpdatedAt": status_updated_at,
-            "updatedAt": 999999,
-            "cwd": "/same/checkout",
-            "name": "SYNTHETIC_PRIVATE_NAME",
-            "detail": "SYNTHETIC_PRIVATE_DETAIL",
-            "prompt": "SYNTHETIC_PRIVATE_PROMPT",
-            "needs": {"question": "SYNTHETIC_PRIVATE_NEED"},
-            "waitingFor": "dialog:SYNTHETIC_PRIVATE_QUESTION",
-            **extra,
-        }
-        if job_id is not None:
-            row["jobId"] = job_id
-        self.write_json(self.root / "sessions" / f"{pid}.json", row)
-        return row
+    def test_source_bounds_and_unsafe_files_prevent_parked(self):
+        self.record()
+        with patch.object(module, "_MAX_REGISTRY_ROWS", 0):
+            self.assertEqual(self.row()["runtimeDisposition"]["value"], "unknown")
+        with patch.object(module, "_MAX_REGISTRY_TOTAL_BYTES", 1):
+            self.assertEqual(self.row()["runtimeDisposition"]["value"], "unknown")
+        target = self.root / "sessions/123.json"
+        target.unlink()
+        target.symlink_to(self.root / "missing")
+        self.assertFalse(self.read()["parkedSupported"])
+        target.unlink()
+        os.mkfifo(target)
+        self.assertFalse(self.read()["parkedSupported"])
 
-    def write_job(
-        self,
-        job_id="abcdef01",
-        *,
-        session_id="11234567-0123-4567-89ab-0123456789ab",
-        state="working",
-        tempo="active",
-        **extra,
-    ):
-        row = {
-            "sessionId": session_id,
-            "state": state,
-            "tempo": tempo,
-            "updatedAt": 999999,
-            "createdAt": "2026-10-02T00:00:00Z",
-            "cwd": "/same/checkout",
-            "name": "SYNTHETIC_PRIVATE_JOB_NAME",
-            "detail": "SYNTHETIC_PRIVATE_JOB_DETAIL",
-            "providerEnv": {"TOKEN": "SYNTHETIC_PRIVATE_CREDENTIAL"},
-            "prompt": "SYNTHETIC_PRIVATE_JOB_PROMPT",
-            "needs": {"secret": "SYNTHETIC_PRIVATE_NEED"},
-            "output": "SYNTHETIC_PRIVATE_OUTPUT",
-            "block": {"questions": ["SYNTHETIC_PRIVATE_QUESTION"]},
-            "tool": {"arguments": "SYNTHETIC_PRIVATE_TOOL_ARGUMENT"},
-            **extra,
-        }
-        directory = self.root / "jobs" / job_id
-        directory.mkdir()
-        self.write_json(directory / "state.json", row)
-        return row
+    def test_wrong_filename_duplicate_keys_and_malformed_identity_are_rejected(self):
+        self.record(pid=124)
+        (self.root / "sessions/124.json").rename(self.root / "sessions/123.json")
+        self.assertFalse(self.read()["parkedSupported"])
+        (self.root / "sessions/123.json").write_text('{"sessionId":"' + SID + '","sessionId":"' + SID + '"}')
+        self.assertFalse(self.read()["parkedSupported"])
+        self.record(sessionId="not-a-uuid")
+        self.assertFalse(self.read()["parkedSupported"])
 
-    @staticmethod
-    def write_json(path, row):
-        path.write_text(json.dumps(row), encoding="utf-8")
+    def test_native_title_requires_user_source_and_optional_path_does_not_break_runtime(self):
+        for extra in ({"nameSource": "automatic"}, {"nameSource": None}, {"cwd": "/bad/../path"}):
+            self.record(**extra)
+            row = self.row()
+            self.assertEqual(row["presence"]["value"], "present")
+            if extra.get("cwd"):
+                self.assertIsNone(row["cwd"])
+            else:
+                self.assertEqual(row["title"], "Claude " + SID)
 
-    def read(self, *, executable_match=True):
-        with (
-            patch("agent_observer.claude_metadata._current_pid_domain", return_value=self.domain),
-            patch("agent_observer.claude_metadata.time.time_ns", return_value=5_000_000_000),
-            patch(
-                "agent_observer.claude_metadata._linux_process_uses_supported_binary",
-                return_value=(
-                    executable_match,
-                    "matched" if executable_match else "different_binary",
-                ),
-            ),
-        ):
-            return snapshot(self.root, **self.scope)
+    def test_invalid_scope_or_saved_catalog_is_rejected_before_io(self):
+        for args in ({"host_scope": []}, {"saved_session_ids": ["invalid"]}, {"binary_sha256": "invalid"}):
+            kwargs = dict(host_scope="snap", namespace="private", runtime_version="unknown", binary_sha256=None)
+            kwargs.update(args)
+            self.assertFalse(snapshot(self.root, **kwargs)["supported"])
 
-    def test_compatibility_depends_on_owned_metadata_not_release_or_hash(self):
-        result = snapshot(self.root, **{**self.scope, "runtime_version": "2.999.0", "binary_sha256": "0" * 64})
-        self.assertTrue(result["supported"])
-        result = snapshot(self.root / "does-not-exist", **self.scope)
-        self.assertFalse(result["supported"])
-        self.assertEqual(result["errors"], [{"code": "config_root_unavailable"}])
-        result = snapshot(self.root, **{**self.scope, "binary_sha256": "invalid"})
-        self.assertFalse(result["supported"])
-        self.assertEqual(result["errors"], [{"code": "invalid_runtime_digest"}])
-
-    def test_linux_pid_domain_matches_exact_installed_formula(self):
-        self.assertEqual(
-            linux_pid_domain("0123456789abcdef0123456789abcdef", "pid:[4026531836]"),
-            self.domain,
-        )
-        self.assertEqual(
-            linux_pid_domain("", "pid:[4026531836]"),
-            "linux::pid:[4026531836]",
-        )
-        self.assertIsNone(linux_pid_domain("not-a-machine-id", "pid:[4026531836]"))
-        self.assertIsNone(linux_pid_domain("0" * 32, "pid:[bad]"))
-        with (
-            patch("agent_observer.claude_metadata.sys.platform", "linux"),
-            patch("agent_observer.claude_metadata.os.open", side_effect=FileNotFoundError),
-            patch("agent_observer.claude_metadata.os.readlink", return_value="pid:[4026531836]"),
-        ):
-            self.assertEqual(
-                claude_metadata._current_pid_domain(),
-                "linux::pid:[4026531836]",
-            )
-
-    def test_live_status_clock_is_preserved_and_payload_text_is_filtered(self):
-        self.write_session(status="busy", status_updated_at=111)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            result = self.read()
-        item = result["observations"][0]
-        self.assertEqual(item["work"]["value"], "working")
-        self.assertEqual(item["work"]["observedAt"], 111)
-        self.assertEqual(item["presence"]["observedAt"], 5000)
-        self.assertEqual(item["attachment"]["value"], "unknown")
-        self.assertEqual(item["title"], "Claude 11234567-0123-4567-89ab-0123456789ab")
-        self.assertEqual(item["nativeStatus"]["observedAt"], 111)
-        self.assertEqual(item["cwd"], "/same/checkout")
-        self.assertEqual(item["cwdSource"], "claude_registry")
-        encoded = json.dumps(result)
-        for secret in (
-            "SYNTHETIC_PRIVATE_NAME",
-            "SYNTHETIC_PRIVATE_DETAIL",
-            "SYNTHETIC_PRIVATE_PROMPT",
-            "SYNTHETIC_PRIVATE_NEED",
-            "SYNTHETIC_PRIVATE_QUESTION",
-            "SYNTHETIC_PRIVATE_CREDENTIAL",
-            "SYNTHETIC_PRIVATE_OUTPUT",
-            "SYNTHETIC_PRIVATE_TOOL_ARGUMENT",
-            "999999",
-        ):
-            self.assertNotIn(secret, encoded)
-
-    def test_user_assigned_registry_title_is_bounded_without_changing_identity(self):
-        self.write_session(name="  Native\nSession\x00Name  " + "x" * 300, nameSource="user")
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            result = self.read()
-        item = result["observations"][0]
-        self.assertTrue(item["title"].startswith("Native Session Name "))
-        self.assertEqual(len(item["title"]), 256)
-        self.assertEqual(item["identity"]["nativeId"], "11234567-0123-4567-89ab-0123456789ab")
-        self.assertEqual(item["work"]["observedAt"], 111)
-        self.assertNotIn("SYNTHETIC_PRIVATE_PROMPT", json.dumps(result))
-
-    def test_unproved_name_sources_and_empty_names_keep_id_fallback(self):
-        for source in (None, "auto", "derived", "collision", "peer", "hook", "unknown", []):
-            with self.subTest(source=source):
-                self.write_session(name="SYNTHETIC_PRIVATE_TASK_NAME", nameSource=source)
-                result = self.read()
-                self.assertEqual(
-                    result["observations"][0]["title"],
-                    "Claude 11234567-0123-4567-89ab-0123456789ab",
-                )
-                self.assertNotIn("SYNTHETIC_PRIVATE_TASK_NAME", json.dumps(result))
-        for name in (None, True, [], "", " \n\x00\t "):
-            with self.subTest(name=name):
-                self.write_session(name=name, nameSource="user")
-                self.assertEqual(
-                    self.read()["observations"][0]["title"],
-                    "Claude 11234567-0123-4567-89ab-0123456789ab",
-                )
-
-    def test_user_job_title_requires_exact_session_link_and_registry_name_wins(self):
-        self.write_session(job_id="abcdef01", nameSource="auto")
-        self.write_job(name="User job title", nameSource="user")
-        result = self.read()
-        self.assertEqual(result["observations"][0]["title"], "User job title")
-        self.write_session(job_id="abcdef01", name="User registry title", nameSource="user")
-        self.assertEqual(self.read()["observations"][0]["title"], "User registry title")
-        path = self.root / "jobs" / "abcdef01" / "state.json"
-        job = json.loads(path.read_text())
-        job["sessionId"] = "21234567-0123-4567-89ab-0123456789ab"
-        self.write_json(path, job)
-        self.write_session(job_id="abcdef01", nameSource="auto")
-        for item in self.read()["observations"]:
-            self.assertEqual(item["title"], "Claude " + item["identity"]["nativeId"])
-
-    def test_retained_job_user_title_does_not_require_a_running_registry_record(self):
-        self.write_job(
-            name="Retained user title",
-            nameSource="user",
-            state="done",
-            tempo="idle",
-            lastTerminalAt="2026-10-02T00:00:01.000Z",
-        )
-        result = self.read()
-        self.assertEqual(result["observations"][0]["title"], "Retained user title")
-        self.assertEqual(result["observations"][0]["work"]["value"], "settled")
-
-    def test_user_rename_during_read_refreshes_title_without_changing_work_clock(self):
-        self.write_session(name="First title", nameSource="user", job_id="abcdef01")
-        self.write_job(name="First job title", nameSource="user")
-        original_read = claude_metadata._read_json_at
-        renamed: set[str] = set()
-
-        def rename_after_first_read(directory_fd, name, limit):
-            value = original_read(directory_fd, name, limit)
-            if name in {"23145.json", "state.json"} and name not in renamed:
-                renamed.add(name)
-                path = (
-                    self.root / "sessions" / name
-                    if name == "23145.json"
-                    else self.root / "jobs" / "abcdef01" / name
-                )
-                row = json.loads(path.read_text())
-                row["name"] = "Second title" if name == "23145.json" else "Second job title"
-                row["updatedAt"] = 888888
-                self.write_json(path, row)
-            return value
-
-        with (
-            patch(
-                "agent_observer.claude_metadata._read_json_at", side_effect=rename_after_first_read
-            ),
-            patch(
-                "agent_observer.claude_metadata._linux_proc_start_token",
-                return_value=("67890", "present"),
-            ),
-        ):
-            result = self.read()
-        self.assertEqual(len(result["observations"]), 1)
-        self.assertEqual(result["observations"][0]["title"], "Second title")
-        self.assertEqual(result["observations"][0]["work"]["observedAt"], 111)
-        self.assertEqual(result["coverage"]["sessionRegistry"], "complete")
-        self.assertEqual(result["coverage"]["jobStore"], "complete")
-        self.assertNotIn("metadata_changed_during_snapshot", json.dumps(result["errors"]))
-
-    def test_cwd_is_optional_metadata_and_never_an_identity_join(self):
-        self.write_session(status="busy", status_updated_at=111, cwd="relative/path")
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            row = self.read()["observations"][0]
-        self.assertIsNone(row["cwd"])
-        self.assertIsNone(row["cwdSource"])
-        self.assertEqual(row["identity"]["nativeId"], "11234567-0123-4567-89ab-0123456789ab")
-
-    def test_pid_reuse_never_confirms_presence_or_current_registry_work(self):
-        self.write_session(status="busy", status_updated_at=111)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("99999", "present"),
-        ):
-            item = self.read()["observations"][0]
-        self.assertEqual(item["presence"]["value"], "absent")
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertIsNone(item["work"]["observedAt"])
-
-    def test_pid_reuse_during_executable_check_never_confirms_presence(self):
-        self.write_session(status="busy", status_updated_at=111)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            side_effect=[("67890", "present"), ("99999", "present")],
-        ) as start_reader:
-            item = self.read()["observations"][0]
-        self.assertEqual(start_reader.call_count, 2)
-        self.assertEqual(item["presence"]["value"], "absent")
-        self.assertEqual(item["work"]["value"], "unknown")
-
-    def test_background_idle_and_general_updated_at_do_not_settle_job(self):
-        self.write_session(job_id="abcdef01", status="idle", status_updated_at=222)
-        self.write_job(state="working", tempo="active")
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            item = self.read()["observations"][0]
-        self.assertEqual(item["job"]["state"], "working")
-        self.assertEqual(item["job"]["tempo"], "active")
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertIsNone(item["work"]["observedAt"])
-        self.assertEqual(item["nativeStatus"]["observedAt"], 222)
-
-    def test_missing_linked_job_does_not_fall_back_to_registry_idle(self):
-        self.write_session(job_id="abcdef01", status="idle", status_updated_at=222)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            item = self.read()["observations"][0]
-        self.assertEqual(item["job"]["retained"], False)
-        self.assertEqual(item["work"]["value"], "unknown")
-
-    def test_terminal_state_requires_nonactive_tempo_and_terminal_clock(self):
-        self.write_session(job_id="abcdef01", status="idle", status_updated_at=100)
-        self.write_job(
-            state="done",
-            tempo="active",
-            lastTerminalAt="1970-01-01T00:00:00.450Z",
-            firstTerminalAt="1970-01-01T00:00:00.400Z",
-        )
-        active_item = self.read()["observations"][0]
-        self.assertEqual(active_item["work"]["value"], "unknown")
-
-        (self.root / "jobs" / "abcdef01" / "state.json").unlink()
-        self.write_json(
-            self.root / "jobs" / "abcdef01" / "state.json",
-            {
-                "sessionId": "11234567-0123-4567-89ab-0123456789ab",
-                "state": "done",
-                "tempo": "idle",
-                "updatedAt": 999999,
-                "lastTerminalAt": "1970-01-01T00:00:00.450Z",
-            },
-        )
-        terminal_item = self.read()["observations"][0]
-        self.assertEqual(terminal_item["work"]["value"], "settled")
-        self.assertEqual(terminal_item["work"]["observedAt"], 450)
-
-    def test_later_idle_registry_status_does_not_invalidate_terminal_job(self):
-        self.write_session(job_id="abcdef01", status="idle", status_updated_at=460)
-        self.write_job(
-            state="done",
-            tempo="idle",
-            lastTerminalAt="1970-01-01T00:00:00.450Z",
-        )
-        item = self.read()["observations"][0]
-        self.assertEqual(item["work"]["value"], "settled")
-        self.assertEqual(item["work"]["observedAt"], 450)
-        self.assertNotIn("status_after_terminal_clock", item["metadataIssues"])
-
-    def test_later_active_registry_status_keeps_terminal_job_ambiguous(self):
-        self.write_session(job_id="abcdef01", status="busy", status_updated_at=460)
-        self.write_job(
-            state="done",
-            tempo="idle",
-            lastTerminalAt="1970-01-01T00:00:00.450Z",
-        )
-        item = self.read()["observations"][0]
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertEqual(item["work"]["health"], "ambiguous")
-        self.assertIn("status_after_terminal_clock", item["metadataIssues"])
-
-    def test_terminal_state_without_proven_clock_stays_unknown(self):
-        self.write_job(state="done", tempo="idle")
-        item = self.read()["observations"][0]
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertIsNone(item["work"]["observedAt"])
-        self.assertIn("terminal_clock_unavailable", item["metadataIssues"])
-
-    def test_cross_id_conflict_is_explicit_and_never_merges_terminal_work(self):
-        first = "11234567-0123-4567-89ab-0123456789ab"
-        second = "21234567-0123-4567-89ab-0123456789ab"
-        self.write_session(job_id="abcdef01", session_id=first)
-        self.write_job(
-            session_id=second,
-            state="done",
-            tempo="idle",
-            lastTerminalAt="1970-01-01T00:00:00.450Z",
-        )
-        result = self.read()
-        by_session = {item["nativeIds"]["sessionId"]: item for item in result["observations"]}
-        self.assertEqual(set(by_session), {first, second})
-        self.assertEqual(by_session[first]["work"]["health"], "ambiguous")
-        self.assertEqual(by_session[second]["work"]["health"], "ambiguous")
-        self.assertIn("job_session_conflict", json.dumps(result["errors"]))
-
-    def test_duplicate_session_job_bindings_are_not_resolved_by_pid_order(self):
-        session_id = "11234567-0123-4567-89ab-0123456789ab"
-        self.write_session(pid=23145, job_id="abcdef01", session_id=session_id)
-        self.write_session(pid=23146, job_id="abcdef01", session_id=session_id)
-        self.write_job("abcdef01", session_id=session_id)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            result = self.read()
-        self.assertEqual(len(result["observations"]), 2)
-        self.assertTrue(
-            all(item["work"]["health"] == "ambiguous" for item in result["observations"])
-        )
-        self.assertIn("duplicate_session_job_pair", json.dumps(result["errors"]))
-
-    def test_same_cwd_does_not_collapse_independent_retained_jobs(self):
-        first = "11234567-0123-4567-89ab-0123456789ab"
-        second = "21234567-0123-4567-89ab-0123456789ab"
-        self.write_job("abcdef01", session_id=first)
-        self.write_job("abcdef02", session_id=second)
-        result = self.read()
-        self.assertEqual(len(result["observations"]), 2)
-        self.assertEqual(
-            {item["nativeIds"]["jobId"] for item in result["observations"]},
-            {"abcdef01", "abcdef02"},
-        )
-        self.assertEqual(
-            {item["nativeIds"]["sessionId"] for item in result["observations"]},
-            {first, second},
-        )
-        self.assertTrue(
-            all(item["presence"]["value"] == "unknown" for item in result["observations"])
-        )
-
-    def test_waiting_status_maps_only_reason_code_not_dialog_text(self):
-        self.write_session(status="waiting", status_updated_at=333)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            result = self.read()
-        item = result["observations"][0]
-        self.assertEqual(item["work"]["value"], "needs_input")
-        self.assertEqual(item["waitReason"], "user_input")
-        self.assertNotIn("SYNTHETIC_PRIVATE_QUESTION", json.dumps(result))
-
-    def test_blocked_job_waiting_and_idle_have_distinct_work_semantics(self):
-        self.write_session(
-            job_id="abcdef01",
-            status="waiting",
-            status_updated_at=333,
-            waitingFor="permission prompt",
-        )
-        self.write_job(state="working", tempo="blocked")
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            waiting = self.read()["observations"][0]
-        self.assertEqual(waiting["work"]["value"], "needs_input")
-        self.assertEqual(waiting["work"]["observedAt"], 333)
-        self.assertEqual(waiting["waitReason"], "approval")
-
-        session_path = self.root / "sessions" / "23145.json"
-        row = json.loads(session_path.read_text(encoding="utf-8"))
-        row.update(status="idle", statusUpdatedAt=444)
-        self.write_json(session_path, row)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            idle = self.read()["observations"][0]
-        self.assertEqual(idle["work"]["value"], "unknown")
-        self.assertEqual(idle["work"]["health"], "unavailable")
-
-    def test_supported_waiting_for_vocabulary_is_finite(self):
-        expected = {
-            "input needed": "user_input",
-            "permission prompt": "approval",
-            "worker request": "worker_request",
-            "sandbox request": "sandbox_request",
-            "dialog open": "user_input",
-            "dialog:mcp_elicitation": "user_input",
-            "goal proposal": "unknown",
-        }
-        for native_reason, reason_code in expected.items():
-            self.write_session(status="waiting", status_updated_at=333, waitingFor=native_reason)
-            with patch(
-                "agent_observer.claude_metadata._linux_proc_start_token",
-                return_value=("67890", "present"),
-            ):
-                item = self.read()["observations"][0]
-            self.assertEqual(item["waitReason"], reason_code)
-
-    def test_native_blocked_job_is_recognized_without_inventing_phase(self):
-        self.write_job(state="blocked", tempo="blocked")
-        item = self.read()["observations"][0]
-        self.assertEqual(item["job"]["state"], "unknown")
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertIn("native_blocked_phase_unproved", item["metadataIssues"])
-        self.assertNotIn("unknown_job_state", item["metadataIssues"])
-
-    def test_different_live_executable_is_unsupported_not_worker_exit(self):
-        self.write_session(status="busy", status_updated_at=111)
-        with patch(
-            "agent_observer.claude_metadata._linux_proc_start_token",
-            return_value=("67890", "present"),
-        ):
-            item = self.read(executable_match=False)["observations"][0]
-        self.assertEqual(item["presence"]["value"], "unknown")
-        self.assertEqual(item["presence"]["health"], "unsupported")
-        self.assertEqual(item["work"]["value"], "unknown")
-
-    def test_malformed_and_unrecognized_records_are_bounded_and_private(self):
-        self.write_job(state="SYNTHETIC_PRIVATE_ARBITRARY_STATE", tempo="active")
-        (self.root / "sessions" / "123.json").write_text(
-            '{"pid":123,"sessionId":"SYNTHETIC_PRIVATE_BAD_ID",', encoding="utf-8"
-        )
-        result = self.read()
-        self.assertEqual(len(result["observations"]), 1)
-        item = result["observations"][0]
-        self.assertEqual(item["job"]["state"], "unknown")
-        self.assertEqual(item["work"]["value"], "unknown")
-        self.assertIn("unknown_job_state", json.dumps(result["errors"]))
-        encoded = json.dumps(result)
-        self.assertNotIn("SYNTHETIC_PRIVATE_ARBITRARY_STATE", encoded)
-        self.assertNotIn("SYNTHETIC_PRIVATE_BAD_ID", encoded)
-        self.assertNotIn("providerEnv", encoded)
-        self.assertNotIn("SYNTHETIC_PRIVATE_PROMPT", encoded)
-
-    def test_fifo_is_rejected_without_opening_a_blocking_reader(self):
-        self.write_job(state="working", tempo="active")
-        state_path = self.root / "jobs" / "abcdef01" / "state.json"
-        state_path.unlink()
-        os.mkfifo(state_path)
-        result = self.read()
-        self.assertFalse(result["observations"])
-        self.assertIn("not_regular_file", json.dumps(result["errors"]))
-
-    def test_symlinked_state_file_is_rejected(self):
-        self.write_job(state="working", tempo="active")
-        state_path = self.root / "jobs" / "abcdef01" / "state.json"
-        state_path.unlink()
-        target = self.root / "private-source.json"
-        self.write_json(target, {"prompt": "SYNTHETIC_PRIVATE_PROMPT"})
-        state_path.symlink_to(target)
-        result = self.read()
-        self.assertFalse(result["observations"])
-        self.assertIn("symlink_rejected", json.dumps(result["errors"]))
-        self.assertNotIn("SYNTHETIC_PRIVATE_PROMPT", json.dumps(result))
-
-    def test_registry_change_between_reads_is_reported_and_excluded(self):
-        self.write_session(status="busy", status_updated_at=111)
-        original_read = claude_metadata._read_json_at
-        calls = 0
-
-        def change_after_first_read(directory_fd, name, limit):
-            nonlocal calls
-            value = original_read(directory_fd, name, limit)
-            if name == "23145.json":
-                calls += 1
-                if calls == 1:
-                    self.write_json(
-                        self.root / "sessions" / name,
-                        {
-                            "pid": 23145,
-                            "sessionId": "21234567-0123-4567-89ab-0123456789ab",
-                            "procStart": "67890",
-                            "pidDomain": self.domain,
-                            "kind": "interactive",
-                            "status": "busy",
-                            "statusUpdatedAt": 111,
-                        },
-                    )
-            return value
-
-        with (
-            patch(
-                "agent_observer.claude_metadata._read_json_at",
-                side_effect=change_after_first_read,
-            ),
-            patch("agent_observer.claude_metadata._current_pid_domain", return_value=self.domain),
-            patch("agent_observer.claude_metadata.time.time_ns", return_value=5_000_000_000),
-            patch(
-                "agent_observer.claude_metadata._linux_proc_start_token",
-                return_value=("67890", "present"),
-            ),
-            patch(
-                "agent_observer.claude_metadata._linux_process_uses_supported_binary",
-                return_value=(True, "matched"),
-            ),
-        ):
-            result = snapshot(self.root, **self.scope)
-        self.assertFalse(result["observations"])
-        self.assertEqual(result["coverage"]["sessionRegistry"], "partial")
-        self.assertIn("metadata_changed_during_snapshot", json.dumps(result["errors"]))
-
-    def test_unrelated_metadata_update_does_not_invalidate_projected_state(self):
-        self.write_session(status="busy", status_updated_at=111)
-        original_read = claude_metadata._read_json_at
-        calls = 0
-
-        def update_unprojected_fields(directory_fd, name, limit):
-            nonlocal calls
-            value = original_read(directory_fd, name, limit)
-            if name == "23145.json":
-                calls += 1
-                if calls == 1:
-                    path = self.root / "sessions" / name
-                    row = json.loads(path.read_text(encoding="utf-8"))
-                    row["updatedAt"] = 888888
-                    row["name"] = "SYNTHETIC_PRIVATE_RENAMED"
-                    self.write_json(path, row)
-            return value
-
-        with (
-            patch(
-                "agent_observer.claude_metadata._read_json_at",
-                side_effect=update_unprojected_fields,
-            ),
-            patch("agent_observer.claude_metadata._current_pid_domain", return_value=self.domain),
-            patch("agent_observer.claude_metadata.time.time_ns", return_value=5_000_000_000),
-            patch(
-                "agent_observer.claude_metadata._linux_proc_start_token",
-                return_value=("67890", "present"),
-            ),
-            patch(
-                "agent_observer.claude_metadata._linux_process_uses_supported_binary",
-                return_value=(True, "matched"),
-            ),
-        ):
-            result = snapshot(self.root, **self.scope)
-        self.assertEqual(result["observations"][0]["work"]["value"], "working")
-        self.assertEqual(result["observations"][0]["work"]["observedAt"], 111)
-        self.assertEqual(result["coverage"]["sessionRegistry"], "complete")
-
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_linux_zombie_is_dead_incarnation(self):
+        fields = ["Z"] + ["0"] * 18 + ["456"]
+        with (patch.object(module.os, "open", return_value=99), patch.object(module.os, "close"),
+              patch.object(module.os, "read", return_value=("123 (worker) " + " ".join(fields)).encode())):
+            self.assertEqual(module._linux_proc_start_token(123), ("456", "absent"))

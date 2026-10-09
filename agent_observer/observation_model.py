@@ -13,7 +13,6 @@ from dataclasses import dataclass, replace
 _VALUES = {
     "work": frozenset({"working", "needs_input", "settled", "interrupted", "error", "unknown"}),
     "presence": frozenset({"present", "absent", "unknown"}),
-    "attachment": frozenset({"attached", "detached", "unknown"}),
 }
 _HEALTH = frozenset({"current", "stale", "unavailable", "unsupported", "ambiguous"})
 _SOURCES = frozenset(
@@ -139,17 +138,15 @@ class SessionObservation:
     identity: NativeIdentity
     work: Evidence = Evidence("work")
     presence: Evidence = Evidence("presence")
-    attachment: Evidence = Evidence("attachment")
 
     def __post_init__(self) -> None:
         if (
             not isinstance(self.identity, NativeIdentity)
             or not all(
-                isinstance(value, Evidence) for value in (self.work, self.presence, self.attachment)
+                isinstance(value, Evidence) for value in (self.work, self.presence)
             )
             or self.work.dimension != "work"
             or self.presence.dimension != "presence"
-            or self.attachment.dimension != "attachment"
         ):
             raise ValueError("invalid_observation_dimension")
 
@@ -167,7 +164,6 @@ class SessionObservation:
             },
             "work": self.work.metadata(),
             "presence": self.presence.metadata(),
-            "attachment": self.attachment.metadata(),
         }
 
 

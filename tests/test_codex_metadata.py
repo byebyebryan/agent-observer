@@ -37,8 +37,7 @@ class CodexMetadataTest(unittest.TestCase):
         self.assertEqual(value["work"]["value"], "settled")
         self.assertEqual(value["work"]["observedAt"], 100)
         self.assertEqual(value["presence"]["value"], "present")
-        self.assertEqual(value["attachment"]["value"], "unknown")
-        self.assertEqual(value["attachment"]["health"], "unsupported")
+        self.assertNotIn("attachment", value)
 
     def test_saved_idle_is_not_fresh_work_or_presence(self):
         value = saved_thread_metadata(self.row, **self.scope)

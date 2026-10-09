@@ -118,7 +118,6 @@ def _projection(payload, *, host_scope, namespace, runtime_version):
     session_id = _uuid(payload.get("sessionId"))
     observation = SessionObservation(
         NativeIdentity(host_scope, "codex", namespace, "thread", thread_id),
-        attachment=Evidence("attachment", health="unsupported", reason="unsupported"),
     )
     cwd = payload.get("cwd")
     issues = []
@@ -218,7 +217,7 @@ def live_thread_metadata(payload, *, host_scope, namespace, runtime_version, obs
         )
     else:
         work = Evidence("work", health="unsupported", reason="unsupported")
-    observation = SessionObservation(observation.identity, work, presence, observation.attachment)
+    observation = SessionObservation(observation.identity, work, presence)
     disposition = presence.metadata()
     disposition["value"] = "parked" if kind == "notLoaded" else "running"
     return {

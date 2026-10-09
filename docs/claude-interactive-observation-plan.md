@@ -2,7 +2,8 @@
 
 Date: 2026-10-08. Status: accepted design direction and registration assumption;
 shared public contract fit is now [settled](claude-read-contract-review.md).
-Implementation, artifact acceptance and rollout remain pending. This reconciles
+I1 oracle/private boundary is accepted; the a9 producer is implemented in source.
+Immutable artifact/native acceptance and rollout remain pending. This reconciles
 the [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md) and subsequent
 [native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 with the user's accepted practical scope. It replaces the earlier requirement
@@ -29,7 +30,9 @@ The selected a8 adapter already authenticates native running registrations and
 supported status, with saved metadata collected independently. Its parked
 predicate applies only to bounded terminal retained jobs. Saved-only rows and
 foreground `/exit` still report unknown. This plan changes that lifecycle policy
-and removes background/attachment scaffolding; the new rule is not implemented.
+and removes background/attachment scaffolding. The successor implements it in
+source through the [private sample boundary](claude-private-sample-contract.md);
+that does not select an installed artifact.
 
 Native evidence now establishes:
 
@@ -194,7 +197,9 @@ baseline until a successor's separate artifact/native acceptance.
 | I4: Observer operational selection | Scoped read/service selection after I3; restart/failure/reconnect/rollback/reselection | Installed bytes and normal endpoints verified independently; writer remains separately selected |
 | I5: provider policy and handoff | Prefer Agent View off for the interactive-only workflow if I3 preserves required evidence; prepare managed Snap settings separately and validate fresh launches | Separate configuration gate; no forced restart of ordinary sessions; clients receive the accepted artifact/contract and registration limitation |
 
-Remaining I1 oracle/private work is the next checkpoint. Reuse native I0 facts
+I1 oracle/private work is complete. I2 source checks cover interactive lifecycle,
+incarnation uncertainty, duplicates, source bounds, conflict guards and independent
+leases. The next checkpoint is I3 installed native acceptance. Reuse native I0 facts
 rather than repeating the entire spike for every daily provider update. Additional cases
 establish the candidate's bounded behavior; they are not an attempt to prove
 away the already demonstrated missing-registration limitation. If a required

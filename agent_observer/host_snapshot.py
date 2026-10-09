@@ -102,7 +102,7 @@ def compose(*, host_scope: str, provider_snapshots: list[dict]):
             }
         )
         for row in rows:
-            for dimension in ("work", "presence", "attachment"):
+            for dimension in ("work", "presence"):
                 evidence = row[dimension]
                 if evidence.get("value") != "unknown":
                     evidence["lastKnownValue"] = evidence["value"]
