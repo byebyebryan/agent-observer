@@ -11,6 +11,12 @@ a separate operational gate. No old-wire converter is supplied.
 
 ## Interfaces and ownership
 
+The [ownership specification and source audit](observation-boundaries.md)
+clarify core/model/adapter/engine, local service, mesh and read-client boundaries.
+The planned internal extraction preserves this contract. Native refresh hints,
+read push and user-facing notification delivery are separate concerns; this
+read API supplies no terminal/window matching or public attention-event stream.
+
 | Interface | Version | Entry point |
 | --- | --- | --- |
 | Pure read API | 2 | `agent_observer.public`, `agent-observer api` |

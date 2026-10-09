@@ -212,6 +212,11 @@ for direct and cached commands against the explicit accepted candidate.
 
 ## Scope
 
+The [observation ownership specification](docs/observation-boundaries.md)
+defines core/model/adapter/engine, local service, optional mesh and read-client
+boundaries. It records the next internal hardening pass. Terminal/window matching,
+attachment/actions and user-facing alert delivery have separate client ownership.
+
 Agent Observer owns provider discovery, bounded metadata, runtime observations,
 source/version capability handling, and reconciliation of stale or conflicting
 evidence. Its interface should work across consumer languages.

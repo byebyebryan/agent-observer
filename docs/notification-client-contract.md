@@ -3,6 +3,12 @@
 Date: 2026-10-06. Separate S6 checkpoint; not part of stable API v1 or a hook
 installation. Native/transport acceptance is recorded separately below.
 
+The later [ownership clarification](observation-boundaries.md) distinguishes
+provider refresh hints, Observer read push and user-facing alerts. This remains
+an experimental source/client contract, outside API 2's accepted read surface.
+Its suppression/disposition/formatting fields are client policy; future reusable
+native-event evidence needs a separately reviewed boundary and native gate.
+
 ## Source boundary
 
 `notification_source` consumes an explicitly invoked provider callback and a

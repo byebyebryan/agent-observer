@@ -4,6 +4,10 @@
 
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
+- `docs/observation-boundaries.md` defines the next boundary-hardening pass:
+  model/passive adapters/reusable observation engine in core, service hosting
+  and local read delivery, external meshing and attachment/action/alert clients.
+  Native refresh hints do not grant runtime evidence or alert/action authority.
 - The active correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked

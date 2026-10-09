@@ -8,6 +8,18 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
+The next source pass is [observation boundary hardening](observation-boundaries.md).
+The authorized [Codex completion loop](codex-observation-completion-plan.md)
+sequences source hardening, separate artifact/native acceptance and an
+Observer-only normal read/service rollout; the writer retains its own selection.
+It locks core/model/adapter/engine, service hosting, mesh and read-client ownership;
+separates provider wakeups/read push from alert policy; and extracts common
+observation decisions currently spread through service/direct-watch modules.
+Codex remains the only accepted adapter. Dependency/authority checks and
+independent installed CLI/native comparisons precede any rollout, Claude,
+public event API or attachment/client implementation. API 2 stays unchanged
+unless a separately reviewed semantic change requires otherwise.
+
 The current checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
 [deep review](codex-daemon-authority-review.md). D0 captures the reviewed design

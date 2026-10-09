@@ -1,5 +1,12 @@
 # Agent Observer architecture boundaries
 
+The [observation ownership clarification](observation-boundaries.md) defines
+the next hardening pass: core contains the model, passive adapters and reusable
+observation engine; the service hosts it and provides local IPC. Provider refresh
+signals, pushed read updates and user-facing alerts have separate ownership.
+Meshing and terminal/window matching remain external. Its source audit records
+the internal extraction work still needed without changing accepted API 2.
+
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only
 discovery, terminal/job field scaffolding, compatibility obligations and the
