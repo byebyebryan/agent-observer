@@ -8,6 +8,14 @@
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
+- `docs/claude-observation-execution.md` and its
+  `docs/evidence/2026-10-08-claude-observation/REPORT.md` accept the following
+  Claude observation checkpoint on Snap. Stable authenticated provider registration
+  and status metadata supply running/phase; terminal retained jobs have a bounded
+  positive parked predicate. Saved-only absence and foreground exit remain
+  unknown. The earlier Codex-only correction below is historical scope, not a
+  prohibition on this independently accepted passive adapter. Claude actions,
+  attachment and generic background lifetime remain separate gates.
 - The active correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked

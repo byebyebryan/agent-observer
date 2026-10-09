@@ -1,0 +1,31 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a",
+  "initialServiceId": "4e0d14a0-ea6e-44ba-af70-7c0d6f2f0d29",
+  "cases": [
+    {
+      "case": "restart",
+      "oldPid": 2508858,
+      "newPid": 2511256,
+      "oldServiceId": "4e0d14a0-ea6e-44ba-af70-7c0d6f2f0d29",
+      "newServiceId": "a6153466-ba15-4c63-8aa1-6780032e3f64",
+      "oldWatchEnded": true,
+      "reconnectedInitialSequence": 1,
+      "recoverySeconds": 1.4810513280099258
+    },
+    {
+      "case": "forced_publisher_failure",
+      "oldPid": 2511256,
+      "newPid": 2512996,
+      "oldServiceId": "a6153466-ba15-4c63-8aa1-6780032e3f64",
+      "newServiceId": "937ee184-e131-4070-943d-ce87db238e47",
+      "oldWatchEnded": true,
+      "reconnectedInitialSequence": 1,
+      "recoverySeconds": 7.450946061988361
+    }
+  ],
+  "installedCachedCli": true,
+  "startLimitResetBeforeProof": true,
+  "ordinaryProviderActions": false
+}

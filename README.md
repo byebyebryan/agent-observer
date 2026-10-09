@@ -13,34 +13,36 @@ simplified.
 
 ## Status
 
-The current Codex observation checkpoint is
-[a6 gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-on Snap and Starship. The reusable core owns reconciliation and evidence;
-one passive adapter owns authoritative native reads; the local service owns
-helper lifetime and cached pull/push. Dependency checks enforce those boundaries.
-Normal read CLI and services select a6 after independent installed/native and
-scoped operational acceptance. a5's preceding 30-minute reader/resource proof
-retains its exact-artifact bounds; a6 adds focused successor reader checks.
-The normal writer retains a16 independently. Frontend migration,
-actions/attachment, Claude, networking and user-facing alerts remain separate.
+The current checkpoint is [a8 Claude observation](docs/evidence/2026-10-08-claude-observation/REPORT.md).
+Codex is accepted on Snap and Starship; Claude discovery/monitoring is accepted
+on Snap. Normal read CLI/services select a8 through the separate operational gate.
+The reusable core owns reconciliation and evidence; passive adapters own native
+reads; the local service owns helper lifetime and cached pull/push. Dependency
+checks enforce those boundaries. The normal writer retains a16 independently.
+Frontend migration, actions/attachment, networking and user-facing alerts remain
+separate.
 
 [API 2](docs/api-v2.md), snapshot/watch wire 4 and service protocol 2 are unchanged.
-The [client handoff](docs/api-v2-client-handoff.md) provides current direct/cached
-commands and consumer obligations. a6 installed comparisons match all 89 Snap
-and 354 Starship rows, including eight running contexts at that checkpoint.
-The preceding a5 proof establishes isolated working, approval/question, waiting,
-positive parked and outage/recovery agreement across native/direct/cache/push.
-Age follows native conversation activity; uncertainty,
-coverage limits and stale evidence stay explicit.
+The [client handoff](docs/api-v2-client-handoff.md) provides direct/cached commands
+and consumer obligations. Installed/native comparisons match all five ordinary
+Claude running sessions and three terminal parked jobs on Snap, alongside all
+89 Snap and 354 Starship Codex rows. Isolated native/direct/cache/push proofs
+cover working, waiting, approval/question, positive parked and source recovery.
+Age follows native conversation activity; coverage and stale evidence stay explicit.
 
-The [daemon authority reconciliation](docs/codex-daemon-authority-plan.md) and
-[deep review](docs/codex-daemon-authority-review.md) establish Codex as the sole
-running/parked authority, independent of TUI/tmux attachment. The preceding
-[a3 acceptance](docs/evidence/2026-10-08-codex-authority-acceptance/REPORT.md) and
-[a4 saved-evidence repair](docs/evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-retain their exact artifact bounds, including the separate writer subset.
-Claude is unsupported by the current live adapter; post-TUI-closure lifetime and
-physical sleep/wake validation are deferred.
+Codex queries its owning daemon for running/parked independently of TUI/tmux.
+Claude authenticates provider-owned native registrations/status and bounded
+retained-job evidence. Its mutating native roster CLI is never used for observation.
+Saved-only Claude absence and foreground exit remain unknown; terminal jobs have
+a positive parked predicate. One setup-only SDK omission and excluded nested child
+transcripts keep saved coverage partial. Generic dialogs, unregistered background
+runtime and Claude turn outcomes remain unproved.
+
+The preceding [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+and earlier native reports retain their exact artifact bounds. Twenty-one older
+Starship kinds are an accepted forward-looking limit. Physical sleep/wake and
+Codex post-TUI-closure lifetime remain deferred. No provider configuration change
+or ordinary session restart is required for passive observation.
 
 ## Previous checkpoints
 

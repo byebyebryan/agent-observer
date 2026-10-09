@@ -54,3 +54,14 @@ Run `./scripts/check` before each commit. Report unsupported classifications as
 limits, not inferred state. No provider-version/hash allowlist, history migration
 or ordinary provider restart is required. Current installed a6 rejects Claude;
 earlier a16 evidence is historical and does not accept this new adapter.
+
+## Accepted checkpoint
+
+The [a8 receipt](evidence/2026-10-08-claude-observation/REPORT.md) independently
+accepts this passive adapter. The roster command failed the isolated passivity
+gate, so observation uses authenticated native files. Direct/cached/pushed native
+proof covers working, waiting, question/approval, positive terminal parked,
+foreground exit uncertainty and source failure/recovery. Saved-only runtime,
+unregistered background work, generic dialogs and turn outcomes remain unproved.
+The read/service operational gate follows artifact acceptance; writer and
+downstream clients retain their separate gates.

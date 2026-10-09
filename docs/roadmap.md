@@ -13,16 +13,20 @@ The authorized [Codex completion loop](codex-observation-completion-plan.md)
 accepts the a5 source, installed artifact and native observation on both hosts.
 The following [gap-closure pass](codex-observation-gap-closure-plan.md) accepts
 a6's atomic publication and retirement-probe repair. Normal read CLI/services
-select a6 after its independent artifact/native and scoped operational gates.
+selected a6 after its independent artifact/native and scoped operational gates.
+The [Claude execution pass](claude-observation-execution.md) independently accepts
+[a8 discovery/monitoring](evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
+preserving Codex on both hosts and the same read/service contracts. Normal
+read/service selection now uses a8 through its separate operational gate.
 The writer retains a16 independently. Core/model/adapter/engine, service hosting,
 mesh and read-client ownership are enforced; provider wakeups/read push remain
 separate from alert policy. `ObservationEngine` owns common reconciliation and
-`observation_evidence` supplies shared direct-watch retention. Codex remains the
-only accepted live adapter. Claude, public event API, attachment/client and
+`observation_evidence` supplies shared direct-watch retention. Codex and Claude
+are accepted passive adapters within their documented native scopes. Public event API, attachment/client and
 frontend implementation retain their own gates. API 2 stays unchanged unless
 a separately reviewed semantic change requires otherwise.
 
-The current checkpoint is the
+The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
 [deep review](codex-daemon-authority-review.md). D0 captures the reviewed design
 and [ordinary/synthetic evidence](evidence/2026-10-08-codex-authority-review/REPORT.md).
@@ -35,14 +39,15 @@ reader/converter or provider fallback is required. D1–D4 and the supported exa
 writer subset are [accepted against a3](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
 on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) and
 the [client handoff](api-v2-client-handoff.md) describe the current read contract.
-The completion loop supplies the following managed read/service gate; D6 Claude
-remains next. Writer and frontend delivery remain separate checkpoints.
+The completion loop supplied the following managed read/service gate; D6 Claude
+observation is now independently accepted at a8. Claude write/attachment and
+frontend delivery remain separate checkpoints.
 The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
 and unproved exact-Resume gaps against the
 [a4 successor](evidence/2026-10-08-codex-evidence-repair/REPORT.md), with the same
 API/wires and fresh both-host read/write/native proof. It precedes the a5 core
 completion. Future terminal integration belongs to tmux-observer and clients;
-Claude retains its separate following gate.
+Claude followed through its own passive observation gate; write support remains separate.
 
 The preceding [daily-use gap execution](daily-use-gap-execution-plan.md)
 selected a16. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)

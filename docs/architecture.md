@@ -7,7 +7,7 @@ signals, pushed read updates and user-facing alerts have separate ownership.
 Meshing and terminal/window matching remain external. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records source/artifact/native acceptance without changing API 2. Normal read
-CLI/service selection uses the [a6 gap-closure successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+CLI/service selection now uses [a8 Claude observation](evidence/2026-10-08-claude-observation/REPORT.md)
 after independent artifact/native and scoped operational acceptance. History
 and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16.
@@ -19,7 +19,10 @@ requirement to complete Claude proof before this common-contract checkpoint.
 Codex owns execution and native runtime disposition; Observer core/service own
 passive reads, evidence, reconciliation and fan-out; clients own native entry,
 TUI lifetime and terminal attachment. The observation path has no TUI/tmux state
-authority. Claude follows independently; post-TUI-closure acceptance is deferred.
+authority. Claude's independent observation gate accepts provider-owned native
+registration/status metadata and a bounded terminal-job parked predicate on
+Snap, without terminal matching. Saved-only lifecycle remains unknown and
+post-TUI-closure Codex acceptance is deferred.
 The [review](codex-daemon-authority-review.md) led to API 2/read wire 4/service 2
 with clean rejection of the old wire. The following
 [saved-evidence repair](codex-evidence-repair-plan.md) accepts the a4 successor

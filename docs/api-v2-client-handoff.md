@@ -1,9 +1,9 @@
 # API 2 client handoff
 
-Date: 2026-10-08. The Codex observation core/read/service are accepted against
-[0.5.0a6](evidence/2026-10-08-codex-observation-gaps/REPORT.md) on Snap and
-Starship. Normal read CLI links and user services select a6 after independent
-installed/native, managed recovery, rollback/reselection and focused reader checks.
+Date: 2026-10-08. Codex on Snap/Starship and Claude on Snap are independently
+accepted against [0.5.0a8](evidence/2026-10-08-claude-observation/REPORT.md).
+Normal read CLI links and user services select a8 through the separate operational
+gate. The preceding a6 Codex acceptance remains historical evidence.
 The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
 select a consumer or authorize provider policy, frontend, terminal-runtime or
@@ -13,7 +13,7 @@ networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a6.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a8.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -29,7 +29,8 @@ Both API descriptors operate without a provider or service.
 
 - Key rows by the complete host/provider/namespace/native-kind/native-ID tuple.
   Codex `threadId` is the exact thread; `sessionTreeRootId` is independent metadata.
-- Treat running/parked/unknown as daemon facts. No tmux, TUI PID, cwd, title,
+- Treat running/parked/unknown as provider facts. Codex's daemon is its authority;
+  Claude uses authenticated native registration and retained-job evidence. No tmux, TUI PID, cwd, title,
   loaded-list absence or completion callback supplies runtime authority.
 - Handle parked phase null and unknown phase evidence. Blocked reasons are a
   bounded set containing approval, question or both. Default urgency is blocked,
@@ -47,9 +48,13 @@ Both API descriptors operate without a provider or service.
 - Own user intent, terminal/TUI lifetime, tmux/Kitty placement, routing and viewer
   association in the client. Observation supplies no attachment or worker fields.
 
-Codex is the sole native adapter in a6. Explicit Claude collection/service/write
-selection returns `unsupported_provider`. Reserved Claude schema examples are
-contract fixtures, not native acceptance. Claude is the next producer checkpoint.
+Claude supports working, interactive waiting and typed approval/question waits.
+Saved-only absence and foreground `/exit` leave runtime unknown; only a positively
+proved terminal retained job can be parked. Generic dialogs, unregistered background
+work and Claude turn outcomes remain unproved. Saved coverage is partial, including
+one observed SDK setup-only omission and excluded nested child transcripts.
+Claude write selection remains unsupported by the new writer; the a16 writer is
+selected independently and this read acceptance grants no new action capability.
 
 ## Inspect the observation service
 
@@ -60,6 +65,7 @@ agent-observer api
 agent-observer service api
 agent-observer service list --host-scope snap
 agent-observer service watch --host-scope snap --count 3
+agent-observer list --host-scope snap --provider claude
 ```
 
 The managed publisher is already running on each host. Cached pull and push use
