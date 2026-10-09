@@ -42,6 +42,7 @@ class Emitter:
 
 def main():
     from agent_observer.bounded_json import decode_document
+    from agent_observer.adapters import adapter_for
     signal.signal(signal.SIGALRM, lambda *_args: os._exit(2))
     signal.setitimer(signal.ITIMER_REAL, 2)
     request = decode_document(sys.stdin.buffer.read(4097), max_bytes=4096)
@@ -49,6 +50,7 @@ def main():
         raise ValueError("service_hint_request")
     if request["provider"] not in {"codex", "claude"} or not isinstance(request["epoch"], str) or len(request["epoch"]) != 36:
         raise ValueError("service_hint_request")
+    adapter = adapter_for(request["provider"])
     home = Path(request["configHome"])
     if not home.is_absolute() or os.getpgrp() != os.getpid() or os.getsid(0) != os.getpid():
         raise ValueError("service_hint_ownership")
@@ -60,11 +62,7 @@ def main():
         raise ValueError("service_hint_parent")
     signal.setitimer(signal.ITIMER_REAL, 0)
     emitter = Emitter(request["epoch"])
-    if request["provider"] == "codex":
-        from agent_observer.codex_hints import run
-    else:
-        from agent_observer.claude_hints import run
-    run(home, emitter)
+    adapter.listen(home, emitter)
     return 0
 
 

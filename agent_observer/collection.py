@@ -214,19 +214,13 @@ def compose_snapshot(*, host_scope, provider_snapshots):
 
 def collect(*, host_scope, providers, codex_home, claude_home, workspace_config=None):
     # Imports belong to the collecting path, not the public fixture reader.
-    from .codex_snapshot import collect_codex
+    from .adapters import select_adapters
 
-    if (
-        not providers
-        or len(set(providers)) != len(providers)
-        or any(p not in {"codex", "claude"} for p in providers)
-    ):
-        raise ValueError("invalid_provider_selection")
-    if "claude" in providers:
-        raise ValueError("unsupported_provider")
+    adapters = select_adapters(providers)
+    homes = {"codex": codex_home, "claude": claude_home}
     snapshots = [
-        collect_codex(Path(codex_home), host_scope=host_scope)
-        for p in providers
+        adapter.collect(Path(homes[adapter.provider]), host_scope=host_scope)
+        for adapter in adapters
     ]
     result = compose_snapshot(host_scope=host_scope, provider_snapshots=snapshots)
     from .workspace import enrich

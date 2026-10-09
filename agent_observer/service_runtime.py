@@ -143,6 +143,9 @@ class Runtime:
                  max_clients=16, encoded_limit=64 * 1024 * 1024, io_timeout_ms=5000,
                  heartbeat_ms=10000, workspace_config=None, native_hints=False,
                  hint_factory=None, hint_diagnostics=None):
+        if (collect and worker_factory is None) or (native_hints and hint_factory is None):
+            from .adapters import select_adapters
+            select_adapters(list(state.configs))
         if not 1 <= max_clients <= 16 or encoded_limit < MAX_SNAPSHOT_BYTES + MAX_OVERHEAD_BYTES or not 100 <= io_timeout_ms <= 30000:
             raise ValueError("service_runtime_limits")
         self.state, self.path = state, Path(path)

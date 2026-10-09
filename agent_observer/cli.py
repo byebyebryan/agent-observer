@@ -121,9 +121,6 @@ def main(argv=None):
             command_parser.add_argument(
                 "--ref", required=True, help="exact JSON identity from a snapshot row"
             )
-        if command == "doctor":
-            command_parser.add_argument("--history-census", action="store_true",
-                                        help="separate bounded Claude history scan with exclusion counts")
         if command == "watch":
             command_parser.add_argument("--interval", type=float, default=2.0)
             command_parser.add_argument("--count", type=int, help="stop after this many samples")
@@ -179,21 +176,6 @@ def main(argv=None):
             )
         elif args.command == "doctor":
             report = diagnostic(value)
-            if args.history_census:
-                if args.input is not None:
-                    raise ContractError("history_census_requires_live_scope")
-                from .claude_history import collect_saved_history
-                report["historyCensus"] = []
-                for source in report["sources"]:
-                    if source["provider"] != "claude":
-                        continue
-                    history = collect_saved_history(Path(source["configHome"]), history_limit=1000)
-                    report["historyCensus"].append({
-                        "provider": "claude", "namespace": source["namespace"],
-                        "sampledAt": time.time_ns() // 1_000_000,
-                        "coverage": history["coverage"], "counts": history.get("census"),
-                        "errors": history["errors"],
-                    })
             if args.json:
                 print(canonical(report))
             else:
@@ -219,8 +201,6 @@ def main(argv=None):
                             "file_unavailable": "a native metadata file could not be read; check retained target evidence",
                         }.get(code, "observation requirement unavailable")
                         print(f"  {code}: {detail}")
-                for census in report.get("historyCensus", []):
-                    print(f"claude history census (separate sample): {canonical(census)}")
         else:
             print(canonical(value))
         return 0
