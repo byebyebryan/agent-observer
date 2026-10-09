@@ -1,0 +1,16 @@
+{
+  "installedPackage": "claude-code 2.1.294-1",
+  "case": "empty_roster_private_namespaces",
+  "command": "claude agents --json --all",
+  "exit": 0,
+  "rows": 0,
+  "changedFiles": [
+    ".claude.json",
+    "preferences_backup",
+    "jobs/pins.json"
+  ],
+  "newProcesses": 0,
+  "sourceRejected": true,
+  "ordinaryProviderActions": false,
+  "rawOutputRetained": false
+}

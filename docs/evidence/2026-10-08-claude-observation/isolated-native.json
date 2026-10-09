@@ -1,0 +1,182 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "nativeHints": true,
+  "samples": [
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "idle",
+      "runtime": "running",
+      "phase": "waiting",
+      "blockedReasons": [],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518665058,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "busy",
+      "runtime": "running",
+      "phase": "working",
+      "blockedReasons": [],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518673242,
+      "nativeAgeCompared": false
+    },
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "question"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518675770,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "question"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518675770,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "question"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518675770,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "1105fd5b-34fd-41fd-bdb5-48083e192c46",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "question"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518675770,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "8288e5a7-446d-4017-b041-ad98214684e9",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "approval"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518696183,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "8288e5a7-446d-4017-b041-ad98214684e9",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "approval"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518696183,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "8288e5a7-446d-4017-b041-ad98214684e9",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "approval"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518696183,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "8288e5a7-446d-4017-b041-ad98214684e9",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "approval"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518696183,
+      "nativeAgeCompared": true
+    },
+    {
+      "nativeId": "8288e5a7-446d-4017-b041-ad98214684e9",
+      "nativeStatus": "waiting",
+      "runtime": "running",
+      "phase": "blocked",
+      "blockedReasons": [
+        "approval"
+      ],
+      "directCachedPushAgree": true,
+      "activityAt": 1791518696183,
+      "nativeAgeCompared": true
+    }
+  ],
+  "gaps": 0,
+  "heldQuestionPreservesAge": true,
+  "exitSavedRuntimeUnknown": true,
+  "heldApprovalPreservesAge": true,
+  "approvalAutomaticallyAnswered": false,
+  "backgroundIdentityFromNativeJob": true,
+  "terminalJobParkedDirectCachedPush": true,
+  "sourceFaultPreservesUncertainty": true,
+  "sourceRecoveryAccepted": true,
+  "status": "accepted",
+  "harnessSha256": "8055d1a1efa9c102d87a2676f39e691bf4b79f25240bbcd52dae158d67407f40",
+  "artifact": {
+    "manifestVersion": 3,
+    "package": "agent-observer",
+    "version": "0.5.0a8",
+    "wheel": "agent_observer-0.5.0a8-py3-none-any.whl",
+    "wheelSha256": "2d302213b95af76a8e5da888bba1783015eb4770a0cfaade404f7f181cce8b99",
+    "sourceRevision": "a2ad5b19fecc3bb798823b5c363e7c0b8f74a1b6",
+    "apiVersion": 2,
+    "schemas": {
+      "snapshot": 4,
+      "watch": 4
+    },
+    "write": {
+      "schema": 2
+    },
+    "service": {
+      "protocol": 2,
+      "schemas": {
+        "request": 2,
+        "frame": 2
+      }
+    },
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "nativeContracts": [
+      "codex_daemon_status_v2",
+      "codex_database_only_catalog_v1",
+      "claude_registry_job_metadata_v1",
+      "claude_history_metadata_v1"
+    ],
+    "claudeHistorySdk": "0.2.163"
+  }
+}

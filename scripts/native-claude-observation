@@ -2,6 +2,7 @@
 """Explicit isolated Claude state proof; native oracle imports no Observer code."""
 
 import fcntl
+from datetime import datetime
 import json
 import os
 import pty
@@ -95,6 +96,33 @@ def main():
     def row(snapshot, sid):
         return next((r for r in (snapshot or {}).get("sessions", []) if r["identity"]["nativeId"] == sid), None)
 
+    def native_activity(sid):
+        latest = None
+        for path in (base / "claude/projects").glob("*/" + sid + ".jsonl"):
+            with path.open("rb") as stream:
+                size = os.fstat(stream.fileno()).st_size
+                offset = max(0, size - 2 * 1024 * 1024)
+                stream.seek(offset)
+                lines = stream.read(2 * 1024 * 1024).split(b"\n")[:-1]
+            for line in lines[1:] if offset else lines:
+                if not line:
+                    continue
+                value = json.loads(line)
+                if (value.get("sessionId") != sid or value.get("type") not in {"user", "assistant"}
+                        or value.get("isSidechain") is not False or value.get("isMeta") is True):
+                    continue
+                message = value.get("message", {})
+                if message.get("role") != value["type"]:
+                    continue
+                body = message.get("content")
+                if value["type"] == "user" and isinstance(body, str) and body.startswith(
+                    ("<command-name>", "<local-command-stdout>", "<local-command-stderr>", "<local-command-caveat>")
+                ):
+                    continue
+                at = int(datetime.fromisoformat(value["timestamp"].replace("Z", "+00:00")).timestamp() * 1000)
+                latest = max(latest or 0, at)
+        return latest
+
     def drain():
         nonlocal pushed
         while True:
@@ -123,13 +151,30 @@ def main():
             cached = row(command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(sock)]).get("snapshot"), sid)
             drain()
             push = row(pushed, sid)
-            if all(matches(r, phase, reason) for r in (direct, cached, push)) and native(sid).get("status") in wanted:
+            expected_age = native_activity(sid)
+            ages_agree = phase == "working" or all(r and r["activity"]["at"] == expected_age for r in (direct, cached, push))
+            if (ages_agree and all(matches(r, phase, reason) for r in (direct, cached, push))
+                    and native(sid).get("status") in wanted):
                 record = {"nativeId": sid, "nativeStatus": n["status"], "runtime": "running", "phase": phase,
                           "blockedReasons": [reason] if reason else [], "directCachedPushAgree": True,
                           "activityAt": direct["activity"]["at"]}
+                record["nativeAgeCompared"] = phase != "working"
                 receipt["samples"].append(record)
                 return direct
         raise RuntimeError("phase_not_accepted_" + phase + "_" + str(reason))
+
+    def stable_hold(sid, reason):
+        last, stable = None, 0
+        deadline = time.monotonic() + 35
+        while time.monotonic() < deadline:
+            current = wait_phase(sid, "blocked", reason, timeout=20)
+            at = current["activity"]["at"]
+            stable = stable + 1 if at is not None and at == last else 0
+            last = at
+            if stable >= 2:
+                return current
+            pause(1)
+        raise RuntimeError("held_age_not_stable")
 
     try:
         deadline = time.monotonic() + 15
@@ -149,7 +194,7 @@ def main():
         wait_phase(sid, "waiting")
         os.write(fd, b"\x1b[200~Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.\x1b[201~\r")
         wait_phase(sid, "working", timeout=30)
-        held = wait_phase(sid, "blocked", "question")
+        held = stable_hold(sid, "question")
         events = [json.loads(line) for line in (root / "lifecycle-events.jsonl").read_text().splitlines()]
         assert any(e.get("askUserQuestion") and e["nativeId"] == sid for e in events)
         pause(1)
@@ -180,7 +225,7 @@ def main():
             pause(0.1)
         assert receipt.get("exitSavedRuntimeUnknown"), "exit_uncertainty_not_delivered"
         approval_sid, _ = spawn("Use Bash to write OK to approval-proof.txt.", "Observer private Claude approval proof")
-        held = wait_phase(approval_sid, "blocked", "approval")
+        held = stable_hold(approval_sid, "approval")
         pause(1)
         repeated = wait_phase(approval_sid, "blocked", "approval")
         assert held["activity"]["at"] == repeated["activity"]["at"]

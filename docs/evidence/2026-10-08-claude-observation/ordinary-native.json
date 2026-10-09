@@ -1,0 +1,1002 @@
+{
+  "snapDirect": [
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 122,
+        "providersChecked": [
+          "claude",
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "claude",
+          "codex"
+        ]
+      },
+      "sourceHealth": "current",
+      "providers": {
+        "claude": {
+          "cliRows": 33,
+          "nativeCounts": {
+            "running": 5,
+            "activityKnown": 32,
+            "classification": {
+              "unknown": 2,
+              "user": 32
+            }
+          },
+          "checks": {
+            "membership": 33,
+            "title": 30,
+            "cwd": 33,
+            "runtime": 8,
+            "phase": 8,
+            "activity": 32,
+            "kind": 32,
+            "runtime_unproved": 25,
+            "phase_unproved": 25,
+            "title_unproved": 3,
+            "activity_unproved": 1,
+            "kind_unproved": 1
+          },
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ],
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "spare-gpus",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791499859289
+            },
+            {
+              "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+              "title": "pr-review",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791506319850
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791516308078
+            },
+            {
+              "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+              "title": "2026-recap-dedup",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517378221
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512141316
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ]
+        },
+        "codex": {
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791516965000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791515548000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    },
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 122,
+        "providersChecked": [
+          "claude",
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "claude",
+          "codex"
+        ]
+      },
+      "sourceHealth": "current",
+      "providers": {
+        "claude": {
+          "cliRows": 33,
+          "nativeCounts": {
+            "running": 5,
+            "activityKnown": 32,
+            "classification": {
+              "unknown": 2,
+              "user": 32
+            }
+          },
+          "checks": {
+            "membership": 33,
+            "title": 30,
+            "cwd": 33,
+            "runtime": 8,
+            "phase": 8,
+            "activity": 32,
+            "kind": 32,
+            "runtime_unproved": 25,
+            "phase_unproved": 25,
+            "title_unproved": 3,
+            "activity_unproved": 1,
+            "kind_unproved": 1
+          },
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ],
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "spare-gpus",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791499859289
+            },
+            {
+              "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+              "title": "pr-review",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791506319850
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791516308078
+            },
+            {
+              "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+              "title": "2026-recap-dedup",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517378221
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512141316
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ]
+        },
+        "codex": {
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791516965000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791515548000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    }
+  ],
+  "snapCached": [
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 122,
+        "providersChecked": [
+          "claude",
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "claude",
+          "codex"
+        ]
+      },
+      "sourceHealth": "partial",
+      "providers": {
+        "claude": {
+          "cliRows": 33,
+          "nativeCounts": {
+            "running": 5,
+            "activityKnown": 32,
+            "classification": {
+              "unknown": 2,
+              "user": 32
+            }
+          },
+          "checks": {
+            "membership": 33,
+            "title": 30,
+            "cwd": 33,
+            "runtime": 8,
+            "phase": 8,
+            "activity": 32,
+            "kind": 32,
+            "runtime_unproved": 25,
+            "phase_unproved": 25,
+            "title_unproved": 3,
+            "activity_unproved": 1,
+            "kind_unproved": 1
+          },
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ],
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "spare-gpus",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791499859289
+            },
+            {
+              "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+              "title": "pr-review",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791506319850
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791516308078
+            },
+            {
+              "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+              "title": "2026-recap-dedup",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517378221
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512141316
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ]
+        },
+        "codex": {
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791516965000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791515548000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    },
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 122,
+        "providersChecked": [
+          "claude",
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "claude",
+          "codex"
+        ]
+      },
+      "sourceHealth": "partial",
+      "providers": {
+        "claude": {
+          "cliRows": 33,
+          "nativeCounts": {
+            "running": 5,
+            "activityKnown": 32,
+            "classification": {
+              "unknown": 2,
+              "user": 32
+            }
+          },
+          "checks": {
+            "membership": 33,
+            "title": 30,
+            "cwd": 33,
+            "runtime": 8,
+            "phase": 8,
+            "activity": 32,
+            "kind": 32,
+            "runtime_unproved": 25,
+            "phase_unproved": 25,
+            "title_unproved": 3,
+            "activity_unproved": 1,
+            "kind_unproved": 1
+          },
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "membership",
+              "result": "missing_cli_row"
+            }
+          ],
+          "nativeActive": [
+            {
+              "id": "64725eaf-7e6d-4503-bd9c-053dfe84d510",
+              "title": "spare-gpus",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791499859289
+            },
+            {
+              "id": "8fb8cfa1-f99e-4ca4-b3dc-7d1da4fdc339",
+              "title": "pr-review",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791506319850
+            },
+            {
+              "id": "9fd1ae71-76f0-41c3-925f-da4756e64953",
+              "title": "caos-models",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "shell",
+              "activityAt": 1791516308078
+            },
+            {
+              "id": "cf80698d-97bb-46b6-a36a-effeda5ae338",
+              "title": "2026-recap-dedup",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517378221
+            },
+            {
+              "id": "fac5ee15-8b9c-4527-8976-0a808ab93ac7",
+              "title": "embeddings-bf",
+              "cwd": "/home/bryan/code/caos",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512141316
+            }
+          ],
+          "contextDifferences": [
+            {
+              "id": "0a6591b8-0e86-4b8e-8199-480da17cdefd",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/f2-review-fixes"
+            },
+            {
+              "id": "6ee19683-ca62-4797-8efa-1ea995f07aa0",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/temporal-schedules"
+            },
+            {
+              "id": "902dc359-dc83-4466-b888-7e1c4cc2553b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/catchment-findings"
+            },
+            {
+              "id": "b2fe2c5c-3824-4233-9c7c-86982513b23b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/zbai-yearly-docs-reconcile"
+            },
+            {
+              "id": "bd98c907-0bdf-4d9f-8237-7238554a8680",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.claude/worktrees/prefilter-v2"
+            },
+            {
+              "id": "ca5f6c4a-8d2a-4796-938f-cbe4e42fc97b",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/.local/stop-scale/res/logs"
+            },
+            {
+              "id": "db1a3b44-9419-4b27-bd40-3a1673c04f36",
+              "recordedCwd": "/home/bryan/code/caos",
+              "latestConversationCwd": "/home/bryan/code/caos/models/memories-siglip2-so400m-embedding"
+            }
+          ]
+        },
+        "codex": {
+          "cliRows": 89,
+          "nativeCounts": {
+            "running": 2,
+            "activityKnown": 52,
+            "classification": {
+              "user": 51,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 89,
+            "title": 43,
+            "cwd": 89,
+            "runtime": 89,
+            "phase": 89,
+            "activity": 52,
+            "kind": 89,
+            "sessionTreeRootId": 89,
+            "blockedReasons": 89,
+            "createdAt": 89,
+            "hasSavedHistory": 89,
+            "outcome": 52,
+            "outcomeAt": 50,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791516965000
+            },
+            {
+              "id": "01a113b3-adca-7b62-834f-262791c1c774",
+              "title": "tmux-plus",
+              "cwd": "/home/bryan/code/rofi-tmux-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791515548000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    }
+  ],
+  "starshipDirect": [
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 354,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "sourceHealth": "current",
+      "providers": {
+        "codex": {
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 251,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 105,
+            "outcomeAt": 103
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791518543000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791518507000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517878000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791515423000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    },
+    {
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 354,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "sourceHealth": "current",
+      "providers": {
+        "codex": {
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 251,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 105,
+            "outcomeAt": 103
+          },
+          "issues": [],
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791518543000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791518507000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517878000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791512205000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791515423000
+            }
+          ],
+          "contextDifferences": []
+        }
+      }
+    }
+  ],
+  "snapPush": {
+    "scope": {
+      "hostProvenance": true,
+      "storeScopes": true,
+      "fullRowReferences": true,
+      "rowsChecked": 122,
+      "providersChecked": [
+        "claude",
+        "codex"
+      ],
+      "nativeReferenceProviders": [
+        "claude"
+      ]
+    },
+    "serviceId": "d984fd65-39b5-42d6-b340-c724a2c6fd84",
+    "viewRevision": 18,
+    "nativeCounts": {
+      "running": 5,
+      "activityKnown": 32,
+      "classification": {
+        "unknown": 2,
+        "user": 32
+      }
+    },
+    "issues": [
+      {
+        "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+        "field": "membership",
+        "result": "missing_cli_row"
+      }
+    ]
+  }
+}
