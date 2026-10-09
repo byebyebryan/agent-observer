@@ -1,7 +1,7 @@
 # Disappeared runtime-only identity retention
 
-Date: 2026-10-09. Status: scoped shared-core follow-up; no implementation or new
-artifact accepted here. The [Claude wrap-up](claude-observation-wrap-up.md) remains
+Date: 2026-10-09. Status: authorized shared-core implementation checkpoint;
+native artifact and operational gates remain pending. The [Claude wrap-up](claude-observation-wrap-up.md) remains
 complete within its declared scope. API 2/wire 4/service 2 and selected a9 stay
 unchanged. This work is independent of frontend implementation and provider policy.
 
@@ -48,12 +48,40 @@ Consumers apply presentation policy without becoming a second native classifier.
   Use injected host-local monotonic clocks, never conversation age or cross-host
   wall time. Direct watch and service delivery must declare their retention bounds.
 
+## Accepted retention policy
+
+The service binds each unsaved observation to its original runtime receipt lease,
+using the injected host-local BOOTTIME clock. At the configured cadence the bound
+is 90 seconds on Snap and 60 seconds on Starship, from the last positively
+accepted native sample start. Repeated incomplete reads do not extend it. History
+leases, enrichment, heartbeats, readers and delivery do not extend it either.
+Receipt renewal does not renew missing-row evidence.
+
+Sampled direct watch uses a fixed 60-second host-local BOOTTIME bound. The CLI
+captures sample start before collection; slow collection cannot start the bound
+at delivery. Expiry is applied at the next sample; a collection gap already
+invalidates the view until resync. Single direct reads keep no prior identity
+memory and need no retention policy.
+
+Current accepted native rows remain protected, including unsaved rows with an
+unknown phase. Positive saved proof from either component protects the identity
+through SDK/runtime faults and preserves the original conversation clock. When
+an unprotected deadline expires, both component caches drop the unsaved row so
+an older history sample cannot resurrect it. Exact fresh reappearance supplies
+new evidence. Deadline bookkeeping follows the bounded current component rows
+and is not restored across collector/stream incarnations.
+
+This is finite observation-memory eviction, never proof of parked, ended or
+deleted. Full pushed views reflect the removal; it needs no additional native
+event or alert. API 2/wire 4/service 2 remain unchanged. Additive bounded
+limitation codes describe runtime-lease retention and the direct-watch bound;
+they introduce no fields, enums or action capabilities.
+
 ## Execution and acceptance
 
-1. Review the concrete policy before implementation: original accepted runtime
-   lease versus a separate finite retention window; source-read failure behavior;
-   component merge, context replacement, watch parity and diagnostics. The
-   original runtime lease is a candidate, not a settled new guarantee.
+1. R0 policy review is complete above: original runtime lease for service,
+   fixed direct-watch bound, exact saved/current protection and no sliding
+   deadlines. Source, artifact/native and operational proof remain separate.
 2. Implement in `observation_engine.py`, `observation_evidence.py` and sampled
    watch as needed, with no provider-specific branch in the service/read client.
    Prove deadlines do not slide, current rows survive, reappearance works and

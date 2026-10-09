@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 from dataclasses import dataclass, field
 
-from .observation_evidence import retain_missing, stale_row
+from .observation_evidence import RuntimeOnlyRetention, retain_missing, stale_row
 from .contract import (
     MAX_SESSIONS, MAX_SNAPSHOT_BYTES, ContractError, canonical, identity_key,
     store_namespace, validate_snapshot,
@@ -45,6 +45,7 @@ class ObservationEngine:
         self.generations = {provider: 0 for provider in configs}
         self.contexts = {provider: None for provider in configs}
         self.context_samples = {provider: -1 for provider in configs}
+        self.retention = {provider: RuntimeOnlyRetention() for provider in configs}
         self.snapshot = None
         self.revision = 0
 
@@ -116,8 +117,14 @@ class ObservationEngine:
         # Retain evidence belonging to this component across an incomplete read.
         # Only positive saved-history identity is retained by the metadata
         # component. Runtime retention uses its own daemon census coverage.
+        retention = self.retention[provider] if component == "runtime" else None
+        if retention is not None:
+            retention.observe(value["sessions"], sampled_ms=sampled_ms, ttl_ms=ttl_ms)
         if previous and coverage != "complete":
-            retain_missing(previous, receipt.data, component=component)
+            retain_missing(previous, receipt.data, component=component,
+                           retention=retention, now=self.clock())
+        if retention is not None:
+            retention.prune(receipt.data["sessions"])
         if component == "history" and source["coverage"]["runtime"]["status"] in {"complete", "partial"}:
             runtime = self.receipts[provider]["runtime"]
             if runtime.sampledBoottimeMs is None or sampled_ms >= runtime.sampledBoottimeMs:
@@ -135,8 +142,34 @@ class ObservationEngine:
                     receipt.health = "stale"
                     receipt.lastResult = "lease_expired"
                     changed = True
+        changed = self._retire_runtime_only(now) or changed
         if changed:
             self.publish()
+        return changed
+
+    def _retire_runtime_only(self, now):
+        changed = False
+        for provider, receipts in self.receipts.items():
+            runtime = receipts["runtime"]
+            saved = {identity_key(row["identity"]) for receipt in receipts.values()
+                     if receipt.data for row in receipt.data["sessions"]
+                     if row["hasSavedHistory"]}
+            current = {identity_key(row["identity"])
+                       for row in (runtime.data or {}).get("sessions", [])
+                       if "retained_after_gap" not in row["metadataIssues"]}
+            if not runtime.current():
+                current.clear()
+            retention = self.retention[provider]
+            protected = saved | current
+            for receipt in receipts.values():
+                if receipt.data is None:
+                    continue
+                rows = receipt.data["sessions"]
+                receipt.data["sessions"] = [row for row in rows
+                    if identity_key(row["identity"]) in protected
+                    or not retention.expired(row, now)]
+                changed = changed or len(rows) != len(receipt.data["sessions"])
+            retention.prune(runtime.data["sessions"] if runtime.data else [])
         return changed
 
     def _placeholder(self, provider):
@@ -151,6 +184,7 @@ class ObservationEngine:
         }
 
     def publish(self):
+        self._retire_runtime_only(self.clock())
         rows, sources = [], []
         for provider, receipts in self.receipts.items():
             runtime, history = receipts["runtime"], receipts["history"]
@@ -179,6 +213,9 @@ class ObservationEngine:
                 row["workspace"] = None
                 saved = hi_rows.get(key)
                 if saved:
+                    if saved["hasSavedHistory"] and not row["hasSavedHistory"]:
+                        row["hasSavedHistory"] = True
+                        row["inventory"] = "saved"
                     saved = stale_row(saved, runtime=True, metadata=not history.current())
                     fallback = self.profiles[provider].display_name + " " + row["identity"]["nativeId"]
                     if row["title"] == fallback or key not in rt_rows or not runtime.current():
@@ -238,7 +275,7 @@ class ObservationEngine:
             "schemaVersion": 4, "collectionId": self.collection_id(), "collectedAt": self.wall_clock(),
             "host": {"authority": self.host_scope, "authoritySource": "caller", "nativeHostname": self.native_hostname, "uid": self.uid},
             "sourceHealth": "current" if all(s["sourceHealth"] == "current" for s in sources) else "partial" if rows or any(s["sourceHealth"] in {"current", "partial"} for s in sources) else "unavailable",
-            "sources": sources, "sessions": [], "errors": [], "limitations": ["shared_sampled_service", "no_native_event_replay"],
+            "sources": sources, "sessions": [], "errors": [], "limitations": ["shared_sampled_service", "no_native_event_replay", "runtime_only_retention_runtime_lease"],
         }
         used = len(canonical(value).encode()) + 256
         rows.sort(key=lambda r: (r["runtime"]["value"] != "running", identity_key(r["identity"])))

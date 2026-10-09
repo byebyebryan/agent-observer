@@ -20,8 +20,7 @@ import uuid
 from pathlib import Path
 
 
-def main():
-    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+def acceptance_class(root):
     NativeProof = runpy.run_path(str(root / "native-claude-interactive-proof"))["NativeProof"]
     oracle = runpy.run_path(str(root / "evaluate-observation"))["claude_reference"]
 
@@ -225,7 +224,12 @@ def main():
                 (self.home / "settings.json").write_bytes(original)
                 (root / "claude-interactive-acceptance.json").write_text(json.dumps(self.receipt, indent=2) + "\n")
 
-    Acceptance().run()
+    return Acceptance
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    acceptance_class(root)().run()
 
 
 if __name__ == "__main__":
