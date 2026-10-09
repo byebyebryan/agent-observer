@@ -65,3 +65,13 @@ foreground exit uncertainty and source failure/recovery. Saved-only runtime,
 unregistered background work, generic dialogs and turn outcomes remain unproved.
 The read/service operational gate follows artifact acceptance; writer and
 downstream clients retain their separate gates.
+
+## Following interactive-only target
+
+The [interactive reconciliation plan](claude-interactive-observation-plan.md)
+supersedes this pass as the next execution track. It narrows supported runtime to
+interactive sessions, separates a complete native census from client inventory,
+and gates saved-session parked detection and Agent View opt-out independently.
+The accepted a8 terminal-job predicate is historical baseline evidence, not
+acceptance of the new scope or lifecycle rule. No background compatibility
+adapter or attachment dependency is required by the following target.

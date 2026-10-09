@@ -48,7 +48,9 @@ separate facts. Observed running or parked state never authorizes an action.
 
 - Discovery reports `running`, `parked` or `unknown`, with declared scope,
   bounds and coverage. Parked requires positive provider evidence; absence
-  from a list, terminal exit and an unavailable endpoint do not establish it.
+  from an ordinary list, terminal exit and an unavailable endpoint do not
+  establish it. A future exhaustive native census predicate needs independent
+  completeness/absence proof before it can establish parked for saved identities.
 - A running session's phase is `working`, `blocked`, `waiting` or `unknown`.
   Parked has no applicable phase. Blocked reasons preserve approval/question
   evidence without approving or answering anything.
@@ -76,6 +78,13 @@ records and do not inspect terminal attachment. Terminal retained jobs require
 positive lifecycle, no pending work and saved existence before parked. General
 saved-only absence remains unknown. The native roster CLI has initialization
 writes and is not invoked by observation.
+
+The next [interactive-only Claude plan](claude-interactive-observation-plan.md)
+proposes a native census predicate and removes unused private attachment/job
+scaffolding. Observer must reconstruct supported lifecycle with client inventories
+absent, including after its own restart. Provider-owned registration incarnation
+checks are permitted; generic terminal/process discovery is not. Agent View
+disabling and the narrower public scope remain pending independent gates.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing

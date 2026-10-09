@@ -38,6 +38,12 @@ a positive parked predicate. One setup-only SDK omission and excluded nested chi
 transcripts keep saved coverage partial. Generic dialogs, unregistered background
 runtime and Claude turn outcomes remain unproved.
 
+The next [Claude interactive reconciliation](docs/claude-interactive-observation-plan.md)
+targets interactive-only discovery/monitoring from provider-owned evidence,
+including restart-safe parked detection. Client inventories and attachment are
+excluded. Agent View opt-out, a narrower runtime scope and a breaking read
+contract require their own native/contract gates; a8 remains the accepted baseline.
+
 The preceding [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 and earlier native reports retain their exact artifact bounds. Twenty-one older
 Starship kinds are an accepted forward-looking limit. Physical sleep/wake and

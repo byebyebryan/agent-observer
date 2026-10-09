@@ -12,6 +12,13 @@ after independent artifact/native and scoped operational acceptance. History
 and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16.
 
+The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
+keeps Observer upstream of all clients. Provider-native interactive registration
+and a separately proved complete census are the candidate lifecycle authority;
+terminal inventory and attachment cannot fill missing evidence. Background
+runtime support is excluded from the target, and Agent View opt-out is conditional
+on isolated proof. This proposal does not change the accepted a8 artifact or wires.
+
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only
 discovery, terminal/job field scaffolding, compatibility obligations and the

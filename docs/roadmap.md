@@ -26,6 +26,14 @@ are accepted passive adapters within their documented native scopes. Public even
 frontend implementation retain their own gates. API 2 stays unchanged unless
 a separately reviewed semantic change requires otherwise.
 
+The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
+defines I0–I5: independent Agent View on/off and native census proof; oracle and
+explicitly versioned scope review; interactive adapter/model cleanup; immutable
+direct/cache/push acceptance; scoped Observer operations; then a separate provider
+policy/handoff gate. Parked requires positive saved identity and a proved exhaustive
+native absence predicate. Client inventory/attachment and background runtime
+support are excluded. The plan remains unimplemented; a8 retains its original scope.
+
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
 [deep review](codex-daemon-authority-review.md). D0 captures the reviewed design
