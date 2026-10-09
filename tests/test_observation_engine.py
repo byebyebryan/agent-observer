@@ -54,6 +54,36 @@ class EngineTest(unittest.TestCase):
                             if r["identity"]["provider"] == "codex"))
         self.assertEqual([r for r in rows if r["identity"]["provider"] == "claude"], prior)
 
+    def test_history_sample_publishes_once_with_independent_component_leases(self):
+        self.assertTrue(self.engine.accept("codex", "history", provider_snapshot("codex"),
+                                           sampled_ms=self.now, ttl_ms=10000,
+                                           runtime_ttl_ms=1000))
+        self.assertEqual(self.engine.revision, 1)
+        receipts = self.engine.receipts["codex"]
+        self.assertEqual(receipts["history"].accepted, 1)
+        self.assertEqual(receipts["runtime"].accepted, 1)
+        self.assertEqual(receipts["history"].expiresBoottimeMs, self.now + 10000)
+        self.assertEqual(receipts["runtime"].expiresBoottimeMs, self.now + 1000)
+        before = copy.deepcopy(self.engine.snapshot)
+        self.now += 1001
+        self.engine.expire()
+        self.assertEqual(self.engine.revision, 2)
+        self.assertEqual(receipts["history"].health, "current")
+        self.assertEqual(receipts["runtime"].health, "stale")
+        for old, row in zip(before["sessions"], self.engine.snapshot["sessions"], strict=True):
+            self.assertEqual(row["runtime"]["value"], "unknown")
+            self.assertEqual(row["runtime"]["observedAt"], old["runtime"]["observedAt"])
+
+    def test_rejected_history_sample_does_not_publish_or_refresh_receipts(self):
+        self.accept("codex")
+        revision = self.engine.revision
+        before = copy.deepcopy(self.engine.snapshot)
+        accepted = {c: r.accepted for c, r in self.engine.receipts["codex"].items()}
+        self.assertFalse(self.accept("codex", sampled=self.now - 1))
+        self.assertEqual(self.engine.revision, revision)
+        self.assertEqual(self.engine.snapshot, before)
+        self.assertEqual({c: r.accepted for c, r in self.engine.receipts["codex"].items()}, accepted)
+
     def test_older_metadata_cannot_replace_newer_runtime_or_conversation_clock(self):
         self.accept("codex")
         previous = copy.deepcopy(self.engine.snapshot)

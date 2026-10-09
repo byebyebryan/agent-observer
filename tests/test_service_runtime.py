@@ -87,6 +87,31 @@ def source_worker(job):
 
 
 class ServiceRuntimeTest(unittest.TestCase):
+    def test_one_history_sample_reaches_healthy_reader_without_a_gap(self):
+        state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")})
+        value = scoped_snapshot()
+        state.attempt("codex", "runtime")
+        state.accept("codex", "runtime", value, sampled_ms=state.clock(), ttl_ms=60000)
+        with Running(state=state) as server:
+            with server.connect(b'{"serviceProtocol":2,"operation":"watch","hostScope":"fixture"}\n') as peer:
+                with peer.makefile("rb") as reader:
+                    guard = StreamGuard(expected_host="fixture", expected_uid=os.geteuid())
+                    initial = guard.accept(parse_frame(reader.readline()))
+                    state.attempt("codex", "history")
+                    state.accept("codex", "history", value, sampled_ms=state.clock(),
+                                 ttl_ms=120000, runtime_ttl_ms=60000)
+                    deadline = time.monotonic() + 3
+                    while time.monotonic() < deadline:
+                        frame = guard.accept(parse_frame(reader.readline()))
+                        if frame["kind"] != "heartbeat":
+                            break
+                    self.assertEqual(frame["kind"], "view")
+                    self.assertEqual(frame["viewRevision"], initial["viewRevision"] + 1)
+                    self.assertEqual(frame["snapshot"]["sourceHealth"], "current")
+                    receipts = {r["name"]: r for r in frame["sources"][0]["components"]}
+                    self.assertEqual(receipts["history"]["accepted"], 1)
+                    self.assertEqual(receipts["runtime"]["accepted"], 2)
+
     def test_partial_frame_is_immutable_and_coalesced_views_resync(self):
         state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")})
         value = scoped_snapshot()
