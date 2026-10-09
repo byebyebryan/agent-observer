@@ -7,13 +7,14 @@ import time
 import uuid
 
 from .contract import (
-    SCHEMA_VERSION, canonical, identity_key,
+    SCHEMA_VERSION, ContractError, canonical, identity_key,
     validate_snapshot, validate_watch,
 )
 from .read_client import listing
-from .observation_evidence import retain_missing
+from .observation_evidence import RuntimeOnlyRetention, retain_missing
 
 MIN_INTERVAL = 1.0
+RUNTIME_ONLY_RETENTION_MS = 60000
 
 
 def _semantic(snapshot):
@@ -30,7 +31,9 @@ def _semantic(snapshot):
 
 
 class SampledWatch:
-    def __init__(self):
+    def __init__(self, *, clock=None):
+        self.clock = clock or (lambda: int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000))
+        self.retention = RuntimeOnlyRetention()
         self.stream_id = str(uuid.uuid4())
         self.revision = 0
         self.previous = None
@@ -55,11 +58,21 @@ class SampledWatch:
         self.gapped = True
         return self.frame("gap", reason)
 
-    def sample(self, snapshot, *, include_children=True, providers=None, order="activity"):
+    def sample(self, snapshot, *, include_children=True, providers=None, order="activity",
+               sampled_ms=None):
         value = copy.deepcopy(validate_snapshot(snapshot))
+        now = self.clock()
+        sampled_ms = now if sampled_ms is None else sampled_ms
+        if sampled_ms > now or sampled_ms < 0:
+            raise ContractError("invalid_watch_sample_clock")
+        self.retention.observe(value["sessions"], sampled_ms=sampled_ms,
+                               ttl_ms=RUNTIME_ONLY_RETENTION_MS)
+        if len(value["limitations"]) < 128 and "runtime_only_retention_60000ms" not in value["limitations"]:
+            value["limitations"].append("runtime_only_retention_60000ms")
         evicted = False
         if self.previous:
-            evicted = retain_missing(self.previous, value)
+            evicted = retain_missing(self.previous, value, retention=self.retention, now=now)
+        self.retention.prune(value["sessions"])
         validate_snapshot(value)
         projected = listing(value, include_children=include_children, providers=providers, order=order)
         signature = _semantic(projected)

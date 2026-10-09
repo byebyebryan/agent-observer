@@ -1,0 +1,207 @@
+#!/usr/bin/env python3
+"""Isolated installed retention/native proof; no raw payload or terminal receipts.
+
+Use native-isolation and copy the interactive native/acceptance helpers plus the
+independent oracle into its root. Only disposable sessions/registry are changed.
+"""
+
+import json
+import os
+import runpy
+import signal
+import subprocess
+import threading
+import time
+import uuid
+from pathlib import Path
+
+
+class DirectWatch:
+    def __init__(self, home):
+        self.process = subprocess.Popen(["agent-observer", "watch", "--host-scope", "snap",
+            "--provider", "claude", "--claude-home", str(home), "--interval", "1"],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
+        self.snapshot, self.error, self.frames, self.kinds = None, False, 0, {}
+        self.thread = threading.Thread(target=self.receive, daemon=True)
+        self.thread.start()
+
+    def receive(self):
+        revision, stream = 0, None
+        try:
+            for line in self.process.stdout:
+                assert len(line) <= 8 * 1024 * 1024 + 16384
+                frame = json.loads(line)
+                assert frame["schemaVersion"] == 4 and frame["revision"] == revision + 1
+                stream = stream or frame["streamId"]
+                assert frame["streamId"] == stream
+                revision = frame["revision"]
+                self.frames += 1
+                kind = frame["kind"]
+                self.kinds[kind] = self.kinds.get(kind, 0) + 1
+                if kind == "gap":
+                    self.snapshot = None
+                elif frame["snapshot"] is not None:
+                    self.snapshot = frame["snapshot"]
+        except (OSError, ValueError, AssertionError, KeyError):
+            self.error = True
+
+    def stop(self):
+        if self.process.poll() is None:
+            self.process.send_signal(signal.SIGTERM)
+        self.process.wait(timeout=10)
+        self.thread.join(timeout=3)
+        self.process.stdout.close()
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    Base = runpy.run_path(str(root / "native-claude-interactive-acceptance"))["acceptance_class"](root)
+
+    class RetentionProof(Base):
+        def __init__(self):
+            super().__init__()
+            self.watch = None
+            self.receipt.update(case="runtime_only_retention", checks=[], hooksDisabled=True)
+
+        def views(self):
+            return [self.direct(), self.cached(), self.push["snapshot"],
+                    self.watch.snapshot if self.watch else None]
+
+        def running_unsaved(self, sid):
+            native = self.native()
+            if native["rows"].get(sid, {}).get("runtime") != "running":
+                return False
+            views = self.views()
+            if any(view is None for view in views):
+                return False
+            rows = [self.row(view, sid) for view in views]
+            if not all(row and row["runtime"]["value"] == "running" and not row["hasSavedHistory"] for row in rows):
+                return False
+            assert not self.metadata(sid)["positiveSavedIdentity"]
+            assert all(row["identity"] == rows[0]["identity"] for row in rows)
+            assert not self.push["error"] and not self.watch.error
+            return rows[0]["identity"]
+
+        def retired(self, sid, *, timeout=100):
+            start, stale_seen, original_clocks = time.monotonic(), False, {}
+            def absent():
+                nonlocal stale_seen
+                before = self.native()
+                views = self.views()
+                after = self.native()
+                assert before["negativeScanHealthy"] and after["negativeScanHealthy"]
+                assert sid not in before["rows"] and sid not in after["rows"]
+                assert not self.metadata(sid)["positiveSavedIdentity"]
+                if any(view is None for view in views):
+                    return False
+                assert self.row(views[0], sid) is None
+                for index, view in enumerate(views[1:]):
+                    row = self.row(view, sid)
+                    if row:
+                        assert row["runtime"]["value"] == "unknown" and not row["hasSavedHistory"]
+                        assert "retained_after_gap" in row["metadataIssues"]
+                        stale_seen = True
+                        clock = row["runtime"]["observedAt"]
+                        original_clocks.setdefault(index, clock)
+                        assert clock == original_clocks[index], "retained_clock_slid"
+                        assert row["runtime"]["health"] == "stale"
+                assert not self.push["error"] and not self.watch.error
+                return all(self.row(view, sid) is None for view in views)
+            self.until(absent, "unsaved_retention_expiry_unproved", timeout)
+            assert stale_seen, "retention_interval_not_observed"
+            return {"nativeId": sid, "nativeRegistrationAndSavedAbsent": True,
+                    "directCachedPushWatchAbsent": True, "staleUnknownBeforeExpiry": True,
+                    "elapsedSeconds": round(time.monotonic() - start, 3),
+                    "parkedEndedDeletedClaimed": False}
+
+        def run(self):
+            original = (self.home / "settings.json").read_bytes()
+            settings = json.loads(original)
+            settings.update(disableAllHooks=True, disableAgentView=False)
+            settings.pop("hooks", None)
+            (self.home / "settings.json").write_text(json.dumps(settings))
+            backup = self.home / "sessions-retention-backup"
+            try:
+                self.start_service()
+                self.watch = DirectWatch(self.home)
+                sid = str(uuid.uuid4())
+                client = self.spawn(sid)
+                reference = self.until(lambda: self.running_unsaved(sid), "unsaved_new_unproved", 35)
+                self.until(lambda: all(c["accepted"] >= 2 for s in
+                    self.command(["agent-observer", "service", "status", "--host-scope", "snap",
+                                  "--socket", str(self.path)])["sources"]
+                    for c in s["components"]), "both_component_samples_unproved", 25)
+                exit_receipt = self.normal_exit(client)
+                self.stop(client)
+                assert exit_receipt["registrationRemoved"] and not exit_receipt["savedIdentityRetained"]
+                result = self.retired(sid)
+                result.update(case="unsaved_normal_exit", normalExit=exit_receipt)
+                self.receipt["checks"].append(result)
+                print(json.dumps({"accepted": result["case"], "elapsedSeconds": result["elapsedSeconds"]}), flush=True)
+
+                # The exact UUID reappears with a new authenticated incarnation.
+                client = self.spawn(sid)
+                restored = self.until(lambda: self.running_unsaved(sid), "exact_reappearance_unproved", 35)
+                assert restored == reference
+                self.receipt["checks"].append({"case": "exact_unsaved_reappearance", "nativeId": sid,
+                                               "exactReferenceRestored": True, "allReadPathsRunning": True})
+                self.registry.rename(backup)
+                self.registry.write_text("owned retention source fault\n")
+                try:
+                    def unknown():
+                        assert not self.native()["negativeScanHealthy"]
+                        return all((r := self.row(view, sid)) is not None and r["runtime"]["value"] == "unknown"
+                                   for view in self.views()[1:3])
+                    self.until(unknown, "source_fault_unknown_unproved", 25)
+                finally:
+                    self.registry.unlink()
+                    backup.rename(self.registry)
+                self.until(lambda: self.running_unsaved(sid), "source_recovery_running_unproved", 35)
+                self.receipt["checks"].append({"case": "unsaved_source_fault_recovery", "nativeId": sid,
+                                               "faultRemainedUnknown": True, "exactRunningRecovered": True})
+                self.stop(client)
+                assert not any(self.authenticated(r) for r in self.records() if r.get("sessionId") == sid)
+                result = self.retired(sid)
+                result.update(case="unsaved_forced_kill", deadRegistrationMayRemain=True)
+                self.receipt["checks"].append(result)
+                print(json.dumps({"accepted": result["case"], "elapsedSeconds": result["elapsedSeconds"]}), flush=True)
+
+                saved_id = str(uuid.uuid4())
+                saved = self.spawn(saved_id, prompt="Reply only with OK.")
+                self.phase(saved, "idle")
+                self.until(lambda: self.metadata(saved_id)["eventCounts"]["assistant"] > 0, "saved_response_unproved")
+                checks = [self.check(saved_id, "running", "waiting", "saved_new")]
+                age = self.native()["rows"][saved_id]["activity"]
+                self.normal_exit(saved)
+                self.stop(saved)
+                checks.append(self.check(saved_id, "parked", None, "saved_exit", age=age))
+                resumed = self.spawn(saved_id, resume=True)
+                self.phase(resumed, "idle", timeout=35)
+                checks.append(self.check(saved_id, "running", "waiting", "saved_resume", age=age))
+                self.normal_exit(resumed)
+                self.stop(resumed)
+                checks.append(self.check(saved_id, "parked", None, "saved_final_exit", age=age))
+                self.receipt["checks"].append({"case": "saved_history_resume_age", "checks": checks})
+                self.receipt.update(status="accepted", pushFrames=self.push["frames"], pushKinds=self.push["kinds"],
+                                    directWatchFrames=self.watch.frames, directWatchKinds=self.watch.kinds)
+            except Exception as error:
+                self.receipt.update(status="partial", failureCode=str(error))
+                raise
+            finally:
+                if backup.exists():
+                    if self.registry.is_file():
+                        self.registry.unlink()
+                    backup.rename(self.registry)
+                for client in self.clients:
+                    self.stop(client)
+                if self.watch is not None:
+                    self.watch.stop()
+                self.stop_service()
+                (self.home / "settings.json").write_bytes(original)
+                (root / "runtime-only-retention.json").write_text(json.dumps(self.receipt, indent=2) + "\n")
+
+    RetentionProof().run()
+
+
+if __name__ == "__main__":
+    main()

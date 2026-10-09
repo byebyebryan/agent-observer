@@ -144,11 +144,13 @@ def main(argv=None):
             count = 0
             while args.count is None or count < args.count:
                 started = time.monotonic()
+                sampled_ms = watch.clock()
                 try:
                     snapshot = _snapshot(args)
                     frames = watch.sample(
                         snapshot, include_children=args.include_children,
                         providers=args.provider, order=args.order,
+                        sampled_ms=sampled_ms,
                     )
                 except (ContractError, WireError, ValueError, OSError):
                     frames = [watch.gap()]

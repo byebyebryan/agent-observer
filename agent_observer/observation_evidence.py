@@ -5,6 +5,30 @@ import copy
 from .contract import MAX_SESSIONS, MAX_SNAPSHOT_BYTES, canonical, identity_key
 
 
+class RuntimeOnlyRetention:
+    """Host-local deadlines for unsaved observations, never lifecycle facts."""
+
+    def __init__(self):
+        self.deadlines = {}
+
+    def observe(self, rows, *, sampled_ms, ttl_ms):
+        for row in rows:
+            key = identity_key(row["identity"])
+            if row["hasSavedHistory"]:
+                self.deadlines.pop(key, None)
+            elif "retained_after_gap" not in row["metadataIssues"]:
+                self.deadlines[key] = sampled_ms + ttl_ms
+
+    def expired(self, row, now):
+        return (not row["hasSavedHistory"]
+                and self.deadlines.get(identity_key(row["identity"]), now) <= now)
+
+    def prune(self, rows):
+        present = {identity_key(row["identity"]) for row in rows}
+        self.deadlines = {key: deadline for key, deadline in self.deadlines.items()
+                          if key in present}
+
+
 def stale_row(row, *, runtime=False, metadata=False, reason="service_source_expired",
               metadata_reason="service_history_stale"):
     row = copy.deepcopy(row)
@@ -29,7 +53,7 @@ def stale_row(row, *, runtime=False, metadata=False, reason="service_source_expi
     return row
 
 
-def retain_missing(previous, current, *, component=None):
+def retain_missing(previous, current, *, component=None, retention=None, now=None):
     """Partial coverage retains prior identity as stale evidence within byte bounds."""
     present = {identity_key(row["identity"]) for row in current["sessions"]}
     sources = {(s["provider"], s["namespace"]): s for s in current["sources"]}
@@ -41,7 +65,11 @@ def retain_missing(previous, current, *, component=None):
         source = sources.get((old["identity"]["provider"], old["identity"]["namespace"]))
         if source is None:
             continue
+        if retention is not None and retention.expired(old, now):
+            continue
         if component is None:
+            if not old["hasSavedHistory"] and source["coverage"]["runtime"]["status"] == "complete":
+                continue
             if all(entry["status"] == "complete" for entry in source["coverage"].values()):
                 continue
         else:
