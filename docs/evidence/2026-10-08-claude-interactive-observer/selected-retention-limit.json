@@ -1,0 +1,49 @@
+{
+  "status": "accepted_with_retention_limit",
+  "ordinaryProviderActions": false,
+  "nativeId": "4359adf3-32f1-49fb-ab95-cc780bfe68de",
+  "directCollectedAt": 1791530240328,
+  "directMembership": false,
+  "cachedServiceId": "498ce3eb-8122-47ca-88af-9dfccb285981",
+  "cachedViewRevision": 70,
+  "cachedRow": {
+    "identity": {
+      "hostScope": "snap",
+      "namespace": "sha256:c38222e8bc01c1b3a428d4b3adbde38c5685ddf9171a0bbc91da32a36a3629c8",
+      "nativeId": "4359adf3-32f1-49fb-ab95-cc780bfe68de",
+      "nativeIdKind": "session",
+      "provider": "claude"
+    },
+    "runtime": {
+      "clock": "sample",
+      "health": "stale",
+      "lastKnownValue": "running",
+      "observedAt": 1791529612980,
+      "reason": "service_source_expired",
+      "source": "claude_registry",
+      "value": "unknown"
+    },
+    "phase": {
+      "clock": "sample",
+      "health": "stale",
+      "lastKnownValue": "working",
+      "observedAt": 1791529612980,
+      "reason": "service_source_expired",
+      "source": "claude_registry",
+      "value": "unknown"
+    },
+    "hasSavedHistory": false,
+    "metadataIssues": [
+      "service_history_stale",
+      "retained_after_gap"
+    ]
+  },
+  "independentNative": {
+    "matchingRegistrations": [],
+    "rootTranscriptPresent": false,
+    "absenceProvesExhaustiveRuntime": false
+  },
+  "classification": "stale_retained_runtime_only_identity",
+  "activeCountImpact": false,
+  "retentionBound": "existing_partial_coverage_byte_and_row_bounds_no_time_eviction"
+}

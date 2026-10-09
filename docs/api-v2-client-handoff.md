@@ -1,8 +1,8 @@
 # API 2 client handoff
 
-Date: 2026-10-08. Codex on Snap/Starship and Claude on Snap are independently
-accepted against [0.5.0a8](evidence/2026-10-08-claude-observation/REPORT.md).
-Normal read CLI links and user services select a8 through the separate operational
+Date: 2026-10-09. Codex on Snap/Starship and Claude on Snap are independently
+accepted against [0.5.0a9](evidence/2026-10-08-claude-interactive-observer/REPORT.md).
+Normal read CLI links and user services select a9 through the separate operational
 gate. The preceding a6 Codex acceptance remains historical evidence.
 The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
@@ -13,7 +13,7 @@ networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a8.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a9.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -26,10 +26,11 @@ schema and semantic checks. Other-language clients can obtain schemas with
 Both API descriptors operate without a provider or service.
 
 The [Claude alignment review](claude-read-contract-review.md) settles API 2/wire 4/
-protocol 2 for the interactive-only successor. Read clients can start implementing
-against this contract and the [synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
-before that producer is deployed. Keep its pending native/rollout acceptance
-separate from shared parsing, selection, state display and transport work.
+protocol 2 for the interactive-only adapter. The independent a9 native/artifact
+and scoped operational gates now accept it. The
+[synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
+remains useful for parser, selection, partial-coverage and expiry conformance.
+Consumer source/native/deployment acceptance remains separate.
 
 ## Required consumer behavior
 
@@ -59,26 +60,39 @@ separate from shared parsing, selection, state display and transport work.
   versions and state enums strict. Do not depend on an exhaustive coverage claim
   or discard every known row merely because its source coverage is partial.
 
-Claude supports working, interactive waiting and typed approval/question waits.
-Saved-only absence and foreground `/exit` leave runtime unknown; only a positively
-proved terminal retained job can be parked. Generic dialogs, unregistered background
-work and Claude turn outcomes remain unproved. Saved coverage is partial, including
-one observed SDK setup-only omission and excluded nested child transcripts.
+Claude supports interactive working, waiting and typed approval/question waits.
+Healthy native registration scans and positive saved identity can report parked
+when no authenticated live interactive incarnation or relevant unresolved
+conflict remains. This is the declared `interactive_registration_assumed` scope,
+with partial runtime coverage and explicit limitations. A live session whose
+registration failed/disappeared may be missed or falsely parked after recovery.
+Consumers preserve that qualification; they do not build their own provider census.
+
+Normal exit, forced kill, saved Resume, same-process UUID switches, simultaneous
+live contexts, conflicting phase and Observer cold start are independently proved
+with Agent View on/off. Background execution/attachment is unsupported. The two
+old stopped recap job histories remain unknown because their pending-work data
+is missing. The setup-only SDK candidate now has positive saved discovery, but
+its cwd, kind and age remain unavailable. Generic dialogs, nested child history
+and Claude turn outcomes remain unproved. Source coverage stays partial.
+
+Partial runtime coverage can retain a disappeared, unsaved runtime-only UUID in
+the service as stale unknown with `retained_after_gap`, even when a fresh direct
+read omits it. The selected-host comparison observed one such row. Its original
+sample clock and last-known value remain diagnostic; it is neither currently
+running nor proved parked. Retention has row/byte bounds, without time eviction.
+Clients preserve the uncertainty and can place these rows after current facts.
+
 Claude write selection remains unsupported by the new writer; the a16 writer is
-selected independently and this read acceptance grants no new action capability.
-
-The next [interactive Claude reconciliation](claude-interactive-observation-plan.md)
-changes the target parked predicate under an explicit native-registration
-assumption. Missing live registration can cause false parked classification;
-partial coverage and this limitation must reach consumers. That successor still
-needs implementation/native/artifact acceptance. The a8 behavior above remains the
-installed baseline; this plan grants no attachment or action authority.
-
-The contract alignment is now accepted; implementation/native acceptance remains
-pending. The successor declares `provider_sessions` with partial runtime coverage
-and the registration-assumption limitations specified in [API 2](api-v2.md).
-Consumers must support both a8's saved-only unknown state and the successor's
-scoped parked state. Parked never grants automatic resume or attachment permission.
+selected independently and read acceptance grants no new action capability.
+Parked never grants automatic resume, stop, approval or attachment permission.
+Agent View settings and ordinary sessions were not changed by a9 selection.
+Runtime refreshes authenticate saved identities without rerunning the history
+SDK. Conversation metadata has a separate lease, and process liveness cannot
+refresh its age. Native file hints can prompt earlier reads; a forced kill with
+no file event falls back to the configured runtime cadence (30 seconds on Snap),
+plus bounded collection time. Push distributes the accepted view, not every
+native transition.
 
 ## Inspect the observation service
 
@@ -101,7 +115,7 @@ reads collect metadata anew and can take longer than cached reads.
 For explicit artifact checks, use its immutable prefix:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a9-d72cb6c360b35b42
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \

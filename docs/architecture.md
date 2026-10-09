@@ -7,24 +7,26 @@ signals, pushed read updates and user-facing alerts have separate ownership.
 Meshing and terminal/window matching remain external. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records source/artifact/native acceptance without changing API 2. Normal read
-CLI/service selection now uses [a8 Claude observation](evidence/2026-10-08-claude-observation/REPORT.md)
+CLI/service selection now uses [a9 interactive observation](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 after independent artifact/native and scoped operational acceptance. History
 and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16.
 
-The next [Claude interactive reconciliation](claude-interactive-observation-plan.md)
-keeps Observer upstream of all clients. Under the user's accepted native-registration
+The [Claude interactive reconciliation](claude-interactive-observation-plan.md)
+keeps Observer upstream of all clients. Under the accepted native-registration
 assumption, healthy provider-owned scans and authenticated incarnation checks
-classify positively saved interactive UUIDs with no live context as parked,
-including after normal exit or crash. Missing live registration can cause false
-parked classification, so coverage remains partial with that explicit limitation.
-Client inventory and attachment are outside observation. Background runtime
-support is excluded; implementation and Agent View opt-out retain separate gates.
-This design does not change the accepted a8 artifact or wires.
-The [shared read-contract review](claude-read-contract-review.md) now settles
-Claude's fit within API 2/wire 4/service 2. Read clients may develop independently;
-successor producer selection, attachment/actions and frontend rollout retain
-their own acceptance gates.
+classify positively saved interactive UUIDs with no live context or relevant
+unresolved conflict as parked, including normal exit/crash and Observer cold start.
+Missing live registration can cause false parked classification; coverage remains
+partial with explicit limitations. Native job metadata only vetoes unsafe
+negatives. Background lifecycle and private attachment fields are removed.
+Native Agent View on/off both pass; ordinary provider settings remain unchanged.
+The [private sample boundary](claude-private-sample-contract.md) keeps bounded
+saved-identity/native classification in the adapter and normalized reconciliation
+in the engine. Client inventory, generic process discovery and attachment are
+outside observation. [API 2/wire 4/service 2 fit](claude-read-contract-review.md)
+is settled; read clients can develop independently. Provider-policy changes,
+actions/attachment, networking and frontend rollout retain separate gates.
 
 The [2026-10-08 Codex daemon authority reconciliation](codex-daemon-authority-plan.md)
 governs the accepted producer correction. It supersedes earlier loaded-only
@@ -34,9 +36,8 @@ Codex owns execution and native runtime disposition; Observer core/service own
 passive reads, evidence, reconciliation and fan-out; clients own native entry,
 TUI lifetime and terminal attachment. The observation path has no TUI/tmux state
 authority. Claude's independent observation gate accepts provider-owned native
-registration/status metadata and a bounded terminal-job parked predicate on
-Snap, without terminal matching. Saved-only lifecycle remains unknown and
-post-TUI-closure Codex acceptance is deferred.
+interactive registration/status and the declared scoped negative predicate on
+Snap, without terminal matching. Codex post-TUI-closure acceptance is deferred.
 The [review](codex-daemon-authority-review.md) led to API 2/read wire 4/service 2
 with clean rejection of the old wire. The following
 [saved-evidence repair](codex-evidence-repair-plan.md) accepts the a4 successor

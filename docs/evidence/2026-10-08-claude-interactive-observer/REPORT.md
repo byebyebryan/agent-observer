@@ -1,10 +1,11 @@
 # Claude interactive Observer acceptance
 
-Date: 2026-10-08. I1–I3 of the
+Dates: native acceptance 2026-10-08; operational acceptance 2026-10-09. I1–I4 of the
 [interactive reconciliation](../../claude-interactive-observation-plan.md)
-are accepted within the user's native-registration assumption. I4 operational
-selection is pending at this checkpoint. Provider settings, frontend work and
-attachment/actions have separate gates.
+are accepted within the user's native-registration assumption. Normal read CLI
+and service select a9 on Snap and Starship. I5 provider-policy rollout is deferred;
+the [read-client handoff](../../api-v2-client-handoff.md) is current. Provider
+settings, frontend work and attachment/actions retain separate gates.
 
 ## Artifact and contract
 
@@ -46,6 +47,7 @@ adapter/engine boundary independently of this oracle.
 | [Ordinary push client](ordinary-push.json) | First-party watch receives monotonic frames and working/waiting running contexts | Three frames; sampled delivery, not lossless native events |
 | [Snap Codex](ordinary-snap-codex.json) | All 89 rows and two running contexts agree; no issues | Passive direct/native sample |
 | [Starship Codex](ordinary-starship-codex.json) | All 354 rows and six running contexts agree; no issues | Passive direct/native sample; 21 old kinds remain unknown |
+| [Selected Snap cache](selected-snap-cache.json) / [Starship cache](selected-starship-cache.json) | Normal selected CLI/socket match the six Claude and two Snap/six Starship Codex active contexts; all comparable state/age facts agree | Same setup-only cwd gap; one additional stale unsaved Claude row in the service, qualified below |
 | [Preservation](preservation.json) / [cleanup](native-cleanup.json) | Ordinary settings/executable unchanged; all six original Claude births/registrations remain live; owned namespace stopped and borrowed auth/history removed | No ordinary provider actions |
 
 The transition [harness](../../../scripts/native-claude-interactive-acceptance)
@@ -56,6 +58,36 @@ output is discarded. Receipts retain UUIDs, finite states/clocks and provenance,
 never conversations, tool output or credentials. The background guard probe
 launches an owned background question solely to prove exclusion; namespace
 cleanup stops its private daemon/workers.
+
+## Operational selection
+
+Managed source changes only the read/service tuple and its operations note:
+Snap chezmoi commit `fb6f8b5`, Starship scoped commit `9de3ecc`. The remote branch
+was already divergent; its scoped commit preserves that branch and unrelated
+Kitty drift. The six-target operator verifies artifact bytes, rendered unit and
+links before apply. Writer a16, workspace mapping, frontend selections, provider
+settings and ordinary sessions remain unchanged.
+
+| Evidence | Result |
+| --- | --- |
+| [Snap selection](managed-selection-snap.json) and final [Snap](managed-final-snap.json) / [Starship](managed-final-starship.json) verification | Immutable a9 read/service selected; owning user unit enabled/active; native hints enabled; no provider actions or frontend targets |
+| [Snap recovery](managed-recovery-snap.json) / [Starship recovery](managed-recovery-starship.json) | Unit restart and forced publisher failure each end the old watch; fresh reconnect starts sequence 1 with a new service incarnation |
+| [Snap rollback](managed-rollback-snap.json) / [reselection](managed-reselection-snap.json) | Six targets restore a8, then verified a9 reselection succeeds; source tuple stays a9 throughout rollback |
+| [Snap readers](managed-readers-snap.json) / [Starship readers](managed-readers-starship.json) | 180 seconds per existing managed unit, 100 cached reads, three independent healthy watchers and an unread subscriber; no watcher gaps/errors; leases/provenance accepted |
+
+Starship rollback/reselection also passed the scoped operator during this pass;
+its rollback snapshot remains
+`~/.local/state/agent-observer/rollback/20261009-a9-starship/snapshot.json`.
+Snap's snapshot is at the equivalent `20261009-a9-snap` path. Final receipts
+independently verify selected a9 bytes/units after both rollback exercises.
+
+Snap runtime/history cadence is 30/120 seconds; Starship is 20/60. The reader
+soak measured cached CLI p95 about 95 ms on Snap and 157 ms on Starship. Peak
+aggregate publisher/helper RSS was about 115/74 MiB respectively; summed RSS
+counts shared pages and differs from unit memory accounting. These are bounded
+three-minute operational samples, not long-term memory or physical wake proof.
+Forced kills without a native file event use periodic runtime reconciliation
+plus bounded collection time; pushed views are sampled, not lossless native events.
 
 ## Limits and practical effects
 
@@ -77,6 +109,18 @@ cleanup stops its private daemon/workers.
   `/home/bryan/code`, while Observer returns null. Its conversation age and kind
   remain unknown. The evaluator records this stable cwd mismatch; complete
   metadata parity is not claimed. Normal conversation rows match.
+- **The service can retain a disappeared unsaved row as stale unknown.** The
+  selected cache contains UUID `4359adf3-32f1-49fb-ab95-cc780bfe68de` with
+  `hasSavedHistory=false`, `retained_after_gap`, original sample clocks and
+  last-known running/working values. Current independent native checks find no
+  matching registration or root transcript, and a direct installed read omits
+  it. The [retention receipt](selected-retention-limit.json) verifies the current
+  difference; it does not reconstruct independent proof of the earlier runtime.
+  Claude's permanently partial coverage uses the engine's existing conservative
+  retention rule. Row/byte limits bound storage, without time eviction. This
+  stale row does not count as active or parked; cached/direct membership equality
+  is not claimed for retained gaps. Consumer presentation must preserve that
+  distinction. No service restart or native deletion is used to hide it.
 - Generic dialogs and unrecognized/future status clocks keep running known and
   phase unknown. Native child history exclusions and Claude turn outcomes
   remain unsupported. Hazardous PID reuse/foreign domain/ownership/torn-file
@@ -86,8 +130,8 @@ cleanup stops its private daemon/workers.
   expiry and service incarnation changes remain explicit. A liveness refresh
   does not advance conversation age or renew a missing history fact.
 
-I2 passes 383 synthetic tests (one skip), Markdown/local-link and diff checks.
+I2 passes 383 tests (one skip), Markdown/local-link and diff checks.
 The removed tests asserted obsolete background lifecycle/attachment behavior;
 replacement tests cover interactive lifecycle, provenance, conflict guards,
 runtime-only saved discovery and short runtime leases independent of history.
-Native acceptance above is separate from those source checks and from I4.
+Native acceptance above is separate from source checks and I4 operations.

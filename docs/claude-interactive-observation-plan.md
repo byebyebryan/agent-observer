@@ -1,15 +1,16 @@
 # Claude interactive observation reconciliation
 
-Date: 2026-10-08. Status: accepted design direction and registration assumption;
+Date: 2026-10-09. Status: accepted design direction and registration assumption;
 shared public contract fit is now [settled](claude-read-contract-review.md).
 I1 oracle/private boundary is accepted; the a9 producer is implemented in source.
 The [a9 artifact/native gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
-is accepted; operational selection and provider-policy rollout remain separate. This reconciles
+and I4 scoped operational selection are accepted. Provider-policy rollout remains
+separate and deferred; the read-client handoff is current. This reconciles
 the [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md) and subsequent
 [native-source validation](evidence/2026-10-08-claude-interactive-source/REPORT.md)
 with the user's accepted practical scope. It replaces the earlier requirement
-for an exhaustive interactive census. It does not select a new artifact, wire,
-provider configuration or consumer.
+for an exhaustive interactive census. The gate report records the selected
+artifact; provider configuration and consumer selection are outside this plan.
 
 ## Direction and current baseline
 
@@ -27,13 +28,13 @@ support. No legacy adapter, Observer session manager or terminal fallback is
 required. Native process checks are permitted to authenticate provider-owned
 UUID registrations; they are not generic process discovery or attachment.
 
-The selected a8 adapter already authenticates native running registrations and
+The preceding a8 adapter authenticated native running registrations and
 supported status, with saved metadata collected independently. Its parked
-predicate applies only to bounded terminal retained jobs. Saved-only rows and
-foreground `/exit` still report unknown. This plan changes that lifecycle policy
-and removes background/attachment scaffolding. The successor implements it in
-source through the [private sample boundary](claude-private-sample-contract.md);
-that does not select an installed artifact.
+predicate applied only to bounded terminal retained jobs. Saved-only rows and
+foreground `/exit` reported unknown. A9 changes that lifecycle policy and removes
+background/attachment scaffolding through the
+[private sample boundary](claude-private-sample-contract.md). Independent native
+and operational gates now accept a9 on Snap and Starship.
 
 Native evidence now establishes:
 
@@ -51,8 +52,10 @@ Native evidence now establishes:
   source. Its availability is not required by this design.
 
 The [native report](evidence/2026-10-08-claude-interactive-source/REPORT.md)
-retains exact artifact/topology bounds. Source facts are established; the later
-Observer implementation and normal Agent View opt-out still need their gates.
+retains exact artifact/topology bounds. The successor's
+[acceptance report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+adds immutable Observer and operational proof. Normal Agent View opt-out remains
+a separate, deferred provider-policy gate.
 
 ## Accepted assumption and lifecycle rule
 
@@ -168,14 +171,14 @@ coverage; do not require `coverage=complete` to classify an otherwise qualified
 saved UUID.
 
 The public part of I1 is settled: shared semantics and diagnostic codes fit the
-unchanged strict validators/descriptors, including the installed a8 reader.
+unchanged strict validators/descriptors, including the preceding a8 reader.
 No automatic API 3 / wire 5 / protocol 3 bump is needed for private cleanup.
 Read-client source work can begin independently against the settled interface.
-I1's native oracle and bounded private sample interface remain unfinished.
+I1's independent native oracle and bounded private sample interface are accepted.
 If implementation demonstrates a required new public field/enum or incompatible
 shared meaning, reopen a concrete versioned contract gate rather than silently
-extending wire 4 or adding a converter. The installed a8 behavior remains the
-baseline until a successor's separate artifact/native acceptance.
+extending wire 4 or adding a converter. A9 is the current accepted read/service
+artifact; a8 remains historical native evidence and a retained rollback target.
 
 | Area | Responsibility |
 | --- | --- |
@@ -201,7 +204,11 @@ baseline until a successor's separate artifact/native acceptance.
 I1 oracle/private work is complete. I2 source checks cover interactive lifecycle,
 incarnation uncertainty, duplicates, source bounds, conflict guards and independent
 leases. I3 accepts the immutable a9 candidate through native direct/cache/push
-and ordinary both-host comparisons. The next checkpoint is I4 scoped operations. Reuse native I0 facts
+and ordinary both-host comparisons. I4 selects read/service a9 on both hosts,
+with restart, publisher failure/reconnect, rollback/reselection and sustained
+readers accepted. The independent writer remains a16. I5 provider-policy changes
+are deferred; [read-client handoff](api-v2-client-handoff.md) is complete.
+Reuse native I0 facts
 rather than repeating the entire spike for every daily provider update. Additional cases
 establish the candidate's bounded behavior; they are not an attempt to prove
 away the already demonstrated missing-registration limitation. If a required
