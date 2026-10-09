@@ -9,6 +9,13 @@ an experimental source/client contract, outside API 2's accepted read surface.
 Its suppression/disposition/formatting fields are client policy; future reusable
 native-event evidence needs a separately reviewed boundary and native gate.
 
+The [2026-10-09 state/event design](state-and-events-design.md) now settles that
+future boundary, with [independent research proof](evidence/2026-10-09-state-and-events-design/REPORT.md)
+and a separate implementation sequence. The ESP32-349 handoff is one client
+request. This historical experimental wire remains policy-bearing and is not
+the proposed pure event wire or a general consumer contract; no converter or
+production event acceptance is implied.
+
 ## Source boundary
 
 `notification_source` consumes an explicitly invoked provider callback and a

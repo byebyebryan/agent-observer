@@ -17,6 +17,16 @@ Direct sampled watch uses the same evidence helper with a fixed 60-second bound;
 one-shot reads retain no prior view. Removal is observation-memory retirement,
 not a provider lifecycle assertion. Native admission predicates stay in adapters.
 
+The [2026-10-09 state/event design](state-and-events-design.md) adds a reviewed
+future product alongside accepted state pull/push: bounded native occurrence
+facts, normalized in core and hosted/delivered by the local service. Partial
+callback coverage, receipt/correlation identity and replay gaps are explicit.
+It adds no alert/terminal/action authority. A distinct event facade/protocol
+and its read CLI remain [following implementation](state-and-events-execution-plan.md).
+The ESP32-349 handoff is one client request, not the common contract. Networking
+development moves to the separate mesh-plus repo/thread; older optional-in-repo
+networking proposals below retain historical scope only.
+
 The [Claude interactive reconciliation](claude-interactive-observation-plan.md)
 keeps Observer upstream of all clients. Under the accepted native-registration
 assumption, healthy provider-owned scans and authenticated incarnation checks

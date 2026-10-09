@@ -1,0 +1,31 @@
+{
+  "callbacks": [
+    {
+      "callbackThreadId": "01a12270-d520-7623-a6a0-e63b989ad05f",
+      "detailAvailable": false,
+      "classification": "unknown",
+      "reason": "native_detail_unavailable"
+    },
+    {
+      "callbackThreadId": "01a12270-bace-7390-9ffa-6e6f05a4a6f2",
+      "threadSource": "user",
+      "parentThreadId": null,
+      "ancestorThreadId": null,
+      "detailAvailable": true
+    },
+    {
+      "callbackThreadId": "01a12270-9ce0-7f13-bb40-1b986088b771",
+      "threadSource": "user",
+      "parentThreadId": null,
+      "ancestorThreadId": null,
+      "detailAvailable": true
+    },
+    {
+      "callbackThreadId": "01a12270-d72d-7573-a6af-b298fddbdf34",
+      "detailAvailable": false,
+      "classification": "unknown",
+      "reason": "native_detail_unavailable"
+    }
+  ],
+  "readsPreserveLoadedRoster": true
+}

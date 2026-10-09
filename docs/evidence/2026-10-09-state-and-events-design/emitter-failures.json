@@ -1,0 +1,37 @@
+{
+  "studyOnly": true,
+  "productionEmitterProved": false,
+  "allFailuresNeutral": true,
+  "cases": [
+    {
+      "case": "invalid_json",
+      "neutralExit": true,
+      "neutralOutput": true,
+      "durationMs": 19
+    },
+    {
+      "case": "oversized_input",
+      "neutralExit": true,
+      "neutralOutput": true,
+      "durationMs": 20
+    },
+    {
+      "case": "unknown_event",
+      "neutralExit": true,
+      "neutralOutput": true,
+      "durationMs": 19
+    },
+    {
+      "case": "invalid_notify",
+      "neutralExit": true,
+      "neutralOutput": true,
+      "durationMs": 18
+    },
+    {
+      "case": "sink_symlink_rejected",
+      "neutralExit": true,
+      "neutralOutput": true,
+      "durationMs": 18
+    }
+  ]
+}

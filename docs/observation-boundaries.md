@@ -144,6 +144,15 @@ existing [experimental notification source/client](notification-client-contract.
 does not establish such an API 2 event stream. Its policy-bearing `notify`,
 `wake` and `ignore` dispositions are not new core state semantics.
 
+The reviewed [state/event design](state-and-events-design.md) settles the next
+producer boundary: pure bounded native-event meaning in core, source/intake/
+replay hosting and local read delivery in the existing service, with client
+policy kept external. State hints and event receipts never supply new phase,
+runtime or age authority. A distinct proposed event wire/protocol has its own
+[implementation/native gates](state-and-events-execution-plan.md); it is not yet
+implemented. The 349 handoff is one client's request, not a universal event or
+alert contract.
+
 ## Network and attachment boundaries
 
 Meshing consumes the local read interface; it does not query providers or run
@@ -157,6 +166,10 @@ the mesh must not compare raw boottime values across hosts.
 binds it to the authenticated route. Project grouping across hosts is separate
 from logical session identity. Meshing can initially stay in existing clients;
 this pass does not require a new network runtime or public mesh schema.
+
+The user's following networking work is in the separate **mesh-plus** repository/
+thread. Observer's local state and proposed event products are its upstream
+inputs; no networking implementation or deployment is included in this pass.
 
 Context matching is deliberately outside observation. A separate layer may
 combine an exact session reference with tmux-observer, niri or other window

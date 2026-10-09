@@ -28,6 +28,15 @@ alerts remain separate.
 The [Claude wrap-up](docs/claude-observation-wrap-up.md) closes the interactive
 observation pass and records independent follow-ups.
 
+The next producer track has a reviewed [state and native event design](docs/state-and-events-design.md),
+[source/replay evidence](docs/evidence/2026-10-09-state-and-events-design/REPORT.md)
+and [implementation gates](docs/state-and-events-execution-plan.md). Existing
+pull/push delivers current state; the proposed optional event feed preserves
+native occurrence facts with partial source coverage and bounded replay. Its
+production schemas/service/read CLI are not implemented. The 349 handoff is
+one client's request; alert policy remains external. Networking is moving to the
+separate mesh-plus repository/thread.
+
 Codex queries its owning daemon for running/parked independently of TUI/tmux.
 Claude authenticates provider-owned interactive registrations and status.
 Healthy bounded scans with positive saved identity and no live matching

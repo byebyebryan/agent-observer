@@ -1,0 +1,11 @@
+{
+  "sourceBaseline": "43b8d3e",
+  "nativeDriverFilesSha256": {
+    "native-event-source-study": "685bd6912ce25d4877fd9bc42bc592f8667228a96515dadde1c83e7cec545e9c",
+    "capture-event-source-study": "22e6a3aa66e7aa81e96b9ab1648d2fa3d517489702cdf196e97a902e288124b6",
+    "evaluate-observation": "02d1f4022ca5c2f85bab91379a1719e8c1dc07537ad04f0e3a25e4023f7196a9",
+    "native-acceptance": "6cb4eedf2c1372c04ac4df1b82c4b32911df6eafadba705fefae43570adcf8a6",
+    "native-claude-interactive-proof": "437a268b4cd3e831eaae2e42853bb80c89ad188267c66c70a284c60441b26278"
+  },
+  "productionImplementation": false
+}

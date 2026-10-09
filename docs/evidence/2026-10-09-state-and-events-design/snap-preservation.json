@@ -1,0 +1,23 @@
+{
+  "ownedNamespaceStopped": true,
+  "borrowedAuthAndHistoryRemoved": true,
+  "ordinaryConfigHashesUnchanged": {
+    "/home/bryan/.codex/config.toml": true,
+    "/home/bryan/.claude/settings.json": true,
+    "/home/bryan/.claude.json": false,
+    "/home/bryan/.local/bin/codex-notify": true
+  },
+  "ordinaryDaemonIncarnationUnchanged": true,
+  "isolationReady": {
+    "privateTmp": true,
+    "ordinaryProviderPathsMasked": true,
+    "privateUserMountPidNamespaces": true
+  },
+  "mutablePreferenceDrift": {
+    "path": "/home/bryan/.claude.json",
+    "sha256Changed": true,
+    "studyWroteOrdinaryPreferencePath": false,
+    "changedKeysAndWriterUnproved": true,
+    "restored": false
+  }
+}
