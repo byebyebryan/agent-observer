@@ -3,10 +3,12 @@
 Date: 2026-10-09. Status: interactive observation complete within the accepted
 native-registration assumption. The [a9 acceptance report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 and [ordinary review](evidence/2026-10-09-claude-wrap-up/REPORT.md) establish the
-source, immutable artifact/native and scoped operational gates. Normal read CLI
-and service select a9 on Snap and Starship; Claude native support is on Snap.
+source, immutable artifact/native and scoped operational gates of that checkpoint.
+The subsequent [finite-retention pass](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+selects a11 normal read CLI/service on Snap and Starship; Claude native support is on Snap.
 Codex remains accepted on both hosts. The normal writer is separately selected
-at a16. This wrap-up changes documentation only.
+at a16. The original wrap-up changed documentation only; its a9 evidence keeps
+its historical artifact bounds.
 
 ## Supported observation
 
@@ -43,7 +45,7 @@ collection and delivery do not advance conversation activity.
 
 [API 2](api-v2.md), snapshot/watch wire 4 and [service protocol 2](service-protocol-v2.md)
 are unchanged prerelease interfaces. New read clients use the
-[a9 manifest](../artifacts/observer-0.5.0a9.json) and
+[a11 manifest](../artifacts/observer-0.5.0a11.json) and
 [client handoff](api-v2-client-handoff.md). They preserve exact scoped references,
 partial coverage, row health, parked/null phase, native conversation age,
 child filtering, leases and gap/resync behavior. Read-client implementation and
@@ -69,10 +71,12 @@ evidence, not an exhaustive process census or new controlled lifecycle proof.
 - Generic dialogs, nested child history and Claude turn outcomes remain unproved.
   Two non-conversation rows lack activity/kind; one has the documented setup-only
   cwd omission. Older Starship Codex kinds retain their accepted limits.
-- Shared-core partial-coverage retention can leave disappeared unsaved rows as
-  stale unknown indefinitely within row/byte bounds. The
-  [retention follow-up](runtime-only-retention-follow-up.md) scopes that producer
-  repair separately. It is not a new Claude classifier or a current running fact.
+- The separate [retention pass](runtime-only-retention-follow-up.md) closes
+  indefinite unsaved stale memory in a11. It retires by the original runtime
+  lease, protects current/saved rows and age, and accepts normal/forced exit,
+  faults/recovery and exact reappearance across direct/cache/push/watch.
+  A focused passive Claude admission repair omits independently proved dead
+  unsaved residue; retirement still supplies no native lifecycle assertion.
 - Agent View policy, New/Resume/attach and context matching, networking,
   notifications and downstream client rollout remain separate. Neither on/off
   proof nor the observation handoff authorizes those actions.

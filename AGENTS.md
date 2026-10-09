@@ -9,7 +9,7 @@
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
 - `docs/claude-observation-wrap-up.md` records the completed Claude observation
-  checkpoint. The a9 read/service artifact is accepted and selected on Snap and
+  checkpoint. The a11 read/service artifact is accepted and selected on Snap and
   Starship; Claude native support is on Snap and Codex remains accepted on both.
   `docs/claude-observation-execution.md` and its a8 report are historical evidence.
   The implemented Claude track is `docs/claude-interactive-observation-plan.md`.
@@ -30,7 +30,7 @@
   artifact/native proof and scoped Observer operations. I5 provider-policy
   rollout is deferred; ordinary Agent View settings and sessions remain unchanged.
   `docs/claude-read-contract-review.md` settles API 2/wire 4/service 2 fit with
-  existing fields and partial scope. Read clients use the accepted a9 artifact
+  existing fields and partial scope. Read clients use the accepted a11 artifact
   and `docs/api-v2-client-handoff.md`, with their own implementation/native gates.
   No frontend or provider-policy deployment is implied. Version only a concrete
   required incompatible public change, not private adapter cleanup.
@@ -42,8 +42,12 @@
   superseded by the user's narrower design acceptance, not by new completeness
   evidence. Old background histories remaining unknown are outside the user's
   forward interactive workflow, not a request for legacy compatibility.
-  `docs/runtime-only-retention-follow-up.md` separately scopes shared-core
-  retirement of disappeared unsaved rows; it is not implemented by this wrap-up.
+  `docs/runtime-only-retention-follow-up.md` records the accepted shared-core
+  finite retirement of disappeared unsaved rows in a11. Partial receipts cannot
+  slide the original runtime deadline; current rows and positive saved history
+  remain protected. Retirement supplies no native lifecycle or action authority.
+  The focused dead-unsaved native-admission predicate stays in the passive
+  Claude adapter. The a9 lifecycle/on-off proofs retain their historical bounds.
 - The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked

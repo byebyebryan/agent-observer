@@ -17,8 +17,10 @@ selected a6 after its independent artifact/native and scoped operational gates.
 The [Claude execution pass](claude-observation-execution.md) independently accepts
 [a8 discovery/monitoring](evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
 preserving Codex on both hosts and the same read/service contracts. Normal
-read/service selection now uses the [a9 interactive successor](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
-through its separate operational gate.
+read/service selection now uses [a11 finite runtime-only retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+through its separate operational gate. The preceding
+[a9 interactive successor](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+retains its lifecycle/on-off proof bounds.
 The writer retains a16 independently. Core/model/adapter/engine, service hosting,
 mesh and read-client ownership are enforced; provider wakeups/read push remain
 separate from alert policy. `ObservationEngine` owns common reconciliation and
@@ -47,9 +49,13 @@ legacy background compatibility is not a completion requirement. The metadata-on
 cwd omission and other accepted scope limits stay explicit.
 The [Claude wrap-up](claude-observation-wrap-up.md) closes the provider pass;
 read-client work can proceed independently against the settled contract.
-The [shared-core retention follow-up](runtime-only-retention-follow-up.md) separately
-scopes bounded retirement of disappeared unsaved rows, which a9 currently retains
-as stale unknown. It does not change the selected artifact or block read-client work.
+The [shared-core retention follow-up](runtime-only-retention-follow-up.md) is
+complete at a11: disappeared unsaved rows retire by the original runtime lease,
+without sliding on partial samples. Current rows and positive saved history are
+protected, and conversation age is unchanged. Direct watch uses a fixed 60-second
+bound at the next sample. Native forced-exit proof exposed a dead-unsaved Claude
+admission gap in rejected a10; the focused a11 adapter repair and independent
+native acceptance close it without a new public field or lifecycle claim.
 
 The preceding checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
@@ -65,7 +71,7 @@ writer subset are [accepted against a3](evidence/2026-10-08-codex-authority-acce
 on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) and
 the [client handoff](api-v2-client-handoff.md) describe the current read contract.
 The completion loop supplied the following managed read/service gate; D6 Claude
-observation followed at a8 and the current interactive a9 checkpoint. Claude write/attachment and
+observation followed at a8 and the interactive a9 checkpoint. Claude write/attachment and
 frontend delivery remain separate checkpoints.
 The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
 and unproved exact-Resume gaps against the
@@ -141,7 +147,7 @@ explicitly. Tmux Plus work blocks Agent Plus implementation, not Observer delive
 
 The [API v1 client handoff](api-v1-client-handoff.md) retains its historical bounds.
 A2 remains a separately installed historical acceptance tuple. That pass selected
-a16/wire 3; current read/service links use a6/API 2. Plus retains its old frozen
+a16/wire 3; current read/service links use a11/API 2. Plus retains its old frozen
 reader. Client/cache migration has its own gate. The separate notification
 source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older

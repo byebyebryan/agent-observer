@@ -13,8 +13,8 @@ simplified.
 
 ## Status
 
-The current checkpoint is [a9 interactive observation](docs/evidence/2026-10-08-claude-interactive-observer/REPORT.md).
-Normal read CLI/services select a9 on Snap and Starship through the separate
+The current checkpoint is [a11 finite runtime-only retention](docs/evidence/2026-10-09-runtime-only-retention/REPORT.md).
+Normal read CLI/services select a11 on Snap and Starship through the separate
 operational gate. Codex is accepted on both hosts; Claude interactive discovery
 and monitoring are accepted on Snap. The reusable core owns reconciliation and
 evidence, passive adapters own native reads, and the service owns helper lifetime
@@ -47,15 +47,18 @@ Claude turn outcomes remain unproved.
 
 Installed native comparisons match all six ordinary Claude running contexts,
 35 saved UUIDs and 33 known conversation clocks on Snap within the documented
-metadata gap; one additional unsaved identity is retained only as stale unknown
-in the service. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
+metadata gap. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
 cached pulls and pushed views pass independently. Age follows native conversation
 activity; leases, source faults, ambiguity and gaps remain explicit.
-The [shared-core retention follow-up](docs/runtime-only-retention-follow-up.md)
-separately scopes retirement of disappeared unsaved rows; a9 still retains them
-as stale unknown.
+The [shared-core retention pass](docs/runtime-only-retention-follow-up.md)
+retires disappeared unsaved rows at their original runtime lease: 90 seconds on
+Snap and 60 on Starship; sampled direct watch uses 60 seconds and applies expiry
+at the next sample. Repeated partial reads do not extend retention. Current rows
+and positive saved history survive, with original conversation age. Retirement
+omits observation memory and establishes no native lifecycle or action authority.
 
-The preceding [a8 Claude checkpoint](docs/evidence/2026-10-08-claude-observation/REPORT.md)
+The preceding [a9 interactive checkpoint](docs/evidence/2026-10-08-claude-interactive-observer/REPORT.md),
+[a8 Claude checkpoint](docs/evidence/2026-10-08-claude-observation/REPORT.md)
 and [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 retain their historical artifact bounds. Twenty-one older Starship kinds are an
 accepted forward-looking limit. Physical sleep/wake and Codex post-TUI-closure
@@ -222,7 +225,7 @@ cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
 The retained a16 [API v1 candidate](docs/api-v1.md) keeps its historical
-JSON/CLI and pure Python surface. Current a6 read clients use
+JSON/CLI and pure Python surface. Current a11 read clients use
 [API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
@@ -235,7 +238,7 @@ agent-observer snapshot --host-scope starship --provider codex
 
 Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
-roots can be supplied explicitly. The a6 Codex collector reads the existing
+roots can be supplied explicitly. The Codex collector reads the existing
 owning daemon without private saved-store fallback. It never starts a missing
 daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
 for direct and cached commands against the accepted candidate and normal service.

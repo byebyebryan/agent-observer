@@ -2,7 +2,7 @@
 
 Date: 2026-10-09. Prerelease read contract, accepted for the installed Codex
 [a5 candidate](evidence/2026-10-08-codex-observation-completion/REPORT.md).
-The following [a9 checkpoint](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+The current [a11 checkpoint](evidence/2026-10-09-runtime-only-retention/REPORT.md)
 selects normal read services with the same protocol. Protocol 2 embeds API 2 snapshot wire 4
 and rejects protocol 1; there is no converter or automatic direct fallback.
 The [Claude read-contract review](claude-read-contract-review.md) settles
@@ -66,6 +66,13 @@ Its runtime refresh may prove exact saved identity without renewing the slower
 catalog/title/activity receipt. A stale history component invalidates its current
 coverage/enrichment; it does not invalidate independently current runtime evidence.
 This does not let a consumer infer parked from a missing row, warming view or gap.
+
+Disappeared unsaved rows can remain stale unknown only until their original
+accepted runtime lease expires. Partial receipts, history enrichment and
+heartbeats cannot extend that retention deadline. Current rows and positive
+saved identities remain protected. Expiry removes unsaved memory from both
+component caches and the next complete pushed view; it supplies no native
+lifecycle event or action permission. Conversation clocks remain unchanged.
 
 Custom host-local consumers must account for elapsed BOOTTIME and matching
 boot/time scope, stop current claims on expired leases or transport silence,
