@@ -4,19 +4,15 @@
 
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
-- `docs/observation-boundaries.md` defines the next boundary-hardening pass:
+- `docs/observation-boundaries.md` defines the implemented observation boundary:
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
-- `docs/claude-observation-execution.md` and its
-  `docs/evidence/2026-10-08-claude-observation/REPORT.md` accept the following
-  Claude observation checkpoint on Snap. Stable authenticated provider registration
-  and status metadata supply running/phase; terminal retained jobs have a bounded
-  positive parked predicate. Saved-only absence and foreground exit remain
-  unknown. The earlier Codex-only correction below is historical scope, not a
-  prohibition on this independently accepted passive adapter. Claude actions,
-  attachment and generic background lifetime remain separate gates.
-- The next Claude track is `docs/claude-interactive-observation-plan.md`.
+- `docs/claude-observation-wrap-up.md` records the completed Claude observation
+  checkpoint. The a9 read/service artifact is accepted and selected on Snap and
+  Starship; Claude native support is on Snap and Codex remains accepted on both.
+  `docs/claude-observation-execution.md` and its a8 report are historical evidence.
+  The implemented Claude track is `docs/claude-interactive-observation-plan.md`.
   Interactive-only observation must use provider-owned evidence without client
   inventory, tmux/TUI/window matching or attachment queries. Native process checks
   authenticate exact provider registrations only. The user accepts the normal
@@ -30,11 +26,12 @@
   assertions. Background runtime is unsupported; use only a minimal native
   conflict guard, not full job lifecycle compatibility. No run ledger or mandatory
   hook source is required. Report partial runtime coverage and the assumption.
-  I1–I5 separately gate contract, source, artifact, Observer operations and provider
-  policy. `docs/claude-read-contract-review.md` settles API 2/wire 4/service 2 fit
-  with existing fields and partial scope. Independent read-client source work may
-  start against that interface and the accepted a8 artifact; the Claude successor
-  still needs oracle/private-interface, source/artifact/native and rollout gates.
+  I0–I4 are accepted: native scope, oracle/private interface, source, immutable
+  artifact/native proof and scoped Observer operations. I5 provider-policy
+  rollout is deferred; ordinary Agent View settings and sessions remain unchanged.
+  `docs/claude-read-contract-review.md` settles API 2/wire 4/service 2 fit with
+  existing fields and partial scope. Read clients use the accepted a9 artifact
+  and `docs/api-v2-client-handoff.md`, with their own implementation/native gates.
   No frontend or provider-policy deployment is implied. Version only a concrete
   required incompatible public change, not private adapter cleanup.
   This design plan alone authorizes no new public wire or deployment.
@@ -43,13 +40,16 @@
   census: a failed registration can remain missing after directory recovery while
   the interactive session is usable. Its original negative-gate rejection is
   superseded by the user's narrower design acceptance, not by new completeness
-  evidence. The installed a8 behavior remains unchanged pending implementation.
+  evidence. Old background histories remaining unknown are outside the user's
+  forward interactive workflow, not a request for legacy compatibility.
+  `docs/runtime-only-retention-follow-up.md` separately scopes shared-core
+  retirement of disappeared unsaved rows; it is not implemented by this wrap-up.
 - The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked
-  or work phase. Clients own terminal lifetime/attachment. Codex-only acceptance
-  leads this breaking correction; Claude support is deferred to the next gate
-  and may break. Post-TUI-closure validation is deferred. Preserve provider-neutral
+  or work phase. Clients own terminal lifetime/attachment. The original correction
+  accepted Codex first; Claude now has its independent completed observation gate.
+  Post-TUI-closure validation is deferred. Preserve provider-neutral
   interfaces, but do not retain compatibility converters, private saved-store
   fallback or terminal/job field scaffolding merely for the old contract.
   `docs/contract-and-clients-plan.md` records the preceding track. Keep
@@ -58,7 +58,7 @@
   component may share this repository, but are separate from passive core and
   have independent implementation/native gates. Design documentation alone
   does not accept proposed states/fields/commands or authorize deployment.
-- D0-D6 in `docs/codex-daemon-authority-plan.md` define the next correction
+- D0-D6 in `docs/codex-daemon-authority-plan.md` record the preceding correction
   sequence. Its D4 gate independently accepts the Codex read/service artifact;
   write/native delivery and Claude have separate following gates. The preceding
   `docs/contract-and-clients-execution-plan.md` records the earlier sequence.

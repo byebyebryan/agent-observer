@@ -1,0 +1,182 @@
+{
+  "scope": "read_only_ordinary_active_and_history_review",
+  "observerArtifact": "0.5.0a9",
+  "apiVersion": 2,
+  "snapshotWatchVersion": 4,
+  "serviceProtocol": 2,
+  "independentNativeOracle": true,
+  "ordinaryProviderActions": false,
+  "sourceChanges": false,
+  "comparisons": {
+    "snap-direct": {
+      "version": "agent-observer 0.5.0a9",
+      "rounds": 2,
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 89,
+          "nativeAfterRows": 89,
+          "cliRows": 89,
+          "nativeRunning": 2,
+          "matchedRuntime": 89,
+          "matchedPhase": 89,
+          "matchedActivity": 52,
+          "issues": []
+        },
+        "claude": {
+          "nativeBeforeRows": 35,
+          "nativeAfterRows": 35,
+          "cliRows": 35,
+          "nativeRunning": 6,
+          "matchedRuntime": 35,
+          "matchedPhase": 35,
+          "matchedActivity": 33,
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "cwd",
+              "result": "mismatch",
+              "native": "/home/bryan/code",
+              "cli": null
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 8,
+        "doctorSessionCount": true,
+        "cliRows": 86,
+        "filteredChildren": 38
+      },
+      "errors": []
+    },
+    "snap-cache": {
+      "version": "agent-observer 0.5.0a9",
+      "rounds": 2,
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 89,
+          "nativeAfterRows": 89,
+          "cliRows": 89,
+          "nativeRunning": 2,
+          "matchedRuntime": 89,
+          "matchedPhase": 89,
+          "matchedActivity": 52,
+          "issues": []
+        },
+        "claude": {
+          "nativeBeforeRows": 35,
+          "nativeAfterRows": 35,
+          "cliRows": 36,
+          "nativeRunning": 6,
+          "matchedRuntime": 35,
+          "matchedPhase": 35,
+          "matchedActivity": 33,
+          "issues": [
+            {
+              "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+              "field": "cwd",
+              "result": "mismatch",
+              "native": "/home/bryan/code",
+              "cli": null
+            },
+            {
+              "id": "4359adf3-32f1-49fb-ab95-cc780bfe68de",
+              "field": "membership",
+              "result": "cli_only_unproved",
+              "runtime": "unknown"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 8,
+        "doctorSessionCount": true,
+        "cliRows": 87,
+        "filteredChildren": 38
+      },
+      "errors": []
+    },
+    "starship-direct": {
+      "version": "agent-observer 0.5.0a9",
+      "rounds": 2,
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeRunning": 6,
+          "matchedRuntime": 354,
+          "matchedPhase": 354,
+          "matchedActivity": 106,
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 102,
+        "filteredChildren": 252
+      },
+      "errors": []
+    },
+    "starship-cache": {
+      "version": "agent-observer 0.5.0a9",
+      "rounds": 2,
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeRunning": 6,
+          "matchedRuntime": 354,
+          "matchedPhase": 354,
+          "matchedActivity": 106,
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 6,
+        "doctorSessionCount": true,
+        "cliRows": 102,
+        "filteredChildren": 252
+      },
+      "errors": []
+    }
+  },
+  "pureChecks": {
+    "sourceBoundary": 8,
+    "installedContractAlignment": 8
+  },
+  "findings": [
+    "partial_coverage_retains_disappeared_unsaved_claude_identity_without_time_eviction",
+    "AGENTS_validation_workflow_and_final_client_handoff_paragraph_have_stale_a8_selection_text"
+  ],
+  "existingLimits": [
+    "unregistered_interactive_runtime_unproved",
+    "two_legacy_background_recap_histories_unknown",
+    "SDK_excluded_setup_metadata_cwd_missing",
+    "21_older_starship_kinds_unknown",
+    "generic_dialogs_nested_claude_child_history_and_claude_outcomes_unproved"
+  ],
+  "newRuntimePhaseActivityMismatch": false,
+  "evidencePhase": "ordinary_review_before_documentation_wrap_up",
+  "inventoryFile": "inventory.json",
+  "pushFile": "push.json",
+  "comparisonsFile": "comparisons.json"
+}

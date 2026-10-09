@@ -1,12 +1,13 @@
 # Local service protocol 2
 
-Date: 2026-10-08. Prerelease read contract, accepted for the installed Codex
+Date: 2026-10-09. Prerelease read contract, accepted for the installed Codex
 [a5 candidate](evidence/2026-10-08-codex-observation-completion/REPORT.md).
-The following [a8 checkpoint](evidence/2026-10-08-claude-observation/REPORT.md)
+The following [a9 checkpoint](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 selects normal read services with the same protocol. Protocol 2 embeds API 2 snapshot wire 4
 and rejects protocol 1; there is no converter or automatic direct fallback.
 The [Claude read-contract review](claude-read-contract-review.md) settles
-interactive Claude's fit within this envelope; its producer acceptance is pending.
+interactive Claude's fit within this envelope; a9 independently accepts its
+producer/native and scoped operational gates.
 
 The pure `agent_observer.service_public` facade exports the descriptor,
 request/frame schemas, bounded parsers, validators and `StreamGuard`.

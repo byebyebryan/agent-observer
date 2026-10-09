@@ -1,15 +1,15 @@
 # Observer API 2
 
-Date: 2026-10-08. Prerelease producer contract. The Codex a3 packaged/native gate
+Date: 2026-10-09. Prerelease producer contract. The Codex a3 packaged/native gate
 is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
 The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
 precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 removes redundant publication after separate installed/native and scoped
 operational acceptance. The following
-[a8 Claude gate](evidence/2026-10-08-claude-observation/REPORT.md) preserves these
+[a9 Claude gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md) preserves these
 interfaces and adds passive Claude discovery/monitoring on Snap; normal read
-CLI/services select a8. The writer remains independently selected at a16.
+CLI/services select a9. The writer remains independently selected at a16.
 This document supersedes
 [API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
 
@@ -17,7 +17,8 @@ The [Claude contract alignment review](claude-read-contract-review.md) settles
 the shared read contract for interactive Claude implementation and independent
 client development. API 2, snapshot/watch wire 4 and service protocol 2 fit the
 accepted scoped-registration design without new wire fields or enum values.
-This settles the interface, not the successor's native or operational acceptance.
+The a9 gate separately accepts native behavior and operational selection;
+interface conformance alone does not establish those facts.
 
 ## Interfaces and ownership
 
@@ -95,12 +96,12 @@ Unknown wait flags preserve known active runtime but leave phase unknown.
 
 Each adapter owns its native predicate; clients consume the normalized facts and
 declared limitations. They do not repeat daemon queries or native PID checks.
-The installed a8 Claude adapter uses authenticated registrations/status and a
-bounded terminal-job parked predicate; saved-only absence and foreground exit
-remain unknown. The interactive successor uses positive saved identity plus a
+The installed a9 Claude adapter uses authenticated interactive registrations and
+status. Parked requires positive saved identity plus a
 healthy bounded native scan with no matching live incarnation or relevant
-unresolved conflict, under the user's accepted registration assumption. Normal
-exit, crash and cold start are targets. Failed/lost live registration can cause
+unresolved conflict, under the accepted registration assumption. Normal
+exit, crash, Resume, UUID switches, duplicate contexts and cold start have native
+proof with Agent View on/off. Failed/lost live registration can cause
 false parked, including after source recovery; declare that limitation. Native
 PID/birth checks remain private authentication, never public attachment handles.
 
@@ -130,7 +131,7 @@ Direct reads with an unavailable daemon return no current rows and finite source
 failure; they never fall back to a private store. Existing watch/service rows may
 remain stale under bounded retention.
 
-Claude keeps runtime scope `provider_sessions`. The interactive successor's
+Claude keeps runtime scope `provider_sessions`. The installed interactive adapter's
 runtime coverage is `partial`, with reason `interactive_registration_assumed`
 and limitations `interactive_runtime_only`, `native_registration_assumed`,
 `unregistered_interactive_runtime_unproved` and `background_runtime_unsupported`.
@@ -143,8 +144,17 @@ negative assertion. Source health, coverage and per-row evidence are separate.
 Capabilities declare usable evidence dimensions within the configured context;
 they are not exhaustive membership or action permission. Clients preserve
 unknown/stale facts and source coverage even when some dimensions are supported.
-Both a8's saved-only unknown rows and the successor's scoped parked rows use the
-same shared fields; consumers must handle both without provider-specific inference.
+Current scoped parked rows, unsupported contexts and stale unknown rows use the
+same shared fields; consumers handle those facts without provider-specific inference.
+Background runtime remains unsupported. Old background histories are outside the
+user's forward interactive workflow and require no legacy compatibility repair.
+
+Partial coverage may retain a disappeared unsaved runtime-only identity as stale
+unknown, with original clocks and `retained_after_gap`, while a direct read omits
+it. A9 retention has row/byte bounds without time eviction. This is neither a
+current running assertion nor proof of parked. The
+[shared-core retention follow-up](runtime-only-retention-follow-up.md) records
+the proposed separate repair; it changes no accepted behavior here.
 
 Wire object fields, versions and enum values are closed and strictly validated.
 Evidence `source`/`reason`, coverage reasons, errors and limitation codes use the
@@ -159,7 +169,7 @@ versioned contract and clean rejection; no silent extension or converter.
 Direct snapshots and sampled watch use the same projection as service workers.
 The fast runtime cycle and slower history/enrichment cycle have independent
 receipts. Codex's fast cycle also samples saved-thread daemon state. Claude's
-interactive successor must refresh disposition for known saved UUIDs without
+interactive adapter refreshes disposition for positively saved UUIDs without
 rerunning the whole history SDK scan. Native runtime evidence obtained during
 metadata work is accepted under the short runtime lease and sample ordering
 rules; metadata-only refresh cannot renew state.
@@ -201,7 +211,7 @@ and own attachment/action validation. Agent Plus implementation and managed
 consumer selection are separate gates. Tmux Plus is unchanged.
 
 Read-client implementation can begin against this settled contract and synthetic
-conformance examples while the Claude successor is developed independently.
+conformance examples, using the independently accepted a9 producer.
 Native claims and consumer rollout use an accepted producer artifact; planned
 behavior in a fixture is not deployed behavior. Attachment/actions and public
 notification events remain separate contracts. API 2 remains prerelease; this

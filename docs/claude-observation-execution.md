@@ -1,5 +1,10 @@
 # Claude observation execution
 
+Historical a8 execution pass. The completed
+[interactive successor](claude-observation-wrap-up.md) accepts and selects a9.
+The source and lifecycle rules below retain their original evidence bounds;
+they do not define current support for background jobs or saved-only absence.
+
 This pass adds Claude discovery and monitoring to the established passive
 observation boundary. Codex remains independently accepted. API 2 rows retain
 exact session UUIDs, running/parked/unknown disposition, working/blocked/waiting
@@ -52,7 +57,7 @@ and default presentation hides only confirmed children.
 
 Run `./scripts/check` before each commit. Report unsupported classifications as
 limits, not inferred state. No provider-version/hash allowlist, history migration
-or ordinary provider restart is required. Current installed a6 rejects Claude;
+or ordinary provider restart is required. At the start of that pass, installed a6 rejected Claude;
 earlier a16 evidence is historical and does not accept this new adapter.
 
 ## Accepted checkpoint
@@ -66,15 +71,17 @@ unregistered background work, generic dialogs and turn outcomes remain unproved.
 The read/service operational gate follows artifact acceptance; writer and
 downstream clients retain their separate gates.
 
-## Following interactive-only target
+## Following interactive-only checkpoint
 
 The [interactive reconciliation plan](claude-interactive-observation-plan.md)
-supersedes this pass as the next execution track. It narrows supported runtime to
+supersedes this pass as the implemented execution track. It narrows supported runtime to
 interactive sessions and uses native incarnation checks under the user's accepted
 registration assumption, without client inventory. Normal/crash parked and
-Observer cold start are targets; live missing registration can cause false parked
-and must remain an explicit partial-coverage limit. Implementation, artifact
-acceptance and Agent View opt-out remain separately gated.
+Observer cold start have separate a9 native proof; live missing registration can
+cause false parked and remains an explicit partial-coverage limit. The
+[a9 report](evidence/2026-10-08-claude-interactive-observer/REPORT.md) accepts
+implementation, artifact/native and read/service operations. Agent View policy
+remains separately gated and deferred.
 The accepted a8 terminal-job predicate is historical baseline evidence, not
 acceptance of the new scope or lifecycle rule. No background compatibility
 adapter or attachment dependency is required by the following target.
