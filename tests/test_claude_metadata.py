@@ -94,9 +94,32 @@ class ClaudeMetadataTest(unittest.TestCase):
         self.record()
         for probe in ((None, "absent"), ("789", "present")):
             self.assertEqual(self.row(probe=probe)["runtimeDisposition"]["value"], "parked")
-            self.assertEqual(self.row(probe=probe, saved=())["runtimeDisposition"]["value"], "unknown")
+            self.assertEqual(self.read(probe=probe, saved=())["observations"], [])
         for probe in ((None, "unavailable"), (None, "malformed")):
             self.assertEqual(self.row(probe=probe)["runtimeDisposition"]["value"], "unknown")
+
+    def test_dead_unsaved_registration_remains_unresolved_when_native_scan_or_guard_is_incomplete(self):
+        self.record()
+        (self.root / "sessions/124.json").write_text("invalid")
+        self.assertEqual(self.row(saved=(), probe=(None, "absent"))["runtimeDisposition"]["value"], "unknown")
+        (self.root / "sessions/124.json").unlink()
+        self.job(state="working")
+        self.assertEqual(self.row(saved=(), probe=(None, "absent"))["runtimeDisposition"]["value"], "unknown")
+        (self.root / "jobs/abcdef12/state.json").write_text("invalid")
+        self.assertEqual(self.row(saved=(), probe=(None, "absent"))["runtimeDisposition"]["value"], "unknown")
+
+    def test_live_unsaved_duplicate_survives_dead_registration_with_same_uuid(self):
+        self.record(123)
+        self.record(124)
+        real = module._presence
+        def dead_old(record, domain, observed, cache):
+            if record["pid"] == 123:
+                return module.Evidence("presence", "absent", observed, "claude_registry", "current", "native_snapshot")
+            return real(record, domain, observed, cache)
+        with patch.object(module, "_presence", side_effect=dead_old):
+            row = self.row(saved=())
+            self.assertEqual(row["presence"]["value"], "present")
+            self.assertFalse(row["savedIdentity"])
 
     def test_pid_domain_birth_and_image_uncertainty_never_prove_exit(self):
         for extra in ({"pidDomain": "foreign"}, {"pidDomain": None}, {"procStart": None}):

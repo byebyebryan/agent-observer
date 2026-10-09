@@ -77,6 +77,16 @@ event or alert. API 2/wire 4/service 2 remain unchanged. Additive bounded
 limitation codes describe runtime-lease retention and the direct-watch bound;
 they introduce no fields, enums or action capabilities.
 
+The first frozen a10 native probe passed normal exit but rejected forced-kill
+acceptance: the Claude adapter kept returning an unsaved dead registration as a
+new unknown candidate. Renewing that candidate defeated disappearance retention.
+The a11 successor also omits this provider metadata residue when a healthy native
+bracket/guard and every matching interactive incarnation prove absence, with no
+positive saved identity or relevant unresolved/background conflict. It does not
+delete native files or assert logical session end. Saved records, live matching
+incarnations and uncertain/faulted scans remain protected. This admission repair
+belongs to the passive Claude adapter; service/core retain no Claude predicate.
+
 ## Execution and acceptance
 
 1. R0 policy review is complete above: original runtime lease for service,
