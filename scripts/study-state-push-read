@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Read-only installed watch/native study; no provider or publisher actions.
+
+Independent native metadata brackets complete installed CLI views. Source
+sampling and cache lag remain explicit; this does not prove every transition.
+Only scalar comparison, identity/state/age and service counters are emitted.
+"""
+
+import argparse
+import collections
+import hashlib
+import json
+import os
+import runpy
+import select
+import subprocess
+import time
+from pathlib import Path
+
+
+def tick():
+    return int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
+
+
+def unit():
+    result = subprocess.run(["systemctl", "--user", "show", "agent-observer.service",
+                             "-p", "MainPID", "-p", "NRestarts"], capture_output=True,
+                            check=True, timeout=10)
+    values = dict(line.split("=", 1) for line in result.stdout.decode().splitlines())
+    pid = int(values["MainPID"])
+    parts = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()
+    return {"pid": pid, "birth": parts[19], "restarts": int(values["NRestarts"])}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host-scope", choices=("snap", "starship"), required=True)
+    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
+    parser.add_argument("--oracle", type=Path, required=True)
+    args = parser.parse_args()
+    oracle = runpy.run_path(str(args.oracle))
+    peer = oracle["NativeRPC"](Path.home() / ".codex") if "codex" in args.provider else None
+    cache = {}
+    before_unit = unit()
+    preservation_paths = [Path.home() / ".codex/config.toml", Path.home() / ".claude/settings.json", Path.home() / ".local/bin/codex-notify"]
+    hashes = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in preservation_paths if p.exists()}
+    versions = subprocess.run([str(args.cli), "--version"], capture_output=True, check=True, timeout=10).stdout.decode().strip()
+    connections = []
+
+    def native():
+        values = {}
+        if peer:
+            values["codex"] = oracle["codex_reference"](peer)
+        if "claude" in args.provider:
+            values["claude"] = oracle["claude_reference"](Path.home() / ".claude", cache)
+        return values
+
+    try:
+        for connection in range(2):
+            pre_start = tick()
+            before = native()
+            process = subprocess.Popen([str(args.cli), "service", "watch", "--host-scope", args.host_scope,
+                                        "--include-children"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                       start_new_session=True, cwd="/tmp")
+            pending, counts, frames, first = bytearray(), collections.Counter(), [], None
+            start, sequence, revision, publisher, gapped = time.monotonic(), 0, 0, None, False
+            first_latency, initial_after = None, None
+            try:
+                while len(frames) < 4 or gapped:
+                    assert time.monotonic() - start < 55, "study_watch_deadline"
+                    if not select.select([process.stdout], [], [], .5)[0]:
+                        continue
+                    data = os.read(process.stdout.fileno(), 65536)
+                    assert data, "study_watch_eof"
+                    pending.extend(data)
+                    assert len(pending) <= 8 * 1024 * 1024 + 16384 + 65536, "study_frame_limit"
+                    while b"\n" in pending:
+                        line, _, rest = pending.partition(b"\n")
+                        pending = bytearray(rest)
+                        frame = json.loads(line)
+                        assert frame["serviceProtocol"] == 2 and frame["hostScope"] == args.host_scope and frame["uid"] == os.geteuid()
+                        assert frame["sequence"] == sequence + 1 and frame["viewRevision"] >= revision
+                        assert frame["clockDomain"] == os.readlink("/proc/self/ns/time")
+                        assert frame["bootId"] == Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+                        assert publisher is None or frame["serviceId"] == publisher
+                        assert frame["emittedBoottimeMs"] <= tick()
+                        if gapped:
+                            assert frame["kind"] in {"resync", "status", "error"}, "study_resync_required"
+                        gapped = frame["kind"] == "gap" or gapped and frame["kind"] == "status"
+                        assert frame["kind"] != "error", "study_stream_error"
+                        sequence, revision, publisher = frame["sequence"], frame["viewRevision"], frame["serviceId"]
+                        for source in frame["sources"]:
+                            for component in source["components"]:
+                                assert component["health"] not in {"current", "partial"} or component["expiresBoottimeMs"] > tick()
+                        counts[frame["kind"]] += 1
+                        frames.append({"kind": frame["kind"], "sequence": sequence, "viewRevision": revision,
+                                       "encodedBytes": len(line) + 1})
+                        if first is None and frame["snapshot"] is not None and not gapped:
+                            first = frame
+                            first_latency = round((time.monotonic() - start) * 1000)
+                            initial_after = native()
+                assert first is not None
+                after = initial_after
+                comparisons = {p: oracle["compare"](before[p], first["snapshot"], after[p], p) for p in args.provider}
+                for value in comparisons.values():
+                    value.pop("active", None)
+                    value.pop("contextDifferences", None)
+                connections.append({"connection": connection + 1, "serviceId": publisher,
+                                    "initialSequence": frames[0]["sequence"], "initialKind": frames[0]["kind"],
+                                    "firstCompleteViewLatencyMs": first_latency, "frames": frames,
+                                    "frameCounts": dict(counts), "sourceReceiptsAtInitialView": first["sources"],
+                                    "nativeBracketStartedBoottimeMs": pre_start,
+                                    "initialViewCollectedAt": first["snapshot"]["collectedAt"],
+                                    "nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()},
+                                    "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()},
+                                    "comparisons": comparisons,
+                                    "initialViewRows": len(first["snapshot"]["sessions"]),
+                                    "sourceCoverage": [{k: s[k] for k in ("provider", "coverage", "limitations", "errors")} for s in first["snapshot"]["sources"]],
+                                    "gapsRecovered": not gapped, "viewDiscardedOnDisconnect": True,
+                                    "durationSeconds": round(time.monotonic() - start, 3)})
+            finally:
+                if process.poll() is None:
+                    process.terminate()
+                process.wait(timeout=10)
+                process.stdout.close()
+        preserved = {name: hashlib.sha256(Path(name).read_bytes()).hexdigest() == digest for name, digest in hashes.items()}
+        assert before_unit == unit(), "ordinary_unit_changed"
+        assert all(preserved.values()), "ordinary_managed_input_changed"
+        print(json.dumps({"status": "bounded_installed_state_push_study", "hostScope": args.host_scope,
+                          "cliVersion": versions, "selectedCli": str(args.cli.resolve()),
+                          "nativeOracleSha256": hashlib.sha256(args.oracle.read_bytes()).hexdigest(),
+                          "nativeOracleImportsObserver": False, "ordinaryProviderActions": False,
+                          "ordinaryServiceRestarted": False, "ordinaryUnitUnchanged": True,
+                          "ordinaryManagedInputHashesUnchanged": preserved,
+                          "nativeEveryTransitionProved": False, "networkImplementation": False,
+                          "connections": connections}, indent=2))
+    finally:
+        if peer:
+            peer.close()
+
+
+if __name__ == "__main__":
+    main()

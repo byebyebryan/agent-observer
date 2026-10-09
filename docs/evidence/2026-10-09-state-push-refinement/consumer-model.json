@@ -1,0 +1,21 @@
+{
+  "status": "synthetic_state_consumer_design_study",
+  "checks": [
+    "warming_null_is_not_complete_empty",
+    "initial_complete_view_establishes_baseline_only",
+    "receipt_revision_renewal_is_not_a_semantic_session_change",
+    "heartbeat_never_renews_cached_view_deadlines",
+    "local_timer_expires_one_source_without_expiring_the_other",
+    "row_order_is_not_identity_or_a_change",
+    "same_native_id_across_providers_does_not_merge_rows",
+    "gap_status_resync_requires_new_baseline",
+    "reconnect_resets_guard_sequence_and_baseline",
+    "row_omission_supplies_no_parked_or_deleted_assertion",
+    "provider_fault_is_independent_of_other_provider",
+    "receipt_delivery_and_fault_preserve_conversation_clock"
+  ],
+  "productionConsumerImplemented": false,
+  "nativeTransitionsProved": false,
+  "providerActions": false,
+  "eventProtocolAdded": false
+}

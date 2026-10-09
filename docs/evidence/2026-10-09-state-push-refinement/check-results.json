@@ -1,0 +1,17 @@
+{
+  "command": "./scripts/check",
+  "repositoryCheck": "passed",
+  "exitCode": 0,
+  "durationSeconds": 46.023,
+  "testsRun": 399,
+  "testDurationSeconds": 45.712,
+  "markdownFilesChecked": 111,
+  "syntheticConsumerCases": 12,
+  "nativeHosts": [
+    "snap",
+    "starship"
+  ],
+  "installedReadServiceArtifact": "0.5.0a11",
+  "productionCodeChanged": false,
+  "nativeNotificationWorkDeferred": true
+}

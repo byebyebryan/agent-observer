@@ -17,15 +17,19 @@ Direct sampled watch uses the same evidence helper with a fixed 60-second bound;
 one-shot reads retain no prior view. Removal is observation-memory retirement,
 not a provider lifecycle assertion. Native admission predicates stay in adapters.
 
-The [2026-10-09 state/event design](state-and-events-design.md) adds a reviewed
-future product alongside accepted state pull/push: bounded native occurrence
-facts, normalized in core and hosted/delivered by the local service. Partial
-callback coverage, receipt/correlation identity and replay gaps are explicit.
-It adds no alert/terminal/action authority. A distinct event facade/protocol
-and its read CLI remain [following implementation](state-and-events-execution-plan.md).
-The ESP32-349 handoff is one client request, not the common contract. Networking
-development moves to the separate mesh-plus repo/thread; older optional-in-repo
-networking proposals below retain historical scope only.
+The active [state-push design](state-push-design.md),
+[source/client review](state-push-design-review.md) and
+[independent validation](evidence/2026-10-09-state-push-refinement/REPORT.md)
+retain API 2/read wire 4/Service 2 without a producer repair or new event wire.
+The reusable engine publishes complete reconciled views; the service hosts
+collection and local delivery; read clients own baselines, selection and idle
+expiry timers. Optional read-cache ergonomics and conformance have their own
+[following plan](state-push-execution-plan.md). Native occurrence normalization,
+callback emitters, event replay and Kitty/D-Bus integration are deferred; the
+preceding [research](state-and-events-design.md) retains future-product scope.
+The ESP32-349 handoff is one client request. Device projections, alerts and
+networking remain external, with networking in the separate mesh-plus thread;
+older optional-in-repo networking proposals below retain historical scope only.
 
 The [Claude interactive reconciliation](claude-interactive-observation-plan.md)
 keeps Observer upstream of all clients. Under the accepted native-registration

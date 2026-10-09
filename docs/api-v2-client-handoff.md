@@ -25,6 +25,13 @@ schema and semantic checks. Other-language clients can obtain schemas with
 `schema --kind snapshot|watch` and `service schema --kind request|frame`.
 Both API descriptors operate without a provider or service.
 
+The [state-push guide](state-push-design.md) consolidates complete-view baselines,
+idle expiry timers, selection and semantic comparison. Its
+[installed/native study](evidence/2026-10-09-state-push-refinement/REPORT.md)
+revalidates the accepted state stream without changing public versions. Native
+occurrence events and Kitty/D-Bus notification integration are deferred; they are
+not read-client dependencies.
+
 The [Claude alignment review](claude-read-contract-review.md) settles API 2/wire 4/
 protocol 2 for the interactive-only adapter. The independent a9 native/artifact
 and scoped operational gates accept it; a11 adds independently proved finite

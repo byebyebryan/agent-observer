@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""Synthetic consumer-contract study; no providers, live services or alerts.
+
+The real checkout engine emits validated fixture frames with injected clocks.
+A separate example consumer checks baseline, replacement, identity and expiry.
+This is a design spike, not a new supported facade or production cache.
+"""
+
+import copy
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from agent_observer.contract import identity_key
+from agent_observer.service_public import StreamGuard
+from agent_observer.service_state import ServiceState
+
+
+class Consumer:
+    def __init__(self):
+        self.connect()
+
+    def connect(self):
+        self.guard = StreamGuard(expected_host="fixture", expected_uid=1000)
+        self.view, self.deadlines, self.valid = None, {}, False
+
+    def accept(self, frame, now):
+        self.guard.accept(frame)
+        if frame["kind"] in {"gap", "error"}:
+            self.valid = False
+            return "invalidated"
+        if frame["snapshot"] is None or self.guard.gapped:
+            return "transport_only"
+        previous = self.view if self.valid and all(now < expiry for expiry in self.deadlines.values()) else None
+        self.view = copy.deepcopy(frame["snapshot"])
+        self.deadlines = {
+            source["provider"]: min((item["expiresBoottimeMs"] for item in source["components"]
+                                     if item["health"] in {"current", "partial"}), default=now)
+            for source in frame["sources"]
+        }
+        self.valid = True
+        # Values, rather than new observation clocks/revision, determine a UI change.
+        return "baseline" if previous is None else self.diff(previous, self.view)
+
+    @staticmethod
+    def rows(view):
+        return {identity_key(row["identity"]): row for row in view["sessions"]}
+
+    @staticmethod
+    def value(row):
+        return (row["runtime"]["value"], row["phase"]["value"] if row["phase"] else None,
+                tuple(row["blockedReasons"]), row["kind"], row["title"], row["activity"]["at"], row["activity"]["health"])
+
+    def diff(self, before, after):
+        old, new = self.rows(before), self.rows(after)
+        return {"appeared": len(new.keys() - old.keys()), "omitted": len(old.keys() - new.keys()),
+                "changed": sum(self.value(old[k]) != self.value(new[k]) for k in old.keys() & new.keys())}
+
+    def current(self, provider, now):
+        return self.valid and self.view is not None and now < self.deadlines.get(provider, now)
+
+
+def main():
+    fixture = json.loads((ROOT / "tests/fixtures/service-v2/view.json").read_text())
+    age_row = next(row for row in fixture["snapshot"]["sessions"] if row["identity"]["provider"] == "claude")
+    age_key = identity_key(age_row["identity"])
+    age_row["activity"] = {"at": 1700000001000, "source": "claude_registry", "health": "current", "reason": "native_snapshot"}
+    now = [15000]
+    configs = {source["provider"]: (source["configHome"], source["configHomeKind"]) for source in fixture["sources"]}
+    state = ServiceState(host_scope="fixture", configs=configs, uid=1000, clock=lambda: now[0],
+                         boot_id=fixture["bootId"], clock_domain=fixture["clockDomain"])
+    sequence, checks = [0], []
+
+    def send(client, kind="view"):
+        sequence[0] += 1
+        return client.accept(state.frame(kind, sequence[0]), now[0])
+
+    def sample(provider):
+        value = copy.deepcopy(fixture["snapshot"])
+        value["sources"] = [source for source in value["sources"] if source["provider"] == provider]
+        value["sessions"] = [row for row in value["sessions"] if row["identity"]["provider"] == provider]
+        return value
+
+    def accept(provider, ttl=5000):
+        state.attempt(provider, "runtime")
+        state.accept(provider, "runtime", sample(provider), sampled_ms=now[0], ttl_ms=ttl)
+
+    client = Consumer()
+    assert send(client, "status") == "transport_only" and client.view is None
+    checks.append("warming_null_is_not_complete_empty")
+    accept("codex")
+    accept("claude", ttl=9000)
+    assert send(client) == "baseline"
+    checks.append("initial_complete_view_establishes_baseline_only")
+    original = copy.deepcopy(client.view)
+    now[0] += 10
+    accept("codex")
+    diff = send(client)
+    assert diff == {"appeared": 0, "omitted": 0, "changed": 0}
+    checks.append("receipt_revision_renewal_is_not_a_semantic_session_change")
+    deadline = client.deadlines["codex"]
+    now[0] += 10
+    assert send(client, "heartbeat") == "transport_only"
+    assert client.deadlines["codex"] == deadline
+    checks.append("heartbeat_never_renews_cached_view_deadlines")
+    assert not client.current("codex", deadline) and client.current("claude", deadline)
+    checks.append("local_timer_expires_one_source_without_expiring_the_other")
+    # Array order and duplicate native IDs across providers are not row identity.
+    permuted = copy.deepcopy(client.view)
+    permuted["sessions"].reverse()
+    assert client.diff(client.view, permuted) == {"appeared": 0, "omitted": 0, "changed": 0}
+    keys = list(client.rows(client.view))
+    assert len(keys) == len(client.view["sessions"])
+    checks.append("row_order_is_not_identity_or_a_change")
+    same_id = copy.deepcopy(client.view)
+    codex_row = next(row for row in same_id["sessions"] if row["identity"]["provider"] == "codex")
+    claude_row = next(row for row in same_id["sessions"] if row["identity"]["provider"] == "claude")
+    claude_row["identity"]["nativeId"] = codex_row["identity"]["nativeId"]
+    assert len(client.rows(same_id)) == len(same_id["sessions"])
+    checks.append("same_native_id_across_providers_does_not_merge_rows")
+    assert send(client, "gap") == "invalidated"
+    assert not client.current("codex", now[0])
+    assert send(client, "status") == "transport_only"
+    assert send(client, "resync") == "baseline"
+    checks.append("gap_status_resync_requires_new_baseline")
+    client.connect()
+    sequence[0] = 0
+    assert send(client) == "baseline"
+    checks.append("reconnect_resets_guard_sequence_and_baseline")
+    removed = copy.deepcopy(client.view)
+    removed["sessions"].pop()
+    assert client.diff(client.view, removed)["omitted"] == 1
+    assert not any(row["runtime"]["value"] == "parked" for row in removed["sessions"])
+    checks.append("row_omission_supplies_no_parked_or_deleted_assertion")
+    state.fail("codex", "runtime")
+    send(client)
+    assert not client.current("codex", now[0]) and client.current("claude", now[0])
+    checks.append("provider_fault_is_independent_of_other_provider")
+    original_clock = Consumer.rows(original)[age_key]["activity"]["at"]
+    assert original_clock == Consumer.rows(client.view)[age_key]["activity"]["at"] == 1700000001000
+    assert (1700000061000 - original_clock) // 1000 == 60
+    checks.append("receipt_delivery_and_fault_preserve_conversation_clock")
+    print(json.dumps({"status": "synthetic_state_consumer_design_study", "checks": checks,
+                      "productionConsumerImplemented": False, "nativeTransitionsProved": False,
+                      "providerActions": False, "eventProtocolAdded": False}, indent=2))
+
+
+if __name__ == "__main__":
+    main()
