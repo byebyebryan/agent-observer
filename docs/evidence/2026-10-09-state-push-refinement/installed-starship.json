@@ -1,0 +1,417 @@
+{
+  "status": "bounded_installed_state_push_study",
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.5.0a11",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676/bin/agent-observer",
+  "nativeOracleSha256": "02d1f4022ca5c2f85bab91379a1719e8c1dc07537ad04f0e3a25e4023f7196a9",
+  "nativeOracleImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "ordinaryServiceRestarted": false,
+  "ordinaryUnitUnchanged": true,
+  "ordinaryManagedInputHashesUnchanged": {
+    "/home/bryan/.codex/config.toml": true,
+    "/home/bryan/.local/bin/codex-notify": true
+  },
+  "nativeEveryTransitionProved": false,
+  "networkImplementation": false,
+  "connections": [
+    {
+      "connection": 1,
+      "serviceId": "a93b577e-6746-4015-87c7-6f87149f3bf4",
+      "initialSequence": 1,
+      "initialKind": "view",
+      "firstCompleteViewLatencyMs": 409,
+      "frames": [
+        {
+          "kind": "view",
+          "sequence": 1,
+          "viewRevision": 3125,
+          "encodedBytes": 413087
+        },
+        {
+          "kind": "view",
+          "sequence": 2,
+          "viewRevision": 3126,
+          "encodedBytes": 413087
+        },
+        {
+          "kind": "heartbeat",
+          "sequence": 3,
+          "viewRevision": 3126,
+          "encodedBytes": 931
+        },
+        {
+          "kind": "heartbeat",
+          "sequence": 4,
+          "viewRevision": 3126,
+          "encodedBytes": 930
+        }
+      ],
+      "frameCounts": {
+        "view": 2,
+        "heartbeat": 2
+      },
+      "sourceReceiptsAtInitialView": [
+        {
+          "components": [
+            {
+              "accepted": 3125,
+              "attempts": 3125,
+              "expiresBoottimeMs": 623703362,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 623643362
+            },
+            {
+              "accepted": 808,
+              "attempts": 808,
+              "expiresBoottimeMs": 623823362,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 623643362
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 2,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "nativeBracketStartedBoottimeMs": 623653583,
+      "initialViewCollectedAt": 1791583356905,
+      "nativeBeforeAt": {
+        "codex": 1791583366671
+      },
+      "nativeAfterAt": {
+        "codex": 1791583367343
+      },
+      "comparisons": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 250,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 105,
+            "outcomeAt": 104
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791581939000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791582137000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517878000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791570543000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791515423000
+            }
+          ],
+          "issues": []
+        }
+      },
+      "initialViewRows": 354,
+      "sourceCoverage": [
+        {
+          "provider": "codex",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "gapsRecovered": true,
+      "viewDiscardedOnDisconnect": true,
+      "durationSeconds": 30.068
+    },
+    {
+      "connection": 2,
+      "serviceId": "a93b577e-6746-4015-87c7-6f87149f3bf4",
+      "initialSequence": 1,
+      "initialKind": "view",
+      "firstCompleteViewLatencyMs": 410,
+      "frames": [
+        {
+          "kind": "view",
+          "sequence": 1,
+          "viewRevision": 3127,
+          "encodedBytes": 413087
+        },
+        {
+          "kind": "heartbeat",
+          "sequence": 2,
+          "viewRevision": 3127,
+          "encodedBytes": 931
+        },
+        {
+          "kind": "heartbeat",
+          "sequence": 3,
+          "viewRevision": 3127,
+          "encodedBytes": 930
+        },
+        {
+          "kind": "view",
+          "sequence": 4,
+          "viewRevision": 3128,
+          "encodedBytes": 413086
+        }
+      ],
+      "frameCounts": {
+        "view": 2,
+        "heartbeat": 2
+      },
+      "sourceReceiptsAtInitialView": [
+        {
+          "components": [
+            {
+              "accepted": 3127,
+              "attempts": 3127,
+              "expiresBoottimeMs": 623743597,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 623683597
+            },
+            {
+              "accepted": 808,
+              "attempts": 808,
+              "expiresBoottimeMs": 623823362,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 623643362
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 2,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "nativeBracketStartedBoottimeMs": 623683942,
+      "initialViewCollectedAt": 1791583396985,
+      "nativeBeforeAt": {
+        "codex": 1791583397024
+      },
+      "nativeAfterAt": {
+        "codex": 1791583397696
+      },
+      "comparisons": {
+        "codex": {
+          "nativeBeforeRows": 354,
+          "nativeAfterRows": 354,
+          "cliRows": 354,
+          "nativeCounts": {
+            "running": 6,
+            "activityKnown": 106,
+            "classification": {
+              "user": 81,
+              "child": 252,
+              "unknown": 21
+            }
+          },
+          "checks": {
+            "membership": 354,
+            "title_unproved": 276,
+            "cwd": 354,
+            "runtime": 354,
+            "phase": 354,
+            "activity_unproved": 248,
+            "kind": 333,
+            "sessionTreeRootId": 354,
+            "blockedReasons": 354,
+            "createdAt": 354,
+            "hasSavedHistory": 354,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 250,
+            "title": 78,
+            "activity": 106,
+            "kind_unproved": 21,
+            "outcome": 105,
+            "outcomeAt": 104
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791581939000
+            },
+            {
+              "id": "01a0ca16-d486-7142-8170-c496b7419368",
+              "title": "pd-lab-next",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791582137000
+            },
+            {
+              "id": "01a11979-4eb8-7442-9e17-f6c243aa76d5",
+              "title": "raster90",
+              "cwd": "/home/bryan/code/raster90",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791504900000
+            },
+            {
+              "id": "01a1197f-1113-7261-bc5b-810100a74236",
+              "title": "devlog",
+              "cwd": "/home/bryan/code/devlog",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791517878000
+            },
+            {
+              "id": "01a11d31-e1cc-7811-935d-77b4a9235aac",
+              "title": "sleep",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791570543000
+            },
+            {
+              "id": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+              "title": "system",
+              "cwd": "/home/bryan/.local/share/chezmoi",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791515423000
+            }
+          ],
+          "issues": []
+        }
+      },
+      "initialViewRows": 354,
+      "sourceCoverage": [
+        {
+          "provider": "codex",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "gapsRecovered": true,
+      "viewDiscardedOnDisconnect": true,
+      "durationSeconds": 21.145
+    }
+  ]
+}

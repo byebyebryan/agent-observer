@@ -7,6 +7,12 @@ This plan is ready for a subsequent implementation goal. The current research
 request authorizes study scripts/docs only, not these production changes or
 ordinary hook selection. Keep accepted state/read behavior usable throughout.
 
+**Deferred:** the following E0–E5 packages retain future implementation gates.
+The subsequent user decision prioritizes the
+[state-only design and plan](state-push-execution-plan.md), without native event
+normalization, callback installation, replay or Kitty/D-Bus work. These packages
+are not dependencies of existing discovery/monitoring push or read clients.
+
 ## E0 — freeze the independent event contract
 
 Export event record wire 1 and local event protocol 1 in their own schema/facade

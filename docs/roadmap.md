@@ -8,17 +8,20 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
-The [state/event design research](state-and-events-research-plan.md) is complete:
-[reviewed design](state-and-events-design.md),
-[deep review](state-and-events-design-review.md) and
-[native/model/current-read evidence](evidence/2026-10-09-state-and-events-design/REPORT.md).
-The next authorized implementation pass can follow
-[E0–E5](state-and-events-execution-plan.md): independent event contract, passive
-sources/neutral emitter, service intake/replay, read CLI, immutable native gate
-and separately scoped operations. No production event feed is implemented yet.
-State API 2/wire 4/Service 2 remain accepted. The 349 handoff supplies one client's
-requirements; downstream alert and frontend work stay separate. Networking
-development is in the user's separate mesh-plus repository/thread.
+The active [state-push refinement](state-push-design.md) is complete:
+[source/client review](state-push-design-review.md) and
+[synthetic/controlled/installed-native evidence](evidence/2026-10-09-state-push-refinement/REPORT.md)
+support the existing complete-view contract without production changes.
+[P0–P2](state-push-execution-plan.md) records this checkpoint and optional following
+read-cache/timer conformance and CLI ergonomics. API 2/wire 4/Service 2 remain
+accepted. Current-state push does not promise every native transition or alert.
+
+The preceding [native event research](state-and-events-research-plan.md) is
+retained, but its [E0–E5 implementation](state-and-events-execution-plan.md) is
+deferred: native occurrence normalization, callback emitters, event replay and
+Kitty/D-Bus integration are outside the active track. The 349 handoff supplies
+one client's requirements; device projections, alerts and frontend work stay
+separate. Networking is in the user's separate mesh-plus repository/thread.
 
 The [observation boundary hardening](observation-boundaries.md) is implemented.
 The authorized [Codex completion loop](codex-observation-completion-plan.md)

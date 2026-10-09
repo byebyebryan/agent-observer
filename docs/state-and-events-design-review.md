@@ -5,6 +5,11 @@ Date: 2026-10-09. Primary-led review of the
 source/client boundaries, isolated native sources and an independent synthetic
 delivery model. No production event stream is accepted by these experiments.
 
+**Subsequent scope decision:** the readiness verdict below retains its research
+bounds. Native event implementation is now deferred in favor of the
+[state-push refinement](state-push-design-review.md). Its accepted state contract
+does not require this proposed event product.
+
 ## Verdict
 
 The design is ready for a separately authorized implementation pass. It fits

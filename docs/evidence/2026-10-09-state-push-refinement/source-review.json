@@ -1,0 +1,14 @@
+{
+  "sourceBaseline": "bca4c26ba82f1cd4bbc3fa46061093069301ddeb",
+  "reviewedSourceSha256": {
+    "agent_observer/service_contract.py": "bc594931c7d5d9f0ec0673fa96a8a52ed9701c9dac717749dc3f25b039b320ca",
+    "agent_observer/service_runtime.py": "18d78454f95ffdb6fe1996dea217456869d0fe56d5e25ca7d815922642712dd5",
+    "agent_observer/service_client.py": "a4a508afbfbcc0b2140ca4430ec6574b8534c1a45d150635e5dc1f4e26fb113c",
+    "agent_observer/service_cli.py": "5d129233e20eb4727de4f44da3f5c41e988c795c7a116d69f7783054fceb2801",
+    "agent_observer/observation_engine.py": "a4bae205524331ebc811a2aaf6d129767487d415c3f402c2ef8bb4eebed4bfb1",
+    "scripts/study-state-push-read": "72fe43ac687de6a8b94e7f05b8d9c5f063605df9f023703285bae48014037b90",
+    "scripts/study-state-push-consumer": "1e61dd987a5c4e6b18417fcfaabfab69a41b2bfa086a7e16e6b0112beb169af8"
+  },
+  "productionCodeChanged": false,
+  "nativeEventWorkDeferred": true
+}

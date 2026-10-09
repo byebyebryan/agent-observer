@@ -153,6 +153,12 @@ runtime or age authority. A distinct proposed event wire/protocol has its own
 implemented. The 349 handoff is one client's request, not a universal event or
 alert contract.
 
+The subsequent [state-push refinement](state-push-design.md) is the active scope.
+Native event normalization, callback emitters and replay are deferred; existing
+passive refresh hints remain implemented. Discovery/monitoring push uses the
+accepted complete-view state stream, with no hook-installation or terminal
+integration dependency. Read clients own baseline recovery and idle expiry.
+
 ## Network and attachment boundaries
 
 Meshing consumes the local read interface; it does not query providers or run

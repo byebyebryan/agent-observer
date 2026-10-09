@@ -72,3 +72,8 @@ checks retain accepted metadata limits. Owned namespaces/auth were cleaned.
 Production event schemas, sources, service replay and event CLI remain following
 work. No new event API, hook selection, alert client, provider policy, mesh or
 frontend deployment is accepted by this research checkpoint.
+
+The subsequent user decision defers that native event implementation and
+prioritizes [state-push refinement](state-push-design.md). The research remains
+available for a future separately scoped pass; current state reads and push have
+no dependency on E0–E5 or the requested desktop notification integration.

@@ -9,6 +9,12 @@ from these requested alert behaviors; its
 client delivery independently pending. Nothing in this note installs hooks or
 selects an alert client.
 
+The subsequent user decision defers native notification integration and
+prioritizes [discovery/monitoring state push](state-push-design.md). Sender,
+title, formatting and Open requests remain recorded for later client work.
+Ordinary notifications and accepted passive refresh hints keep their independent
+ownership; no new hook or event product is needed to consume current state.
+
 The subsequent [experimental source/client contract](notification-client-contract.md)
 and [a4 native report](evidence/2026-10-06-notifications/REPORT.md) implement the
 bounded source/formatting checkpoint. Normal hook selection, originating terminal

@@ -8,6 +8,14 @@ The [execution plan](state-and-events-execution-plan.md) defines the following
 implementation and acceptance gates. Existing API 2/read wire 4/Service 2 stay
 accepted and unchanged.
 
+**Scope refinement:** the user subsequently prioritized
+[discovery/monitoring state push](state-push-design.md) and deferred native
+occurrence-event normalization, callback emitters, event replay and desktop
+notification integration. This document retains the preceding future-product
+research; its proposed event product is neither implemented nor required by
+current read clients. The [active plan](state-push-execution-plan.md) uses the
+accepted complete-view state contract.
+
 ## Product and requirements authority
 
 Observer provides two complementary read products:
