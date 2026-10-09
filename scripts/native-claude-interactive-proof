@@ -348,15 +348,53 @@ class NativeProof:
         assert all(result["exit"][k] for k in ("processExited", "registrationRemoved", "savedIdentityRetained"))
         result["status"] = "completed"
 
-    def run(self, *, hookless_only=False):
+    def crash_roster_mode(self, disabled):
+        self.config(disabled)
+        config_path = self.home / "settings.json"
+        config = json.loads(config_path.read_text())
+        config.update(disableAllHooks=True)
+        config.pop("hooks")
+        config_path.write_text(json.dumps(config))
+        sid = str(uuid.uuid4())
+        result = {"disableAgentView": disabled, "nativeId": sid, "hooksDisabled": True}
+        self.receipt["modes"].append(result)
+        client = self.spawn(sid, prompt="Reply only with OK.")
+        live = self.phase(client, "idle")
+        self.until(lambda: self.metadata(sid)["eventCounts"]["assistant"] > 0, "crash_response_unproved")
+        result["registeredStatusBeforeKill"] = live["status"]
+        self.stop(client)
+        stale = self.record(sid)
+        result.update(
+            forcedKillExitCode=client["exitCode"],
+            registrationRetainedBeforeRoster=stale is not None,
+            staleStatusBeforeRoster=stale.get("status") if stale else None,
+            staleIncarnationAuthenticated=self.authenticated(stale),
+            savedIdentityRetained=self.metadata(sid)["positiveSavedIdentity"],
+        )
+        roster = subprocess.run(["/opt/claude-code/bin/claude", "agents", "--json", "--all"],
+                                capture_output=True, timeout=25)
+        try:
+            rows = json.loads(roster.stdout)
+            result["nativeRoster"] = {"exitCode": roster.returncode, "jsonArray": isinstance(rows, list),
+                                      "rowCount": len(rows) if isinstance(rows, list) else None,
+                                      "matchingRows": [{k: r.get(k) for k in ("sessionId", "kind", "pid", "status", "state")}
+                                                       for r in rows if r.get("sessionId") == sid] if isinstance(rows, list) else []}
+        except ValueError:
+            result["nativeRoster"] = {"exitCode": roster.returncode, "jsonArray": False}
+        result["registrationRetainedAfterRoster"] = self.record(sid) is not None
+        result["savedIdentityRetainedAfterRoster"] = self.metadata(sid)["positiveSavedIdentity"]
+        result["status"] = "completed"
+
+    def run(self, *, hookless_only=False, crash_roster_only=False):
         settings = self.home / "settings.json"
         original = settings.read_bytes()
         self.receipt["hooklessOnly"] = hookless_only
+        self.receipt["crashRosterOnly"] = crash_roster_only
         try:
             self.receipt["executableSha256"] = hashlib.file_digest(Path("/opt/claude-code/bin/claude").open("rb"), "sha256").hexdigest()
             self.receipt["harnessSha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
             for disabled in (True, False):
-                (self.hookless_mode if hookless_only else self.mode)(disabled)
+                (self.crash_roster_mode if crash_roster_only else self.hookless_mode if hookless_only else self.mode)(disabled)
             self.receipt["status"] = "completed"
         except Exception as error:
             self.receipt.update(status="partial", failureCode=str(error))
@@ -365,12 +403,16 @@ class NativeProof:
             for client in self.clients:
                 self.stop(client)
             settings.write_bytes(original)
-            name = "claude-interactive-hookless-receipt.json" if hookless_only else "claude-interactive-receipt.json"
+            name = ("claude-interactive-crash-roster.json" if crash_roster_only else
+                    "claude-interactive-hookless-receipt.json" if hookless_only else "claude-interactive-receipt.json")
             (self.root / name).write_text(json.dumps(self.receipt, indent=2) + "\n")
         print(json.dumps(self.receipt), flush=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--hookless-only", action="store_true", help="independent native registration/question/exit proof with all hooks disabled")
-    NativeProof().run(hookless_only=parser.parse_args().hookless_only)
+    cases = parser.add_mutually_exclusive_group()
+    cases.add_argument("--hookless-only", action="store_true", help="independent native registration/question/exit proof with all hooks disabled")
+    cases.add_argument("--crash-roster-only", action="store_true", help="query the isolated native roster after an owned interactive process is forcibly killed")
+    args = parser.parse_args()
+    NativeProof().run(hookless_only=args.hookless_only, crash_roster_only=args.crash_roster_only)

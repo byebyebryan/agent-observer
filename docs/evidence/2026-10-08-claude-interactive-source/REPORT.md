@@ -84,12 +84,34 @@ metadata facts do not depend on those callbacks. Approval tools were never
 executed. After the fault counterexample, only the owned test process is killed.
 
 The main receipt predates addition of the harness's `--hookless-only` option;
-the supplemental receipt binds the final harness hash. Its default lifecycle
+the supplemental receipt binds that checkpoint's harness hash. Its default lifecycle
 and fault methods retain the main run's behavior. Three early runs corrected
 harness assumptions: selecting the first stale record instead of authenticating
 all incarnations, cancelling an already-idle TUI before `/exit`, and treating
 graceful exit of the unregistered fault context as a required cleanup proof.
 They are not producer failures or accepted alternative parked predicates.
+
+### Native roster after an unexpected interactive exit
+
+The following [focused crash-roster receipt](native-crash-roster.json) queries
+Claude only inside a fresh isolated namespace after an owned interactive process
+is killed with SIGKILL. All hooks are disabled. Both modes retain saved identity
+and a stale registration with its last `idle` status; the dead incarnation fails
+authentication. Agent View on returns an empty JSON array from
+`claude agents --json --all`, omitting the killed session. The stale registration
+file remains after the command. Agent View off exits 1 without a JSON roster.
+
+Claude therefore supplies live-roster omission and a dead native incarnation,
+not an interactive `stopped`, `parked` or `unknown` row. Observer's current unknown
+classification is its own conservative policy. Under a separately reviewed
+healthy-registration assumption, a simple killed registered context can be
+classified as no current runtime using native incarnation checks. The broader
+live-but-unregistered counterexample remains a separate limitation; native
+roster omission alone cannot distinguish it. No new Observer predicate is
+implemented or accepted by this focused proof.
+
+This receipt binds the harness hash after adding `--crash-roster-only`. The
+private namespace is stopped and all borrowed authentication/history removed.
 
 [Preservation/cleanup](preservation.json) verifies unchanged ordinary Claude
 settings and native executable, all six pre-existing native incarnations still
