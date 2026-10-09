@@ -1,0 +1,98 @@
+[
+  {
+    "identityScope": {
+      "hostProvenance": true,
+      "storeScopes": true,
+      "fullRowReferences": true,
+      "rowsChecked": 122,
+      "providersChecked": [
+        "claude",
+        "codex"
+      ],
+      "nativeReferenceProviders": [
+        "claude",
+        "codex"
+      ]
+    },
+    "providers": {
+      "claude": {
+        "cliRows": 33,
+        "nativeCounts": {
+          "running": 5,
+          "activityKnown": 32,
+          "classification": {
+            "unknown": 2,
+            "user": 32
+          }
+        },
+        "issues": [
+          {
+            "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+            "field": "membership",
+            "result": "missing_cli_row"
+          }
+        ]
+      },
+      "codex": {
+        "cliRows": 89,
+        "nativeCounts": {
+          "running": 2,
+          "activityKnown": 52,
+          "classification": {
+            "user": 51,
+            "child": 38
+          }
+        },
+        "issues": []
+      }
+    }
+  },
+  {
+    "identityScope": {
+      "hostProvenance": true,
+      "storeScopes": true,
+      "fullRowReferences": true,
+      "rowsChecked": 122,
+      "providersChecked": [
+        "claude",
+        "codex"
+      ],
+      "nativeReferenceProviders": [
+        "claude",
+        "codex"
+      ]
+    },
+    "providers": {
+      "claude": {
+        "cliRows": 33,
+        "nativeCounts": {
+          "running": 5,
+          "activityKnown": 32,
+          "classification": {
+            "unknown": 2,
+            "user": 32
+          }
+        },
+        "issues": [
+          {
+            "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+            "field": "membership",
+            "result": "missing_cli_row"
+          }
+        ]
+      },
+      "codex": {
+        "cliRows": 89,
+        "nativeCounts": {
+          "running": 2,
+          "activityKnown": 52,
+          "classification": {
+            "user": 51,
+            "child": 38
+          }
+        },
+        "issues": []
+      }
+    }
+  }
+]

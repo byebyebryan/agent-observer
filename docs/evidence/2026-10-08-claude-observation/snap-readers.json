@@ -1,0 +1,53 @@
+{
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a",
+  "status": "accepted",
+  "durationSeconds": 180.197,
+  "serviceId": "4051814f-b009-404b-af7e-9016db2921a4",
+  "readSamples": 100,
+  "readP95Ms": 96.29473695531487,
+  "readMaxMs": 110.97905295901,
+  "publisherCgroupCpuMs": 4788.013,
+  "oneCoreCpuPercent": 2.6570991747920334,
+  "peakAggregateRssBytes": 119447552,
+  "peakAggregateFds": 40,
+  "peakOwnedProcesses": 5,
+  "existingManagedUserUnit": true,
+  "independentReaders": [
+    {
+      "frames": 28,
+      "views": 16,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 28,
+      "views": 16,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 28,
+      "views": 16,
+      "gaps": 0,
+      "errors": 0
+    }
+  ],
+  "slowReaderConnectedWithoutReading": true,
+  "summaryEvidence": "captured proof output before local transfer overwrote the full receipt",
+  "verifiedConfiguration": {
+    "runtimeIntervalSeconds": 30,
+    "historyIntervalSeconds": 120,
+    "nativeHints": true,
+    "providers": [
+      "codex",
+      "claude"
+    ]
+  },
+  "originalHarnessFlagDefaults": {
+    "runtimeIntervalSeconds": 20,
+    "historyIntervalSeconds": 60,
+    "nativeHints": false,
+    "ignoredByUnitMode": true
+  }
+}

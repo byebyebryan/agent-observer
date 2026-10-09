@@ -96,6 +96,57 @@ package source revision.
 
 Source checks pass 392 tests with one independent-schema environment skip,
 including Codex regressions, strict shared schemas, import/authority boundaries,
-positive identity guards and phase/clock failures. Operational selection and
-normal-unit recovery are a following scoped gate; their receipt is added after
-completion. Earlier a6 and a16 reports retain their exact acceptance bounds.
+positive identity guards and phase/clock failures. Earlier a6 and a16 reports
+retain their exact acceptance bounds.
+
+## Separate operational gate
+
+Managed source commits `238eb1a` on Snap and `8bd0624` on Starship select the
+accepted a8 read/service artifact. Only the six Observer targets are applied;
+the a16 writer target is preserved. Snap now publishes Codex/Claude at 30/120
+seconds and Starship publishes Codex at 20/60, both with native hints. Exact
+live unit arguments, source namespaces, artifact profiles and archive checksums
+pass the scoped operational verifier. Observer restarts do not restart providers.
+
+[Snap recovery](snap-recovery.json) and [Starship recovery](starship-recovery.json)
+accept restart, forced publisher failure, old-stream termination and a new
+initial sequence on reconnect. Both hosts restore all six original targets to
+a6 and reselect a8. Private recovery snapshots remain at
+`~/.local/state/agent-observer/rollback/20261008-a8-snap` and
+`~/.local/state/agent-observer/rollback/20261008-a8-starship` on their hosts.
+The managed source history diverges between hosts; only the scoped commit is
+cherry-picked, preserving concurrent Tmux work and unrelated Kitty drift.
+
+The [Snap reader summary](snap-readers.json) and
+[Starship reader receipt](starship-readers.json) each cover three minutes with
+three independent healthy readers, 100 cached reads and an unread subscriber.
+Healthy readers have zero gaps/errors. Snap peak aggregate RSS is 119,447,552
+bytes with five owned processes and 2.66 percent of one core during this workload.
+The earlier thirty-minute proof remains historical; this is a focused successor
+check with no strict memory-budget claim.
+
+The reader harness's top-level interval/hint fields are unused launch-argument
+defaults in existing-unit mode, not actual unit configuration. The evidence
+retains them explicitly and supplies independently verified actual settings.
+A transfer overwrote the full local Snap reader receipt after its complete
+output was captured; the saved summary records those captured measurements.
+The short Snap recovery proof was rerun into a separate host file. No receipt is
+used as proof of a different provider or configuration.
+
+[Normal Starship comparisons](starship-normal-native.json) retain complete
+354-row native agreement after selection. [Normal Snap comparisons](snap-normal-native.json) retain the
+89/33-row scopes, five running Claude sessions, three terminal parked jobs and
+only the declared setup-only SDK exclusion. An
+[initial normal pushed view](snap-normal-push.json) independently agrees with
+the native Claude facts. Exact [Snap](snap-live-selection.json) and
+[Starship](starship-live-selection.json) live selection receipts bind both units.
+Scoped managed self-tests, artifact
+verification, rendering, dry-run, recovery and live checks pass. The whole
+dotfiles check stops at the existing unrelated Rofi Tmux Plus archive-pin drift;
+that consumer is outside this pass.
+
+All private provider proof namespaces are stopped and borrowed authentication
+and history are removed. Temporary ordinary-store candidate publishers are
+stopped; normal units remain selected. Ordinary provider settings, hooks and
+native sessions are preserved. No provider action, frontend change or push to a
+remote Git branch accompanies this selection.

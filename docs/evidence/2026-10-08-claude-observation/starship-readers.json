@@ -1,0 +1,121 @@
+{
+  "hostScope": "starship",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a",
+  "providers": [
+    "codex"
+  ],
+  "runtimeIntervalSeconds": 20,
+  "historyIntervalSeconds": 60,
+  "nativeHints": false,
+  "startupSettledSeconds": 0,
+  "status": "accepted",
+  "durationSeconds": 180.284,
+  "serviceId": "6d2f2a86-fa83-4570-acf6-fdb712aaca03",
+  "serviceProtocol": 2,
+  "readSamples": 100,
+  "readP95Ms": 156.12371801398695,
+  "readMaxMs": 249.26764296833426,
+  "readBatchMs": 15035,
+  "payloadBytes": 413003,
+  "publisherCgroupCpuMs": 7888.604,
+  "oneCoreCpuPercent": 4.375653968183533,
+  "existingManagedUserUnit": true,
+  "unitMemoryPeakBytes": 45527040,
+  "peakAggregateRssBytes": 77787136,
+  "peakAggregateFds": 23,
+  "peakOwnedProcesses": 3,
+  "independentReaders": [
+    {
+      "frames": 25,
+      "views": 12,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 25,
+      "views": 12,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 25,
+      "views": 12,
+      "gaps": 0,
+      "errors": 0
+    }
+  ],
+  "slowReaderConnectedWithoutReading": true,
+  "initialSources": [
+    {
+      "components": [
+        {
+          "accepted": 8,
+          "attempts": 8,
+          "expiresBoottimeMs": 559614279,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 559554279
+        },
+        {
+          "accepted": 2,
+          "attempts": 2,
+          "expiresBoottimeMs": 559712722,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 559532722
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ],
+  "finalSources": [
+    {
+      "components": [
+        {
+          "accepted": 19,
+          "attempts": 19,
+          "expiresBoottimeMs": 559777408,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 559717408
+        },
+        {
+          "accepted": 5,
+          "attempts": 5,
+          "expiresBoottimeMs": 559894515,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 559714515
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "selectedLinksChanged": false,
+  "verifiedConfiguration": {
+    "runtimeIntervalSeconds": 20,
+    "historyIntervalSeconds": 60,
+    "nativeHints": true,
+    "providers": [
+      "codex"
+    ]
+  },
+  "configurationNote": "Top-level intervals/hint flag are unused launch-argument defaults in existing-unit mode; exact live arguments are independently verified by the operational helper."
+}

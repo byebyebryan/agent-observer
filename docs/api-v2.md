@@ -6,9 +6,10 @@ The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.
 precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
 removes redundant publication; normal read CLI/services select it after separate
-installed/native and scoped operational acceptance. The writer remains
-independently selected at a16. Claude follows the
-[reconciliation plan](codex-daemon-authority-plan.md).
+installed/native and scoped operational acceptance. The following
+[a8 Claude gate](evidence/2026-10-08-claude-observation/REPORT.md) preserves these
+interfaces and adds passive Claude discovery/monitoring on Snap. The writer
+remains independently selected at a16.
 This document supersedes
 [API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
 
@@ -29,14 +30,16 @@ read API supplies no terminal/window matching or public attention-event stream.
 
 The pure read facade exports validators, selectors and schema descriptors only.
 It does not import collecting or action modules. Collection authenticates an
-existing provider endpoint; it neither starts a provider nor reads terminal
-attachment, tmux state, private saved databases or rollout logs. The service
+existing provider endpoint or provider-owned session registration; it neither
+starts a provider nor reads terminal attachment or tmux state. Codex history is
+read through its daemon; Claude history projects bounded native transcript/SDK
+metadata without retaining conversation contents. The service
 owns collection helpers, leases and read fan-out. Clients own provider actions,
 TUI lifetime, terminal placement and viewers. Networking is a separate component.
 
-The implemented provider is Codex. Explicit Claude collection or write selection
-returns `unsupported_provider`; reserved Claude identity/schema fixtures do not
-establish a native adapter. Claude gets a separate reconciliation checkpoint.
+The implemented providers are Codex and Claude. Claude observation is accepted
+on Snap through its independent native gate; new Claude write selection still
+returns `unsupported_provider`.
 Provider support binds required contracts, with versions/hashes as diagnostics
 and executable/incarnation guards.
 
@@ -50,8 +53,8 @@ list hides only positively classified children. Unknown kinds remain visible.
 
 Each row contains title, recorded cwd, workspace/project facts, creation time,
 conversation activity and latest turn outcome. `hasSavedHistory` reports positive
-saved identity independently of runtime state. `inventory` records whether the
-current row comes from a live or saved disposition; it is not action authority.
+saved identity independently of runtime state. `inventory` records saved-catalog
+evidence or runtime-only membership; it does not classify lifecycle or grant action authority.
 There are no common worker, terminal attachment, client binding or Claude-job fields.
 
 | Positive current native status | Runtime | Phase | Blocked reasons |

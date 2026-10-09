@@ -1,0 +1,60 @@
+[
+  {
+    "identityScope": {
+      "hostProvenance": true,
+      "storeScopes": true,
+      "fullRowReferences": true,
+      "rowsChecked": 354,
+      "providersChecked": [
+        "codex"
+      ],
+      "nativeReferenceProviders": [
+        "codex"
+      ]
+    },
+    "providers": {
+      "codex": {
+        "cliRows": 354,
+        "nativeCounts": {
+          "running": 6,
+          "activityKnown": 106,
+          "classification": {
+            "user": 81,
+            "child": 252,
+            "unknown": 21
+          }
+        },
+        "issues": []
+      }
+    }
+  },
+  {
+    "identityScope": {
+      "hostProvenance": true,
+      "storeScopes": true,
+      "fullRowReferences": true,
+      "rowsChecked": 354,
+      "providersChecked": [
+        "codex"
+      ],
+      "nativeReferenceProviders": [
+        "codex"
+      ]
+    },
+    "providers": {
+      "codex": {
+        "cliRows": 354,
+        "nativeCounts": {
+          "running": 6,
+          "activityKnown": 106,
+          "classification": {
+            "user": 81,
+            "child": 252,
+            "unknown": 21
+          }
+        },
+        "issues": []
+      }
+    }
+  }
+]

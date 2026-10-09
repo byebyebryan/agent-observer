@@ -1,0 +1,32 @@
+{
+  "scope": {
+    "hostProvenance": true,
+    "storeScopes": true,
+    "fullRowReferences": true,
+    "rowsChecked": 122,
+    "providersChecked": [
+      "claude",
+      "codex"
+    ],
+    "nativeReferenceProviders": [
+      "claude"
+    ]
+  },
+  "serviceId": "0a38f00b-d426-48f7-8822-3a0f97703ed3",
+  "viewRevision": 16,
+  "nativeCounts": {
+    "running": 5,
+    "activityKnown": 32,
+    "classification": {
+      "unknown": 2,
+      "user": 32
+    }
+  },
+  "issues": [
+    {
+      "id": "e0cba9dd-b642-4730-af4b-beb3b7e9c16c",
+      "field": "membership",
+      "result": "missing_cli_row"
+    }
+  ]
+}

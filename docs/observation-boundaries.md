@@ -62,11 +62,20 @@ separate facts. Observed running or parked state never authorizes an action.
   children; the default read presentation hides confirmed children only.
   Unknown classification is preserved.
 
-Codex is the sole accepted live adapter. Its existing owning daemon is the
+Codex's existing owning daemon is the
 runtime authority: active is running, idle is running/waiting, and current
 `notLoaded` plus positively readable saved identity is parked. Native error
 and unsupported wait flags preserve the independently proved runtime fact
 while leaving phase uncertain as required by API 2.
+
+The [independent Claude gate](evidence/2026-10-08-claude-observation/REPORT.md)
+accepts passive observation on Snap. Exact provider registrations authenticated
+by native PID domain, process birth, source ownership and executable locator
+supply running and current status evidence. These authenticate provider-native
+records and do not inspect terminal attachment. Terminal retained jobs require
+positive lifecycle, no pending work and saved existence before parked. General
+saved-only absence remains unknown. The native roster CLI has initialization
+writes and is not invoked by observation.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing
