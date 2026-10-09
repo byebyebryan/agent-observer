@@ -25,13 +25,21 @@ schema and semantic checks. Other-language clients can obtain schemas with
 `schema --kind snapshot|watch` and `service schema --kind request|frame`.
 Both API descriptors operate without a provider or service.
 
+The [Claude alignment review](claude-read-contract-review.md) settles API 2/wire 4/
+protocol 2 for the interactive-only successor. Read clients can start implementing
+against this contract and the [synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
+before that producer is deployed. Keep its pending native/rollout acceptance
+separate from shared parsing, selection, state display and transport work.
+
 ## Required consumer behavior
 
 - Key rows by the complete host/provider/namespace/native-kind/native-ID tuple.
   Codex `threadId` is the exact thread; `sessionTreeRootId` is independent metadata.
-- Treat running/parked/unknown as provider facts. Codex's daemon is its authority;
-  Claude uses authenticated native registration and retained-job evidence. No tmux, TUI PID, cwd, title,
-  loaded-list absence or completion callback supplies runtime authority.
+- Treat running/parked/unknown as normalized native evidence within declared
+  scope and assumptions. Codex's daemon is its authority; Claude has its separate
+  native predicate. Clients do not query provider registries or validate PIDs.
+  No tmux, TUI PID, cwd, title, loaded-list absence or completion callback supplies
+  client-side runtime authority.
 - Handle parked phase null and unknown phase evidence. Blocked reasons are a
   bounded set containing approval, question or both. Default urgency is blocked,
   waiting, working, then unknown/parked, with conversation activity newest first.
@@ -47,6 +55,9 @@ Both API descriptors operate without a provider or service.
   Project keys can group rows across hosts without merging session references.
 - Own user intent, terminal/TUI lifetime, tmux/Kitty placement, routing and viewer
   association in the client. Observation supplies no attachment or worker fields.
+- Accept unfamiliar valid diagnostic/limitation codes while keeping wire fields,
+  versions and state enums strict. Do not depend on an exhaustive coverage claim
+  or discard every known row merely because its source coverage is partial.
 
 Claude supports working, interactive waiting and typed approval/question waits.
 Saved-only absence and foreground `/exit` leave runtime unknown; only a positively
@@ -60,8 +71,14 @@ The next [interactive Claude reconciliation](claude-interactive-observation-plan
 changes the target parked predicate under an explicit native-registration
 assumption. Missing live registration can cause false parked classification;
 partial coverage and this limitation must reach consumers. That successor still
-needs contract/artifact acceptance. The a8 behavior described above remains the
+needs implementation/native/artifact acceptance. The a8 behavior above remains the
 installed baseline; this plan grants no attachment or action authority.
+
+The contract alignment is now accepted; implementation/native acceptance remains
+pending. The successor declares `provider_sessions` with partial runtime coverage
+and the registration-assumption limitations specified in [API 2](api-v2.md).
+Consumers must support both a8's saved-only unknown state and the successor's
+scoped parked state. Parked never grants automatic resume or attachment permission.
 
 ## Inspect the observation service
 
@@ -84,7 +101,7 @@ reads collect metadata anew and can take longer than cached reads.
 For explicit artifact checks, use its immutable prefix:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a6-9240493982e041c8
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a8-2d302213b95af76a
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -149,3 +166,11 @@ there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
 The [completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records the separate Observer read/service operational gate.
+
+An independent read-client pass may now implement schema/semantic validation,
+exact-reference selection, age/attention presentation, mixed-provider views and
+cached pull/push with gap/resync/lease handling. Use the accepted a8 artifact for
+current behavior and the synthetic fixture for upcoming Claude states. Actual
+New/Resume/attach, cross-host clock/transport handling and user-facing completion
+notifications require their separate contracts/proofs. Do not couple that client
+pass to simultaneous Observer adapter edits or select a future artifact early.

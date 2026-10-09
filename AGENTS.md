@@ -31,8 +31,12 @@
   conflict guard, not full job lifecycle compatibility. No run ledger or mandatory
   hook source is required. Report partial runtime coverage and the assumption.
   I1–I5 separately gate contract, source, artifact, Observer operations and provider
-  policy. Prefer existing API 2/wire 4/service 2 fields if strict contract review
-  accepts the declared semantics; version only a required incompatible change.
+  policy. `docs/claude-read-contract-review.md` settles API 2/wire 4/service 2 fit
+  with existing fields and partial scope. Independent read-client source work may
+  start against that interface and the accepted a8 artifact; the Claude successor
+  still needs oracle/private-interface, source/artifact/native and rollout gates.
+  No frontend or provider-policy deployment is implied. Version only a concrete
+  required incompatible public change, not private adapter cleanup.
   This design plan alone authorizes no new public wire or deployment.
   `docs/evidence/2026-10-08-claude-interactive-source/REPORT.md` accepts tested
   positive on/off registration/phase/Resume evidence but disproves an exhaustive
