@@ -8,17 +8,17 @@ The [architecture](architecture.md),
 
 ## Current track: contract and first-party clients
 
-The next source pass is [observation boundary hardening](observation-boundaries.md).
+The [observation boundary hardening](observation-boundaries.md) is implemented.
 The authorized [Codex completion loop](codex-observation-completion-plan.md)
-sequences source hardening, separate artifact/native acceptance and an
-Observer-only normal read/service rollout; the writer retains its own selection.
-It locks core/model/adapter/engine, service hosting, mesh and read-client ownership;
-separates provider wakeups/read push from alert policy; and extracts common
-observation decisions currently spread through service/direct-watch modules.
-Codex remains the only accepted adapter. Dependency/authority checks and
-independent installed CLI/native comparisons precede any rollout, Claude,
-public event API or attachment/client implementation. API 2 stays unchanged
-unless a separately reviewed semantic change requires otherwise.
+accepts the a5 source, installed artifact and native observation on both hosts;
+normal read CLI and services select a5 after independent operational acceptance.
+The writer retains a16 independently. Core/model/adapter/engine, service hosting,
+mesh and read-client ownership are enforced; provider wakeups/read push remain
+separate from alert policy. `ObservationEngine` owns common reconciliation and
+`observation_evidence` supplies shared direct-watch retention. Codex remains the
+only accepted live adapter. Claude, public event API, attachment/client and
+frontend implementation retain their own gates. API 2 stays unchanged unless
+a separately reviewed semantic change requires otherwise.
 
 The current checkpoint is the
 [Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
@@ -32,15 +32,15 @@ ownership remains client-side, and post-TUI-closure proof is deferred. No legacy
 reader/converter or provider fallback is required. D1–D4 and the supported exact
 writer subset are [accepted against a3](evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
 on both hosts. [API 2](api-v2.md), [service protocol 2](service-protocol-v2.md) and
-the [client handoff](api-v2-client-handoff.md) describe the installed unselected
-candidate. D5 managed selection/restart/rollback and D6 Claude remain next;
-a16 remains selected. Frontend work remains a separate checkpoint.
+the [client handoff](api-v2-client-handoff.md) describe the current read contract.
+The completion loop supplies the following managed read/service gate; D6 Claude
+remains next. Writer and frontend delivery remain separate checkpoints.
 The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
 and unproved exact-Resume gaps against the
 [a4 successor](evidence/2026-10-08-codex-evidence-repair/REPORT.md), with the same
-API/wires and fresh both-host read/write/native proof. It is the current explicit
-candidate. Future terminal integration belongs to tmux-observer and clients;
-normal selection and Claude retain their separate following gates.
+API/wires and fresh both-host read/write/native proof. It precedes the a5 core
+completion. Future terminal integration belongs to tmux-observer and clients;
+Claude retains its separate following gate.
 
 The preceding [daily-use gap execution](daily-use-gap-execution-plan.md)
 selected a16. Its [ordinary baseline](evidence/2026-10-07-daily-use-gap/REPORT.md)
@@ -99,7 +99,7 @@ age/classification/bounds, row isolation, write-result semantics and independent
 reference coverage from the [review](discovery-monitoring-contract-review.md)
 are repaired with explicit unsupported capabilities.
 
-The [daily-use repair pass](evidence/2026-10-07-daily-use-gap/REPORT.md) selects a16
+The [daily-use repair pass](evidence/2026-10-07-daily-use-gap/REPORT.md) selected a16
 after separate producer and Observer-only operational gates. It fixes indefinite
 Claude runtime-only retention, passive saved Codex classification, display-time
 CLI age and specific missing-context rejection. Current recent/active roots are
@@ -107,10 +107,11 @@ classified; 21 older Starship kinds and all-topology saved lifecycle stay unprov
 Common-root mappings already load in the service; direct reads select them
 explicitly. Tmux Plus work blocks Agent Plus implementation, not Observer delivery.
 
-The [API v1 client handoff](api-v1-client-handoff.md) is the next consumer boundary.
-A2 remains a separately installed historical acceptance tuple. Normal links
-now select a16/wire 3; Plus retains its old frozen reader. Client/cache migration
-has its own gate. The separate notification source/client checkpoint follows stable read/write
+The [API v1 client handoff](api-v1-client-handoff.md) retains its historical bounds.
+A2 remains a separately installed historical acceptance tuple. That pass selected
+a16/wire 3; current read/service links use a5/API 2. Plus retains its old frozen
+reader. Client/cache migration has its own gate. The separate notification
+source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older
 exact-image records below remain historical proof.
 

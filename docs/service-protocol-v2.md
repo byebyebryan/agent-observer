@@ -1,8 +1,8 @@
 # Local service protocol 2
 
-Date: 2026-10-08. Prerelease read contract, accepted for the explicitly installed
-Codex [a3 candidate](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
-Normal services remain a16/protocol 1. Protocol 2 embeds API 2 snapshot wire 4
+Date: 2026-10-08. Prerelease read contract, accepted for the installed Codex
+[a5 candidate](evidence/2026-10-08-codex-observation-completion/REPORT.md).
+Normal read services select a5/protocol 2. Protocol 2 embeds API 2 snapshot wire 4
 and rejects protocol 1; there is no converter or automatic direct fallback.
 
 The pure `agent_observer.service_public` facade exports the descriptor,

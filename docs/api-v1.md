@@ -1,9 +1,10 @@
 # Agent Observer API v1
 
 The [2026-10-08 Codex authority reconciliation](codex-daemon-authority-plan.md)
-defines the next breaking API 2/read wire 4/service 2 producer correction.
-API 1 remains the selected a16 operational baseline with the bounds documented
-here. It is not the target for complete daemon-authoritative running/parked
+defines the implemented breaking API 2/read wire 4/service 2 producer correction.
+API 1 retains the historical a16 operational bounds documented here. Normal
+read/service selection now uses a5/API 2; API 1 is not the target for complete
+daemon-authoritative running/parked
 discovery. The new design defers Claude and post-TUI-closure acceptance; no
 API 1 conversion/compatibility implementation is required.
 

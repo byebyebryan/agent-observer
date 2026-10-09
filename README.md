@@ -13,25 +13,32 @@ simplified.
 
 ## Status
 
-The current accepted producer checkpoint is the
-[Codex daemon authority reconciliation](docs/codex-daemon-authority-plan.md).
-Its [deep review](docs/codex-daemon-authority-review.md) traces collection,
-projection, strict validation, cached pull/push and action identity. Codex leads
-a clean breaking API 2/read wire 4/service 2 correction; Claude is the next
-provider checkpoint. The daemon owns running/parked state, while clients own
-TUI/tmux lifetime and attachment. Post-TUI-closure validation is deferred.
-The [a3 acceptance](docs/evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
-matches all 89 Snap and 353 Starship rows, including seven running contexts and
-positive parked state. Held approval/question, direct/cached/pushed parity,
-no-repair catalog, outage/recovery and supported exact TTY entry passed on both
-hosts. [API 2](docs/api-v2.md) and its [client handoff](docs/api-v2-client-handoff.md)
-define the breaking interface. The following
-[saved-evidence repair](docs/evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-accepts a4 with the same API/wires: interrupted catalog reads cannot promote
-unverified parked rows, and exact Resume requires readable native saved history.
-The a4 candidate is installed separately; normal
-commands and services still select a16/API 1/read wire 3. Claude and managed
-selection have separate next gates.
+The current Codex observation checkpoint is
+[a5 core/artifact/native acceptance](docs/evidence/2026-10-08-codex-observation-completion/REPORT.md)
+on Snap and Starship. The reusable core owns reconciliation and evidence;
+one passive adapter owns authoritative native reads; the local service owns
+helper lifetime and cached pull/push. Dependency checks enforce those boundaries.
+Normal read CLI and services select a5 after both-host managed recovery,
+rollback/reselection and 30-minute reader/resource acceptance. The normal writer
+retains a16 independently. Frontend migration,
+actions/attachment, Claude, networking and user-facing alerts remain separate.
+
+[API 2](docs/api-v2.md), snapshot/watch wire 4 and service protocol 2 are unchanged.
+The [client handoff](docs/api-v2-client-handoff.md) provides current direct/cached
+commands and consumer obligations. Independent installed reads match all 89 Snap
+and 353 Starship rows, including seven running contexts. Isolated working,
+approval/question, waiting, positive parked and outage/recovery cases agree across
+native/direct/cache/push. Age follows native conversation activity; uncertainty,
+coverage limits and stale evidence stay explicit.
+
+The [daemon authority reconciliation](docs/codex-daemon-authority-plan.md) and
+[deep review](docs/codex-daemon-authority-review.md) establish Codex as the sole
+running/parked authority, independent of TUI/tmux attachment. The preceding
+[a3 acceptance](docs/evidence/2026-10-08-codex-authority-acceptance/REPORT.md) and
+[a4 saved-evidence repair](docs/evidence/2026-10-08-codex-evidence-repair/REPORT.md)
+retain their exact artifact bounds, including the separate writer subset.
+Claude is unsupported by the current live adapter; post-TUI-closure lifetime and
+physical sleep/wake validation are deferred.
 
 ## Previous checkpoints
 
@@ -74,7 +81,7 @@ original evidence in the delivery report. Physical suspend/wake, provider entry
 repair, notifications and downstream migrations remain separate.
 
 The [daily-use repair pass](docs/evidence/2026-10-07-daily-use-gap/REPORT.md)
-now selects `0.4.0a16` on both hosts with the same API and hint/reconciliation
+selected `0.4.0a16` on both hosts with the same API and hint/reconciliation
 boundary. It repairs Claude runtime-only retention, classifies current saved
 Codex roots from passive detail and improves human age/runtime and missing-cwd
 diagnostics. Independent direct/cache comparisons match all nine ordinary active
@@ -89,11 +96,13 @@ blocked/parked/recovery cases, bounded watch and strict consumer conformance.
 Required native contracts replace daily provider release/hash allowlists;
 actual executable identity and changed-context action guards remain enforced.
 
-The immutable a2 candidate is installed separately on both hosts. Normal
-Observer links now select a16/wire 3, and Agent Plus still uses its old frozen
-wire-2 reader. Use the [API v1 client handoff](docs/api-v1-client-handoff.md) for the next
-separate client migration; frontend and notification rollout have independent
-gates. No ordinary provider restart is needed for passive observation.
+The immutable a2 candidate is installed separately on both hosts. At the
+following daily-use checkpoint Observer links selected a16/wire 3. It is the retained
+rollback artifact; the current read/service selection uses API 2. Agent Plus
+still uses its separate frozen reader and requires its own migration. Use the
+[API 2 client handoff](docs/api-v2-client-handoff.md) for new read clients;
+frontend and notification rollout have independent gates. No ordinary provider
+restart is needed for passive observation.
 
 The [earlier discovery/monitoring review](docs/discovery-monitoring-contract-review.md)
 records eight producer findings; the stable API execution closes their scoped
@@ -183,7 +192,7 @@ The [reviewed migration plan](docs/native-runtime-migration-plan.md) defines
 rollout. The [execution handoff](docs/execution-handoff.md) records the current
 coordinator's final deliberate reopen route and remaining checks.
 
-Claude saved history uses the optional pinned `claude-history` extra. The pilot
+The historical Claude pilot uses the optional pinned `claude-history` extra. It
 builds `claude-agent-sdk==0.2.163` from its official source distribution with
 `--no-binary=claude-agent-sdk` to avoid the wheel's bundled Claude executable.
 The SDK and its Python dependencies belong in Observer's own environment;
@@ -191,8 +200,8 @@ Codex-only hosts need no SDK. Observer projects explicit saved titles, UUIDs,
 cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
-The selected a16 [API v1 candidate](docs/api-v1.md) retains its historical
-JSON/CLI and pure Python surface. New source and explicit a4 clients use
+The retained a16 [API v1 candidate](docs/api-v1.md) keeps its historical
+JSON/CLI and pure Python surface. Current a5 read clients use
 [API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
@@ -205,17 +214,18 @@ agent-observer snapshot --host-scope starship --provider codex
 
 Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
-roots can be supplied explicitly. The a4 Codex collector reads the existing
+roots can be supplied explicitly. The a5 Codex collector reads the existing
 owning daemon without private saved-store fallback. It never starts a missing
 daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
-for direct and cached commands against the explicit accepted candidate.
+for direct and cached commands against the accepted candidate and normal service.
 
 ## Scope
 
 The [observation ownership specification](docs/observation-boundaries.md)
 defines core/model/adapter/engine, local service, optional mesh and read-client
-boundaries. It records the next internal hardening pass. Terminal/window matching,
-attachment/actions and user-facing alert delivery have separate client ownership.
+boundaries. The reusable core and passive adapter hardening are implemented.
+Terminal/window matching, attachment/actions and user-facing alert delivery
+have separate client ownership.
 
 Agent Observer owns provider discovery, bounded metadata, runtime observations,
 source/version capability handling, and reconciliation of stale or conflicting

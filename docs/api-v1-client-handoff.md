@@ -1,16 +1,15 @@
 # API v1 client handoff
 
-API 1 remains the selected a16 baseline. New clients target the breaking
-[API 2 handoff](api-v2-client-handoff.md), accepted against an independently
-installed but unselected a3 candidate. Do not combine its wire 4/protocol 2
-with the ordinary a16 endpoint.
+API 1 retains its historical a16 bounds. New read clients target the breaking
+[API 2 handoff](api-v2-client-handoff.md) and selected a5 read/service artifact.
+Do not combine wire 4/protocol 2 with a historical a16 endpoint.
 
 Date: 2026-10-06. The independent Observer gate is accepted; this handoff does not
 implement or select Agent Plus, RLCD, 349 or a terminal/mux client.
 
-The [current service handoff](shared-observation-service-handoff.md) supersedes
-this historical a2 installation tuple: normal Observer links and the user unit
-now select a16 with native hints, while Agent Plus keeps its old frozen reader.
+The [historical service handoff](shared-observation-service-handoff.md) superseded
+this a2 installation tuple: that checkpoint selected a16 links and the user unit
+with native hints, while Agent Plus kept its own frozen reader.
 API 1, snapshot/watch 3 and write 1 remain unchanged; service protocol 1 is
 separately prerelease. The current handoff records the exact a16 artifact,
 endpoint, reconciliation cadences and client responsibilities. Choose that
@@ -19,7 +18,7 @@ rollout gates are recorded in the [delivery report](evidence/2026-10-07-native-d
 producer selection does not accept a downstream migration.
 
 The [daily-use repair pass](evidence/2026-10-07-daily-use-gap/REPORT.md) updates
-the current producer without decoder changes: runtime-only Claude rows no longer
+the preceding producer without decoder changes: runtime-only Claude rows no longer
 stick in partial history, saved Codex kind uses bounded passive detail, human ages
 advance at display time, and missing cwd/config preparation has specific finite
 codes. Tmux Plus work blocks Agent Plus implementation; keep its source and

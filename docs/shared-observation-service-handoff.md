@@ -1,9 +1,9 @@
 # Shared service producer handoff
 
-This is the selected a16/protocol-1 handoff. New consumer work uses the explicit
-accepted a3 [API 2 handoff](api-v2-client-handoff.md) and
-[protocol 2](service-protocol-v2.md). Normal selection remains a16 until its
-own operational gate; this historical contract does not describe a3 source.
+This is the historical a16/protocol-1 handoff. New consumer work uses the
+a5 [API 2 handoff](api-v2-client-handoff.md) and
+[protocol 2](service-protocol-v2.md). Normal read/service selection now uses a5;
+this historical contract does not describe current source or selected reads.
 
 Date: 2026-10-08. Producer and client development remain separate. This handoff
 adds explicit cached service access to the accepted [API v1 boundary](api-v1.md).
@@ -15,7 +15,7 @@ and [earlier evidence](evidence/2026-10-07-observer-operations/REPORT.md) record
 a7 baseline. The [latest delivery](evidence/2026-10-07-native-delivery/REPORT.md)
 records the historical a15 selection and preserves earlier failed candidate gates.
 The [daily-use repair report](evidence/2026-10-07-daily-use-gap/REPORT.md) records
-current a16 selection, independently accepted producer repairs and scoped operations.
+the preceding a16 selection, independently accepted producer repairs and scoped operations.
 
 ## Candidate and selection
 
