@@ -1,0 +1,31 @@
+{
+  "host": "snap",
+  "sampleAt": 1791513049080,
+  "referenceImportsObserver": false,
+  "providerActions": false,
+  "rows": 89,
+  "nativeReferenceLimits": [],
+  "classification": {
+    "user": 51,
+    "child": 38
+  },
+  "missingActivity": {
+    "count": 37,
+    "byKind": {
+      "child": 37
+    },
+    "byRuntime": {
+      "parked": 37
+    },
+    "nativeReason": {
+      "no_native_turn": 37
+    },
+    "createdWithinSevenDays": 0
+  },
+  "unknownKinds": {
+    "count": 0,
+    "nativeSourceShapes": {},
+    "createdWithinSevenDays": 0,
+    "running": 0
+  }
+}

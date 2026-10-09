@@ -1,0 +1,22 @@
+{
+  "providerActions": false,
+  "retirementWindowSeconds": 1,
+  "descriptorClosureRequired": true,
+  "baseline": {
+    "runs": 20,
+    "failures": 3,
+    "exitReadErrors": {
+      "FileNotFoundError": 1,
+      "ProcessLookupError": 2
+    },
+    "liveHelperAssertionFailures": 0,
+    "durationSeconds": 21.322
+  },
+  "corrected": {
+    "runs": 60,
+    "failures": 0,
+    "durationSeconds": 63.654
+  },
+  "originalA5BooleanAssertionReproduced": false,
+  "productionHelperSignalingChanged": false
+}
