@@ -9,8 +9,11 @@ Both forms of evidence are useful, but their coverage differs.
 [API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
 prerelease read contracts. The [a9 Claude report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 records independent artifact/native and scoped operational acceptance on Snap,
-with Codex preserved on Snap/Starship. Read/service commands select a9; the writer
-retains a16 independently. A later receipt must record the selected artifact anew.
+with Codex preserved on Snap/Starship. The
+[a11 retention report](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+records finite runtime-only retirement and focused installed/native/operational
+acceptance. Read/service commands select a11; the writer retains a16 independently.
+A later receipt must record the selected artifact anew.
 The [interactive Claude plan](claude-interactive-observation-plan.md) accepts
 I0–I4 and retains an independent native oracle. Existing a8 receipts keep their
 historical bounds; a9 adds Observer-native on/off and lifecycle proof.

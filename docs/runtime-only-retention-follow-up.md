@@ -1,20 +1,21 @@
 # Disappeared runtime-only identity retention
 
-Date: 2026-10-09. Status: source and immutable a11 artifact/native acceptance
-complete; scoped operational selection remains pending. The
+Date: 2026-10-09. Status: source, immutable a11 artifact/native and separate
+scoped operational acceptance complete on Snap and Starship. The
 [acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md) binds the
 implemented policy and proof. The [Claude wrap-up](claude-observation-wrap-up.md) remains
-complete within its declared scope. API 2/wire 4/service 2 and selected a9 stay
-unchanged until its separate operational gate. This work is independent of
-frontend implementation and provider policy.
+complete within its declared scope. API 2/wire 4/service 2 remain unchanged;
+normal read/service now select a11 and writer a16 stays independent. This work
+is independent of frontend implementation and provider policy.
 
-## Problem and current evidence
+## Original problem and evidence
 
-`observation_evidence.retain_missing` retains missing rows as stale unknown when
-the new source coverage is partial. The engine calls it for incomplete runtime
-samples and a9 Claude deliberately never declares exhaustive runtime coverage.
-Consequently a disappeared, unsaved identity can remain in the cached view
-indefinitely, bounded only by existing row/byte limits. A direct read omits it.
+Before this repair, `observation_evidence.retain_missing` retained missing rows
+as stale unknown when new coverage was partial. The engine called it for
+incomplete runtime samples and a9 Claude deliberately never declared exhaustive
+runtime coverage. Consequently a disappeared unsaved identity could remain in
+the cached view indefinitely, bounded only by row/byte limits, while direct
+reads omitted it. A11 supplies the finite policy accepted below.
 
 The [ordinary review](evidence/2026-10-09-claude-wrap-up/REPORT.md) and original
 [retention receipt](evidence/2026-10-08-claude-interactive-observer/selected-retention-limit.json)
@@ -107,10 +108,13 @@ belongs to the passive Claude adapter; service/core retain no Claude predicate.
    reappearance and saved Resume age preservation. Previous source proofs retain
    their bounds; no background compatibility or ordinary provider action ran.
 5. Both-host installed ordinary comparisons and candidate reader checks pass.
-   Scoped read/service selection, recovery/rollback and the final selected-client
-   handoff are the remaining operational gate.
+   Separate scoped read/service selection, restart/failure/reconnect, a9 rollback/
+   reselection and normal-unit readers pass. Selected direct/cache/native
+   comparisons agree on all runtime/phase facts and 14 running contexts; the
+   accepted setup-only Claude cwd omission remains. The read-client handoff names
+   a11. Provider settings and ordinary sessions are preserved.
 
-Completion requires disappeared unsaved identities to retire by the accepted
-bound without false lifecycle claims, active/saved loss or refreshed stale age.
+Completion is accepted: disappeared unsaved identities retire by the bound
+without false lifecycle claims, active/saved loss or refreshed stale age.
 Do not remove the accepted invisible-registration limitation or couple this
 producer checkpoint to frontend work.

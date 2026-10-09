@@ -1,9 +1,9 @@
 # API 2 client handoff
 
 Date: 2026-10-09. Codex on Snap/Starship and Claude on Snap are independently
-accepted against [0.5.0a9](evidence/2026-10-08-claude-interactive-observer/REPORT.md).
-Normal read CLI links and user services select a9 through the separate operational
-gate. The preceding a6 Codex acceptance remains historical evidence.
+accepted against [0.5.0a11](evidence/2026-10-09-runtime-only-retention/REPORT.md).
+Normal read CLI links and user services select a11 through the separate operational
+gate. The preceding a9 interactive and a6 Codex acceptance retain historical bounds.
 The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
 select a consumer or authorize provider policy, frontend, terminal-runtime or
@@ -13,7 +13,7 @@ networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [manifest](../artifacts/observer-0.5.0a9.json) identifies the
+pure read facade. The [manifest](../artifacts/observer-0.5.0a11.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -27,7 +27,8 @@ Both API descriptors operate without a provider or service.
 
 The [Claude alignment review](claude-read-contract-review.md) settles API 2/wire 4/
 protocol 2 for the interactive-only adapter. The independent a9 native/artifact
-and scoped operational gates now accept it. The
+and scoped operational gates accept it; a11 adds independently proved finite
+unsaved retention within the same contract. The
 [synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
 remains useful for parser, selection, partial-coverage and expiry conformance.
 Consumer source/native/deployment acceptance remains separate.
@@ -78,20 +79,21 @@ positive saved discovery, but
 its cwd, kind and age remain unavailable. Generic dialogs, nested child history
 and Claude turn outcomes remain unproved. Source coverage stays partial.
 
-Partial runtime coverage can retain a disappeared, unsaved runtime-only UUID in
-the service as stale unknown with `retained_after_gap`, even when a fresh direct
-read omits it. The selected-host comparison observed one such row. Its original
-sample clock and last-known value remain diagnostic; it is neither currently
-running nor proved parked. Retention has row/byte bounds, without time eviction.
-Clients preserve the uncertainty and can place these rows after current facts.
-The [shared-core retention follow-up](runtime-only-retention-follow-up.md)
-separately scopes retirement of disappeared unsaved identities; a9 still retains
-them. It does not block independent read-client development.
+Partial runtime coverage can briefly retain a disappeared unsaved UUID as stale
+unknown with `retained_after_gap`, even when a fresh direct read omits it. A11
+retires it at the original runtime lease: 90 seconds on Snap and 60 on Starship
+at the selected cadence. Partial samples, history enrichment and heartbeats
+cannot slide that deadline. Direct sampled watch uses 60 seconds from collection
+start and applies expiry at the next sample. Current rows and positive saved
+identities survive, with original conversation age. Clients preserve uncertainty
+until replacement/resync and treat omission as observation-memory retirement,
+never a native end/parked event or action permission. The
+[retention record](runtime-only-retention-follow-up.md) binds the policy and proof.
 
 Claude write selection remains unsupported by the new writer; the a16 writer is
 selected independently and read acceptance grants no new action capability.
 Parked never grants automatic resume, stop, approval or attachment permission.
-Agent View settings and ordinary sessions were not changed by a9 selection.
+Agent View settings and ordinary sessions were not changed by a11 selection.
 Runtime refreshes authenticate saved identities without rerunning the history
 SDK. Conversation metadata has a separate lease, and process liveness cannot
 refresh its age. Native file hints can prompt earlier reads; a forced kill with
@@ -120,7 +122,7 @@ reads collect metadata anew and can take longer than cached reads.
 For explicit artifact checks, use its immutable prefix:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a9-d72cb6c360b35b42
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -183,12 +185,12 @@ its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
 there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
-The [a9 acceptance report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+The [a11 acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md)
 records the current separate Observer read/service operational gate.
 
 An independent read-client pass may now implement schema/semantic validation,
 exact-reference selection, age/attention presentation, mixed-provider views and
-cached pull/push with gap/resync/lease handling. Use the accepted a9 artifact for
+cached pull/push with gap/resync/lease handling. Use the accepted a11 artifact for
 current behavior and the synthetic fixture for interface conformance. The
 [Claude wrap-up](claude-observation-wrap-up.md) records supported scope, completed
 gates and independent follow-ups. Actual New/Resume/attach, cross-host

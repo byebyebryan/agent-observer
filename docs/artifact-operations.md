@@ -1,12 +1,12 @@
 # Candidate artifact operations
 
-The current read/service manifest is [Observer a6](../artifacts/observer-0.5.0a6.json).
+The current read/service manifest is [Observer a11](../artifacts/observer-0.5.0a11.json).
 It freezes the producer wheel independently of later operations/tooling/docs
 commits. Normal read/service links and a user unit select it on Snap and Starship
 through the Observer-only chezmoi operations tuple. The writer independently
 retains [a16](../artifacts/observer-0.4.0a16.json); read selection does not select
 or accept a writer. See the
-[gap-closure report](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+[retention acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md)
 and [client handoff](api-v2-client-handoff.md) for source, installed, native and
 operational acceptance. Provider compatibility follows
 required contracts, not executable-release allowlists. Older manifests and
@@ -14,23 +14,25 @@ exact-image pilot receipts remain historical verification/rollback artifacts.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.5.0a6.json \
-  --wheel /absolute/path/agent_observer-0.5.0a6-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a11.json \
+  --wheel /absolute/path/agent_observer-0.5.0a11-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.5.0a6.json \
-  --wheel /absolute/path/agent_observer-0.5.0a6-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a11.json \
+  --wheel /absolute/path/agent_observer-0.5.0a11-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 
 The prefix's parent must already be canonical and owned by the operator. A new
 prefix is never selected globally. Existing candidates must pass the same
 byte/schema/profile checks or are rejected; no in-place repair occurs. Core
-installation is offline from the supplied wheel. Codex is the sole live adapter;
-use `--profile core`. The historical `--profile claude-history` option
+installation is offline from the supplied wheel. Starship selects Codex with
+`--profile core`; Snap selects Codex and interactive Claude with
+`--profile claude-history`. That option
 installs exactly SDK 0.2.163 from source (`--no-binary=claude-agent-sdk`), resolves
 its Python dependencies and rejects a bundled native executable; installing that
-profile does not accept or enable a current Claude adapter. Verification
+profile alone does not establish native adapter acceptance. The current a11
+report independently accepts its installed native subset. Verification
 never invokes providers, starts a daemon or registers hooks.
 
 The installer supplies an isolated prefix; managed selection additionally needs
@@ -53,7 +55,7 @@ candidate=/absolute/owned/parent/candidate
 The installed interpreter supplies only public validation. Reports contain
 aggregate counts/timing/resources; native payloads and titles remain in memory.
 This is bounded sampled observation, not a lossless event feed or long-duration
-performance guarantee. Use Codex-only selection on both hosts in this checkpoint. Gaps,
+performance guarantee. Use Codex on both hosts and Claude only on Snap. Gaps,
 partial sources and unsupported activity remain explicit.
 
 Source CI checks are prepared in `.github/workflows/ci.yml`; no hosted result is

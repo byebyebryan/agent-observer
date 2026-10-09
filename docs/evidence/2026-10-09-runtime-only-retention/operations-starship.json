@@ -1,0 +1,278 @@
+{
+  "previousBaseline": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a9-d72cb6c360b35b42",
+    "wheelSha256": "d72cb6c360b35b42e96de2b56d0f85d909823ebb74a5abb1a4438809e6c04ef0",
+    "renderedTargets": 6,
+    "artifactVerified": true,
+    "unitSyntaxVerified": true,
+    "providerActions": 0,
+    "frontendTargets": 0,
+    "live": true,
+    "nativeHints": true,
+    "unit": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "2881842",
+      "birth": 56988819,
+      "executableDevice": 36,
+      "executableInode": 18693316
+    },
+    "serviceId": "602f2e8e-e008-4336-9a1f-c044fde60469",
+    "sources": [
+      {
+        "components": [
+          {
+            "accepted": 418,
+            "attempts": 418,
+            "expiresBoottimeMs": 576049968,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 575989968
+          },
+          {
+            "accepted": 110,
+            "attempts": 110,
+            "expiresBoottimeMs": 576139716,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 575959716
+          }
+        ],
+        "configHome": "/home/bryan/.codex",
+        "configHomeKind": "explicit",
+        "contextGeneration": 1,
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "provider": "codex"
+      }
+    ]
+  },
+  "firstSelection": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "wheelSha256": "b1b755c8df0d4676f5f5f8fb47f10b689dabfadcd95593565da31e15af7e40eb",
+    "renderedTargets": 6,
+    "artifactVerified": true,
+    "unitSyntaxVerified": true,
+    "providerActions": 0,
+    "frontendTargets": 0,
+    "live": true,
+    "nativeHints": true,
+    "unit": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "3093322",
+      "birth": 57633977,
+      "executableDevice": 36,
+      "executableInode": 18693316
+    },
+    "serviceId": "e6dda767-ecb0-4865-9489-bd9a26f0c9a6",
+    "sources": [
+      {
+        "components": [
+          {
+            "accepted": 3,
+            "attempts": 3,
+            "expiresBoottimeMs": 576400977,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 576340977
+          },
+          {
+            "accepted": 1,
+            "attempts": 1,
+            "expiresBoottimeMs": 576520174,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 576340174
+          }
+        ],
+        "configHome": "/home/bryan/.codex",
+        "configHomeKind": "explicit",
+        "contextGeneration": 1,
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "provider": "codex"
+      }
+    ]
+  },
+  "rollback": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "restoredTargets": 6,
+    "unit": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "3094473"
+    },
+    "managedSourceChanged": false,
+    "intentionalManagedDrift": true,
+    "providerActions": 0,
+    "frontendTargets": 0
+  },
+  "reselection": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "wheelSha256": "b1b755c8df0d4676f5f5f8fb47f10b689dabfadcd95593565da31e15af7e40eb",
+    "renderedTargets": 6,
+    "artifactVerified": true,
+    "unitSyntaxVerified": true,
+    "providerActions": 0,
+    "frontendTargets": 0,
+    "live": true,
+    "nativeHints": true,
+    "unit": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "3095278",
+      "birth": 57638827,
+      "executableDevice": 36,
+      "executableInode": 18693316
+    },
+    "serviceId": "f7155c80-ada8-4ea5-b1eb-2331bd53fb03",
+    "sources": [
+      {
+        "components": [
+          {
+            "accepted": 2,
+            "attempts": 3,
+            "expiresBoottimeMs": 576448676,
+            "health": "current",
+            "inFlight": true,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 576388676
+          },
+          {
+            "accepted": 1,
+            "attempts": 1,
+            "expiresBoottimeMs": 576568676,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 576388676
+          }
+        ],
+        "configHome": "/home/bryan/.codex",
+        "configHomeKind": "explicit",
+        "contextGeneration": 1,
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "provider": "codex"
+      }
+    ],
+    "snapshot": "/home/bryan/.local/state/agent-observer/rollback/20261009-a11-starship",
+    "selectedTargets": 6
+  },
+  "recovery": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "initialServiceId": "f7155c80-ada8-4ea5-b1eb-2331bd53fb03",
+    "cases": [
+      {
+        "case": "restart",
+        "oldPid": 3095278,
+        "newPid": 3095936,
+        "oldServiceId": "f7155c80-ada8-4ea5-b1eb-2331bd53fb03",
+        "newServiceId": "ee5a9af8-769c-4979-92a5-6032b3af480d",
+        "oldWatchEnded": true,
+        "reconnectedInitialSequence": 1,
+        "recoverySeconds": 2.299890124006197
+      },
+      {
+        "case": "forced_publisher_failure",
+        "oldPid": 3095936,
+        "newPid": 3096121,
+        "oldServiceId": "ee5a9af8-769c-4979-92a5-6032b3af480d",
+        "newServiceId": "a93b577e-6746-4015-87c7-6f87149f3bf4",
+        "oldWatchEnded": true,
+        "reconnectedInitialSequence": 1,
+        "recoverySeconds": 7.373261169996113
+      }
+    ],
+    "installedCachedCli": true,
+    "startLimitResetBeforeProof": true,
+    "ordinaryProviderActions": false
+  },
+  "finalLive": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+    "wheelSha256": "b1b755c8df0d4676f5f5f8fb47f10b689dabfadcd95593565da31e15af7e40eb",
+    "renderedTargets": 6,
+    "artifactVerified": true,
+    "unitSyntaxVerified": true,
+    "providerActions": 0,
+    "frontendTargets": 0,
+    "live": true,
+    "nativeHints": true,
+    "unit": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "MainPID": "3096121",
+      "birth": 57642006,
+      "executableDevice": 36,
+      "executableInode": 18693316
+    },
+    "serviceId": "a93b577e-6746-4015-87c7-6f87149f3bf4",
+    "sources": [
+      {
+        "components": [
+          {
+            "accepted": 15,
+            "attempts": 15,
+            "expiresBoottimeMs": 576666870,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 576606870
+          },
+          {
+            "accepted": 4,
+            "attempts": 4,
+            "expiresBoottimeMs": 576783277,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 576603277
+          }
+        ],
+        "configHome": "/home/bryan/.codex",
+        "configHomeKind": "explicit",
+        "contextGeneration": 1,
+        "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+        "provider": "codex"
+      }
+    ]
+  },
+  "providerSettings": {
+    "status": "accepted",
+    "hostScope": "starship",
+    "providerSettingsUnchanged": {
+      "/home/bryan/.codex/config.toml": true
+    },
+    "ordinaryProviderActions": false
+  },
+  "status": "accepted",
+  "hostScope": "starship",
+  "managedSourceCommit": "0c6611d",
+  "scope": "Observer read/service only"
+}

@@ -8,8 +8,10 @@ with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observatio
 removes redundant publication after separate installed/native and scoped
 operational acceptance. The following
 [a9 Claude gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md) preserves these
-interfaces and adds passive Claude discovery/monitoring on Snap; normal read
-CLI/services select a9. The writer remains independently selected at a16.
+interfaces and adds passive Claude discovery/monitoring on Snap. The
+[a11 retention gate](evidence/2026-10-09-runtime-only-retention/REPORT.md) preserves
+the same interfaces and bounds disappeared unsaved memory; normal read
+CLI/services select a11. The writer remains independently selected at a16.
 This document supersedes
 [API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
 
@@ -40,8 +42,9 @@ It does not import collecting or action modules. Collection authenticates an
 existing provider endpoint or provider-owned session registration; it neither
 starts a provider nor reads terminal attachment or tmux state. Codex history is
 read through its daemon; Claude history projects bounded native transcript/SDK
-metadata without retaining conversation contents. The service
-owns collection helpers, leases and read fan-out. Clients own provider actions,
+metadata without retaining conversation contents. The reusable core engine owns
+reconciliation and evidence leases; the service hosts collection helpers and
+read fan-out. Clients own provider actions,
 TUI lifetime, terminal placement and viewers. Networking is a separate component.
 
 The implemented providers are Codex and Claude. Claude observation is accepted
@@ -96,7 +99,7 @@ Unknown wait flags preserve known active runtime but leave phase unknown.
 
 Each adapter owns its native predicate; clients consume the normalized facts and
 declared limitations. They do not repeat daemon queries or native PID checks.
-The installed a9 Claude adapter uses authenticated interactive registrations and
+The installed Claude adapter uses authenticated interactive registrations and
 status. Parked requires positive saved identity plus a
 healthy bounded native scan with no matching live incarnation or relevant
 unresolved conflict, under the accepted registration assumption. Normal
@@ -151,10 +154,15 @@ user's forward interactive workflow and require no legacy compatibility repair.
 
 Partial coverage may retain a disappeared unsaved runtime-only identity as stale
 unknown, with original clocks and `retained_after_gap`, while a direct read omits
-it. A9 retention has row/byte bounds without time eviction. This is neither a
-current running assertion nor proof of parked. The
-[shared-core retention follow-up](runtime-only-retention-follow-up.md) records
-the proposed separate repair; it changes no accepted behavior here.
+it. A11 retires this memory at the original accepted runtime lease: 90 seconds
+on Snap and 60 on Starship at the selected cadence. Partial samples, metadata
+refresh, heartbeats and delivery cannot slide that deadline. Direct sampled watch
+uses a fixed 60-second bound from collection start, applied at the next sample.
+Current rows and positive saved identities are protected; exact fresh
+reappearance establishes new evidence. Retirement is omission of stale memory,
+never a parked/ended assertion or action authority. The
+[shared-core retention record](runtime-only-retention-follow-up.md) binds the
+policy, bounds and native acceptance. Row/byte limits remain independent.
 
 Wire object fields, versions and enum values are closed and strictly validated.
 Evidence `source`/`reason`, coverage reasons, errors and limitation codes use the
@@ -211,7 +219,7 @@ and own attachment/action validation. Agent Plus implementation and managed
 consumer selection are separate gates. Tmux Plus is unchanged.
 
 Read-client implementation can begin against this settled contract and synthetic
-conformance examples, using the independently accepted a9 producer.
+conformance examples, using the independently accepted a11 producer.
 Native claims and consumer rollout use an accepted producer artifact; planned
 behavior in a fixture is not deployed behavior. Attachment/actions and public
 notification events remain separate contracts. API 2 remains prerelease; this
