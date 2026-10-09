@@ -20,38 +20,28 @@ MAX_FINGERPRINTS, MAX_METADATA_BYTES, MAX_METADATA_EVENTS = 4096, 128 * 1024, 64
 ROOTS = {"sessions": "runtime", "jobs": "runtime", "projects": "history"}
 
 
-def scheduling_projection(root, name, payload, *, linked_job=None):
+def scheduling_projection(root, name, payload):
     # Reuse the authoritative adapter's pure field projection, without invoking
     # its process, image, roster or phase observation functions.
-    from .claude_metadata import _job_record, _session_record
+    from .claude_metadata import _session_record, _uuid
     if root == "sessions":
         record = _session_record(name, payload)
         if (record["issues"] or record["kind"] not in {"interactive", "bg"}
                 or record["status"] == "waiting" and record["waitReason"] == "unknown"):
             raise ValueError("service_watch_metadata")
-        # Busy and shell project to the same working phase. Failed/stopped or
-        # unavailable job contexts still retain the exact registry clock because
-        # its relation to a terminal clock can change an ambiguity predicate.
-        clock_matters = record["jobId"] is not None and (
-            linked_job is None or linked_job.session_id != record["sessionId"]
-            or linked_job.state not in {"working", "done"} or linked_job.issues
-            or linked_job.in_flight_invalid or linked_job.in_flight is None
-        )
-        if not clock_matters:
-            record.pop("statusUpdatedAt")
+        # Heartbeat clocks do not change the accepted phase. This fingerprint
+        # only schedules a fresh authoritative read; it supplies no facts.
+        record.pop("statusUpdatedAt")
         if record["status"] in {"busy", "shell"}:
             record["status"] = "working"
         return record
-    job = _job_record(name, payload)
-    if job.issues or job.in_flight_invalid or job.in_flight is None:
+    if not isinstance(payload, dict) or _uuid(payload.get("sessionId")) is None:
         raise ValueError("service_watch_metadata")
-    block = payload.get("block")
-    if block is not None and (not isinstance(block, dict)
-            or block.get("questions") is not None and not job.question_wait):
-        raise ValueError("service_watch_metadata")
-    return [job.job_id, job.session_id, job.state, job.tempo, job.terminal_at,
-            job.cwd, job.title, None if job.in_flight is None else any(job.in_flight),
-            job.last_terminal_at, job.question_wait]
+    counts = payload.get("inFlight")
+    quiet = (payload.get("state") in {"done", "failed", "stopped"} and payload.get("tempo") == "idle"
+             and isinstance(counts, dict) and all(type(counts.get(k)) is int and counts[k] == 0
+                                                 for k in ("tasks", "queued", "drainableMonitors")))
+    return [_uuid(payload["sessionId"]), quiet]
 
 
 @dataclass(frozen=True)
@@ -126,15 +116,8 @@ class Watcher:
             if deleted:
                 raise ValueError("service_watch_metadata")
             payload = self._metadata(directory, name)
-            linked_job = None
-            if directory.root == "sessions" and isinstance(payload, dict):
-                job_id = payload.get("jobId")
-                if isinstance(job_id, str) and re.fullmatch(r"[a-f0-9]{8}", job_id):
-                    from .claude_metadata import _job_record
-                    job_directory = self._directory(self.home / "jobs" / job_id, "runtime", "jobs")
-                    linked_job = _job_record(job_id, self._metadata(job_directory, "state.json"))
             projection = scheduling_projection(directory.root, name if directory.root == "sessions" else directory.path.name,
-                                               payload, linked_job=linked_job)
+                                               payload)
             from .contract import canonical
             digest = hashlib.sha256(canonical(projection).encode()).digest()
         except (OSError, ValueError, TypeError, KeyError, _ReadFailure):
@@ -259,6 +242,8 @@ class Watcher:
                 runtime_files[key] = runtime_files.get(key, False) or bool(mask & (DELETE | MOVED_FROM))
             elif directory.root == "projects" and directory.path.parent == self.home / "projects" and name.endswith(b".jsonl"):
                 components.add("history")
+                if mask & (CREATE | DELETE | MOVED_FROM | MOVED_TO):
+                    components.add("runtime")
         # MODIFY/CLOSE_WRITE/atomic-replace bursts share one bounded read per
         # watched file in this chunk. Excess work becomes a conservative wakeup.
         for index, ((wd, name), deleted) in enumerate(runtime_files.items()):
