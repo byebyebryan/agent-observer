@@ -1,0 +1,31 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a5-9e116932e007b0bf",
+  "initialServiceId": "27a5676a-d583-4a26-b229-673327339978",
+  "cases": [
+    {
+      "case": "restart",
+      "oldPid": 505808,
+      "newPid": 506969,
+      "oldServiceId": "27a5676a-d583-4a26-b229-673327339978",
+      "newServiceId": "dfe31771-dbe4-4c1a-9b89-7bea0737abbf",
+      "oldWatchEnded": true,
+      "reconnectedInitialSequence": 1,
+      "recoverySeconds": 0.8959986750269309
+    },
+    {
+      "case": "forced_publisher_failure",
+      "oldPid": 506969,
+      "newPid": 507536,
+      "oldServiceId": "dfe31771-dbe4-4c1a-9b89-7bea0737abbf",
+      "newServiceId": "908df20f-631f-4a24-9053-11cce216c15b",
+      "oldWatchEnded": true,
+      "reconnectedInitialSequence": 1,
+      "recoverySeconds": 6.187264537089504
+    }
+  ],
+  "installedCachedCli": true,
+  "startLimitResetBeforeProof": true,
+  "ordinaryProviderActions": false
+}

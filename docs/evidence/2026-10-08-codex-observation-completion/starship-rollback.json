@@ -1,0 +1,33 @@
+{
+  "hostScope": "starship",
+  "providerConfigurationAndUnitHashes": {
+    ".codex/config.toml": "b1cc554b13b9fb7e93cfaeb4fbd93940b59834114cd297819faffbbee2526bf3",
+    ".claude/settings.json": null,
+    ".config/agent-observer/workspace.json": "2b8c2fb1c3e085ed7295e35dde9e8e64a123de9518610ecfb1b5fd1c26de067a",
+    ".config/systemd/user/agent-observer.service": "ff39aba8fbd3b1fdc741367dc63c08c7cc9caa2031372d5a08d56085268b2f99"
+  },
+  "selectedLinks": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer",
+    "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-service",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+    "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+    "rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi",
+    "rofi-tmux-plus": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus",
+    "rofi-tmux-plus-rofi": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus-rofi"
+  },
+  "unit": {
+    "ActiveState": "active",
+    "UnitFileState": "enabled",
+    "InvocationID": "1e3a9fbb33a94e51aca616a727d07569",
+    "MainPID": "2107070"
+  },
+  "serviceId": "8ec27b3d-9d65-44ed-96cf-665e7f6087f7",
+  "ordinaryCodexDaemon": {
+    "pid": 1566532,
+    "startTicks": "52740759",
+    "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+    "provider": "codex",
+    "version": "0.162.0",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  }
+}
