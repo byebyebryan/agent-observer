@@ -1,0 +1,56 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "clientInventoryQueried": false,
+  "isolationEstablished": true,
+  "modes": [
+    {
+      "disableAgentView": true,
+      "nativeId": "4ebbb2fe-ddd9-4e2d-aa70-baf99be0ba8f",
+      "hooksDisabled": true,
+      "registeredStatusBeforeKill": "idle",
+      "forcedKillExitCode": -9,
+      "registrationRetainedBeforeRoster": true,
+      "staleStatusBeforeRoster": "idle",
+      "staleIncarnationAuthenticated": false,
+      "savedIdentityRetained": true,
+      "nativeRoster": {
+        "exitCode": 1,
+        "jsonArray": false
+      },
+      "registrationRetainedAfterRoster": true,
+      "savedIdentityRetainedAfterRoster": true,
+      "status": "completed"
+    },
+    {
+      "disableAgentView": false,
+      "nativeId": "e37c6009-34d2-4111-bfa7-d13d3519b648",
+      "hooksDisabled": true,
+      "registeredStatusBeforeKill": "idle",
+      "forcedKillExitCode": -9,
+      "registrationRetainedBeforeRoster": true,
+      "staleStatusBeforeRoster": "idle",
+      "staleIncarnationAuthenticated": false,
+      "savedIdentityRetained": true,
+      "nativeRoster": {
+        "exitCode": 0,
+        "jsonArray": true,
+        "rowCount": 0,
+        "matchingRows": []
+      },
+      "registrationRetainedAfterRoster": true,
+      "savedIdentityRetainedAfterRoster": true,
+      "status": "completed"
+    }
+  ],
+  "hooklessOnly": false,
+  "crashRosterOnly": true,
+  "executableSha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+  "harnessSha256": "f4ce305b5a8e081b881a2369c9c8a8053a30214446809b4ccf474f22f942cb00",
+  "status": "completed",
+  "cleanup": {
+    "ownedNamespaceStopped": true,
+    "borrowedAuthenticationAndHistoryRemoved": true
+  }
+}
