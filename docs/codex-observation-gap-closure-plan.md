@@ -32,3 +32,19 @@ that originate in the provider are documented rather than filled by inference.
 
 Push remains sampled current-view delivery. Removing redundant publication
 does not establish native event replay, completion alerts or lossless delivery.
+
+## Execution record
+
+- G0: `50c85a6` reconciles the validation workflow. All 379 tests pass (one skip).
+- G1: `ea8adeb` accepts history/runtime receipts before publishing once. Core and
+  healthy-reader regressions fail against a5 and pass after the correction;
+  genuine transport coalescing still resyncs. All 382 tests pass (one skip).
+- G2: `6aec733` fixes a demonstrated `/proc` exit/read race in the retirement
+  test. Baseline repetition has three errors in 20 runs; corrected repetition
+  has zero in 60, retaining the same one-second retirement assertion. All 383
+  tests pass (one skip). No production helper timeout/signaling is changed.
+- G3: independent native queries prove all missing clocks belong to parked
+  children with no native turn, and all unknown kinds are older/non-running.
+  [Investigation evidence](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
+  distinguishes native omissions from producer defects. Source version a6
+  prepares the successor; installed/native and managed selection remain pending.

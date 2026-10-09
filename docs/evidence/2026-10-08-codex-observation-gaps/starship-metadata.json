@@ -1,0 +1,36 @@
+{
+  "host": "starship",
+  "sampleAt": 1791513049462,
+  "referenceImportsObserver": false,
+  "providerActions": false,
+  "rows": 353,
+  "nativeReferenceLimits": [],
+  "classification": {
+    "user": 80,
+    "child": 252,
+    "unknown": 21
+  },
+  "missingActivity": {
+    "count": 248,
+    "byKind": {
+      "child": 248
+    },
+    "byRuntime": {
+      "parked": 248
+    },
+    "nativeReason": {
+      "no_native_turn": 248
+    },
+    "createdWithinSevenDays": 0
+  },
+  "unknownKinds": {
+    "count": 21,
+    "nativeSourceShapes": {
+      "vscode/other_shape": 3,
+      "vscode/absent": 16,
+      "cli/absent": 2
+    },
+    "createdWithinSevenDays": 0,
+    "running": 0
+  }
+}
