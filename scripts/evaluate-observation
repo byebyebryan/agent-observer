@@ -44,7 +44,17 @@ def read_json(path):
         data = os.read(fd, MAX_FILE + 1)
         if len(data) > MAX_FILE:
             raise ValueError("native_file_limit")
-        return json.loads(data)
+        signature = lambda v: (v.st_dev, v.st_ino, v.st_size, v.st_mtime_ns, v.st_ctime_ns)
+        if len(data) != info.st_size or signature(info) != signature(os.fstat(fd)) or signature(info) != signature(path.lstat()):
+            raise ValueError("native_file_changed")
+        def unique(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError("native_duplicate_key")
+                result[key] = value
+            return result
+        return json.loads(data, object_pairs_hook=unique)
     finally:
         os.close(fd)
 
@@ -411,123 +421,164 @@ def worker_image(pid, cache):
 
 
 def claude_reference(home, image_cache):
+    """Independent interactive registration oracle; no Observer implementation.
+
+    A healthy negative scan is scoped to the declared native-registration
+    assumption. Native jobs only veto negatives; they never supply lifecycle.
+    """
     domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
     history, history_gaps, scanned = native_history(home)
-    rows = {sid: {**r, "runtime": None, "phase": None} for sid, r in history.items()}
-    registry = []
-    registry_seen = set()
-    registry_complete = True
-    runtime_gaps, workers = [], []
-    for path in sorted((home / "sessions").glob("*.json")):
-        try:
-            r = read_json(path)
-            sid, pid = r.get("sessionId"), r.get("pid")
-            if not isinstance(sid, str) or not UUID.fullmatch(sid) or type(pid) is not int:
-                registry_complete = False
-                continue
-            registry_seen.add(sid)
-            start, state, parent = birth(pid)
-            if start != r.get("procStart") or r.get("pidDomain") != domain or state == "Z":
-                continue
-            artifact = worker_image(pid, image_cache)
-            if artifact["provider"] != "claude" or birth(pid)[0] != start:
-                registry_complete = False
-                runtime_gaps.append("worker_image_unproved:" + sid)
-                continue
-            job_id = r.get("jobId")
-            try:
-                job = read_json(home / "jobs" / job_id / "state.json") if isinstance(job_id, str) and re.fullmatch("[0-9a-f]{8}", job_id) else None
-            except (OSError, ValueError):
-                job = None
-            if job is not None and not isinstance(job, dict):
-                raise ValueError("native_job_shape_unproved")
-            linked = job is None and job_id is None or job is not None and job.get("sessionId") == sid
-            status = r.get("status")
-            native_state = job.get("state") if job else None
-            tempo = job.get("tempo") if job else None
-            phase = None
-            if linked and type(r.get("statusUpdatedAt")) is int and 0 <= r["statusUpdatedAt"] <= 4_000_000_000_000:
-                counts = (job or {}).get("inFlight") or {}
-                if not isinstance(counts, dict):
-                    counts = {}
-                current_job = job is None and r.get("kind") == "interactive" or native_state in ("working", "done")
-                questions = ((job or {}).get("block") or {}).get("questions")
-                question_bound = (job is not None and native_state == "working" and tempo == "blocked"
-                                  and isinstance(questions, list) and 1 <= len(questions) <= 32
-                                  and all(isinstance(q, dict) for q in questions))
-                foreground_question = job is None and job_id is None and r.get("kind") == "interactive"
-                if current_job and status == "waiting" and (
-                    r.get("waitingFor") == "permission prompt" or r.get("waitingFor") == "input needed" and (question_bound or foreground_question)
-                ):
-                    phase = "blocked"
-                elif job is None and r.get("kind") == "interactive" and status == "idle":
-                    phase = "waiting"
-                elif current_job and status in ("busy", "shell"):
-                    phase = "working"
-                elif job is not None and native_state == "done" and tempo == "idle" and status == "idle" and (
-                    job.get("lastTerminalAt") is not None
-                    and all(type(counts.get(k)) is int and counts[k] == 0 for k in ("tasks", "queued", "drainableMonitors"))
-                ):
-                    phase = "waiting"
-            original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
-            row = {**original, "cwd": bounded_text(r.get("cwd"), 4096) or original["cwd"], "runtime": "running", "phase": phase, "pid": pid, "parentPid": parent, "startTicks": start, "workerVersion": artifact["version"], "registryKind": r.get("kind") if r.get("kind") in ("interactive", "bg", "daemon", "daemon-worker") else "unknown", "nativeStatus": status if status in ("busy", "shell", "idle", "waiting") else "unknown", "nativeJobState": native_state if native_state in ("working", "done", "blocked", "failed", "stopped") else None, "nativeTempo": tempo if tempo in ("active", "idle", "blocked") else None, "statusUpdatedAt": r.get("statusUpdatedAt"), "jobLinked": linked}
-            workers.append({"id": sid, "pid": pid, "startTicks": start, "phase": phase,
-                            "binarySha256": artifact["sha256"]})
-            if sid in registry:
-                row["runtime"], row["phase"] = None, None
-                row["ambiguousWorkers"] = True
-                runtime_gaps.append("duplicate_live_workers:" + sid)
-            rows[sid] = row
-            registry.append(sid)
-        except (OSError, ValueError, TypeError):
-            registry_complete = False
-            runtime_gaps.append("worker_reference_unavailable")
-            continue
-    # Independently bound retained terminal jobs. This reference accepts only
-    # registry-free UUIDs; an unsupported/stale registry record remains unproved.
-    # Provider state is read directly and never supplied by the CLI under test.
-    terminal_jobs = {}
+    rows = {sid: {**r, "runtime": "unknown", "phase": "unknown"} for sid, r in history.items()}
+    runtime_gaps, workers, records = [], [], []
+    uncertain, excluded, live = set(), set(), {}
+    healthy = True
+
+    def owned_directory(path):
+        stamp = path.lstat()
+        if not stat.S_ISDIR(stamp.st_mode) or stamp.st_uid != os.getuid():
+            raise ValueError("native_directory_rejected")
+        return stamp.st_dev, stamp.st_ino
+
+    def names(path, limit):
+        with os.scandir(path) as stream:
+            result = []
+            for entry in stream:
+                if len(result) == limit:
+                    raise ValueError("native_directory_limit")
+                result.append(entry.name)
+        return sorted(result)
+
+    def registry_fields(r):
+        return {k: r.get(k) for k in ("sessionId", "pid", "procStart", "pidDomain", "kind", "jobId", "status", "statusUpdatedAt", "waitingFor", "cwd")}
+
+    registry_path = home / "sessions"
     try:
-        job_dirs = list((home / "jobs").iterdir())
-        if len(job_dirs) > 128:
-            raise ValueError("native_job_limit")
-        for directory in job_dirs:
-            if not re.fullmatch("[0-9a-f]{8}", directory.name):
-                continue
-            if directory.is_symlink() or not directory.is_dir():
-                raise ValueError("native_job_directory_rejected")
-            job = read_json(directory / "state.json")
-            sid = job.get("sessionId")
-            if not isinstance(sid, str) or not UUID.fullmatch(sid):
-                raise ValueError("native_job_identity_unproved")
-            terminal_jobs.setdefault(sid, []).append(job)
-        for sid, jobs in terminal_jobs.items():
-            if not registry_complete or sid in registry_seen or len(jobs) != 1:
-                continue
-            job = jobs[0]
-            counts = job.get("inFlight")
-            if counts is not None and (not isinstance(counts, dict) or any(
-                type(counts.get(k)) is not int or counts[k] != 0 for k in ("tasks", "queued", "drainableMonitors")
-            )):
-                continue
-            terminal = job.get("lastTerminalAt") or job.get("firstTerminalAt")
-            if job.get("state") not in ("done", "stopped") or job.get("tempo") != "idle" or not isinstance(terminal, str):
-                continue
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z", terminal):
-                continue
+        root_stamp = owned_directory(home)
+        registry_stamp = owned_directory(registry_path)
+        registry_names = names(registry_path, 4096)
+        files = [n for n in registry_names if n.endswith(".json")]
+        if len(files) > 256:
+            raise ValueError("native_registry_limit")
+        byte_count = 0
+        for name in files:
             try:
-                at = int(datetime.datetime.fromisoformat(terminal.replace("Z", "+00:00")).timestamp() * 1000)
-            except (ValueError, OverflowError):
-                continue
-            if not 0 <= at <= clock():
-                continue
-            original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
-            rows[sid] = {**original, "runtime": "parked", "phase": None,
-                         "nativeJobState": job["state"], "nativeTempo": job["tempo"]}
-    except (OSError, ValueError, TypeError):
-        runtime_gaps.append("terminal_job_reference_incomplete")
-    return {"sampleAt": clock(), "rows": rows, "registered": sorted(registry), "historyGaps": history_gaps,
-            "historyBytesScanned": scanned, "runtimeGaps": sorted(set(runtime_gaps)), "workers": workers}
+                path = registry_path / name
+                r = read_json(path)
+                byte_count += path.lstat().st_size
+                if byte_count > 4 * 1024 * 1024:
+                    raise ValueError("native_registry_byte_limit")
+                sid, pid = r.get("sessionId"), r.get("pid")
+                if (not isinstance(sid, str) or not UUID.fullmatch(sid) or type(pid) is not int
+                        or not 1 <= pid <= 2**31 - 1 or name != str(pid) + ".json"):
+                    raise ValueError("native_registry_identity_unproved")
+                sid = sid.lower()
+                r = {**r, "sessionId": sid}
+                records.append((path, registry_fields(r)))
+                if (r.get("pidDomain") != domain or not isinstance(r.get("procStart"), str)
+                        or not re.fullmatch(r"[0-9]{1,20}", r["procStart"])):
+                    uncertain.add(sid)
+                    runtime_gaps.append("worker_domain_or_birth_unproved:" + sid)
+                    continue
+                try:
+                    start, state, parent = birth(pid)
+                except FileNotFoundError:
+                    continue
+                if start != r["procStart"] or state in ("Z", "X"):
+                    continue
+                artifact = worker_image(pid, image_cache)
+                if artifact["provider"] != "claude" or birth(pid)[0] != start:
+                    uncertain.add(sid)
+                    runtime_gaps.append("worker_image_unproved:" + sid)
+                    continue
+                if r.get("kind") != "interactive" or r.get("jobId") is not None:
+                    excluded.add(sid)
+                    runtime_gaps.append("noninteractive_runtime_unsupported:" + sid)
+                    rows.setdefault(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown", "runtime": "unknown", "phase": "unknown"})
+                    continue
+                phase = "unknown"
+                status = r.get("status")
+                if type(r.get("statusUpdatedAt")) is int and 0 <= r["statusUpdatedAt"] <= min(clock(), 4_000_000_000_000):
+                    if status == "waiting" and r.get("waitingFor") in ("permission prompt", "input needed"):
+                        phase = "blocked"
+                    elif status == "idle":
+                        phase = "waiting"
+                    elif status in ("busy", "shell"):
+                        phase = "working"
+                original = rows.get(sid, {"title": None, "cwd": None, "activity": None, "kind": "unknown"})
+                title = bounded_text(r.get("name")) if r.get("nameSource") == "user" else None
+                row = {**original, "title": title or original["title"], "cwd": bounded_text(r.get("cwd"), 4096) or original["cwd"], "runtime": "running", "phase": phase,
+                       "pid": pid, "parentPid": parent, "startTicks": start, "workerVersion": artifact["version"], "registryKind": "interactive", "nativeStatus": status,
+                       "statusUpdatedAt": r.get("statusUpdatedAt")}
+                workers.append({"id": sid, "pid": pid, "startTicks": start, "phase": phase, "binarySha256": artifact["sha256"]})
+                if sid in live:
+                    row["ambiguousWorkers"] = True
+                    if live[sid]["phase"] != phase:
+                        row["phase"] = "unknown"
+                    runtime_gaps.append("duplicate_live_workers:" + sid)
+                live[sid] = row
+                rows[sid] = row
+            except (OSError, ValueError, TypeError, AttributeError):
+                healthy = False
+                runtime_gaps.append("worker_reference_unavailable")
+        for path, expected in records:
+            if registry_fields(read_json(path)) != expected:
+                raise ValueError("native_registry_changed")
+        if names(registry_path, 4096) != registry_names or owned_directory(registry_path) != registry_stamp or owned_directory(home) != root_stamp:
+            raise ValueError("native_registry_changed")
+    except (OSError, ValueError, TypeError, AttributeError):
+        healthy = False
+        runtime_gaps.append("registry_reference_incomplete")
+        # An unstable bracket cannot authenticate a sample taken inside it.
+        for sid in live:
+            rows[sid].update(runtime="unknown", phase="unknown")
+        live = {}
+
+    try:
+        jobs = home / "jobs"
+        if jobs.exists() or jobs.is_symlink():
+            job_stamp = owned_directory(jobs)
+            job_names = names(jobs, 4096)
+            ids = [n for n in job_names if re.fullmatch("[0-9a-f]{8}", n)]
+            if len(ids) > 128:
+                raise ValueError("native_job_guard_limit")
+            byte_count = 0
+            for jid in ids:
+                directory = jobs / jid
+                directory_stamp = owned_directory(directory)
+                path = directory / "state.json"
+                job = read_json(path)
+                byte_count += path.lstat().st_size
+                if byte_count > 24 * 1024 * 1024:
+                    raise ValueError("native_job_guard_byte_limit")
+                sid = job.get("sessionId")
+                if not isinstance(sid, str) or not UUID.fullmatch(sid):
+                    raise ValueError("native_job_guard_identity_unproved")
+                counts = job.get("inFlight")
+                quiet = (job.get("state") in ("done", "failed", "stopped") and job.get("tempo") == "idle"
+                         and isinstance(counts, dict) and all(type(counts.get(k)) is int and counts[k] == 0 for k in ("tasks", "queued", "drainableMonitors")))
+                if not quiet:
+                    excluded.add(sid.lower())
+                    runtime_gaps.append("background_conflict:" + sid.lower())
+                later = read_json(path)
+                if any(later.get(k) != job.get(k) for k in ("sessionId", "state", "tempo", "inFlight")) or owned_directory(directory) != directory_stamp:
+                    raise ValueError("native_job_guard_changed")
+            if names(jobs, 4096) != job_names or owned_directory(jobs) != job_stamp:
+                raise ValueError("native_job_guard_changed")
+        if names(registry_path, 4096) != registry_names or owned_directory(registry_path) != registry_stamp:
+            raise ValueError("native_registry_changed")
+        for path, expected in records:
+            if registry_fields(read_json(path)) != expected:
+                raise ValueError("native_registry_changed")
+    except (OSError, ValueError, TypeError, AttributeError):
+        healthy = False
+        runtime_gaps.append("background_guard_incomplete")
+    if healthy:
+        for sid in history:
+            if sid not in live and sid not in uncertain and sid not in excluded:
+                rows[sid].update(runtime="parked", phase=None)
+    return {"sampleAt": clock(), "rows": rows, "registered": sorted(live), "historyGaps": history_gaps,
+            "historyBytesScanned": scanned, "runtimeGaps": sorted(set(runtime_gaps)), "workers": workers,
+            "runtimeScope": "interactive_registration_assumed", "negativeScanHealthy": healthy}
 
 
 def cli_call(cli, argv, snapshot=None):
