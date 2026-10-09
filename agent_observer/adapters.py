@@ -17,7 +17,8 @@ class CodexAdapter:
         if selector != "explicit" or not home.is_absolute():
             raise ValueError("adapter_selector_invalid")
 
-    def collect(self, home, *, host_scope, include_history=True, image_cache=None):
+    def collect(self, home, *, host_scope, include_history=True, image_cache=None,
+                owned_worker_group=False):
         self.validate_selector(home, "explicit")
         from .codex_snapshot import collect_codex
 
@@ -31,7 +32,35 @@ class CodexAdapter:
         return run(home, emitter)
 
 
-_ADAPTERS = {"codex": CodexAdapter()}
+@dataclass(frozen=True)
+class ClaudeAdapter:
+    provider: str = "claude"
+
+    @property
+    def profile(self):
+        return profile_for(self.provider)
+
+    def validate_selector(self, home, selector):
+        if selector not in {"default", "explicit"} or not home.is_absolute():
+            raise ValueError("adapter_selector_invalid")
+
+    def collect(self, home, *, host_scope, include_history=True, image_cache=None,
+                owned_worker_group=False):
+        self.validate_selector(home, "explicit")
+        from .claude_snapshot import collect_claude
+
+        return collect_claude(home, host_scope=host_scope, include_history=include_history,
+                              image_cache=image_cache, owned_worker_group=owned_worker_group,
+                              config_home_kind="explicit")
+
+    def listen(self, home, emitter):
+        self.validate_selector(home, "explicit")
+        from .claude_hints import run
+
+        return run(home, emitter)
+
+
+_ADAPTERS = {"codex": CodexAdapter(), "claude": ClaudeAdapter()}
 
 
 def adapter_for(provider):

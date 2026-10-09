@@ -113,6 +113,7 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
             "created_at",
             "last_modified",
             "activity",
+            "kind",
         }:
             raise ValueError("invalid_worker_row")
         session_id = value.get("session_id")
@@ -142,6 +143,8 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
             or any(unicodedata.category(char).startswith("C") for char in cwd)
         ):
             raise ValueError("invalid_worker_cwd")
+        if value["kind"] not in {"user", "child", "unknown"}:
+            raise ValueError("invalid_worker_kind")
         validate_shape(value["activity"], ACTIVITY)
         if value["activity"]["at"] is not None and (
             value["activity"]["health"] != "current"
@@ -156,6 +159,7 @@ def _validate_payload(payload: object) -> tuple[list[dict[str, object]], list[st
                 "created_at": _valid_time(value.get("created_at")),
                 "last_modified": _valid_time(value.get("last_modified")),
                 "activity": value["activity"],
+                "kind": value["kind"],
             }
         )
     return rows, list(dict.fromkeys(raw_errors))

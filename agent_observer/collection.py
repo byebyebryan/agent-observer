@@ -76,6 +76,10 @@ def _coverage(value, health):
 
 def project_source(native):
     provider = native["provider"]
+    if provider == "claude":
+        from .claude_projection import project_source as project_claude_source
+
+        return project_claude_source(native)
     if provider != "codex":
         raise ValueError("unsupported_provider")
     selector = native.get("configHomeKind", "explicit")
@@ -115,6 +119,10 @@ def project_source(native):
 
 
 def project_session(native, source):
+    if source["provider"] == "claude":
+        from .claude_projection import project_session as project_claude_session
+
+        return project_claude_session(native, source)
     identity = copy.deepcopy(native["identity"])
     identity["namespace"] = source["namespace"]
     if identity["provider"] != "codex":

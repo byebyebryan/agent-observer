@@ -16,6 +16,7 @@ from agent_observer._claude_history_worker import (
     census_projects,
     duplicate_file_kind,
     transcript_activity,
+    transcript_kind,
 )
 from agent_observer.claude_history import SDK_VERSION, _run_worker, collect_saved_history
 
@@ -124,6 +125,7 @@ def worker_row(session_id, *, created_at, last_modified, cwd=None, title=None, a
         "cwd": cwd,
         "created_at": created_at,
         "last_modified": last_modified,
+        "kind": "unknown",
         "activity": {
             "at": activity_at,
             "source": "claude_transcript_message" if activity_at is not None else None,
@@ -250,7 +252,7 @@ class ClaudeHistoryTest(unittest.TestCase):
         self.assertEqual(result["errors"], [])
         self.assertEqual(
             set(result["rows"][0]),
-            {"session_id", "custom_title", "cwd", "created_at", "last_modified", "activity"},
+            {"session_id", "custom_title", "cwd", "created_at", "last_modified", "activity", "kind"},
         )
 
     def test_preserves_exact_cwd_and_rejects_ambiguous_paths(self):
@@ -357,6 +359,24 @@ class ClaudeHistoryTest(unittest.TestCase):
             with self.assertRaises(_WorkerFailure) as fifo_error:
                 census_projects(projects)
             self.assertEqual(fifo_error.exception.code, "history_unsafe_entry")
+
+    def test_classification_is_explicit_and_independent_of_activity_clock(self):
+        path = self.config / "classification.jsonl"
+        value = {"type": "user", "sessionId": FIRST, "isSidechain": False,
+                 "message": {"role": "user", "content": "discard"}}
+        path.write_text(json.dumps(value) + "\n")
+        self.assertEqual(transcript_kind(path, FIRST), "user")
+        self.assertIsNone(transcript_activity(path, FIRST)["at"])
+        value["isSidechain"] = True
+        path.write_text(json.dumps(value) + "\n")
+        self.assertEqual(transcript_kind(path, FIRST), "child")
+        del value["isSidechain"]
+        path.write_text(json.dumps(value) + "\n")
+        self.assertEqual(transcript_kind(path, FIRST), "unknown")
+        value["isSidechain"] = False
+        value["sessionId"] = SECOND
+        path.write_text(json.dumps(value) + "\n")
+        self.assertEqual(transcript_kind(path, FIRST), "unknown")
 
     def test_transcript_clock_ignores_rename_housekeeping_sidechains_and_meta_messages(self):
         path = self.config / "transcript.jsonl"

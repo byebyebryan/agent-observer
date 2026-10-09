@@ -226,7 +226,7 @@ class CodexAuthorityTest(unittest.TestCase):
         with self.assertRaises(ContractError):
             parse_snapshot(old)
         with self.assertRaisesRegex(ValueError, "unsupported_provider"):
-            project_source({"provider": "claude"})
+            project_source({"provider": "unknown"})
 
     def test_phase_and_parked_identity_constraints(self):
         value, _ = self.collect({FIRST: {"type": "active", "activeFlags": []}})

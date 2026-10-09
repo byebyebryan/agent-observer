@@ -65,10 +65,14 @@ def collect_claude(
     include_history: bool = True,
     image_cache=None,
     owned_worker_group: bool = False,
+    config_home_kind: str | None = None,
 ):
     if (
         type(include_history) is not bool
         or type(owned_worker_group) is not bool
+        or config_home_kind is not None and (
+            not isinstance(config_home_kind, str) or config_home_kind not in {"default", "explicit"}
+        )
         or not isinstance(config_home, Path)
         or not config_home.is_absolute()
         or len(str(config_home)) > 4096
@@ -80,7 +84,7 @@ def collect_claude(
     ):
         raise CollectionError("invalid_collection_scope")
     started = time.monotonic()
-    config_home_kind = (
+    config_home_kind = config_home_kind or (
         "default"
         if config_home == Path.home() / ".claude" and "CLAUDE_CONFIG_DIR" not in os.environ
         else "explicit"
@@ -308,6 +312,7 @@ def collect_claude(
             }
             if native is not None:
                 native["history"] = history_metadata
+                native["threadKind"] = history_row.get("kind", "unknown")
                 native["activity"] = history_row.get(
                     "activity", unavailable("activity_clock_unavailable")
                 )
@@ -364,6 +369,7 @@ def collect_claude(
                         "activity", unavailable("activity_clock_unavailable")
                     ),
                     "inventory": "saved",
+                    "threadKind": history_row.get("kind", "unknown"),
                 }
             )
     result["durationMs"] = round((time.monotonic() - started) * 1000, 3)

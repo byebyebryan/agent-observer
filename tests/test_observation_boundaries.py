@@ -55,7 +55,7 @@ class ObservationBoundaryTest(unittest.TestCase):
                      "observation_scheduler", "observation_evidence"):
             with self.subTest(root=root):
                 self.assertFalse(dependencies(root) & forbidden)
-        pure_forbidden = {"adapters", "collection", "codex_snapshot", "codex_hints",
+        pure_forbidden = {"adapters", "collection", "codex_snapshot", "codex_hints", "claude_snapshot", "claude_projection", "claude_hints",
                           "service_runtime", "_service_worker", "_hint_worker"}
         for root in ("public", "service_public"):
             self.assertFalse(dependencies(root) & pure_forbidden)
@@ -75,9 +75,9 @@ class ObservationBoundaryTest(unittest.TestCase):
                 self.assertFalse(names & {"os", "socket", "subprocess", "time", "uuid", "pathlib"})
 
     def test_mixed_selection_rejects_before_collecting_any_provider(self):
-        with patch("agent_observer.adapters.CodexAdapter.collect") as collect:
+        with patch.dict("agent_observer.provider.PROFILES", {"future": SimpleNamespace()}), patch("agent_observer.adapters.CodexAdapter.collect") as collect:
             with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
-                collection.collect(host_scope="fixture", providers=["codex", "claude"],
+                collection.collect(host_scope="fixture", providers=["codex", "future"],
                                    codex_home="/fixture/codex", claude_home="/fixture/claude")
             collect.assert_not_called()
         for values in ([], ["codex", "codex"], ["unknown"]):
@@ -86,10 +86,10 @@ class ObservationBoundaryTest(unittest.TestCase):
         self.assertEqual(adapter_for("codex").profile.runtime_scope, "daemon_threads")
 
     def test_private_collector_rejects_unsupported_before_memo_or_provider_io(self):
-        request = {"hostScope": "fixture", "provider": "claude", "component": "runtime",
+        request = {"hostScope": "fixture", "provider": "codex", "component": "runtime",
                    "configHome": "/fixture/claude", "configHomeKind": "explicit",
                    "timeoutMs": 1000, "workspaceConfig": None, "imageMemoFd": 99}
-        with patch.object(_service_worker.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(json.dumps(request).encode()))), \
+        with patch.dict("agent_observer.adapters._ADAPTERS", {}, clear=True), patch.object(_service_worker.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(json.dumps(request).encode()))), \
              patch.object(_service_worker.signal, "signal"), \
              patch.object(_service_worker.signal, "setitimer"), \
              patch.object(_service_worker.os, "getpgrp", return_value=os.getpid()), \
@@ -100,9 +100,9 @@ class ObservationBoundaryTest(unittest.TestCase):
             socket.assert_not_called()
 
     def test_private_feed_rejects_unsupported_before_process_or_native_checks(self):
-        request = {"provider": "claude", "configHome": "/fixture/claude",
+        request = {"provider": "codex", "configHome": "/fixture/claude",
                    "epoch": "0" * 36, "parentPid": os.getpid()}
-        with patch.object(_hint_worker.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(json.dumps(request).encode()))), \
+        with patch.dict("agent_observer.adapters._ADAPTERS", {}, clear=True), patch.object(_hint_worker.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(json.dumps(request).encode()))), \
              patch.object(_hint_worker.signal, "signal"), \
              patch.object(_hint_worker.signal, "setitimer"), \
              patch.object(_hint_worker.os, "getpgrp") as process_check:
@@ -112,13 +112,13 @@ class ObservationBoundaryTest(unittest.TestCase):
 
     def test_runtime_rejects_unsupported_before_creating_local_endpoint(self):
         state = ServiceState(host_scope="fixture", configs={"claude": ("/fixture/claude", "explicit")})
-        with patch("agent_observer.service_runtime.selectors.DefaultSelector") as selector:
+        with patch.dict("agent_observer.adapters._ADAPTERS", {}, clear=True), patch("agent_observer.service_runtime.selectors.DefaultSelector") as selector:
             with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
                 Runtime(state, "/fixture/never-created.sock")
             selector.assert_not_called()
 
     def test_feed_host_rejects_unsupported_before_starting_helper(self):
-        with patch("agent_observer.service_hints.subprocess.Popen") as launch:
+        with patch.dict("agent_observer.adapters._ADAPTERS", {}, clear=True), patch("agent_observer.service_hints.subprocess.Popen") as launch:
             with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
                 Hints({"claude": ("/fixture/claude", "explicit")}, None, None, None)
             launch.assert_not_called()

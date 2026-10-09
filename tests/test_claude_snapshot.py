@@ -129,8 +129,9 @@ class ClaudeCollectionTest(unittest.TestCase):
         self.assertEqual(value["sourceHealth"], "partial")
         self.assertEqual(value["sessions"][0]["activity"]["at"], 150)
         self.assertEqual(value["sessions"][0]["presence"]["value"], "unknown")
-        with self.assertRaisesRegex(ValueError, "unsupported_provider"):
-            project_source(value)
+        source = project_source(value)
+        self.assertEqual(source["coverage"]["runtime"]["status"], "unavailable")
+        self.assertEqual(source["sourceHealth"], "partial")
 
     def test_default_configuration_is_distinct_from_explicit_same_directory(self):
         config = self.root / ".claude"

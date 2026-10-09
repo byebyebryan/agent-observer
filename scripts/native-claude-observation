@@ -1,0 +1,268 @@
+#!/usr/bin/env python3
+"""Explicit isolated Claude state proof; native oracle imports no Observer code."""
+
+import fcntl
+import json
+import os
+import pty
+import queue
+import select
+import signal
+import struct
+import subprocess
+import termios
+import threading
+import time
+import uuid
+from pathlib import Path
+
+
+def main():
+    root = Path(os.environ["NATIVE_PROOF_ROOT"])
+    base = root / "native-snap"
+    assert os.getuid() == 0 and os.environ["NATIVE_PROOF_HOST"] == "snap"
+    assert all(json.loads((root / "ready.json").read_text()).values())
+    owned = json.loads((root / "runtime.json").read_text())
+    assert all(os.readlink("/proc/self/ns/" + k) == v for k, v in owned["namespaces"].items())
+    assert Path(os.environ["CLAUDE_CONFIG_DIR"]) == base / "claude"
+    os.chdir(base / "workspace")
+    settings = base / "claude/settings.json"
+    original = settings.read_bytes()
+    config = json.loads(original)
+    config.update(permissions={"ask": ["Bash", "Write"]}, disableAllHooks=False)
+    hook = str(Path(os.sys.executable)) + " " + str(root / "capture-native-lifecycle")
+    config["hooks"] = {event: [{"matcher": "AskUserQuestion" if event == "PreToolUse" else "",
+                               "hooks": [{"type": "command", "command": hook, "timeout": 2}]}]
+                       for event in ("PreToolUse", "SessionEnd", "Notification")}
+    settings.write_text(json.dumps(config))
+    sock = base / "runtime/claude-observation/read.sock"
+    service = subprocess.Popen(["agent-observer-service", "serve", "--host-scope", "snap",
+                                "--provider", "claude", "--socket", str(sock), "--native-hints",
+                                "--runtime-interval", "30", "--history-interval", "120"],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    clients, watcher = [], None
+    pushed, frames = {}, queue.Queue(maxsize=128)
+    receipt = {"ordinaryProviderActions": False, "terminalOutputPersisted": False,
+               "nativeOracleImportsObserver": False, "nativeHints": True, "samples": [], "gaps": 0}
+
+    def command(argv):
+        r = subprocess.run(argv, capture_output=True, timeout=20)
+        assert r.returncode == 0, "read_failed"
+        return json.loads(r.stdout)
+
+    def pause(seconds):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            for pid, fd in clients:
+                if select.select([fd], [], [], 0)[0]:
+                    try:
+                        data = os.read(fd, 65536)
+                        if b"\x1b[6n" in data:
+                            os.write(fd, b"\x1b[1;1R")
+                        if b"\x1b[c" in data:
+                            os.write(fd, b"\x1b[?1;2c")
+                    except OSError:
+                        pass
+            time.sleep(0.05)
+
+    def spawn(prompt, name):
+        sid = str(uuid.uuid4())
+        pid, fd = pty.fork()
+        if pid == 0:
+            os.execv("/opt/claude-code/bin/claude", ["claude", prompt, "--session-id", sid, "--name", name])
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+        os.set_blocking(fd, False)
+        clients.append((pid, fd))
+        return sid, fd
+
+    def native(sid):
+        for path in (base / "claude/sessions").glob("*.json"):
+            try:
+                r = json.loads(path.read_text())
+                if r.get("sessionId") != sid:
+                    continue
+                pid = r["pid"]
+                birth = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+                domain = "linux:" + Path("/etc/machine-id").read_text().strip() + ":" + os.readlink("/proc/self/ns/pid")
+                assert birth == r["procStart"] and domain == r["pidDomain"]
+                assert os.readlink(f"/proc/{pid}/exe") == "/opt/claude-code/bin/claude"
+                assert r["kind"] == "interactive" and r.get("jobId") is None
+                return r
+            except (OSError, ValueError):
+                pass
+        return None
+
+    def row(snapshot, sid):
+        return next((r for r in (snapshot or {}).get("sessions", []) if r["identity"]["nativeId"] == sid), None)
+
+    def drain():
+        nonlocal pushed
+        while True:
+            try:
+                frame = frames.get_nowait()
+            except queue.Empty:
+                break
+            receipt["gaps"] += frame.get("kind") == "gap"
+            if frame.get("snapshot") is not None:
+                pushed = frame["snapshot"]
+
+    def matches(r, phase, reason):
+        return r is not None and r["runtime"]["value"] == "running" and r["phase"]["value"] == phase and r["blockedReasons"] == ([reason] if reason else [])
+
+    def wait_phase(sid, phase, reason=None, timeout=75):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            pause(0.1)
+            n = native(sid)
+            wanted = {"working": {"busy", "shell"}, "waiting": {"idle"}, "blocked": {"waiting"}}[phase]
+            if not n or n.get("status") not in wanted:
+                continue
+            if reason and n.get("waitingFor") != {"question": "input needed", "approval": "permission prompt"}[reason]:
+                continue
+            direct = row(command(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude"]), sid)
+            cached = row(command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(sock)]).get("snapshot"), sid)
+            drain()
+            push = row(pushed, sid)
+            if all(matches(r, phase, reason) for r in (direct, cached, push)) and native(sid).get("status") in wanted:
+                record = {"nativeId": sid, "nativeStatus": n["status"], "runtime": "running", "phase": phase,
+                          "blockedReasons": [reason] if reason else [], "directCachedPushAgree": True,
+                          "activityAt": direct["activity"]["at"]}
+                receipt["samples"].append(record)
+                return direct
+        raise RuntimeError("phase_not_accepted_" + phase + "_" + str(reason))
+
+    try:
+        deadline = time.monotonic() + 15
+        while not sock.exists():
+            assert service.poll() is None and time.monotonic() < deadline
+            pause(0.1)
+        watcher = subprocess.Popen(["agent-observer", "service", "watch", "--host-scope", "snap", "--socket", str(sock)],
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        def reader():
+            for line in watcher.stdout:
+                try:
+                    frames.put_nowait(json.loads(line))
+                except (ValueError, queue.Full):
+                    receipt["readerError"] = True
+        threading.Thread(target=reader, daemon=True).start()
+        sid, fd = spawn("Reply only with OK.", "Observer private Claude state proof")
+        wait_phase(sid, "waiting")
+        os.write(fd, b"\x1b[200~Use AskUserQuestion to ask which colour I prefer with options Red and Blue. Wait for my answer.\x1b[201~\r")
+        wait_phase(sid, "working", timeout=30)
+        held = wait_phase(sid, "blocked", "question")
+        events = [json.loads(line) for line in (root / "lifecycle-events.jsonl").read_text().splitlines()]
+        assert any(e.get("askUserQuestion") and e["nativeId"] == sid for e in events)
+        pause(1)
+        repeated = wait_phase(sid, "blocked", "question")
+        assert held["activity"]["at"] == repeated["activity"]["at"]
+        receipt["heldQuestionPreservesAge"] = True
+        for _ in range(2):
+            os.write(fd, b"\x1b")
+            pause(1)
+        os.write(fd, b"\x03")
+        pause(2)
+        os.write(fd, b"/exit\r")
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            pause(0.1)
+            if not native(sid):
+                break
+        assert not native(sid), "native_exit_not_observed"
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            d = row(command(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude"]), sid)
+            c = row(command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(sock)]).get("snapshot"), sid)
+            drain()
+            p = row(pushed, sid)
+            if all(r and r["hasSavedHistory"] and r["runtime"]["value"] == "unknown" for r in (d, c, p)):
+                receipt["exitSavedRuntimeUnknown"] = True
+                break
+            pause(0.1)
+        assert receipt.get("exitSavedRuntimeUnknown"), "exit_uncertainty_not_delivered"
+        approval_sid, _ = spawn("Use Bash to write OK to approval-proof.txt.", "Observer private Claude approval proof")
+        held = wait_phase(approval_sid, "blocked", "approval")
+        pause(1)
+        repeated = wait_phase(approval_sid, "blocked", "approval")
+        assert held["activity"]["at"] == repeated["activity"]["at"]
+        assert not (base / "workspace/approval-proof.txt").exists()
+        receipt.update(heldApprovalPreservesAge=True, approvalAutomaticallyAnswered=False)
+        # This background context exists only to prove a terminal native job.
+        # No background launch/action route is added to the Observer.
+        bg_sid = str(uuid.uuid4())
+        launched = subprocess.run(["/opt/claude-code/bin/claude", "--bg", "--session-id", bg_sid,
+                                   "--name", "Observer private parked proof", "Reply only with OK."],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+        assert launched.returncode == 0, "private_background_launch_failed"
+        deadline = time.monotonic() + 75
+        job = None
+        while time.monotonic() < deadline:
+            pause(0.1)
+            for path in (base / "claude/jobs").glob("*/state.json"):
+                value = json.loads(path.read_text())
+                if value.get("sessionId") == bg_sid:
+                    job = value
+                    job_id = path.parent.name
+            if job and job.get("state") == "done" and job.get("tempo") == "idle":
+                break
+        assert job and job.get("state") == "done", "private_job_completion_unproved"
+        stopped = subprocess.run(["/opt/claude-code/bin/claude", "stop", job_id],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
+        assert stopped.returncode == 0
+        deadline = time.monotonic() + 35
+        while time.monotonic() < deadline:
+            pause(0.1)
+            job = json.loads((base / "claude/jobs" / job_id / "state.json").read_text())
+            counts = job.get("inFlight")
+            no_pending = counts is None or all(counts.get(k) == 0 for k in ("tasks", "queued", "drainableMonitors"))
+            registered = [json.loads(p.read_text()) for p in (base / "claude/sessions").glob("*.json")]
+            absent = not any(r.get("sessionId") == bg_sid for r in registered)
+            if not (job.get("state") in {"done", "stopped"} and job.get("tempo") == "idle"
+                    and (job.get("lastTerminalAt") or job.get("firstTerminalAt")) and no_pending and absent):
+                continue
+            d = row(command(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude"]), bg_sid)
+            c = row(command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(sock)]).get("snapshot"), bg_sid)
+            drain()
+            p = row(pushed, bg_sid)
+            if all(r and r["runtime"]["value"] == "parked" and r["phase"] is None and r["hasSavedHistory"] for r in (d, c, p)):
+                receipt["terminalJobParkedDirectCachedPush"] = True
+                break
+        assert receipt.get("terminalJobParkedDirectCachedPush"), "parked_not_delivered"
+        moved = base / "claude/sessions-held"
+        (base / "claude/sessions").rename(moved)
+        try:
+            deadline = time.monotonic() + 35
+            while time.monotonic() < deadline:
+                d = row(command(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude"]), approval_sid)
+                c = row(command(["agent-observer", "service", "snapshot", "--host-scope", "snap", "--socket", str(sock)]).get("snapshot"), approval_sid)
+                drain()
+                p = row(pushed, approval_sid)
+                if all(r and r["runtime"]["value"] == "unknown" and r["phase"]["value"] == "unknown" for r in (d, c, p)):
+                    receipt["sourceFaultPreservesUncertainty"] = True
+                    break
+                pause(0.1)
+            assert receipt.get("sourceFaultPreservesUncertainty"), "source_fault_not_delivered"
+        finally:
+            moved.rename(base / "claude/sessions")
+        wait_phase(approval_sid, "blocked", "approval", timeout=35)
+        receipt.update(sourceRecoveryAccepted=True, status="accepted")
+        assert not receipt.get("readerError")
+        print(json.dumps(receipt))
+    finally:
+        (root / "claude-observation-receipt.json").write_text(json.dumps(receipt) + "\n")
+        settings.write_bytes(original)
+        for pid, fd in clients:
+            try:
+                os.kill(pid, signal.SIGHUP)
+                os.waitpid(pid, 0)
+            except ProcessLookupError:
+                pass
+            os.close(fd)
+        for process in (watcher, service):
+            if process is not None:
+                if process.poll() is None:
+                    process.terminate()
+                process.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    main()

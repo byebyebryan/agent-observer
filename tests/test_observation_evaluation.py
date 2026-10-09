@@ -70,7 +70,7 @@ class ObservationEvaluationTest(unittest.TestCase):
         sources, sessions = [], []
         for provider, suffix, native_kind in (("codex", ".codex", "thread"), ("claude", ".claude", "session")):
             home = str(Path.home() / suffix)
-            selector = "explicit" if provider == "codex" or "CLAUDE_CONFIG_DIR" in os.environ else "default"
+            selector = "explicit"
             namespace = "sha256:" + evaluation.hashlib.sha256(json.dumps(
                 [provider, home, selector, os.getuid()], separators=(",", ":")
             ).encode()).hexdigest()
