@@ -45,6 +45,9 @@ class Source:
 
 class Hints:
     def __init__(self, configs, selector, scheduler, stop_process, *, factory=None, diagnostics=None):
+        if factory is None:
+            from .adapters import select_adapters
+            select_adapters(list(configs))
         self.configs, self.selector, self.scheduler = configs, selector, scheduler
         self.stop_process = stop_process
         self.factory = factory or self._spawn

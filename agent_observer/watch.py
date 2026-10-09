@@ -7,10 +7,11 @@ import time
 import uuid
 
 from .contract import (
-    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, SCHEMA_VERSION, canonical, identity_key,
+    SCHEMA_VERSION, canonical, identity_key,
     validate_snapshot, validate_watch,
 )
 from .read_client import listing
+from .observation_evidence import retain_missing
 
 MIN_INTERVAL = 1.0
 
@@ -26,51 +27,6 @@ def _semantic(snapshot):
             if row[name] and row[name]["clock"] == "sample":
                 row[name]["observedAt"] = None
     return canonical(value)
-
-
-def _retain_missing(previous, current):
-    """A partial/capped roster cannot remove prior rows or prove parked."""
-    present = {identity_key(row["identity"]) for row in current["sessions"]}
-    sources = {(source["provider"], source["namespace"]): source for source in current["sources"]}
-    used_bytes = len(canonical(current).encode())
-    evicted = False
-    for old in previous["sessions"]:
-        if identity_key(old["identity"]) in present:
-            continue
-        source = sources.get((old["identity"]["provider"], old["identity"]["namespace"]))
-        if source is None:
-            continue
-        if all(entry["status"] == "complete" for entry in source["coverage"].values()):
-            continue
-        retained = copy.deepcopy(old)
-        retained["blockedReasons"] = []
-        for name in ("phase", "runtime", "outcome"):
-            evidence = retained[name]
-            if evidence is None:
-                retained[name] = evidence = {"value": "unknown", "observedAt": None, "source": None, "health": "stale", "reason": "observation_gap", "clock": None}
-            if evidence["value"] != "unknown":
-                evidence["lastKnownValue"] = evidence["value"]
-            evidence.update(value="unknown", health="stale", reason="observation_gap")
-        if retained["activity"]["at"] is not None:
-            retained["activity"].update(
-                lastKnownAt=retained["activity"]["at"], at=None,
-                health="stale", reason="observation_gap",
-            )
-        retained["metadataIssues"] = [
-            issue for issue in retained["metadataIssues"] if issue != "retained_after_gap"
-        ][:127] + ["retained_after_gap"]
-        row_bytes = len(canonical(retained).encode()) + 1
-        if (
-            len(current["sessions"]) >= MAX_SESSIONS
-            or used_bytes + row_bytes > MAX_SNAPSHOT_BYTES - 512
-        ):
-            evicted = True
-            continue
-        current["sessions"].append(retained)
-        used_bytes += row_bytes
-    if evicted:
-        current["errors"] = [code for code in current["errors"] if code != "retention_limit"][:127] + ["retention_limit"]
-    return evicted
 
 
 class SampledWatch:
@@ -103,7 +59,7 @@ class SampledWatch:
         value = copy.deepcopy(validate_snapshot(snapshot))
         evicted = False
         if self.previous:
-            evicted = _retain_missing(self.previous, value)
+            evicted = retain_missing(self.previous, value)
         validate_snapshot(value)
         projected = listing(value, include_children=include_children, providers=providers, order=order)
         signature = _semantic(projected)

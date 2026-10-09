@@ -7,7 +7,7 @@ from test_service_contract import fixture
 
 from agent_observer.activity import codex_activity, codex_outcome
 from agent_observer.contract import ContractError, validate_snapshot
-from agent_observer.service_scheduler import Scheduler
+from agent_observer.observation_scheduler import Scheduler
 from agent_observer.service_state import ServiceState
 from agent_observer.workspace import context
 

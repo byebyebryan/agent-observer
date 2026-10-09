@@ -10,9 +10,9 @@ adapter. API 2/read wire 4/service protocol 2 stay unchanged.
 
 | Checkpoint | Work | Acceptance | Status |
 | --- | --- | --- | --- |
-| C0: boundary | Review/commit the ownership document and this bounded sequence | Repository/doc checks pass; ordinary deployment remains unchanged | In progress |
-| C1: adapter authority | One passive adapter dispatch path for collection and feed helpers; reject unsupported legacy diagnostic/helper routes | Unsupported selection fails before native I/O/helper launch; read imports/actions/alerts/terminal boundaries enforced | Pending |
-| C2: reusable engine | Extract sample reconciliation, retention, expiry and refresh planning; service owns envelopes/runtime; direct watch reuses shared evidence rules | Fake-clock partial/outage/incarnation/order/hint tests and existing wire/transport checks pass | Pending |
+| C0: boundary | Review/commit the ownership document and this bounded sequence | Repository/doc checks pass; ordinary deployment remains unchanged | Complete: a18258e |
+| C1: adapter authority | One passive adapter dispatch path for collection and feed helpers; reject unsupported legacy diagnostic/helper routes | Unsupported selection fails before native I/O/helper launch; read imports/actions/alerts/terminal boundaries enforced | Complete: 05b6a41 |
+| C2: reusable engine | Extract sample reconciliation, retention, expiry and refresh planning; service owns envelopes/runtime; direct watch reuses shared evidence rules | Fake-clock partial/outage/incarnation/order/hint tests and existing wire/transport checks pass | Source accepted; candidate/native follows |
 | C3: candidate/native | Freeze a successor wheel; separately install on both hosts; independently compare installed direct/cached/pushed discovery and monitoring | Exact identity/state/age/coverage agree; isolated state/recovery proofs pass; ordinary providers are preserved | Pending |
 | C4: operations | Review/render scoped managed read/service selection; restart/crash/reconnect/rollback/reselection; sustained normal-service reads/resource checks | Both hosts select the accepted Codex read/service tuple; recovery works; provider configuration/incarnations and separate writer/frontend selections are preserved | Pending |
 | C5: closeout | Review docs/artifact/evidence; commit source, acceptance and operational checkpoints | Clear installed/selected/native status, bounded limitations and a clean intended patch; no push requested | Pending |
@@ -62,3 +62,13 @@ prompt, response, tool payload, credentials or terminal capture is retained.
   collects Codex/Claude; Starship collects Codex. Both user services are active.
 - Source tree starts with only the preceding ownership documentation changes.
   All 367 tests pass (one skipped), with 87 Markdown documents checked.
+- C0 committed the ownership/sequence with 367 tests passing and 88 documents
+  checked. C1 consolidates live Codex dispatch, rejects unsupported private
+  helpers before I/O and removes the old history-census option; 373 tests pass.
+- C2 extracts `ObservationEngine`, `observation_scheduler` and shared evidence
+  invalidation/retention into core. The service supplies host clocks and stream
+  envelopes; direct watch shares conservative retention. Core tests use injected
+  clocks/host identity with no OS/transport/native imports. All 378 tests pass
+  (one skipped), including existing expiry, source order, incarnation, gap,
+  history/runtime lease and native-hint controlled regressions. The successor
+  package is a5; installed/native and normal rollout remain separate gates.

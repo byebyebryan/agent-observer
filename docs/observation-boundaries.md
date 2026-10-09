@@ -2,8 +2,10 @@
 
 Date: 2026-10-08. This captures the user's clarified ownership direction after
 the [a4 Codex acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md).
-The source audit below is read-only. Internal extraction and enforcement are
-the next implementation pass; this document does not accept new API fields,
+The source audit below records the pre-extraction baseline. The
+[completion loop](codex-observation-completion-plan.md) now accepts the source
+extraction/enforcement; candidate/native and operational gates follow. This
+document does not accept new API fields,
 event guarantees, adapters or deployments. [API 2](api-v2.md), read wire 4 and
 service protocol 2 remain the accepted prerelease read contracts.
 
@@ -165,6 +167,14 @@ does not import the separate writer or notification client. Remaining source
 seams do not authorize adding those features to core.
 
 ## Focused execution and acceptance
+
+Source implementation now uses `ObservationEngine`, `observation_scheduler`
+and `observation_evidence`; service state is the host/envelope wrapper. One
+passive adapter dispatch serves direct collection and owned helpers. Unsupported
+private routes are rejected, and the history-census diagnostic option is removed.
+Dependency tests enforce the read/action/alert boundary and core's independence
+from host I/O/service/native implementations. The steps below retain the
+acceptance sequence, including the pending installed/native and rollout gates.
 
 1. Lock this ownership specification and add meaningful dependency/authority
    checks. Exercise transitive imports, rejection before unsupported provider

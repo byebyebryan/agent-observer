@@ -16,7 +16,7 @@ from agent_observer import _service_worker
 from agent_observer.contract import canonical, parse_snapshot
 from agent_observer.service_cli import serve
 from agent_observer.service_runtime import Runtime
-from agent_observer.service_scheduler import Job
+from agent_observer.observation_scheduler import Job
 from agent_observer.service_state import ServiceState
 from agent_observer.workspace import MAX_CONFIG_BYTES, enrich, load_config
 

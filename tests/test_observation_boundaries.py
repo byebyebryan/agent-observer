@@ -13,6 +13,7 @@ from unittest.mock import patch
 from agent_observer import _hint_worker, _service_worker, cli, collection
 from agent_observer.adapters import adapter_for, select_adapters
 from agent_observer.service_runtime import Runtime
+from agent_observer.service_hints import Hints
 from agent_observer.service_state import ServiceState
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -50,13 +51,28 @@ class ObservationBoundaryTest(unittest.TestCase):
         forbidden = {"write_client", "write_contract", "codex_exact",
                      "notification_client", "notification_source"}
         for root in ("public", "service_public", "cli", "service_runtime",
-                     "_service_worker", "_hint_worker"):
+                     "_service_worker", "_hint_worker", "observation_engine",
+                     "observation_scheduler", "observation_evidence"):
             with self.subTest(root=root):
                 self.assertFalse(dependencies(root) & forbidden)
         pure_forbidden = {"adapters", "collection", "codex_snapshot", "codex_hints",
                           "service_runtime", "_service_worker", "_hint_worker"}
         for root in ("public", "service_public"):
             self.assertFalse(dependencies(root) & pure_forbidden)
+
+    def test_core_engine_has_no_host_transport_or_adapter_imports(self):
+        forbidden = {"adapters", "codex_snapshot", "codex_hints", "service_contract",
+                     "service_state", "service_runtime", "service_hints"}
+        for root in ("observation_engine", "observation_evidence", "observation_scheduler"):
+            self.assertFalse(dependencies(root) & forbidden)
+            for node in ast.walk(ast.parse((PACKAGE / (root + ".py")).read_text())):
+                if isinstance(node, ast.Import):
+                    names = {a.name.split(".")[0] for a in node.names}
+                elif isinstance(node, ast.ImportFrom) and not node.level:
+                    names = {node.module.split(".")[0]}
+                else:
+                    continue
+                self.assertFalse(names & {"os", "socket", "subprocess", "time", "uuid", "pathlib"})
 
     def test_mixed_selection_rejects_before_collecting_any_provider(self):
         with patch("agent_observer.adapters.CodexAdapter.collect") as collect:
@@ -100,6 +116,12 @@ class ObservationBoundaryTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
                 Runtime(state, "/fixture/never-created.sock")
             selector.assert_not_called()
+
+    def test_feed_host_rejects_unsupported_before_starting_helper(self):
+        with patch("agent_observer.service_hints.subprocess.Popen") as launch:
+            with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
+                Hints({"claude": ("/fixture/claude", "explicit")}, None, None, None)
+            launch.assert_not_called()
 
     def test_removed_history_diagnostic_never_collects(self):
         with patch.object(collection, "collect") as collect, contextlib.redirect_stderr(io.StringIO()):
