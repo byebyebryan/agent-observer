@@ -28,7 +28,7 @@ def interface():
     }
 
 
-def human_view(frame, current_rows, *, reconstruct):
+def human_view(frame, current_rows, *, reconstruct, now_ms=None):
     """Display current selection and explicit delivery/coverage qualifications."""
     mesh = frame["mesh"]
     if mesh["kind"] in {"gap", "error"}:
@@ -39,6 +39,10 @@ def human_view(frame, current_rows, *, reconstruct):
     snapshots, qualifiers = [], []
     for host in mesh["hosts"]:
         qualifiers.append(f"{host['hostId']}: delivery={host['delivery']['status']} view={host['viewState']}")
+        if now_ms is not None:
+            expired = sum(r["health"] in {"current", "partial"} and r["expiresAtMs"] <= now_ms for r in host["receipts"])
+            if expired:
+                qualifiers.append(f"  expired receipts={expired}; current selection is reduced")
         if host["owner"] is None:
             continue
         snapshot = reconstruct(frame, host)["snapshot"]
@@ -50,6 +54,29 @@ def human_view(frame, current_rows, *, reconstruct):
         snapshot["sessions"] = [row for row in snapshot["sessions"] if identity_key(row["identity"]) in current]
         snapshots.append(snapshot)
     return "\n".join([f"Mesh {mesh['status']} ({mesh['kind']}); cached state", *qualifiers]), snapshots
+
+
+async def ticked(stream):
+    """Wake human rendering while preserving the pending SDK read task."""
+    pending = None
+    try:
+        while True:
+            if pending is None:
+                pending = asyncio.create_task(anext(stream))
+            done, _ = await asyncio.wait({pending}, timeout=1)
+            if not done:
+                yield None
+                continue
+            try:
+                frame = pending.result()
+            except StopAsyncIteration:
+                return
+            pending = None
+            yield frame
+    finally:
+        if pending is not None:
+            pending.cancel()
+            await asyncio.gather(pending, return_exceptions=True)
 
 
 async def run(args, *, output=None, human_output=None):
@@ -77,25 +104,37 @@ async def run(args, *, output=None, human_output=None):
                "selection": {"mode": args.scope, "hostIds": args.hosts}, "extensions": {}}
     guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None)
     stream = reader.execute(request)
+    events = ticked(stream) if args.human and operation == "watch" else stream
     count, result = 0, 0
+    render_at = 0
     try:
-        async for frame in stream:
-            if operation == "watch" or "mesh" not in frame:
+        async for frame in events:
+            if frame is None:
+                if boottime_ms() < render_at:
+                    continue
+            elif operation == "watch" or "mesh" not in frame:
                 guard.accept(frame)
             else:
                 validate_response(frame)
                 check(frame["protocol"] == request["profile"] and frame["mesh"]["requestId"] == request_id
                       and frame["mesh"]["operation"] == "snapshot", "read_request_binding")
                 check(args.scope != "hosts" or frame["mesh"]["scope"]["hostIds"] == args.hosts, "read_scope_binding")
-            if "mesh" not in frame:
+            if frame is not None and "mesh" not in frame:
                 if args.human:
                     human_output("Mesh error: " + frame["error"]["code"])
                 else:
                     output(frame)
                 return 1
             if args.human:
-                rows = guard.current(boottime_ms(), clock_domain()) if operation == "watch" else current_sessions(frame, boottime_ms(), clock_domain())
-                view = human_view(frame, rows, reconstruct=reconstructed)
+                now = boottime_ms()
+                if frame is None:
+                    if guard.view is None:
+                        continue
+                    display = guard.view
+                else:
+                    display = guard.view if frame["mesh"]["kind"] == "heartbeat" and guard.view is not None else frame
+                rows = guard.current(now, clock_domain()) if operation == "watch" else current_sessions(frame, now, clock_domain())
+                view = human_view(display, rows, reconstruct=reconstructed, now_ms=now)
                 if isinstance(view, str):
                     human_output(view)
                 else:
@@ -103,15 +142,24 @@ async def run(args, *, output=None, human_output=None):
                     human_output(qualification + "\n" + human_snapshots(
                         snapshots, now_ms=int(time.time() * 1000), include_children=args.include_children,
                         providers=args.provider, order=args.order))
+                deadlines = [r["expiresAtMs"] for h in display["mesh"].get("hosts", []) for r in h["receipts"]
+                             if r["health"] in {"current", "partial"} and r["expiresAtMs"] > now]
+                render_at = min(now + 5000, min(deadlines, default=now + 5000))
             else:
                 output(frame)
+            if frame is None:
+                continue
             result = 1 if frame["mesh"].get("status") == "unavailable" or frame["mesh"]["kind"] == "error" else 0
             count += 1
             if args.count is not None and count >= args.count:
                 break
     finally:
         guard.disconnect()
+        if events is not stream:
+            await events.aclose()
         await stream.aclose()
+        if args.human and operation == "watch" and sys.exc_info()[0] in {None, KeyboardInterrupt}:
+            human_output("Mesh watch ended; current view revoked")
     return result
 
 

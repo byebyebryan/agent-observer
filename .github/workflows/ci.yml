@@ -11,3 +11,12 @@ jobs:
       - run: python -m pip install '.[dev]'
       - run: ./scripts/check
       - run: ruff check scripts/candidate-artifact tests/test_candidate_artifact.py
+  mesh-reader:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a4/mesh_plus-0.1.0a4-py3-none-any.whl#sha256=55a8ef018e0bab994ce3dd2106552a69fdcb5a397ed607cd9cab92afb51659dd'
+      - run: ./scripts/check
