@@ -1,5 +1,11 @@
 # Agent Observer roadmap
 
+The [state-only Mesh integration](mesh-integration-plan.md) is the current
+execution track: compatible adapter SDK fixes, optional a12 read CLI, immutable
+package/native comparison, then separately gated client/bridge selection.
+The [CLI guide](mesh-read-client.md) describes raw and human read modes.
+Core/local service, provider policy and downstream UI development stay separate.
+
 Date: 2026-10-09. This document records status and delivery dependencies.
 The [architecture](architecture.md),
 [migration plan](native-runtime-migration-plan.md),
