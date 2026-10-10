@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Pure cached-data CPU study; counterfactual is not a producer repair/proof."""
+
+import argparse
+import cProfile
+import hashlib
+import json
+import subprocess
+import time
+from pathlib import Path
+
+from agent_observer.service_public import validate_frame
+from agent_observer.service_state import ServiceState
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host", required=True)
+    parser.add_argument("--cli", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    result = subprocess.run([str(args.cli), "service", "snapshot", "--host-scope", args.host],
+                            capture_output=True, check=True, timeout=30)
+    frame = validate_frame(json.loads(result.stdout))
+    snapshot = frame["snapshot"]
+    assert snapshot is not None
+    now = frame["emittedBoottimeMs"]
+    state = ServiceState(host_scope=args.host, uid=frame["uid"],
+                         configs={s["provider"]: (s["configHome"], s["configHomeKind"]) for s in frame["sources"]},
+                         clock=lambda: now, boot_id=frame["bootId"], clock_domain=frame["clockDomain"])
+    for provider in state.configs:
+        value = {**snapshot,
+                 "sources": [s for s in snapshot["sources"] if s["provider"] == provider],
+                 "sessions": [r for r in snapshot["sessions"] if r["identity"]["provider"] == provider]}
+        for component in ("runtime", "history"):
+            state.attempt(provider, component)
+            state.accept(provider, component, value, sampled_ms=now, ttl_ms=1800000)
+
+    def exercise(rounds):
+        started = time.process_time()
+        for _ in range(rounds):
+            state.expire(now)
+        return time.process_time() - started
+
+    rounds = 200
+    original = exercise(rounds)
+    profile = cProfile.Profile()
+    profile.enable()
+    exercise(50)
+    profile.disable()
+    scan = state._retire_runtime_only
+    state._retire_runtime_only = lambda now: False
+    try:
+        without_scan = exercise(rounds)
+    finally:
+        state._retire_runtime_only = scan
+    hotspots = []
+    for entry in sorted(profile.getstats(), key=lambda e: e.inlinetime, reverse=True)[:12]:
+        name = entry.code if isinstance(entry.code, str) else entry.code.co_name
+        hotspots.append({"function": name[:128], "calls": entry.callcount,
+                         "ownCpuSeconds": round(entry.inlinetime, 6)})
+    source = Path(__import__("agent_observer.observation_engine", fromlist=["__file__"]).__file__)
+    args.output.write_text(json.dumps({
+        "status": "controlled_cached_data_cost", "host": args.host,
+        "rows": len(snapshot["sessions"]), "savedRows": sum(r["hasSavedHistory"] for r in snapshot["sessions"]),
+        "retentionDeadlines": sum(len(r.deadlines) for r in state.retention.values()),
+        "rounds": rounds, "expiryCpuSeconds": round(original, 6),
+        "counterfactualNoScanCpuSeconds": round(without_scan, 6),
+        "hotspots": hotspots, "engineSha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "rawPayloadsRetained": False, "nativeCalls": False, "liveServicesChanged": False,
+        "limits": ["fixed cached data and fixed clock", "counterfactual does not establish repair correctness",
+                   "profile timing overhead separate from unprofiled comparison"],
+    }, indent=2) + "\n")
+    print(json.dumps({"rows": len(snapshot["sessions"]), "expiryCpuSeconds": original,
+                      "counterfactualNoScanCpuSeconds": without_scan}))
+
+
+if __name__ == "__main__":
+    main()

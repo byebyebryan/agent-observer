@@ -1,0 +1,35 @@
+{
+  "status": "accepted",
+  "managedCanonicalRepository": "/home/bryan/.local/share/chezmoi",
+  "reader": "0.5.0a13",
+  "collector": "0.5.0a11",
+  "writer": "0.2.0a16",
+  "bridge": "0.1.0a4",
+  "bridgeObserverPrefix": "0.5.0a12-e292e689a1dd1b32",
+  "appliedTargets": [
+    ".local/bin/agent-observer"
+  ],
+  "excludeScripts": true,
+  "refreshExternals": "never",
+  "daemonReloads": 0,
+  "publisherRestarts": 0,
+  "providerActions": 0,
+  "sourceAuthorityAndProviderHashesUnchanged": true,
+  "readerOnlyRollbackAndReselectBothHosts": true,
+  "meshRootFdsAfterCleanup": {
+    "snap": 8,
+    "starship": 8
+  },
+  "remoteSSHWorkerCleanupIndependentlyProved": false,
+  "operatorSha256": "063e1ad99e4901ba726d1905071f08d0caae526a936dd4fdb3fd5b24692476f6",
+  "intermediateRollbackRejection": "strict template lookup rejected absent bridgeSelection; corrected with index lookup before accepted repeat",
+  "CI": {
+    "acceptedRunId": 38026176511,
+    "revision": "08ca4af647af902be9882c66f6fc19f52c24b038",
+    "jobs": [
+      "check",
+      "mesh-reader"
+    ],
+    "result": "success"
+  }
+}

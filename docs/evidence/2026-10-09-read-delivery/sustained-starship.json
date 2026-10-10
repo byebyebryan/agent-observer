@@ -1,0 +1,351 @@
+{
+  "status": "measured",
+  "windows": [
+    {
+      "workload": "baseline",
+      "host": "starship",
+      "addedReaders": 0,
+      "scope": null,
+      "warmupSeconds": 30,
+      "durationSeconds": 600.938,
+      "samples": 600,
+      "startupThroughWarmupSeconds": 30.002,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 220.72,
+          "percentOneCore": 36.729,
+          "mean": {
+            "rssBytes": 54969788,
+            "pssBytes": 31019274,
+            "fds": 12,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 78848000,
+            "pssBytes": 43850752,
+            "fds": 20,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 54403072,
+            "pssBytes": 30746624,
+            "fds": 12,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 0.0,
+          "percentOneCore": 0.0,
+          "mean": {
+            "rssBytes": 39882752,
+            "pssBytes": 27272334,
+            "fds": 8,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 39882752,
+            "pssBytes": 27424768,
+            "fds": 8,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 39882752,
+            "pssBytes": 27285504,
+            "fds": 8,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    },
+    {
+      "workload": "local-one",
+      "host": "starship",
+      "addedReaders": 1,
+      "scope": "local",
+      "warmupSeconds": 30,
+      "durationSeconds": 600.288,
+      "samples": 599,
+      "startupThroughWarmupSeconds": 30.002,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 240.01,
+          "percentOneCore": 39.982,
+          "mean": {
+            "rssBytes": 55046500,
+            "pssBytes": 31120572,
+            "fds": 13,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 78184448,
+            "pssBytes": 43213824,
+            "fds": 21,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 54276096,
+            "pssBytes": 30664704,
+            "fds": 13,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 25.66,
+          "percentOneCore": 4.275,
+          "mean": {
+            "rssBytes": 40223452,
+            "pssBytes": 27359133,
+            "fds": 10,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 41488384,
+            "pssBytes": 28637184,
+            "fds": 11,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 39964672,
+            "pssBytes": 27111424,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        },
+        "reader1": {
+          "cpuSeconds": 27.91,
+          "percentOneCore": 4.649,
+          "mean": {
+            "rssBytes": 39835549,
+            "pssBytes": 27165055,
+            "fds": 7,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 63205376,
+            "pssBytes": 39094272,
+            "fds": 13,
+            "processes": 2
+          },
+          "end": {
+            "rssBytes": 40411136,
+            "pssBytes": 27836416,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    },
+    {
+      "workload": "fleet-one",
+      "host": "starship",
+      "addedReaders": 1,
+      "scope": "fleet",
+      "warmupSeconds": 30,
+      "durationSeconds": 600.483,
+      "samples": 599,
+      "startupThroughWarmupSeconds": 30.003,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 254.36,
+          "percentOneCore": 42.359,
+          "mean": {
+            "rssBytes": 54977709,
+            "pssBytes": 31025113,
+            "fds": 14,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 78811136,
+            "pssBytes": 43756544,
+            "fds": 22,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 54272000,
+            "pssBytes": 30556160,
+            "fds": 13,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 26.28,
+          "percentOneCore": 4.376,
+          "mean": {
+            "rssBytes": 40212395,
+            "pssBytes": 27188265,
+            "fds": 10,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 41132032,
+            "pssBytes": 28132352,
+            "fds": 11,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 39964672,
+            "pssBytes": 27020288,
+            "fds": 11,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        },
+        "reader1": {
+          "cpuSeconds": 75.45,
+          "percentOneCore": 12.565,
+          "mean": {
+            "rssBytes": 54651082,
+            "pssBytes": 32824963,
+            "fds": 18,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 77643776,
+            "pssBytes": 45105152,
+            "fds": 24,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 55476224,
+            "pssBytes": 33771520,
+            "fds": 18,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    },
+    {
+      "workload": "fleet-two",
+      "host": "starship",
+      "addedReaders": 2,
+      "scope": "fleet",
+      "warmupSeconds": 30,
+      "durationSeconds": 600.081,
+      "samples": 598,
+      "startupThroughWarmupSeconds": 30.004,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 270.44,
+          "percentOneCore": 45.067,
+          "mean": {
+            "rssBytes": 55100159,
+            "pssBytes": 31081883,
+            "fds": 17,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 78852096,
+            "pssBytes": 43787264,
+            "fds": 26,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 54403072,
+            "pssBytes": 30683136,
+            "fds": 16,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 56.05,
+          "percentOneCore": 9.34,
+          "mean": {
+            "rssBytes": 46139413,
+            "pssBytes": 32983086,
+            "fds": 12,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 48562176,
+            "pssBytes": 35393536,
+            "fds": 16,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 46231552,
+            "pssBytes": 33069056,
+            "fds": 12,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        },
+        "reader1": {
+          "cpuSeconds": 74.56,
+          "percentOneCore": 12.425,
+          "mean": {
+            "rssBytes": 54299008,
+            "pssBytes": 32365910,
+            "fds": 18,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 76865536,
+            "pssBytes": 44042240,
+            "fds": 24,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 54759424,
+            "pssBytes": 32809984,
+            "fds": 18,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "reader2": {
+          "cpuSeconds": 74.2,
+          "percentOneCore": 12.365,
+          "mean": {
+            "rssBytes": 55239389,
+            "pssBytes": 33442477,
+            "fds": 18,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 79654912,
+            "pssBytes": 45543424,
+            "fds": 24,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 55521280,
+            "pssBytes": 33549312,
+            "fds": 18,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    }
+  ],
+  "limits": [
+    "ordinary active hosts",
+    "one-second tree sampling",
+    "remote SSH server/bridge excluded",
+    "concurrent host workloads"
+  ]
+}

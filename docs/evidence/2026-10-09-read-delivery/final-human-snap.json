@@ -1,0 +1,30 @@
+{
+  "host": "snap",
+  "cliVersion": "0.5.0a13",
+  "readOnly": true,
+  "windowSecondsEach": 12,
+  "checks": [
+    {
+      "mode": "local",
+      "exitCode": 130,
+      "renders": 4,
+      "ageRows": 264,
+      "revokedAtEnd": true,
+      "stderrEmpty": true,
+      "ownedProcessGone": true,
+      "outputBytes": 24301,
+      "rawOutputRetained": false
+    },
+    {
+      "mode": "fleet",
+      "exitCode": 130,
+      "renders": 8,
+      "ageRows": 1038,
+      "revokedAtEnd": true,
+      "stderrEmpty": true,
+      "ownedProcessGone": true,
+      "outputBytes": 95361,
+      "rawOutputRetained": false
+    }
+  ]
+}
