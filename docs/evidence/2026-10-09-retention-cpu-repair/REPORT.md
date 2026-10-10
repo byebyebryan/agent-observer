@@ -2,9 +2,8 @@
 
 The [execution gates](../../collector-cost-follow-up.md) repair the
 [profiled a11 hotspot](../2026-10-09-collector-cpu/REPORT.md), preserving API 2,
-snapshot/watch 4, Service 2 and native observation semantics. C0–C2 source gates
-are accepted. Immutable artifact, independent native, sustained candidate cost
-and scoped collector selection remain pending at this source checkpoint.
+snapshot/watch 4, Service 2 and native observation semantics. C0–C3 source, immutable artifact and native gates are accepted. Sustained
+candidate cost and scoped collector selection remain pending at this checkpoint.
 
 ## Source behavior and review
 
@@ -61,3 +60,65 @@ reference method from the test file and emits bounded counters/hashes. The
 component rosters are replicas of merged cached data, not private live receipts.
 CPU, allocations and cProfile are separate runs. Installed and native gates must
 establish actual package behavior and sustained savings before selection.
+
+## Immutable installed/native acceptance
+
+[a14](../../../artifacts/observer-0.5.0a14.json) freezes source commit
+`d567306e0f0113f3c72aa295f7d3ded8c77b8adf`, wheel SHA-256
+`16a223f224addc5bf92174be385372e85eb864ba3670d07e7941e7c3485caddf`.
+Both hosts install into the new prefix
+`~/.local/share/agent-observer/0.5.0a14-16a223f224addc5b`. The passive verifier
+accepts exact installed bytes, entrypoints, SDK profile and unchanged contracts.
+Snap retains Python 3.12.8 with source-only Claude SDK 0.2.163; Starship uses
+Python 3.14.7/core. Existing immutable prefixes are untouched.
+
+[Installed validation](installed-validation.json) runs an affected 86-test
+subset from a copied harness outside the checkout, using `-I -B` and installed
+imports only. Snap passes all; Starship skips one independent JSON Schema test
+because that dependency is absent from the core profile. The source optional
+Mesh environment passes all 429 tests, including that schema test. No native
+provider executable is bundled with the SDK.
+
+The matched studies use each candidate's exact collector interpreter and cached
+host roster: [Snap](installed-cost-snap.json), 128 saved rows, costs 0.000397
+versus 7.739 CPU seconds for 200 expiries; [Starship](installed-cost-starship.json),
+354 saved rows, costs 0.000089 versus 5.099 seconds. Both optimized profiles
+perform zero identity validations on quiet ticks. This is isolated engine cost,
+not sustained live-service CPU.
+
+Independent native brackets compare installed direct reads
+([Snap](native-direct-snap.json), [Starship](native-direct-starship.json)),
+candidate cached pull ([Snap](native-cached-snap.json),
+[Starship](native-cached-starship.json)) and initial complete pushed views
+([Snap](native-push-snap.json), [Starship](native-push-starship.json)).
+The candidate runs beside a11 on explicit private sockets, with the ordinary
+30/120-second Snap and 20/60-second Starship cadences and native hints. Snap has
+91 Codex and 37 Claude rows, including three active sessions each; Starship has
+354 Codex rows, including six active sessions. All active membership, runtime
+and phase match. Codex has zero comparison issues across these probes.
+
+Push probes translate only `service snapshot` to the installed
+`service watch --count 1 --include-children`, preserving the complete inventory;
+all other CLI operations execute unchanged. The first probe omitted child rows
+because human watch filters children by default; that probe was rejected and
+is not acceptance evidence. Final reports bind the corrected proxy hash.
+They prove initial delivery, not ongoing native transition completeness.
+
+The comparison reports retain unresolved metadata explicitly: setup-only Claude
+UUID `e0cba9dd-b642-4730-af4b-beb3b7e9c16c` has unavailable cwd/kind/age,
+already documented in the accepted baseline. Direct a11/a14 reads both return
+that same missing metadata. Cached/pushed Claude conversation clocks sometimes
+lag a newer native bracket by the independent sample cadence; direct reads
+match. No poll or liveness clock is substituted for conversation activity.
+These are existing sampling/metadata bounds, not changes introduced by the repair.
+
+The [isolated installed retention proof](native-retention-snap.json) masks
+ordinary provider homes before launching disposable Claude sessions. Normal
+exit and forced kill of unsaved sessions produce stale/unknown retained rows
+with unchanged original evidence clocks, then finite omission in direct,
+cached, pushed and sampled-watch views. Exact UUID reappearance restores the
+same logical reference with a new authenticated process. Native registration
+source fault/recovery stays unknown then recovers running. Saved history,
+Resume and conversation age remain protected. The proof records 196 Service 2
+and 150 direct-watch frames. Namespace teardown removes borrowed credentials
+and private history; ordinary provider settings and sessions are unchanged.
