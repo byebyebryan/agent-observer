@@ -6,14 +6,26 @@ without added readers used about 55% of one core on Snap and 37% on Starship.
 These are ordinary active hosts, not idle benchmarks. Collection helpers are
 included; provider daemon and remote SSH server costs are excluded.
 
-An isolated cached-data study identifies a strong candidate cause:
-`ObservationEngine.expire()` invokes runtime-only retention reconciliation on
-every service loop, roughly every 50 ms. The reconciliation repeatedly validates
-and canonicalizes all saved identities even when no retirement deadline exists.
-With the actual cached rosters, 200 calls consumed 3.53 CPU seconds for Snap's
-129 rows and 5.08 seconds for Starship's 354 rows. Skipping the scan in the
-isolated fixed-clock study reduced this to less than 0.001 seconds. The study
-does not establish repair correctness or exclusive attribution of live CPU.
+The [live profiling pass](evidence/2026-10-09-collector-cpu/REPORT.md) confirms the
+main cause: `ObservationEngine.expire()` invokes runtime-only retention
+reconciliation on every service loop. It rebuilds and repeatedly validates saved
+identities even when no retirement deadline exists. The selector's 50 ms timeout
+is a maximum idle wait, not a fixed iteration rate. The a11 retention change
+`4f99e0d` introduced this path.
+
+Consistent stack samples place about 95%/97% of captured Python execution inside
+retention on Snap/Starship. Root/helper CPU is measured separately: Snap used
+47–51% of one core in the collector and 10–12% in owned helpers; Starship used
+36–38% and about 1%. A final unprofiled minute confirms the persistent cost.
+
+Fresh cached studies use each collector's exact a11 package and interpreter
+(Snap Python 3.12.8, Starship Python 3.14.7). With 128/354 saved rows and no
+retirement deadlines, expiry still performs 768/2,124 identity validations per
+call. The fixed-clock full scan costs 56.8/37.4 ms per call; direct trusted keys
+in the isolated replica cost 0.69/0.88 ms. Skipping the scan costs less than
+0.001 CPU seconds for 200 calls. The earlier Snap study used a different
+interpreter. These counterfactuals establish avoidable work, not production
+repair correctness or an exact live CPU floor.
 
 This is a producer checkpoint, separate from the a13 reader selection. The
 read-delivery pass changes no collector, cadence, provider settings or retention

@@ -1,0 +1,190 @@
+{
+  "status": "controlled_cached_data_cost",
+  "host": "snap",
+  "rows": 128,
+  "savedRows": 128,
+  "retentionDeadlines": 0,
+  "pythonVersion": "3.12.8",
+  "installedPrefix": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676",
+  "rounds": 200,
+  "profileRounds": 50,
+  "identityValidationsPerExpiry": 768.0,
+  "expiryCpuSeconds": 11.368428,
+  "expiryMillisecondsPerCall": 56.842139,
+  "counterfactualTrustedIdentityCpuSeconds": 0.138809,
+  "counterfactualTrustedIdentityMillisecondsPerCall": 0.694047,
+  "counterfactualNoScanCpuSeconds": 0.000274,
+  "hotspots": [
+    {
+      "function": "<genexpr>",
+      "calls": 4899000,
+      "ownCpuSeconds": 1.679451
+    },
+    {
+      "function": "<method 'startswith' of 'str' objects>",
+      "calls": 4707000,
+      "ownCpuSeconds": 1.122311
+    },
+    {
+      "function": "validate_shape",
+      "calls": 230400,
+      "ownCpuSeconds": 0.947949
+    },
+    {
+      "function": "<built-in method builtins.any>",
+      "calls": 422400,
+      "ownCpuSeconds": 0.57961
+    },
+    {
+      "function": "<built-in method unicodedata.category>",
+      "calls": 4707000,
+      "ownCpuSeconds": 0.555919
+    },
+    {
+      "function": "<built-in method builtins.isinstance>",
+      "calls": 1344000,
+      "ownCpuSeconds": 0.201332
+    },
+    {
+      "function": "_matches_type",
+      "calls": 153600,
+      "ownCpuSeconds": 0.189878
+    },
+    {
+      "function": "<method 'get' of 'dict' objects>",
+      "calls": 652900,
+      "ownCpuSeconds": 0.143638
+    },
+    {
+      "function": "<genexpr>",
+      "calls": 307200,
+      "ownCpuSeconds": 0.083568
+    },
+    {
+      "function": "_compile",
+      "calls": 115200,
+      "ownCpuSeconds": 0.083405
+    },
+    {
+      "function": "<method 'fullmatch' of 're.Pattern' objects>",
+      "calls": 115200,
+      "ownCpuSeconds": 0.082065
+    },
+    {
+      "function": "identity_key",
+      "calls": 38400,
+      "ownCpuSeconds": 0.073321
+    }
+  ],
+  "inclusiveHotspots": [
+    {
+      "function": "main.<locals>.exercise",
+      "file": "exact_retention_study.py",
+      "line": 43,
+      "calls": 1,
+      "ownCpuSeconds": 7.1e-05,
+      "inclusiveCpuSeconds": 6.003893
+    },
+    {
+      "function": "ObservationEngine.expire",
+      "file": "observation_engine.py",
+      "line": 136,
+      "calls": 50,
+      "ownCpuSeconds": 0.000553,
+      "inclusiveCpuSeconds": 6.003817
+    },
+    {
+      "function": "ObservationEngine._retire_runtime_only",
+      "file": "observation_engine.py",
+      "line": 150,
+      "calls": 50,
+      "ownCpuSeconds": 0.02228,
+      "inclusiveCpuSeconds": 6.003164
+    },
+    {
+      "function": "identity_key",
+      "file": "contract.py",
+      "line": 276,
+      "calls": 38400,
+      "ownCpuSeconds": 0.073321,
+      "inclusiveCpuSeconds": 5.977346
+    },
+    {
+      "function": "validate_shape",
+      "file": "contract.py",
+      "line": 230,
+      "calls": 230400,
+      "ownCpuSeconds": 0.947949,
+      "inclusiveCpuSeconds": 5.873268
+    },
+    {
+      "function": "<built-in method builtins.any>",
+      "file": null,
+      "line": null,
+      "calls": 422400,
+      "ownCpuSeconds": 0.57961,
+      "inclusiveCpuSeconds": 4.302002
+    },
+    {
+      "function": "validate_shape.<locals>.<genexpr>",
+      "file": "contract.py",
+      "line": 265,
+      "calls": 4899000,
+      "ownCpuSeconds": 1.679451,
+      "inclusiveCpuSeconds": 3.357681
+    },
+    {
+      "function": "<method 'startswith' of 'str' objects>",
+      "file": null,
+      "line": null,
+      "calls": 4707000,
+      "ownCpuSeconds": 1.122311,
+      "inclusiveCpuSeconds": 1.122311
+    },
+    {
+      "function": "RuntimeOnlyRetention.prune",
+      "file": "observation_evidence.py",
+      "line": 26,
+      "calls": 100,
+      "ownCpuSeconds": 0.0032,
+      "inclusiveCpuSeconds": 0.995042
+    },
+    {
+      "function": "<built-in method unicodedata.category>",
+      "file": null,
+      "line": null,
+      "calls": 4707000,
+      "ownCpuSeconds": 0.555919,
+      "inclusiveCpuSeconds": 0.555919
+    },
+    {
+      "function": "validate_shape.<locals>.<genexpr>",
+      "file": "contract.py",
+      "line": 248,
+      "calls": 307200,
+      "ownCpuSeconds": 0.083568,
+      "inclusiveCpuSeconds": 0.369999
+    },
+    {
+      "function": "fullmatch",
+      "file": "__init__.py",
+      "line": 169,
+      "calls": 115200,
+      "ownCpuSeconds": 0.061327,
+      "inclusiveCpuSeconds": 0.293208
+    }
+  ],
+  "engineSha256": "a4bae205524331ebc811a2aaf6d129767487d415c3f402c2ef8bb4eebed4bfb1",
+  "rawPayloadsRetained": false,
+  "nativeCalls": false,
+  "liveServicesChanged": false,
+  "limits": [
+    "fixed cached data and fixed clock",
+    "counterfactual does not establish repair correctness",
+    "profile timing overhead separate from unprofiled comparison",
+    "cached merged roster duplicated into components, not private live receipt shape",
+    "trusted identity bypass is isolated and not safe for untrusted input",
+    "matching current fixed-clock rows cannot establish retention repair parity"
+  ],
+  "operatorSource": "temporary instrumented precursor of scripts/study-retention-cost"
+}

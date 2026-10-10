@@ -6,9 +6,13 @@ import cProfile
 import hashlib
 import json
 import subprocess
+import sys
 import time
 from pathlib import Path
 
+import agent_observer.observation_engine as engine_module
+import agent_observer.observation_evidence as evidence_module
+from agent_observer.contract import IDENTITY
 from agent_observer.service_public import validate_frame
 from agent_observer.service_state import ServiceState
 
@@ -48,6 +52,17 @@ def main():
     profile.enable()
     exercise(50)
     profile.disable()
+    # This bypass exists only in the isolated, already validated replica. It
+    # must never replace validation of provider or client input in a producer.
+    original_engine_key = engine_module.identity_key
+    original_evidence_key = evidence_module.identity_key
+    trusted_key = lambda identity: tuple(identity[name] for name in IDENTITY["required"])
+    engine_module.identity_key = evidence_module.identity_key = trusted_key
+    try:
+        trusted_identity = exercise(rounds)
+    finally:
+        engine_module.identity_key = original_engine_key
+        evidence_module.identity_key = original_evidence_key
     scan = state._retire_runtime_only
     state._retire_runtime_only = lambda now: False
     try:
@@ -59,20 +74,45 @@ def main():
         name = entry.code if isinstance(entry.code, str) else entry.code.co_name
         hotspots.append({"function": name[:128], "calls": entry.callcount,
                          "ownCpuSeconds": round(entry.inlinetime, 6)})
+    cumulative = []
+    for entry in sorted(profile.getstats(), key=lambda e: e.totaltime, reverse=True)[:12]:
+        code = entry.code
+        cumulative.append({
+            "function": (code if isinstance(code, str) else code.co_qualname)[:128],
+            "file": None if isinstance(code, str) else Path(code.co_filename).name,
+            "line": None if isinstance(code, str) else code.co_firstlineno,
+            "calls": entry.callcount,
+            "ownCpuSeconds": round(entry.inlinetime, 6),
+            "inclusiveCpuSeconds": round(entry.totaltime, 6),
+        })
+    identity_calls = sum(entry.callcount for entry in profile.getstats()
+                         if not isinstance(entry.code, str) and entry.code.co_name == "identity_key")
     source = Path(__import__("agent_observer.observation_engine", fromlist=["__file__"]).__file__)
     args.output.write_text(json.dumps({
         "status": "controlled_cached_data_cost", "host": args.host,
         "rows": len(snapshot["sessions"]), "savedRows": sum(r["hasSavedHistory"] for r in snapshot["sessions"]),
         "retentionDeadlines": sum(len(r.deadlines) for r in state.retention.values()),
-        "rounds": rounds, "expiryCpuSeconds": round(original, 6),
+        "pythonVersion": sys.version.split()[0], "pythonPrefix": sys.prefix,
+        "rounds": rounds, "profileRounds": 50,
+        "identityValidationsPerExpiry": identity_calls / 50,
+        "expiryCpuSeconds": round(original, 6),
+        "expiryMillisecondsPerCall": round(original * 1000 / rounds, 6),
+        "counterfactualTrustedIdentityCpuSeconds": round(trusted_identity, 6),
+        "counterfactualTrustedIdentityMillisecondsPerCall": round(trusted_identity * 1000 / rounds, 6),
         "counterfactualNoScanCpuSeconds": round(without_scan, 6),
-        "hotspots": hotspots, "engineSha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "hotspots": hotspots, "inclusiveHotspots": cumulative,
+        "engineSha256": hashlib.sha256(source.read_bytes()).hexdigest(),
         "rawPayloadsRetained": False, "nativeCalls": False, "liveServicesChanged": False,
         "limits": ["fixed cached data and fixed clock", "counterfactual does not establish repair correctness",
-                   "profile timing overhead separate from unprofiled comparison"],
+                   "profile timing overhead separate from unprofiled comparison",
+                   "cached merged roster duplicated into components, not private live receipt shape",
+                   "trusted identity bypass is isolated and not safe for untrusted input",
+                   "current fixed-clock rows do not establish retention repair parity"],
     }, indent=2) + "\n")
     print(json.dumps({"rows": len(snapshot["sessions"]), "expiryCpuSeconds": original,
-                      "counterfactualNoScanCpuSeconds": without_scan}))
+                      "counterfactualNoScanCpuSeconds": without_scan,
+                      "trustedIdentityCpuSeconds": trusted_identity,
+                      "pythonVersion": sys.version.split()[0]}))
 
 
 if __name__ == "__main__":
