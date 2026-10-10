@@ -38,8 +38,6 @@ until resync; reconnect starts a new baseline.
 the next unexpired view deadline. Timers apply runtime/history/provider leases
 independently. Heartbeat receipt fields never renew the cached view. Detected
 component faults or context-generation changes revoke affected components
-until a replacement view; generation regression rejects the stream. Detected
-component faults or context-generation changes revoke the affected component
 until a replacement view; generation regression rejects the stream. Expired
 runtime becomes unknown and loses blocked reasons; it never becomes parked.
 Saved metadata can remain under its independent history lease. Disappeared

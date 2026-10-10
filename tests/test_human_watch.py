@@ -136,3 +136,32 @@ class MeshHumanWatchTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(closed, [True])
         self.assertIn("revoked", outputs[-1])
         self.assertEqual(len([v for v in outputs if "cached state" in v]), 3)
+
+        # asyncio.run turns Ctrl-C into task cancellation before raising
+        # KeyboardInterrupt to its caller. It must still close and revoke.
+        gate = asyncio.Event()
+        args.count = None
+
+        class WaitingReader:
+            async def execute(self, request):
+                try:
+                    frame = sdk.compose(sdk.endpoints, {"fixture": (sdk.unavailable(sdk.endpoints[0]), [])},
+                                        request["requestId"], request["operation"])
+                    frame["mesh"]["reader"]["sequence"] = 1
+                    yield frame
+                    gate.set()
+                    await asyncio.Event().wait()
+                finally:
+                    closed.append(True)
+
+        async def waiting(*args, **kwargs):
+            return WaitingReader()
+
+        with patch("mesh_plus.configured_read.configured_reader", waiting):
+            task = asyncio.create_task(mesh_cli.run(args, human_output=outputs.append))
+            await asyncio.wait_for(gate.wait(), timeout=2)
+            task.cancel()
+            with self.assertRaises(asyncio.CancelledError):
+                await task
+        self.assertEqual(closed, [True, True])
+        self.assertIn("revoked", outputs[-1])
