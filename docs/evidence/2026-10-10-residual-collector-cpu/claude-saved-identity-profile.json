@@ -1,0 +1,183 @@
+{
+  "status": "profiled",
+  "interpreter": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b/bin/python",
+  "unprofiled": [
+    {
+      "cpuSeconds": 0.057675,
+      "wallSeconds": 0.058037,
+      "positiveIds": 37
+    },
+    {
+      "cpuSeconds": 0.05455,
+      "wallSeconds": 0.054764,
+      "positiveIds": 37
+    },
+    {
+      "cpuSeconds": 0.056673,
+      "wallSeconds": 0.057104,
+      "positiveIds": 37
+    }
+  ],
+  "profiledPositiveIds": 37,
+  "functions": [
+    {
+      "file": "bounded_json.py",
+      "line": 34,
+      "function": "decode_document",
+      "calls": 1885,
+      "ownSeconds": 0.043717,
+      "inclusiveSeconds": 0.137086
+    },
+    {
+      "file": "decoder.py",
+      "line": 344,
+      "function": "raw_decode",
+      "calls": 1885,
+      "ownSeconds": 0.019797,
+      "inclusiveSeconds": 0.032231
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.isinstance>",
+      "calls": 151998,
+      "ownSeconds": 0.018456,
+      "inclusiveSeconds": 0.018456
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'extend' of 'list' objects>",
+      "calls": 9942,
+      "ownSeconds": 0.009082,
+      "inclusiveSeconds": 0.014948
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'pop' of 'list' objects>",
+      "calls": 50490,
+      "ownSeconds": 0.008728,
+      "inclusiveSeconds": 0.008728
+    },
+    {
+      "file": "bounded_json.py",
+      "line": 83,
+      "function": "<genexpr>",
+      "calls": 55421,
+      "ownSeconds": 0.005503,
+      "inclusiveSeconds": 0.005503
+    },
+    {
+      "file": "bounded_json.py",
+      "line": 12,
+      "function": "_pairs",
+      "calls": 8388,
+      "ownSeconds": 0.005447,
+      "inclusiveSeconds": 0.005447
+    },
+    {
+      "file": "claude_saved_identity.py",
+      "line": 26,
+      "function": "_identity",
+      "calls": 37,
+      "ownSeconds": 0.005077,
+      "inclusiveSeconds": 0.147474
+    },
+    {
+      "file": "bounded_json.py",
+      "line": 25,
+      "function": "_integer",
+      "calls": 6898,
+      "ownSeconds": 0.004942,
+      "inclusiveSeconds": 0.006987
+    },
+    {
+      "file": "__init__.py",
+      "line": 299,
+      "function": "loads",
+      "calls": 1885,
+      "ownSeconds": 0.004049,
+      "inclusiveSeconds": 0.045973
+    },
+    {
+      "file": "decoder.py",
+      "line": 285,
+      "function": "__init__",
+      "calls": 1885,
+      "ownSeconds": 0.003352,
+      "inclusiveSeconds": 0.003352
+    },
+    {
+      "file": "decoder.py",
+      "line": 333,
+      "function": "decode",
+      "calls": 1885,
+      "ownSeconds": 0.002757,
+      "inclusiveSeconds": 0.037782
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.len>",
+      "calls": 19161,
+      "ownSeconds": 0.002421,
+      "inclusiveSeconds": 0.002421
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'split' of 'bytes' objects>",
+      "calls": 72,
+      "ownSeconds": 0.00192,
+      "inclusiveSeconds": 0.00192
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'decode' of 'bytes' objects>",
+      "calls": 1885,
+      "ownSeconds": 0.001908,
+      "inclusiveSeconds": 0.001908
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'values' of 'dict' objects>",
+      "calls": 8388,
+      "ownSeconds": 0.001805,
+      "inclusiveSeconds": 0.001805
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'match' of 're.Pattern' objects>",
+      "calls": 3770,
+      "ownSeconds": 0.001699,
+      "inclusiveSeconds": 0.001699
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'lstrip' of 'str' objects>",
+      "calls": 6898,
+      "ownSeconds": 0.00133,
+      "inclusiveSeconds": 0.00133
+    },
+    {
+      "file": "claude_saved_identity.py",
+      "line": 52,
+      "function": "saved_ids",
+      "calls": 1,
+      "ownSeconds": 0.000761,
+      "inclusiveSeconds": 0.14868
+    }
+  ],
+  "rawPayloadsRetained": false,
+  "providerSettingsChanged": false,
+  "limits": [
+    "read-only positive-identity scan",
+    "controlled separate process; not live-unit cost",
+    "native file changes may alter each scan"
+  ]
+}

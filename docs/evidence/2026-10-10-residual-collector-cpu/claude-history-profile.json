@@ -1,0 +1,893 @@
+{
+  "status": "profiled",
+  "installedWorker": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b/lib/python3.12/site-packages/agent_observer/_claude_history_worker.py",
+  "interpreter": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b/bin/python",
+  "profiler": "cProfile",
+  "exitCode": 0,
+  "wallSeconds": 0.59439,
+  "cpuSeconds": 0.591951,
+  "census": {
+    "projects": 11,
+    "candidate_files": 39,
+    "total_bytes": 988874911,
+    "candidate_ids": 37,
+    "sdk_returned_ids": 36,
+    "projected_ids": 36,
+    "sdk_omitted_ids": 1,
+    "unresolved_ids": 0,
+    "duplicate_ids": 2,
+    "resolved_companion_ids": 2,
+    "malformed_filename_ids": 0
+  },
+  "rowCount": 36,
+  "errors": [],
+  "jsonDecodeCallsByCaller": {
+    "_claude_history_worker.py:duplicate_file_kind": {
+      "calls": 114,
+      "bytes": 131238,
+      "nonByteInputs": 0
+    },
+    "sessions.py:_extract_first_prompt_from_head": {
+      "calls": 56,
+      "bytes": 0,
+      "nonByteInputs": 56
+    },
+    "_claude_history_worker.py:transcript_activity": {
+      "calls": 9268,
+      "bytes": 17502547,
+      "nonByteInputs": 0
+    },
+    "_claude_history_worker.py:transcript_kind": {
+      "calls": 9820,
+      "bytes": 18584384,
+      "nonByteInputs": 0
+    }
+  },
+  "functions": [
+    {
+      "file": "decoder.py",
+      "line": 344,
+      "function": "raw_decode",
+      "primitiveCalls": 19258,
+      "calls": 19258,
+      "ownSeconds": 0.173875,
+      "inclusiveSeconds": 0.223299
+    },
+    {
+      "file": "profile-history.py",
+      "line": 12,
+      "function": "counted",
+      "primitiveCalls": 19258,
+      "calls": 19258,
+      "ownSeconds": 0.052366,
+      "inclusiveSeconds": 0.434397
+    },
+    {
+      "file": "__init__.py",
+      "line": 299,
+      "function": "loads",
+      "primitiveCalls": 19258,
+      "calls": 19258,
+      "ownSeconds": 0.034709,
+      "inclusiveSeconds": 0.3629
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 346,
+      "function": "transcript_activity",
+      "primitiveCalls": 36,
+      "calls": 36,
+      "ownSeconds": 0.026755,
+      "inclusiveSeconds": 0.266426
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 94,
+      "function": "_unique_pairs",
+      "primitiveCalls": 56464,
+      "calls": 56464,
+      "ownSeconds": 0.024715,
+      "inclusiveSeconds": 0.024715
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 352,
+      "function": "pairs",
+      "primitiveCalls": 55159,
+      "calls": 55159,
+      "ownSeconds": 0.024709,
+      "inclusiveSeconds": 0.024709
+    },
+    {
+      "file": "decoder.py",
+      "line": 285,
+      "function": "__init__",
+      "primitiveCalls": 19202,
+      "calls": 19202,
+      "ownSeconds": 0.023097,
+      "inclusiveSeconds": 0.023097
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 435,
+      "function": "transcript_kind",
+      "primitiveCalls": 36,
+      "calls": 36,
+      "ownSeconds": 0.021031,
+      "inclusiveSeconds": 0.259234
+    },
+    {
+      "file": "decoder.py",
+      "line": 333,
+      "function": "decode",
+      "primitiveCalls": 19258,
+      "calls": 19258,
+      "ownSeconds": 0.020591,
+      "inclusiveSeconds": 0.263121
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'splitlines' of 'bytes' objects>",
+      "primitiveCalls": 116,
+      "calls": 116,
+      "ownSeconds": 0.017704,
+      "inclusiveSeconds": 0.017704
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'decode' of 'bytes' objects>",
+      "primitiveCalls": 19283,
+      "calls": 19283,
+      "ownSeconds": 0.014655,
+      "inclusiveSeconds": 0.014655
+    },
+    {
+      "file": "__init__.py",
+      "line": 244,
+      "function": "detect_encoding",
+      "primitiveCalls": 19202,
+      "calls": 19202,
+      "ownSeconds": 0.013875,
+      "inclusiveSeconds": 0.025503
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'get' of 'dict' objects>",
+      "primitiveCalls": 68949,
+      "calls": 68949,
+      "ownSeconds": 0.012055,
+      "inclusiveSeconds": 0.012055
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.isinstance>",
+      "primitiveCalls": 100245,
+      "calls": 100245,
+      "ownSeconds": 0.010875,
+      "inclusiveSeconds": 0.010875
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'match' of 're.Pattern' objects>",
+      "primitiveCalls": 38605,
+      "calls": 38605,
+      "ownSeconds": 0.010764,
+      "inclusiveSeconds": 0.010764
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method sys._getframe>",
+      "primitiveCalls": 19259,
+      "calls": 19259,
+      "ownSeconds": 0.00988,
+      "inclusiveSeconds": 0.00988
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'startswith' of 'bytes' objects>",
+      "primitiveCalls": 57607,
+      "calls": 57607,
+      "ownSeconds": 0.009505,
+      "inclusiveSeconds": 0.009505
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.exec>",
+      "primitiveCalls": 3,
+      "calls": 109,
+      "ownSeconds": 0.008983,
+      "inclusiveSeconds": 0.035789
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.len>",
+      "primitiveCalls": 74237,
+      "calls": 74374,
+      "ownSeconds": 0.008236,
+      "inclusiveSeconds": 0.00826
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'end' of 're.Match' objects>",
+      "primitiveCalls": 38516,
+      "calls": 38516,
+      "ownSeconds": 0.006348,
+      "inclusiveSeconds": 0.006348
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method posix.read>",
+      "primitiveCalls": 116,
+      "calls": 116,
+      "ownSeconds": 0.00575,
+      "inclusiveSeconds": 0.00575
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'find' of 'str' objects>",
+      "primitiveCalls": 1802,
+      "calls": 1802,
+      "ownSeconds": 0.00572,
+      "inclusiveSeconds": 0.00572
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'rsplit' of 'str' objects>",
+      "primitiveCalls": 19258,
+      "calls": 19258,
+      "ownSeconds": 0.004938,
+      "inclusiveSeconds": 0.004938
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method marshal.loads>",
+      "primitiveCalls": 16,
+      "calls": 16,
+      "ownSeconds": 0.001975,
+      "inclusiveSeconds": 0.001975
+    },
+    {
+      "file": "sessions.py",
+      "line": 229,
+      "function": "_extract_last_json_string_field",
+      "primitiveCalls": 97,
+      "calls": 97,
+      "ownSeconds": 0.001916,
+      "inclusiveSeconds": 0.007558
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'timestamp' of 'datetime.datetime' objects>",
+      "primitiveCalls": 3666,
+      "calls": 3666,
+      "ownSeconds": 0.00188,
+      "inclusiveSeconds": 0.00188
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 605,
+      "function": "main",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 0.001549,
+      "inclusiveSeconds": 0.594301
+    },
+    {
+      "file": "sessions.py",
+      "line": 259,
+      "function": "_extract_first_prompt_from_head",
+      "primitiveCalls": 41,
+      "calls": 41,
+      "ownSeconds": 0.001413,
+      "inclusiveSeconds": 0.002654
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'split' of 'str' objects>",
+      "primitiveCalls": 168,
+      "calls": 168,
+      "ownSeconds": 0.001394,
+      "inclusiveSeconds": 0.001394
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 175,
+      "function": "census_projects",
+      "primitiveCalls": 2,
+      "calls": 2,
+      "ownSeconds": 0.001233,
+      "inclusiveSeconds": 0.006859
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.__build_class__>",
+      "primitiveCalls": 152,
+      "calls": 152,
+      "ownSeconds": 0.001211,
+      "inclusiveSeconds": 0.010697
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.max>",
+      "primitiveCalls": 3803,
+      "calls": 3803,
+      "ownSeconds": 0.001154,
+      "inclusiveSeconds": 0.001181
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method __new__ of type object at 0x7f22189865c0>",
+      "primitiveCalls": 448,
+      "calls": 448,
+      "ownSeconds": 0.001112,
+      "inclusiveSeconds": 0.001132
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'replace' of 'str' objects>",
+      "primitiveCalls": 3766,
+      "calls": 3766,
+      "ownSeconds": 0.001042,
+      "inclusiveSeconds": 0.001042
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'startswith' of 'str' objects>",
+      "primitiveCalls": 4420,
+      "calls": 4420,
+      "ownSeconds": 0.001025,
+      "inclusiveSeconds": 0.001025
+    },
+    {
+      "file": "typing.py",
+      "line": 2884,
+      "function": "__new__",
+      "primitiveCalls": 70,
+      "calls": 70,
+      "ownSeconds": 0.000969,
+      "inclusiveSeconds": 0.003433
+    },
+    {
+      "file": "_parser.py",
+      "line": 512,
+      "function": "_parse",
+      "primitiveCalls": 14,
+      "calls": 70,
+      "ownSeconds": 0.000958,
+      "inclusiveSeconds": 0.003214
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 921,
+      "function": "_process_class",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 0.000906,
+      "inclusiveSeconds": 0.013573
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method posix.stat>",
+      "primitiveCalls": 258,
+      "calls": 258,
+      "ownSeconds": 0.000881,
+      "inclusiveSeconds": 0.001875
+    },
+    {
+      "file": "typing.py",
+      "line": 175,
+      "function": "_type_check",
+      "primitiveCalls": 320,
+      "calls": 320,
+      "ownSeconds": 0.000692,
+      "inclusiveSeconds": 0.001294
+    },
+    {
+      "file": "typing.py",
+      "line": 1215,
+      "function": "__setattr__",
+      "primitiveCalls": 747,
+      "calls": 747,
+      "ownSeconds": 0.000526,
+      "inclusiveSeconds": 0.001123
+    },
+    {
+      "file": "_compiler.py",
+      "line": 37,
+      "function": "_compile",
+      "primitiveCalls": 14,
+      "calls": 128,
+      "ownSeconds": 0.000498,
+      "inclusiveSeconds": 0.001449
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 449,
+      "function": "_create_fn",
+      "primitiveCalls": 93,
+      "calls": 93,
+      "ownSeconds": 0.000485,
+      "inclusiveSeconds": 0.009717
+    },
+    {
+      "file": "sessions.py",
+      "line": 421,
+      "function": "_parse_session_info_from_lite",
+      "primitiveCalls": 41,
+      "calls": 41,
+      "ownSeconds": 0.00044,
+      "inclusiveSeconds": 0.013798
+    },
+    {
+      "file": "pathlib.py",
+      "line": 437,
+      "function": "__str__",
+      "primitiveCalls": 460,
+      "calls": 460,
+      "ownSeconds": 0.000384,
+      "inclusiveSeconds": 0.001707
+    },
+    {
+      "file": "typing.py",
+      "line": 1269,
+      "function": "__init__",
+      "primitiveCalls": 108,
+      "calls": 108,
+      "ownSeconds": 0.000371,
+      "inclusiveSeconds": 0.002164
+    },
+    {
+      "file": "sessions.py",
+      "line": 205,
+      "function": "_extract_json_string_field",
+      "primitiveCalls": 82,
+      "calls": 82,
+      "ownSeconds": 0.000368,
+      "inclusiveSeconds": 0.001114
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 107,
+      "function": "duplicate_file_kind",
+      "primitiveCalls": 8,
+      "calls": 8,
+      "ownSeconds": 0.000335,
+      "inclusiveSeconds": 0.002706
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 568,
+      "function": "_init_fn",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 0.000294,
+      "inclusiveSeconds": 0.005139
+    },
+    {
+      "file": "sessions.py",
+      "line": 353,
+      "function": "_read_session_lite",
+      "primitiveCalls": 41,
+      "calls": 41,
+      "ownSeconds": 0.000267,
+      "inclusiveSeconds": 0.003975
+    },
+    {
+      "file": "typing.py",
+      "line": 753,
+      "function": "Literal",
+      "primitiveCalls": 64,
+      "calls": 64,
+      "ownSeconds": 0.000237,
+      "inclusiveSeconds": 0.001679
+    },
+    {
+      "file": "sessions.py",
+      "line": 519,
+      "function": "_read_sessions_from_dir",
+      "primitiveCalls": 11,
+      "calls": 11,
+      "ownSeconds": 0.000224,
+      "inclusiveSeconds": 0.017876
+    },
+    {
+      "file": "typing.py",
+      "line": 392,
+      "function": "inner",
+      "primitiveCalls": 176,
+      "calls": 176,
+      "ownSeconds": 0.000218,
+      "inclusiveSeconds": 0.003804
+    },
+    {
+      "file": "pathlib.py",
+      "line": 447,
+      "function": "__fspath__",
+      "primitiveCalls": 341,
+      "calls": 341,
+      "ownSeconds": 0.000214,
+      "inclusiveSeconds": 0.00159
+    },
+    {
+      "file": "pathlib.py",
+      "line": 551,
+      "function": "drive",
+      "primitiveCalls": 184,
+      "calls": 184,
+      "ownSeconds": 0.000177,
+      "inclusiveSeconds": 0.001204
+    },
+    {
+      "file": "sessions.py",
+      "line": 663,
+      "function": "_list_all_sessions",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 0.000175,
+      "inclusiveSeconds": 0.018249
+    },
+    {
+      "file": "types.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 0.000168,
+      "inclusiveSeconds": 0.022221
+    },
+    {
+      "file": "_parser.py",
+      "line": 452,
+      "function": "_parse_sub",
+      "primitiveCalls": 14,
+      "calls": 49,
+      "ownSeconds": 0.000157,
+      "inclusiveSeconds": 0.003272
+    },
+    {
+      "file": "pathlib.py",
+      "line": 407,
+      "function": "_load_parts",
+      "primitiveCalls": 92,
+      "calls": 92,
+      "ownSeconds": 0.000131,
+      "inclusiveSeconds": 0.001027
+    },
+    {
+      "file": "__init__.py",
+      "line": 280,
+      "function": "_compile",
+      "primitiveCalls": 14,
+      "calls": 14,
+      "ownSeconds": 0.000121,
+      "inclusiveSeconds": 0.005465
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 1240,
+      "function": "_find_spec",
+      "primitiveCalls": 24,
+      "calls": 24,
+      "ownSeconds": 0.000106,
+      "inclusiveSeconds": 0.00111
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 552,
+      "function": "_metadata_sdk",
+      "primitiveCalls": 3,
+      "calls": 3,
+      "ownSeconds": 0.000104,
+      "inclusiveSeconds": 0.037813
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 1349,
+      "function": "_find_and_load",
+      "primitiveCalls": 6,
+      "calls": 27,
+      "ownSeconds": 0.000104,
+      "inclusiveSeconds": 0.036543
+    },
+    {
+      "file": "<frozen importlib._bootstrap_external>",
+      "line": 1066,
+      "function": "get_code",
+      "primitiveCalls": 16,
+      "calls": 16,
+      "ownSeconds": 0.0001,
+      "inclusiveSeconds": 0.002755
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 627,
+      "function": "_repr_fn",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 9.9e-05,
+      "inclusiveSeconds": 0.002699
+    },
+    {
+      "file": "subprocess.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 9.8e-05,
+      "inclusiveSeconds": 0.003304
+    },
+    {
+      "file": "typing.py",
+      "line": 521,
+      "function": "__getitem__",
+      "primitiveCalls": 85,
+      "calls": 85,
+      "ownSeconds": 9.3e-05,
+      "inclusiveSeconds": 0.001869
+    },
+    {
+      "file": "typing.py",
+      "line": 694,
+      "function": "Union",
+      "primitiveCalls": 22,
+      "calls": 22,
+      "ownSeconds": 8.2e-05,
+      "inclusiveSeconds": 0.001176
+    },
+    {
+      "file": "pathlib.py",
+      "line": 835,
+      "function": "stat",
+      "primitiveCalls": 136,
+      "calls": 136,
+      "ownSeconds": 6.6e-05,
+      "inclusiveSeconds": 0.001608
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 911,
+      "function": "_load_unlocked",
+      "primitiveCalls": 3,
+      "calls": 22,
+      "ownSeconds": 6e-05,
+      "inclusiveSeconds": 0.036241
+    },
+    {
+      "file": "sessions.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 5.9e-05,
+      "inclusiveSeconds": 0.03578
+    },
+    {
+      "file": "__init__.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 5.9e-05,
+      "inclusiveSeconds": 0.006125
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 1304,
+      "function": "_find_and_load_unlocked",
+      "primitiveCalls": 2,
+      "calls": 23,
+      "ownSeconds": 5.6e-05,
+      "inclusiveSeconds": 0.036468
+    },
+    {
+      "file": "_compiler.py",
+      "line": 745,
+      "function": "compile",
+      "primitiveCalls": 14,
+      "calls": 14,
+      "ownSeconds": 5e-05,
+      "inclusiveSeconds": 0.005178
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 1264,
+      "function": "wrap",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 4.6e-05,
+      "inclusiveSeconds": 0.013619
+    },
+    {
+      "file": "_parser.py",
+      "line": 969,
+      "function": "parse",
+      "primitiveCalls": 14,
+      "calls": 14,
+      "ownSeconds": 3.8e-05,
+      "inclusiveSeconds": 0.003339
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 661,
+      "function": "_cmp_fn",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 3.5e-05,
+      "inclusiveSeconds": 0.002862
+    },
+    {
+      "file": "_compiler.py",
+      "line": 578,
+      "function": "_code",
+      "primitiveCalls": 14,
+      "calls": 14,
+      "ownSeconds": 3.4e-05,
+      "inclusiveSeconds": 0.001756
+    },
+    {
+      "file": "<frozen importlib._bootstrap_external>",
+      "line": 993,
+      "function": "exec_module",
+      "primitiveCalls": 3,
+      "calls": 16,
+      "ownSeconds": 3.2e-05,
+      "inclusiveSeconds": 0.036171
+    },
+    {
+      "file": "_claude_history_worker.py",
+      "line": 151,
+      "function": "exact_sdk_metadata",
+      "primitiveCalls": 2,
+      "calls": 2,
+      "ownSeconds": 2.9e-05,
+      "inclusiveSeconds": 0.001614
+    },
+    {
+      "file": "typing.py",
+      "line": 515,
+      "function": "__getitem__",
+      "primitiveCalls": 44,
+      "calls": 44,
+      "ownSeconds": 2.6e-05,
+      "inclusiveSeconds": 0.001724
+    },
+    {
+      "file": "<frozen importlib._bootstrap_external>",
+      "line": 755,
+      "function": "_compile_bytecode",
+      "primitiveCalls": 16,
+      "calls": 16,
+      "ownSeconds": 2.6e-05,
+      "inclusiveSeconds": 0.002016
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 480,
+      "function": "_call_with_frames_removed",
+      "primitiveCalls": 6,
+      "calls": 50,
+      "ownSeconds": 2.5e-05,
+      "inclusiveSeconds": 0.035919
+    },
+    {
+      "file": "dataclasses.py",
+      "line": 1247,
+      "function": "dataclass",
+      "primitiveCalls": 31,
+      "calls": 31,
+      "ownSeconds": 2.4e-05,
+      "inclusiveSeconds": 0.013644
+    },
+    {
+      "file": "traceback.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 2.3e-05,
+      "inclusiveSeconds": 0.002595
+    },
+    {
+      "file": "textwrap.py",
+      "line": 17,
+      "function": "TextWrapper",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 1.6e-05,
+      "inclusiveSeconds": 0.001948
+    },
+    {
+      "file": "typing.py",
+      "line": 1288,
+      "function": "__or__",
+      "primitiveCalls": 24,
+      "calls": 24,
+      "ownSeconds": 1.5e-05,
+      "inclusiveSeconds": 0.001353
+    },
+    {
+      "file": "__init__.py",
+      "line": 226,
+      "function": "compile",
+      "primitiveCalls": 14,
+      "calls": 14,
+      "ownSeconds": 9e-06,
+      "inclusiveSeconds": 0.005474
+    },
+    {
+      "file": "__init__.py",
+      "line": 73,
+      "function": "import_module",
+      "primitiveCalls": 6,
+      "calls": 6,
+      "ownSeconds": 9e-06,
+      "inclusiveSeconds": 0.036565
+    },
+    {
+      "file": "__init__.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 8e-06,
+      "inclusiveSeconds": 0.00104
+    },
+    {
+      "file": "sessions.py",
+      "line": 680,
+      "function": "list_sessions",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 8e-06,
+      "inclusiveSeconds": 0.018258
+    },
+    {
+      "file": "<frozen importlib._bootstrap>",
+      "line": 1375,
+      "function": "_gcd_import",
+      "primitiveCalls": 6,
+      "calls": 7,
+      "ownSeconds": 8e-06,
+      "inclusiveSeconds": 0.036554
+    },
+    {
+      "file": "textwrap.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "calls": 1,
+      "ownSeconds": 5e-06,
+      "inclusiveSeconds": 0.002173
+    }
+  ],
+  "rawPayloadsRetained": false,
+  "providerSettingsChanged": false,
+  "limits": [
+    "instrumented isolated read-only metadata scan",
+    "not normal-unit CPU",
+    "emit serialization replaced by metadata capture",
+    "native file changes can alter each scan"
+  ]
+}

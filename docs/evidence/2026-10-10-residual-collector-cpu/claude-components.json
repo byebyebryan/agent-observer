@@ -1,0 +1,186 @@
+{
+  "status": "measured",
+  "method": "controlled installed adapter with normal image memo and isolated read-only SDK child",
+  "scans": [
+    {
+      "component": "runtime",
+      "coldMemo": true,
+      "wallSeconds": 0.826636,
+      "ownCpuSeconds": 0.822275,
+      "adapterOwnCpuSeconds": 0.808239,
+      "composeOwnCpuSeconds": 0.014023,
+      "reapedChildCpuSeconds": 0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 0.204261,
+          "ownCpuSeconds": 0.203052,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.053633,
+          "ownCpuSeconds": 0.053319,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.554197,
+          "ownCpuSeconds": 0.551493,
+          "reapedChildCpuSeconds": 0.0
+        }
+      ]
+    },
+    {
+      "component": "runtime",
+      "coldMemo": false,
+      "wallSeconds": 0.063325,
+      "ownCpuSeconds": 0.062838,
+      "adapterOwnCpuSeconds": 0.052883,
+      "composeOwnCpuSeconds": 0.009943,
+      "reapedChildCpuSeconds": 0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 8.7e-05,
+          "ownCpuSeconds": 8.7e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.050055,
+          "ownCpuSeconds": 0.04961,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002859,
+          "ownCpuSeconds": 0.002842,
+          "reapedChildCpuSeconds": 0.0
+        }
+      ]
+    },
+    {
+      "component": "runtime",
+      "coldMemo": false,
+      "wallSeconds": 0.069976,
+      "ownCpuSeconds": 0.069759,
+      "adapterOwnCpuSeconds": 0.059118,
+      "composeOwnCpuSeconds": 0.010632,
+      "reapedChildCpuSeconds": 0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 9.6e-05,
+          "ownCpuSeconds": 9.2e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.055912,
+          "ownCpuSeconds": 0.055724,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002977,
+          "ownCpuSeconds": 0.00297,
+          "reapedChildCpuSeconds": 0.0
+        }
+      ]
+    },
+    {
+      "component": "history",
+      "coldMemo": false,
+      "wallSeconds": 0.562462,
+      "ownCpuSeconds": 0.069475,
+      "adapterOwnCpuSeconds": 0.058906,
+      "composeOwnCpuSeconds": 0.01056,
+      "reapedChildCpuSeconds": 0.4902,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 9e-05,
+          "ownCpuSeconds": 9e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.053545,
+          "ownCpuSeconds": 0.053298,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002882,
+          "ownCpuSeconds": 0.002873,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "collect_saved_history",
+          "wallSeconds": 0.494546,
+          "ownCpuSeconds": 0.001855,
+          "reapedChildCpuSeconds": 0.4902
+        }
+      ]
+    },
+    {
+      "component": "history",
+      "coldMemo": false,
+      "wallSeconds": 0.5683,
+      "ownCpuSeconds": 0.070784,
+      "adapterOwnCpuSeconds": 0.06024,
+      "composeOwnCpuSeconds": 0.010529,
+      "reapedChildCpuSeconds": 0.494813,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 9.3e-05,
+          "ownCpuSeconds": 9.3e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.053691,
+          "ownCpuSeconds": 0.053408,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002904,
+          "ownCpuSeconds": 0.002887,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "collect_saved_history",
+          "wallSeconds": 0.499975,
+          "ownCpuSeconds": 0.002815,
+          "reapedChildCpuSeconds": 0.494813
+        }
+      ]
+    }
+  ],
+  "providerSettingsChanged": false,
+  "rawPayloadsRetained": false,
+  "limits": [
+    "same-process imports amortized; normal workers import afresh",
+    "ordinary saved files may change between scans",
+    "not normal-unit CPU",
+    "no native runtime actions"
+  ]
+}
