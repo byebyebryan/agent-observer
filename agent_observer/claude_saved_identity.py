@@ -23,12 +23,14 @@ def _signature(info):
     return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
-def _identity(directory_fd, name, sid):
+def _identity(directory_fd, name, sid, *, file_memo=None, project=None):
     fd = os.open(name, _FLAGS, dir_fd=directory_fd)
     try:
         before = os.fstat(fd)
         if not stat.S_ISREG(before.st_mode) or before.st_uid != os.geteuid():
             return False
+        if file_memo is not None and name[:-6].lower() == sid and file_memo.get(fd, project, name, "positive") is True:
+            return True
         head = os.read(fd, MAX_BYTES)
         offset = max(0, before.st_size - MAX_BYTES)
         os.lseek(fd, offset, os.SEEK_SET)
@@ -36,20 +38,23 @@ def _identity(directory_fd, name, sid):
         if (_signature(before) != _signature(os.fstat(fd)) or _signature(before) !=
                 _signature(os.stat(name, dir_fd=directory_fd, follow_symlinks=False))):
             return False
+        lines = head.split(b"\n")[:-1] + (tail.split(b"\n")[1:-1] if offset else [])
+        identities = set()
+        for line in lines:
+            if not line:
+                continue
+            value = decode_document(line, max_bytes=MAX_BYTES, max_depth=32, max_nodes=16384)
+            if isinstance(value, dict) and isinstance(value.get("sessionId"), str):
+                identities.add(value["sessionId"].lower())
+        positive = identities == {sid}
+        if positive and file_memo is not None:
+            file_memo.put(fd, project, name, "positive", True, before)
+        return positive
+
     finally:
         os.close(fd)
-    lines = head.split(b"\n")[:-1] + (tail.split(b"\n")[1:-1] if offset else [])
-    identities = set()
-    for line in lines:
-        if not line:
-            continue
-        value = decode_document(line, max_bytes=MAX_BYTES, max_depth=32, max_nodes=16384)
-        if isinstance(value, dict) and isinstance(value.get("sessionId"), str):
-            identities.add(value["sessionId"].lower())
-    return identities == {sid}
 
-
-def saved_ids(home, candidates=None):
+def saved_ids(home, candidates=None, *, file_memo=None):
     """Return fresh positive UUIDs, optionally restricted to supplied identities.
 
     An incomplete catalog retains proven positives; it is never a negative
@@ -90,7 +95,7 @@ def saved_ids(home, candidates=None):
                         if candidates is not None and sid not in candidates or sid in found:
                             continue
                         try:
-                            if _identity(project_fd, entry.name, sid):
+                            if _identity(project_fd, entry.name, sid, file_memo=file_memo, project=name):
                                 proven.add(sid)
                         except (OSError, ValueError):
                             continue

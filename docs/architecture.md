@@ -31,6 +31,17 @@ Retention reconciles only after accepted receipts, source failure, lease expiry
 or the next eligible unsaved deadline. Provider-sized private dirty/deadline
 caches skip quiet roster scans; admission/public validation and observation
 semantics remain unchanged. These caches supply no native evidence.
+The [Claude collection repair](claude-collection-cost-plan.md) adds a separate
+private normalized-file memo retained by the service wrapper. Passive Claude
+adapters authenticate current home/project/file incarnations and change stamps
+before reuse. Only successful positive UUID, kind and activity projections are
+retained, bounded to 2,048 entries and 1 MiB encoded metadata. Sealed read-only
+inputs and validated private worker envelopes preserve complete public snapshots.
+Registration/process/phase checks, catalogue/SDK listing and scan-budget charging
+remain fresh. File timestamps detect change and never supply conversation age.
+The SDK worker loads the stdlib-only memo helper without initializing SDK/client
+runtime. Faults, failed admission and changed provider context discard reuse;
+cold reads preserve existing unavailable/unknown classifications.
 Direct sampled watch uses the same evidence helper with a fixed 60-second bound;
 one-shot reads retain no prior view. Removal is observation-memory retirement,
 not a provider lifecycle assertion. Native admission predicates stay in adapters.

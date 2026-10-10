@@ -1,0 +1,71 @@
+{
+  "studyVersion": 1,
+  "pythonVersion": "3.12.8",
+  "referenceSha256": "7f4caacd76076feab2d7b399324ace7e8eabf5401f01b3de1f78c08a2417339b",
+  "workerSha256": "42dea2cb8f8d01fc5fa28f7a59643ff88123f8eedaa1fc46155b2db10bd206e9",
+  "censusFiles": 37,
+  "stableFiles": 37,
+  "changedDuringStudy": 0,
+  "stableParityMismatches": [],
+  "studies": {
+    "referenceTimed": {
+      "wallSeconds": 0.30979552608914673,
+      "ownCpuSeconds": 0.308446285,
+      "files": 37
+    },
+    "sharedColdTimed": {
+      "wallSeconds": 0.18026873702183366,
+      "ownCpuSeconds": 0.179527245,
+      "files": 37
+    },
+    "memoFillTimed": {
+      "wallSeconds": 0.18885252194013447,
+      "ownCpuSeconds": 0.18809018599999994,
+      "files": 37
+    },
+    "memoWarmTimed": {
+      "wallSeconds": 0.0018722830573096871,
+      "ownCpuSeconds": 0.001867437999999999,
+      "files": 37
+    },
+    "referenceCounted": {
+      "wallSeconds": 0.3443152529653162,
+      "ownCpuSeconds": 0.34278717599999997,
+      "files": 37,
+      "decodedRecords": 19097,
+      "decoderInputBytes": 36200152
+    },
+    "sharedColdCounted": {
+      "wallSeconds": 0.22934180905576795,
+      "ownCpuSeconds": 0.22807494299999997,
+      "files": 37,
+      "decodedRecords": 7547,
+      "decoderInputBytes": 18314876
+    },
+    "memoWarmCounted": {
+      "wallSeconds": 0.0020345719531178474,
+      "ownCpuSeconds": 0.0020151499999998546,
+      "files": 37,
+      "decodedRecords": 29,
+      "decoderInputBytes": 41589
+    }
+  },
+  "memoEntries": 35,
+  "memoEncodedBytes": 13342,
+  "syntheticDelta": {
+    "files": 3,
+    "changedFiles": 1,
+    "decodedRecords": 1,
+    "unchangedProjectionsEqual": true,
+    "changedActivityDeltaMs": 1000
+  },
+  "limits": [
+    "parser component only; imports amortized",
+    "unknown/fault projections remain uncached",
+    "ordinary source changes excluded from stable parity",
+    "counting and timing are separate runs",
+    "no runtime registration or SDK-list proof",
+    "no raw provider contents retained"
+  ],
+  "implementation": "unselected source a15"
+}

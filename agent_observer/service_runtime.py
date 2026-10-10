@@ -16,9 +16,10 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ._claude_file_memo import FileMemo, MAX_PACKET as MAX_CLAUDE_MEMO_BYTES
 from ._image_memo import ImageMemo, receive as receive_memo, send as send_memo
 from .bounded_json import decode_document
-from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
+from .contract import MAX_SNAPSHOT_BYTES, MAX_NODES, canonical, parse_snapshot, validate_snapshot
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
 from .observation_scheduler import Scheduler
 from .workspace import MAX_CONFIG_BYTES, validate_config
@@ -168,6 +169,7 @@ class Runtime:
         self.native_hints, self.hint_factory = native_hints, hint_factory
         self.hint_diagnostics, self.hints = hint_diagnostics, None
         self.image_memos = {provider: ImageMemo(provider) for provider in state.configs}
+        self.claude_memo = FileMemo(state.configs["claude"][0]) if "claude" in state.configs else None
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -175,22 +177,26 @@ class Runtime:
                    "configHomeKind": self.state.configs[job.provider][1],
                    "timeoutMs": self.scheduler.timeout,
                    "workspaceConfig": self.workspace_config if job.component == "history" else None}
-        parent, child, process = None, None, None
+        parent, child, process, metadata_fd = None, None, None, None
         try:
             parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             parent.setblocking(False)
             payload['imageMemoFd'] = child.fileno()
+            if job.provider == "claude":
+                metadata_fd = self.claude_memo.descriptor()
+                payload["claudeMemoFd"] = metadata_fd
             request = (canonical(payload) + "\n").encode()
             if len(request) > MAX_CONFIG_BYTES + 16384:
                 raise ValueError("service_worker_request_limit")
             process = subprocess.Popen(
                 [sys.executable, "-I", "-B", str(Path(__file__).with_name("_service_worker.py"))],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                start_new_session=True, pass_fds=(child.fileno(),),
+                start_new_session=True, pass_fds=(child.fileno(),) + ((metadata_fd,) if metadata_fd is not None else ()),
             )
             child.close()
             child = None
             process._observer_image_reply = parent
+            process._observer_claude_envelope = metadata_fd is not None
             try:
                 send_memo(parent, self.image_memos[job.provider])
             except (ValueError, OSError):
@@ -215,6 +221,9 @@ class Runtime:
                     except OSError:
                         pass
             raise
+        finally:
+            if metadata_fd is not None:
+                os.close(metadata_fd)
         return process
 
     @staticmethod
@@ -402,9 +411,17 @@ class Runtime:
         self._stop_worker(worker)
         success = False
         prior_context = self.state.contexts[provider]
+        replacement = None
         if not timed_out and exit_status == 0:
             try:
-                value = parse_snapshot(bytes(worker.buffer))
+                if getattr(process, "_observer_claude_envelope", False):
+                    envelope = decode_document(bytes(worker.buffer), max_bytes=MAX_SNAPSHOT_BYTES + MAX_CLAUDE_MEMO_BYTES + 1024, max_nodes=MAX_NODES)
+                    if not isinstance(envelope, dict) or set(envelope) != {"snapshot", "claudeMemo"}:
+                        raise ValueError("service_worker_envelope")
+                    value = validate_snapshot(envelope["snapshot"])
+                    replacement = FileMemo(self.state.configs[provider][0], envelope["claudeMemo"])
+                else:
+                    value = parse_snapshot(bytes(worker.buffer))
                 ttl = max(self.scheduler.timeout + 2 * self.scheduler.intervals[worker.job.component] + 1000, 3 * self.scheduler.intervals[worker.job.component])
                 if worker.job.generation == self.scheduler.generation[provider]:
                     self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl, runtime_ttl_ms=max(self.scheduler.timeout + 2 * self.scheduler.intervals["runtime"] + 1000, 3 * self.scheduler.intervals["runtime"]))
@@ -415,6 +432,8 @@ class Runtime:
         if success:
             eligible = eligible and value['sources'][0]['runtime'] is not None and value['sources'][0]['coverage']['runtime']['status'] in {'complete', 'partial'}
         self._take_image_memo(process, provider, eligible=eligible)
+        if provider == "claude":
+            self.claude_memo = replacement if eligible and replacement is not None else FileMemo(self.state.configs[provider][0])
         self.scheduler.finish(worker.job, self.state.clock(), success=success)
         if not success:
             self.state.fail(provider, worker.job.component, "collection_timeout" if timed_out else "collection_failed")
@@ -458,6 +477,8 @@ class Runtime:
                                     process.stdout.close()
                                     self.workers.pop(job.provider, None)
                                 self.image_memos[job.provider].close()
+                                if job.provider == "claude":
+                                    self.claude_memo.clear()
                                 self.scheduler.finish(job, now, success=False)
                                 self.state.fail(job.provider, job.component)
                     for peer in list(self.peers):
@@ -494,7 +515,8 @@ class Runtime:
                             data = os.read(obj.process.stdout.fileno(), 65536)
                             if data:
                                 obj.buffer.extend(data)
-                                if len(obj.buffer) > MAX_SNAPSHOT_BYTES:
+                                limit = MAX_SNAPSHOT_BYTES + MAX_CLAUDE_MEMO_BYTES + 1024 if getattr(obj.process, "_observer_claude_envelope", False) else MAX_SNAPSHOT_BYTES
+                                if len(obj.buffer) > limit:
                                     self._complete(obj, timed_out=True)
                             else:
                                 obj.eof = True
@@ -521,4 +543,6 @@ class Runtime:
                 worker.process.stdout.close()
             for memo in self.image_memos.values():
                 memo.close()
+            if self.claude_memo is not None:
+                self.claude_memo.clear()
             self.selector.close()

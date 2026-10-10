@@ -177,7 +177,7 @@ def _kill_process(process: subprocess.Popen[bytes], *, grouped=True) -> None:
         process.kill()
 
 
-def _run_worker(config_home: Path, *, timeout: float, owned_worker_group=False) -> tuple[bytes | None, str | None]:
+def _run_worker(config_home: Path, *, timeout: float, owned_worker_group=False, file_memo=None) -> tuple[bytes | None, str | None]:
     if owned_worker_group and (os.getpgrp() != os.getpid() or os.getsid(0) != os.getpid()):
         return None, "history_source_failed"
     worker = Path(__file__).with_name("_claude_history_worker.py")
@@ -187,19 +187,24 @@ def _run_worker(config_home: Path, *, timeout: float, owned_worker_group=False) 
         "PATH": os.defpath,
         "PYTHONNOUSERSITE": "1",
     }
+    memo_fd = file_memo.descriptor() if file_memo is not None else None
     try:
         process = subprocess.Popen(
-            [sys.executable, "-I", "-B", str(worker)],
+            [sys.executable, "-I", "-B", str(worker)] + ([str(memo_fd)] if memo_fd is not None else []),
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             cwd=str(config_home),
             env=env,
             close_fds=True,
+            pass_fds=(memo_fd,) if memo_fd is not None else (),
             start_new_session=not owned_worker_group,
         )
     except OSError:
         return None, "history_source_failed"
+    finally:
+        if memo_fd is not None:
+            os.close(memo_fd)
 
     assert process.stdout is not None
     selector = selectors.DefaultSelector()
@@ -250,6 +255,7 @@ def collect_saved_history(
     history_limit: int = DEFAULT_HISTORY_LIMIT,
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
     owned_worker_group: bool = False,
+    file_memo=None,
 ) -> dict[str, object]:
     """Read bounded saved metadata without launching Claude or its daemon.
 
@@ -276,15 +282,34 @@ def collect_saved_history(
     if resolved != config_home:
         return _error("history_unsafe_entry")
 
-    output, failure = _run_worker(config_home, timeout=float(timeout), owned_worker_group=True) if owned_worker_group else _run_worker(config_home, timeout=float(timeout))
+    options = {}
+    if owned_worker_group:
+        options["owned_worker_group"] = True
+    if file_memo is not None:
+        options["file_memo"] = file_memo
+    output, failure = _run_worker(config_home, timeout=float(timeout), **options)
     if failure:
+        if file_memo is not None:
+            file_memo.clear()
         return _error(failure)
     if output is None:
+        if file_memo is not None:
+            file_memo.clear()
         return _error("history_source_failed")
     try:
         payload = json.loads(output.decode("utf-8", "strict"))
+        replacement = None
+        if file_memo is not None and isinstance(payload, dict) and "file_memo" in payload:
+            from ._claude_file_memo import FileMemo
+            replacement = FileMemo(config_home, payload.pop("file_memo"))
         rows, errors = _validate_payload(payload)
+        if file_memo is not None:
+            file_memo.clear()
+            if replacement is not None and not errors:
+                file_memo.scope, file_memo.context, file_memo.entries = replacement.scope, replacement.context, replacement.entries
     except (UnicodeDecodeError, json.JSONDecodeError, ValueError, TypeError, UnicodeEncodeError):
+        if file_memo is not None:
+            file_memo.clear()
         return _error("history_source_failed")
 
     if errors and not rows:

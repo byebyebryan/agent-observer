@@ -1,0 +1,237 @@
+{
+  "status": "measured",
+  "method": "controlled installed adapter with normal image memo and isolated read-only SDK child",
+  "scans": [
+    {
+      "component": "runtime",
+      "coldMemo": true,
+      "wallSeconds": 0.765191,
+      "ownCpuSeconds": 0.762402,
+      "adapterOwnCpuSeconds": 0.751093,
+      "composeOwnCpuSeconds": 0.011301,
+      "reapedChildCpuSeconds": 0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 8663,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 0.178203,
+          "ownCpuSeconds": 0.177537,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.05342,
+          "ownCpuSeconds": 0.053182,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.521809,
+          "ownCpuSeconds": 0.519958,
+          "reapedChildCpuSeconds": 0.0
+        }
+      ]
+    },
+    {
+      "component": "runtime",
+      "coldMemo": false,
+      "wallSeconds": 0.014021,
+      "ownCpuSeconds": 0.013956,
+      "adapterOwnCpuSeconds": 0.004585,
+      "composeOwnCpuSeconds": 0.009364,
+      "reapedChildCpuSeconds": 0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 8663,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 7.9e-05,
+          "ownCpuSeconds": 7.9e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.001393,
+          "ownCpuSeconds": 0.001383,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002831,
+          "ownCpuSeconds": 0.002798,
+          "reapedChildCpuSeconds": 0.0
+        }
+      ]
+    },
+    {
+      "component": "history",
+      "coldMemo": false,
+      "wallSeconds": 0.320673,
+      "ownCpuSeconds": 0.017989,
+      "adapterOwnCpuSeconds": 0.00775,
+      "composeOwnCpuSeconds": 0.010229,
+      "reapedChildCpuSeconds": 0.301365,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 14473,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 6.8e-05,
+          "ownCpuSeconds": 6.8e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.001273,
+          "ownCpuSeconds": 0.00127,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002468,
+          "ownCpuSeconds": 0.002459,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "collect_saved_history",
+          "wallSeconds": 0.305844,
+          "ownCpuSeconds": 0.003233,
+          "reapedChildCpuSeconds": 0.301365
+        }
+      ]
+    },
+    {
+      "component": "history",
+      "coldMemo": false,
+      "wallSeconds": 0.138894,
+      "ownCpuSeconds": 0.021955,
+      "adapterOwnCpuSeconds": 0.011264,
+      "composeOwnCpuSeconds": 0.01068,
+      "reapedChildCpuSeconds": 0.116245,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 14473,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 8.6e-05,
+          "ownCpuSeconds": 8.6e-05,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.003095,
+          "ownCpuSeconds": 0.003083,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.00271,
+          "ownCpuSeconds": 0.002694,
+          "reapedChildCpuSeconds": 0.0
+        },
+        {
+          "name": "collect_saved_history",
+          "wallSeconds": 0.121411,
+          "ownCpuSeconds": 0.004591,
+          "reapedChildCpuSeconds": 0.116245
+        }
+      ]
+    },
+    {
+      "component": "runtime",
+      "coldMemo": false,
+      "wallSeconds": 0.015106,
+      "ownCpuSeconds": 0.015007,
+      "adapterOwnCpuSeconds": 0.004775,
+      "composeOwnCpuSeconds": 0.010222,
+      "reapedChildCpuSeconds": -0.0,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 14473,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 0.0001,
+          "ownCpuSeconds": 9.8e-05,
+          "reapedChildCpuSeconds": -0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.001484,
+          "ownCpuSeconds": 0.001469,
+          "reapedChildCpuSeconds": -0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002876,
+          "ownCpuSeconds": 0.002855,
+          "reapedChildCpuSeconds": -0.0
+        }
+      ]
+    },
+    {
+      "component": "history",
+      "coldMemo": false,
+      "wallSeconds": 0.133188,
+      "ownCpuSeconds": 0.019515,
+      "adapterOwnCpuSeconds": 0.009066,
+      "composeOwnCpuSeconds": 0.010439,
+      "reapedChildCpuSeconds": 0.112698,
+      "sourceHealth": "current",
+      "rows": 37,
+      "savedRows": 37,
+      "memoEntries": 37,
+      "memoBytes": 14473,
+      "stages": [
+        {
+          "name": "_verify_artifact",
+          "wallSeconds": 0.000108,
+          "ownCpuSeconds": 9.4e-05,
+          "reapedChildCpuSeconds": -0.0
+        },
+        {
+          "name": "saved_ids",
+          "wallSeconds": 0.001433,
+          "ownCpuSeconds": 0.001417,
+          "reapedChildCpuSeconds": -0.0
+        },
+        {
+          "name": "snapshot",
+          "wallSeconds": 0.002824,
+          "ownCpuSeconds": 0.002817,
+          "reapedChildCpuSeconds": -0.0
+        },
+        {
+          "name": "collect_saved_history",
+          "wallSeconds": 0.117551,
+          "ownCpuSeconds": 0.003958,
+          "reapedChildCpuSeconds": 0.112698
+        }
+      ]
+    }
+  ],
+  "providerSettingsChanged": false,
+  "rawPayloadsRetained": false,
+  "limits": [
+    "same-process imports amortized; normal workers import afresh",
+    "ordinary saved files may change between scans",
+    "not normal-unit CPU",
+    "no native runtime actions"
+  ],
+  "implementation": "unselected source a15"
+}

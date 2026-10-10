@@ -343,7 +343,7 @@ def census_projects(projects_dir: Path) -> dict[str, object]:
     }
 
 
-def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
+def transcript_activity(path: Path, session_id: str, *, _data=None, _decode=None) -> dict[str, object]:
     """Read a bounded tail; only timestamp provenance crosses this boundary."""
 
     def missing(reason):
@@ -357,29 +357,32 @@ def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
             result[key] = value
         return result
 
-    try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    if _data is None:
         try:
-            before = os.fstat(fd)
-            if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
-                return missing("activity_source_unsafe")
-            offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
-            os.lseek(fd, offset, os.SEEK_SET)
-            content = os.read(fd, MAX_ACTIVITY_BYTES)
-            if len(content) != before.st_size - offset:
-                return missing("activity_source_changed")
-            after = os.fstat(fd)
-            bound = os.stat(path, follow_symlinks=False)
-            if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (
-                after.st_size,
-                after.st_mtime_ns,
-                after.st_ctime_ns,
-            ) or (after.st_dev, after.st_ino) != (bound.st_dev, bound.st_ino):
-                return missing("activity_source_changed")
-        finally:
-            os.close(fd)
-    except OSError:
-        return missing("activity_source_unavailable")
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            try:
+                before = os.fstat(fd)
+                if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+                    return missing("activity_source_unsafe")
+                offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
+                os.lseek(fd, offset, os.SEEK_SET)
+                content = os.read(fd, MAX_ACTIVITY_BYTES)
+                if len(content) != before.st_size - offset:
+                    return missing("activity_source_changed")
+                after = os.fstat(fd)
+                bound = os.stat(path, follow_symlinks=False)
+                if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (
+                    after.st_size,
+                    after.st_mtime_ns,
+                    after.st_ctime_ns,
+                ) or (after.st_dev, after.st_ino) != (bound.st_dev, bound.st_ino):
+                    return missing("activity_source_changed")
+            finally:
+                os.close(fd)
+        except OSError:
+            return missing("activity_source_unavailable")
+    else:
+        content, offset = _data
     if content and not content.endswith(b"\n"):
         return missing("activity_record_incomplete")
     lines = content.splitlines()
@@ -390,7 +393,7 @@ def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
         if not line:
             continue
         try:
-            value = json.loads(line, object_pairs_hook=pairs)
+            value = _decode(line) if _decode else json.loads(line, object_pairs_hook=pairs)
         except (ValueError, UnicodeError, RecursionError):
             return missing("activity_metadata_invalid")
         if not isinstance(value, dict) or value.get("type") not in {"user", "assistant"}:
@@ -432,28 +435,31 @@ def transcript_activity(path: Path, session_id: str) -> dict[str, object]:
     }
 
 
-def transcript_kind(path: Path, session_id: str) -> str:
+def transcript_kind(path: Path, session_id: str, *, _data=None, _decode=None) -> str:
     """Identity-bound conversation classification, independent of its clock."""
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-        try:
-            before = os.fstat(fd)
-            if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
-                return "unknown"
-            data = os.read(fd, MAX_COMPANION_BYTES)
-            offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
-            os.lseek(fd, offset, os.SEEK_SET)
-            tail = os.read(fd, MAX_ACTIVITY_BYTES)
-            if _file_stamp(before) != _file_stamp(os.fstat(fd)) or _file_stamp(before) != _file_stamp(path.lstat()):
-                return "unknown"
-        finally:
-            os.close(fd)
+        if _data is None:
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            try:
+                before = os.fstat(fd)
+                if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+                    return "unknown"
+                data = os.read(fd, MAX_COMPANION_BYTES)
+                offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
+                os.lseek(fd, offset, os.SEEK_SET)
+                tail = os.read(fd, MAX_ACTIVITY_BYTES)
+                if _file_stamp(before) != _file_stamp(os.fstat(fd)) or _file_stamp(before) != _file_stamp(path.lstat()):
+                    return "unknown"
+            finally:
+                os.close(fd)
+        else:
+            data, tail, offset = _data
         lines = data.splitlines() if data.endswith(b"\n") else data.splitlines()[:-1]
         tail_lines = tail.splitlines() if tail.endswith(b"\n") else tail.splitlines()[:-1]
         lines += tail_lines[1:] if offset else tail_lines
         kinds = set()
         for line in lines:
-            value = json.loads(line, object_pairs_hook=_unique_pairs)
+            value = _decode(line) if _decode else json.loads(line, object_pairs_hook=_unique_pairs)
             if not isinstance(value, dict) or value.get("type") not in {"user", "assistant"}:
                 continue
             if value.get("sessionId") != session_id:
@@ -475,6 +481,66 @@ def transcript_kind(path: Path, session_id: str) -> str:
         return next(iter(kinds)) if len(kinds) == 1 else "unknown"
     except (OSError, ValueError, TypeError, RecursionError):
         return "unknown"
+
+
+def transcript_metadata(path, session_id, *, activity=True, kind=True, file_memo=None):
+    """One bounded read/decode for both independent normalized projections."""
+    missing = lambda reason: {"at": None, "source": None, "health": "unavailable", "reason": reason}
+    result = {"activity": missing("activity_scan_limit"), "kind": "unknown"}
+    if not activity and not kind:
+        return result
+    if path.stem.lower() != session_id:
+        file_memo = None
+    fd = None
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        before = os.fstat(fd)
+        if not stat.S_ISREG(before.st_mode) or not _owner_is_current(before):
+            result["activity"] = missing("activity_source_unsafe") if activity else result["activity"]
+            return result
+        if file_memo is not None:
+            cached = file_memo.get(fd, path.parent.name, path.name, "projection")
+            if cached is not None:
+                return {"activity": cached["activity"] if activity else result["activity"],
+                        "kind": cached["kind"] if kind else "unknown"}
+        offset = max(0, before.st_size - MAX_ACTIVITY_BYTES)
+        os.lseek(fd, offset, os.SEEK_SET)
+        tail = os.read(fd, MAX_ACTIVITY_BYTES)
+        # For short files the tail already contains the entire head.
+        head = tail[:MAX_COMPANION_BYTES] if not offset else (os.pread(fd, MAX_COMPANION_BYTES, 0) if kind else b"")
+        after, bound = os.fstat(fd), path.lstat()
+        if (_file_stamp(before) != _file_stamp(after) or _file_stamp(before) != _file_stamp(bound)
+                or len(tail) != before.st_size - offset):
+            result["activity"] = missing("activity_source_changed") if activity else result["activity"]
+            return result
+        decoded = {}
+        def decode(line):
+            if line not in decoded:
+                value = json.loads(line, object_pairs_hook=_unique_pairs)
+                # Retain envelope fields only, never message/tool bodies in the memo.
+                if isinstance(value, dict):
+                    message = value.get("message")
+                    projected = {k: value[k] for k in ("type", "sessionId", "isMeta", "isSidechain", "timestamp") if k in value}
+                    if isinstance(message, dict):
+                        body = message.get("content")
+                        local = isinstance(body, str) and body.startswith(("<command-name>", "<local-command-stdout>", "<local-command-stderr>", "<local-command-caveat>"))
+                        projected["message"] = {"role": message.get("role"), "content": "<command-name>" if local else None}
+                    value = projected
+                decoded[line] = value
+            return decoded[line]
+        if activity:
+            result["activity"] = transcript_activity(path, session_id, _data=(tail, offset), _decode=decode)
+        if kind:
+            result["kind"] = transcript_kind(path, session_id, _data=(head, tail, offset), _decode=decode)
+        if file_memo is not None and activity and kind:
+            file_memo.put(fd, path.parent.name, path.name, "projection", result, before)
+        return result
+    except OSError:
+        result["activity"] = missing("activity_source_unavailable") if activity else result["activity"]
+        return result
+    finally:
+        if fd is not None:
+            os.close(fd)
 
 
 def _bounded_text(value: object, *, max_chars: int, max_utf8_bytes: int) -> str | None:
@@ -629,6 +695,22 @@ def main() -> int:
         _emit({"error": exc.code})
         return 0
 
+    file_memo = None
+    if len(sys.argv) == 2:
+        try:
+            import runpy
+            helper = runpy.run_path(str(Path(__file__).with_name("_claude_file_memo.py")))
+            descriptor = int(sys.argv[1])
+            packet = helper["read_packet"](descriptor, config_dir)
+            os.close(descriptor)
+            file_memo = helper["FileMemo"](config_dir, packet)
+        except (OSError, ValueError):
+            _emit({"error": "history_source_failed"})
+            return 0
+    elif len(sys.argv) != 1:
+        _emit({"error": "history_source_failed"})
+        return 0
+
     blocked: list[str] = []
     _install_audit_guard(blocked)
     try:
@@ -700,21 +782,14 @@ def main() -> int:
             activity_bytes += min(path.stat().st_size, MAX_ACTIVITY_BYTES)
         except OSError:
             activity_bytes += MAX_ACTIVITY_BYTES
-        activity = (
-            transcript_activity(path, session_id)
-            if activity_bytes <= MAX_ACTIVITY_TOTAL_BYTES
-            else {
-                "at": None,
-                "source": None,
-                "health": "unavailable",
-                "reason": "activity_scan_limit",
-            }
-        )
         try:
             size = path.stat().st_size
             classification_bytes += min(size, MAX_ACTIVITY_BYTES) + min(size, MAX_COMPANION_BYTES)
         except OSError:
             classification_bytes += MAX_ACTIVITY_BYTES + MAX_COMPANION_BYTES
+        projection = transcript_metadata(path, session_id,
+            activity=activity_bytes <= MAX_ACTIVITY_TOTAL_BYTES,
+            kind=classification_bytes <= MAX_ACTIVITY_TOTAL_BYTES, file_memo=file_memo)
         rows.append(
             {
                 "session_id": session_id,
@@ -724,11 +799,13 @@ def main() -> int:
                 "cwd": _bounded_cwd(getattr(session, "cwd", None)),
                 "created_at": _valid_epoch(getattr(session, "created_at", None)),
                 "last_modified": _valid_epoch(getattr(session, "last_modified", None)),
-                "activity": activity,
-                "kind": transcript_kind(path, session_id) if classification_bytes <= MAX_ACTIVITY_TOTAL_BYTES else "unknown",
+                "activity": projection["activity"],
+                "kind": projection["kind"],
             }
         )
 
+    if file_memo is not None:
+        file_memo.retain({(p.parent.name, p.name) for p in after_census["transcript_paths"].values()})
     _emit(
         {
             "sdk_version": SDK_VERSION,
@@ -747,6 +824,7 @@ def main() -> int:
             },
             "rows": rows,
             "errors": sorted(errors),
+            **({"file_memo": file_memo.export()} if file_memo is not None else {}),
         }
     )
     return 0

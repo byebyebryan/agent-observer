@@ -64,6 +64,7 @@ def collect_claude(
     executable: Path = Path("/opt/claude-code/bin/claude"),
     include_history: bool = True,
     image_cache=None,
+    file_memo=None,
     owned_worker_group: bool = False,
     config_home_kind: str | None = None,
 ):
@@ -139,7 +140,10 @@ def collect_claude(
             "bootId": boot_id,
             "topology": "private_interactive_registration",
         } if artifact_identity is not None else None
-        identities = saved_ids(config_home)
+        if file_memo is not None:
+            context = hashlib.sha256(json.dumps([namespace, boot_id, result["runtime"], CLAUDE_HISTORY_SDK_VERSION], sort_keys=True).encode()).hexdigest()
+            file_memo.bind_context(context)
+        identities = saved_ids(config_home, file_memo=file_memo) if file_memo is not None else saved_ids(config_home)
         native = snapshot(
             config_home,
             host_scope=host_scope,
@@ -239,7 +243,12 @@ def collect_claude(
         history = {"rows": [], "coverage": {"complete": False, "reason": "not_observed"}, "errors": []}
     elif "namespace" in result:
         try:
-            history = collect_saved_history(config_home, owned_worker_group=True) if owned_worker_group else collect_saved_history(config_home)
+            history_options = {}
+            if owned_worker_group:
+                history_options["owned_worker_group"] = True
+            if file_memo is not None:
+                history_options["file_memo"] = file_memo
+            history = collect_saved_history(config_home, **history_options)
         except Exception:
             history = {
                 "rows": [],
