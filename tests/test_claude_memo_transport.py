@@ -12,7 +12,7 @@ from unittest.mock import patch
 from test_service_state import provider_snapshot
 from test_service_contract import fixture
 from agent_observer._claude_file_memo import FileMemo
-from agent_observer.contract import canonical
+from agent_observer.contract import canonical, store_namespace
 from agent_observer.service_runtime import Runtime, Worker
 from agent_observer.service_state import ServiceState
 
@@ -21,6 +21,10 @@ class ClaudeMemoTransportTest(unittest.TestCase):
         self.value = provider_snapshot('claude')
         self.value['host']['uid'] = os.geteuid()
         self.source = self.value['sources'][0]
+        self.source['namespace'] = store_namespace('claude', self.source['configHome'],
+            self.source['configHomeKind'], os.geteuid())
+        for row in self.value['sessions']:
+            row['identity']['namespace'] = self.source['namespace']
         self.home = self.source['configHome']
         self.now = 15000
         self.temp = tempfile.TemporaryDirectory()
