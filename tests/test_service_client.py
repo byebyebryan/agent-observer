@@ -10,6 +10,17 @@ from agent_observer.service_client import frames
 
 
 class ServiceClientTest(unittest.TestCase):
+    def test_local_ticks_do_not_forge_frames_or_reset_transport(self):
+        with Running() as server:
+            stream = frames(server.path, host_scope="fixture", tick_interval=0.1)
+            try:
+                first = next(stream)
+                self.assertEqual(first["sequence"], 1)
+                self.assertIsNone(next(stream))
+                self.assertEqual(server.runtime.counts["workerStarts"], 0)
+            finally:
+                stream.close()
+
     def test_explicit_cold_status_and_host_rejection(self):
         with Running() as server:
             frame = next(frames(server.path, host_scope="fixture", operation="status"))

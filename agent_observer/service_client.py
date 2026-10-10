@@ -1,5 +1,6 @@
 """Explicit Unix read transport; no autostart, provider access or fallback."""
 
+import math
 import os
 import socket
 import stat
@@ -11,9 +12,17 @@ from .contract import ContractError, canonical
 from .service_contract import MAX_FRAME_BYTES, StreamGuard, parse_frame, validate_request
 
 
-def frames(path, *, host_scope, operation="watch", timeout=15.0):
+def frames(path, *, host_scope, operation="watch", timeout=15.0, tick_interval=None):
+    """Yield validated frames; optional None ticks are local presentation wakeups.
+
+    Ticks do not reset the transport deadline or change protocol frame counts.
+    Default callers receive exactly the existing frame-only stream.
+    """
     if type(timeout) not in (int, float) or not 1 <= timeout <= 60:
         raise ContractError("service_client_timeout")
+    if tick_interval is not None and (type(tick_interval) not in (int, float)
+                                      or not math.isfinite(tick_interval) or not 0.1 <= tick_interval <= 60):
+        raise ContractError("service_client_tick_interval")
     path = Path(path)
     if not path.is_absolute() or path.parent.resolve() != path.parent:
         raise ContractError("service_socket_path")
@@ -36,14 +45,23 @@ def frames(path, *, host_scope, operation="watch", timeout=15.0):
             raise ContractError("service_peer_ownership")
         peer.sendall((canonical(request) + "\n").encode())
         pending = bytearray()
+        tick_at = time.clock_gettime(time.CLOCK_BOOTTIME) + (tick_interval or timeout)
         while True:
             deadline = time.clock_gettime(time.CLOCK_BOOTTIME) + timeout
             while b"\n" not in pending:
-                remaining = deadline - time.clock_gettime(time.CLOCK_BOOTTIME)
+                now = time.clock_gettime(time.CLOCK_BOOTTIME)
+                if tick_interval is not None and now >= tick_at:
+                    yield None
+                    now = time.clock_gettime(time.CLOCK_BOOTTIME)
+                    tick_at = now + tick_interval
+                remaining = deadline - now
                 if remaining <= 0:
                     raise ContractError("service_transport_timeout")
-                peer.settimeout(remaining)
-                part = peer.recv(min(65536, MAX_FRAME_BYTES + 1 - len(pending)))
+                peer.settimeout(min(remaining, max(0.001, tick_at - now)) if tick_interval is not None else remaining)
+                try:
+                    part = peer.recv(min(65536, MAX_FRAME_BYTES + 1 - len(pending)))
+                except TimeoutError:
+                    continue
                 if not part:
                     raise ContractError("service_disconnected")
                 pending.extend(part)
