@@ -93,8 +93,15 @@ new transport contracts or networking changes in Observer.
 
 The retention repair removes the profiled root hotspot. Snap still spends
 material CPU in owned collection helpers under active Claude/native-hint load.
-A following bounded pass can attribute helper CPU by native hint, runtime scan
-and saved metadata, using the selected a14 baseline before proposing any change.
+The [residual profiling pass](evidence/2026-10-10-residual-collector-cpu/REPORT.md)
+attributes the remaining Snap helper cost: hint-driven full Claude history scans
+and duplicate activity/kind transcript decoding dominate; the hint listeners are
+cheap. A fresh five-minute ordinary-workload window totals 6.91% of one core,
+including at least 3.55% in Claude history workers/helpers. This does not replace
+the preceding 11.01% ten-minute measurement or promise an idle floor. The proposed
+first repair shares bounded transcript parsing, with behavioral parity and
+independent installed/native/sustained-cost gates before collector selection.
+Normalized metadata memoization remains a separate decision after remeasurement.
 It must preserve independent history/runtime clocks, accepted cadence/hints,
 source faults and native classification. No cadence or native scope is relaxed
 to make the retention repair look cheaper.

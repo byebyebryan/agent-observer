@@ -1,0 +1,69 @@
+{
+  "status": "profiled",
+  "method": "py-spy 0.4.2 consistent GIL-holding 79Hz, subprocess discovery",
+  "durationSeconds": 120,
+  "samples": 237,
+  "errors": 1,
+  "capturedSamplesByRole": {
+    "publisher": 120,
+    "claude_collector": 82,
+    "claude_metadata": 24,
+    "codex_hint": 8,
+    "claude_hint": 3
+  },
+  "inclusiveFunctionSamples": {
+    "validate_shape": 109,
+    "_complete": 104,
+    "identity_key": 49,
+    "publish": 67,
+    "transcript_activity": 11,
+    "saved_ids": 23,
+    "decode_document": 28,
+    "_identity": 23,
+    "canonical": 3,
+    "_pairs": 2,
+    "transcript_kind": 12,
+    "_integer": 3,
+    "_retire_runtime_only": 11
+  },
+  "rawPayloadsRetained": false,
+  "limits": [
+    "sample shares are not OS CPU shares",
+    "short-lived workers may escape subprocess discovery"
+  ],
+  "inclusiveFunctionSamplesByRole": {
+    "publisher": {
+      "total": 120,
+      "validate_shape": 88,
+      "_complete": 104,
+      "publish": 67,
+      "identity_key": 42,
+      "canonical": 2,
+      "_retire_runtime_only": 11,
+      "decode_document": 1
+    },
+    "claude_collector": {
+      "total": 82,
+      "validate_shape": 21,
+      "identity_key": 7,
+      "saved_ids": 23,
+      "decode_document": 27,
+      "_identity": 23,
+      "canonical": 1,
+      "_pairs": 2,
+      "_integer": 3,
+      "_verify_artifact": 1
+    },
+    "claude_metadata": {
+      "total": 24,
+      "transcript_activity": 11,
+      "transcript_kind": 12
+    },
+    "codex_hint": {
+      "total": 8
+    },
+    "claude_hint": {
+      "total": 3
+    }
+  }
+}

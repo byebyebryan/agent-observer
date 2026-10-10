@@ -1,0 +1,58 @@
+{
+  "sourceHead": "8b8ebeb645edbf27d49734553c6c38b37a51dbbe",
+  "collectorPrefix": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b",
+  "sourceInstalledHashes": {
+    "observation_engine.py": {
+      "sourceSha256": "1f880766082a9565663a03ebc3a002d1731ed742917649033b1b96865203b621",
+      "installedSha256": "1f880766082a9565663a03ebc3a002d1731ed742917649033b1b96865203b621",
+      "equal": true
+    },
+    "claude_hints.py": {
+      "sourceSha256": "610285eb91d70adf9620a13256501cd7c1365c8f8a82298e5279483b6af9cd6d",
+      "installedSha256": "610285eb91d70adf9620a13256501cd7c1365c8f8a82298e5279483b6af9cd6d",
+      "equal": true
+    },
+    "claude_snapshot.py": {
+      "sourceSha256": "adbb4c86534f7bc8b4eb5a76ef29fded681ee7f5c028aebd58ea084b2621d8d8",
+      "installedSha256": "adbb4c86534f7bc8b4eb5a76ef29fded681ee7f5c028aebd58ea084b2621d8d8",
+      "equal": true
+    },
+    "claude_saved_identity.py": {
+      "sourceSha256": "138aabdda0ea85eb9342371acb07e0b28b298f12bad1520a8eebaa5d7110ab1f",
+      "installedSha256": "138aabdda0ea85eb9342371acb07e0b28b298f12bad1520a8eebaa5d7110ab1f",
+      "equal": true
+    },
+    "_claude_history_worker.py": {
+      "sourceSha256": "751be5eab6bf624c8189a92bde43d606974a398a1ece96770f14f56253319255",
+      "installedSha256": "751be5eab6bf624c8189a92bde43d606974a398a1ece96770f14f56253319255",
+      "equal": true
+    },
+    "observation_scheduler.py": {
+      "sourceSha256": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6",
+      "installedSha256": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6",
+      "equal": true
+    },
+    "service_runtime.py": {
+      "sourceSha256": "18d78454f95ffdb6fe1996dea217456869d0fe56d5e25ca7d815922642712dd5",
+      "installedSha256": "18d78454f95ffdb6fe1996dea217456869d0fe56d5e25ca7d815922642712dd5",
+      "equal": true
+    }
+  },
+  "normalUnit": {
+    "ActiveState": "active",
+    "MainPID": "2367213",
+    "NRestarts": "0"
+  },
+  "collector": {
+    "pid": 2367213,
+    "birth": 65491117
+  },
+  "codex_hint": {
+    "pid": 2367265,
+    "birth": 65491125
+  },
+  "claude_hint": {
+    "pid": 2367266,
+    "birth": 65491125
+  }
+}
