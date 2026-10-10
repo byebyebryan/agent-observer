@@ -1,0 +1,2 @@
+{{- $selection := include "deployments/agent-observer.json" | fromJson -}}
+{{ .chezmoi.homeDir }}/{{ $selection.prefix }}/bin/agent-observer-service

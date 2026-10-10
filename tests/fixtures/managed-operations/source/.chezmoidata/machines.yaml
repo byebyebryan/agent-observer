@@ -1,0 +1,8 @@
+machine:
+  # Resolve hostnames to stable logical IDs used by host-gated templates.
+  # Unknown hosts intentionally resolve to "unknown" and receive no
+  # host-specific templates, including workstation-only transport files.
+  by_hostname:
+    starship: starship
+    "80H1VV3": snap
+    carbon: carbon

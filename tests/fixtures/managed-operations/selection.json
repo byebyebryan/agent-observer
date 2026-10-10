@@ -1,0 +1,49 @@
+{
+  "manifestVersion": 2,
+  "selection": "observer_only_operational_candidate",
+  "hosts": [
+    "snap",
+    "starship"
+  ],
+  "version": "0.5.0a15",
+  "sourceRevision": "eed244fae16199f88c92dc2f520f4823cce221e8",
+  "wheelSha256": "073296885c5b67ac2f0d9bf8c268393794ff722523fd8fb746118ed5aaa91c08",
+  "prefix": ".local/share/agent-observer/0.5.0a15-073296885c5b67ac",
+  "archive": ".local/share/agent-observer/0.5.0a15-073296885c5b67ac/artifact",
+  "wheel": "agent_observer-0.5.0a15-py3-none-any.whl",
+  "schemas": {
+    "snapshot": 4,
+    "watch": 4
+  },
+  "serviceProtocol": 2,
+  "unit": "agent-observer.service",
+  "workspaceConfig": ".config/agent-observer/workspace.json",
+  "profiles": {
+    "snap": {
+      "providers": [
+        "codex",
+        "claude"
+      ],
+      "runtimeSeconds": 30,
+      "historySeconds": 120,
+      "artifactProfile": "claude-history",
+      "nativeHints": true
+    },
+    "starship": {
+      "providers": [
+        "codex"
+      ],
+      "runtimeSeconds": 20,
+      "historySeconds": 60,
+      "artifactProfile": "core",
+      "nativeHints": true
+    }
+  },
+  "apiVersion": 2,
+  "writerPrefix": ".local/share/agent-observer/0.4.0a16-a9c13aee3d04144c",
+  "artifactVerifier": {
+    "path": ".local/share/agent-observer/0.5.0a15-073296885c5b67ac/artifact/candidate-artifact",
+    "sha256": "147d1da0e3bf3069174af0e3471958ff91f6d9f9edc469c0c545d660f7395f65"
+  },
+  "readerPrefix": ".local/share/agent-observer/0.5.0a16-94705baebfa51a96-mesh-a10-reader"
+}

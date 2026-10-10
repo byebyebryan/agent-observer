@@ -1,0 +1,2 @@
+{{- $machineID := default "unknown" (get .machine.by_hostname .chezmoi.hostname) -}}
+{{ if or (eq $machineID "snap") (eq $machineID "starship") }}{{ $selection := include "deployments/agent-observer.json" | fromJson }}{{ .chezmoi.homeDir }}/{{ (default $selection.prefix $selection.readerPrefix) }}/bin/agent-observer{{ else }}{{ .chezmoi.homeDir }}/.local/share/agent-observer/0.1.0a5-b68ebf4cefbd8b58/bin/agent-observer{{ end }}

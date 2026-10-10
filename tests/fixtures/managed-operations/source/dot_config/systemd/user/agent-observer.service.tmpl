@@ -1,0 +1,30 @@
+{{- $machineID := default "unknown" (get .machine.by_hostname .chezmoi.hostname) -}}
+{{- $selection := include "deployments/agent-observer.json" | fromJson -}}
+{{- if or (eq $machineID "snap") (eq $machineID "starship") -}}
+{{- $profile := get $selection.profiles $machineID -}}
+[Unit]
+Description=Shared passive coding agent observation
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=exec
+WorkingDirectory=%h
+ExecStart={{ .chezmoi.homeDir }}/{{ $selection.prefix }}/bin/agent-observer-service serve --host-scope {{ $machineID }}{{ range $profile.providers }} --provider {{ . }}{{ end }} --codex-home %h/.codex --runtime-interval {{ $profile.runtimeSeconds }} --history-interval {{ $profile.historySeconds }} --collection-timeout 10 --workspace-config %h/{{ $selection.workspaceConfig }} --socket %t/agent-observer/read.sock{{ if eq (default false (get $profile "nativeHints")) true }} --native-hints --hint-diagnostics %t/agent-observer/hints.json{{ end }}
+UnsetEnvironment=CODEX_HOME CLAUDE_CONFIG_DIR PYTHONPATH PYTHONHOME
+NoNewPrivileges=yes
+UMask=0077
+RuntimeDirectory=agent-observer
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=restart
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+KillMode=control-group
+MemoryAccounting=yes
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=default.target
+{{ end -}}

@@ -68,3 +68,43 @@ read command. It requires an operator-established private namespace and masked
 ordinary provider paths. It launches disposable contexts and stops only the
 verified owned daemon. Do not run it against an ordinary provider home. See the
 execution record for the exact isolation/proof matrix.
+
+## Managed selection tooling
+
+The current host selection is configuration-owned in
+[dotfiles deployments/agent-observer.json](https://github.com/byebyebryan/dotfiles/blob/main/deployments/agent-observer.json).
+Collector, reader and writer prefixes are independent; use the selection rather
+than inferring one from another. The reader/bridge may advance after the a13
+artifact checkpoint described above. Source checkout identity is separate from
+installed runtime identity. Use a checkout of this repository at the reviewed
+operations-tooling commit on each host; no Snap development path is required.
+
+```sh
+./scripts/agent-observer-operations verify --host snap --source /absolute/chezmoi --selection /absolute/chezmoi/deployments/agent-observer.json
+./scripts/agent-observer-operations apply --host snap --source /absolute/chezmoi --selection /absolute/chezmoi/deployments/agent-observer.json
+```
+
+`verify` is passive; `apply` defaults to a dry run. Live selection requires
+`--apply --snapshot /absolute/private/new-backup`, and upgrades additionally
+require `--previous-tuple /absolute/private/previous.json`. A snapshot uses a new
+owned 0700 directory beneath an existing canonical parent. Six targets are in
+scope: read/write/service links, workspace JSON, user unit and enablement link.
+The projection excludes unrelated externals. It never changes frontend selection,
+provider settings, hooks, native sessions or lingering.
+
+Installed wheel/profile/manifest/verifier checks precede selection. Existing
+controls must match the previous render; executable, argv, UID and PID birth
+must match before stopping the owned unit. Missing canonical artifact archives,
+changed workspace/unit bytes, foreign prefixes and changed incarnations reject
+before stop. `rollback --snapshot ...` verifies all selected controls, restores
+only captured targets and restarts the verified prior publisher. Source remains
+on the candidate. Reselection reuses the snapshot only after exact restoration;
+review drift and explicitly reselect before any broader configuration apply.
+
+The synthetic operations self-test covers ownership, arguments, process birth,
+permissions, foreign prefixes, restore/reselection and unrelated externals.
+It does not establish live deployment, native delivery, physical suspend or
+UI acceptance. Cached `service list/status/watch` reads never start a collector;
+direct reads perform collection. Authorized unit recovery creates a new service
+incarnation, and clients must discard previous authority and honor warming,
+partial, stale and gap states.

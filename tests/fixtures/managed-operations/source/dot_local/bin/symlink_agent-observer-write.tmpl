@@ -1,0 +1,2 @@
+{{- $machineID := default "unknown" (get .machine.by_hostname .chezmoi.hostname) -}}
+{{ if or (eq $machineID "snap") (eq $machineID "starship") }}{{ $selection := include "deployments/agent-observer.json" | fromJson }}{{ .chezmoi.homeDir }}/{{ default $selection.prefix (get $selection "writerPrefix") }}/bin/agent-observer-write{{ else }}{{ .chezmoi.homeDir }}/.local/share/agent-observer/0.2.0a9-b4563dc2a09df0e1/bin/agent-observer-write{{ end }}
