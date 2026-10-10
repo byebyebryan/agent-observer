@@ -158,7 +158,7 @@ async def run(args, *, output=None, human_output=None):
         if events is not stream:
             await events.aclose()
         await stream.aclose()
-        if args.human and operation == "watch" and sys.exc_info()[0] in {None, KeyboardInterrupt}:
+        if args.human and operation == "watch" and sys.exc_info()[0] in {None, KeyboardInterrupt, asyncio.CancelledError}:
             human_output("Mesh watch ended; current view revoked")
     return result
 
