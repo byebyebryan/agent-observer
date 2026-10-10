@@ -1,5 +1,10 @@
 # Agent Observer architecture boundaries
 
+The optional [Mesh read CLI](mesh-read-client.md) uses Mesh Plus's configured
+Reader and ReadGuard. Core and the local service do not import it. The CLI owns
+read validation/presentation only; Mesh owns IPC/SSH, fleet scope and remote
+proofs. Raw mesh frames preserve provider metadata, receipts and canonical rows.
+
 The [observation ownership clarification](observation-boundaries.md) defines
 the implemented boundary: core contains the model, passive adapters and reusable
 observation engine; the service hosts it and provides local IPC. Provider refresh

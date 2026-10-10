@@ -12,7 +12,14 @@ from pathlib import Path
 
 from . import __version__
 from .bounded_json import WireError, decode_document
-from .contract import MAX_BYTES, SCHEMA_VERSION, ContractError, canonical, parse_snapshot, schema_document
+from .contract import (
+    MAX_BYTES,
+    SCHEMA_VERSION,
+    ContractError,
+    canonical,
+    parse_snapshot,
+    schema_document,
+)
 from .native_contracts import CONTRACTS
 from .read_client import diagnostic, human_rows, listing
 from .read_client import select as select_session
@@ -78,6 +85,10 @@ def _snapshot(args):
 def _watch_output(frame):
     """Bound stdout backpressure; reconnect starts a new epoch/snapshot."""
     data = (canonical(frame) + "\n").encode()
+    _write_output(data)
+
+
+def _write_output(data):
     fd = sys.stdout.fileno()
     blocking = os.get_blocking(fd)
     deadline = time.monotonic() + 5
@@ -101,10 +112,14 @@ def main(argv=None):
     if arguments and arguments[0] == "service":
         from .service_cli import main as service_main
         return service_main(arguments[1:])
+    if arguments and arguments[0] == "mesh":
+        from .mesh_cli import main as mesh_main
+        return mesh_main(arguments[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("service", help="explicit cached service read client (service --help)")
+    commands.add_parser("mesh", help="optional Mesh Plus cached state client (mesh --help)")
     commands.add_parser("api", help="describe the versioned public interface")
     schemas = commands.add_parser("schema", help="emit a bundled public JSON schema")
     schemas.add_argument("--kind", choices=("snapshot", "watch"), required=True)
@@ -191,7 +206,6 @@ def main(argv=None):
                     )
                     for code in source["errors"]:
                         detail = {
-                            "runtime_image_ownership_mismatch": "runtime image ownership or provider locator did not match the required context",
                             "runtime_artifact_unavailable": "installed runtime executable could not be read",
                             "runtime_peer_identity_mismatch": "kernel peer does not match the configured managed endpoint owner",
                             "runtime_binary_not_accepted": "owning runtime image differs from the explicitly requested artifact",

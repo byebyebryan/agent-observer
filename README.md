@@ -13,6 +13,11 @@ simplified.
 
 ## Status
 
+The optional a12 [Mesh read client](docs/mesh-read-client.md) implements the
+[state-only integration plan](docs/mesh-integration-plan.md). It consumes Mesh
+Plus's SDK; networking remains outside core and the host-local service.
+Its package/native/operational acceptance is separate from the a11 service gate.
+
 The current checkpoint is [a11 finite runtime-only retention](docs/evidence/2026-10-09-runtime-only-retention/REPORT.md).
 Normal read CLI/services select a11 on Snap and Starship through the separate
 operational gate. Codex is accepted on both hosts; Claude interactive discovery

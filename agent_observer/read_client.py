@@ -15,11 +15,18 @@ def _activity_time(row):
 
 
 def ordered_rows(snapshot, *, include_children=False, providers=None, order="activity"):
-    validate_snapshot(snapshot)
+    return ordered_snapshots([snapshot], include_children=include_children, providers=providers, order=order)
+
+
+def ordered_snapshots(snapshots, *, include_children=False, providers=None, order="activity"):
+    """Order independently validated host snapshots for a presentation client."""
+    for snapshot in snapshots:
+        validate_snapshot(snapshot)
     if order not in {"activity", "created"}:
         raise ContractError("invalid_order")
     rows = [
         copy.deepcopy(row)
+        for snapshot in snapshots
         for row in snapshot["sessions"]
         if (include_children or row["kind"] != "child")
         and (not providers or row["identity"]["provider"] in providers)
@@ -71,10 +78,15 @@ def human_rows(snapshot, *, now_ms=None, **options):
     # Callers supply display time; deterministic pure consumers may use the
     # receipt time. Neither changes native evidence or the snapshot itself.
     now_ms = snapshot["collectedAt"] if now_ms is None else now_ms
+    return human_snapshots([snapshot], now_ms=now_ms, **options)
+
+
+def human_snapshots(snapshots, *, now_ms, **options):
+    """Human-only cross-host view; never rewrites a transport envelope."""
     if type(now_ms) is not int or now_ms < 0:
         raise ContractError("invalid_display_time")
     lines = ["HOST  PROVIDER  PHASE  RUNTIME  AGE  ID  TITLE"]
-    for row in ordered_rows(snapshot, **options):
+    for row in ordered_snapshots(snapshots, **options):
         identity = row["identity"]
         at = _activity_time(row)
         if at is None:
