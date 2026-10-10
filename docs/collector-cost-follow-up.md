@@ -32,6 +32,13 @@ read-delivery pass changes no collector, cadence, provider settings or retention
 semantics. Its [acceptance report](evidence/2026-10-09-read-delivery/REPORT.md)
 records the complete measurement matrix and exclusions.
 
+The [a14 repair report](evidence/2026-10-09-retention-cpu-repair/REPORT.md)
+records completed C0–C5 source, artifact, native, sustained candidate/normal
+CPU and scoped operational gates. Normal services select a14 on both hosts;
+root/total CPU is 2.72/11.01% of one core on Snap and 1.12/2.02% on Starship. The implementation caches only a provider dirty flag
+and its next eligible deadline; it reuses validated keys within changed
+reconciliation instead of maintaining persistent full-roster indices.
+
 ## Execution gates
 
 The user authorized the repair goal loop after live profiling. Keep this a
@@ -81,3 +88,17 @@ Mesh bridge and fleet-reader CPU also increase with subscribers. Their recorded
 costs warrant a separate Mesh investigation into repeated validation, copying
 and per-reader SSH work. These observations do not authorize pooling, a broker,
 new transport contracts or networking changes in Observer.
+
+## Separate residual cost work
+
+The retention repair removes the profiled root hotspot. Snap still spends
+material CPU in owned collection helpers under active Claude/native-hint load.
+A following bounded pass can attribute helper CPU by native hint, runtime scan
+and saved metadata, using the selected a14 baseline before proposing any change.
+It must preserve independent history/runtime clocks, accepted cadence/hints,
+source faults and native classification. No cadence or native scope is relaxed
+to make the retention repair look cheaper.
+
+Mesh bridge/fleet subscriber costs remain in the separate Mesh thread. The
+current a14 acceptance does not promise an idle floor, native event completeness,
+provider outcomes beyond existing support or terminal/action authority.

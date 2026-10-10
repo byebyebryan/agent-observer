@@ -1,0 +1,17 @@
+{
+  "status": "accepted",
+  "scope": "fleet",
+  "meshProtocol": 1,
+  "clientProtocol": "agent-observer.mesh-candidate.v1",
+  "access": "cached",
+  "sessionCount": 482,
+  "cliSelection": "0.5.0a13",
+  "collectorSelection": "0.5.0a14",
+  "ordinaryProviderActions": false,
+  "networkDeploymentPerformed": false,
+  "rawPayloadsRetained": false,
+  "limits": [
+    "one cached fleet pull after normal CPU measurement",
+    "no frontend/native occurrence or network completeness acceptance"
+  ]
+}

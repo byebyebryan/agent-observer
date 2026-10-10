@@ -20,13 +20,17 @@ signals, pushed read updates and user-facing alerts have separate ownership.
 Meshing and terminal/window matching remain external. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records source/artifact/native acceptance without changing API 2. Normal read
-service selection uses [a11 finite retention](evidence/2026-10-09-runtime-only-retention/REPORT.md).
+service selection uses [a14 retention CPU repair](evidence/2026-10-09-retention-cpu-repair/REPORT.md).
 The independently accepted [a12 Mesh reader](evidence/2026-10-09-mesh-integration/REPORT.md)
 adds cached local/fleet pull and push without restarting collection. History
 and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16. Shared-core BOOTTIME deadlines
 retire disappeared unsaved identities at the original runtime lease, without
 sliding on partial reads. Current rows and positive saved identity are protected.
+Retention reconciles only after accepted receipts, source failure, lease expiry
+or the next eligible unsaved deadline. Provider-sized private dirty/deadline
+caches skip quiet roster scans; admission/public validation and observation
+semantics remain unchanged. These caches supply no native evidence.
 Direct sampled watch uses the same evidence helper with a fixed 60-second bound;
 one-shot reads retain no prior view. Removal is observation-memory retirement,
 not a provider lifecycle assertion. Native admission predicates stay in adapters.

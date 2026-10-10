@@ -1,0 +1,14 @@
+{
+  "unchangedTrackedPaths": 10,
+  "changedSinceBaseline": [
+    ".chezmoiexternal.toml",
+    "docs/tmux-observer-operations-tuple.json"
+  ],
+  "observerPathsExcluded": [
+    "docs/agent-observer-operations-tuple.json",
+    "docs/agent-observer-operations.md",
+    "scripts/agent-observer-operations"
+  ],
+  "observerPathsPresentInBaseline": 2,
+  "concurrentOtherActorChangesPreserved": true
+}

@@ -1,0 +1,8 @@
+{
+  "unchanged": {
+    ".codex/config.toml": true,
+    ".local/bin/agent-observer": true,
+    ".local/bin/agent-observer-write": true,
+    "bridge": true
+  }
+}

@@ -1,10 +1,12 @@
 # API 2 client handoff
 
 Date: 2026-10-09. The observation producer remains independently accepted against
-[0.5.0a11](evidence/2026-10-09-runtime-only-retention/REPORT.md): Codex on
+[0.5.0a14](evidence/2026-10-09-retention-cpu-repair/REPORT.md): Codex on
 Snap/Starship and Claude on Snap. The read CLI independently selects
 [0.5.0a13](evidence/2026-10-09-read-delivery/REPORT.md) on both hosts; collection
-services remain a11 and the Mesh bridge remains a4 in its previous a12 prefix.
+services select a14 and the Mesh bridge remains a4 in its previous a12 prefix.
+a14 removes repeated quiet retention scans, preserving a11 observation behavior
+and every public contract version.
 The preceding a9 interactive and a6 Codex acceptance retain historical bounds.
 The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
@@ -200,12 +202,13 @@ its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
 there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
-The [a11 acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md)
-records the current separate Observer read/service operational gate.
+The [a14 acceptance report](evidence/2026-10-09-retention-cpu-repair/REPORT.md)
+records the current separate Observer service operational gate; a13 retains the
+independent reader selection.
 
 An independent read-client pass may now implement schema/semantic validation,
 exact-reference selection, age/attention presentation, mixed-provider views and
-cached pull/push with gap/resync/lease handling. Use the accepted a11 artifact for
+cached pull/push with gap/resync/lease handling. Use the accepted a14 producer for
 current behavior and the synthetic fixture for interface conformance. The
 [Claude wrap-up](claude-observation-wrap-up.md) records supported scope, completed
 gates and independent follow-ups. Actual New/Resume/attach, cross-host
