@@ -20,6 +20,7 @@ UUID = r"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
 SCOPE = r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$"
 CODE = r"^[a-z][a-z0-9_]{0,127}$"
 DIGEST = r"^sha256:[0-9a-f]{64}$"
+ASCII_CONTROLS = re.compile(r"[\x00-\x1f\x7f]")
 
 
 def text(limit=4096, *, pattern=None, nullable=False):
@@ -262,9 +263,11 @@ def validate_shape(value, spec):
         for item in value:
             validate_shape(item, spec["items"])
     elif isinstance(value, str):
-        if not spec.get("minLength", 0) <= len(value) <= spec.get("maxLength", 4096) or any(
-            unicodedata.category(c).startswith("C") for c in value
-        ):
+        if not spec.get("minLength", 0) <= len(value) <= spec.get("maxLength", 4096):
+            raise ContractError("invalid_contract_text")
+        controls = (ASCII_CONTROLS.search(value) is not None if str.isascii(value) else
+                    any(unicodedata.category(c).startswith("C") for c in value))
+        if controls:
             raise ContractError("invalid_contract_text")
         if "pattern" in spec and not re.fullmatch(spec["pattern"], value, re.ASCII):
             raise ContractError("invalid_contract_text")
