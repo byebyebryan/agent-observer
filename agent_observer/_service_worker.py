@@ -30,7 +30,7 @@ def main():
     request_limit = MAX_CONFIG_BYTES + 16384
     request = decode_document(sys.stdin.buffer.read(request_limit + 1), max_bytes=request_limit)
     keys = {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig"}
-    if set(request) not in (keys, keys | {"imageMemoFd"}):
+    if not keys <= set(request) or set(request) - keys - {"imageMemoFd", "claudeMemoFd"}:
         raise ValueError("service_worker_request")
     if type(request["timeoutMs"]) is not int or not 1000 <= request["timeoutMs"] <= 30000:
         raise ValueError("service_worker_timeout")
@@ -51,8 +51,18 @@ def main():
     if request["configHomeKind"] not in {"explicit", "default"}:
         raise ValueError("service_worker_request")
     adapter.validate_selector(home, request["configHomeKind"])
-    memo, channel = None, None
+    memo, channel, file_memo = None, None, None
     try:
+        if "claudeMemoFd" in request:
+            if provider != "claude":
+                raise ValueError("service_worker_memo_provider")
+            from agent_observer._claude_file_memo import FileMemo, read_packet
+            descriptor = request["claudeMemoFd"]
+            try:
+                file_memo = FileMemo(home, read_packet(descriptor, home))
+            finally:
+                if type(descriptor) is int and descriptor >= 3:
+                    os.close(descriptor)
         if "imageMemoFd" in request:
             from agent_observer._image_memo import ImageMemo, receive, send
             descriptor = request['imageMemoFd']
@@ -69,7 +79,8 @@ def main():
                 memo = ImageMemo(provider)
         native = adapter.collect(home, host_scope=request["hostScope"],
                                  include_history=component == "history", image_cache=memo,
-                                 owned_worker_group=True)
+                                 owned_worker_group=True,
+                                 **({"file_memo": file_memo} if file_memo is not None else {}))
         value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
         if component == "history":
             enrich(value, request["workspaceConfig"])
@@ -78,7 +89,7 @@ def main():
                 send(channel, memo)
             except (ValueError, OSError):
                 pass
-        sys.stdout.write(canonical(value))
+        sys.stdout.write(canonical({"snapshot": value, "claudeMemo": file_memo.export()} if file_memo is not None else value))
         return 0
     finally:
         if memo is not None:
