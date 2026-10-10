@@ -1,0 +1,34 @@
+{
+  "host": "starship",
+  "frames": [
+    {
+      "stage": "initial",
+      "kind": "view",
+      "status": "connecting",
+      "sequence": 1
+    },
+    {
+      "stage": "initial",
+      "kind": "view",
+      "status": "ready",
+      "sequence": 2
+    },
+    {
+      "stage": "lost",
+      "kind": "resync",
+      "status": "unavailable",
+      "sequence": 3
+    },
+    {
+      "stage": "recover",
+      "kind": "resync",
+      "status": "ready",
+      "sequence": 4
+    }
+  ],
+  "lostAuthorityObserved": true,
+  "readyResyncAfterRestart": true,
+  "ownedReadClosed": true,
+  "providerActions": 0,
+  "observerRestarted": false
+}

@@ -1,0 +1,23 @@
+{
+  "host": "80H1VV3",
+  "samples": [
+    {
+      "readers": 1,
+      "seconds": 5.001,
+      "readerCpuSeconds": 0.58,
+      "readerRssKiB": 34460,
+      "bridgeCpuSeconds": 0.51,
+      "bridgeRssKiB": 33676
+    },
+    {
+      "readers": 2,
+      "seconds": 5.001,
+      "readerCpuSeconds": 1.92,
+      "readerRssKiB": 69208,
+      "bridgeCpuSeconds": 1.73,
+      "bridgeRssKiB": 35904
+    }
+  ],
+  "scope": "five-second ordinary local read window including cold client startup; excludes Observer and SSH; descriptive, no strict budget",
+  "ownedReadsClosed": true
+}

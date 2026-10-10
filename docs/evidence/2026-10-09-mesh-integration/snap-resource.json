@@ -1,0 +1,24 @@
+{
+  "host": "80H1VV3",
+  "bridgePid": 2032688,
+  "samples": [
+    {
+      "readers": 1,
+      "seconds": 5.011,
+      "cpuSeconds": 0.85,
+      "rssKiB": 34224,
+      "frames": 4,
+      "ownedReadsClosed": true
+    },
+    {
+      "readers": 2,
+      "seconds": 5.009,
+      "cpuSeconds": 1.81,
+      "rssKiB": 35836,
+      "frames": 8,
+      "ownedReadsClosed": true
+    }
+  ],
+  "scope": "ordinary active host; local bridge, excludes per-reader/SSH/Observer CPU and RSS",
+  "strictBudget": false
+}

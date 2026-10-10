@@ -1,5 +1,11 @@
 # Optional Mesh state read client
 
+The [accepted a12/a4 candidate](evidence/2026-10-09-mesh-integration/REPORT.md)
+is selected on Snap and Starship. Both bridge units are enabled. Collection
+services stay a11 and the writer stays a16; the shared SSH Plus authority stays a1.
+These immutable candidate wheels are archived locally on both hosts, not released
+publicly by this pass.
+
 Observer a12 adds a read-only client of `mesh-plus>=0.1.0a4,<0.2`. Install the
 optional `mesh` extra or explicitly install the reviewed Mesh wheel into the
 client environment. Core and local service remain dependency-free. Normal

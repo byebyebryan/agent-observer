@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Exercise only the gated Mesh bridge/read selection and captured prior targets."""
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+from pathlib import Path
+
+
+def run(argv):
+    return subprocess.run(argv, capture_output=True, check=True, timeout=45).stdout
+
+
+def main(host):
+    home = Path.home()
+    root = home / ".local/share/chezmoi"
+    baseline = json.loads((home / ".local/state/agent-observer/mesh-rollback/2026-10-09/baseline.json").read_text())
+    value = json.loads((root / "docs/agent-observer-mesh-tuple.json").read_text())
+    prefix = home / value["readerPrefix"]
+    targets = baseline["targets"]
+    expected_targets = {".local/bin/agent-observer", ".local/bin/mesh-plus", ".config/mesh-plus/sources.toml",
+                        ".config/systemd/user/mesh-plus-agent.service", ".config/systemd/user/default.target.wants/mesh-plus-agent.service"}
+    if set(targets) != expected_targets or host not in value["hosts"]:
+        raise ValueError("selection_scope_invalid")
+    run([str(root / "scripts/agent-observer-mesh-operations"), "--host", host])
+    unit = value["unit"]
+    pid = int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"]))
+    def birth():
+        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+    started = birth()
+    argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+    if str(prefix / "bin/mesh-plus").encode() not in argv or b"serve" not in argv:
+        raise ValueError("selection_foreign_unit")
+    if pid != int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"])) or birth() != started:
+        raise ValueError("selection_unit_changed")
+    desired = {t: run(["chezmoi", "--source", str(root), "--refresh-externals=never", "cat", str(home / t)]) for t in targets}
+    prior = None
+    try:
+        run(["systemctl", "--user", "stop", unit])
+        for target, saved in targets.items():
+            path = home / target
+            if path.exists() or path.is_symlink():
+                path.unlink()
+            if saved["kind"] == "symlink":
+                path.symlink_to(saved["value"])
+            elif saved["kind"] == "file":
+                path.write_text(saved["value"])
+                path.chmod(saved["mode"])
+        run(["systemctl", "--user", "daemon-reload"])
+        if os.readlink(home / ".local/bin/agent-observer") != targets[".local/bin/agent-observer"]["value"]:
+            raise ValueError("selection_prior_reader_changed")
+        prior = run([str(home / ".local/bin/agent-observer"), "--version"]).decode().strip()
+        cache = json.loads(run([str(home / ".local/bin/agent-observer"), "service", "status", "--host-scope", host]))
+        if cache["state"] != "ready":
+            raise ValueError("selection_prior_cache_unavailable")
+    finally:
+        # Forced apply is allowed only for a target still matching this owned
+        # restored baseline or the reviewed candidate, never unrelated drift.
+        for target, saved in targets.items():
+            path = home / target
+            if not path.exists() and not path.is_symlink():
+                allowed = saved["kind"] == "absent"
+            elif path.is_symlink():
+                allowed = os.readlink(path) in [desired[target].decode().strip(), saved.get("value")]
+            else:
+                allowed = path.read_bytes() == desired[target] or saved["kind"] == "file" and path.read_text() == saved["value"]
+            if not allowed:
+                raise ValueError("selection_target_changed")
+        first = [str(home / t) for t in targets if "default.target.wants" not in t]
+        first[first.index(str(home / ".config/mesh-plus/sources.toml"))] = str(home / ".config/mesh-plus")
+        for selected in (first, [str(home / ".config/systemd/user/default.target.wants/mesh-plus-agent.service")]):
+            run(["chezmoi", "--source", str(root), "--refresh-externals=never", "apply", "--force", *selected])
+        run(["systemctl", "--user", "daemon-reload"])
+        run(["systemctl", "--user", "start", unit])
+    receipt = json.loads(run([str(root / "scripts/agent-observer-mesh-operations"), "--host", host]))
+    current = run(["systemctl", "--user", "show", "agent-observer.service", "-p", "MainPID", "-p", "ActiveState", "-p", "NRestarts"]).decode()
+    if current != baseline["observerUnit"] or not all(hashlib.sha256((home / t).read_bytes()).hexdigest() == sha for t, sha in baseline["protectedHashes"].items()):
+        raise ValueError("selection_preservation_failed")
+    return {"host": host, "priorCli": prior, "baselineTargetsRestored": len(targets), "priorCachedReadReady": True,
+            "reselectedGate": receipt["status"], "observerUnitUnchanged": True, "protectedHashesUnchanged": True,
+            "bridgeUnitOnlyStopped": True, "verifiedScopedForceReselection": True}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host", choices=("snap", "starship"), required=True)
+    args = parser.parse_args()
+    try:
+        print(json.dumps(main(args.host), indent=2))
+    except Exception:
+        print(json.dumps({"error": "mesh_selection_acceptance_failed"}))
+        raise SystemExit(1) from None

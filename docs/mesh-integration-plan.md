@@ -6,6 +6,12 @@ Date: 2026-10-09. Authorized implementation following the Mesh catch-up and
 `agent-observer.mesh-candidate.v1`, consuming API 2 / snapshot 4 / service 2.
 No native observation or public wire version changes are required.
 
+S0–S3 are accepted at the [completion checkpoint](evidence/2026-10-09-mesh-integration/REPORT.md).
+The selected reader/bridge is a12/a4 on both hosts; local collection remains
+a11 and the writer a16. Native events, alert normalization, shared fleet broker,
+physical suspend, downstream UI/device adoption and public artifact publication
+are independent following work. Exact wheel archives are installed on both hosts.
+
 ## Ownership and delivery
 
 Observer core/local service retain collection, reconciliation, coverage, native

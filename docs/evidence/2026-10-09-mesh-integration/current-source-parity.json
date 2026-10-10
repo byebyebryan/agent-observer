@@ -1,0 +1,22 @@
+{
+  "tmux-observer": {
+    "head": "c1525e48b9906548b5aa3804ebb9903d45aab634",
+    "changedRecordedFiles": []
+  },
+  "agent-observer": {
+    "head": "e55825e2843905f9f60ce332f94014f53331987f",
+    "changedRecordedFiles": []
+  },
+  "rofi-tmux-plus": {
+    "head": "734f227d615986283fcf4932454ebdb27cf0c014",
+    "changedRecordedFiles": []
+  },
+  "rofi-agent-plus": {
+    "head": "f28e56256dd2a33e7ca40dddbf2bab90b8b42b71",
+    "changedRecordedFiles": []
+  },
+  "rofi-ssh-plus": {
+    "head": "e01f89cfdb7b068f6b2150b33a96dbce1b5c328f",
+    "changedRecordedFiles": []
+  }
+}

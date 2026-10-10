@@ -1,0 +1,24 @@
+{
+  "host": "starship",
+  "bridgePid": 447763,
+  "samples": [
+    {
+      "readers": 1,
+      "seconds": 5.006,
+      "cpuSeconds": 1.19,
+      "rssKiB": 38528,
+      "frames": 4,
+      "ownedReadsClosed": true
+    },
+    {
+      "readers": 2,
+      "seconds": 5.004,
+      "cpuSeconds": 1.45,
+      "rssKiB": 39448,
+      "frames": 6,
+      "ownedReadsClosed": true
+    }
+  ],
+  "scope": "ordinary active host; local bridge, excludes per-reader/SSH/Observer CPU and RSS",
+  "strictBudget": false
+}

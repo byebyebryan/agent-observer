@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Verify the exact optional reader/bridge wheels without selecting or collecting."""
+
+import argparse
+import hashlib
+import json
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
+
+
+def require(value):
+    if not value:
+        raise ValueError("mesh_artifact_invalid")
+
+
+def verify(prefix, archive, profile):
+    observer = json.loads((archive / "observer-0.5.0a12.json").read_text())
+    mesh = json.loads((archive / "mesh-0.1.0a4.json").read_text())
+    require(mesh["package"] == "mesh-plus" and mesh["version"] == "0.1.0a4")
+    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1")
+    result = subprocess.run([str(archive / "candidate-artifact"), "verify", "--manifest",
+                             str(archive / "observer-0.5.0a12.json"), "--wheel", str(archive / observer["wheel"]),
+                             "--prefix", str(prefix), "--profile", profile], capture_output=True, check=True, timeout=30)
+    receipt = json.loads(result.stdout)
+    wheel = archive / mesh["wheel"]
+    require(hashlib.sha256(wheel.read_bytes()).hexdigest() == mesh["wheelSha256"])
+    code = """import json,sysconfig,sys,importlib.metadata
+from agent_observer import public,service_public
+from mesh_plus.configured_read import configured_reader
+from mesh_plus.view import ReadGuard
+assert not any(n in sys.modules for n in ('agent_observer.collection','agent_observer.service_runtime',
+ 'agent_observer.write_client','agent_observer.codex_snapshot','agent_observer.claude_snapshot'))
+print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata.version('mesh-plus'),
+ 'observer':importlib.metadata.version('agent-observer'),'api':public.interface(),'service':service_public.interface(),
+ 'dependencies':{n:importlib.metadata.version(n) for n in ('jsonschema','attrs','referencing','rpds-py','jsonschema-specifications')}}))"""
+    output = subprocess.run([str(prefix / "bin/python"), "-I", "-B", "-c", code], check=True, capture_output=True, timeout=30)
+    metadata = json.loads(output.stdout)
+    site = Path(metadata.pop("site"))
+    require(site.is_relative_to(prefix) and metadata["mesh"] == mesh["version"])
+    with zipfile.ZipFile(wheel) as bundle:
+        for entry in bundle.infolist():
+            if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
+                continue
+            path = site / entry.filename
+            require(path.is_file() and not path.is_symlink() and path.read_bytes() == bundle.read(entry))
+    check = subprocess.run([str(prefix / "bin/pip"), "check"], check=True, capture_output=True, timeout=30)
+    require(b"No broken requirements" in check.stdout)
+    shebang = (prefix / "bin/mesh-plus").read_text().splitlines()[0]
+    require(shebang == (prefix / "bin/agent-observer").read_text().splitlines()[0]
+            and Path(shebang[2:]).parent == prefix / "bin")
+    return {"status": "accepted", "observer": receipt, "mesh": mesh, "metadata": metadata,
+            "installedMeshWheelBytesVerified": True, "collectorImports": 0, "providerInvocations": 0}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--archive", type=Path, required=True)
+    parser.add_argument("--profile", choices=("core", "claude-history"), required=True)
+    args = parser.parse_args()
+    try:
+        print(json.dumps(verify(args.prefix, args.archive, args.profile), indent=2))
+        return 0
+    except Exception:
+        print(json.dumps({"status": "rejected", "reason": "mesh_artifact_invalid"}), file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
