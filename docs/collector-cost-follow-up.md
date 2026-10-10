@@ -102,6 +102,9 @@ the preceding 11.01% ten-minute measurement or promise an idle floor. The propos
 first repair shares bounded transcript parsing, with behavioral parity and
 independent installed/native/sustained-cost gates before collector selection.
 Normalized metadata memoization remains a separate decision after remeasurement.
+The user subsequently authorized shared parsing and change-aware normalized
+metadata reuse in the [Claude collection execution](claude-collection-cost-plan.md).
+Its source, immutable/native, sustained-cost and scoped selection gates are pending.
 It must preserve independent history/runtime clocks, accepted cadence/hints,
 source faults and native classification. No cadence or native scope is relaxed
 to make the retention repair look cheaper.
