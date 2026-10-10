@@ -5,6 +5,8 @@ is selected on Snap and Starship. Both bridge units are enabled. Collection
 services stay a11 and the writer stays a16; the shared SSH Plus authority stays a1.
 The [a13 read-delivery pass](evidence/2026-10-09-read-delivery/REPORT.md)
 independently selects the reader without changing the a4 bridge or its a12 prefix.
+The exact [a13 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a13)
+adds timed human watch; raw envelopes remain unchanged.
 These immutable wheels are archived locally on both hosts. The following read
 delivery pass publishes [Observer a12](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a12)
 and [Mesh a4](https://github.com/byebyebryan/mesh-plus/releases/tag/v0.1.0a4)

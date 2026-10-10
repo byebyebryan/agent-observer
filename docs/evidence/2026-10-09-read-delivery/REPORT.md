@@ -9,7 +9,11 @@ have been changed by the source/package work.
 
 The [publication receipt](publication.json) accepts the exact archived a12/a4
 GitHub prereleases, downloaded checksums and clean core/Mesh installation.
-No accepted archive was rebuilt or overwritten. The fresh Mesh source gate
+No accepted archive was rebuilt or overwritten. The following
+[a13 publication receipt](a13-publication.json) accepts the exact new wheel and
+manifest downloaded from the
+[GitHub prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a13),
+plus a clean core/Mesh installation. No PyPI publication is implied. The fresh Mesh source gate
 passes 116/169 oracles, 56 core tests and frozen lock/schema checks. That source
 environment records installed metadata a3; the preceding
 [immutable a4 native proof](../2026-10-09-mesh-integration/mesh-wheel-native.json)

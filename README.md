@@ -44,8 +44,8 @@ The active [state-push design](docs/state-push-design.md) and
 [review/validation](docs/evidence/2026-10-09-state-push-refinement/REPORT.md)
 refine existing complete-view discovery/monitoring delivery. Initial views,
 source expiry and reconnect/gap/resync establish current state without a new
-event protocol. [Following work](docs/state-push-execution-plan.md) covers optional
-read-cache ergonomics and conformance. The preceding
+event protocol. The [a13 cache guide](docs/read-cache-client.md) supplies the
+implemented read-cache helper and timer conformance. The preceding
 [native occurrence-event research](docs/state-and-events-design.md) is retained,
 but notification normalization, hooks, event replay and Kitty/D-Bus integration
 are deferred. The 349 handoff is one client's request; device projections and
