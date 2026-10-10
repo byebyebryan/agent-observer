@@ -3,8 +3,11 @@
 The [accepted a12/a4 candidate](evidence/2026-10-09-mesh-integration/REPORT.md)
 is selected on Snap and Starship. Both bridge units are enabled. Collection
 services stay a11 and the writer stays a16; the shared SSH Plus authority stays a1.
-These immutable candidate wheels are archived locally on both hosts, not released
-publicly by this pass.
+These immutable wheels are archived locally on both hosts. The following read
+delivery pass publishes [Observer a12](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a12)
+and [Mesh a4](https://github.com/byebyebryan/mesh-plus/releases/tag/v0.1.0a4)
+as GitHub prereleases with exact wheels and manifests. PyPI publication is not
+implied; install the two downloaded wheels explicitly for Mesh commands.
 
 Observer a12 adds a read-only client of `mesh-plus>=0.1.0a4,<0.2`. Install the
 optional `mesh` extra or explicitly install the reviewed Mesh wheel into the
