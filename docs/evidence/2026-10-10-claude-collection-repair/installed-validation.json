@@ -1,0 +1,27 @@
+{
+  "sourceRevision": "eed244fae16199f88c92dc2f520f4823cce221e8",
+  "buildFromCleanTrackedArchive": true,
+  "packageFileBytesAndMembershipCheckedAgainstSource": true,
+  "publicSchemasUnchanged": true,
+  "rejectedPreliminaryBuild": "Unselected build reused an ignored build directory and contained removed modules; replaced with a clean tracked-source archive before installation",
+  "pushProxySha256": "875402d3fe82d6c10eee10645114c4816aaafd0318314e75fdcd02efaa3c1806",
+  "sourceChecks": {
+    "tests": 443,
+    "skips": 0,
+    "seconds": 48.24,
+    "markdownFiles": 123,
+    "result": "passed"
+  },
+  "installedChecks": {
+    "snap": {
+      "tests": 142,
+      "skips": 0
+    },
+    "starship": {
+      "tests": 142,
+      "skips": 1,
+      "skipReason": "independent JSON Schema dependency absent from core profile"
+    }
+  },
+  "ordinaryProviderSettingsOrSessionsChanged": false
+}
