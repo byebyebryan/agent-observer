@@ -1,0 +1,1835 @@
+{
+  "host": "snap",
+  "collectorArtifact": "0.5.0a11-b1b755c8df0d4676",
+  "pythonVersion": "3.12.8",
+  "installedCodeHashes": {
+    "observation_engine.py": "a4bae205524331ebc811a2aaf6d129767487d415c3f402c2ef8bb4eebed4bfb1",
+    "observation_evidence.py": "8f81abc9bc851b176de265274d1f324d9c181f939874a45995b78678276c31a5",
+    "contract.py": "a775ee3cd8b1dd20e6890f3fe35b5bbf5ed4f8bf287cce23df2a4c750985db10",
+    "service_runtime.py": "18d78454f95ffdb6fe1996dea217456869d0fe56d5e25ca7d815922642712dd5"
+  },
+  "sourceIntroductionCommit": "4f99e0daa5d1b8b29d3ee19ef2129a4094048b1a",
+  "cpuWindows": [
+    {
+      "host": "snap",
+      "collectorPid": 2165818,
+      "collectorStartTicks": 57600605,
+      "collectorInterpreter": "/home/bryan/.pyenv/versions/3.12.8/bin/python3.12",
+      "elapsedSeconds": 91.09,
+      "sampleRateHz": 79,
+      "profilerExitCode": 0,
+      "rootOwnCpuSeconds": 42.59,
+      "rootOwnCpuPercent": 46.756,
+      "rootReapedHelperCpuSeconds": 9.7,
+      "treeCpuSeconds": 52.38,
+      "initialLiveHelpers": 2,
+      "finalLiveHelpers": 2,
+      "intervals": [
+        {
+          "elapsedSeconds": 1.077,
+          "rootOwnCpuPercent": 47.364,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 47.364,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 2.124,
+          "rootOwnCpuPercent": 46.789,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.789,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 3.195,
+          "rootOwnCpuPercent": 41.083,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.083,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 4.259,
+          "rootOwnCpuPercent": 52.651,
+          "rootReapedHelperCpuPercent": 16.924,
+          "treeCpuPercent": 112.824,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 5.315,
+          "rootOwnCpuPercent": 56.805,
+          "rootReapedHelperCpuPercent": 71.953,
+          "treeCpuPercent": 85.208,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 6.372,
+          "rootOwnCpuPercent": 45.401,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.401,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 7.399,
+          "rootOwnCpuPercent": 41.889,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.889,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 8.456,
+          "rootOwnCpuPercent": 41.62,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.62,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 9.495,
+          "rootOwnCpuPercent": 49.074,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.074,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 10.516,
+          "rootOwnCpuPercent": 46.032,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.032,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 11.574,
+          "rootOwnCpuPercent": 40.648,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.593,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 12.632,
+          "rootOwnCpuPercent": 47.248,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 47.248,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 13.68,
+          "rootOwnCpuPercent": 42.956,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.956,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 14.704,
+          "rootOwnCpuPercent": 55.628,
+          "rootReapedHelperCpuPercent": 78.074,
+          "treeCpuPercent": 133.702,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 15.728,
+          "rootOwnCpuPercent": 49.815,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 50.792,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 16.75,
+          "rootOwnCpuPercent": 48.923,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 48.923,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 17.77,
+          "rootOwnCpuPercent": 39.223,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.223,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 18.814,
+          "rootOwnCpuPercent": 41.191,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.191,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 19.836,
+          "rootOwnCpuPercent": 42.071,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.071,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 20.857,
+          "rootOwnCpuPercent": 41.134,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.134,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 21.88,
+          "rootOwnCpuPercent": 40.065,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.065,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 22.901,
+          "rootOwnCpuPercent": 53.912,
+          "rootReapedHelperCpuPercent": 14.703,
+          "treeCpuPercent": 68.616,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 23.927,
+          "rootOwnCpuPercent": 38.953,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 58.429,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 24.949,
+          "rootOwnCpuPercent": 52.876,
+          "rootReapedHelperCpuPercent": 71.48,
+          "treeCpuPercent": 104.772,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 25.968,
+          "rootOwnCpuPercent": 39.256,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.256,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 26.988,
+          "rootOwnCpuPercent": 37.241,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 37.241,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 28.009,
+          "rootOwnCpuPercent": 38.213,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 38.213,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 29.027,
+          "rootOwnCpuPercent": 37.302,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 37.302,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 30.045,
+          "rootOwnCpuPercent": 36.343,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 36.343,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 31.067,
+          "rootOwnCpuPercent": 39.151,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.151,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 32.097,
+          "rootOwnCpuPercent": 36.896,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 36.896,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 33.118,
+          "rootOwnCpuPercent": 37.204,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 37.204,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 34.14,
+          "rootOwnCpuPercent": 38.177,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 73.418,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 35.178,
+          "rootOwnCpuPercent": 65.535,
+          "rootReapedHelperCpuPercent": 82.883,
+          "treeCpuPercent": 114.687,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 36.199,
+          "rootOwnCpuPercent": 38.172,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.151,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 37.231,
+          "rootOwnCpuPercent": 39.725,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.725,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 38.262,
+          "rootOwnCpuPercent": 38.823,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 38.823,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 39.283,
+          "rootOwnCpuPercent": 40.133,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.133,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 40.325,
+          "rootOwnCpuPercent": 44.153,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.153,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 41.355,
+          "rootOwnCpuPercent": 43.69,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.69,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 42.376,
+          "rootOwnCpuPercent": 39.2,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.2,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 43.397,
+          "rootOwnCpuPercent": 39.145,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.145,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 44.419,
+          "rootOwnCpuPercent": 40.134,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 93.971,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 45.441,
+          "rootOwnCpuPercent": 51.878,
+          "rootReapedHelperCpuPercent": 66.561,
+          "treeCpuPercent": 64.603,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 46.462,
+          "rootOwnCpuPercent": 39.164,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.164,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 47.494,
+          "rootOwnCpuPercent": 44.583,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.583,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 48.52,
+          "rootOwnCpuPercent": 41.893,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.893,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 49.556,
+          "rootOwnCpuPercent": 50.221,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 50.221,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 50.582,
+          "rootOwnCpuPercent": 44.802,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.776,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 51.604,
+          "rootOwnCpuPercent": 42.081,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.081,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 52.651,
+          "rootOwnCpuPercent": 42.041,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 50.64,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 53.68,
+          "rootOwnCpuPercent": 50.531,
+          "rootReapedHelperCpuPercent": 16.52,
+          "treeCpuPercent": 58.305,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 54.71,
+          "rootOwnCpuPercent": 45.641,
+          "rootReapedHelperCpuPercent": 71.86,
+          "treeCpuPercent": 118.472,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 55.729,
+          "rootOwnCpuPercent": 45.115,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.096,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 56.756,
+          "rootOwnCpuPercent": 40.918,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.918,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 57.8,
+          "rootOwnCpuPercent": 42.144,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.144,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 58.821,
+          "rootOwnCpuPercent": 41.122,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.122,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 59.846,
+          "rootOwnCpuPercent": 49.739,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.739,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 60.9,
+          "rootOwnCpuPercent": 54.085,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 54.085,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 61.94,
+          "rootOwnCpuPercent": 55.785,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 55.785,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 62.989,
+          "rootOwnCpuPercent": 49.58,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.58,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 64.034,
+          "rootOwnCpuPercent": 51.67,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.67,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 65.083,
+          "rootOwnCpuPercent": 58.132,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 58.132,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 66.135,
+          "rootOwnCpuPercent": 57.025,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 150.167,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 67.181,
+          "rootOwnCpuPercent": 73.644,
+          "rootReapedHelperCpuPercent": 120.508,
+          "treeCpuPercent": 131.985,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 68.261,
+          "rootOwnCpuPercent": 56.5,
+          "rootReapedHelperCpuPercent": 30.566,
+          "treeCpuPercent": 56.5,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 69.333,
+          "rootOwnCpuPercent": 45.701,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.701,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 70.367,
+          "rootOwnCpuPercent": 50.278,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.245,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 71.405,
+          "rootOwnCpuPercent": 69.354,
+          "rootReapedHelperCpuPercent": 28.897,
+          "treeCpuPercent": 98.251,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 72.442,
+          "rootOwnCpuPercent": 64.617,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 65.582,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 73.499,
+          "rootOwnCpuPercent": 54.869,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 54.869,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 74.597,
+          "rootOwnCpuPercent": 51.919,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.919,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 75.669,
+          "rootOwnCpuPercent": 59.699,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 101.675,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 76.705,
+          "rootOwnCpuPercent": 54.074,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 146.773,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 77.766,
+          "rootOwnCpuPercent": 68.757,
+          "rootReapedHelperCpuPercent": 133.747,
+          "treeCpuPercent": 69.699,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 78.788,
+          "rootOwnCpuPercent": 65.571,
+          "rootReapedHelperCpuPercent": 24.467,
+          "treeCpuPercent": 90.038,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 79.811,
+          "rootOwnCpuPercent": 36.16,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 36.16,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 80.845,
+          "rootOwnCpuPercent": 39.662,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.662,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 81.869,
+          "rootOwnCpuPercent": 41.035,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.035,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 82.89,
+          "rootOwnCpuPercent": 43.068,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.068,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 83.914,
+          "rootOwnCpuPercent": 52.734,
+          "rootReapedHelperCpuPercent": 13.672,
+          "treeCpuPercent": 66.406,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 84.943,
+          "rootOwnCpuPercent": 45.695,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.695,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 85.967,
+          "rootOwnCpuPercent": 45.894,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 121.083,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 87.003,
+          "rootOwnCpuPercent": 55.02,
+          "rootReapedHelperCpuPercent": 89.769,
+          "treeCpuPercent": 70.464,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 88.024,
+          "rootOwnCpuPercent": 40.148,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.148,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 89.047,
+          "rootOwnCpuPercent": 42.039,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.039,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 90.068,
+          "rootOwnCpuPercent": 40.158,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.137,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 91.09,
+          "rootOwnCpuPercent": 41.11,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.11,
+          "liveHelpers": 2
+        }
+      ],
+      "providerProcessesProfiled": false,
+      "localsCaptured": false,
+      "serviceChanged": false,
+      "limitations": [
+        "nonblocking sampling may miss or misread stacks",
+        "proc subtree counters have short process handoff races",
+        "ordinary host workload during profiling, not idle benchmark"
+      ],
+      "treeCpuPercent": 57.504,
+      "profilerMode": "nonblocking",
+      "helperCpuPercent": 10.748
+    },
+    {
+      "host": "snap",
+      "collectorPid": 2165818,
+      "collectorStartTicks": 57600605,
+      "collectorInterpreter": "/home/bryan/.pyenv/versions/3.12.8/bin/python3.12",
+      "elapsedSeconds": 61.431,
+      "sampleRateHz": 79,
+      "profilerMode": "consistent_gil",
+      "profilerExitCode": 0,
+      "rootOwnCpuSeconds": 29.47,
+      "rootOwnCpuPercent": 47.973,
+      "rootReapedHelperCpuSeconds": 6.17,
+      "treeCpuSeconds": 35.69,
+      "initialLiveHelpers": 2,
+      "finalLiveHelpers": 2,
+      "intervals": [
+        {
+          "elapsedSeconds": 1.071,
+          "rootOwnCpuPercent": 38.265,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 38.265,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 2.092,
+          "rootOwnCpuPercent": 41.145,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.145,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 3.115,
+          "rootOwnCpuPercent": 41.076,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.076,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 4.136,
+          "rootOwnCpuPercent": 58.776,
+          "rootReapedHelperCpuPercent": 17.633,
+          "treeCpuPercent": 94.042,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 5.16,
+          "rootOwnCpuPercent": 53.664,
+          "rootReapedHelperCpuPercent": 77.081,
+          "treeCpuPercent": 113.183,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 6.198,
+          "rootOwnCpuPercent": 43.358,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.358,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 7.219,
+          "rootOwnCpuPercent": 42.118,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.118,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 8.243,
+          "rootOwnCpuPercent": 43.943,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.92,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 9.265,
+          "rootOwnCpuPercent": 41.096,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.096,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 10.287,
+          "rootOwnCpuPercent": 44.047,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.047,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 11.338,
+          "rootOwnCpuPercent": 40.919,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.919,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 12.36,
+          "rootOwnCpuPercent": 52.834,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 52.834,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 13.382,
+          "rootOwnCpuPercent": 40.104,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.104,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 14.415,
+          "rootOwnCpuPercent": 45.501,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 88.098,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 15.438,
+          "rootOwnCpuPercent": 58.668,
+          "rootReapedHelperCpuPercent": 80.179,
+          "treeCpuPercent": 96.801,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 16.467,
+          "rootOwnCpuPercent": 55.399,
+          "rootReapedHelperCpuPercent": 15.551,
+          "treeCpuPercent": 70.95,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 17.489,
+          "rootOwnCpuPercent": 51.863,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.863,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 18.55,
+          "rootOwnCpuPercent": 44.295,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.295,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 19.608,
+          "rootOwnCpuPercent": 49.148,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.148,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 20.672,
+          "rootOwnCpuPercent": 47.917,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 47.917,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 21.729,
+          "rootOwnCpuPercent": 46.383,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.383,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 22.796,
+          "rootOwnCpuPercent": 51.521,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.521,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 23.834,
+          "rootOwnCpuPercent": 51.086,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.086,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 24.873,
+          "rootOwnCpuPercent": 50.028,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 126.994,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 25.917,
+          "rootOwnCpuPercent": 53.627,
+          "rootReapedHelperCpuPercent": 78.525,
+          "treeCpuPercent": 55.542,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 26.942,
+          "rootOwnCpuPercent": 45.865,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.865,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 27.97,
+          "rootOwnCpuPercent": 45.723,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.723,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 29.029,
+          "rootOwnCpuPercent": 48.156,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.1,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 30.057,
+          "rootOwnCpuPercent": 45.714,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.714,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 31.119,
+          "rootOwnCpuPercent": 46.146,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.146,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 32.184,
+          "rootOwnCpuPercent": 48.801,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.74,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 33.251,
+          "rootOwnCpuPercent": 46.883,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 47.82,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 34.318,
+          "rootOwnCpuPercent": 51.545,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 78.723,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 35.343,
+          "rootOwnCpuPercent": 59.516,
+          "rootReapedHelperCpuPercent": 29.27,
+          "treeCpuPercent": 137.569,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 36.403,
+          "rootOwnCpuPercent": 63.231,
+          "rootReapedHelperCpuPercent": 100.036,
+          "treeCpuPercent": 88.712,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 37.462,
+          "rootOwnCpuPercent": 51.923,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.923,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 38.523,
+          "rootOwnCpuPercent": 48.055,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 48.055,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 39.587,
+          "rootOwnCpuPercent": 44.192,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.192,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 40.649,
+          "rootOwnCpuPercent": 70.592,
+          "rootReapedHelperCpuPercent": 21.648,
+          "treeCpuPercent": 92.24,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 41.679,
+          "rootOwnCpuPercent": 44.668,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.668,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 42.702,
+          "rootOwnCpuPercent": 46.9,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.9,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 43.743,
+          "rootOwnCpuPercent": 45.147,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 45.147,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 44.793,
+          "rootOwnCpuPercent": 42.877,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 76.227,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 45.853,
+          "rootOwnCpuPercent": 65.067,
+          "rootReapedHelperCpuPercent": 87.699,
+          "treeCpuPercent": 120.704,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 46.913,
+          "rootOwnCpuPercent": 46.223,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 58.486,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 47.968,
+          "rootOwnCpuPercent": 58.769,
+          "rootReapedHelperCpuPercent": 17.062,
+          "treeCpuPercent": 63.508,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 49.025,
+          "rootOwnCpuPercent": 41.654,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.654,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 50.059,
+          "rootOwnCpuPercent": 46.407,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.407,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 51.102,
+          "rootOwnCpuPercent": 43.133,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.092,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 52.127,
+          "rootOwnCpuPercent": 40.992,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.992,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 53.15,
+          "rootOwnCpuPercent": 44.947,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.947,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 54.171,
+          "rootOwnCpuPercent": 41.162,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.162,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 55.208,
+          "rootOwnCpuPercent": 46.278,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 110.874,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 56.236,
+          "rootOwnCpuPercent": 49.591,
+          "rootReapedHelperCpuPercent": 68.067,
+          "treeCpuPercent": 52.509,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 57.258,
+          "rootOwnCpuPercent": 44.046,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.046,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 58.287,
+          "rootOwnCpuPercent": 40.814,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.814,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 59.364,
+          "rootOwnCpuPercent": 43.66,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.66,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 60.399,
+          "rootOwnCpuPercent": 43.477,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.477,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 61.431,
+          "rootOwnCpuPercent": 45.538,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.507,
+          "liveHelpers": 2
+        }
+      ],
+      "providerProcessesProfiled": false,
+      "localsCaptured": false,
+      "serviceChanged": false,
+      "limitations": [
+        "consistent samples briefly pause collector reads and select GIL-holding Python threads",
+        "proc subtree counters have short process handoff races",
+        "ordinary host workload during profiling, not idle benchmark"
+      ],
+      "treeCpuPercent": 58.098,
+      "helperCpuPercent": 10.125
+    },
+    {
+      "host": "snap",
+      "collectorPid": 2165818,
+      "collectorStartTicks": 57600605,
+      "collectorInterpreter": "/home/bryan/.pyenv/versions/3.12.8/bin/python3.12",
+      "elapsedSeconds": 60.756,
+      "sampleRateHz": 0,
+      "profilerMode": "cpu_only",
+      "profilerExitCode": null,
+      "rootOwnCpuSeconds": 30.92,
+      "rootOwnCpuPercent": 50.892,
+      "rootReapedHelperCpuSeconds": 7.17,
+      "treeCpuSeconds": 38.13,
+      "initialLiveHelpers": 2,
+      "finalLiveHelpers": 2,
+      "intervals": [
+        {
+          "elapsedSeconds": 1.13,
+          "rootOwnCpuPercent": 47.796,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 47.796,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 2.206,
+          "rootOwnCpuPercent": 50.162,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 64.095,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 3.293,
+          "rootOwnCpuPercent": 80.045,
+          "rootReapedHelperCpuPercent": 36.802,
+          "treeCpuPercent": 103.967,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 4.356,
+          "rootOwnCpuPercent": 61.154,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 61.154,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 5.399,
+          "rootOwnCpuPercent": 52.756,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 101.676,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 6.424,
+          "rootOwnCpuPercent": 65.369,
+          "rootReapedHelperCpuPercent": 111.225,
+          "treeCpuPercent": 126.835,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 7.483,
+          "rootOwnCpuPercent": 50.019,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 50.019,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 8.558,
+          "rootOwnCpuPercent": 52.102,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 52.102,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 9.643,
+          "rootOwnCpuPercent": 51.603,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.603,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 10.673,
+          "rootOwnCpuPercent": 48.554,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 48.554,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 11.709,
+          "rootOwnCpuPercent": 50.179,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.144,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 12.762,
+          "rootOwnCpuPercent": 54.163,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 54.163,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 13.833,
+          "rootOwnCpuPercent": 56.926,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 56.926,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 14.914,
+          "rootOwnCpuPercent": 49.045,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.045,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 15.964,
+          "rootOwnCpuPercent": 55.242,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 144.771,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 17.027,
+          "rootOwnCpuPercent": 63.956,
+          "rootReapedHelperCpuPercent": 113.804,
+          "treeCpuPercent": 89.351,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 18.096,
+          "rootOwnCpuPercent": 50.503,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 50.503,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 19.163,
+          "rootOwnCpuPercent": 56.224,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 56.224,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 20.209,
+          "rootOwnCpuPercent": 49.719,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 49.719,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 21.241,
+          "rootOwnCpuPercent": 52.363,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 52.363,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 22.32,
+          "rootOwnCpuPercent": 54.647,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 54.647,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 23.402,
+          "rootOwnCpuPercent": 51.785,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.785,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 24.429,
+          "rootOwnCpuPercent": 57.4,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 58.373,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 25.466,
+          "rootOwnCpuPercent": 54.023,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 92.611,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 26.5,
+          "rootOwnCpuPercent": 58.05,
+          "rootReapedHelperCpuPercent": 125.775,
+          "treeCpuPercent": 146.093,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 27.603,
+          "rootOwnCpuPercent": 57.106,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 57.106,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 28.69,
+          "rootOwnCpuPercent": 51.495,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.495,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 29.719,
+          "rootOwnCpuPercent": 56.384,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 56.384,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 30.749,
+          "rootOwnCpuPercent": 51.476,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 51.476,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 31.785,
+          "rootOwnCpuPercent": 54.034,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 54.034,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 32.871,
+          "rootOwnCpuPercent": 48.803,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 69.06,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 33.951,
+          "rootOwnCpuPercent": 64.838,
+          "rootReapedHelperCpuPercent": 21.304,
+          "treeCpuPercent": 83.363,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 35.033,
+          "rootOwnCpuPercent": 62.849,
+          "rootReapedHelperCpuPercent": 17.561,
+          "treeCpuPercent": 62.849,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 36.108,
+          "rootOwnCpuPercent": 51.155,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 140.445,
+          "liveHelpers": 3
+        },
+        {
+          "elapsedSeconds": 37.145,
+          "rootOwnCpuPercent": 63.614,
+          "rootReapedHelperCpuPercent": 96.384,
+          "treeCpuPercent": 67.469,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 38.193,
+          "rootOwnCpuPercent": 53.458,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 53.458,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 39.222,
+          "rootOwnCpuPercent": 55.396,
+          "rootReapedHelperCpuPercent": 17.494,
+          "treeCpuPercent": 72.89,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 40.28,
+          "rootOwnCpuPercent": 42.528,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.528,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 41.301,
+          "rootOwnCpuPercent": 39.188,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 39.188,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 42.321,
+          "rootOwnCpuPercent": 42.123,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.123,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 43.366,
+          "rootOwnCpuPercent": 44.045,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.045,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 44.389,
+          "rootOwnCpuPercent": 42.983,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.983,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 45.419,
+          "rootOwnCpuPercent": 42.746,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 74.805,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 46.439,
+          "rootOwnCpuPercent": 52.913,
+          "rootReapedHelperCpuPercent": 77.41,
+          "treeCpuPercent": 98.967,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 47.469,
+          "rootOwnCpuPercent": 44.676,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 44.676,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 48.492,
+          "rootOwnCpuPercent": 41.071,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 42.049,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 49.516,
+          "rootOwnCpuPercent": 45.867,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 46.843,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 50.539,
+          "rootOwnCpuPercent": 40.091,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.091,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 51.56,
+          "rootOwnCpuPercent": 41.134,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.134,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 52.579,
+          "rootOwnCpuPercent": 40.232,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.232,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 53.602,
+          "rootOwnCpuPercent": 41.049,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 41.049,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 54.629,
+          "rootOwnCpuPercent": 40.897,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.897,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 55.652,
+          "rootOwnCpuPercent": 41.063,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 89.948,
+          "liveHelpers": 4
+        },
+        {
+          "elapsedSeconds": 56.673,
+          "rootOwnCpuPercent": 54.859,
+          "rootReapedHelperCpuPercent": 71.512,
+          "treeCpuPercent": 77.39,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 57.694,
+          "rootOwnCpuPercent": 43.072,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 43.072,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 58.715,
+          "rootOwnCpuPercent": 38.232,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 38.232,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 59.735,
+          "rootOwnCpuPercent": 40.167,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.167,
+          "liveHelpers": 2
+        },
+        {
+          "elapsedSeconds": 60.756,
+          "rootOwnCpuPercent": 40.177,
+          "rootReapedHelperCpuPercent": 0.0,
+          "treeCpuPercent": 40.177,
+          "liveHelpers": 2
+        }
+      ],
+      "providerProcessesProfiled": false,
+      "localsCaptured": false,
+      "serviceChanged": false,
+      "limitations": [
+        "unprofiled CPU counter window",
+        "proc subtree counters have short process handoff races",
+        "ordinary host workload during profiling, not idle benchmark"
+      ],
+      "treeCpuPercent": 62.759,
+      "helperCpuPercent": 11.867
+    }
+  ],
+  "profiles": [
+    {
+      "mode": "nonblocking",
+      "reportedSamples": 2545,
+      "readErrors": 857,
+      "acceptedSamples": 2544,
+      "discardedCorruptSamples": 1,
+      "emptyStackSamples": 143,
+      "inclusiveFunctions": [
+        {
+          "function": "validate_shape",
+          "samples": 1859,
+          "percentOfAcceptedSamples": 73.074
+        },
+        {
+          "function": "_retire_runtime_only",
+          "samples": 1840,
+          "percentOfAcceptedSamples": 72.327
+        },
+        {
+          "function": "identity_key",
+          "samples": 1833,
+          "percentOfAcceptedSamples": 72.052
+        },
+        {
+          "function": "expire",
+          "samples": 1825,
+          "percentOfAcceptedSamples": 71.737
+        },
+        {
+          "function": "prune",
+          "samples": 309,
+          "percentOfAcceptedSamples": 12.146
+        },
+        {
+          "function": "_complete",
+          "samples": 121,
+          "percentOfAcceptedSamples": 4.756
+        },
+        {
+          "function": "publish",
+          "samples": 91,
+          "percentOfAcceptedSamples": 3.577
+        },
+        {
+          "function": "parse_snapshot",
+          "samples": 11,
+          "percentOfAcceptedSamples": 0.432
+        },
+        {
+          "function": "tick",
+          "samples": 1,
+          "percentOfAcceptedSamples": 0.039
+        }
+      ],
+      "topObserverLeafFrames": [
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 266,
+          "samples": 849,
+          "percentOfAcceptedSamples": 33.373
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 265,
+          "samples": 629,
+          "percentOfAcceptedSamples": 24.725
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 248,
+          "samples": 161,
+          "percentOfAcceptedSamples": 6.329
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 258,
+          "samples": 126,
+          "percentOfAcceptedSamples": 4.953
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 269,
+          "samples": 124,
+          "percentOfAcceptedSamples": 4.874
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 242,
+          "samples": 64,
+          "percentOfAcceptedSamples": 2.516
+        },
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 265,
+          "samples": 63,
+          "percentOfAcceptedSamples": 2.476
+        },
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 278,
+          "samples": 42,
+          "percentOfAcceptedSamples": 1.651
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 252,
+          "samples": 36,
+          "percentOfAcceptedSamples": 1.415
+        },
+        {
+          "function": "_matches_type",
+          "file": "contract.py",
+          "line": 227,
+          "samples": 30,
+          "percentOfAcceptedSamples": 1.179
+        },
+        {
+          "function": "identity_key",
+          "file": "contract.py",
+          "line": 277,
+          "samples": 23,
+          "percentOfAcceptedSamples": 0.904
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 250,
+          "samples": 23,
+          "percentOfAcceptedSamples": 0.904
+        }
+      ],
+      "inclusiveCountsOverlap": true,
+      "rawStacksRetainedInRepository": false
+    },
+    {
+      "mode": "consistent_gil",
+      "reportedSamples": 2348,
+      "readErrors": 1,
+      "acceptedSamples": 2348,
+      "discardedCorruptSamples": 0,
+      "emptyStackSamples": 0,
+      "inclusiveFunctions": [
+        {
+          "function": "validate_shape",
+          "samples": 2247,
+          "percentOfAcceptedSamples": 95.698
+        },
+        {
+          "function": "identity_key",
+          "samples": 2242,
+          "percentOfAcceptedSamples": 95.486
+        },
+        {
+          "function": "_retire_runtime_only",
+          "samples": 2229,
+          "percentOfAcceptedSamples": 94.932
+        },
+        {
+          "function": "expire",
+          "samples": 2206,
+          "percentOfAcceptedSamples": 93.952
+        },
+        {
+          "function": "prune",
+          "samples": 351,
+          "percentOfAcceptedSamples": 14.949
+        },
+        {
+          "function": "_complete",
+          "samples": 137,
+          "percentOfAcceptedSamples": 5.835
+        },
+        {
+          "function": "publish",
+          "samples": 93,
+          "percentOfAcceptedSamples": 3.961
+        },
+        {
+          "function": "parse_snapshot",
+          "samples": 18,
+          "percentOfAcceptedSamples": 0.767
+        },
+        {
+          "function": "tick",
+          "samples": 2,
+          "percentOfAcceptedSamples": 0.085
+        }
+      ],
+      "topObserverLeafFrames": [
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 266,
+          "samples": 1079,
+          "percentOfAcceptedSamples": 45.954
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 265,
+          "samples": 182,
+          "percentOfAcceptedSamples": 7.751
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 248,
+          "samples": 171,
+          "percentOfAcceptedSamples": 7.283
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 242,
+          "samples": 85,
+          "percentOfAcceptedSamples": 3.62
+        },
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 248,
+          "samples": 58,
+          "percentOfAcceptedSamples": 2.47
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 252,
+          "samples": 53,
+          "percentOfAcceptedSamples": 2.257
+        },
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 265,
+          "samples": 49,
+          "percentOfAcceptedSamples": 2.087
+        },
+        {
+          "function": "_matches_type",
+          "file": "contract.py",
+          "line": 220,
+          "samples": 49,
+          "percentOfAcceptedSamples": 2.087
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 256,
+          "samples": 42,
+          "percentOfAcceptedSamples": 1.789
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 247,
+          "samples": 41,
+          "percentOfAcceptedSamples": 1.746
+        },
+        {
+          "function": "validate_shape",
+          "file": "contract.py",
+          "line": 258,
+          "samples": 38,
+          "percentOfAcceptedSamples": 1.618
+        },
+        {
+          "function": "<genexpr>",
+          "file": "contract.py",
+          "line": 243,
+          "samples": 32,
+          "percentOfAcceptedSamples": 1.363
+        }
+      ],
+      "inclusiveCountsOverlap": true,
+      "rawStacksRetainedInRepository": false
+    }
+  ],
+  "providerProcessesProfiled": false,
+  "rawProviderPayloadsRetained": false,
+  "localsCaptured": false,
+  "serviceRestarted": false,
+  "settingsChanged": false,
+  "limits": [
+    "CPU percentages use one logical core",
+    "ordinary live workload varied between windows",
+    "GIL profile shares describe captured Python execution, not an exact whole-CPU split",
+    "helper delta includes reaped and live Observer descendants, with proc handoff races",
+    "nonblocking profile has substantial read errors and is secondary evidence",
+    "consistent profile briefly pauses only the collector during stack reads"
+  ],
+  "profilerVersion": "py-spy 0.4.2"
+}
