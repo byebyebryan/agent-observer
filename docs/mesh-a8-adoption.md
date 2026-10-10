@@ -17,3 +17,8 @@ rollback inputs. Source a15 is not promoted as the read CLI by this change.
 Operational and recovery acceptance is recorded separately after scoped
 selection on Snap and Starship. Metrics do not establish native provider truth,
 GUI behavior, physical suspend or lossless event replay.
+
+Mesh a9 follows a8 with owned-IO cancellation refinement. It uses new `-mesh-a9`
+roots with the same Observer wheels, profiles, collector and writer selections.
+The verifier independently admits the reviewed a9 manifest and rejects unknown
+versions or multiple Mesh manifests before invoking archived verification.

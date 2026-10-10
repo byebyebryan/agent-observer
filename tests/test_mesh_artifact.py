@@ -16,7 +16,7 @@ class MeshArtifactTest(unittest.TestCase):
         spec = importlib.util.spec_from_loader(loader.name, loader)
         module = importlib.util.module_from_spec(spec)
         loader.exec_module(module)
-        for versions in (("0.1.0a4", "0.1.0a8"), ("0.1.0a9",)):
+        for versions in (("0.1.0a4", "0.1.0a8"), ("0.1.0a10",)):
             with self.subTest(versions=versions), tempfile.TemporaryDirectory() as name:
                 archive = Path(name)
                 (archive / "observer-0.5.0a13.json").write_text("{}")
