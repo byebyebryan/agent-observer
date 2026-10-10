@@ -1,0 +1,81 @@
+{
+  "status": "controlled_cached_data_cost",
+  "host": "snap",
+  "rows": 129,
+  "savedRows": 128,
+  "retentionDeadlines": 0,
+  "rounds": 200,
+  "expiryCpuSeconds": 3.529914,
+  "counterfactualNoScanCpuSeconds": 0.000133,
+  "hotspots": [
+    {
+      "function": "<genexpr>",
+      "calls": 4899000,
+      "ownCpuSeconds": 1.974666
+    },
+    {
+      "function": "validate_shape",
+      "calls": 230400,
+      "ownCpuSeconds": 1.624154
+    },
+    {
+      "function": "<method 'startswith' of 'str' objects>",
+      "calls": 4707000,
+      "ownCpuSeconds": 0.582469
+    },
+    {
+      "function": "<built-in method unicodedata.category>",
+      "calls": 4707000,
+      "ownCpuSeconds": 0.578452
+    },
+    {
+      "function": "<built-in method builtins.isinstance>",
+      "calls": 1344000,
+      "ownCpuSeconds": 0.215717
+    },
+    {
+      "function": "_matches_type",
+      "calls": 153600,
+      "ownCpuSeconds": 0.20486
+    },
+    {
+      "function": "<method 'get' of 'dict' objects>",
+      "calls": 652900,
+      "ownCpuSeconds": 0.119027
+    },
+    {
+      "function": "_compile",
+      "calls": 115200,
+      "ownCpuSeconds": 0.103555
+    },
+    {
+      "function": "<genexpr>",
+      "calls": 307200,
+      "ownCpuSeconds": 0.087187
+    },
+    {
+      "function": "<method 'fullmatch' of 're.Pattern' objects>",
+      "calls": 115200,
+      "ownCpuSeconds": 0.081573
+    },
+    {
+      "function": "identity_key",
+      "calls": 38400,
+      "ownCpuSeconds": 0.0787
+    },
+    {
+      "function": "fullmatch",
+      "calls": 115200,
+      "ownCpuSeconds": 0.067603
+    }
+  ],
+  "engineSha256": "a4bae205524331ebc811a2aaf6d129767487d415c3f402c2ef8bb4eebed4bfb1",
+  "rawPayloadsRetained": false,
+  "nativeCalls": false,
+  "liveServicesChanged": false,
+  "limits": [
+    "fixed cached data and fixed clock",
+    "counterfactual does not establish repair correctness",
+    "profile timing overhead separate from unprofiled comparison"
+  ]
+}

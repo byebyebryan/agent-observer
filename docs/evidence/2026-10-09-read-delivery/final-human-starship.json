@@ -1,0 +1,30 @@
+{
+  "host": "starship",
+  "cliVersion": "0.5.0a13",
+  "readOnly": true,
+  "windowSecondsEach": 12,
+  "checks": [
+    {
+      "mode": "local",
+      "exitCode": 130,
+      "renders": 4,
+      "ageRows": 306,
+      "revokedAtEnd": true,
+      "stderrEmpty": true,
+      "ownedProcessGone": true,
+      "outputBytes": 28504,
+      "rawOutputRetained": false
+    },
+    {
+      "mode": "fleet",
+      "exitCode": 130,
+      "renders": 9,
+      "ageRows": 1154,
+      "revokedAtEnd": true,
+      "stderrEmpty": true,
+      "ownedProcessGone": true,
+      "outputBytes": 106430,
+      "rawOutputRetained": false
+    }
+  ]
+}

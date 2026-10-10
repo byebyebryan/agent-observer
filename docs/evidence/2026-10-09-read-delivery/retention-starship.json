@@ -1,0 +1,81 @@
+{
+  "status": "controlled_cached_data_cost",
+  "host": "starship",
+  "rows": 354,
+  "savedRows": 354,
+  "retentionDeadlines": 0,
+  "rounds": 200,
+  "expiryCpuSeconds": 5.077741,
+  "counterfactualNoScanCpuSeconds": 5.4e-05,
+  "hotspots": [
+    {
+      "function": "<genexpr>",
+      "calls": 13912200,
+      "ownCpuSeconds": 2.486876
+    },
+    {
+      "function": "validate_shape",
+      "calls": 637200,
+      "ownCpuSeconds": 1.93425
+    },
+    {
+      "function": "<method 'startswith' of 'str' objects>",
+      "calls": 13381200,
+      "ownCpuSeconds": 0.814214
+    },
+    {
+      "function": "<built-in method unicodedata.category>",
+      "calls": 13381200,
+      "ownCpuSeconds": 0.772565
+    },
+    {
+      "function": "<built-in method builtins.isinstance>",
+      "calls": 3717000,
+      "ownCpuSeconds": 0.265468
+    },
+    {
+      "function": "_matches_type",
+      "calls": 424800,
+      "ownCpuSeconds": 0.256864
+    },
+    {
+      "function": "<method 'get' of 'dict' objects>",
+      "calls": 1805450,
+      "ownCpuSeconds": 0.160231
+    },
+    {
+      "function": "_compile",
+      "calls": 318600,
+      "ownCpuSeconds": 0.118496
+    },
+    {
+      "function": "<genexpr>",
+      "calls": 849600,
+      "ownCpuSeconds": 0.107222
+    },
+    {
+      "function": "<method 'fullmatch' of 're.Pattern' objects>",
+      "calls": 318600,
+      "ownCpuSeconds": 0.104426
+    },
+    {
+      "function": "identity_key",
+      "calls": 106200,
+      "ownCpuSeconds": 0.094403
+    },
+    {
+      "function": "fullmatch",
+      "calls": 318600,
+      "ownCpuSeconds": 0.082436
+    }
+  ],
+  "engineSha256": "a4bae205524331ebc811a2aaf6d129767487d415c3f402c2ef8bb4eebed4bfb1",
+  "rawPayloadsRetained": false,
+  "nativeCalls": false,
+  "liveServicesChanged": false,
+  "limits": [
+    "fixed cached data and fixed clock",
+    "counterfactual does not establish repair correctness",
+    "profile timing overhead separate from unprofiled comparison"
+  ]
+}

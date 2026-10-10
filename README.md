@@ -13,6 +13,8 @@ simplified.
 
 ## Status
 
+The a13 [read cache and timed human watches](docs/read-cache-client.md) are
+accepted through the [read-delivery pass](docs/evidence/2026-10-09-read-delivery/REPORT.md).
 The a12 [Mesh read client](docs/mesh-read-client.md) and Mesh a4 bridge are
 [accepted and selected](docs/evidence/2026-10-09-mesh-integration/REPORT.md)
 on Snap and Starship. Local/fleet cached pull and push, native comparisons,
@@ -20,7 +22,11 @@ bridge restart and scoped rollback/reselection pass. Networking stays in Mesh
 Plus; core and the host-local collection service remain independent.
 
 The observation checkpoint is [a11 finite runtime-only retention](docs/evidence/2026-10-09-runtime-only-retention/REPORT.md).
-Normal collection/services remain a11; the read CLI independently selects a12.
+Normal collection/services remain a11; the read CLI independently selects a13.
+The a4 bridge retains its a12 prefix and process. Sustained measurements found
+material collector and fleet-reader CPU costs; the
+[focused collector follow-up](docs/collector-cost-follow-up.md) records the next
+producer gate without changing the accepted observation contract.
 Codex is accepted on both hosts; Claude interactive discovery
 and monitoring are accepted on Snap. The reusable core owns reconciliation and
 evidence, passive adapters own native reads, and the service owns helper lifetime
@@ -242,7 +248,7 @@ cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
 The retained a16 [API v1 candidate](docs/api-v1.md) keeps its historical
-JSON/CLI and pure Python surface. Current a11 read clients use
+JSON/CLI and pure Python surface. Current API 2 read clients use
 [API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate

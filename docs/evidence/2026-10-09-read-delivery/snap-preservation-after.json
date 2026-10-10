@@ -1,0 +1,34 @@
+{
+  "protectedHashes": {
+    ".codex/config.toml": "fbfa91996e16619506878c91b2954d33c609fb2d2074785fe42a7cd75b943674",
+    ".claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+    ".config/agent-observer/workspace.json": "2b8c2fb1c3e085ed7295e35dde9e8e64a123de9518610ecfb1b5fd1c26de067a",
+    ".config/systemd/user/agent-observer.service": "9ef011b4abd5708b84592fdfece58f4e055ea941e92e6cfa64d404481c2a95d8",
+    ".config/systemd/user/mesh-plus-agent.service": "0f02b6b567f88fbe18705591e9b3e059c973e4a2c3b25e860dfcc6dd5b862672",
+    ".local/share/mesh-plus/python/mesh_plus/authority.py": "188570bdf706fcd758dae0b94be022645957313aaf7917d2b24fe65d856097b0",
+    ".local/share/chezmoi/.chezmoiexternal.toml": "f9355e208df8dac2ed219a2adbb9f20b6afa2d3faa7340a77b46744fe376002a",
+    ".local/share/chezmoi/dot_config/kitty/kitty.conf": "00036fa4ee8f801a1e689560fa8a30b44aa75b3862ef4d9d968a755a6e1c2426"
+  },
+  "units": {
+    "agent-observer.service": {
+      "ActiveState": "active",
+      "MainPID": "2165818",
+      "NRestarts": "1",
+      "startTicks": "57600605",
+      "fds": 12
+    },
+    "mesh-plus-agent.service": {
+      "ActiveState": "active",
+      "MainPID": "2181472",
+      "NRestarts": "0",
+      "startTicks": "64180772",
+      "fds": 8
+    }
+  },
+  "links": {
+    "agent-observer": "/home/bryan/.local/share/agent-observer/0.5.0a13-646a067dcba3b1a3/bin/agent-observer",
+    "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+    "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.5.0a11-b1b755c8df0d4676/bin/agent-observer-service",
+    "mesh-plus": "/home/bryan/.local/share/agent-observer/0.5.0a12-e292e689a1dd1b32/bin/mesh-plus"
+  }
+}

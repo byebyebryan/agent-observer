@@ -1,0 +1,35 @@
+{
+  "status": "accepted_source_and_package",
+  "manifest": "observer-0.5.0a13.json",
+  "wheelSha256": "646a067dcba3b1a37354c01b9aa91a247351adabbb352b19f732bd6f89cedbcc",
+  "sourceRevision": "4cb623376ce857dba10be90306ad0ef80f482429",
+  "contracts": {
+    "api": 2,
+    "snapshot": 4,
+    "watch": 4,
+    "service": 2,
+    "meshProfile": 1
+  },
+  "sourceTestsWithMesh": 425,
+  "sourceSkipsWithMesh": 0,
+  "readCacheConformanceCases": 14,
+  "installedTestsPerHost": 67,
+  "installedTestSkips": 0,
+  "staticSchemasAndFixturesCopied": true,
+  "publicFacade": "agent_observer.service_public.ReadCache",
+  "providerActions": 0,
+  "collectorSelectionChanged": false,
+  "rejectedIntermediateCandidate": {
+    "wheelSha256": "e61345856e4f01a24c62da3355a73a1c1d4c2dd7787bf010d858368c707f627b",
+    "reason": "async cancellation did not print final human revocation notice",
+    "selected": false,
+    "published": false
+  },
+  "harnessCorrections": [
+    "copy static schemas and transitive test helpers without implementation",
+    "drain human output during the watch; slow undrained output is a separate bounded failure case"
+  ],
+  "ciFixtureCorrection": "native fixture UID must match test runner UID, not assume 1000",
+  "implementationCopied": false,
+  "testSourcesCopied": true
+}

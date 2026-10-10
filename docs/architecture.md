@@ -5,6 +5,14 @@ Reader and ReadGuard. Core and the local service do not import it. The CLI owns
 read validation/presentation only; Mesh owns IPC/SSH, fleet scope and remote
 proofs. Raw mesh frames preserve provider metadata, receipts and canonical rows.
 
+The [a13 local read cache](read-cache-client.md) belongs to the consumer facade.
+It admits local Service 2 frames, applies independent component deadlines during
+silence and exposes original last-known context separately from current facts.
+It owns no IO, provider evidence, reconnect or remote proof. Timed human watches
+use this cache locally and Mesh's ReadGuard remotely; timer renders are not wire
+frames or native occurrences. Reader selection can differ from the bridge's
+immutable prefix without restarting either publisher.
+
 The [observation ownership clarification](observation-boundaries.md) defines
 the implemented boundary: core contains the model, passive adapters and reusable
 observation engine; the service hosts it and provides local IPC. Provider refresh

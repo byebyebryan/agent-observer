@@ -1,0 +1,78 @@
+{
+  "status": "accepted",
+  "observer": {
+    "status": "accepted",
+    "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a13-646a067dcba3b1a3",
+    "wheelSha256": "646a067dcba3b1a37354c01b9aa91a247351adabbb352b19f732bd6f89cedbcc",
+    "sourceRevision": "4cb623376ce857dba10be90306ad0ef80f482429",
+    "profile": "core",
+    "version": "0.5.0a13",
+    "sdk": null,
+    "bundledExecutable": false,
+    "installedWheelBytesVerified": true,
+    "entrypointsVerified": true,
+    "schemaVersionsVerified": true,
+    "serviceProtocolVerified": true,
+    "providerInvocations": 0,
+    "selectedLinksChanged": false
+  },
+  "mesh": {
+    "manifestVersion": 1,
+    "package": "mesh-plus",
+    "version": "0.1.0a4",
+    "wheel": "mesh_plus-0.1.0a4-py3-none-any.whl",
+    "wheelSha256": "55a8ef018e0bab994ce3dd2106552a69fdcb5a397ed607cd9cab92afb51659dd",
+    "sourceRevision": "2cc12accb331db7ee65ab426da09576a907b291c",
+    "lockSha256": "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489",
+    "agentProfile": "agent-observer.mesh-candidate.v1"
+  },
+  "metadata": {
+    "mesh": "0.1.0a4",
+    "observer": "0.5.0a13",
+    "api": {
+      "apiVersion": 2,
+      "schemas": {
+        "snapshot": 4,
+        "watch": 4
+      },
+      "readCommands": [
+        "snapshot",
+        "list",
+        "show",
+        "watch",
+        "schema"
+      ],
+      "hostLocal": true,
+      "nativeEventReplay": false
+    },
+    "service": {
+      "serviceProtocol": 2,
+      "stability": "prerelease",
+      "observationApiVersion": 2,
+      "embeddedSnapshotVersion": 4,
+      "hostLocal": true,
+      "operations": [
+        "status",
+        "snapshot",
+        "watch"
+      ],
+      "nativeEventReplay": false,
+      "durableReplay": false,
+      "limits": {
+        "requestBytes": 16384,
+        "frameBytes": 8404992,
+        "envelopeBytes": 16384
+      }
+    },
+    "dependencies": {
+      "jsonschema": "4.26.0",
+      "attrs": "26.1.0",
+      "referencing": "0.37.0",
+      "rpds-py": "2026.9.1",
+      "jsonschema-specifications": "2025.9.1"
+    }
+  },
+  "installedMeshWheelBytesVerified": true,
+  "collectorImports": 0,
+  "providerInvocations": 0
+}

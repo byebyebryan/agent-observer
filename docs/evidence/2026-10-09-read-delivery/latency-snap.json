@@ -1,0 +1,90 @@
+{
+  "host": "snap",
+  "newReaderProcessEachSample": true,
+  "cachedOnly": true,
+  "networkBytesMeasured": false,
+  "rawPayloadsRetained": false,
+  "samples": [
+    {
+      "mode": "service",
+      "sample": 1,
+      "seconds": 0.3847,
+      "exitCode": 0,
+      "outputBytes": 154338,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "service",
+      "sample": 2,
+      "seconds": 0.4175,
+      "exitCode": 0,
+      "outputBytes": 154338,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "service",
+      "sample": 3,
+      "seconds": 0.5446,
+      "exitCode": 0,
+      "outputBytes": 154338,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-local",
+      "sample": 1,
+      "seconds": 0.938,
+      "exitCode": 0,
+      "outputBytes": 155951,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-local",
+      "sample": 2,
+      "seconds": 1.0402,
+      "exitCode": 0,
+      "outputBytes": 155951,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-local",
+      "sample": 3,
+      "seconds": 1.2027,
+      "exitCode": 0,
+      "outputBytes": 155951,
+      "rows": 129,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-fleet",
+      "sample": 1,
+      "seconds": 2.0871,
+      "exitCode": 0,
+      "outputBytes": 570072,
+      "rows": 483,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-fleet",
+      "sample": 2,
+      "seconds": 2.1309,
+      "exitCode": 0,
+      "outputBytes": 570072,
+      "rows": 483,
+      "stderrEmpty": true
+    },
+    {
+      "mode": "mesh-fleet",
+      "sample": 3,
+      "seconds": 2.5707,
+      "exitCode": 0,
+      "outputBytes": 570071,
+      "rows": 483,
+      "stderrEmpty": true
+    }
+  ]
+}
