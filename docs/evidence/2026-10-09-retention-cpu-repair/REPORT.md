@@ -2,8 +2,8 @@
 
 The [execution gates](../../collector-cost-follow-up.md) repair the
 [profiled a11 hotspot](../2026-10-09-collector-cpu/REPORT.md), preserving API 2,
-snapshot/watch 4, Service 2 and native observation semantics. C0–C3 source, immutable artifact and native gates are accepted. Sustained
-candidate cost and scoped collector selection remain pending at this checkpoint.
+snapshot/watch 4, Service 2 and native observation semantics. C0–C4 source, immutable artifact, native and candidate cost gates are accepted.
+Scoped collector selection remains pending at this checkpoint.
 
 ## Source behavior and review
 
@@ -122,3 +122,33 @@ source fault/recovery stays unknown then recovers running. Saved history,
 Resume and conversation age remain protected. The proof records 196 Service 2
 and 150 direct-watch frames. Namespace teardown removes borrowed credentials
 and private history; ordinary provider settings and sessions are unchanged.
+
+## Sustained candidate cost
+
+Both transient candidate units run for a measured 600 seconds after 30 seconds
+of warmup, using ordinary provider sources and unchanged cadence/native hints.
+The [counter operator](../../../scripts/measure-collector-cost) authenticates
+systemd MainPID/UID/incarnation and the collector entrypoint; it samples the
+bounded owned process tree and separates root CPU from helpers, including reaped
+child ticks. It adds no readers or provider operations. Counter receipts retain
+no provider payloads. This is ordinary active-host cost, not an idle benchmark.
+
+a11 remains running beside each candidate. Snap's first segment overlaps the
+installed/native validation in an isolated namespace; Starship has no disposable
+provider sessions. Concurrent workloads and duplicated passive collectors are
+explicit limits. A following normal-unit window after teardown/selection must
+confirm the sustained production result.
+
+| Host | a11 recent total percent of one core | a14 root | a14 helpers | a14 total | Mean/peak aggregate RSS MiB |
+| --- | --- | --- | --- | --- | --- |
+| [Snap](candidate-cpu-snap.json) | 57.5–62.8 | 3.520 | 11.527 | 15.047 | 73.2 / 115.6 |
+| [Starship](candidate-cpu-starship.json) | 36.6–39.0 | 1.117 | 0.885 | 2.002 | 52.2 / 74.2 |
+
+The old CPU windows and profiling have separate timing/workload bounds in the
+[profiling report](../2026-10-09-collector-cpu/REPORT.md). They are not randomized
+paired measurements. Both reductions materially clear C4 without promising a
+fixed CPU floor. Snap's remaining helper cost is separate from the repaired root
+hotspot; it is not hidden by reporting root alone. Aggregate PSS averages 36.5
+MiB on Snap and 29.6 MiB on Starship. The resource samples return to three/two
+processes and 21/12 FDs at the end; transient workers account for higher peaks.
+Memory remains a review threshold, not a strict budget.
