@@ -13,14 +13,15 @@ simplified.
 
 ## Status
 
-The optional a12 [Mesh read client](docs/mesh-read-client.md) implements the
-[state-only integration plan](docs/mesh-integration-plan.md). It consumes Mesh
-Plus's SDK; networking remains outside core and the host-local service.
-Its package/native/operational acceptance is separate from the a11 service gate.
+The a12 [Mesh read client](docs/mesh-read-client.md) and Mesh a4 bridge are
+[accepted and selected](docs/evidence/2026-10-09-mesh-integration/REPORT.md)
+on Snap and Starship. Local/fleet cached pull and push, native comparisons,
+bridge restart and scoped rollback/reselection pass. Networking stays in Mesh
+Plus; core and the host-local collection service remain independent.
 
-The current checkpoint is [a11 finite runtime-only retention](docs/evidence/2026-10-09-runtime-only-retention/REPORT.md).
-Normal read CLI/services select a11 on Snap and Starship through the separate
-operational gate. Codex is accepted on both hosts; Claude interactive discovery
+The observation checkpoint is [a11 finite runtime-only retention](docs/evidence/2026-10-09-runtime-only-retention/REPORT.md).
+Normal collection/services remain a11; the read CLI independently selects a12.
+Codex is accepted on both hosts; Claude interactive discovery
 and monitoring are accepted on Snap. The reusable core owns reconciliation and
 evidence, passive adapters own native reads, and the service owns helper lifetime
 and cached pull/push. The normal writer remains a16 independently.

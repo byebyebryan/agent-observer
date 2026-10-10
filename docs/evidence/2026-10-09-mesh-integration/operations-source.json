@@ -1,0 +1,9 @@
+{
+  "chezmoiCommit": "d332114f3fabfad0bbd7549f33f89246953297c6",
+  "sourceFiles": {
+    "docs/agent-observer-mesh-tuple.json": "2e9a6ab6ee0383b8be6e450de4b9b31c3c9018725ecca33074f237876e486d63",
+    "scripts/agent-observer-mesh-operations": "b38759923caf4c74d17caf87ced05342948e0eaa918b8932d4a0d26b19c45b2b",
+    "dot_config/systemd/user/mesh-plus-agent.service.tmpl": "0ad7507d0e542240f7e1f0601d6613b16008fe5df6853aa5f33d3d409800813e"
+  },
+  "publicArtifactsUploaded": false
+}

@@ -1,0 +1,23 @@
+{
+  "host": "starship",
+  "samples": [
+    {
+      "readers": 1,
+      "seconds": 5.0,
+      "readerCpuSeconds": 1.01,
+      "readerRssKiB": 38016,
+      "bridgeCpuSeconds": 1.15,
+      "bridgeRssKiB": 37464
+    },
+    {
+      "readers": 2,
+      "seconds": 5.0,
+      "readerCpuSeconds": 1.36,
+      "readerRssKiB": 76648,
+      "bridgeCpuSeconds": 1.39,
+      "bridgeRssKiB": 39064
+    }
+  ],
+  "scope": "five-second ordinary local read window including cold client startup; excludes Observer and SSH; descriptive, no strict budget",
+  "ownedReadsClosed": true
+}

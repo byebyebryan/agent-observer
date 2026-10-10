@@ -1,0 +1,109 @@
+{
+  "host": "starship",
+  "frames": [
+    {
+      "kind": "view",
+      "status": "pending",
+      "sequence": 1,
+      "revision": 1,
+      "hosts": [
+        {
+          "host": "starship",
+          "delivery": "connecting",
+          "view": "unavailable",
+          "rows": 0
+        },
+        {
+          "host": "snap",
+          "delivery": "connecting",
+          "view": "unavailable",
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "partial",
+      "sequence": 2,
+      "revision": 2,
+      "hosts": [
+        {
+          "host": "starship",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 354
+        },
+        {
+          "host": "snap",
+          "delivery": "connecting",
+          "view": "unavailable",
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "sequence": 3,
+      "revision": 3,
+      "hosts": [
+        {
+          "host": "starship",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 354
+        },
+        {
+          "host": "snap",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 128
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "sequence": 4,
+      "revision": 4,
+      "hosts": [
+        {
+          "host": "starship",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 354
+        },
+        {
+          "host": "snap",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 128
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "sequence": 5,
+      "revision": 5,
+      "hosts": [
+        {
+          "host": "starship",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 354
+        },
+        {
+          "host": "snap",
+          "delivery": "ready",
+          "view": "current",
+          "rows": 128
+        }
+      ]
+    }
+  ],
+  "validRequestSequenceAndBinding": true,
+  "ownedStreamClosed": true,
+  "scope": "fleet",
+  "access": "cached"
+}

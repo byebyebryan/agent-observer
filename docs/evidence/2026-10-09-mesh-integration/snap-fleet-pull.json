@@ -1,0 +1,49 @@
+{
+  "from": "snap",
+  "protocol": "agent-observer.mesh-candidate.v1",
+  "status": "complete",
+  "scope": [
+    "snap",
+    "starship"
+  ],
+  "hosts": [
+    {
+      "host": "snap",
+      "delivery": {
+        "epoch": 1,
+        "error": null,
+        "path": "ipc",
+        "proof": null,
+        "routeToken": null,
+        "status": "ready"
+      },
+      "viewState": "current",
+      "rows": 129
+    },
+    {
+      "host": "starship",
+      "delivery": {
+        "epoch": 1,
+        "error": null,
+        "path": "ssh",
+        "proof": {
+          "bridgeClock": {
+            "bootId": "d211a380-0e46-4552-838e-ad29c7b90120",
+            "timeNamespace": "time:4026531834"
+          },
+          "bridgeEncodedAtMs": 641656434,
+          "bridgeId": "b19e768f-c66a-48cf-b55c-2d675150892e",
+          "marginMs": 100,
+          "nonce": "980d7db8ea755e72d8f6d1a0ee3d7d33",
+          "payloadDigest": "sha256:8eb19e0af0ad3e051dfad535fcc3ced699ffd0e057f39b02a12c4547d141ff6f",
+          "receivedAtMs": 641244139,
+          "sentAtMs": 641243243
+        },
+        "routeToken": "sha256:72805ab7f7be76281357992d190b559fd750debdb55d828c1295b8012942c6a7",
+        "status": "ready"
+      },
+      "viewState": "current",
+      "rows": 354
+    }
+  ]
+}

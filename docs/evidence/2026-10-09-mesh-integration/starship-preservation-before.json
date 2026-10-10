@@ -1,0 +1,12 @@
+{
+  "protectedHashes": {
+    ".codex/config.toml": "b1cc554b13b9fb7e93cfaeb4fbd93940b59834114cd297819faffbbee2526bf3",
+    ".config/agent-observer/workspace.json": "2b8c2fb1c3e085ed7295e35dde9e8e64a123de9518610ecfb1b5fd1c26de067a",
+    ".config/systemd/user/agent-observer.service": "6ab775ae4e588ca0a3cf7c404524f2a6b8b3bc750db56015fafd5c09e066bfc0",
+    ".local/share/mesh-plus/python/mesh_plus/authority.py": "188570bdf706fcd758dae0b94be022645957313aaf7917d2b24fe65d856097b0",
+    ".local/share/chezmoi/.chezmoiexternal.toml": "f9355e208df8dac2ed219a2adbb9f20b6afa2d3faa7340a77b46744fe376002a",
+    ".local/share/chezmoi/dot_config/kitty/kitty.conf": "a3d55d08639873fa7e56d9d87f39202577d4dd7e3b05caf473c57c63f3e60baf"
+  },
+  "observerUnit": "ActiveState=active\nMainPID=3096121\nNRestarts=1\n",
+  "rollback": "/home/bryan/.local/state/agent-observer/mesh-rollback/2026-10-09/baseline.json"
+}

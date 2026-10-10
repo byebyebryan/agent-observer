@@ -12,8 +12,9 @@ signals, pushed read updates and user-facing alerts have separate ownership.
 Meshing and terminal/window matching remain external. The
 [a5 completion report](evidence/2026-10-08-codex-observation-completion/REPORT.md)
 records source/artifact/native acceptance without changing API 2. Normal read
-CLI/service selection now uses [a11 finite retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
-after independent artifact/native and scoped operational acceptance. History
+service selection uses [a11 finite retention](evidence/2026-10-09-runtime-only-retention/REPORT.md).
+The independently accepted [a12 Mesh reader](evidence/2026-10-09-mesh-integration/REPORT.md)
+adds cached local/fleet pull and push without restarting collection. History
 and runtime receipts from one sample publish one view with independent leases.
 The independently selected writer remains a16. Shared-core BOOTTIME deadlines
 retire disappeared unsaved identities at the original runtime lease, without

@@ -1,8 +1,9 @@
 # Agent Observer roadmap
 
-The [state-only Mesh integration](mesh-integration-plan.md) is the current
-execution track: compatible adapter SDK fixes, optional a12 read CLI, immutable
-package/native comparison, then separately gated client/bridge selection.
+The [state-only Mesh integration](mesh-integration-plan.md) is
+[complete](evidence/2026-10-09-mesh-integration/REPORT.md): compatible adapter SDK
+fixes, a12 read CLI, immutable package/native comparison, and scoped a12/a4
+client/bridge selection on both hosts. Collection stays on a11, writer on a16.
 The [CLI guide](mesh-read-client.md) describes raw and human read modes.
 Core/local service, provider policy and downstream UI development stay separate.
 
@@ -38,7 +39,7 @@ selected a6 after its independent artifact/native and scoped operational gates.
 The [Claude execution pass](claude-observation-execution.md) independently accepts
 [a8 discovery/monitoring](evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
 preserving Codex on both hosts and the same read/service contracts. Normal
-read/service selection now uses [a11 finite runtime-only retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+collection/service selection now uses [a11 finite runtime-only retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
 through its separate operational gate. The preceding
 [a9 interactive successor](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 retains its lifecycle/on-off proof bounds.
