@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+The authorized [read-delivery follow-up](read-delivery-follow-up-plan.md)
+publishes accepted artifacts, measures sustained read costs and implements pure
+read-cache/timer conformance and human-watch ergonomics. Reader acceptance and
+selection stay separate from collection, networking and downstream development.
+
 The [state-only Mesh integration](mesh-integration-plan.md) is
 [complete](evidence/2026-10-09-mesh-integration/REPORT.md): compatible adapter SDK
 fixes, a12 read CLI, immutable package/native comparison, and scoped a12/a4
