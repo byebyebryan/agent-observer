@@ -1,0 +1,70 @@
+{
+  "studyVersion": 1,
+  "pythonVersion": "3.12.8",
+  "referenceSha256": "7f4caacd76076feab2d7b399324ace7e8eabf5401f01b3de1f78c08a2417339b",
+  "workerSha256": "42dea2cb8f8d01fc5fa28f7a59643ff88123f8eedaa1fc46155b2db10bd206e9",
+  "censusFiles": 37,
+  "stableFiles": 37,
+  "changedDuringStudy": 0,
+  "stableParityMismatches": [],
+  "studies": {
+    "referenceTimed": {
+      "wallSeconds": 0.3223182159708813,
+      "ownCpuSeconds": 0.320809876,
+      "files": 37
+    },
+    "sharedColdTimed": {
+      "wallSeconds": 0.198266621096991,
+      "ownCpuSeconds": 0.197085795,
+      "files": 37
+    },
+    "memoFillTimed": {
+      "wallSeconds": 0.1924301900435239,
+      "ownCpuSeconds": 0.191452713,
+      "files": 37
+    },
+    "memoWarmTimed": {
+      "wallSeconds": 0.0018218460027128458,
+      "ownCpuSeconds": 0.001818478999999984,
+      "files": 37
+    },
+    "referenceCounted": {
+      "wallSeconds": 0.3402627210598439,
+      "ownCpuSeconds": 0.338673914,
+      "files": 37,
+      "decodedRecords": 19221,
+      "decoderInputBytes": 36147368
+    },
+    "sharedColdCounted": {
+      "wallSeconds": 0.19415011000819504,
+      "ownCpuSeconds": 0.19324278699999997,
+      "files": 37,
+      "decodedRecords": 7599,
+      "decoderInputBytes": 18287542
+    },
+    "memoWarmCounted": {
+      "wallSeconds": 0.0019052070565521717,
+      "ownCpuSeconds": 0.0018976549999998316,
+      "files": 37,
+      "decodedRecords": 29,
+      "decoderInputBytes": 41589
+    }
+  },
+  "memoEntries": 35,
+  "memoEncodedBytes": 13342,
+  "syntheticDelta": {
+    "files": 3,
+    "changedFiles": 1,
+    "decodedRecords": 1,
+    "unchangedProjectionsEqual": true,
+    "changedActivityDeltaMs": 1000
+  },
+  "limits": [
+    "parser component only; imports amortized",
+    "unknown/fault projections remain uncached",
+    "ordinary source changes excluded from stable parity",
+    "counting and timing are separate runs",
+    "no runtime registration or SDK-list proof",
+    "no raw provider contents retained"
+  ]
+}

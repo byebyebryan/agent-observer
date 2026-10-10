@@ -1,9 +1,9 @@
 # Change-aware Claude collection repair
 
 The [execution plan](../../claude-collection-cost-plan.md) addresses the
-[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H2 source
-acceptance is complete. Immutable/native, sustained candidate and operational
-selection gates remain pending. Normal services still select a14. API 2,
+[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H3 source and immutable/native
+acceptance are complete. Sustained candidate cost and operational selection
+gates remain pending. Normal services still select a14. API 2,
 snapshot/watch 4 and Service 2 are unchanged; source a15 names a new package only.
 
 ## Source boundary and validation
@@ -74,3 +74,52 @@ files potentially changing between runs. They establish meaningful source cost
 reduction, not sustained host savings or native runtime completeness. Installed
 public CLI/native comparison and ten-minute normal workload measurements remain
 independent acceptance requirements before managed collector selection.
+
+## Immutable installed/native gate
+
+[a15](../../../artifacts/observer-0.5.0a15.json) freezes source
+`eed244fae16199f88c92dc2f520f4823cce221e8`, wheel SHA-256
+`073296885c5b67ac2f0d9bf8c268393794ff722523fd8fb746118ed5aaa91c08`.
+The wheel is built from a clean tracked-source archive; its package membership
+and bytes match that revision. A preliminary unselected build reused ignored
+build output and included removed modules; that build was rejected before
+installation. Public schemas remain byte-identical to a14.
+
+[Snap](install-snap.json) installs Python 3.12.8/source-only SDK 0.2.163;
+[Starship](install-starship.json) installs Python 3.14.7/core. Both immutable
+prefixes pass byte, entrypoint, profile and API verification without provider
+invocation or selection. The external copied harness imports only installed
+modules: [Snap](tests-installed-snap.json) passes 142 tests without skips;
+[Starship](tests-installed-starship.json) passes 142 with one optional independent
+JSON Schema test skipped, as in the preceding core-profile gate. The full source
+suite covers that test. [Installed validation](installed-validation.json) binds
+the artifact audit, harness counts and push-proxy hash. The [installed parser
+study](parser-installed.json) confirms 37 stable native candidates and zero
+activity/kind parity differences under the exact Snap interpreter.
+
+Independent native brackets compare installed direct
+([Snap](native-direct-snap.json), [Starship](native-direct-starship.json)),
+private candidate cached pull
+([Snap](native-cached-snap.json), [Starship](native-cached-starship.json)) and
+initial complete pushed views
+([Snap](native-push-snap.json), [Starship](native-push-starship.json)). Candidate
+services use ordinary sources, native hints and unchanged host cadences on private
+sockets beside a14. Snap's 91 Codex/37 Claude rows contain three active sessions
+each; Starship's 354 Codex rows contain six active sessions. All active identity,
+runtime and phase checks match. Codex reports zero issues. Claude retains the
+existing setup-only `e0cba9dd-b642-4730-af4b-beb3b7e9c16c` cwd gap; SDK classification
+and age remain unavailable for that row. Legacy Starship unknown metadata keeps
+its accepted scope. The proxy translates only `service snapshot` into
+`service watch --count 1 --include-children`; it proves initial complete delivery,
+not lossless transition history.
+
+The [isolated installed native proof](native-retention-snap.json) establishes
+private user/mount/PID isolation and masks ordinary homes before provider actions.
+It independently validates normal exit, forced kill, exact UUID reappearance,
+registration source fault/recovery, saved history, Resume and unchanged activity
+age through direct, cached, pushed and sampled-watch reads. Unsaved omission
+remains stale/unknown before finite retirement, with original clocks preserved.
+The new memo never turns failed native runtime evidence into parked. The proof
+records 203 Service 2 and 147 sampled-watch frames. [Cleanup](native-cleanup.json)
+removes borrowed credentials and private history. Ordinary provider sessions,
+settings, hooks and selected collectors remain unchanged at this gate.
