@@ -182,7 +182,7 @@ class Runtime:
             parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             parent.setblocking(False)
             payload['imageMemoFd'] = child.fileno()
-            if job.provider == "claude":
+            if job.provider == "claude" and callable(getattr(os, "memfd_create", None)):
                 metadata_fd = self.claude_memo.descriptor()
                 payload["claudeMemoFd"] = metadata_fd
             request = (canonical(payload) + "\n").encode()

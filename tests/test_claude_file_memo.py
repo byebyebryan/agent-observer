@@ -155,6 +155,7 @@ class ClaudeMemoTest(unittest.TestCase):
         self.memo.put(fd, 'project', self.path.name, 'positive', True, before)
         self.assertFalse(self.memo.entries)
 
+    @unittest.skipUnless(callable(getattr(os, "memfd_create", None)), "Python lacks Linux memfd support")
     def test_sealed_read_only_roundtrip_and_strict_content_free_admission(self):
         self.read()
         descriptor = self.memo.descriptor()

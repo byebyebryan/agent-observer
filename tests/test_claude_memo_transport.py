@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from test_service_state import provider_snapshot
 from test_service_contract import fixture
@@ -18,6 +19,7 @@ from agent_observer.service_state import ServiceState
 class ClaudeMemoTransportTest(unittest.TestCase):
     def setUp(self):
         self.value = provider_snapshot('claude')
+        self.value['host']['uid'] = os.geteuid()
         self.source = self.value['sources'][0]
         self.home = self.source['configHome']
         self.now = 15000
@@ -82,6 +84,7 @@ class ClaudeMemoTransportTest(unittest.TestCase):
         self.complete({'snapshot': value, 'claudeMemo': self.packet})
         self.assertFalse(self.runtime.claude_memo.entries)
 
+    @unittest.skipUnless(callable(getattr(os, "memfd_create", None)), "Python lacks Linux memfd support")
     def test_real_worker_accepts_sealed_input_and_emits_only_normalized_envelope(self):
         job = self.runtime.scheduler.start_due(self.now)[0]
         process = self.runtime._spawn(job)
@@ -94,6 +97,24 @@ class ClaudeMemoTransportTest(unittest.TestCase):
             self.assertEqual(set(envelope), {'snapshot', 'claudeMemo'})
             self.assertEqual(envelope['claudeMemo']['entries'], [])
             self.assertEqual(envelope['snapshot']['sources'][0]['provider'], 'claude')
+        finally:
+            self.runtime._stop_worker(Worker(job, process))
+            self.runtime._close_memo_channel(process)
+            process.stdout.close()
+
+    def test_worker_without_memfd_uses_normal_snapshot_without_memo(self):
+        job = self.runtime.scheduler.start_due(self.now)[0]
+        with patch.object(os, 'memfd_create', None, create=True):
+            process = self.runtime._spawn(job)
+        try:
+            output = process.stdout.read()
+            process.wait(timeout=5)
+            self.assertEqual(process.returncode, 0)
+            import json
+            snapshot = json.loads(output)
+            self.assertNotIn('claudeMemo', snapshot)
+            self.assertEqual(snapshot['sources'][0]['provider'], 'claude')
+            self.assertFalse(process._observer_claude_envelope)
         finally:
             self.runtime._stop_worker(Worker(job, process))
             self.runtime._close_memo_channel(process)

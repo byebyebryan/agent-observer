@@ -18,5 +18,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a4/mesh_plus-0.1.0a4-py3-none-any.whl#sha256=55a8ef018e0bab994ce3dd2106552a69fdcb5a397ed607cd9cab92afb51659dd'
+      - run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a9/mesh_plus-0.1.0a9-py3-none-any.whl#sha256=07882909a49cd513b5c114da7890bebfe9b1592da3a08cca69a68c24817164c2'
       - run: ./scripts/check

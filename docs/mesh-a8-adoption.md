@@ -22,3 +22,13 @@ Mesh a9 follows a8 with owned-IO cancellation refinement. It uses new `-mesh-a9`
 roots with the same Observer wheels, profiles, collector and writer selections.
 The verifier independently admits the reviewed a9 manifest and rejects unknown
 versions or multiple Mesh manifests before invoking archived verification.
+
+The coordinated CI pass updates the Mesh reader lane to the exact a9 wheel.
+The Claude memo transport fixture binds its UID to the executing user, so CI
+does not mistake UID 1000 fixture state for an admitted current worker sample.
+A source-only portability refinement uses stable Linux UAPI seal values when
+CPython headers omit the names. If Python has no `memfd_create`, the worker
+uses the ordinary snapshot path and no memo descriptor or memo reply is admitted.
+The real owned worker regression covers that fallback. Installed collector a15
+bytes and process incarnation remain unchanged; these source refinements require
+the producer's next independent packaged/operational acceptance before rollout.
