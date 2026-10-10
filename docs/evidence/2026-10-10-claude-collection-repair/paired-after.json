@@ -1,0 +1,114 @@
+[
+  {
+    "label": "a14",
+    "serviceId": "d41259e3-7e62-4983-a6ff-923723f89f8a",
+    "sources": [
+      {
+        "provider": "codex",
+        "components": [
+          {
+            "accepted": 340,
+            "attempts": 340,
+            "expiresBoottimeMs": 662917746,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 662827746
+          },
+          {
+            "accepted": 72,
+            "attempts": 72,
+            "expiresBoottimeMs": 663109949,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 662749949
+          }
+        ]
+      },
+      {
+        "provider": "claude",
+        "components": [
+          {
+            "accepted": 817,
+            "attempts": 817,
+            "expiresBoottimeMs": 662929335,
+            "health": "partial",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 662839335
+          },
+          {
+            "accepted": 483,
+            "attempts": 483,
+            "expiresBoottimeMs": 663155295,
+            "health": "partial",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 662795295
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "a15",
+    "serviceId": "6e27a65f-7674-4a74-b00e-3f70ed3c1f29",
+    "sources": [
+      {
+        "provider": "codex",
+        "components": [
+          {
+            "accepted": 57,
+            "attempts": 57,
+            "expiresBoottimeMs": 662936826,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 662846826
+          },
+          {
+            "accepted": 12,
+            "attempts": 12,
+            "expiresBoottimeMs": 663206826,
+            "health": "current",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 662846826
+          }
+        ]
+      },
+      {
+        "provider": "claude",
+        "components": [
+          {
+            "accepted": 113,
+            "attempts": 113,
+            "expiresBoottimeMs": 662927192,
+            "health": "partial",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "runtime",
+            "sampledBoottimeMs": 662837192
+          },
+          {
+            "accepted": 61,
+            "attempts": 61,
+            "expiresBoottimeMs": 663155296,
+            "health": "partial",
+            "inFlight": false,
+            "lastResult": "accepted",
+            "name": "history",
+            "sampledBoottimeMs": 662795296
+          }
+        ]
+      }
+    ]
+  }
+]
