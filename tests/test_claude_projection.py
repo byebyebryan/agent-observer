@@ -1,6 +1,7 @@
 """Shared Claude evidence invariants; fixture reads do not execute a provider."""
 
 import copy
+import os
 import unittest
 
 from agent_observer.collection import compose_snapshot
@@ -21,7 +22,7 @@ def sample():
            "activity": {"at": 90, "source": "claude_transcript_message", "health": "current",
                         "reason": "native_conversation_event"}}
     return {"provider": "claude", "configHome": "/fixture/claude", "configHomeKind": "explicit",
-            "namespace": NAMESPACE, "host": {"authority": "fixture", "uid": 1000},
+            "namespace": NAMESPACE, "host": {"authority": "fixture", "uid": os.geteuid()},
             "sourceHealth": "current", "runtime": None, "parkedSupported": True,
             "activitySupported": True, "errors": [],
             "coverage": {"sessionRegistry": "complete", "backgroundGuard": "complete",
