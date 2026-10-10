@@ -28,3 +28,9 @@ SDK/jsonschema skips. The Mesh a9/jsonschema-enabled source gate also passes all
 448 tests with no skips, independently of the ordinary environment.
 Producer/runtime truth, a new packaged artifact and consumer/deployment
 selection remain separate gates; this source change deploys no provider policy.
+
+The next package candidate is 0.5.0a16. Its archive verifier explicitly admits
+the reviewed Mesh a10 candidate while still rejecting duplicate manifests and
+unreviewed a11. Exact wheel/import/metadata acceptance precedes selection of
+new private reader and bridge environments. Ordinary collector a15 and writer
+a16 remain independently pinned; this does not select the new collector code.
