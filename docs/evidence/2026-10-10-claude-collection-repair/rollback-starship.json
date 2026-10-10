@@ -1,0 +1,15 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "restoredTargets": 6,
+  "unit": {
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "UnitFileState": "enabled",
+    "MainPID": "1336635"
+  },
+  "managedSourceChanged": false,
+  "intentionalManagedDrift": true,
+  "providerActions": 0,
+  "frontendTargets": 0
+}

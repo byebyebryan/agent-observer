@@ -1,0 +1,15 @@
+{
+  "status": "accepted",
+  "hostScope": "snap",
+  "restoredTargets": 6,
+  "unit": {
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "UnitFileState": "enabled",
+    "MainPID": "310101"
+  },
+  "managedSourceChanged": false,
+  "intentionalManagedDrift": true,
+  "providerActions": 0,
+  "frontendTargets": 0
+}

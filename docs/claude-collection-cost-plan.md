@@ -79,3 +79,13 @@ observation leases/retention remain intact.
 No slower cadence, new hook requirement, append-only transcript ledger, persistent
 SDK runtime, alert protocol or downstream implementation is included. Appended-byte
 tailing and broader publisher optimization remain later measured decisions.
+
+## Completion checkpoint
+
+H0–H5 are accepted in the [execution report](evidence/2026-10-10-claude-collection-repair/REPORT.md).
+Normal collectors select immutable a15 on Snap and Starship after independent
+native/cost proofs, a14 rollback and a15 reselection. Source passes 443 tests;
+the matched Snap window reduces total CPU from 3.493% to 2.353% of one core.
+Final ten-minute normal-unit windows measure 2.003% on Snap and 2.340% on Starship.
+API 2/wire 4/Service 2, cadence/hints and reader/writer/Mesh/provider policy remain
+unchanged. Changed-file tailing beyond the existing bounded parser is deferred.

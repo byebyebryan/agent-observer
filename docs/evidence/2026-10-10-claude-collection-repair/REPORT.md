@@ -1,8 +1,9 @@
 # Change-aware Claude collection repair
 
 The [execution plan](../../claude-collection-cost-plan.md) addresses the
-[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H4 source, immutable/native and sustained candidate cost acceptance are
-complete. Scoped operational selection remains pending. Normal services still select a14. API 2,
+[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H5 source, immutable/native, sustained cost and scoped operational acceptance
+are complete. Normal services select a15 on Snap and Starship through canonical chezmoi
+commit `720bfae`. API 2,
 snapshot/watch 4 and Service 2 are unchanged; source a15 names a new package only.
 
 ## Source boundary and validation
@@ -157,7 +158,83 @@ services warmed and ordinary sources/cadence unchanged:
 That is about 33% less total and 47% less helper CPU for this matched interval.
 [Before](paired-before.json)/[after](paired-after.json) source receipt counters
 bind the same service incarnations and retain cadence/coverage diagnostics.
+Both versions accept 14 Codex runtime receipts/three history receipts and eight
+Claude history receipts; Claude runtime receipts total 21/20 including atomic
+history acceptance. This small boundary difference is explicit.
 No provider actions or sustained added readers run during the comparison.
 This independently confirms a material ordinary-workload improvement without
 using the earlier busier windows as a paired baseline. H4 is accepted; normal
 selection and post-selection sustained measurement remain separate.
+
+## Scoped normal selection and delivery
+
+Six-target dry-run passes on [Snap](preflight-snap.json)/
+[Starship](preflight-starship.json). Both transient units are stopped before
+normal selection. Exact verified installed a15 selection
+([Snap](select-initial-snap.json), [Starship](select-initial-starship.json)),
+a14 rollback ([Snap](rollback-snap.json), [Starship](rollback-starship.json))
+and a15 reselection ([Snap](reselect-snap.json), [Starship](reselect-starship.json))
+pass without provider actions. Only the service command link and unit executable
+prefix change. Reader a13, writer a16, workspace, native hints, provider settings
+and 30/120-second Snap, 20/60-second Starship cadence remain selected. The existing
+Mesh bridge retains its incarnation. Private six-target rollback snapshots remain
+at `~/.local/state/agent-observer/rollback/20261010-a15-snap` and
+`~/.local/state/agent-observer/rollback/20261010-a15-starship`.
+
+Existing normal-unit delivery ([Snap](normal-delivery-snap.json),
+[Starship](normal-delivery-starship.json)) runs three healthy readers, one deliberately
+unread peer and 100 cached snapshots over about thirty seconds per host. Healthy
+readers record six/four frames each with zero gaps/errors. These burst-read CPU
+receipts are excluded from the following normal workload window. The legacy
+operator echoes unused requested cadence/hint defaults under `--unit`; the
+annotated receipt preserves those fields and separately supplies exact effective
+unit arguments bound by the operations verifier. It never changes the unit.
+The first invocation lacked an existing owned output directory and was rejected
+before observation; the completed runs use explicitly prepared private roots.
+
+Independent separately selected a13 CLI/native cached pull
+([Snap](normal-native-cached-snap.json), [Starship](normal-native-cached-starship.json))
+and initial complete push
+([Snap](normal-native-push-snap.json), [Starship](normal-native-push-starship.json))
+retain the same 3+3 and six active contexts, with zero Codex issues and the existing
+Claude setup-only metadata gap. Direct native proof remains in the artifact gate.
+[Snap preservation](preservation-snap.json)/[Starship preservation](preservation-starship.json)
+bind unchanged provider configuration, reader/writer and Mesh incarnation to
+[before](protected-before-snap.json)/[after](protected-after-snap.json) receipts.
+Unrelated Mesh/Tmux source drift is preserved. The final normal-unit 600-second
+CPU/resource window after readers and fixtures stop completes the last H5 gate.
+
+## Normal-unit sustained acceptance and follow-ups
+
+[Snap](normal-cpu-snap.json) and [Starship](normal-cpu-starship.json) each run
+600 seconds after 30 seconds of warmup, following candidate teardown and bounded
+reader/native tests. No added sustained readers or private provider fixtures
+remain; existing Mesh subscriptions and ordinary host work continue. Exact
+root PID/birth values match [Snap](verify-final-snap.json)/
+[Starship](verify-final-starship.json) final unit verification, with zero restarts.
+
+| Normal a15 | Root percent of one core | Helpers | Total | Mean/peak RSS MiB | Mean PSS MiB |
+| --- | --- | --- | --- | --- | --- |
+| Snap | 0.977 | 1.027 | 2.003 | 69.0 / 90.4 | 37.6 |
+| Starship | 1.293 | 1.047 | 2.340 | 52.6 / 74.4 | 29.8 |
+
+End resources return to three/two processes and 21/12 descriptors. Resource
+variation remains bounded in these windows; the user's relaxed memory review
+threshold is preserved. Percentages are workload measurements, not idle floors.
+The concurrent comparison supplies the fair a14/a15 savings claim; this final
+window independently establishes normal-unit operation after rollback/reselection.
+[Post-soak native brackets](post-soak-native-snap.json) on Snap and
+[Starship](post-soak-native-starship.json) confirm all current active identities, runtime and phase with zero Codex
+issues and the existing Claude setup-only cwd gap. Snap remains at three Codex
+and three Claude sessions; Starship has seven active Codex sessions after one
+ordinary new session appears, and the installed cached CLI reports it correctly.
+All H0–H5 gates are accepted with the same public observation contracts.
+
+The service still performs cheap current catalogue/SDK metadata listing and
+fresh native runtime checks. Changed files use bounded head/tail parsing;
+append-only incremental parsing, persistent SDK workers, slower cadences,
+publisher/read-burst optimization and alert normalization remain separate
+measured decisions. Existing setup-only/legacy metadata and accepted native
+registration coverage limits remain explicit. Reader a13, writer a16, Mesh and
+provider policy retain their independent selections. Remote publication/push is
+not part of this loop.

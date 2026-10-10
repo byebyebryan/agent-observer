@@ -1,0 +1,43 @@
+{
+  "paths": [
+    {
+      "path": ".codex/config.toml",
+      "sha256": "fbfa91996e16619506878c91b2954d33c609fb2d2074785fe42a7cd75b943674",
+      "link": null
+    },
+    {
+      "path": ".claude/settings.json",
+      "sha256": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+      "link": null
+    },
+    {
+      "path": ".local/bin/agent-observer",
+      "sha256": "9409db9396650c2955d7d6f061c529821cc2b2d236b5d6edcdc18532a5956770",
+      "link": "/home/bryan/.local/share/agent-observer/0.5.0a13-646a067dcba3b1a3/bin/agent-observer"
+    },
+    {
+      "path": ".local/bin/agent-observer-write",
+      "sha256": "a153167edef82c80ee0587b3a55af57be810ebc4efa9d08beb6d8976b4b09a11",
+      "link": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write"
+    },
+    {
+      "path": ".local/bin/agent-observer-service",
+      "sha256": "6c18f0305626c5f784a7c48e57ad3827d7e00ef4f8776379ce3f474b91b7252a",
+      "link": "/home/bryan/.local/share/agent-observer/0.5.0a15-073296885c5b67ac/bin/agent-observer-service"
+    }
+  ],
+  "units": {
+    "agent-observer.service": {
+      "ActiveState": "active",
+      "MainPID": "328970",
+      "NRestarts": "0",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/agent-observer.service"
+    },
+    "mesh-plus-agent.service": {
+      "ActiveState": "active",
+      "MainPID": "2181472",
+      "NRestarts": "0",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/mesh-plus-agent.service"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "providerConfigurationAndReaderWriterUnchanged": true,
+  "meshBridgeIncarnationUnchanged": true,
+  "observerChangedTargets": [
+    ".local/bin/agent-observer-service",
+    ".config/systemd/user/agent-observer.service"
+  ]
+}

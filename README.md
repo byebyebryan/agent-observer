@@ -21,11 +21,13 @@ on Snap and Starship. Local/fleet cached pull and push, native comparisons,
 bridge restart and scoped rollback/reselection pass. Networking stays in Mesh
 Plus; core and the host-local collection service remain independent.
 
-The observation checkpoint is [a14 retention CPU repair](docs/evidence/2026-10-09-retention-cpu-repair/REPORT.md).
-Normal collection/services select a14; the read CLI independently selects a13.
+The observation checkpoint is [a15 Claude collection repair](docs/evidence/2026-10-10-claude-collection-repair/REPORT.md).
+Normal collection/services select a15; the read CLI independently selects a13.
 The a4 bridge retains its a12 prefix and process. Retention reconciles on changed
 receipts or due deadlines, preserving the a11 finite-retention behavior and the
-accepted observation contract. The [collector follow-up](docs/collector-cost-follow-up.md)
+accepted observation contract. Claude shares bounded activity/kind decoding and
+reuses normalized metadata after current file/directory guards; native runtime
+and phase checks remain fresh. The [collector follow-up](docs/collector-cost-follow-up.md)
 records source, installed/native and sustained-cost evidence. Mesh subscriber
 costs remain a separate networking follow-up.
 Codex is accepted on both hosts; Claude interactive discovery
