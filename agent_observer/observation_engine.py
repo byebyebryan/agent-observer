@@ -46,6 +46,8 @@ class ObservationEngine:
         self.contexts = {provider: None for provider in configs}
         self.context_samples = {provider: -1 for provider in configs}
         self.retention = {provider: RuntimeOnlyRetention() for provider in configs}
+        self._retirement_dirty = set(configs)
+        self._retirement_due = dict.fromkeys(configs)
         self.snapshot = None
         self.revision = 0
 
@@ -68,6 +70,7 @@ class ObservationEngine:
         receipt.inFlight = False
         receipt.lastResult = reason
         receipt.health = "stale" if receipt.data else "unavailable"
+        self._retirement_dirty.add(provider)
         self.publish()
 
     def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
@@ -104,6 +107,7 @@ class ObservationEngine:
         receipt = self.receipts[provider][component]
         previous = receipt.data
         receipt.data = copy.deepcopy(value)
+        self._retirement_dirty.add(provider)
         receipt.inFlight = False
         receipt.lastResult = "accepted"
         receipt.accepted += 1
@@ -136,11 +140,12 @@ class ObservationEngine:
     def expire(self, now=None):
         now = self.clock() if now is None else now
         changed = False
-        for receipts in self.receipts.values():
+        for provider, receipts in self.receipts.items():
             for receipt in receipts.values():
                 if receipt.current() and receipt.expiresBoottimeMs <= now:
                     receipt.health = "stale"
                     receipt.lastResult = "lease_expired"
+                    self._retirement_dirty.add(provider)
                     changed = True
         changed = self._retire_runtime_only(now) or changed
         if changed:
@@ -150,26 +155,41 @@ class ObservationEngine:
     def _retire_runtime_only(self, now):
         changed = False
         for provider, receipts in self.receipts.items():
+            due = self._retirement_due[provider]
+            if provider not in self._retirement_dirty and (due is None or now < due):
+                continue
             runtime = receipts["runtime"]
-            saved = {identity_key(row["identity"]) for receipt in receipts.values()
-                     if receipt.data for row in receipt.data["sessions"]
+            keyed = {name: [(identity_key(row["identity"]), row)
+                            for row in (receipt.data or {}).get("sessions", [])]
+                     for name, receipt in receipts.items()}
+            saved = {key for rows in keyed.values() for key, row in rows
                      if row["hasSavedHistory"]}
-            current = {identity_key(row["identity"])
-                       for row in (runtime.data or {}).get("sessions", [])
-                       if "retained_after_gap" not in row["metadataIssues"]}
-            if not runtime.current():
-                current.clear()
+            current = {key for key, row in keyed["runtime"]
+                       if "retained_after_gap" not in row["metadataIssues"]} if runtime.current() else set()
             retention = self.retention[provider]
             protected = saved | current
-            for receipt in receipts.values():
+            candidates = set()
+            for name, receipt in receipts.items():
                 if receipt.data is None:
                     continue
                 rows = receipt.data["sessions"]
-                receipt.data["sessions"] = [row for row in rows
-                    if identity_key(row["identity"]) in protected
-                    or not retention.expired(row, now)]
+                kept = []
+                for key, row in keyed[name]:
+                    if key in protected:
+                        kept.append(row)
+                    elif retention.deadlines.get(key, now) > now:
+                        kept.append(row)
+                        candidates.add(key)
+                receipt.data["sessions"] = kept
                 changed = changed or len(rows) != len(receipt.data["sessions"])
             retention.prune(runtime.data["sessions"] if runtime.data else [])
+            # Only unprotected survivors can retire by time alone. Current
+            # rows become eligible on receipt replacement/failure/lease expiry.
+            # Pruning can remove a history-only survivor's ledger entry; the
+            # next call must then use the original immediate-expiry predicate.
+            self._retirement_due[provider] = min(
+                (retention.deadlines.get(key, now) for key in candidates), default=None)
+            self._retirement_dirty.discard(provider)
         return changed
 
     def _placeholder(self, provider):

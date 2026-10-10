@@ -1,0 +1,16 @@
+{
+  "status": "accepted_source",
+  "tests": 429,
+  "skipped": 0,
+  "markdownFiles": 119,
+  "seededParityTransitions": 1200,
+  "quietTickRegressionIterations": 2000,
+  "exactDeadlineRegression": true,
+  "invalidAdmissionRegression": true,
+  "referenceSourceCommit": "37ccc53",
+  "referenceMethodIntroducedIn": "4f99e0d",
+  "engineSha256": "1f880766082a9565663a03ebc3a002d1731ed742917649033b1b96865203b621",
+  "nativeCalls": false,
+  "installedArtifactAccepted": false,
+  "productionSelected": false
+}
