@@ -159,7 +159,7 @@ were copied from the committed Snap managed checkpoint. Nothing was pushed.
 Private rollback snapshots are armed at
 `~/.local/share/agent-observer/rollback-20261004-snap` and
 `~/.local/share/agent-observer/rollback-20261004-starship` on their respective hosts.
-The managed `docs/agent-observer-pilot-operations.md` explains the rollback command
+The [original pilot procedure](https://github.com/byebyebryan/dotfiles/blob/5ff8b412a45b69cac64b8eb356444e6cf0705012/docs/agent-observer-pilot-operations.md) explains the rollback command
 and guards. Default rollback restores selectors/managed sources; optional consumer
 state restoration rejects later user changes. It never restores provider stores,
 auth/settings or stops native work. Tests used private consumer state, so ordinary
@@ -172,3 +172,22 @@ manual. Public push/release, supplied hosted-CI artifact input and the unrelated
 external archive maintenance remain open. Monitoring expansion stays an independent
 Observer batch: last conversation activity, parked/offline predicates, broader
 input/questions, foreground Claude readiness, native events and optional networking.
+
+## Retired joint pilot procedure
+
+The former joint selector and provider executable allowlists are retired. They
+cannot select or roll back the independent current collector, reader, writer or
+Mesh bridge. [Original pilot operations](https://github.com/byebyebryan/dotfiles/blob/5ff8b412a45b69cac64b8eb356444e6cf0705012/docs/agent-observer-pilot-operations.md)
+and [original selection](https://github.com/byebyebryan/dotfiles/blob/5ff8b412a45b69cac64b8eb356444e6cf0705012/docs/agent-observer-pilot-tuple.json) preserve the exact
+historical scope, wheel identities and native/graphical limits. Private rollback
+snapshots remain host-local and were not migrated.
+
+Agent Plus owns its retained native artifact/dependency manifest and selector-only
+rollback tooling; see its
+[installed proof](https://github.com/byebyebryan/rofi-agent-plus/blob/main/docs/managed-operations.md).
+Current producer procedures are [artifact operations](artifact-operations.md)
+and [Mesh reader guidance](mesh-read-client.md). The a6 Codex observation, a8
+Claude adapter, a9 interactive mode, a11 finite unsaved retention, a14 retention
+CPU repair and a15 Claude collection repair remain dated producer checkpoints,
+not a combined current acceptance claim. [Original operations history](https://github.com/byebyebryan/dotfiles/blob/5ff8b412a45b69cac64b8eb356444e6cf0705012/docs/agent-observer-operations.md)
+retains cadence, private snapshot locations and the original evidence links.

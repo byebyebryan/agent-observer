@@ -1,0 +1,61 @@
+AGENTS.md
+README.md
+docs
+scripts
+deployments
+# Generated Python caches are not part of the accepted package payloads.
+.local/share/rofi/extensions/tmux-plus/rofi_tmux_plus/__pycache__
+.local/share/tmux-observer/python/tmux_observer/__pycache__
+.local/share/tmux-observer/python/tmux_observer_client/__pycache__
+.local/share/tmux-observer/python/tmux_observer_actions/__pycache__
+.local/share/mesh-plus/**/__pycache__
+{{ $machineID := default "unknown" (get .machine.by_hostname .chezmoi.hostname) }}
+{{ if eq $machineID "unknown" }}
+.codex/hooks.json
+.local/share/rofi/extensions/ssh-plus
+.local/share/rofi/extensions/agent-plus
+.local/share/rofi/extensions/tmux-plus
+.local/bin/rofi-agent-plus
+.local/bin/rofi-agent-plus-rofi
+.local/bin/rofi-ssh-plus
+.local/bin/rofi-tmux-plus
+.local/bin/rofi-tmux-plus-rofi
+.config/rofi/scripts/ssh-plus
+.config/rofi/scripts/agent-plus
+.config/rofi/scripts/tmux-plus
+.config/rofi-agent-plus/config.toml
+.config/rofi-ssh-plus/config.toml
+.config/rofi-tmux-plus/config.toml
+.config/DankMaterialShell/plugins/powerStatus
+.config/systemd/user/graphical-session.target.wants/dms.service
+.config/yazi/package.toml
+{{ end }}
+{{ if ne $machineID "snap" }}
+.claude/settings.json
+.claude.json
+.config/systemd/user/default.target.wants/tmux-observer-owner@snap.service
+{{ end }}
+{{ if eq $machineID "starship" }}
+.claude
+{{ end }}
+{{ if ne $machineID "starship" }}
+.config/systemd/user/default.target.wants/tmux-observer-owner@starship.service
+{{ end }}
+{{ if and (ne $machineID "snap") (ne $machineID "starship") }}
+.local/share/mesh-plus
+.local/share/tmux-observer
+.local/bin/tmux-observer
+.local/bin/tmux-observer-client
+.config/systemd/user/tmux-observer-*
+.config/systemd/user/default.target.wants/tmux-observer-owner@*.service
+.local/bin/agent-observer
+.local/bin/agent-observer-write
+.local/bin/agent-observer-service
+.config/agent-observer
+.config/systemd/user/agent-observer.service
+.config/systemd/user/default.target.wants/agent-observer.service
+.local/bin/mesh-plus
+.config/mesh-plus
+.config/systemd/user/mesh-plus-agent.service
+.config/systemd/user/default.target.wants/mesh-plus-agent.service
+{{ end }}

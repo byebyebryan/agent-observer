@@ -1,0 +1,936 @@
+#!/usr/bin/env python3
+"""Verify/select/restore six Observer-only managed targets and its owning unit."""
+
+import argparse
+from contextlib import contextmanager
+import hashlib
+import json
+import os
+import shlex
+import shutil
+import stat
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+
+PROJECT = Path(__file__).resolve().parents[1]
+ROOT = None
+SELECTION = None
+PAIRS = {
+    "dot_local/bin/symlink_agent-observer.tmpl": ".local/bin/agent-observer",
+    "dot_local/bin/symlink_agent-observer-write.tmpl": ".local/bin/agent-observer-write",
+    "dot_local/bin/symlink_agent-observer-service.tmpl": ".local/bin/agent-observer-service",
+    "dot_config/private_agent-observer/private_workspace.json.tmpl": ".config/agent-observer/workspace.json",
+    "dot_config/systemd/user/agent-observer.service.tmpl": ".config/systemd/user/agent-observer.service",
+    "dot_config/systemd/user/default.target.wants/symlink_agent-observer.service.tmpl": ".config/systemd/user/default.target.wants/agent-observer.service",
+}
+UNIT = "agent-observer.service"
+APPLY_TARGETS = tuple(
+    ".config/agent-observer"
+    if p == ".config/agent-observer/workspace.json"
+    else ".config/systemd/user/default.target.wants"
+    if p.endswith("default.target.wants/agent-observer.service")
+    else p
+    for p in PAIRS.values()
+)
+
+
+def require(ok, code):
+    if not ok:
+        raise ValueError(code)
+
+
+def run(argv, timeout=30, *, umask=-1):
+    result = subprocess.run(argv, capture_output=True, timeout=timeout, cwd="/tmp", umask=umask)
+    require(
+        result.returncode == 0 and len(result.stdout) <= 9 * 1024 * 1024,
+        "operations_command_failed",
+    )
+    return result.stdout
+
+
+def document(path, limit=256 * 1024):
+    require(path.is_file() and path.stat().st_size <= limit, "operations_document_limit")
+    return json.loads(path.read_bytes())
+
+
+def validate_selection(value, host):
+    legacy = (
+        value.get("manifestVersion") == 1
+        and value.get("schemas") == {"snapshot": 3, "watch": 3, "write": 1}
+        and value.get("serviceProtocol") == 1
+    )
+    current = (
+        value.get("manifestVersion") == 2
+        and value.get("apiVersion") == 2
+        and value.get("schemas") == {"snapshot": 4, "watch": 4}
+        and value.get("serviceProtocol") == 2
+    )
+    require(
+        (legacy or current) and host in value["hosts"] and value["unit"] == UNIT,
+        "operations_selection_invalid",
+    )
+    if current:
+        if "readerPrefix" in value:
+            reader = Path(value["readerPrefix"])
+            require(
+                not reader.is_absolute()
+                and ".." not in reader.parts
+                and reader.parts[:3] == (".local", "share", "agent-observer")
+                and len(reader.parts) == 4,
+                "operations_reader_selection_invalid",
+            )
+        writer = Path(value.get("writerPrefix", ""))
+        require(
+            not writer.is_absolute()
+            and ".." not in writer.parts
+            and writer.parts[:3] == (".local", "share", "agent-observer")
+            and len(writer.parts) == 4,
+            "operations_writer_selection_invalid",
+        )
+        profile = value["profiles"][host]
+        require(
+            profile["providers"] == ["codex"]
+            and profile["artifactProfile"] == "core"
+            or host == "snap"
+            and profile["providers"] == ["codex", "claude"]
+            and profile["artifactProfile"] == "claude-history",
+            "operations_provider_selection_invalid",
+        )
+    return value
+
+
+def selection(host, path=None):
+    value = validate_selection(document(path or SELECTION), host)
+    observed = (
+        run(
+            [
+                "chezmoi",
+                "--source",
+                str(ROOT),
+                "--refresh-externals=never",
+                "execute-template",
+                '{{ default "unknown" (get .machine.by_hostname .chezmoi.hostname) }}',
+            ]
+        )
+        .decode()
+        .strip()
+    )
+    require(observed == host, "operations_host_scope")
+    hint_mode(value, host)
+    return value
+
+
+def hint_mode(value, host):
+    enabled = value["profiles"][host].get("nativeHints", False)
+    require(type(enabled) is bool, "operations_hint_mode_invalid")
+    return enabled
+
+
+def node(path):
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        return {"kind": "absent"}
+    require(info.st_uid == os.getuid(), "operations_target_owner")
+    if stat.S_ISLNK(info.st_mode):
+        return {"kind": "symlink", "value": os.readlink(path)}
+    require(stat.S_ISREG(info.st_mode) and info.st_size <= 128 * 1024, "operations_target_type")
+    return {"kind": "file", "value": path.read_text(), "mode": stat.S_IMODE(info.st_mode)}
+
+
+@contextmanager
+def projection(value):
+    with tempfile.TemporaryDirectory(prefix="observer-managed-selection-") as directory:
+        source = Path(directory)
+        for name in (*PAIRS, ".chezmoidata/machines.yaml", ".chezmoiignore"):
+            target = source / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            # Template permissions are part of chezmoi's target metadata. A
+            # private caller umask must not turn the public unit into 0600.
+            shutil.copy2(ROOT / name, target)
+        target = source / "deployments/agent-observer.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(value) + "\n")
+        yield source
+
+
+def rendered(user_home, value=None):
+    if value is not None:
+        with projection(value) as source:
+            return rendered_from(user_home, source)
+    return rendered_from(user_home, ROOT)
+
+
+def rendered_from(user_home, source_root):
+    values = {}
+    for source, target in PAIRS.items():
+        data = run(
+            [
+                "chezmoi",
+                "--source",
+                str(source_root),
+                "--refresh-externals=never",
+                "cat",
+                str(user_home / target),
+            ]
+        ).decode()
+        values[target] = (
+            {"kind": "symlink", "value": data.strip()}
+            if "symlink_" in Path(source).name
+            else {
+                "kind": "file",
+                "value": data,
+                "mode": 0o600 if "private_workspace" in source else 0o644,
+            }
+        )
+    return values
+
+
+def unit_info():
+    text = run(
+        [
+            "systemctl",
+            "--user",
+            "show",
+            UNIT,
+            "-p",
+            "LoadState",
+            "-p",
+            "ActiveState",
+            "-p",
+            "UnitFileState",
+            "-p",
+            "MainPID",
+        ]
+    ).decode()
+    return dict(line.split("=", 1) for line in text.splitlines())
+
+
+def expected_arguments(desired, user_home):
+    configured = next(
+        line.removeprefix("ExecStart=")
+        for line in desired[".config/systemd/user/agent-observer.service"]["value"].splitlines()
+        if line.startswith("ExecStart=")
+    )
+    return shlex.split(
+        configured.replace("%h", str(user_home)).replace("%t", os.environ["XDG_RUNTIME_DIR"])
+    )
+
+
+def process_identity(pid):
+    process = Path(f"/proc/{pid}")
+    require(process.stat().st_uid == os.getuid(), "operations_unit_owner")
+    start = int((process / "stat").read_text().rsplit(")", 1)[1].split()[19])
+    executable = (process / "exe").stat()
+    return {
+        "birth": start,
+        "executableDevice": executable.st_dev,
+        "executableInode": executable.st_ino,
+    }
+
+
+def owned_unit(value, user_home, desired=None):
+    info = unit_info()
+    if int(info["MainPID"]):
+        pid = int(info["MainPID"])
+        identity = process_identity(pid)
+        argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+        entry = os.fsencode(user_home / value["prefix"] / "bin/agent-observer-service")
+        require(
+            len(argv) > 2 and argv[1] == entry and argv[2] == b"serve", "operations_foreign_unit"
+        )
+        desired = desired or rendered(user_home, value)
+        require(
+            [os.fsdecode(a) for a in argv[1:] if a] == expected_arguments(desired, user_home),
+            "operations_live_arguments",
+        )
+        interpreter = (user_home / value["prefix"] / "bin/python").stat()
+        require(
+            (identity["executableDevice"], identity["executableInode"])
+            == (interpreter.st_dev, interpreter.st_ino),
+            "operations_foreign_executable",
+        )
+        require(process_identity(pid) == identity, "operations_unit_changed")
+        info.update(identity)
+    return info
+
+
+def same_unit(before, after):
+    require(before == after, "operations_unit_changed")
+
+
+def verify(value, host, user_home, live=False, require_ready=True):
+    prefix, archive = user_home / value["prefix"], user_home / value["archive"]
+    manifest = document(archive / "manifest.json")
+    require(
+        all(
+            manifest[k] == value[k]
+            for k in ("version", "sourceRevision", "wheelSha256", "wheel", "schemas")
+        ),
+        "operations_manifest_mismatch",
+    )
+    verifier = PROJECT / "scripts/candidate-artifact"
+    if "artifactVerifier" in value:
+        configured = value["artifactVerifier"]
+        verifier = user_home / configured["path"]
+        require(
+            verifier.resolve(strict=True) == verifier
+            and verifier.is_relative_to(archive)
+            and verifier.stat().st_uid == os.getuid()
+            and hashlib.sha256(verifier.read_bytes()).hexdigest() == configured["sha256"],
+            "operations_artifact_verifier_invalid",
+        )
+    receipt = json.loads(
+        run(
+            [
+                "python3",
+                str(verifier),
+                "verify",
+                "--manifest",
+                str(archive / "manifest.json"),
+                "--wheel",
+                str(archive / value["wheel"]),
+                "--prefix",
+                str(prefix),
+                "--profile",
+                value["profiles"][host]["artifactProfile"],
+            ]
+        )
+    )
+    require(receipt["status"] == "accepted", "operations_artifact_rejected")
+    hints = hint_mode(value, host)
+    if hints:
+        help_text = run([str(prefix / "bin/agent-observer-service"), "serve", "--help"]).decode()
+        require(
+            all(flag in help_text.split() for flag in ("--native-hints", "--hint-diagnostics")),
+            "operations_hint_flags_unavailable",
+        )
+    desired = rendered(user_home, value)
+    with tempfile.TemporaryDirectory(prefix="observer-unit-render-") as directory:
+        unit = Path(directory) / UNIT
+        unit.write_text(desired[".config/systemd/user/agent-observer.service"]["value"])
+        run(["systemd-analyze", "--user", "verify", str(unit)])
+    result = {
+        "status": "accepted",
+        "hostScope": host,
+        "prefix": str(prefix),
+        "wheelSha256": value["wheelSha256"],
+        "renderedTargets": len(PAIRS),
+        "artifactVerified": True,
+        "unitSyntaxVerified": True,
+        "providerActions": 0,
+        "frontendTargets": 0,
+        "live": live,
+        "nativeHints": hints,
+    }
+    if live:
+        require(
+            all(node(user_home / target) == wanted for target, wanted in desired.items()),
+            "operations_managed_drift",
+        )
+        info = owned_unit(value, user_home, desired)
+        require(
+            info["ActiveState"] == "active" and info["UnitFileState"] == "enabled",
+            "operations_unit_inactive",
+        )
+        configured = next(
+            line.removeprefix("ExecStart=")
+            for line in desired[".config/systemd/user/agent-observer.service"]["value"].splitlines()
+            if line.startswith("ExecStart=")
+        )
+        expected = shlex.split(
+            configured.replace("%h", str(user_home)).replace("%t", os.environ["XDG_RUNTIME_DIR"])
+        )
+        actual = Path(f"/proc/{info['MainPID']}/cmdline").read_bytes().split(b"\0")
+        require([os.fsdecode(a) for a in actual[1:] if a] == expected, "operations_live_arguments")
+        frame = json.loads(
+            run([str(prefix / "bin/agent-observer"), "service", "status", "--host-scope", host])
+        )
+        require(frame["hostScope"] == host and frame["uid"] == os.getuid(), "operations_live_scope")
+        if require_ready:
+            require(frame["snapshot"] is not None, "operations_live_warming")
+        providers = value["profiles"][host]["providers"]
+        require(
+            sorted(s["provider"] for s in frame["sources"]) == sorted(providers),
+            "operations_live_providers",
+        )
+        for source in frame["sources"]:
+            home = str(user_home / (".codex" if source["provider"] == "codex" else ".claude"))
+            selector = (
+                "explicit"
+                if value["manifestVersion"] == 2 or source["provider"] == "codex"
+                else "default"
+            )
+            namespace = (
+                "sha256:"
+                + hashlib.sha256(
+                    json.dumps(
+                        [source["provider"], home, selector, os.getuid()], separators=(",", ":")
+                    ).encode()
+                ).hexdigest()
+            )
+            require(
+                source["configHome"] == home
+                and source["configHomeKind"] == selector
+                and source["namespace"] == namespace,
+                "operations_live_store",
+            )
+            if require_ready:
+                require(
+                    all(
+                        c["accepted"] and c["health"] in {"current", "partial"}
+                        for c in source["components"]
+                    ),
+                    "operations_live_warming",
+                )
+        result.update(unit=info, serviceId=frame["serviceId"], sources=frame["sources"])
+    return result
+
+
+def save_snapshot(directory, host, user_home, value, desired, previous=None):
+    require(not directory.exists(), "operations_snapshot_exists")
+    original = {target: node(user_home / target) for target in PAIRS.values()}
+    previous = previous or value
+    previous_desired = rendered(user_home, previous)
+    # An upgrade accepts only a completely verified prior selection, not an
+    # arbitrary unit whose command happens to contain an Observer filename.
+    if previous != value:
+        verify(previous, host, user_home, live=True, require_ready=False)
+        require(original == previous_desired, "operations_preexisting_config")
+    else:
+        for target in (
+            ".config/systemd/user/agent-observer.service",
+            ".config/agent-observer/workspace.json",
+        ):
+            require(
+                original[target]["kind"] == "absent" or original[target] == desired[target],
+                "operations_preexisting_config",
+            )
+    info = owned_unit(previous, user_home, previous_desired)
+    directory.mkdir(mode=0o700)
+    require(
+        directory.resolve(strict=True) == directory and directory.stat().st_uid == os.getuid(),
+        "operations_snapshot_scope",
+    )
+    payload = {
+        "snapshotVersion": 1,
+        "hostScope": host,
+        "uid": os.getuid(),
+        "userHome": str(user_home),
+        "unit": info,
+        "previousSelection": previous,
+        "original": original,
+        "desired": desired,
+    }
+    path = directory / "snapshot.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    path.chmod(0o600)
+    return payload
+
+
+def restore_files(user_home, original, desired):
+    require(set(original) == set(desired) == set(PAIRS.values()), "operations_snapshot_targets")
+    for target in PAIRS.values():
+        current = node(user_home / target)
+        require(current in (original[target], desired[target]), "operations_target_changed")
+    for target, previous in original.items():
+        path = user_home / target
+        if node(path) == previous:
+            continue
+        if previous["kind"] == "absent":
+            path.unlink()
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryDirectory(
+                prefix=".observer-restore-", dir=path.parent
+            ) as directory:
+                temporary = Path(directory) / "target"
+                if previous["kind"] == "symlink":
+                    temporary.symlink_to(previous["value"])
+                else:
+                    require(previous["kind"] == "file", "operations_snapshot_node")
+                    temporary.write_text(previous["value"])
+                    temporary.chmod(previous["mode"])
+                os.replace(temporary, path)
+
+
+def apply(value, host, user_home, snapshot, actual, previous=None):
+    verify(value, host, user_home)
+    desired = rendered(user_home, value)
+    if actual:
+        require(snapshot is not None and snapshot.is_absolute(), "operations_snapshot_required")
+        if snapshot.exists():
+            require(
+                snapshot.resolve(strict=True) == snapshot
+                and snapshot.stat().st_uid == os.getuid()
+                and stat.S_IMODE(snapshot.stat().st_mode) == 0o700,
+                "operations_snapshot_scope",
+            )
+            captured = document(snapshot / "snapshot.json")
+            require(
+                captured["snapshotVersion"] == 1
+                and set(captured["original"]) == set(PAIRS.values())
+                and captured["hostScope"] == host
+                and captured["uid"] == os.getuid()
+                and captured["userHome"] == str(user_home)
+                and captured["desired"] == desired,
+                "operations_snapshot_scope",
+            )
+            require(
+                all(node(user_home / p) == n for p, n in captured["original"].items()),
+                "operations_target_changed",
+            )
+            previous = captured.get("previousSelection", value)
+            verify(previous, host, user_home, live=True, require_ready=False)
+        else:
+            captured = save_snapshot(snapshot, host, user_home, value, desired, previous)
+            previous = captured["previousSelection"]
+            same_unit(captured["unit"], owned_unit(previous, user_home))
+        info = owned_unit(previous, user_home)
+        require(
+            all(node(user_home / p) == n for p, n in captured["original"].items()),
+            "operations_target_changed",
+        )
+        same_unit(info, owned_unit(previous, user_home))
+        if info["ActiveState"] == "active":
+            run(["systemctl", "--user", "stop", UNIT])
+    elif previous is not None:
+        verify(previous, host, user_home, live=True, require_ready=False)
+    with projection(value) as source:
+        argv = [
+            "chezmoi",
+            "--source",
+            str(source),
+            "--refresh-externals=never",
+            "apply",
+            "--exclude",
+            "scripts",
+            "--force",
+        ]
+        if not actual:
+            argv += ["--dry-run", "--verbose"]
+        # Select newly managed directories, not a leaf whose parent is absent.
+        # The isolated source contains only the six intended file/link targets.
+        # Match the explicitly rendered 0644 public / 0600 private target
+        # modes even when an operator invokes this helper with umask 077.
+        run([*argv, *(str(user_home / p) for p in APPLY_TARGETS)], umask=0o022)
+    if actual:
+        run(["systemctl", "--user", "daemon-reload"])
+        run(["systemctl", "--user", "reset-failed", UNIT])
+        run(["systemctl", "--user", "start", UNIT])
+        deadline = time.monotonic() + 30
+        while True:
+            try:
+                result = verify(value, host, user_home, live=True)
+                break
+            except ValueError:
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(0.2)
+        result.update(snapshot=str(snapshot), selectedTargets=len(PAIRS))
+        return result
+    return {
+        "status": "accepted",
+        "hostScope": host,
+        "dryRun": True,
+        "selectedTargets": len(PAIRS),
+        "providerActions": 0,
+        "frontendTargets": 0,
+    }
+
+
+def rollback(value, host, user_home, directory):
+    require(
+        directory is not None
+        and directory.resolve(strict=True) == directory
+        and directory.stat().st_uid == os.getuid()
+        and stat.S_IMODE(directory.stat().st_mode) == 0o700,
+        "operations_snapshot_scope",
+    )
+    snapshot = document(directory / "snapshot.json")
+    require(
+        snapshot["snapshotVersion"] == 1
+        and snapshot["hostScope"] == host
+        and snapshot["uid"] == os.getuid()
+        and snapshot["userHome"] == str(user_home)
+        and snapshot["desired"] == rendered(user_home, value)
+        and set(snapshot["original"]) == set(PAIRS.values()),
+        "operations_snapshot_scope",
+    )
+    # Validate every target before stopping the known publisher or restoring files.
+    for target in PAIRS.values():
+        require(
+            node(user_home / target) in (snapshot["original"][target], snapshot["desired"][target]),
+            "operations_target_changed",
+        )
+    info = owned_unit(value, user_home)
+    same_unit(info, owned_unit(value, user_home))
+    if info["ActiveState"] == "active":
+        run(["systemctl", "--user", "stop", UNIT])
+    restore_files(user_home, snapshot["original"], snapshot["desired"])
+    run(["systemctl", "--user", "daemon-reload"])
+    if snapshot["unit"]["ActiveState"] == "active":
+        # A verified rollback is an explicit recovery operation. Prior rapid
+        # restart/crash tests may have consumed the unit's start-rate allowance.
+        run(["systemctl", "--user", "reset-failed", UNIT])
+        run(["systemctl", "--user", "start", UNIT])
+    require(
+        all(node(user_home / p) == n for p, n in snapshot["original"].items()),
+        "operations_restore_failed",
+    )
+    return {
+        "status": "accepted",
+        "hostScope": host,
+        "restoredTargets": len(PAIRS),
+        "unit": unit_info(),
+        "managedSourceChanged": False,
+        "intentionalManagedDrift": True,
+        "providerActions": 0,
+        "frontendTargets": 0,
+    }
+
+
+def self_test():
+    global ROOT
+    ROOT = PROJECT / "tests/fixtures/managed-operations/source"
+    from unittest.mock import patch
+
+    old = document(PROJECT / "tests/fixtures/managed-operations/selection.json")
+    current = {
+        **old,
+        "manifestVersion": 2,
+        "apiVersion": 2,
+        "schemas": {"snapshot": 4, "watch": 4},
+        "serviceProtocol": 2,
+        "writerPrefix": ".local/share/agent-observer/0.4.0a16-a9c13aee3d04144c",
+        "profiles": {
+            p: {**old["profiles"][p], "providers": ["codex"], "artifactProfile": "core"}
+            for p in old["hosts"]
+        },
+    }
+    for host in old["hosts"]:
+        validate_selection(current, host)
+    claude = {
+        **current,
+        "profiles": {
+            **current["profiles"],
+            "snap": {
+                **current["profiles"]["snap"],
+                "providers": ["codex", "claude"],
+                "artifactProfile": "claude-history",
+            },
+        },
+    }
+    validate_selection(claude, "snap")
+    for host, profile in (
+        ("snap", {"providers": ["codex", "claude"], "artifactProfile": "core"}),
+        ("starship", {"providers": ["codex", "claude"], "artifactProfile": "claude-history"}),
+        ("snap", {"providers": ["claude"], "artifactProfile": "claude-history"}),
+    ):
+        bad = {**current, "profiles": {**current["profiles"], host: profile}}
+        try:
+            validate_selection(bad, host)
+        except ValueError:
+            pass
+        else:
+            raise ValueError("operations_provider_selection_self_test")
+    for changes in (
+        {"schemas": {"snapshot": 3, "watch": 3}},
+        {"serviceProtocol": 1},
+        {"writerPrefix": "/tmp/foreign"},
+        {"writerPrefix": ".local/share/agent-observer/../foreign"},
+    ):
+        try:
+            validate_selection({**current, **changes}, old["hosts"][0])
+        except ValueError:
+            pass
+        else:
+            raise ValueError("operations_selection_self_test")
+
+    prior_umask = os.umask(0o077)
+    try:
+        with globals()["projection"]({"fixture": True}) as source:
+            for name in PAIRS:
+                require(
+                    stat.S_IMODE((source / name).stat().st_mode)
+                    == stat.S_IMODE((ROOT / name).stat().st_mode),
+                    "operations_projection_permissions",
+                )
+    finally:
+        os.umask(prior_umask)
+
+    for enabled in (None, False, True):
+        profile = {} if enabled is None else {"nativeHints": enabled}
+        require(
+            hint_mode({"profiles": {"fixture": profile}}, "fixture") is bool(enabled),
+            "operations_self_test",
+        )
+    for enabled in ("false", 0, 1, None, [], {}):
+        try:
+            hint_mode({"profiles": {"fixture": {"nativeHints": enabled}}}, "fixture")
+        except ValueError as error:
+            require(str(error) == "operations_hint_mode_invalid", "operations_self_test")
+        else:
+            raise ValueError("operations_self_test")
+
+    with tempfile.TemporaryDirectory(prefix="observer-unit-identity-test-") as directory:
+        user_home = Path(directory)
+        prefix = user_home / "prior/bin"
+        prefix.mkdir(parents=True)
+        (prefix / "python").symlink_to(os.readlink("/proc/self/exe"))
+        entry = prefix / "agent-observer-service"
+        entry.write_text("import time\ntime.sleep(30)\n")
+        desired = {
+            ".config/systemd/user/agent-observer.service": {
+                "value": f"ExecStart={entry} serve --host-scope fixture\n"
+            }
+        }
+        child = subprocess.Popen(
+            [str(prefix / "python"), str(entry), "serve", "--host-scope", "fixture"]
+        )
+        try:
+            deadline = time.monotonic() + 2
+            while os.fsencode(entry) not in Path(f"/proc/{child.pid}/cmdline").read_bytes().split(
+                b"\0"
+            ):
+                require(time.monotonic() < deadline, "operations_fixture_start")
+                time.sleep(0.01)
+            info = {"MainPID": str(child.pid), "ActiveState": "active"}
+            with patch.dict(owned_unit.__globals__, unit_info=lambda: info.copy()):
+                accepted = owned_unit({"prefix": "prior"}, user_home, desired)
+                same_unit(accepted, owned_unit({"prefix": "prior"}, user_home, desired))
+                for value, render, code in (
+                    ({"prefix": "new"}, desired, "operations_foreign_unit"),
+                    (
+                        {"prefix": "prior"},
+                        {
+                            ".config/systemd/user/agent-observer.service": {
+                                "value": f"ExecStart={entry} serve --host-scope changed\n"
+                            }
+                        },
+                        "operations_live_arguments",
+                    ),
+                    (
+                        {"prefix": "prior"},
+                        {
+                            ".config/systemd/user/agent-observer.service": {
+                                "value": f"ExecStart={entry} serve --host-scope fixture --native-hints\n"
+                            }
+                        },
+                        "operations_live_arguments",
+                    ),
+                ):
+                    try:
+                        owned_unit(value, user_home, render)
+                    except ValueError as error:
+                        require(str(error) == code, "operations_self_test")
+                    else:
+                        raise ValueError("operations_self_test")
+                identity = process_identity(child.pid)
+                with patch.dict(
+                    owned_unit.__globals__, process_identity=lambda _pid: identity.copy()
+                ):
+                    first = owned_unit({"prefix": "prior"}, user_home, desired)
+                    identity["birth"] += 1
+                    second = owned_unit({"prefix": "prior"}, user_home, desired)
+                    try:
+                        same_unit(first, second)
+                    except ValueError as error:
+                        require(str(error) == "operations_unit_changed", "operations_self_test")
+                    else:
+                        raise ValueError("operations_self_test")
+        finally:
+            child.terminate()
+            child.wait(timeout=5)
+    with tempfile.TemporaryDirectory(prefix="observer-operations-test-") as directory:
+        user_home = Path(directory)
+        original = {p: {"kind": "absent"} for p in PAIRS.values()}
+        desired = {p: {"kind": "symlink", "value": "/fixture/candidate"} for p in PAIRS.values()}
+        for target in PAIRS.values():
+            path = user_home / target
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.symlink_to("/fixture/candidate")
+        foreign = user_home / ".local/bin/agent-observer"
+        foreign.unlink()
+        foreign.symlink_to("/fixture/changed")
+        try:
+            restore_files(user_home, original, desired)
+        except ValueError as error:
+            require(str(error) == "operations_target_changed", "operations_self_test")
+        else:
+            raise ValueError("operations_self_test")
+        require(
+            all((user_home / p).is_symlink() for p in PAIRS.values()), "operations_partial_restore"
+        )
+        foreign.unlink()
+        foreign.symlink_to("/fixture/candidate")
+        restore_files(user_home, original, desired)
+        require(
+            all(not (user_home / p).is_symlink() for p in PAIRS.values()), "operations_self_test"
+        )
+        projection = user_home / "projection"
+        projection.mkdir()
+        for source in PAIRS:
+            path = projection / source.removesuffix(".tmpl")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("/fixture/candidate\n" if "symlink_" in path.name else "{}\n")
+        for parent in (".config/agent-observer", ".config/systemd/user/default.target.wants"):
+            (user_home / parent).rmdir()
+        prior_umask = os.umask(0o077)
+        try:
+            run(
+                [
+                    "chezmoi",
+                    "--source",
+                    str(projection),
+                    "--destination",
+                    str(user_home),
+                    "--persistent-state",
+                    str(user_home / "fixture-state.boltdb"),
+                    "--refresh-externals=never",
+                    "apply",
+                    "--exclude",
+                    "scripts",
+                    "--force",
+                    *(str(user_home / p) for p in APPLY_TARGETS),
+                ],
+                umask=0o022,
+            )
+        finally:
+            os.umask(prior_umask)
+        require(
+            all(node(user_home / p)["kind"] != "absent" for p in PAIRS.values()),
+            "operations_missing_parent_apply",
+        )
+        require(
+            node(user_home / ".config/systemd/user/agent-observer.service")["mode"] == 0o644
+            and node(user_home / ".config/agent-observer/workspace.json")["mode"] == 0o600,
+            "operations_target_permissions",
+        )
+        selected = {p: node(user_home / p) for p in PAIRS.values()}
+        restore_files(user_home, original, selected)
+        run(
+            [
+                "chezmoi",
+                "--source",
+                str(projection),
+                "--destination",
+                str(user_home),
+                "--persistent-state",
+                str(user_home / "fixture-state.boltdb"),
+                "--refresh-externals=never",
+                "apply",
+                "--exclude",
+                "scripts",
+                "--force",
+                *(str(user_home / p) for p in APPLY_TARGETS),
+            ],
+            umask=0o022,
+        )
+        require(
+            all(node(user_home / p) == n for p, n in selected.items()), "operations_reselection"
+        )
+        backup = user_home / "rollback-scope"
+        backup.mkdir(mode=0o700)
+        (backup / "snapshot.json").write_text(
+            json.dumps(
+                {
+                    "snapshotVersion": 1,
+                    "hostScope": "fixture",
+                    "uid": os.getuid(),
+                    "userHome": str(user_home),
+                    "desired": selected,
+                    "original": selected,
+                    "unit": {"ActiveState": "inactive"},
+                }
+            )
+        )
+
+        def isolated_render(candidate_home, value=None):
+            # Full-source rendering can evaluate unrelated externals even with
+            # --refresh-externals=never. Rollback must retain the six-target
+            # projection used by verification/apply and ignore that inventory.
+            require(
+                candidate_home == user_home and value is current, "operations_global_source_render"
+            )
+            return selected
+
+        def fixture_systemctl(argv, **_kwargs):
+            require(
+                argv == ["systemctl", "--user", "daemon-reload"],
+                "operations_unexpected_fixture_command",
+            )
+            return b""
+
+        with patch.dict(
+            rollback.__globals__,
+            rendered=isolated_render,
+            unit_info=lambda: {"MainPID": "0", "ActiveState": "inactive"},
+            run=fixture_systemctl,
+        ):
+            result = rollback(current, "fixture", user_home, backup)
+            require(result["restoredTargets"] == len(PAIRS), "operations_rollback_scope")
+    return {
+        "status": "accepted",
+        "changedTargetsRejectedBeforeRestore": True,
+        "verifiedPriorUnitAccepted": True,
+        "foreignPrefixRejected": True,
+        "changedArgumentsRejected": True,
+        "changedBirthRejectedBeforeStop": True,
+        "ownedFixtureRestored": True,
+        "newParentDirectoriesApplied": True,
+        "restoredTargetsReselected": True,
+        "rollbackIgnoresUnrelatedExternals": True,
+    }
+
+
+def main():
+    global ROOT, SELECTION
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("operation", nargs="?", choices=("verify", "apply", "rollback"))
+    parser.add_argument("--host", choices=("snap", "starship"))
+    parser.add_argument("--live", action="store_true")
+    parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--snapshot", type=Path)
+    parser.add_argument(
+        "--previous-tuple",
+        type=Path,
+        help="explicit verified prior Observer selection for an upgrade",
+    )
+    parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--source", type=Path, help="explicit chezmoi source checkout")
+    parser.add_argument("--selection", type=Path, help="explicit Observer selection JSON")
+    args = parser.parse_args()
+    if args.self_test:
+        result = self_test()
+    else:
+        require(args.operation is not None and args.host is not None, "operations_arguments")
+        require(
+            args.source is not None and args.selection is not None,
+            "operations_explicit_source_selection",
+        )
+        ROOT = args.source.resolve(strict=True)
+        SELECTION = args.selection.resolve(strict=True)
+        user_home = Path.home()
+        value = selection(args.host)
+        if args.operation == "verify":
+            result = verify(value, args.host, user_home, args.live)
+        elif args.operation == "apply":
+            previous = selection(args.host, args.previous_tuple) if args.previous_tuple else None
+            result = apply(value, args.host, user_home, args.snapshot, args.apply, previous)
+        else:
+            result = rollback(value, args.host, user_home, args.snapshot)
+    print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, OSError, KeyError, subprocess.SubprocessError) as error:
+        reason = str(error)
+        if len(reason) > 128 or not reason.replace("_", "").isalnum():
+            reason = "observer_operations_failed"
+        print(json.dumps({"status": "rejected", "reason": reason}))
+        raise SystemExit(2) from None

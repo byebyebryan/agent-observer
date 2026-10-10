@@ -66,3 +66,27 @@ snapshots remain usable with explicit per-host outcomes. Terminal base errors
 end the read. See the [integration plan](mesh-integration-plan.md) for independent
 source, immutable package, native and operational gates. Downstream consumers,
 devices, provider policy and fleet broker services remain separate work.
+
+## Managed reader and bridge verification
+
+The Agent-owned helper is `scripts/agent-observer-mesh-operations`. Supply all
+configuration inputs explicitly:
+
+```sh
+./scripts/agent-observer-mesh-operations --host snap --source /absolute/chezmoi --selection /absolute/chezmoi/deployments/agent-observer-mesh.json --observer-selection /absolute/chezmoi/deployments/agent-observer.json
+```
+
+This verifies the independently selected reader and resident bridge artifacts,
+archived verifier hashes, UID/socket-peer and process-incarnation evidence,
+rendered controls and collector preservation. `--selection` supplies the candidate JSON; `--candidate` checks artifacts and
+rendered targets without requiring live controls to match. No dated rollback
+directory is chosen implicitly.
+`scripts/mesh-selection-acceptance` additionally requires `--baseline` and the
+same explicit source/selection inputs. It is a write/native acceptance procedure
+with captured controls and owned restart/rollback guards, not an ordinary
+read-only check. Shared Mesh CLI rollback is coordinated with the Tmux pair;
+Agent collector and writer remain independently selected.
+
+Mesh owns transport, authority, `doctor` and `probe`. Agent owns its reader and
+bridge selection. Artifact checks, cached native delivery, sustained resources,
+physical suspend and Agent Plus migration retain separate acceptance.
