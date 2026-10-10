@@ -1,9 +1,8 @@
 # Change-aware Claude collection repair
 
 The [execution plan](../../claude-collection-cost-plan.md) addresses the
-[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H3 source and immutable/native
-acceptance are complete. Sustained candidate cost and operational selection
-gates remain pending. Normal services still select a14. API 2,
+[residual profile](../2026-10-10-residual-collector-cpu/REPORT.md). H0–H4 source, immutable/native and sustained candidate cost acceptance are
+complete. Scoped operational selection remains pending. Normal services still select a14. API 2,
 snapshot/watch 4 and Service 2 are unchanged; source a15 names a new package only.
 
 ## Source boundary and validation
@@ -123,3 +122,42 @@ The new memo never turns failed native runtime evidence into parked. The proof
 records 203 Service 2 and 147 sampled-watch frames. [Cleanup](native-cleanup.json)
 removes borrowed credentials and private history. Ordinary provider sessions,
 settings, hooks and selected collectors remain unchanged at this gate.
+
+## Sustained candidate cost gate
+
+Candidate services run 600 unprofiled seconds after 30 seconds of warmup, with
+ordinary provider sources and unchanged native hints/cadences. The counter
+operator authenticates each systemd MainPID/incarnation and separates publisher
+from owned helper CPU, including reaped child ticks. It adds no sustained readers
+or provider actions. The first part of Snap's window overlaps the independent
+isolated native proof and bounded initial push probes; a14 remains running beside
+each candidate. These are explicit workload bounds, not an idle-floor guarantee.
+
+| Candidate | Root percent of one core | Helpers | Total | Mean/peak RSS MiB | Mean PSS MiB |
+| --- | --- | --- | --- | --- | --- |
+| [Snap](candidate-cpu-snap.json) | 1.840 | 2.322 | 4.162 | 69.0 / 115.2 | 35.2 |
+| [Starship](candidate-cpu-starship.json) | 1.108 | 0.900 | 2.008 | 52.6 / 74.8 | 29.7 |
+
+End resources return to the expected three/two processes and 21/12 descriptors.
+Snap's result is below preceding a14 ordinary measurements
+(6.909–11.010 percent total), but a later quiet a14 window measures 3.433 percent.
+Those windows differ in timing/workload and cannot establish a paired saving.
+A concurrent five-minute a14/a15 comparison follows before selection. Starship's
+Codex-only cost stays about two percent. A post-selection normal-unit window
+must also confirm sustained production behavior. Reader, writer, Mesh and provider policy remain separately
+selected; only the verified collector may advance after this gate.
+
+The subsequent overlapping a14 windows measure
+[Snap](baseline-cpu-snap.json), 3.433 percent, and
+[Starship](baseline-cpu-starship.json), 2.163 percent. A following concurrent
+300-second Snap comparison starts the same two counters together, with both
+services warmed and ordinary sources/cadence unchanged:
+[a14](paired-a14-snap.json) costs 1.113 root + 2.380 helpers = 3.493 percent;
+[a15](paired-a15-snap.json) costs 1.087 root + 1.267 helpers = 2.353 percent.
+That is about 33% less total and 47% less helper CPU for this matched interval.
+[Before](paired-before.json)/[after](paired-after.json) source receipt counters
+bind the same service incarnations and retain cadence/coverage diagnostics.
+No provider actions or sustained added readers run during the comparison.
+This independently confirms a material ordinary-workload improvement without
+using the earlier busier windows as a paired baseline. H4 is accepted; normal
+selection and post-selection sustained measurement remain separate.
