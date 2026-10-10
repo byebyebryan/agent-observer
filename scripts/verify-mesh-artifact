@@ -20,8 +20,11 @@ def verify(prefix, archive, profile):
     require(len(manifests) == 1)
     observer_manifest = manifests[0]
     observer = json.loads(observer_manifest.read_text())
-    mesh = json.loads((archive / "mesh-0.1.0a4.json").read_text())
-    require(mesh["package"] == "mesh-plus" and mesh["version"] == "0.1.0a4")
+    mesh_manifests = list(archive.glob("mesh-*.json"))
+    require(len(mesh_manifests) == 1)
+    mesh = json.loads(mesh_manifests[0].read_text())
+    require(mesh["package"] == "mesh-plus" and mesh["version"] in {"0.1.0a4", "0.1.0a8"})
+    require(mesh_manifests[0].name == "mesh-" + mesh["version"] + ".json")
     require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1")
     result = subprocess.run([str(archive / "candidate-artifact"), "verify", "--manifest",
                              str(observer_manifest), "--wheel", str(archive / observer["wheel"]),
