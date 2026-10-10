@@ -19,7 +19,12 @@ MAX_TIME = 4_000_000_000_000
 _UUID_FILE = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\.jsonl\Z")
 _CONTEXT = re.compile(r"[0-9a-f]{64}\Z")
 _DIR_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
-_SEALS = fcntl.F_SEAL_WRITE | fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL
+# Linux UAPI values remain stable even when CPython was built with headers
+# that omit the sealing names. Kernel fcntl admission still enforces the seals.
+_ADD_SEALS = getattr(fcntl, "F_ADD_SEALS", 1033)
+_GET_SEALS = getattr(fcntl, "F_GET_SEALS", 1034)
+_SEALS = (getattr(fcntl, "F_SEAL_WRITE", 8) | getattr(fcntl, "F_SEAL_GROW", 4)
+          | getattr(fcntl, "F_SEAL_SHRINK", 2) | getattr(fcntl, "F_SEAL_SEAL", 1))
 
 
 def directory_stamp(info):
@@ -135,7 +140,7 @@ def sealed_packet(data):
         offset = 0
         while offset < len(data):
             offset += os.write(writable, data[offset:])
-        fcntl.fcntl(writable, fcntl.F_ADD_SEALS, _SEALS)
+        fcntl.fcntl(writable, _ADD_SEALS, _SEALS)
         return os.open(f"/proc/self/fd/{writable}", os.O_RDONLY | os.O_CLOEXEC)
     finally:
         os.close(writable)
@@ -148,7 +153,7 @@ def read_packet(fd, home):
     flags = fcntl.fcntl(fd, fcntl.F_GETFL)
     if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid()
             or not 0 < info.st_size <= MAX_PACKET or flags & os.O_ACCMODE != os.O_RDONLY
-            or fcntl.fcntl(fd, fcntl.F_GET_SEALS) & _SEALS != _SEALS):
+            or fcntl.fcntl(fd, _GET_SEALS) & _SEALS != _SEALS):
         raise ValueError("claude_memo_descriptor")
     data = os.pread(fd, MAX_PACKET + 1, 0)
     if len(data) != info.st_size:
