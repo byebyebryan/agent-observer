@@ -1,0 +1,39 @@
+{
+  "status": "matched_cached_data_repair_cost",
+  "host": "starship",
+  "observerVersion": "0.5.0a14",
+  "pythonVersion": "3.14.7",
+  "pythonPrefix": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b",
+  "engineSha256": "1f880766082a9565663a03ebc3a002d1731ed742917649033b1b96865203b621",
+  "referenceSha256": "e5bd0c5432b59970a16348cd89da2024e3057b870418e66056a0912b473c92a7",
+  "inputRows": 354,
+  "admittedRows": 354,
+  "savedRows": 354,
+  "retentionDeadlines": 0,
+  "rounds": 200,
+  "optimizedCpuSeconds": 8.874e-05,
+  "fullScanCpuSeconds": 5.09933,
+  "optimizedMillisecondsPerCall": 0.0004437,
+  "fullScanMillisecondsPerCall": 25.49665,
+  "optimizedIdentityValidationsIn50Calls": 0,
+  "optimizedAllocations": {
+    "retainedBytes": 0,
+    "peakBytes": 192,
+    "rounds": 5
+  },
+  "fullScanAllocations": {
+    "retainedBytes": 6400,
+    "peakBytes": 149800,
+    "rounds": 5
+  },
+  "viewReceiptsAndDeadlinesUnchanged": true,
+  "nativeCalls": false,
+  "rawPayloadsRetained": false,
+  "liveServicesChanged": false,
+  "limits": [
+    "fixed clock and cached merged roster duplicated into components",
+    "full-scan oracle runs under the same package/interpreter",
+    "tracemalloc and cProfile are separate from unprofiled CPU measurements",
+    "quiet-tick comparison does not establish transition parity or live CPU savings"
+  ]
+}

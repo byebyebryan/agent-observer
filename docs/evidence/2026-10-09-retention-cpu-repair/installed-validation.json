@@ -1,0 +1,31 @@
+{
+  "wheelSha256": "16a223f224addc5bf92174be385372e85eb864ba3670d07e7941e7c3485caddf",
+  "sourceRevision": "d567306e0f0113f3c72aa295f7d3ded8c77b8adf",
+  "installedImportsOnly": true,
+  "harnessContainsSourcePythonPackage": false,
+  "sourceTests": 429,
+  "snap": {
+    "python": "3.12.8",
+    "tests": 86,
+    "skipped": 0,
+    "profile": "claude-history",
+    "sdk": "0.2.163"
+  },
+  "starship": {
+    "python": "3.14.7",
+    "tests": 86,
+    "skipped": 1,
+    "skipReason": "independent jsonschema dependency absent from core profile",
+    "profile": "core"
+  },
+  "pushProbe": {
+    "proxySha256": "ddc085ce72d9fba4c7222b5519e00b59c42367d1c0424a06eaeb50032a222bd7",
+    "translation": "service snapshot to installed service watch --count 1 --include-children; other commands exec unchanged",
+    "scope": "first complete Service 2 watch view independently bracketed against native sources; ongoing transition proof separately isolated on Snap"
+  },
+  "limits": [
+    "installed affected subset, no Mesh dependency in core profile",
+    "ordinary cached views precede native brackets, conversation activity can legitimately lag by component cadence",
+    "preexisting setup-only Claude cwd/kind/age unavailable"
+  ]
+}

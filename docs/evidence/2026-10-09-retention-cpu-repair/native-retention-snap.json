@@ -1,0 +1,146 @@
+{
+  "ordinaryProviderActions": false,
+  "terminalOutputPersisted": false,
+  "nativeOracleImportsObserver": false,
+  "clientInventoryQueried": false,
+  "isolationEstablished": true,
+  "modes": [],
+  "wheel": {
+    "manifestVersion": 3,
+    "package": "agent-observer",
+    "version": "0.5.0a14",
+    "wheel": "agent_observer-0.5.0a14-py3-none-any.whl",
+    "wheelSha256": "16a223f224addc5bf92174be385372e85eb864ba3670d07e7941e7c3485caddf",
+    "sourceRevision": "d567306e0f0113f3c72aa295f7d3ded8c77b8adf",
+    "apiVersion": 2,
+    "schemas": {
+      "snapshot": 4,
+      "watch": 4
+    },
+    "write": {
+      "schema": 2
+    },
+    "service": {
+      "protocol": 2,
+      "schemas": {
+        "request": 2,
+        "frame": 2
+      }
+    },
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "nativeContracts": [
+      "codex_daemon_status_v2",
+      "codex_database_only_catalog_v1",
+      "claude_interactive_registration_v1",
+      "claude_history_metadata_v1"
+    ],
+    "claudeHistorySdk": "0.2.163"
+  },
+  "harnessSha256": "679d742bca35017b248fbd38e9cd60924079f9568726bc6278bffc88b038346f",
+  "nativeOracleSha256": "02d1f4022ca5c2f85bab91379a1719e8c1dc07537ad04f0e3a25e4023f7196a9",
+  "case": "runtime_only_retention",
+  "checks": [
+    {
+      "nativeId": "5b2c5590-85c8-44f2-8a65-bd6f4eb19a23",
+      "nativeRegistrationAndSavedAbsent": true,
+      "directCachedPushWatchAbsent": true,
+      "staleUnknownBeforeExpiry": true,
+      "elapsedSeconds": 59.14,
+      "parkedEndedDeletedClaimed": false,
+      "case": "unsaved_normal_exit",
+      "normalExit": {
+        "processExited": true,
+        "exitCode": 0,
+        "promptInputExitHook": false,
+        "registrationRemoved": true,
+        "savedIdentityRetained": false
+      }
+    },
+    {
+      "case": "exact_unsaved_reappearance",
+      "nativeId": "5b2c5590-85c8-44f2-8a65-bd6f4eb19a23",
+      "exactReferenceRestored": true,
+      "allReadPathsRunning": true
+    },
+    {
+      "case": "unsaved_source_fault_recovery",
+      "nativeId": "5b2c5590-85c8-44f2-8a65-bd6f4eb19a23",
+      "faultRemainedUnknown": true,
+      "exactRunningRecovered": true
+    },
+    {
+      "nativeId": "5b2c5590-85c8-44f2-8a65-bd6f4eb19a23",
+      "nativeRegistrationAndSavedAbsent": true,
+      "directCachedPushWatchAbsent": true,
+      "staleUnknownBeforeExpiry": true,
+      "elapsedSeconds": 59.898,
+      "parkedEndedDeletedClaimed": false,
+      "case": "unsaved_forced_kill",
+      "deadRegistrationMayRemain": true
+    },
+    {
+      "case": "saved_history_resume_age",
+      "checks": [
+        {
+          "case": "saved_new",
+          "nativeId": "2775b560-865b-42d8-bbc5-77905baf7bbf",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791614277980,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 7.942
+        },
+        {
+          "case": "saved_exit",
+          "nativeId": "2775b560-865b-42d8-bbc5-77905baf7bbf",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791614277980,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.706
+        },
+        {
+          "case": "saved_resume",
+          "nativeId": "2775b560-865b-42d8-bbc5-77905baf7bbf",
+          "runtime": "running",
+          "phase": "waiting",
+          "activityAt": 1791614277980,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.702
+        },
+        {
+          "case": "saved_final_exit",
+          "nativeId": "2775b560-865b-42d8-bbc5-77905baf7bbf",
+          "runtime": "parked",
+          "phase": null,
+          "activityAt": 1791614277980,
+          "nativeBracketStable": true,
+          "directCachedPushAgree": true,
+          "elapsedSeconds": 0.64
+        }
+      ]
+    }
+  ],
+  "hooksDisabled": true,
+  "status": "accepted",
+  "pushFrames": 196,
+  "pushKinds": {
+    "status": 1,
+    "view": 195
+  },
+  "directWatchFrames": 150,
+  "directWatchKinds": {
+    "snapshot": 1,
+    "change": 13,
+    "heartbeat": 134,
+    "gap": 1,
+    "resync": 1
+  }
+}
