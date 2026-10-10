@@ -101,10 +101,14 @@ including at least 3.55% in Claude history workers/helpers. This does not replac
 the preceding 11.01% ten-minute measurement or promise an idle floor. The proposed
 first repair shares bounded transcript parsing, with behavioral parity and
 independent installed/native/sustained-cost gates before collector selection.
-Normalized metadata memoization remains a separate decision after remeasurement.
+Normalized metadata reuse was subsequently authorized through its separate
+implementation and measurement gates.
 The user subsequently authorized shared parsing and change-aware normalized
 metadata reuse in the [Claude collection execution](claude-collection-cost-plan.md).
-Its source, immutable/native, sustained-cost and scoped selection gates are pending.
+Its [acceptance report](evidence/2026-10-10-claude-collection-repair/REPORT.md)
+records source, immutable/native, concurrent cost comparison and scoped selection
+evidence. Normal services advance to a15 with unchanged API/cadence/hints.
+The final normal-unit sustained acceptance remains part of that report.
 It must preserve independent history/runtime clocks, accepted cadence/hints,
 source faults and native classification. No cadence or native scope is relaxed
 to make the retention repair look cheaper.

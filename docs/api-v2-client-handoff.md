@@ -1,12 +1,13 @@
 # API 2 client handoff
 
-Date: 2026-10-09. The observation producer remains independently accepted against
-[0.5.0a14](evidence/2026-10-09-retention-cpu-repair/REPORT.md): Codex on
+Date: 2026-10-10. The observation producer remains independently accepted against
+[0.5.0a15](evidence/2026-10-10-claude-collection-repair/REPORT.md): Codex on
 Snap/Starship and Claude on Snap. The read CLI independently selects
 [0.5.0a13](evidence/2026-10-09-read-delivery/REPORT.md) on both hosts; collection
-services select a14 and the Mesh bridge remains a4 in its previous a12 prefix.
-a14 removes repeated quiet retention scans, preserving a11 observation behavior
-and every public contract version.
+services select a15 and the Mesh bridge remains a4 in its previous a12 prefix.
+a15 adds guarded normalized Claude transcript reuse and shared decoding,
+preserving a14 retention, native runtime/phase authority and every public contract
+version. The memo is private; clients keep the same read interfaces.
 The preceding a9 interactive and a6 Codex acceptance retain historical bounds.
 The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
 The normal writer retains a16. This handoff does not
@@ -208,7 +209,7 @@ independent reader selection.
 
 An independent read-client pass may now implement schema/semantic validation,
 exact-reference selection, age/attention presentation, mixed-provider views and
-cached pull/push with gap/resync/lease handling. Use the accepted a14 producer for
+cached pull/push with gap/resync/lease handling. Use the accepted a15 producer for
 current behavior and the synthetic fixture for interface conformance. The
 [Claude wrap-up](claude-observation-wrap-up.md) records supported scope, completed
 gates and independent follow-ups. Actual New/Resume/attach, cross-host
