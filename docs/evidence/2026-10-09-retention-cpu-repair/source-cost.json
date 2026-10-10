@@ -1,0 +1,39 @@
+{
+  "status": "matched_cached_data_repair_cost",
+  "host": "snap",
+  "observerVersion": "0.5.0a14",
+  "pythonVersion": "3.14.7",
+  "pythonPrefix": "/usr",
+  "engineSha256": "1f880766082a9565663a03ebc3a002d1731ed742917649033b1b96865203b621",
+  "referenceSha256": "e5bd0c5432b59970a16348cd89da2024e3057b870418e66056a0912b473c92a7",
+  "inputRows": 128,
+  "admittedRows": 128,
+  "savedRows": 128,
+  "retentionDeadlines": 0,
+  "rounds": 200,
+  "optimizedCpuSeconds": 0.000242193,
+  "fullScanCpuSeconds": 4.247102,
+  "optimizedMillisecondsPerCall": 0.001210965,
+  "fullScanMillisecondsPerCall": 21.235512,
+  "optimizedIdentityValidationsIn50Calls": 0,
+  "optimizedAllocations": {
+    "retainedBytes": 0,
+    "peakBytes": 192,
+    "rounds": 5
+  },
+  "fullScanAllocations": {
+    "retainedBytes": 2112,
+    "peakBytes": 38600,
+    "rounds": 5
+  },
+  "viewReceiptsAndDeadlinesUnchanged": true,
+  "nativeCalls": false,
+  "rawPayloadsRetained": false,
+  "liveServicesChanged": false,
+  "limits": [
+    "fixed clock and cached merged roster duplicated into components",
+    "full-scan oracle runs under the same package/interpreter",
+    "tracemalloc and cProfile are separate from unprofiled CPU measurements",
+    "quiet-tick comparison does not establish transition parity or live CPU savings"
+  ]
+}

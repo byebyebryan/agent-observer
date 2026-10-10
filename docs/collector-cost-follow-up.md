@@ -32,7 +32,37 @@ read-delivery pass changes no collector, cadence, provider settings or retention
 semantics. Its [acceptance report](evidence/2026-10-09-read-delivery/REPORT.md)
 records the complete measurement matrix and exclusions.
 
-## Proposed next gate
+## Execution gates
+
+The user authorized the repair goal loop after live profiling. Keep this a
+producer-only pass: API 2/wire 4/Service 2, provider policy, read CLI selection,
+writer, Mesh bridge and downstream clients remain independently selected.
+
+- C0: review mutation/expiry ownership and freeze the full-scan reference in
+  test-only code. Admission still validates and owns copies of provider data.
+- C1: mark retention reconciliation dirty on accepted receipts, source failure
+  and lease expiry. Reuse each row's validated key within reconciliation and
+  cache the next eligible retirement deadline. Unchanged ticks do no roster
+  scan; current/saved protection still requires invalidation when receipts change.
+  Compute the next deadline after ledger pruning, including missing-ledger
+  candidates, so the optimization cannot postpone an existing omission.
+- C2: prove old/new fixed-clock behavioral parity and quiet-tick cost, including
+  mixed providers, history/runtime replacement, positive saved enrichment,
+  context changes, failures, rejected samples and exact expiry boundaries.
+- C3: freeze an immutable successor wheel. Independently verify installed bytes,
+  regressions, native direct/cached/push comparisons and retention behavior on
+  Snap and Starship before accepting the artifact.
+- C4: measure at least ten minutes of ordinary candidate service costs on both
+  hosts, separating root/helpers and reporting memory. Accept the repair only
+  with a material CPU reduction and preserved observation behavior.
+- C5: perform scoped Observer collector selection with rollback/reselection and
+  normal-unit native/CPU checks. Preserve provider sessions and the separately
+  selected reader/writer/bridge. Commit accepted checkpoints.
+
+The cache is private optimization state, not a new public field or provider
+evidence source. No fixed CPU floor is promised before live measurement.
+
+## Required invariants
 
 1. Maintain validated identity sets and retirement candidates at admission or
    replacement, and avoid roster scans when no candidate deadline can expire.

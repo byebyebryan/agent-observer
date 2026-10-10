@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""Compare quiet expiry with the frozen test-only full-scan oracle, using cached data."""
+
+import argparse
+import ast
+import copy
+import cProfile
+import hashlib
+import json
+import subprocess
+import sys
+import time
+import tracemalloc
+from pathlib import Path
+from types import MethodType
+
+import agent_observer
+import agent_observer.observation_engine as engine_module
+from agent_observer.contract import canonical, identity_key
+from agent_observer.service_public import validate_frame
+from agent_observer.service_state import ServiceState
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host", required=True)
+    parser.add_argument("--cli", type=Path, required=True)
+    parser.add_argument("--reference", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    result = subprocess.run([str(args.cli), "service", "snapshot", "--host-scope", args.host],
+                            capture_output=True, check=True, timeout=30)
+    frame = validate_frame(json.loads(result.stdout))
+    snapshot, now = frame["snapshot"], frame["emittedBoottimeMs"]
+    assert snapshot is not None
+    state = ServiceState(host_scope=args.host, uid=frame["uid"],
+        configs={s["provider"]: (s["configHome"], s["configHomeKind"]) for s in frame["sources"]},
+        clock=lambda: now, boot_id=frame["bootId"], clock_domain=frame["clockDomain"])
+    for provider in state.configs:
+        value = {**snapshot,
+                 "sources": [s for s in snapshot["sources"] if s["provider"] == provider],
+                 "sessions": [r for r in snapshot["sessions"] if r["identity"]["provider"] == provider]}
+        for component in ("runtime", "history"):
+            state.attempt(provider, component)
+            state.accept(provider, component, value, sampled_ms=now, ttl_ms=1800000)
+    baseline_view = canonical(state.snapshot)
+    baseline_data = copy.deepcopy(state.receipts)
+    baseline_deadlines = {p: copy.deepcopy(r.deadlines) for p, r in state.retention.items()}
+
+    # Read only the pinned pure reference method, not the test module or fixtures.
+    source = args.reference.read_text()
+    tree = ast.parse(source)
+    reference_class = next(n for n in tree.body if isinstance(n, ast.ClassDef)
+                           and n.name == "FullScanReference")
+    method = next(n for n in reference_class.body if isinstance(n, ast.FunctionDef)
+                  and n.name == "_retire_runtime_only")
+    namespace = {"identity_key": identity_key}
+    exec(compile(ast.Module(body=[method], type_ignores=[]), str(args.reference), "exec"), namespace)
+    optimized_scan = state._retire_runtime_only
+    full_scan = MethodType(namespace["_retire_runtime_only"], state)
+
+    def exercise(rounds):
+        started = time.process_time()
+        for _ in range(rounds):
+            assert not state.expire(now)
+        return time.process_time() - started
+
+    def allocations():
+        tracemalloc.start()
+        try:
+            exercise(5)
+            current, peak = tracemalloc.get_traced_memory()
+            return {"retainedBytes": current, "peakBytes": peak, "rounds": 5}
+        finally:
+            tracemalloc.stop()
+
+    rounds = 200
+    optimized_cpu = exercise(rounds)
+    optimized_allocations = allocations()
+    profile = cProfile.Profile()
+    profile.enable()
+    exercise(50)
+    profile.disable()
+    identity_calls = sum(e.callcount for e in profile.getstats()
+                         if not isinstance(e.code, str) and e.code.co_name == "identity_key")
+    state._retire_runtime_only = full_scan
+    try:
+        full_scan_cpu = exercise(rounds)
+        full_scan_allocations = allocations()
+    finally:
+        state._retire_runtime_only = optimized_scan
+    assert canonical(state.snapshot) == baseline_view
+    assert state.receipts == baseline_data
+    assert {p: r.deadlines for p, r in state.retention.items()} == baseline_deadlines
+    engine_path = Path(engine_module.__file__)
+    report = {
+        "status": "matched_cached_data_repair_cost", "host": args.host,
+        "observerVersion": agent_observer.__version__, "pythonVersion": sys.version.split()[0],
+        "pythonPrefix": sys.prefix, "engineSha256": hashlib.sha256(engine_path.read_bytes()).hexdigest(),
+        "referenceSha256": hashlib.sha256(source.encode()).hexdigest(),
+        "inputRows": len(snapshot["sessions"]), "admittedRows": len(state.snapshot["sessions"]),
+        "savedRows": sum(r["hasSavedHistory"] for r in state.snapshot["sessions"]),
+        "retentionDeadlines": sum(len(r.deadlines) for r in state.retention.values()),
+        "rounds": rounds, "optimizedCpuSeconds": round(optimized_cpu, 9),
+        "fullScanCpuSeconds": round(full_scan_cpu, 6),
+        "optimizedMillisecondsPerCall": round(optimized_cpu * 1000 / rounds, 9),
+        "fullScanMillisecondsPerCall": round(full_scan_cpu * 1000 / rounds, 6),
+        "optimizedIdentityValidationsIn50Calls": identity_calls,
+        "optimizedAllocations": optimized_allocations, "fullScanAllocations": full_scan_allocations,
+        "viewReceiptsAndDeadlinesUnchanged": True, "nativeCalls": False,
+        "rawPayloadsRetained": False, "liveServicesChanged": False,
+        "limits": ["fixed clock and cached merged roster duplicated into components",
+                   "full-scan oracle runs under the same package/interpreter",
+                   "tracemalloc and cProfile are separate from unprofiled CPU measurements",
+                   "quiet-tick comparison does not establish transition parity or live CPU savings"],
+    }
+    args.output.write_text(json.dumps(report, indent=2) + "\n")
+    print(json.dumps({k: report[k] for k in ("host", "admittedRows", "optimizedCpuSeconds", "fullScanCpuSeconds")}))
+
+
+if __name__ == "__main__":
+    main()
