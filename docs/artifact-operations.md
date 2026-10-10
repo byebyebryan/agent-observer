@@ -1,12 +1,13 @@
 # Candidate artifact operations
 
-The current read/service manifest is [Observer a11](../artifacts/observer-0.5.0a11.json).
+The current collector manifest is [Observer a14](../artifacts/observer-0.5.0a14.json).
+The read CLI independently selects [a13](../artifacts/observer-0.5.0a13.json).
 It freezes the producer wheel independently of later operations/tooling/docs
-commits. Normal read/service links and a user unit select it on Snap and Starship
+commits. The normal service link and user unit select a14 on Snap and Starship
 through the Observer-only chezmoi operations tuple. The writer independently
 retains [a16](../artifacts/observer-0.4.0a16.json); read selection does not select
 or accept a writer. See the
-[retention acceptance report](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+[retention repair acceptance report](evidence/2026-10-09-retention-cpu-repair/REPORT.md)
 and [client handoff](api-v2-client-handoff.md) for source, installed, native and
 operational acceptance. Provider compatibility follows
 required contracts, not executable-release allowlists. Older manifests and
@@ -14,12 +15,12 @@ exact-image pilot receipts remain historical verification/rollback artifacts.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.5.0a11.json \
-  --wheel /absolute/path/agent_observer-0.5.0a11-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a14.json \
+  --wheel /absolute/path/agent_observer-0.5.0a14-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.5.0a11.json \
-  --wheel /absolute/path/agent_observer-0.5.0a11-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a14.json \
+  --wheel /absolute/path/agent_observer-0.5.0a14-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 
@@ -31,7 +32,7 @@ installation is offline from the supplied wheel. Starship selects Codex with
 `--profile claude-history`. That option
 installs exactly SDK 0.2.163 from source (`--no-binary=claude-agent-sdk`), resolves
 its Python dependencies and rejects a bundled native executable; installing that
-profile alone does not establish native adapter acceptance. The current a11
+profile alone does not establish native adapter acceptance. The current a14
 report independently accepts its installed native subset. Verification
 never invokes providers, starts a daemon or registers hooks.
 

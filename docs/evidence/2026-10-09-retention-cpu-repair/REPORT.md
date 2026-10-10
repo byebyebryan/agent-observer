@@ -2,8 +2,9 @@
 
 The [execution gates](../../collector-cost-follow-up.md) repair the
 [profiled a11 hotspot](../2026-10-09-collector-cpu/REPORT.md), preserving API 2,
-snapshot/watch 4, Service 2 and native observation semantics. C0–C4 source, immutable artifact, native and candidate cost gates are accepted.
-Scoped collector selection remains pending at this checkpoint.
+snapshot/watch 4, Service 2 and native observation semantics. C0–C5 source, immutable artifact, native, sustained-cost and scoped operational
+gates are accepted. Normal collectors select a14 on Snap and Starship; the read
+CLI, writer and Mesh bridge retain their independent selections.
 
 ## Source behavior and review
 
@@ -71,6 +72,11 @@ Both hosts install into the new prefix
 accepts exact installed bytes, entrypoints, SDK profile and unchanged contracts.
 Snap retains Python 3.12.8 with source-only Claude SDK 0.2.163; Starship uses
 Python 3.14.7/core. Existing immutable prefixes are untouched.
+
+The wheel audit against selected a11 finds provider adapters, collection helpers,
+service runtime/scheduler byte-identical; `serve` only reorders local imports.
+Other changed modules contain the previously accepted a12/a13 read facade, including the
+Service read-cache export; only engine retention adds new collector behavior.
 
 [Installed validation](installed-validation.json) runs an affected 86-test
 subset from a copied harness outside the checkout, using `-I -B` and installed
@@ -152,3 +158,88 @@ hotspot; it is not hidden by reporting root alone. Aggregate PSS averages 36.5
 MiB on Snap and 29.6 MiB on Starship. The resource samples return to three/two
 processes and 21/12 FDs at the end; transient workers account for higher peaks.
 Memory remains a review threshold, not a strict budget.
+
+## Scoped normal selection
+
+The six-target Observer tuple selects a14 services on Snap/Starship. Normal
+provider homes, cadence, workspace, hints and contracts are unchanged. The read
+CLI remains a13 and the writer remains a16. Apply verifies the immutable new/old
+artifacts, exact old target bytes and unit incarnation before stopping the owned
+collector. Both transient candidates were stopped before managed selection.
+
+Independent first selection verifies installed a14 units on
+[Snap](verify-initial-snap.json)/[Starship](verify-initial-starship.json), followed
+by [a11 rollback on Snap](rollback-snap-fixed.json)/
+[Starship](rollback-starship-fixed.json) and
+[a14 reselection on Snap](reselect-snap.json)/[Starship](reselect-starship.json).
+Private recovery snapshots retain the original six targets at
+`~/.local/state/agent-observer/rollback/20261009-a14-snap` and
+`~/.local/state/agent-observer/rollback/20261009-a14-starship`.
+
+Initial rollback preflight failed before stopping either a14 collector: its
+full-source render evaluated an unrelated unpublished Mesh external (HTTP 404).
+The minimal chezmoi helper repair (`06b3237`) passes the explicit selection to `rendered`,
+using the same six-target projection as verify/apply. Its new regression rejects
+old rollback's global render; scoped self-tests pass on both hosts and actual
+rollback/reselection then pass. This is operations tooling, not a wheel/API
+change. No Mesh artifact, external pin or networking code is repaired here.
+
+Existing managed-unit delivery passes with three simultaneous healthy readers,
+a deliberately unread fourth peer and 100 cached snapshots per host:
+[Snap](normal-delivery-snap.json), [Starship](normal-delivery-starship.json).
+Healthy readers record 8/5 frames each with zero gaps/errors. The measured windows
+are about thirty seconds, not a replacement for historical long-duration
+acceptance. Native brackets using the separately selected a13 read CLI compare
+normal cached pull ([Snap](normal-native-cached-snap.json),
+[Starship](normal-native-cached-starship.json)) and initial push
+([Snap](normal-native-push-snap.json), [Starship](normal-native-push-starship.json)).
+The same 3+3 Snap and 6 Starship active contexts match membership/runtime/phase;
+all Codex comparisons have zero issues. The documented Claude setup-only row and
+sample-lag/native-transition clocks retain their bounds.
+
+[Protected Snap paths](protected-verified-snap.json) and
+[Starship paths](protected-verified-starship.json) keep provider configuration,
+reader/writer links and each Mesh bridge PID/restart count unchanged. Ordinary
+provider processes were never stop/action targets. Source preservation receipts
+([Snap](unrelated-verified-snap.json), [Starship](unrelated-verified-starship.json))
+record concurrent Mesh/Tmux source edits advancing during this loop. Those edits
+were preserved; only the Observer tuple, operations helper and its documentation
+are changed in canonical chezmoi source. The separate full chezmoi check is
+blocked while rendering the package matrix by that separate Mesh a6 wheel 404;
+scoped operations checks/dry runs,
+exact-byte verification and live rollback/reselection are the Observer evidence.
+
+Normal-unit sustained CPU acceptance passes on the final a14 incarnations:
+[Snap](normal-cpu-snap.json) and [Starship](normal-cpu-starship.json). Each window
+runs 600 seconds after 30 seconds of warmup, after candidate teardown and
+completion of the bounded reader/native acceptance tests. No added sustained
+readers or fixture sessions run in these windows; existing Mesh subscriptions
+and ordinary host/provider workloads continue. All final root PID/birth values
+match the [Snap](verify-final-snap.json)/[Starship](verify-final-starship.json)
+verified normal units.
+
+| Host | Normal a14 root percent of one core | Helpers | Total | Mean/peak RSS MiB | Mean PSS MiB |
+| --- | --- | --- | --- | --- | --- |
+| Snap | 2.720 | 8.290 | 11.010 | 71.4 / 115.9 | 37.8 |
+| Starship | 1.115 | 0.908 | 2.023 | 52.0 / 74.2 | 29.4 |
+
+End states return to 3/2 processes and 21/12 FDs. These bounded ordinary-host
+measurements materially reduce the profiled a11 root/total CPU and retain the
+accepted finite-retention behavior. They do not establish a strict idle floor
+or long-term resource guarantee. Snap's remaining helper CPU warrants a separate
+focused study before changing collection scope or cadence. Mesh subscriber costs
+remain external. Public API 2/wire 4/Service 2, provider policies, ordinary hooks
+and action/attachment boundaries are unchanged.
+
+Post-soak native bookends ([Snap](post-soak-native-snap.json),
+[Starship](post-soak-native-starship.json)) retain the same active counts and
+zero Codex comparison issues. Claude's active runtime/phase/membership matches;
+the setup-only metadata omission and a newer conversation clock than the cached
+sample remain explicit. Source checks pass all 429 tests. Source, manifest and evidence are committed locally; exact wheels remain in
+each installed artifact archive. Remote publication is a separate following
+action, with no new release/hosted CI result claimed by this loop.
+
+A final [cached fleet read](normal-mesh-read.json) through the unchanged a13 CLI
+and existing Mesh bridge returns a complete transport view with 482 session rows,
+matching the combined ordinary inventories. This is a one-shot read/reconnect
+smoke check, not a new networking or frontend acceptance gate.

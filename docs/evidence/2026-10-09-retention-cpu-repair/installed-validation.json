@@ -27,5 +27,32 @@
     "installed affected subset, no Mesh dependency in core profile",
     "ordinary cached views precede native brackets, conversation activity can legitimately lag by component cadence",
     "preexisting setup-only Claude cwd/kind/age unavailable"
-  ]
+  ],
+  "baselineWheelAudit": {
+    "changedSinceA11": [
+      "__init__.py",
+      "cli.py",
+      "mesh_cli.py",
+      "observation_engine.py",
+      "read_cache.py",
+      "read_client.py",
+      "service_cli.py",
+      "service_client.py",
+      "service_public.py"
+    ],
+    "providerAdaptersAndCollectionHelpersByteIdentical": true,
+    "otherChangesPreviouslyAcceptedA12A13ReadFacade": true,
+    "serviceRuntimeAndSchedulerByteIdentical": true,
+    "serviceServeOnlyImportOrderChanged": true
+  },
+  "operationsRepair": {
+    "repository": "chezmoi",
+    "commit": "06b3237",
+    "helperSha256": "19c5994f1acaa52bb24d52b51580761cd695b8459c58d6299090ac3f1f0795c4",
+    "oldRegressionFails": true,
+    "scopeSelfTestsSnapStarship": "passed",
+    "initialLiveRollbackRejectedBeforeStop": true,
+    "fixedLiveRollbackReselectionBothHosts": "passed",
+    "fullChezmoiCheck": "blocked by unrelated unpublished Mesh a6 wheel 404"
+  }
 }

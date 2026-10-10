@@ -4,14 +4,17 @@ The [read-delivery follow-up](read-delivery-follow-up-plan.md) publishes exact
 artifacts, measures sustained read costs and adds a13 pure read-cache/timer
 conformance and human-watch ergonomics. Its
 [acceptance report](evidence/2026-10-09-read-delivery/REPORT.md) records independent
-package/native/reader selection. The next producer gate is the
-[collector cost follow-up](collector-cost-follow-up.md). Reader acceptance and
-selection stay separate from collection, networking and downstream development.
+package/native/reader selection. The [collector cost follow-up](collector-cost-follow-up.md)
+repairs repeated retention scans in a14, independently of reader selection.
+Its [acceptance report](evidence/2026-10-09-retention-cpu-repair/REPORT.md) records
+old/new behavioral parity, installed/native proofs and sustained cost reduction.
+Reader acceptance and selection stay separate from collection, networking and downstream development.
 
 The [state-only Mesh integration](mesh-integration-plan.md) is
 [complete](evidence/2026-10-09-mesh-integration/REPORT.md): compatible adapter SDK
 fixes, a12 read CLI, immutable package/native comparison, and scoped a12/a4
-client/bridge selection on both hosts. Collection stays on a11, writer on a16.
+client/bridge selection on both hosts. Collection now selects a14, writer a16;
+the read CLI separately selects a13.
 The [CLI guide](mesh-read-client.md) describes raw and human read modes.
 Core/local service, provider policy and downstream UI development stay separate.
 
@@ -47,8 +50,9 @@ selected a6 after its independent artifact/native and scoped operational gates.
 The [Claude execution pass](claude-observation-execution.md) independently accepts
 [a8 discovery/monitoring](evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
 preserving Codex on both hosts and the same read/service contracts. Normal
-collection/service selection now uses [a11 finite runtime-only retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
-through its separate operational gate. The preceding
+collection/service selection now uses [a14 retention CPU repair](evidence/2026-10-09-retention-cpu-repair/REPORT.md),
+which preserves [a11 finite runtime-only retention](evidence/2026-10-09-runtime-only-retention/REPORT.md)
+through a separate operational gate. The preceding
 [a9 interactive successor](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 retains its lifecycle/on-off proof bounds.
 The writer retains a16 independently. Core/model/adapter/engine, service hosting,
@@ -177,7 +181,7 @@ explicitly. Tmux Plus work blocks Agent Plus implementation, not Observer delive
 
 The [API v1 client handoff](api-v1-client-handoff.md) retains its historical bounds.
 A2 remains a separately installed historical acceptance tuple. That pass selected
-a16/wire 3; current collection/service links use a11/API 2 and the read CLI uses a13. Plus retains its old frozen
+a16/wire 3; current collection/service links use a14/API 2 and the read CLI uses a13. Plus retains its old frozen
 reader. Client/cache migration has its own gate. The separate notification
 source/client checkpoint follows stable read/write
 acceptance; it cannot turn sampled watch into lossless native events. Older

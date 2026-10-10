@@ -1,0 +1,171 @@
+{
+  "hostScope": "snap",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a14-16a223f224addc5b",
+  "providers": [
+    "codex",
+    "claude"
+  ],
+  "runtimeIntervalSeconds": 30.0,
+  "historyIntervalSeconds": 120.0,
+  "nativeHints": true,
+  "startupSettledSeconds": 0,
+  "status": "accepted",
+  "durationSeconds": 30.499,
+  "serviceId": "d41259e3-7e62-4983-a6ff-923723f89f8a",
+  "serviceProtocol": 2,
+  "readSamples": 100,
+  "readP95Ms": 388.64215405192226,
+  "readMaxMs": 693.326469976455,
+  "readBatchMs": 28886,
+  "payloadBytes": 152588,
+  "publisherCgroupCpuMs": 12717.453,
+  "oneCoreCpuPercent": 41.69793435850356,
+  "existingManagedUserUnit": true,
+  "unitMemoryPeakBytes": 72409088,
+  "peakAggregateRssBytes": 120455168,
+  "peakAggregateFds": 42,
+  "peakOwnedProcesses": 5,
+  "independentReaders": [
+    {
+      "frames": 8,
+      "views": 8,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 8,
+      "views": 8,
+      "gaps": 0,
+      "errors": 0
+    },
+    {
+      "frames": 8,
+      "views": 8,
+      "gaps": 0,
+      "errors": 0
+    }
+  ],
+  "slowReaderConnectedWithoutReading": true,
+  "initialSources": [
+    {
+      "components": [
+        {
+          "accepted": 3,
+          "attempts": 3,
+          "expiresBoottimeMs": 655002569,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 654912569
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 655271808,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 654911808
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    },
+    {
+      "components": [
+        {
+          "accepted": 5,
+          "attempts": 5,
+          "expiresBoottimeMs": 655022404,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 654932404
+        },
+        {
+          "accepted": 3,
+          "attempts": 3,
+          "expiresBoottimeMs": 655292404,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 654932404
+        }
+      ],
+      "configHome": "/home/bryan/.claude",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:c38222e8bc01c1b3a428d4b3adbde38c5685ddf9171a0bbc91da32a36a3629c8",
+      "provider": "claude"
+    }
+  ],
+  "finalSources": [
+    {
+      "components": [
+        {
+          "accepted": 4,
+          "attempts": 4,
+          "expiresBoottimeMs": 655033164,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 654943164
+        },
+        {
+          "accepted": 1,
+          "attempts": 1,
+          "expiresBoottimeMs": 655271808,
+          "health": "current",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 654911808
+        }
+      ],
+      "configHome": "/home/bryan/.codex",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+      "provider": "codex"
+    },
+    {
+      "components": [
+        {
+          "accepted": 11,
+          "attempts": 11,
+          "expiresBoottimeMs": 655052453,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "runtime",
+          "sampledBoottimeMs": 654962453
+        },
+        {
+          "accepted": 6,
+          "attempts": 6,
+          "expiresBoottimeMs": 655322453,
+          "health": "partial",
+          "inFlight": false,
+          "lastResult": "accepted",
+          "name": "history",
+          "sampledBoottimeMs": 654962453
+        }
+      ],
+      "configHome": "/home/bryan/.claude",
+      "configHomeKind": "explicit",
+      "contextGeneration": 1,
+      "namespace": "sha256:c38222e8bc01c1b3a428d4b3adbde38c5685ddf9171a0bbc91da32a36a3629c8",
+      "provider": "claude"
+    }
+  ],
+  "ordinaryProviderActions": false,
+  "selectedLinksChanged": false
+}
