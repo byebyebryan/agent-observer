@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "conclusion": "success",
+  "headSha": "dda8888f60452e944ef9f2caf10e6e817c54fabb",
+  "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164488334",
+  "jobs": [
+    {
+      "name": "mesh-reader",
+      "conclusion": "success",
+      "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164488334/job/114544084334"
+    },
+    {
+      "name": "check",
+      "conclusion": "success",
+      "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164488334/job/114544084551"
+    }
+  ],
+  "sourceCheckSummaries": [
+    "mesh-reader\tRun ./scripts/check\t2026-10-11T18:36:48.3268224Z Ran 353 tests in 39.689s",
+    "mesh-reader\tRun ./scripts/check\t2026-10-11T18:36:48.3695029Z PASS: 133 Markdown files, local links, whitespace, fences and Git diff checks",
+    "check\tRun ./scripts/check\t2026-10-11T18:36:46.1102719Z Ran 353 tests in 38.898s",
+    "check\tRun ./scripts/check\t2026-10-11T18:36:46.1103005Z OK (skipped=16)",
+    "check\tRun ./scripts/check\t2026-10-11T18:36:46.1420942Z PASS: 133 Markdown files, local links, whitespace, fences and Git diff checks",
+    "check\tRun ruff check scripts/candidate-artifact tests/test_candidate_artifact.py\t2026-10-11T18:36:46.1731478Z All checks passed!"
+  ]
+}

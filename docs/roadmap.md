@@ -16,11 +16,14 @@ Next work remains separately scoped:
 - Focused proof for accepted Codex edges, including physical suspend and TUI closure.
 - A new provider only after its runtime/identity/activity/capability investigation.
 
-The following [operational cleanup](operational-cleanup-plan.md) is authorized
-for checkpoint commits, reviewed source/deployment publication, hosted CI and
-the exact a18 prerelease. Its [report](evidence/2026-10-11-ops-cleanup/REPORT.md)
-records acceptance separately; the retirement checkpoint alone supplies no
-hosted CI or release receipt.
+The following [operational cleanup](operational-cleanup-plan.md) completes current
+guidance, two-host native revalidation, collector/subscriber cost attribution,
+reviewed source publication, hosted main/tag CI and the exact a18 prerelease with
+fresh downloaded-byte verification. Its
+[report](evidence/2026-10-11-ops-cleanup/REPORT.md) separates those receipts from
+the retirement checkpoint. Mixed Observer/Mesh read validation remains the
+next performance issue: raw fleet watches use roughly 8–10% of one core per
+reader plus bridge cost; collector baselines are below 2% in this pass.
 
 ## Historical execution checkpoints
 
