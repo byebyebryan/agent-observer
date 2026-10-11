@@ -1,5 +1,11 @@
 # Agent Observer architecture boundaries
 
+The [Mesh SDK v1 integration plan](mesh-sdk-v1-integration-plan.md) captures the
+next optional networking boundary: an Observer-owned pure state profile supplied
+explicitly to Mesh's read/guard/view interfaces. Mesh retains transport and proof
+authority; core/local service remain independent. Planning validation is complete;
+owner implementation, new artifact/native and operational acceptance are pending.
+
 The optional [Mesh read CLI](mesh-read-client.md) uses Mesh Plus's configured
 Reader and ReadGuard. Core and the local service do not import it. The CLI owns
 read validation/presentation only; Mesh owns IPC/SSH, fleet scope and remote
