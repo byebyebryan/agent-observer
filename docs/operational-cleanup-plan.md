@@ -61,5 +61,11 @@ source; the unpushed `5065c0a` tooling fix is not a hosted-success receipt.
 O1 passes current guidance, 353 tests without skips, 133 Markdown checks and the
 workflow's scoped Ruff lint. The ten-minute baseline finds collector totals
 0.738% Snap and 1.892% Starship of one core; bridge CPU is effectively zero.
-O2 subscriber windows and O3–O5 remain pending. The
+O2 completes all six subscriber windows and mixed Observer/Mesh profile
+attribution. Final native/installed comparisons retain the baseline counts and
+only the accepted Starship creation-clock cases. Reader cost remains a separate
+performance follow-up. O3 passes 353 tests, scoped workflow lint and final
+direct/cached/Mesh native comparisons; fleet pull/push has 475 Codex rows.
+Dotfiles remote already contains the accepted selection under `6e30240`; no
+additional deployment push is required. O4/O5 publication remain pending. The
 [acceptance report](evidence/2026-10-11-ops-cleanup/REPORT.md) records each gate.

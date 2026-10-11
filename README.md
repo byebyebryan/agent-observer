@@ -15,6 +15,11 @@ records source, exact installed bytes, native comparisons, pull/push and scoped
 operational gates. The retained a16/Mesh a10 bridges and historical 0.4.0a16
 writer have independent selections. No downstream client migration is implied.
 
+The [operational cleanup](docs/evidence/2026-10-11-ops-cleanup/REPORT.md) records
+the following Codex-only cost baseline, subscriber measurements and separate
+hosted CI/publication gates. Older CPU reports retain their historical provider
+sets; they are not the current a18 operating baseline.
+
 The provider-neutral [API 2](docs/api-v2.md), snapshot/watch wire 4, Service 2
 and Mesh SDK 1 are unchanged. Frozen schemas and supplied synthetic observations
 can contain reserved Claude vocabulary; that does not enable native collection.
