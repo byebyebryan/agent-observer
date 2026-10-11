@@ -1,5 +1,10 @@
 # Operational acceptance execution status
 
+Historical 2026-10-04 pilot record. Its provider set, artifact selections and
+consumer gates retain their original bounds. Current Codex-only selection is
+recorded in the [a18 retirement report](evidence/2026-10-11-claude-retirement/REPORT.md);
+current cost and publication work follows the [operational cleanup](operational-cleanup-plan.md).
+
 Date: 2026-10-04. Regular goal loop authorized with scoped checkpoint commits and
 the conditional two-host pilot cutover in the [operational plan](overnight-operational-acceptance-plan.md).
 The primary works directly. Ordinary providers/coordinator remain available;

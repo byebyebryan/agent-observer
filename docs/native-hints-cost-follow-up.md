@@ -1,13 +1,13 @@
 # Native hints: cost investigation and acceptance
 
-Date: 2026-10-07. Historical a9–a15 cost investigation, with current selection
-recorded in the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md)
-and [service handoff](shared-observation-service-handoff.md). A15 now runs with
-native hints on normal Snap/Starship units after the user's explicit memory-target
-relaxation. The [managed receipt](evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
-records the operational and idle/collection RSS/PSS checks. Earlier failures and
-unselected checkpoints below retain their original bounds. Provider-policy
-changes and frontend work remain separate.
+Date: 2026-10-07. Historical a9–a15 cost investigation and selection, recorded
+in the [delivery report](evidence/2026-10-07-native-delivery/REPORT.md) and
+[service handoff](shared-observation-service-handoff.md). Its managed receipt
+records operational and idle/collection RSS/PSS checks after the user's explicit
+memory-target relaxation. These are the original workloads and artifact bounds.
+Current collection is Codex-only [a18](claude-retirement-plan.md); the
+[operational cleanup](operational-cleanup-plan.md) establishes its resource
+baseline. Provider-policy changes and frontend work remain separate.
 
 The [subsequent a10 repair](evidence/2026-10-07-native-delivery/a10-catalog-scope.json)
 removes unnecessary scans from nested transcript traffic. Identical installed

@@ -1,0 +1,234 @@
+{
+  "status": "measured",
+  "host": "snap",
+  "unit": "agent-observer.service",
+  "rootPid": 3134129,
+  "rootStartTicks": 6245357,
+  "interpreter": "/usr/bin/python3.14",
+  "entrypoint": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590/bin/agent-observer-service",
+  "warmupSeconds": 30,
+  "durationSeconds": 600.001,
+  "addedReaders": 0,
+  "percentOneCore": {
+    "root": 0.293,
+    "helpers": 0.445,
+    "total": 0.738
+  },
+  "cpuSeconds": {
+    "root": 1.76,
+    "total": 4.43
+  },
+  "resources": {
+    "rssBytes": {
+      "mean": 49887508,
+      "peak": 71172096,
+      "end": 49745920
+    },
+    "pssBytes": {
+      "mean": 27170054,
+      "peak": 37626880,
+      "end": 27103232
+    },
+    "fds": {
+      "mean": 12,
+      "peak": 20,
+      "end": 12
+    },
+    "processes": {
+      "mean": 2,
+      "peak": 3,
+      "end": 2
+    }
+  },
+  "pssComplete": true,
+  "rawPayloadsRetained": false,
+  "limits": [
+    "ordinary active host",
+    "one-second process-tree sampling",
+    "remote SSH/bridge excluded",
+    "concurrent workloads"
+  ],
+  "sampleCount": 601,
+  "twentySecondCpuWindows": [
+    {
+      "start": 0,
+      "duration": 20.044,
+      "rootPercentOneCore": 0.349,
+      "totalPercentOneCore": 0.948
+    },
+    {
+      "start": 20.044,
+      "duration": 20.041,
+      "rootPercentOneCore": 0.299,
+      "totalPercentOneCore": 0.699
+    },
+    {
+      "start": 40.085,
+      "duration": 20.036,
+      "rootPercentOneCore": 0.2,
+      "totalPercentOneCore": 0.299
+    },
+    {
+      "start": 60.121,
+      "duration": 20.041,
+      "rootPercentOneCore": 0.349,
+      "totalPercentOneCore": 0.798
+    },
+    {
+      "start": 80.162,
+      "duration": 20.042,
+      "rootPercentOneCore": 0.499,
+      "totalPercentOneCore": 1.597
+    },
+    {
+      "start": 100.204,
+      "duration": 20.036,
+      "rootPercentOneCore": 0.499,
+      "totalPercentOneCore": 1.647
+    },
+    {
+      "start": 120.24,
+      "duration": 20.047,
+      "rootPercentOneCore": 0.2,
+      "totalPercentOneCore": 0.249
+    },
+    {
+      "start": 140.287,
+      "duration": 20.039,
+      "rootPercentOneCore": 0.299,
+      "totalPercentOneCore": 0.848
+    },
+    {
+      "start": 160.326,
+      "duration": 20.04,
+      "rootPercentOneCore": 0.349,
+      "totalPercentOneCore": 0.898
+    },
+    {
+      "start": 180.366,
+      "duration": 20.044,
+      "rootPercentOneCore": 0.2,
+      "totalPercentOneCore": 0.299
+    },
+    {
+      "start": 200.41,
+      "duration": 20.037,
+      "rootPercentOneCore": 0.349,
+      "totalPercentOneCore": 0.898
+    },
+    {
+      "start": 220.447,
+      "duration": 20.031,
+      "rootPercentOneCore": 0.499,
+      "totalPercentOneCore": 1.448
+    },
+    {
+      "start": 240.478,
+      "duration": 20.038,
+      "rootPercentOneCore": 0.2,
+      "totalPercentOneCore": 0.25
+    },
+    {
+      "start": 260.516,
+      "duration": 20.04,
+      "rootPercentOneCore": 0.599,
+      "totalPercentOneCore": 1.896
+    },
+    {
+      "start": 280.556,
+      "duration": 20.029,
+      "rootPercentOneCore": 0.15,
+      "totalPercentOneCore": 0.2
+    },
+    {
+      "start": 300.585,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.3,
+      "totalPercentOneCore": 0.849
+    },
+    {
+      "start": 320.611,
+      "duration": 20.022,
+      "rootPercentOneCore": 0.25,
+      "totalPercentOneCore": 0.699
+    },
+    {
+      "start": 340.633,
+      "duration": 20.032,
+      "rootPercentOneCore": 0.15,
+      "totalPercentOneCore": 0.2
+    },
+    {
+      "start": 360.665,
+      "duration": 20.028,
+      "rootPercentOneCore": 0.3,
+      "totalPercentOneCore": 0.749
+    },
+    {
+      "start": 380.693,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.449,
+      "totalPercentOneCore": 1.398
+    },
+    {
+      "start": 400.719,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.15,
+      "totalPercentOneCore": 0.2
+    },
+    {
+      "start": 420.745,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.3,
+      "totalPercentOneCore": 0.649
+    },
+    {
+      "start": 440.771,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.3,
+      "totalPercentOneCore": 0.699
+    },
+    {
+      "start": 460.797,
+      "duration": 20.02,
+      "rootPercentOneCore": 0.1,
+      "totalPercentOneCore": 0.15
+    },
+    {
+      "start": 480.817,
+      "duration": 20.019,
+      "rootPercentOneCore": 0.3,
+      "totalPercentOneCore": 0.799
+    },
+    {
+      "start": 500.836,
+      "duration": 20.015,
+      "rootPercentOneCore": 0.4,
+      "totalPercentOneCore": 1.149
+    },
+    {
+      "start": 520.851,
+      "duration": 20.023,
+      "rootPercentOneCore": 0.15,
+      "totalPercentOneCore": 0.2
+    },
+    {
+      "start": 540.874,
+      "duration": 20.026,
+      "rootPercentOneCore": 0.25,
+      "totalPercentOneCore": 0.599
+    },
+    {
+      "start": 560.9,
+      "duration": 20.021,
+      "rootPercentOneCore": 0.25,
+      "totalPercentOneCore": 0.649
+    },
+    {
+      "start": 580.921,
+      "duration": 19.079,
+      "rootPercentOneCore": 0.105,
+      "totalPercentOneCore": 0.157
+    }
+  ]
+}

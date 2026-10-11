@@ -1,5 +1,12 @@
 # Focused collector cost follow-up
 
+This records historical a11/a14/a15 collector investigations and their exact
+workloads. Current collection is Codex-only [a18](claude-retirement-plan.md);
+these Claude-inclusive measurements are not its CPU baseline. The following
+[operational cleanup](operational-cleanup-plan.md) measures the selected a18
+collector, retained bridge and reader costs independently, without changing
+cadence, hints or the observation contract.
+
 The [read-delivery pass](read-delivery-follow-up-plan.md) measured the existing
 a11 collector while preserving its process and selection. Ten-minute windows
 without added readers used about 55% of one core on Snap and 37% on Starship.
