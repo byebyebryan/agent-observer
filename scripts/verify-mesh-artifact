@@ -4,6 +4,7 @@
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import zipfile
@@ -15,6 +16,23 @@ def require(value):
         raise ValueError("mesh_artifact_invalid")
 
 
+def mesh_manifest(path):
+    require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 8192)
+    mesh = json.loads(path.read_text())
+    require(isinstance(mesh, dict) and set(mesh) == {
+        "manifestVersion", "package", "version", "wheel", "wheelSha256",
+        "sourceRevision", "lockSha256", "agentProfile"})
+    require(mesh["manifestVersion"] == 1 and mesh["package"] == "mesh-plus")
+    require(isinstance(mesh["version"], str) and re.fullmatch(r"[0-9][0-9A-Za-z.]*", mesh["version"]))
+    require(path.name == "mesh-" + mesh["version"] + ".json")
+    require(mesh["wheel"] == "mesh_plus-" + mesh["version"] + "-py3-none-any.whl")
+    require(all(isinstance(mesh[k], str) and re.fullmatch(r"[0-9a-f]{" + str(n) + "}", mesh[k])
+                for k, n in (("wheelSha256", 64), ("sourceRevision", 40))))
+    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1"
+            and mesh["lockSha256"] == "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489")
+    return mesh
+
+
 def verify(prefix, archive, profile):
     manifests = list(archive.glob("observer-*.json"))
     require(len(manifests) == 1)
@@ -22,29 +40,33 @@ def verify(prefix, archive, profile):
     observer = json.loads(observer_manifest.read_text())
     mesh_manifests = list(archive.glob("mesh-*.json"))
     require(len(mesh_manifests) == 1)
-    mesh = json.loads(mesh_manifests[0].read_text())
-    require(mesh["package"] == "mesh-plus" and mesh["version"] in {"0.1.0a4", "0.1.0a8", "0.1.0a9", "0.1.0a10"})
-    require(mesh_manifests[0].name == "mesh-" + mesh["version"] + ".json")
-    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1")
+    mesh = mesh_manifest(mesh_manifests[0])
+    wheel = archive / mesh["wheel"]
+    require(wheel.is_file() and not wheel.is_symlink()
+            and hashlib.sha256(wheel.read_bytes()).hexdigest() == mesh["wheelSha256"])
     result = subprocess.run([str(archive / "candidate-artifact"), "verify", "--manifest",
                              str(observer_manifest), "--wheel", str(archive / observer["wheel"]),
                              "--prefix", str(prefix), "--profile", profile], capture_output=True, check=True, timeout=30)
     receipt = json.loads(result.stdout)
-    wheel = archive / mesh["wheel"]
-    require(hashlib.sha256(wheel.read_bytes()).hexdigest() == mesh["wheelSha256"])
-    code = """import json,sysconfig,sys,importlib.metadata
+    code = """import json,sysconfig,sys,importlib.metadata,dataclasses
 from agent_observer import public,service_public
-from mesh_plus.configured_read import configured_reader
-from mesh_plus.view import ReadGuard
+from agent_observer.mesh_profile import AgentProfile
+from mesh_plus.api import SDK_INTERFACE_VERSION,configured_reader,ReadGuard
+profile=AgentProfile()
+assert SDK_INTERFACE_VERSION==1
 assert not any(n in sys.modules for n in ('agent_observer.collection','agent_observer.service_runtime',
- 'agent_observer.write_client','agent_observer.codex_snapshot','agent_observer.claude_snapshot'))
+ 'agent_observer.write_client','agent_observer.codex_snapshot','agent_observer.claude_snapshot',
+ 'mesh_plus.observer','tmux_observer'))
 print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata.version('mesh-plus'),
  'observer':importlib.metadata.version('agent-observer'),'api':public.interface(),'service':service_public.interface(),
+ 'sdkInterface':SDK_INTERFACE_VERSION,'profileDescriptor':dataclasses.asdict(profile.descriptor),
  'dependencies':{n:importlib.metadata.version(n) for n in ('jsonschema','attrs','referencing','rpds-py','jsonschema-specifications')}}))"""
     output = subprocess.run([str(prefix / "bin/python"), "-I", "-B", "-c", code], check=True, capture_output=True, timeout=30)
     metadata = json.loads(output.stdout)
     site = Path(metadata.pop("site"))
-    require(site.is_relative_to(prefix) and metadata["mesh"] == mesh["version"])
+    require(site.is_relative_to(prefix) and metadata["mesh"] == mesh["version"]
+            and metadata["sdkInterface"] == 1
+            and metadata["profileDescriptor"]["profile_id"] == mesh["agentProfile"])
     with zipfile.ZipFile(wheel) as bundle:
         for entry in bundle.infolist():
             if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
