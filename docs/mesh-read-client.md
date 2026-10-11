@@ -1,17 +1,17 @@
 # Optional Mesh state read client
 
-The inspected current managed configuration selects Agent `0.5.0a16` readers
-and separate bridges with Mesh `0.1.0a10`; collection remains a15 and the writer
-`0.4.0a16`. The [SDK v1 plan](mesh-sdk-v1-integration-plan.md) and
-[planning review](evidence/2026-10-10-mesh-sdk-planning/REPORT.md) govern the next
-owner-profile pass; implementation and selection of Mesh a11 are pending.
-The following a12/a4 and a13 paragraphs retain their historical acceptance bounds.
+The current managed selection uses Agent `0.5.0a17` readers with Mesh `0.1.0a11`
+and the explicit Observer-owned profile. Separate a16/a10 bridges, the global
+Mesh CLI, a15 collection and the `0.4.0a16` writer retain their selections.
+The [SDK v1 report](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) records
+source, immutable/native delivery and reader-only rollback acceptance on both
+hosts. The following a12/a4 and a13 paragraphs are historical checkpoints.
 
 The [accepted a12/a4 candidate](evidence/2026-10-09-mesh-integration/REPORT.md)
-is selected on Snap and Starship. Both bridge units are enabled. Collection
-services stay a11 and the writer stays a16; the shared SSH Plus authority stays a1.
+was selected on Snap and Starship. Both bridge units were enabled. Collection
+then stayed a11 and the writer a16; the shared SSH Plus authority stayed a1.
 The [a13 read-delivery pass](evidence/2026-10-09-read-delivery/REPORT.md)
-independently selects the reader without changing the a4 bridge or its a12 prefix.
+then independently selected the reader without changing the a4 bridge or its a12 prefix.
 The exact [a13 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a13)
 adds timed human watch; raw envelopes remain unchanged.
 These immutable wheels are archived locally on both hosts. The following read
@@ -20,11 +20,11 @@ and [Mesh a4](https://github.com/byebyebryan/mesh-plus/releases/tag/v0.1.0a4)
 as GitHub prereleases with exact wheels and manifests. PyPI publication is not
 implied; install the two downloaded wheels explicitly for Mesh commands.
 
-The SDK v1 source candidate uses `mesh-plus>=0.1.0a11,<0.2` and an explicit
+The selected SDK v1 reader uses `mesh-plus>=0.1.0a11,<0.2` and an explicit
 Observer-owned pure Agent profile. It uses the same profile through configured
 readers, guards, validation, current selection and native reconstruction. The
-Mesh reference publisher is retained independently; new package/native and
-operational gates remain in the [execution status](mesh-sdk-v1-integration-status.md).
+Mesh reference publisher is retained independently; the accepted package/native
+and operational gates are in the [execution status](mesh-sdk-v1-integration-status.md).
 The original a12 dependency floor was a4. Install the
 optional `mesh` extra or explicitly install the reviewed Mesh wheel into the
 client environment. Core and local service remain dependency-free. Normal
@@ -47,6 +47,18 @@ local source selector is `agent` and socket is
 `$XDG_RUNTIME_DIR/mesh-plus-agent/read.sock` (fallback `/run/user/<uid>/...`).
 `--source`/`--socket` override this selection. `--local-host snap --scope local`
 explicitly bypasses catalog lookup for local diagnosis.
+An explicit `--local-host` selects standalone local delivery even with the
+default `fleet` scope. Omit it to resolve the actual fleet through the authority.
+
+Python clients using the optional SDK supply
+`agent_observer.mesh_profile.AgentProfile()` to `mesh_plus.api.configured_reader`,
+`ReadGuard`, `validate_response`, `current_sessions` and `reconstructed`. Reuse
+one profile consistently; import it only when networking is requested. The
+Observer profile owns pure native validation, identity, projection and receipt
+selection. SDK 1 owns compulsory generic admission, proof, expiry and cleanup.
+Never treat `AgentCodec.validate_bridge` alone as a transport/proof validator.
+Keep original clocks and component receipts; consumers own BOOTTIME timers,
+presentation, reconnect and guard revocation. Publisher extraction is deferred.
 
 `snapshot` and ordinary `watch` print lossless validated
 `agent-observer.mesh-candidate.v1` frames as JSON/NDJSON. They include native

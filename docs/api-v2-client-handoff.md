@@ -1,10 +1,12 @@
 # API 2 client handoff
 
-Date: 2026-10-10. The observation producer remains independently accepted against
+Date: 2026-10-11. The observation producer remains independently accepted against
 [0.5.0a15](evidence/2026-10-10-claude-collection-repair/REPORT.md): Codex on
 Snap/Starship and Claude on Snap. The read CLI independently selects
-[0.5.0a13](evidence/2026-10-09-read-delivery/REPORT.md) on both hosts; collection
-services select a15 and the Mesh bridge remains a4 in its previous a12 prefix.
+[0.5.0a17](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) with Mesh a11 on both
+hosts; collection services select a15 and the resident a16/Mesh a10 bridge and
+shared Mesh CLI retain their independently selected prefixes. Reader-only
+rollback/reselection preserves their process incarnations and provider settings.
 a15 adds guarded normalized Claude transcript reuse and shared decoding,
 preserving a14 retention, native runtime/phase authority and every public contract
 version. The memo is private; clients keep the same read interfaces.
@@ -18,7 +20,7 @@ networking changes.
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [reader manifest](../artifacts/observer-0.5.0a13.json) identifies the
+pure read facade. The [reader manifest](../artifacts/observer-0.5.0a17.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -31,7 +33,11 @@ schema and semantic checks. Other-language clients can obtain schemas with
 Both API descriptors operate without a provider or service. Local Service clients
 can use [service_public.ReadCache](read-cache-client.md) for admission and
 independent receipt expiry. Consumers still own IO, timers, reconnect, selection
-and presentation. Mesh clients use Mesh's ReadGuard and reader clock instead.
+and presentation. Mesh clients use Mesh SDK 1's ReadGuard and reader clock with
+one explicit Observer-owned `mesh_profile.AgentProfile` through every read/view
+helper. The [Mesh guide](mesh-read-client.md) gives the optional-package/binding
+requirements. API 2/read 4/Service 2 and current-state push semantics are unchanged;
+this producer checkpoint does not establish a downstream consumer or GUI gate.
 
 The [state-push guide](state-push-design.md) consolidates complete-view baselines,
 idle expiry timers, selection and semantic comparison. Its

@@ -1,0 +1,101 @@
+{
+  "snap": {
+    "host": "snap",
+    "readerSelection": ".local/share/agent-observer/0.5.0a17-06eebb2d87a32829-mesh-a11-reader",
+    "bridgeSelection": ".local/share/agent-observer/0.5.0a16-94705baebfa51a96-mesh-a10-bridge",
+    "readerOnlyTargetChanged": true,
+    "reads": [
+      {
+        "label": "selected",
+        "version": "agent-observer 0.5.0a17",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      },
+      {
+        "label": "rollback",
+        "version": "agent-observer 0.5.0a16",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      },
+      {
+        "label": "reselected",
+        "version": "agent-observer 0.5.0a17",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      }
+    ],
+    "collectorAndBridgeIncarnationsUnchanged": {
+      "agent-observer.service": {
+        "pid": 1776,
+        "startTicks": "2352"
+      },
+      "mesh-plus-agent.service": {
+        "pid": 1104683,
+        "startTicks": "1808135"
+      }
+    },
+    "protectedControlsUnchanged": true,
+    "protectedProviderSettingsUnchanged": true,
+    "unrelatedSourceUnchanged": [],
+    "sharedMeshCliUnchanged": true,
+    "providerActions": 0,
+    "rollbackOnlyReaderLink": true,
+    "reselected": true,
+    "operationsStatus": "accepted"
+  },
+  "starship": {
+    "host": "starship",
+    "readerSelection": ".local/share/agent-observer/0.5.0a17-06eebb2d87a32829-mesh-a11-reader",
+    "bridgeSelection": ".local/share/agent-observer/0.5.0a16-94705baebfa51a96-mesh-a10-bridge",
+    "readerOnlyTargetChanged": true,
+    "reads": [
+      {
+        "label": "selected",
+        "version": "agent-observer 0.5.0a17",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      },
+      {
+        "label": "rollback",
+        "version": "agent-observer 0.5.0a16",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      },
+      {
+        "label": "reselected",
+        "version": "agent-observer 0.5.0a17",
+        "rawRows": 512,
+        "hosts": 2,
+        "status": "complete"
+      }
+    ],
+    "collectorAndBridgeIncarnationsUnchanged": {
+      "agent-observer.service": {
+        "pid": 1383614,
+        "startTicks": "5605607"
+      },
+      "mesh-plus-agent.service": {
+        "pid": 759351,
+        "startTicks": "3704039"
+      }
+    },
+    "protectedControlsUnchanged": true,
+    "protectedProviderSettingsUnchanged": true,
+    "unrelatedSourceUnchanged": [
+      "dot_config/kitty/kitty.conf",
+      "dot_config/niri/config.kdl.tmpl"
+    ],
+    "sharedMeshCliUnchanged": true,
+    "providerActions": 0,
+    "rollbackOnlyReaderLink": true,
+    "reselected": true,
+    "operationsStatus": "accepted"
+  },
+  "dotfilesSelectionCommit": "50685bcc58fcb67bbf4a9c356003a22fc1ffc8a9",
+  "scope": "reader link only; retained bridge and global Mesh CLI"
+}
