@@ -1,0 +1,19 @@
+{
+  "status": "accepted",
+  "hostScope": "starship",
+  "ordinaryProviderActions": false,
+  "managedSelectionChanged": false,
+  "localPushFrames": 5,
+  "pushKinds": [
+    "view",
+    "view",
+    "view",
+    "view",
+    "view"
+  ],
+  "onlyCodexSources": true,
+  "serviceProtocol": 2,
+  "ownedServiceExitedCleanly": true,
+  "ownedChildrenRetired": true,
+  "socketRemoved": true
+}
