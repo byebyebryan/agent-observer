@@ -1,3 +1,5 @@
+# Provider vocabulary is shared frozen data, not the native adapter registry.
+# Implemented native support is selected explicitly in adapters.py.
 """Pure provider vocabulary; reserved profiles do not enable native adapters."""
 
 from dataclasses import dataclass

@@ -18,7 +18,6 @@ from pathlib import Path
 from agent_observer import codex_transport
 from agent_observer.codex_endpoint import inspect_managed_endpoint, validate_incarnation
 from agent_observer.codex_transport import PassiveClient
-from agent_observer.native_artifacts import CLAUDE_PREVIOUS, inspect_process
 
 
 class Proof:
@@ -26,6 +25,8 @@ class Proof:
         self.root = Path(os.environ["NATIVE_PROOF_ROOT"])
         self.host = os.environ["NATIVE_PROOF_HOST"]
         self.base = self.root / ("native-" + self.host)
+        if provider != "codex":
+            raise ValueError("unsupported_provider")
         self.provider = provider
         self.clients = []
         self.output_cues = {}
@@ -122,11 +123,7 @@ class Proof:
         self.clients.remove(client)
 
     def assert_native_client(self, client):
-        expected = (
-            Path("/opt/openai-codex/bin/codex")
-            if self.provider == "codex"
-            else Path("/opt/claude-code/bin/claude")
-        )
+        expected = Path("/opt/openai-codex/bin/codex")
         deadline = time.monotonic() + 15
         while time.monotonic() < deadline:
             state = Path(f"/proc/{client[0]}/stat").read_text().rsplit(")", 1)[1].split()[0]
@@ -177,11 +174,7 @@ class Proof:
         self.pause(client, 5)
         self.assert_native_client(client)
         rows = self.snapshot()["sessions"]
-        ref = (
-            created["resultingIdentity"]
-            if self.provider == "claude"
-            else next(row["identity"] for row in rows if row["identity"]["nativeId"] not in prior)
-        )
+        ref = next(row["identity"] for row in rows if row["identity"]["nativeId"] not in prior)
         self.accepted_ref = ref
         empty = self.row(ref)
         assert empty["activity"]["at"] is None and empty["runtime"]["value"] == "running"
@@ -203,12 +196,6 @@ class Proof:
             assert turn["items"] == [] and turn["itemsView"] == "notLoaded"
             assert turn["completedAt"] * 1000 == at
             self.codex_metadata(ref, rename=True, touch=True)
-        else:
-            os.write(client[1], b"/rename Activity proof renamed\r")
-            self.pause(client, 3)
-            for path in (self.base / "claude/projects").glob("*/*.jsonl"):
-                if path.stem == ref["nativeId"]:
-                    os.utime(path, None)
         renamed = self.row(ref)
         assert renamed["activity"]["at"] == at
         assert renamed["title"] == "Activity proof renamed"
@@ -318,221 +305,6 @@ class Proof:
             "terminalOutputPersisted": False,
         }
 
-    def claude_partial(self):
-        assert self.provider == "claude"
-        source = next(
-            row
-            for row in self.snapshot()["sessions"]
-            if row["job"]
-            and row["job"]["state"] == "done"
-            and row["worker"]["value"] == "present"
-            and row["activity"]["at"] is not None
-        )
-        ref, at = source["identity"], source["activity"]["at"]
-        sibling = self.handoff()
-        sibling_ref = sibling["resultingIdentity"]
-        job_path = next(
-            path
-            for path in (self.base / "claude/jobs").glob("*/state.json")
-            if json.loads(path.read_text()).get("sessionId") == sibling_ref["nativeId"]
-        )
-        job_path.unlink()
-        snapshot = self.snapshot()
-        assert snapshot["sourceHealth"] == "partial"
-        healthy = self.spawn(self.handoff(ref))
-        self.pause(healthy, 3)
-        self.assert_native_client(healthy)
-        self.stop(healthy)
-        for path in (self.base / "claude/sessions").glob("*.json"):
-            registry = json.loads(path.read_text())
-            if registry.get("sessionId") != ref["nativeId"]:
-                continue
-            pid = registry["pid"]
-            assert (
-                Path(f"/proc/{pid}/exe").resolve() == Path("/opt/claude-code/bin/claude").resolve()
-            )
-            assert ("CLAUDE_CONFIG_DIR=" + str(self.base / "claude")).encode() in Path(
-                f"/proc/{pid}/environ"
-            ).read_bytes().split(b"\0")
-            os.kill(pid, signal.SIGKILL)
-            break
-        else:
-            raise RuntimeError("owned_worker_unavailable")
-        time.sleep(1)
-        copied = self.handoff(ref)
-        new_ref = copied["resultingIdentity"]
-        assert new_ref is not None and new_ref != ref
-        assert copied["requestedIdentity"] == ref
-        new_row = self.row(new_ref)
-        # Claude hydrates history in memory before persisting the copied store.
-        # Native resumeSessionId already names the new ID, not its origin. Do
-        # not infer an inherited clock or collapse the two native identities.
-        assert new_row["activity"]["at"] is None or new_row["activity"]["at"] == at
-        resumed = self.spawn(copied)
-        self.pause(resumed, 3)
-        self.assert_native_client(resumed)
-        os.write(resumed[1], b"Reply only with OK.\r")
-        deadline = time.monotonic() + 60
-        while time.monotonic() < deadline:
-            self.pause(resumed, 0.3)
-            advanced = self.row(new_ref)
-            if advanced["activity"]["at"] is not None and advanced["activity"]["at"] > at:
-                break
-        else:
-            raise RuntimeError("copied_activity_pending")
-        assert advanced["history"] is not None
-        self.stop(resumed)
-        return {
-            "status": "accepted",
-            "hostScope": self.host,
-            "provider": "claude",
-            "independentOfFrontend": True,
-            "fixture": "native_worker_missing_job_metadata",
-            "healthyLiveAttachThroughPartialFeed": True,
-            "savedResumeThroughPartialFeed": True,
-            "nativeCopiedIdentityExplicit": True,
-            "savedResumeClockUnknownUntilNativePersistence": True,
-            "firstNewPromptAdvancesCopiedActivity": True,
-            "terminalOutputPersisted": False,
-        }
-
-    def claude_mixed(self):
-        assert self.provider == "claude"
-        old = self.root / "claude-2.1.287"
-        assert hashlib.sha256(old.read_bytes()).hexdigest() == CLAUDE_PREVIOUS.sha256
-        # An old launcher connected to a current daemon creates a current worker.
-        # Model the actual upgrade: start an old runtime while its image is the
-        # installed path in this private mount namespace, then reveal the new
-        # installed image. Ordinary package bytes are never written.
-        registries = list((self.base / "claude/sessions").glob("*.json"))
-        if registries:
-            assert len(registries) == 1
-            registry = json.loads(registries[0].read_text())
-            assert inspect_process(registry["pid"], "claude").artifact == CLAUDE_PREVIOUS
-            ref = next(r["identity"] for r in self.snapshot()["sessions"]
-                       if r["identity"]["nativeId"] == registry["sessionId"])
-        else:
-            subprocess.run(["mount", "--bind", str(old), "/opt/claude-code/bin/claude"], check=True)
-            try:
-                created = self.handoff()
-                ref = created["resultingIdentity"]
-                registry = next(
-                    json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")
-                    if json.loads(p.read_text()).get("sessionId") == ref["nativeId"]
-                )
-                assert inspect_process(registry["pid"], "claude").artifact == CLAUDE_PREVIOUS
-            finally:
-                # Detach this private bind while old workers retain their open image.
-                subprocess.run(["umount", "-l", "/opt/claude-code/bin/claude"], check=True)
-        assert not Path(f"/proc/{registry['pid']}/exe").samefile("/opt/claude-code/bin/claude")
-        viewer = self.spawn(self.handoff(ref))
-        self.pause(viewer, 10)
-        self.assert_native_client(viewer)
-        os.write(viewer[1], b"Reply only with OK.\r")
-        working_seen = False
-        deadline = time.monotonic() + 60
-        while time.monotonic() < deadline:
-            self.pause(viewer, 0.2)
-            row = self.row(ref)
-            working_seen |= row["phase"]["value"] == "working"
-            if row["phase"]["value"] == "waiting" and row["activity"]["at"] is not None:
-                break
-        else:
-            raise RuntimeError("mixed_turn_pending")
-        self.stop(viewer)
-        return {
-            "status": "accepted", "hostScope": self.host, "provider": "claude",
-            "workerVersion": "2.1.287", "viewerVersion": "2.1.289",
-            "differentVerifiedImages": True, "oldWorkerObservedRunning": True,
-            "currentViewerAttachesOldWorker": True, "sameNativeIdentity": True,
-            "workingObserved": working_seen, "completedTurnWaiting": True,
-            "terminalOutputPersisted": False,
-        }
-
-    def claude_approval(self):
-        assert self.provider == "claude"
-        settings = self.base / "claude/settings.json"
-        original = settings.read_bytes()
-        private = json.loads(original)
-        private["permissions"] = {"ask": ["Bash", "Write"]}
-        settings.write_text(json.dumps(private))
-        created = self.handoff()
-        ref = created["resultingIdentity"]
-        viewer = self.spawn(created)
-        self.pause(viewer, 10)
-        self.assert_native_client(viewer)
-        os.write(viewer[1], b"\x1b[200~Use Bash to write OK to approval-proof.txt.\x1b[201~\r")
-        deadline = time.monotonic() + 60
-        working_seen = False
-        while time.monotonic() < deadline:
-            self.pause(viewer, 0.2)
-            row = self.row(ref)
-            working_seen |= row["phase"]["value"] == "working"
-            registry = next(
-                (json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")
-                 if json.loads(p.read_text()).get("sessionId") == ref["nativeId"]), None,
-            )
-            job = row["nativeIds"]["jobId"]
-            state = json.loads((self.base / "claude/jobs" / job / "state.json").read_text())
-            cues = self.output_cues.get(viewer[0], set())
-            permission_cue = bool(cues & {"do you want to proceed?", "allow this command?", "do you want to allow"})
-            if registry and (
-                registry.get("waitingFor") == "permission prompt" or permission_cue
-            ) and row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval":
-                break
-        else:
-            raise RuntimeError("native_approval_pending")
-        assert not (self.base / "workspace/approval-proof.txt").exists()
-        native_state, native_tempo = state.get("state"), state.get("tempo")
-        assert native_state in {"working", "blocked"} and native_tempo in {"active", "blocked"}
-        assert row["runtime"]["value"] == "running"
-        assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "approval"
-        self.pause(viewer, 0.5)
-        repeated = self.row(ref)
-        assert repeated["activity"]["at"] == row["activity"]["at"]
-        self.stop(viewer)
-        settings.write_bytes(original)
-        return {
-            "status": "accepted", "hostScope": self.host, "provider": "claude",
-            "cliSha256": json.loads((self.root / "fixture.json").read_text())["installedCliSha256"]["claude"],
-            "workingObserved": working_seen,
-            "nativePermissionPromptObserved": True,
-            "nativeJobState": native_state, "nativeJobTempo": native_tempo,
-            "observedPhase": row["phase"]["value"],
-            "heldApprovalPreservesAge": True, "toolNotExecuted": True,
-            "approvalAutomaticallyAnswered": False, "terminalOutputPersisted": False,
-        }
-
-    def claude_companion(self):
-        assert self.provider == "claude"
-        source = next(r for r in self.snapshot()["sessions"] if r["history"] and r["activity"]["at"])
-        ref, at = source["identity"], source["activity"]["at"]
-        companion_dir = self.base / "claude/projects/controlled-worktree-companion"
-        companion_dir.mkdir(mode=0o700)
-        companion = companion_dir / (ref["nativeId"] + ".jsonl")
-        companion.write_text(json.dumps({
-            "type": "custom-title", "sessionId": ref["nativeId"], "customTitle": "Companion only",
-        }) + "\n")
-        good = self.row(ref)
-        assert good["title"] == source["title"] and good["activity"]["at"] == at
-        assert len([r for r in self.snapshot()["sessions"] if r["identity"] == ref]) == 1
-        companion.write_text(json.dumps({
-            "type": "user", "sessionId": ref["nativeId"], "timestamp": "2026-10-01T00:00:00Z",
-        }) + "\n")
-        conflict = self.snapshot()
-        assert not any(r["identity"] == ref and r["history"] for r in conflict["sessions"])
-        assert "history_ambiguous" in conflict["sources"][0]["errors"]
-        companion.unlink()
-        companion_dir.rmdir()
-        restored = self.row(ref)
-        assert restored["activity"]["at"] == at
-        return {
-            "status": "accepted", "hostScope": self.host, "provider": "claude",
-            "fixture": "native_transcript_with_controlled_metadata_companion",
-            "singleConversationRetained": True, "companionRecencyIgnored": True,
-            "titleAndNativeActivityPreserved": True, "conflictingConversationsExplicit": True,
-            "restorationPreservesAge": True, "terminalOutputPersisted": False,
-        }
 
     def rejection(self):
         assert self.provider == "codex"
@@ -570,112 +342,6 @@ class Proof:
             "nativeProviderNotExecuted": True, "terminalOutputPersisted": False,
         }
 
-    def claude_question(self):
-        assert self.provider == "claude"
-        created = self.handoff()
-        ref = created["resultingIdentity"]
-        viewer = self.spawn(created)
-        self.pause(viewer, 10)
-        self.assert_native_client(viewer)
-        os.write(viewer[1], b"\x1b[200~Use AskUserQuestion to ask which colour I prefer with two options Red and Blue. Wait for my answer.\x1b[201~\r")
-        deadline = time.monotonic() + 60
-        held, working = [], False
-        while time.monotonic() < deadline:
-            self.pause(viewer, 0.3)
-            row = self.row(ref)
-            working |= row["phase"]["value"] == "working"
-            job = json.loads((self.base / "claude/jobs" / row["nativeIds"]["jobId"] / "state.json").read_text())
-            registries = [json.loads(p.read_text()) for p in (self.base / "claude/sessions").glob("*.json")]
-            registry = next(r for r in registries if r.get("sessionId") == ref["nativeId"])
-            questions = (job.get("block") or {}).get("questions")
-            if (registry.get("status") == "waiting" and registry.get("waitingFor") == "input needed"
-                    and job.get("sessionId") == ref["nativeId"] and job.get("state") == "working"
-                    and job.get("tempo") == "blocked" and isinstance(questions, list) and questions):
-                # The native wait may begin after the earlier discovery read.
-                # Read the public projection only after the held predicate;
-                # no question is answered during this proof.
-                row = self.row(ref)
-                assert row["phase"]["value"] == "blocked" and row["blockedReason"] == "question"
-                if held and held[-1]["activityAt"] != row["activity"]["at"]:
-                    held.clear()
-                held.append({"nativeStatus": "waiting", "nativeJobState": "working", "nativeTempo": "blocked",
-                             "phase": "blocked", "reason": "question", "activityAt": row["activity"]["at"]})
-                if len(held) == 3:
-                    break
-        else:
-            raise RuntimeError("native_question_pending")
-        assert len({r["activityAt"] for r in held}) == 1
-        self.stop(viewer)
-        return {"status": "accepted", "provider": "claude", "hostScope": self.host,
-                "workingObserved": working, "heldQuestionSamples": held,
-                "questionNotAnswered": True, "terminalOutputPersisted": False}
-
-    def claude_parked(self):
-        assert self.provider == "claude"
-        row = next(r for r in self.snapshot()["sessions"] if r["job"] and r["job"]["state"] == "done"
-                   and r["worker"]["value"] == "present" and r["activity"]["at"] is not None)
-        ref, age, job_id = row["identity"], row["activity"]["at"], row["nativeIds"]["jobId"]
-        def native():
-            job = json.loads((self.base / "claude/jobs" / job_id / "state.json").read_text())
-            workers = []
-            for p in (self.base / "claude/sessions").glob("*.json"):
-                r = json.loads(p.read_text())
-                if r.get("sessionId") != ref["nativeId"]:
-                    continue
-                try:
-                    fields = Path(f"/proc/{r['pid']}/stat").read_text().rsplit(")", 1)[1].split()
-                    if fields[0] != "Z" and fields[19] == r.get("procStart"):
-                        workers.append({"pid": r["pid"], "startTicks": fields[19]})
-                except OSError:
-                    pass
-            assert job["sessionId"] == ref["nativeId"]
-            return {"jobState": job["state"], "tempo": job["tempo"], "workers": workers}
-        viewer = self.spawn(self.handoff(ref))
-        self.pause(viewer, 10)
-        self.assert_native_client(viewer)
-        for key in b"/exit":
-            os.write(viewer[1], bytes([key]))
-            self.pause(viewer, 0.05)
-        os.write(viewer[1], b"\r")
-        deadline = time.monotonic() + 15
-        exit_observed = False
-        while time.monotonic() < deadline:
-            self.pause(viewer, 0.2)
-            pid, _status = os.waitpid(viewer[0], os.WNOHANG)
-            if pid:
-                self.clients.remove(viewer)
-                os.close(viewer[1])
-                exit_observed = True
-                break
-        else:
-            # Native UI command recognition is a separate acceptance case;
-            # verify detached/stop state without treating a PTY miss as proof.
-            self.stop(viewer)
-        assert native()["workers"] and self.row(ref)["runtime"]["value"] == "running"
-        stopped = subprocess.run(["/opt/claude-code/bin/claude", "stop", job_id], capture_output=True, timeout=20)
-        assert stopped.returncode == 0
-        held = []
-        for _ in range(3):
-            time.sleep(0.4)
-            expected = native()
-            row = self.row(ref)
-            assert not expected["workers"] and expected["jobState"] in {"done", "stopped"} and expected["tempo"] == "idle"
-            assert row["runtime"]["value"] == "parked" and row["phase"]["value"] == "unknown"
-            assert row["activity"]["at"] == age
-            held.append({**expected, "runtime": "parked", "activityAt": age})
-        copied = self.handoff(ref)
-        assert copied["requestedIdentity"] == ref and copied["effect"] == "confirmed"
-        assert copied["resultingIdentity"] != ref
-        viewer = self.spawn(copied)
-        self.pause(viewer, 3)
-        self.assert_native_client(viewer)
-        self.stop(viewer)
-        return {"status": "accepted", "provider": "claude", "hostScope": self.host,
-                "exitCommandObserved": exit_observed, "viewerDetachPreservesWorker": True,
-                "nativeStopVerified": True,
-                "heldParkedSamples": held, "savedResumeCopiedIdentityExplicit": True,
-                "terminalOutputPersisted": False}
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -684,12 +350,8 @@ def main():
     arguments = parser.parse_args()
     proof = Proof(arguments.provider)
     try:
-        result = {"entry": proof.run, "recovery": proof.recovery, "partial": proof.claude_partial,
-                  "mixed": proof.claude_mixed, "approval": proof.claude_approval,
-                  "companion": proof.claude_companion, "rejection": proof.rejection,
-                  "question": proof.claude_question, "parked": proof.claude_parked}[
-            arguments.scenario
-        ]()
+        result = {"entry": proof.run, "recovery": proof.recovery,
+                  "rejection": proof.rejection}[arguments.scenario]()
     finally:
         for client in list(proof.clients):
             proof.stop(client)

@@ -50,15 +50,13 @@ def _encode(text):
 
 def render(event, form="kitty", *, tmux_passthrough=False):
     validate_event(event)
-    if form not in {"kitty", "claude-hook"}:
+    if form != "kitty":
         raise NotificationError("unsupported_transport")
-    if tmux_passthrough and form != "kitty":
-        raise NotificationError("unsupported_transport")
+    if event["identity"]["provider"] != "codex":
+        raise NotificationError("unsupported_provider")
     if event["disposition"] != "notify":
-        return "{}\n" if form == "claude-hook" else ""
-    if form == "claude-hook" and event["identity"]["provider"] != "claude":
-        raise NotificationError("unsupported_transport")
-    sender = "Codex" if event["identity"]["provider"] == "codex" else "Claude"
+        return ""
+    sender = "Codex"
     # This IDs chunks; it is not a desktop delivery/acknowledgement guarantee.
     identifier = "observer-" + (event["correlation"]["dedupeKey"] or event["receiptId"]).replace(
         "sha256:", ""
@@ -67,7 +65,7 @@ def render(event, form="kitty", *, tmux_passthrough=False):
     sequence = f"\x1b]99;{meta}:d=0;{_encode(event['title'])}\x1b\\\x1b]99;{meta}:p=body:d=1;{_encode(event['body'])}\x1b\\"
     if tmux_passthrough:
         sequence = "\x1bPtmux;" + sequence.replace("\x1b", "\x1b\x1b") + "\x1b\\"
-    return json.dumps({"terminalSequence": sequence}) + "\n" if form == "claude-hook" else sequence
+    return sequence
 
 
 def main(argv=None):
@@ -85,7 +83,7 @@ def main(argv=None):
     )
     for name in ("render", "stream"):
         sub = commands.add_parser(name)
-        sub.add_argument("--format", choices=("json", "kitty", "claude-hook"), default="json")
+        sub.add_argument("--format", choices=("json", "kitty"), default="json")
         sub.add_argument(
             "--tmux-passthrough",
             action="store_true",

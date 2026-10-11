@@ -50,6 +50,10 @@ No provider restart or current conversation exit is required.
 
 ## Status
 
-R0 is the scope checkpoint. R1–R4 remain pending until their individual evidence
-and operational receipts are recorded. Source baseline is `b2125b4`; selected
+R0 is accepted (466 baseline tests). R1 removes the native adapter, SDK/history,
+service memo and Claude hint/notification intake. Obsolete combined/background
+proofs are retired; focused Codex authority, saved, read and service gates remain.
+Shared core retention/expiry and synthetic multi-provider tests remain. R1
+passes 353 tests, including rejection before I/O and byte-identical read schemas.
+R2–R4 remain pending until package/native and operational receipts are recorded. Source baseline is `b2125b4`; selected
 reader a17/Mesh a11, collector a15, bridge a16/Mesh a10 and writer 0.4.0a16.

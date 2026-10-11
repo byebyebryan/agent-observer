@@ -50,8 +50,8 @@ adapter/engine boundary independently of this oracle.
 | [Selected Snap cache](selected-snap-cache.json) / [Starship cache](selected-starship-cache.json) | Normal selected CLI/socket match the six Claude and two Snap/six Starship Codex active contexts; all comparable state/age facts agree | Same setup-only cwd gap; one additional stale unsaved Claude row in the service, qualified below |
 | [Preservation](preservation.json) / [cleanup](native-cleanup.json) | Ordinary settings/executable unchanged; all six original Claude births/registrations remain live; owned namespace stopped and borrowed auth/history removed | No ordinary provider actions |
 
-The transition [harness](../../../scripts/native-claude-interactive-acceptance)
-and [extra probes](../../../scripts/native-claude-interactive-extra) use verified
+The transition [harness](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/scripts/native-claude-interactive-acceptance)
+and [extra probes](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/scripts/native-claude-interactive-extra) use verified
 owned user/mount/PID namespaces, private copied executable bytes, masked ordinary
 stores and disposable workspaces. PTYs operate only owned proof sessions; their
 output is discarded. Receipts retain UUIDs, finite states/clocks and provenance,

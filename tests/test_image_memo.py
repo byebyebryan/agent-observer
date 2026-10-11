@@ -21,7 +21,6 @@ from test_service_owned_helpers import alive
 
 from agent_observer import native_artifacts
 from agent_observer._image_memo import MAX_ENTRIES, MAX_PACKET, ImageMemo, receive, send
-from agent_observer.claude_history import _run_worker
 from agent_observer.contract import canonical, parse_snapshot
 from agent_observer.native_artifacts import inspect_installed, inspect_process
 from agent_observer.service_runtime import Runtime, Worker
@@ -48,18 +47,18 @@ class ImageMemoTest(unittest.TestCase):
             shutil.copyfile("/usr/bin/sleep", path)
             path.chmod(0o700)
             child = subprocess.Popen([str(path), "30"])
-            original, returned = ImageMemo("claude"), None
+            original, returned = ImageMemo("codex"), None
             left, right = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             sha = hashlib.sha256
             try:
                 with patch.object(native_artifacts.hashlib, "sha256", wraps=sha) as hashes:
-                    first = inspect_installed(path, "claude", cache=original)
+                    first = inspect_installed(path, "codex", cache=original)
                     send(left, original)
-                    returned = receive(right, "claude")
+                    returned = receive(right, "codex")
                     original.close()
                     self.assertEqual(
                         inspect_process(
-                            child.pid, "claude", cache=returned, expected_path=path
+                            child.pid, "codex", cache=returned, expected_path=path
                         ).artifact.sha256,
                         first.artifact.sha256,
                     )
@@ -68,17 +67,17 @@ class ImageMemoTest(unittest.TestCase):
                     replacement.write_bytes(path.read_bytes() + b"\0")
                     replacement.chmod(0o700)
                     replacement.replace(path)
-                    second = inspect_installed(path, "claude", cache=returned)
+                    second = inspect_installed(path, "codex", cache=returned)
                     self.assertNotEqual(second.artifact.sha256, first.artifact.sha256)
                     self.assertEqual(
                         inspect_process(
-                            child.pid, "claude", cache=returned, expected_path=path
+                            child.pid, "codex", cache=returned, expected_path=path
                         ).artifact.sha256,
                         first.artifact.sha256,
                     )
                     # Removing the old directory entry also changes its ctime;
                     # the surviving resident image must be rehashed once.
-                    inspect_process(child.pid, "claude", cache=returned, expected_path=path)
+                    inspect_process(child.pid, "codex", cache=returned, expected_path=path)
                     self.assertEqual(hashes.call_count, 3)
                     returned.export()
                     self.assertEqual(len(returned), 2)
@@ -180,31 +179,6 @@ class ImageMemoTest(unittest.TestCase):
                 os.close(writable)
                 memo.close()
 
-    def test_sdk_child_does_not_inherit_image_anchors(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            image, marker, child = root / "image", root / "marker", root / "sdk.py"
-            image.write_bytes(b"image")
-            memo = ImageMemo("claude")
-            inspect_installed(image, "claude", cache=memo)
-            stamp = image.stat()
-            child.write_text(
-                "import os,json\nfrom pathlib import Path\nfound=False\n"
-                'for value in os.listdir("/proc/self/fd"):\n'
-                " try: s=os.fstat(int(value))\n"
-                " except OSError: continue\n"
-                " found |= (s.st_dev,s.st_ino)==" + repr((stamp.st_dev, stamp.st_ino)) + "\n"
-                "Path("
-                + repr(str(marker))
-                + ').write_text(json.dumps({"imageAnchorInherited":found}))\n'
-                'print("{}")\n'
-            )
-            try:
-                with patch("agent_observer.claude_history.Path.with_name", return_value=child):
-                    _run_worker(root, timeout=2)
-                self.assertEqual(json.loads(marker.read_text()), {"imageAnchorInherited": False})
-            finally:
-                memo.close()
 
     def test_actual_spawn_and_optional_send_failure_still_return_bounded_observations(self):
         for fail_send in [False, True]:

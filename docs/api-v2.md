@@ -1,5 +1,11 @@
 # Observer API 2
 
+Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
+our only implemented native provider. The provider-neutral API 2/read wire 4/
+Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
+historical; reserved wire data is not an implemented adapter. Source removal
+is in progress; immutable-package/native and managed rollout gates follow.
+
 Date: 2026-10-09. Prerelease producer contract. The Codex a3 packaged/native gate
 is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
 The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)

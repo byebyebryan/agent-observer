@@ -59,7 +59,7 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--host-scope", required=True)
-    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    parser.add_argument("--provider", action="append", choices=("codex",), required=True)
     parser.add_argument("--workspace-config", type=Path, required=True)
     parser.add_argument("--socket", type=Path)
     args = parser.parse_args()

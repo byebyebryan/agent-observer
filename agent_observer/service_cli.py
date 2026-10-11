@@ -71,7 +71,7 @@ def main(argv=None):
         sub.add_argument("--json", action="store_true")
         if name in {"list", "watch"}:
             sub.add_argument("--include-children", action="store_true")
-            sub.add_argument("--provider", action="append", choices=("codex", "claude"))
+            sub.add_argument("--provider", action="append", choices=("codex",))
             sub.add_argument("--order", choices=("activity", "created"), default="activity")
         if name == "watch":
             sub.add_argument("--count", type=int)
@@ -137,9 +137,8 @@ def serve(argv=None):
     parser.add_argument("command", choices=("serve",))
     parser.add_argument("--host-scope", required=True)
     parser.add_argument("--socket", type=Path, default=socket_path())
-    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--provider", choices=("codex",), action="append", required=True)
     parser.add_argument("--codex-home", type=Path, default=Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))))
-    parser.add_argument("--claude-home", type=Path, default=Path(os.environ.get("CLAUDE_CONFIG_DIR", str(Path.home() / ".claude"))))
     parser.add_argument("--runtime-interval", type=float, default=20)
     parser.add_argument("--history-interval", type=float, default=60)
     parser.add_argument("--collection-timeout", type=float, default=10)
@@ -160,7 +159,7 @@ def serve(argv=None):
         from .service_state import ServiceState
         from .workspace import load_config
         workspace_config = load_config(args.workspace_config) if args.workspace_config else None
-        homes = {"codex": args.codex_home, "claude": args.claude_home}
+        homes = {"codex": args.codex_home}
         configs = {adapter.provider: (str(homes[adapter.provider]), "explicit") for adapter in adapters}
         state = ServiceState(host_scope=args.host_scope, configs=configs)
         scheduler = Scheduler(configs, intervals={"runtime": int(args.runtime_interval * 1000), "history": int(args.history_interval * 1000)}, timeout_ms=int(args.collection_timeout * 1000))

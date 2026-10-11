@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--host-scope", required=True)
-    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--provider", choices=("codex",), action="append", required=True)
     args = parser.parse_args()
     assert args.root.resolve(strict=True) == args.root and args.root.stat().st_uid == os.getuid()
     unit = "ao-service-proof-" + args.root.name
@@ -54,7 +54,7 @@ def main():
             raise ValueError("owned_unit_warmup")
         assert frame["uid"] == os.getuid()
         assert frame["clockDomain"] == os.readlink("/proc/self/ns/time")
-        expected_homes = {"codex": str(Path.home() / ".codex"), "claude": str(Path.home() / ".claude")}
+        expected_homes = {"codex": str(Path.home() / ".codex")}
         assert all(s["configHome"] == expected_homes[s["provider"]] for s in frame["sources"])
         command(["systemctl", "--user", "stop", unit])
         started = False

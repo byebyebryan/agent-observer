@@ -116,7 +116,7 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--host-scope", required=True)
-    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    parser.add_argument("--provider", action="append", choices=("codex",), required=True)
     parser.add_argument("--duration", type=int, default=1800)
     parser.add_argument("--runtime-interval", type=float, default=20)
     parser.add_argument("--history-interval", type=float, default=60)

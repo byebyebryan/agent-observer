@@ -23,19 +23,19 @@ class NativeArtifactTest(unittest.TestCase):
             try:
                 cache = {}
                 with patch.object(native_artifacts.hashlib, "sha256", wraps=original_sha256) as hashes:
-                    installed = inspect_installed(path, "claude", cache=cache)
-                    resident = inspect_process(process.pid, "claude", cache=cache, expected_path=path)
+                    installed = inspect_installed(path, "codex", cache=cache)
+                    resident = inspect_process(process.pid, "codex", cache=cache, expected_path=path)
                     self.assertEqual(installed.artifact.sha256, resident.artifact.sha256)
                     self.assertEqual(hashes.call_count, 1)
                     path.chmod(0o722)
                     with self.assertRaisesRegex(ValueError, "runtime_image_ownership_mismatch"):
-                        inspect_process(process.pid, "claude", cache=cache, expected_path=path)
+                        inspect_process(process.pid, "codex", cache=cache, expected_path=path)
                     path.chmod(0o700)
                     replacement = path.with_name("replacement")
                     replacement.write_bytes(path.read_bytes())
                     replacement.chmod(0o700)
                     replacement.replace(path)
-                    inspect_installed(path, "claude", cache=cache)
+                    inspect_installed(path, "codex", cache=cache)
                     self.assertEqual(hashes.call_count, 2)
             finally:
                 process.terminate()
@@ -47,9 +47,9 @@ class NativeArtifactTest(unittest.TestCase):
             shutil.copyfile("/usr/bin/sleep", path)
             path.chmod(0o700)
             before = path.read_bytes()
-            old = Artifact("claude", "old", hashlib.sha256(before).hexdigest(), str(path))
+            old = Artifact("codex", "old", hashlib.sha256(before).hexdigest(), str(path))
             after = before + b"\0"
-            new = Artifact("claude", "new", hashlib.sha256(after).hexdigest(), str(path))
+            new = Artifact("codex", "new", hashlib.sha256(after).hexdigest(), str(path))
             process = subprocess.Popen([str(path), "30"])
             try:
                 # Popen returns after exec; replacement leaves that open ELF alive.
@@ -59,17 +59,17 @@ class NativeArtifactTest(unittest.TestCase):
                 replacement.replace(path)
                 with patch.object(native_artifacts, "HISTORICAL_IMAGES", (old, new)):
                     cache = {}
-                    self.assertEqual(inspect_installed(path, "claude").artifact, new)
-                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache, expected_path=path).artifact, old)
-                    self.assertEqual(inspect_process(process.pid, "claude", cache=cache, expected_path=path).artifact, old)
+                    self.assertEqual(inspect_installed(path, "codex").artifact, new)
+                    self.assertEqual(inspect_process(process.pid, "codex", cache=cache, expected_path=path).artifact, old)
+                    self.assertEqual(inspect_process(process.pid, "codex", cache=cache, expected_path=path).artifact, old)
                     self.assertEqual(len(cache), 1)
                     with patch.object(native_artifacts, "HISTORICAL_IMAGES", (new,)):
-                        resident = inspect_process(process.pid, "claude", expected_path=path).artifact
+                        resident = inspect_process(process.pid, "codex", expected_path=path).artifact
                         self.assertEqual(resident.sha256, old.sha256)
                         self.assertEqual(resident.version, "unknown")
                         self.assertFalse(hasattr(resident, "capabilities"))
                     with self.assertRaisesRegex(ValueError, "runtime_image_ownership_mismatch"):
-                        inspect_process(process.pid, "claude")
+                        inspect_process(process.pid, "codex")
             finally:
                 process.terminate()
                 process.wait(timeout=5)
@@ -78,7 +78,7 @@ class NativeArtifactTest(unittest.TestCase):
         for profile in native_artifacts.HISTORICAL_IMAGES:
             self.assertEqual(native_artifacts.historical_image(profile.provider, profile.sha256), profile)
             self.assertIsNone(native_artifacts.historical_image("other", profile.sha256))
-        self.assertIsNone(native_artifacts.historical_image("claude", "f" * 64))
+        self.assertIsNone(native_artifacts.historical_image("codex", "f" * 64))
 
     def test_image_diagnostics_never_advertise_contract_capabilities(self):
         self.assertTrue(all(not hasattr(image, "capabilities") for image in native_artifacts.HISTORICAL_IMAGES))

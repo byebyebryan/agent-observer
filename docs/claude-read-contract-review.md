@@ -108,7 +108,7 @@ contains a Codex blocked row and Claude running/question, parked/null and
 saved/unknown rows. It declares the target limitations and partial coverage.
 These are constructed examples, not native observations or deployed behavior.
 
-The eight [alignment tests](../tests/test_claude_contract_alignment.py) exercise:
+The eight [alignment tests](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/tests/test_claude_contract_alignment.py) exercise:
 
 - Strict snapshot parsing, exact selection, partial scoped parked and the
   existing API/wire/service versions.

@@ -51,9 +51,7 @@ def sample(pid, birth, *, memory=False):
             argv = (process / "cmdline").read_bytes().split(b"\0")
             role = "publisher" if current == pid else "collector"
             if any(a.endswith(b"/_hint_worker.py") for a in argv):
-                role = "codex_hint" if b"codex" in argv else "claude_hint" if b"claude" in argv else "unknown_hint"
-            elif any(a.endswith(b"/_claude_history_worker.py") for a in argv):
-                role = "claude_metadata"
+                role = "codex_hint" if b"codex" in argv else "unknown_hint"
             descriptors = list((process / "fd").iterdir())
             watches = 0
             for descriptor in descriptors:
@@ -141,7 +139,7 @@ def main():
                 for key in ("pssBytes", "privateBytes"):
                     peak = "peakPssBytes" if key == "pssBytes" else "peakPrivateBytes"
                     window[peak] = max(window.get(peak, 0), sum(v[key] for v in values))
-                phase = "withCollectionWorker" if any(v["role"] in {"collector", "claude_metadata"} for v in values) else "withoutCollectionWorker"
+                phase = "withCollectionWorker" if any(v["role"] in {"collector"} for v in values) else "withoutCollectionWorker"
                 summary = phases.setdefault(phase, {"samples": 0})
                 summary["samples"] += 1
                 for key in ("rssBytes", "pssBytes", "privateBytes"):

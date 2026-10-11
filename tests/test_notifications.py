@@ -49,25 +49,6 @@ class NotificationTest(unittest.TestCase):
             **options,
         )
 
-    def claude(self, **payload):
-        ref = next(
-            r["identity"]
-            for r in self.snapshot["sessions"]
-            if r["identity"]["provider"] == "claude"
-        )
-        return normalize(
-            json.dumps(
-                {
-                    "session_id": ref["nativeId"],
-                    "hook_event_name": "Notification",
-                    "prompt_id": TURN,
-                    **payload,
-                }
-            ).encode(),
-            ref,
-            snapshot=self.snapshot,
-            received_at=100,
-        )
 
     def test_callback_content_is_discarded_and_exact_public_title_kind_are_reused(self):
         payload = {
@@ -99,30 +80,6 @@ class NotificationTest(unittest.TestCase):
         self.row["kind"] = "child"
         self.assertEqual(self.event()["reason"], "child_suppressed")
 
-    def test_claude_response_end_background_and_child_callbacks_never_claim_completion(self):
-        for event_name in ("Stop", "UserPromptSubmit"):
-            event = self.claude(
-                hook_event_name=event_name,
-                last_assistant_message="PRIVATE_RESPONSE",
-                stop_hook_active=False,
-            )
-            self.assertEqual(event["disposition"], "wake")
-            self.assertEqual(render(event, "claude-hook"), "{}\n")
-        for kind in ("agent_completed", "agent_needs_input"):
-            self.assertEqual(
-                self.claude(notification_type=kind)["reason"], "background_target_unproved"
-            )
-        for child in ({"agent_id": "native-child"}, {"hook_event_name": "SubagentStop"}):
-            self.assertEqual(
-                self.claude(notification_type="idle_prompt", **child)["reason"], "child_suppressed"
-            )
-        event = self.claude(notification_type="permission_prompt", agent_type="custom-top-level")
-        self.assertEqual((event["disposition"], event["body"]), ("notify", "Permission needed"))
-        for kind in ("auth_success", "quota_warning", "future_signal"):
-            self.assertEqual(self.claude(notification_type=kind)["disposition"], "ignore")
-        for changes in ({"notification_type": []}, {"hook_event_name": {}}):
-            with self.assertRaises(NotificationError):
-                self.claude(**changes)
 
     def test_deduplication_distinguishes_turn_host_store_and_receipt(self):
         seen = RecentEvents(2)
@@ -150,13 +107,13 @@ class NotificationTest(unittest.TestCase):
             received_at=100,
         )
         self.assertTrue(seen.accept(scoped))
-        self.assertTrue(seen.accept(self.claude(notification_type="permission_prompt")))
+        self.assertTrue(seen.accept(self.event({"type": "agent-turn-complete", "thread-id": self.ref["nativeId"]})))
         self.assertEqual(len(seen.keys), 2)
         self.assertTrue(seen.accept(first))  # Eviction deliberately loses prior suppression.
         self.assertTrue(RecentEvents().accept(first))  # Restart has no native replay receipt.
         a, b = (
-            self.claude(notification_type="permission_prompt"),
-            self.claude(notification_type="permission_prompt"),
+            normalize(json.dumps({"type": "agent-turn-complete", "thread-id": self.ref["nativeId"]}).encode(), self.ref),
+            normalize(json.dumps({"type": "agent-turn-complete", "thread-id": self.ref["nativeId"]}).encode(), self.ref),
         )
         self.assertEqual(a["correlation"]["nativeId"], b["correlation"]["nativeId"])
         self.assertIsNone(a["correlation"]["dedupeKey"])
@@ -195,16 +152,6 @@ class NotificationTest(unittest.TestCase):
         self.assertEqual(ids[0], ids[1])
         wrapped = render(self.event(), tmux_passthrough=True)
         self.assertEqual(wrapped, "\x1bPtmux;" + sequence.replace("\x1b", "\x1b\x1b") + "\x1b\\")
-        with self.assertRaises(NotificationError):
-            render(
-                self.claude(notification_type="idle_prompt"), "claude-hook", tmux_passthrough=True
-            )
-        event = self.claude(notification_type="idle_prompt")
-        hook = json.loads(render(event, "claude-hook"))
-        self.assertEqual(set(hook), {"terminalSequence"})
-        self.assertNotIn("decision", hook)
-        self.assertIn("99;", hook["terminalSequence"])
-
     def test_bounded_input_false_semantics_and_raw_error_privacy(self):
         with self.assertRaises(WireError):
             normalize(b'{"session_id":1,"session_id":2}', self.ref)
@@ -253,5 +200,5 @@ class NotificationTest(unittest.TestCase):
                 env=env,
                 capture_output=True,
             )
-            self.assertEqual((proc.returncode, proc.stdout, proc.stderr), (0, b"{}\n", b""))
+            self.assertEqual((proc.returncode, proc.stdout, proc.stderr), (0, b"", b""))
             self.assertEqual(list(Path(scratch).iterdir()), [])

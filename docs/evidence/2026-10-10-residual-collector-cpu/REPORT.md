@@ -52,17 +52,17 @@ causes repeated processing of the broader saved catalogue.
 
 ## Scheduling and collection paths
 
-[Claude file hints](../../../agent_observer/claude_hints.py) request history
+[Claude file hints](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/agent_observer/claude_hints.py) request history
 reconciliation for writes to project-level `.jsonl` transcripts. The
 [scheduler](../../../agent_observer/observation_scheduler.py) keeps one dirty bit,
 a 500 ms settling window and a ten-second minimum history start gap. Consequently,
 the configured 120-second history interval is the periodic fallback, not a limit
 on hint-driven scans. Hints already coalesce; the listeners themselves are cheap.
 
-Every [Claude collection](../../../agent_observer/claude_snapshot.py), including
+Every [Claude collection](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/agent_observer/claude_snapshot.py), including
 runtime-only collection, calls `saved_ids()` across the bounded catalogue before
 authenticating native registrations. History collection also starts the isolated
-[metadata worker](../../../agent_observer/_claude_history_worker.py). That worker
+[metadata worker](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/agent_observer/_claude_history_worker.py). That worker
 uses the SDK metadata API and separately calls `transcript_activity()` and
 `transcript_kind()` for each returned session. The first parses a bounded tail;
 the second parses a bounded head and another bounded tail. Unchanged transcripts

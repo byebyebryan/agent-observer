@@ -86,7 +86,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--archive", type=Path, required=True)
-    parser.add_argument("--profile", choices=("core", "claude-history"), required=True)
+    parser.add_argument("--profile", choices=("core",), required=True)
     args = parser.parse_args()
     try:
         print(json.dumps(verify(args.prefix, args.archive, args.profile), indent=2))

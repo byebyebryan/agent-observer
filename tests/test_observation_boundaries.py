@@ -78,7 +78,7 @@ class ObservationBoundaryTest(unittest.TestCase):
         with patch.dict("agent_observer.provider.PROFILES", {"future": SimpleNamespace()}), patch("agent_observer.adapters.CodexAdapter.collect") as collect:
             with self.assertRaisesRegex(ValueError, "^unsupported_provider$"):
                 collection.collect(host_scope="fixture", providers=["codex", "future"],
-                                   codex_home="/fixture/codex", claude_home="/fixture/claude")
+                                   codex_home="/fixture/codex")
             collect.assert_not_called()
         for values in ([], ["codex", "codex"], ["unknown"]):
             with self.assertRaisesRegex(ValueError, "invalid_provider_selection"):

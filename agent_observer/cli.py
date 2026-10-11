@@ -41,16 +41,11 @@ def _input(path, limit=MAX_BYTES):
 
 def _scope(parser):
     parser.add_argument("--host-scope")
-    parser.add_argument("--provider", choices=("codex", "claude"), action="append")
+    parser.add_argument("--provider", choices=("codex",), action="append")
     parser.add_argument(
         "--codex-home",
         type=Path,
         default=Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))),
-    )
-    parser.add_argument(
-        "--claude-home",
-        type=Path,
-        default=Path(os.environ.get("CLAUDE_CONFIG_DIR", str(Path.home() / ".claude"))),
     )
     parser.add_argument(
         "--input", type=Path, help="public snapshot file or - for stdin; does not collect"
@@ -77,7 +72,6 @@ def _snapshot(args):
         host_scope=args.host_scope,
         providers=args.provider or ["codex"],
         codex_home=args.codex_home,
-        claude_home=args.claude_home,
         workspace_config=config,
     )
 

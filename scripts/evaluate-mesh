@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--host-scope", required=True)
     parser.add_argument("--cli", type=Path, required=True)
     parser.add_argument("--socket", type=Path, required=True)
-    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--provider", choices=("codex",), action="append", required=True)
     parser.add_argument("--rounds", type=int, choices=range(1, 5), default=2)
     args = parser.parse_args()
     assert args.cli.is_absolute() and args.socket.is_absolute()

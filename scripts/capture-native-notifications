@@ -27,21 +27,21 @@ def capture():
         os.readlink("/proc/self/ns/" + key) == token for key, token in runtime["namespaces"].items()
     )
     provider = sys.argv[1]
-    assert provider in {"codex", "claude"}
+    assert provider == "codex"
     base = root / ("native-" + fixture["host"])
     assert Path(os.environ["HOME"]) == base / "home"
     assert Path(os.environ["CODEX_HOME"]) == base / "codex"
     assert Path(os.environ["CLAUDE_CONFIG_DIR"]) == base / "claude"
     assert root.resolve(strict=True) == root
     AUTHORIZED_ROOT = root
-    raw = sys.argv[2].encode() if provider == "codex" else sys.stdin.buffer.read(MAX_HOOK_BYTES + 1)
+    raw = sys.argv[2].encode()
     payload = decode_document(raw, max_bytes=MAX_HOOK_BYTES)
     identity = {
         "hostScope": fixture["host"],
         "provider": provider,
         "namespace": store_namespace(provider, str(base / provider), "explicit", os.geteuid()),
-        "nativeIdKind": "thread" if provider == "codex" else "session",
-        "nativeId": payload.get("thread-id" if provider == "codex" else "session_id"),
+        "nativeIdKind": "thread",
+        "nativeId": payload.get("thread-id"),
     }
     snapshot = None
     try:
@@ -97,5 +97,3 @@ except Exception:
             os.close(fd)
         except OSError:
             pass
-if sys.argv[1:2] == ["claude"]:
-    print("{}")

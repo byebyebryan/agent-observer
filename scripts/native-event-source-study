@@ -110,71 +110,16 @@ def codex(root):
             proof.stop(client)
 
 
-def claude(root):
-    Native = runpy.run_path(str(root / "native-claude-interactive-proof"))["NativeProof"]
-    proof = Native()
-    fixture = json.loads((root / "fixture.json").read_text())
-    python = fixture["prefix"] + "/bin/python"
-    capture = {"type": "command", "command": shlex.join([python, "-I", "-B", str(root / "capture-event-source-study"), "claude_hook"]), "timeout": 2}
-    continuation = root / "study-continue-once.py"
-    continuation.write_text('import json,os,sys\nfrom pathlib import Path\np=json.load(sys.stdin)\nm=Path(os.environ["NATIVE_PROOF_ROOT"])/"study-continued-once"\nif not m.exists() and not p.get("stop_hook_active"):\n m.touch(mode=0o600); print(json.dumps({"decision":"block","reason":"Continue once and reply only with DONE."}))\nelse: print("{}")\n')
-    continue_hook = {"type": "command", "command": shlex.join([python, "-I", "-B", str(continuation)]), "timeout": 2}
-    config = {"disableAgentView": True, "disableAllHooks": False, "enabledPlugins": {},
-        "permissions": {"ask": ["Bash", "Write"]},
-        "hooks": {event: [{"hooks": [capture] + ([continue_hook] if event == "Stop" else [])}]
-            for event in ("Stop", "SubagentStop", "UserPromptSubmit", "Notification", "PermissionRequest")}}
-    (proof.home / "settings.json").write_text(json.dumps(config) + "\n")
-    for path in (proof.base / "home/.claude.json", proof.home / ".claude.json"):
-        value = json.loads(path.read_text())
-        value["preferredNotifChannel"] = "notifications_disabled"
-        path.write_text(json.dumps(value) + "\n")
-    sid = str(uuid.uuid4())
-    client = None
-    try:
-        client = proof.spawn(sid, prompt="Reply only with OK.", name="Event source study")
-        proof.until(lambda: len([r for r in records(root) if r["nativeId"] == sid and r["nativeEvent"] == "Stop"]) >= 2, "parallel_stop_continuation_unproved", 100)
-        proof.phase(client, "idle")
-        stop = [r for r in records(root) if r["nativeId"] == sid and r["nativeEvent"] == "Stop"]
-        assert (root / "study-continued-once").exists()
-        assert any(r["stopHookActive"] is False for r in stop) and any(r["stopHookActive"] is True for r in stop)
-        before = len(records(root))
-        target = proof.base / "workspace/event-study-approval.txt"
-        proof.send(client, "Use Bash to write OK to event-study-approval.txt.")
-        proof.phase(client, "waiting", "permission prompt")
-        proof.until(lambda: any(r["nativeId"] == sid and r["notificationType"] == "permission_prompt" for r in records(root)[before:]), "native_attention_notice_unproved", 30)
-        assert not target.exists()
-        subset = [r for r in records(root) if r["nativeId"] == sid]
-        permission = [r for r in subset if r["nativeEvent"] == "PermissionRequest"]
-        notice = [r for r in subset if r["notificationType"] == "permission_prompt"]
-        installed = __import__("subprocess").run(["agent-observer", "snapshot", "--host-scope", "snap", "--provider", "claude"], capture_output=True, timeout=20)
-        assert installed.returncode == 0
-        row = next(r for r in json.loads(installed.stdout)["sessions"] if r["identity"]["nativeId"] == sid)
-        assert row["runtime"]["value"] == "running" and row["phase"]["value"] == "blocked"
-        result = {"hostScope": "snap", "provider": "claude", "status": "completed_source_study", "fixture": fixture,
-            "nativeId": sid, "agentViewDisabled": True, "nativeAlertsDisabled": True,
-            "stopCount": len(stop), "stopPromptIds": [r["nativePromptId"] for r in stop],
-            "samePromptAcrossContinuation": len({r["nativePromptId"] for r in stop}) == 1,
-            "parallelContinuationObserved": True, "permissionRequestCount": len(permission),
-            "permissionNoticeCount": len(notice), "permissionNoticeAfterRequestMs": notice[0]["receivedBoottimeMs"] - permission[0]["receivedBoottimeMs"] if permission else None,
-            "heldApprovalNotExecuted": True, "installedRowMatchesNativeBlocked": True,
-            "sourceEvents": dict(collections.Counter(r["nativeEvent"] for r in subset)),
-            "ordinaryProviderActions": False, "terminalOutputPersisted": False,
-            "productionEventPublisherProved": False, "graphicalDeliveryProved": False}
-        (root / "event-source-claude.json").write_text(json.dumps(result, indent=2) + "\n")
-        print(json.dumps(result))
-    finally:
-        if client:
-            proof.stop(client)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--provider", choices=("codex", "claude"), required=True)
+    parser.add_argument("--provider", choices=("codex",), required=True)
     args = parser.parse_args()
     root = Path(os.environ["NATIVE_PROOF_ROOT"])
     assert os.getuid() == 0 and root.resolve() == root and root.stat().st_uid == 0
     assert all(json.loads((root / "ready.json").read_text()).values())
-    {"codex": codex, "claude": claude}[args.provider](root)
+    codex(root)
 
 
 if __name__ == "__main__":

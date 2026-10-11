@@ -25,7 +25,7 @@ def capture(source):
     runtime = json.loads((root / "runtime.json").read_text())
     assert not runtime.get("stopped")
     assert all(os.readlink("/proc/self/ns/" + k) == v for k, v in runtime["namespaces"].items())
-    assert source in {"codex_notify", "codex_hook", "claude_hook"}
+    assert source in {"codex_notify", "codex_hook"}
     raw = sys.argv[2].encode() if source == "codex_notify" else sys.stdin.buffer.read(1024 * 1024 + 1)
     assert len(raw) <= 1024 * 1024
     payload = json.loads(raw)
@@ -64,5 +64,5 @@ try:
 except Exception:
     # Neutral output even on source failure; no raw callback or exception text.
     pass
-if source in {"claude_hook", "codex_hook"}:
+if source in {"codex_hook"}:
     print("{}")
