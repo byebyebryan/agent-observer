@@ -41,9 +41,95 @@ verifiers for prior artifacts remain unchanged. The operations gate independentl
 verifies reader and bridge artifacts while requiring the same delivery contract;
 it no longer requires identical package versions.
 
+## Immutable package
+
+[Observer a17](../../../artifacts/observer-0.5.0a17.json) comes from source
+`3650e5e6c8bf8d9715801e8e9817860d22d8fefc`, wheel SHA-256
+`06eebb2d87a32829ed1c3b658a2a8e13426bf38bd8de5c58336890e6cd5ef14d`.
+A checkout build retained an obsolete file from its build cache; that uninstalled
+wheel was discarded. The accepted wheel was rebuilt from a clean Git archive.
+Its complete package file set and bytes equal the committed source, including
+unchanged public schemas. The isolated reader prefixes on both hosts include
+released Mesh a11 and private immutable artifact archives.
+
+[Package receipts](packages.json) verify exact installed Observer/Mesh bytes,
+SDK 1, the Agent descriptor, entry points, `pip check` and zero provider or
+collector imports/invocations during artifact verification. Snap independently
+installs the existing Claude-history Python SDK profile without a bundled native
+executable; Starship uses core. All 466 checks pass with the pinned Mesh wheel on
+Python 3.14 with no skips. Python 3.11 passes with only two unrelated sealed-memfd
+skips. A frozen owner delivery view also passes the selected a10 reference;
+native reconstruction and effective counts agree at original time and component
+expiry: 5 combined rows, 2 Claude rows, then zero. Independent owner assertions
+specify these counts.
+
+## Native and mixed-artifact delivery
+
+[Bounded comparisons](native-comparisons.json) bracket installed direct and
+local cached reads with independent existing Codex daemon queries and Snap Claude
+interactive/history evidence. There are two rounds per path and host. No
+providers or normal collectors are restarted. Exact identity/store scope,
+membership, running/parked classification, work phase and proved activity clocks
+agree. Snap observes 91 Codex rows (3 running) and 37 Claude rows (3 running);
+Starship observes 384 Codex rows (6 running). Native raw child rows are preserved;
+normal lists hide 38 Snap and 254 Starship children. Age, ordering and full identity
+read checks pass.
+
+The oracle reports one older non-conversation Claude history's cwd differently:
+UUID `e0cba9dd-b642-4730-af4b-beb3b7e9c16c` is parked with unknown kind and absent
+conversation activity; Observer retains unknown cwd instead of promoting setup
+metadata. This UUID's narrower historical evidence is already recorded in the
+preceding collection checkpoint. Two Starship creation timestamps change between
+bracketing native samples and are reported as sampling races, not exact matches.
+Legacy unknown kinds/activity, old unsupported Claude histories and the accepted
+interactive-registration coverage assumption remain explicit.
+
+Fleet snapshot reads deliver all 512 raw rows with complete transport and an
+after-nonce proof for the SSH host. Replacement watch passes in both directions:
+Snap receives 30 frames (27 complete), Starship 30 (28 complete), over roughly
+18 seconds each. The separate standalone local watches receive 19/17 frames.
+An explicit `local_host` bypasses catalog scope in SDK 1; fleet proofs omit it
+and assert both host deliveries. Every ready owner reconstructs as valid Service 2; current
+selection leaves caller frames unchanged. Streams close with zero active owned
+connections and disconnect revokes positives. This is current ordinary-host SSH
+delivery, separately from synthetic owner fault tests. Delivery completeness
+does not upgrade Claude's partial native coverage.
+
+[Delivery receipts](delivery.json) also record a guarded termination of one owned
+SSH subprocess, not a resident bridge or provider. The Reader reports unavailable
+remote delivery without granting its rows through the healthy local sibling,
+reconnects and fully resynchronizes, then closes all owned connections. The
+successful procedure leaves Reader in sole charge of client cleanup. An earlier
+probe that concurrently called `Client.close` while Reader owned it recovered but
+triggered a Python 3.14 asyncio subprocess callback warning; it is not the accepted
+transport-failure procedure. No such warning occurs in the owned SSH-exit proof.
+
+## Matched ordinary-host cost
+
+[Cost receipts](cost.json) use 30-second windows after 5-second warm-up, with
+local one, fleet one and fleet two readers, first selected a16/a10 then candidate
+a17/a11. Each tree includes its owned local SSH child; remote SSH server costs
+are excluded. These are short, active-host samples, not idle or long-soak claims.
+
+Snap reader CPU is 4.7% of one core locally, 12.9% for one fleet reader and
+9.4–10.3% each with two fleet readers; baseline is 5.2%, 12.1% and 8.8–8.9%.
+Starship is 4.7%, 9.8% and 7.7% each versus 3.9%, 9.3% and 6.6%.
+The SDK path adds roughly 0.5–1.5 core percentage points in fleet samples.
+Mean fleet-tree PSS remains about 30–31 MiB, local PSS 22–27 MiB; process/FD
+counts stay bounded and the owned connection checks retire cleanly. There is no
+new collection loop or large memory increase. This accepts the migration's
+bounded cost, not a low-CPU promise for every reader on a large busy roster.
+
+Three pull samples per path give candidate local latency 371–380 ms on Snap and
+597–620 ms on Starship; fleet 1232–1298 ms and 892–920 ms. Baseline local is
+355–423/548–568 ms and fleet 1140–1192/844–860 ms. SDK validation adds a small
+measured cost in exchange for its independent native/receipt checks. Further
+generic reader validation/publication optimization belongs to Mesh's separate
+maintenance track and must preserve admission and original source leases.
+
 ## Following gates
 
-Immutable a17 installation, native comparisons, real SSH delivery, matched cost
-measurements and scoped reader selection remain pending. Ordinary providers,
-collector a15, writer 0.4.0a16, separate a16/a10 bridge and shared global Mesh CLI
-have not been changed by the source gate.
+Scoped reader selection remains pending. Ordinary
+providers, collector a15, writer 0.4.0a16, separate a16/a10 bridge and shared global
+Mesh CLI have not been changed by the package/native gates. Publisher extraction,
+event products and downstream migration remain separate work.
