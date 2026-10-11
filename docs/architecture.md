@@ -1,10 +1,41 @@
 # Agent Observer architecture boundaries
 
-Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
+Current implementation, 2026-10-11: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
+leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
+interfaces remain provider-neutral: API 2, read wire 4, Service 2 and Mesh SDK 1.
+Native Claude workflows remain external. No Claude collector, SDK/history
+worker, registration parser, hint listener or service metadata memo remains.
+Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
+
+| Owner | Implemented responsibility |
+| --- | --- |
+| Native provider | Saved identity, runtime disposition, native work/activity evidence |
+| Passive Codex adapter | Authenticated bounded daemon reads and normalized projections |
+| Reusable core engine | Shared evidence ordering, reconciliation, leases and finite retention |
+| Local service | Owned collection/hint helper lifetime, scheduling, Unix cached pull/push |
+| Pure/read CLI | Strict admission, identity selection, age/order/display and client expiry |
+| Observer Mesh profile | Pure Agent ownership/identity/projection through SDK 1 |
+| Mesh Plus | Transport, catalog, remote proof, generic admission and delivery lifecycle |
+| External clients | User intent, terminal/window matching, TUI lifetime, actions and alerts |
+
+Neither core nor service discovers client inventory, tmux sessions, TUI presence
+or windows. Codex daemon status owns running/parked and work phase. Native hints
+request earlier reads and supply no runtime evidence. Push distributes complete
+leased views; heartbeats do not renew facts and consumers handle idle expiry,
+gap/resync and new incarnations. Native occurrence normalization/replay and
+publisher extraction remain separate future work.
+
+Normal collector/read selection uses a18; optional readers use Mesh a11. The
+separate retained a16/a10 bridge reads cached Service 2, and does not collect
+providers. Its own archived dependency profile is verified independently from
+the new Codex-only reader. The historical writer has a separate action gate.
+See the [client handoff](api-v2-client-handoff.md) and [roadmap](roadmap.md).
+
+## Historical design and acceptance checkpoints
+
+The following dated checkpoints retain their original scope and artifacts.
+Their Claude implementation requirements and old version/selection statements
+are superseded by the retirement decision above.
 
 The [Mesh SDK v1 integration](evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
 implements the optional networking boundary: `agent_observer.mesh_profile`

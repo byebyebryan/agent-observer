@@ -68,7 +68,7 @@ def validate_selection(value, host, *, prior=False):
         and value.get("serviceProtocol") == 2
     )
     require(
-        (legacy or current) and host in value["hosts"] and value["unit"] == UNIT,
+        (current or (prior and legacy)) and host in value["hosts"] and value["unit"] == UNIT,
         "operations_selection_invalid",
     )
     if current:
@@ -610,8 +610,18 @@ def self_test():
             for p in old["hosts"]
         },
     }
+    legacy = {**old, "manifestVersion": 1,
+              "schemas": {"snapshot": 3, "watch": 3, "write": 1},
+              "serviceProtocol": 1}
     for host in old["hosts"]:
         validate_selection(current, host)
+        validate_selection(legacy, host, prior=True)
+        try:
+            validate_selection(legacy, host)
+        except ValueError as error:
+            require(str(error) == "operations_selection_invalid", "operations_self_test")
+        else:
+            raise ValueError("operations_legacy_desired_selection")
     claude = {
         **current,
         "profiles": {

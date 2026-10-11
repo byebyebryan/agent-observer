@@ -1,11 +1,13 @@
 # Optional Mesh state read client
 
-The current managed selection uses Agent `0.5.0a17` readers with Mesh `0.1.0a11`
-and the explicit Observer-owned profile. Separate a16/a10 bridges, the global
-Mesh CLI, a15 collection and the `0.4.0a16` writer retain their selections.
-The [SDK v1 report](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) records
-source, immutable/native delivery and reader-only rollback acceptance on both
-hosts. The following a12/a4 and a13 paragraphs are historical checkpoints.
+The current managed selection uses Codex-only Agent `0.5.0a18` readers with Mesh
+`0.1.0a11` and the explicit Observer-owned profile. The a18 collector, retained
+separate a16/a10 bridge, global Mesh CLI and historical writer have independent
+selections. The [retirement report](evidence/2026-10-11-claude-retirement/REPORT.md)
+records exact artifacts, native/cached pull/push and scoped operational proof.
+Frozen supplied-data provider vocabulary remains valid; no Claude native
+collection is implemented. The SDK v1 acceptance and earlier selections below
+retain their historical bounds.
 
 The [accepted a12/a4 candidate](evidence/2026-10-09-mesh-integration/REPORT.md)
 was selected on Snap and Starship. Both bridge units were enabled. Collection
@@ -73,8 +75,8 @@ show age from original conversation activity. Shared urgency/activity sorting
 works across hosts: blocked, waiting, working, then unknown/inapplicable; most
 recent within each group. `--include-children`, repeated `--provider` and
 `--order created` apply only here. Filters supply no negative native evidence.
-Coverage, delivery and view qualifications are printed before the rows. A ready
-transport with partial Claude coverage does not mean an exhaustive census.
+Coverage, delivery and view qualifications are printed before the rows. Ready
+transport and partial native coverage do not establish an exhaustive census.
 
 Push is replacement state, with explicit warming, per-host failure, gap and
 resync. Heartbeats do not renew source evidence. The per-request ReadGuard
@@ -102,7 +104,9 @@ configuration inputs explicitly:
 
 This verifies the independently selected reader and resident bridge artifacts,
 archived verifier hashes, UID/socket-peer and process-incarnation evidence,
-rendered controls and collector preservation. `--selection` supplies the candidate JSON; `--candidate` checks artifacts and
+rendered controls and independent collector selection. Each retained bridge
+supplies its own archived dependency profile; it does not inherit the reader
+profile. `--selection` supplies the candidate JSON; `--candidate` checks artifacts and
 rendered targets without requiring live controls to match. No dated rollback
 directory is chosen implicitly.
 `scripts/mesh-selection-acceptance` additionally requires `--baseline` and the

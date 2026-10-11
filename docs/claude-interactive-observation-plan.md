@@ -1,5 +1,10 @@
 # Claude interactive observation reconciliation
 
+Historical checkpoint after [Claude retirement](claude-retirement-plan.md),
+2026-10-11. Native Claude support and tooling described below are removed; the
+dated evidence keeps its original artifact bounds. Current clients use the
+[API 2 handoff](api-v2-client-handoff.md) and Codex-only a18 producer.
+
 Date: 2026-10-09. Status: accepted design direction and registration assumption;
 shared public contract fit is now [settled](claude-read-contract-review.md).
 I1 oracle/private boundary is accepted; the a9 producer is implemented in source.

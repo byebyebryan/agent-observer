@@ -1,32 +1,24 @@
 # API 2 client handoff
 
-Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
+Date: 2026-10-11. [Observer a18](evidence/2026-10-11-claude-retirement/REPORT.md)
+is the independently accepted Codex-only collector and read artifact on Snap and
+Starship. The optional reader uses Mesh a11/SDK 1 with an explicit Observer-owned
+profile. Separate a16/Mesh a10 bridges, the shared Mesh CLI and historical
+0.4.0a16 writer retain their independently selected artifacts. The retirement
+pass removes Claude native collection, SDK/history, hints and service memo.
+Claude remains under native session management/Agent View.
 
-Date: 2026-10-11. The observation producer remains independently accepted against
-[0.5.0a15](evidence/2026-10-10-claude-collection-repair/REPORT.md): Codex on
-Snap/Starship and Claude on Snap. The read CLI independently selects
-[0.5.0a17](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) with Mesh a11 on both
-hosts; collection services select a15 and the resident a16/Mesh a10 bridge and
-shared Mesh CLI retain their independently selected prefixes. Reader-only
-rollback/reselection preserves their process incarnations and provider settings.
-a15 adds guarded normalized Claude transcript reuse and shared decoding,
-preserving a14 retention, native runtime/phase authority and every public contract
-version. The memo is private; clients keep the same read interfaces.
-The preceding a9 interactive and a6 Codex acceptance retain historical bounds.
-The preceding a5 thirty-minute acceptance retains its historical artifact bounds.
-The normal writer retains a16. This handoff does not
-select a consumer or authorize provider policy, frontend, terminal-runtime or
-networking changes.
+API 2/read wire 4/Service 2/Mesh SDK 1 are unchanged. Reserved provider vocabulary
+and synthetic supplied data remain valid for pure conformance; Claude native
+selection and its old CLI/configuration options are unsupported. No dormant
+adapter or compatibility collector remains. This handoff supplies no consumer,
+provider-policy, frontend, attachment/action or Mesh-upgrade acceptance.
 
 ## Bind to the contract
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [reader manifest](../artifacts/observer-0.5.0a17.json) identifies the
+pure read facade. The [reader manifest](../artifacts/observer-0.5.0a18.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.
@@ -52,12 +44,9 @@ revalidates the accepted state stream without changing public versions. Native
 occurrence events and Kitty/D-Bus notification integration are deferred; they are
 not read-client dependencies.
 
-The [Claude alignment review](claude-read-contract-review.md) settles API 2/wire 4/
-protocol 2 for the interactive-only adapter. The independent a9 native/artifact
-and scoped operational gates accept it; a11 adds independently proved finite
-unsaved retention within the same contract. The
-[synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
-remains useful for parser, selection, partial-coverage and expiry conformance.
+The [synthetic mixed-provider fixture](../tests/fixtures/contract-v4/claude-interactive.json)
+remains useful for parser, identity, partial-coverage, source-isolation and expiry
+conformance. Its reserved data does not represent native provider support.
 Consumer source/native/deployment acceptance remains separate.
 
 ## Required consumer behavior
@@ -65,8 +54,7 @@ Consumer source/native/deployment acceptance remains separate.
 - Key rows by the complete host/provider/namespace/native-kind/native-ID tuple.
   Codex `threadId` is the exact thread; `sessionTreeRootId` is independent metadata.
 - Treat running/parked/unknown as normalized native evidence within declared
-  scope and assumptions. Codex's daemon is its authority; Claude has its separate
-  native predicate. Clients do not query provider registries or validate PIDs.
+  scope and assumptions. Codex's daemon is its authority. Clients do not query provider registries or validate PIDs.
   No tmux, TUI PID, cwd, title, loaded-list absence or completion callback supplies
   client-side runtime authority.
 - Handle parked phase null and unknown phase evidence. Blocked reasons are a
@@ -88,24 +76,6 @@ Consumer source/native/deployment acceptance remains separate.
   versions and state enums strict. Do not depend on an exhaustive coverage claim
   or discard every known row merely because its source coverage is partial.
 
-Claude supports interactive working, waiting and typed approval/question waits.
-Healthy native registration scans and positive saved identity can report parked
-when no authenticated live interactive incarnation or relevant unresolved
-conflict remains. This is the declared `interactive_registration_assumed` scope,
-with partial runtime coverage and explicit limitations. A live session whose
-registration failed/disappeared may be missed or falsely parked after recovery.
-Consumers preserve that qualification; they do not build their own provider census.
-
-Normal exit, forced kill, saved Resume, same-process UUID switches, simultaneous
-live contexts, conflicting phase and Observer cold start are independently proved
-with Agent View on/off. Background execution/attachment is unsupported. The two
-old stopped recap job histories remain unknown because their pending-work data
-is missing. They are outside the user's forward interactive workflow; no legacy
-background compatibility work is required. The setup-only SDK candidate now has
-positive saved discovery, but
-its cwd, kind and age remain unavailable. Generic dialogs, nested child history
-and Claude turn outcomes remain unproved. Source coverage stays partial.
-
 Partial runtime coverage can briefly retain a disappeared unsaved UUID as stale
 unknown with `retained_after_gap`, even when a fresh direct read omits it. A11
 retires it at the original runtime lease: 90 seconds on Snap and 60 on Starship
@@ -117,16 +87,12 @@ until replacement/resync and treat omission as observation-memory retirement,
 never a native end/parked event or action permission. The
 [retention record](runtime-only-retention-follow-up.md) binds the policy and proof.
 
-Claude write selection remains unsupported by the new writer; the a16 writer is
-selected independently and read acceptance grants no new action capability.
-Parked never grants automatic resume, stop, approval or attachment permission.
-Agent View settings and ordinary sessions were not changed by a11 selection.
-Runtime refreshes authenticate saved identities without rerunning the history
-SDK. Conversation metadata has a separate lease, and process liveness cannot
-refresh its age. Native file hints can prompt earlier reads; a forced kill with
-no file event falls back to the configured runtime cadence (30 seconds on Snap),
-plus bounded collection time. Push distributes the accepted view, not every
-native transition.
+The normal writer is selected independently and read acceptance grants no new
+action capability. Parked never grants automatic resume, stop, approval or
+attachment permission. Conversation metadata has a separate lease; native
+runtime refresh cannot move its age. Passive Codex refresh hints complement
+periodic reconciliation. Push distributes the accepted replacement view, not
+every native transition or an alert/event stream.
 
 ## Inspect the observation service
 
@@ -140,7 +106,7 @@ agent-observer service watch --host-scope snap --count 3
 agent-observer service watch --host-scope snap --human
 agent-observer mesh list
 agent-observer mesh watch --human
-agent-observer list --host-scope snap --provider claude
+agent-observer list --host-scope snap --provider codex
 ```
 
 The managed publisher is already running on each host. Cached pull and push use
@@ -152,7 +118,7 @@ reads collect metadata anew and can take longer than cached reads.
 For explicit artifact checks, use its immutable prefix:
 
 ```sh
-candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a13-646a067dcba3b1a3
+candidate_prefix=/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader
 "$candidate_prefix/bin/agent-observer" api
 "$candidate_prefix/bin/agent-observer" list --host-scope snap --provider codex
 "$candidate_prefix/bin/agent-observer" snapshot --host-scope snap --provider codex \
@@ -215,16 +181,13 @@ its own graphical/device/terminal acceptance. A producer defect reopens an
 Observer-only checkpoint. Agent Plus and Tmux Plus development remain separate;
 there are no downstream repository edits in this handoff. Future terminal
 observation/attachment can integrate tmux-observer through the client boundary.
-The [a14 acceptance report](evidence/2026-10-09-retention-cpu-repair/REPORT.md)
-records the current separate Observer service operational gate; a13 retains the
-independent reader selection.
+The [retirement report](evidence/2026-10-11-claude-retirement/REPORT.md) records the
+current independent artifact/native and scoped Observer operational gates.
 
 An independent read-client pass may now implement schema/semantic validation,
 exact-reference selection, age/attention presentation, mixed-provider views and
-cached pull/push with gap/resync/lease handling. Use the accepted a15 producer for
-current behavior and the synthetic fixture for interface conformance. The
-[Claude wrap-up](claude-observation-wrap-up.md) records supported scope, completed
-gates and independent follow-ups. Actual New/Resume/attach, cross-host
-clock/transport handling and user-facing completion
-notifications require their separate contracts/proofs. Do not couple that client
-pass to simultaneous Observer adapter edits or select a future artifact early.
+cached pull/push with gap/resync/lease handling. Use the accepted a18 producer for
+current Codex behavior and synthetic fixtures for provider-neutral conformance.
+A future provider requires its own native/capability gate. Actual New/Resume/
+attach, device presentation and user-facing notifications require separate
+contracts/proofs. Keep client work independent of Observer adapter changes.

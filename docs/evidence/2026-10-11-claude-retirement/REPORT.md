@@ -1,8 +1,9 @@
 # Claude retirement acceptance
 
 Date: 2026-10-11. Scope: remove native Claude observation without changing native
-Claude workflows or the frozen read/Mesh boundary. R0 and R1 are accepted.
-R2 package/native is accepted; R3 managed operations and R4 handoff are pending.
+Claude workflows or the frozen read/Mesh boundary. R0–R4 are accepted: source,
+immutable package/native, scoped managed operations and current client/operator
+handoff remain distinct receipts.
 
 ## Source and immutable artifacts
 
@@ -51,3 +52,45 @@ against the retained pre-cutover services: 512 raw rows, six fleet push frames
 per endpoint, initial pending/partial followed by complete views. No ordinary
 collection or provider action is triggered by these reads. Final Codex-only
 fleet delivery is independently rechecked after operational selection.
+
+## Scoped operations and normal delivery
+
+Both host selections now use a18 core collection and a18/Mesh a11 read prefixes,
+with Codex as the only configured provider and no SDK dependency. Runtime/history
+cadence and native hints remain 30/120 seconds on Snap, 20/60 on Starship. Six
+Observer-owned controls passed dry run, authenticated upgrade, rollback and
+reselection on both hosts. The bridge stayed on a16/a10 throughout; its own
+historical profile is recorded separately from the Codex-only reader. The normal
+writer and consumer entrypoints remain independently selected.
+
+Normal installed CLI/native comparisons pass runtime, phase, exact identity,
+activity/age, ordering and filtering. The two previously identified native
+Starship `createdAt` clocks remain unstable: one cached comparison differs by
+one second and the other is a sampling race. They are bounded metadata limits,
+not running/parked or conversation-age mismatches; the receipts retain them.
+Final real two-host fleet pulls contain 477 Codex-only raw rows (91 Snap, 386
+Starship after two new native histories). Six pushed replacement/control frames
+per endpoint progress from pending/partial to complete. No Claude source/row is
+emitted by the new normal collector or final fleet view.
+
+All 8 Snap and 6 Starship preexisting native provider processes retain their
+PID/birth/image. Codex daemon and Mesh bridge incarnations are unchanged;
+Claude settings, Codex policy, desktop managed/live files, workspace and writer/
+consumer links are preserved. Snap's mutable `.claude.json` changed during the
+pass; the writer is not attributed and whole-file immutability is not claimed.
+No Observer operation writes native Claude configuration or starts/stops its
+sessions. Starship's unrelated Kitty/Niri source edits are preserved.
+The identical dotfiles selection commit on both hosts is `5fea4d1`.
+
+## Final source and handoff
+
+The final source/operator check passes 353 tests and all 131 Markdown files.
+Legacy schema/profile selections are accepted only as authenticated explicit
+prior/rollback metadata, never a desired collector selection. Current API,
+architecture, roadmap, artifact operations and read-client guides identify a18
+and the independent retained bridge/writer. Claude implementation documents are
+historical; removed-code links bind immutable pre-retirement source. API 2/read
+4/Service 2/Mesh SDK 1 stay unchanged, including pure supplied-data schemas.
+
+Hosted CI, GitHub release publication, native provider policy and downstream
+client migration are not receipts of this pass. Commits are local as requested.

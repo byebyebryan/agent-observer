@@ -8,12 +8,12 @@
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
-- `docs/claude-retirement-plan.md` records the user's current direction:
-  retire and remove active Claude support. Codex is the only implemented provider
-  after the removal gate. Preserve provider-neutral core/read/Mesh interfaces;
+- `docs/claude-retirement-plan.md` records the accepted a18 Claude retirement:
+  Codex is the only implemented native provider, selected on Snap and Starship.
+  Preserve provider-neutral core/read/Mesh interfaces;
   frozen wire provider vocabulary and synthetic data admission do not enable a
-  native adapter. Remove Claude collection, SDK/history, hints, service memo and
-  Claude-specific notification/action tooling. Ordinary Claude native sessions,
+  native adapter. Claude collection, SDK/history, hints, service memo and
+  Claude-specific notification/action tooling are removed. Ordinary Claude native sessions,
   history, settings, hooks and Agent View remain external and unchanged.
   Claude observation documents and released artifacts are historical evidence,
   not current support obligations. No compatibility collector is required.
@@ -55,7 +55,7 @@
 - RLCD and Agent Plus drive the initial requirements. WSNav is historical
   evidence and a possible future consumer; its integration is not a gate.
 - Agent Plus meshes sessions across providers and hosts. Codex leads delivery;
-  The prior required-second-provider condition is superseded by Claude retirement.
+  the prior required-second-provider condition is superseded by Claude retirement.
   Preserve provider-independent contracts and separate usage context from
   provider/host identity. See `docs/native-runtime-migration-plan.md` for the
   delivery boundaries and `docs/design-review.md` for pending proof decisions.

@@ -57,5 +57,10 @@ Shared core retention/expiry and synthetic multi-provider tests remain. R1
 passes 353 tests, including rejection before I/O and byte-identical read schemas.
 R2 package/native is accepted; [bounded receipts](evidence/2026-10-11-claude-retirement/REPORT.md)
 record exact artifacts, direct/cached Codex comparisons and owned service
-lifecycle on both hosts. R3–R4 remain pending until operational/handoff receipts. Source baseline is `b2125b4`; selected
-reader a17/Mesh a11, collector a15, bridge a16/Mesh a10 and writer 0.4.0a16.
+lifecycle on both hosts. R3 is accepted: both-host Codex-only selection,
+rollback/reselection, normal local/fleet pull/push and provider/bridge/foreign-state
+preservation. R4 is accepted: current API, architecture, operator and client guides
+match the removal and selection; historical evidence is labeled separately.
+Source baseline was `b2125b4`; the prior reader a17/Mesh a11 and collector a15 are
+replaced by a18. The a16/Mesh a10 bridge and 0.4.0a16 writer remain independently
+selected. Dotfiles selection commit `5fea4d1` is identical on both hosts.

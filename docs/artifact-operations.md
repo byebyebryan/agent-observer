@@ -1,44 +1,37 @@
 # Candidate artifact operations
 
-The current collector manifest is [Observer a15](../artifacts/observer-0.5.0a15.json).
-The read CLI independently selects [a17](../artifacts/observer-0.5.0a17.json)
-with [Mesh a11](../artifacts/mesh-0.1.0a11.json). Separate a16/a10 bridges and the
-shared Mesh CLI retain their selection. The
-[SDK integration report](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) records
-exact installation, native delivery and reader-only rollback acceptance.
-It freezes the producer wheel independently of later operations/tooling/docs
-commits. The normal service link and user unit select a15 on Snap and Starship
-through the Observer-only chezmoi operations tuple. The writer independently
-retains [a16](../artifacts/observer-0.4.0a16.json); read selection does not select
-or accept a writer. See the
-[Claude collection acceptance report](evidence/2026-10-10-claude-collection-repair/REPORT.md)
-and [client handoff](api-v2-client-handoff.md) for source, installed, native and
-operational acceptance. Provider compatibility follows
-required contracts, not executable-release allowlists. Older manifests and
-exact-image pilot receipts remain historical verification/rollback artifacts.
+The current collector/read manifest is [Observer a18](../artifacts/observer-0.5.0a18.json).
+Codex-only collector and a18/[Mesh a11](../artifacts/mesh-0.1.0a11.json) reader
+prefixes are independently accepted on Snap and Starship. Separate a16/a10
+bridges, the shared Mesh CLI and historical writer retain their selections.
+The [retirement report](evidence/2026-10-11-claude-retirement/REPORT.md) distinguishes
+source, exact immutable artifacts, native and scoped operational gates. The
+[client handoff](api-v2-client-handoff.md) supplies current commands. Native
+compatibility binds required contracts, not release-number allowlists.
+Archived manifests and their own verifiers keep historical/rollback scope.
 
 ```sh
 ./scripts/candidate-artifact install \
-  --manifest artifacts/observer-0.5.0a15.json \
-  --wheel /absolute/path/agent_observer-0.5.0a15-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a18.json \
+  --wheel /absolute/path/agent_observer-0.5.0a18-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ./scripts/candidate-artifact verify \
-  --manifest artifacts/observer-0.5.0a15.json \
-  --wheel /absolute/path/agent_observer-0.5.0a15-py3-none-any.whl \
+  --manifest artifacts/observer-0.5.0a18.json \
+  --wheel /absolute/path/agent_observer-0.5.0a18-py3-none-any.whl \
   --prefix /absolute/owned/parent/candidate
 ```
 
 The prefix's parent must already be canonical and owned by the operator. A new
 prefix is never selected globally. Existing candidates must pass the same
 byte/schema/profile checks or are rejected; no in-place repair occurs. Core
-installation is offline from the supplied wheel. Starship selects Codex with
-`--profile core`; Snap selects Codex and interactive Claude with
-`--profile claude-history`. That option
-installs exactly SDK 0.2.163 from source (`--no-binary=claude-agent-sdk`), resolves
-its Python dependencies and rejects a bundled native executable; installing that
-profile alone does not establish native adapter acceptance. The current a15
-report independently accepts its installed native subset. Verification
-never invokes providers, starts a daemon or registers hooks.
+installation is offline from the supplied wheel. Both hosts select Codex with
+`--profile core`; the retired `claude-history` install profile is rejected.
+Verification rejects installed Claude SDK/native modules or bundled executables,
+checks exact package bytes/schemas and never invokes a provider, starts a daemon
+or registers hooks. The separate optional reader installs the accepted Mesh
+wheel/dependencies explicitly and uses the archived Mesh verifier. Retained
+bridge artifacts keep their own historical dependency profiles; their archived
+verifiers are not rewritten or used to enable Claude collection.
 
 The installer supplies an isolated prefix; managed selection additionally needs
 an immutable `artifact/` archive. Copy the exact wheel, the manifest under the
@@ -60,7 +53,7 @@ candidate=/absolute/owned/parent/candidate
 The installed interpreter supplies only public validation. Reports contain
 aggregate counts/timing/resources; native payloads and titles remain in memory.
 This is bounded sampled observation, not a lossless event feed or long-duration
-performance guarantee. Use Codex on both hosts and Claude only on Snap. Gaps,
+performance guarantee. Use Codex on both hosts. Gaps,
 partial sources and unsupported activity remain explicit.
 
 Source CI checks are prepared in `.github/workflows/ci.yml`; no hosted result is
@@ -91,7 +84,9 @@ operations-tooling commit on each host; no Snap development path is required.
 
 `verify` is passive; `apply` defaults to a dry run. Live selection requires
 `--apply --snapshot /absolute/private/new-backup`, and upgrades additionally
-require `--previous-tuple /absolute/private/previous.json`. A snapshot uses a new
+require `--previous-tuple /absolute/private/previous.json`. Retired provider
+profiles are accepted only as explicit authenticated prior/rollback metadata,
+never a new desired collector selection. A snapshot uses a new
 owned 0700 directory beneath an existing canonical parent. Six targets are in
 scope: read/write/service links, workspace JSON, user unit and enablement link.
 The projection excludes unrelated externals. It never changes frontend selection,

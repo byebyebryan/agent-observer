@@ -1,32 +1,11 @@
 # Observer API 2
 
-Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
-
-Date: 2026-10-09. Prerelease producer contract. The Codex a3 packaged/native gate
-is [accepted on both hosts](evidence/2026-10-08-codex-authority-acceptance/REPORT.md).
-The [a4 saved-evidence repair](evidence/2026-10-08-codex-evidence-repair/REPORT.md)
-precedes the [a5 core completion](evidence/2026-10-08-codex-observation-completion/REPORT.md)
-with the same API/wires. The [a6 successor](evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-removes redundant publication after separate installed/native and scoped
-operational acceptance. The following
-[a9 Claude gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md) preserves these
-interfaces and adds passive Claude discovery/monitoring on Snap. The
-[a11 retention gate](evidence/2026-10-09-runtime-only-retention/REPORT.md) preserves
-the same interfaces and bounds disappeared unsaved memory; normal read
-CLI/services select a11. The writer remains independently selected at a16.
-This document supersedes
-[API 1](api-v1.md) for new read clients. No old-wire converter is supplied.
-
-The [Claude contract alignment review](claude-read-contract-review.md) settles
-the shared read contract for interactive Claude implementation and independent
-client development. API 2, snapshot/watch wire 4 and service protocol 2 fit the
-accepted scoped-registration design without new wire fields or enum values.
-The a9 gate separately accepts native behavior and operational selection;
-interface conformance alone does not establish those facts.
+Date: 2026-10-11. Prerelease producer contract. The [a18 retirement gate](evidence/2026-10-11-claude-retirement/REPORT.md)
+accepts Codex-only native observation on Snap and Starship. API 2, read wire 4,
+Service 2 and Mesh SDK 1 are unchanged. Claude is retired; its prior alignment
+and native reports are historical. Reserved wire vocabulary and pure data
+admission remain provider-neutral. This supersedes [API 1](api-v1.md) for new
+read clients; there is no old-wire converter.
 
 ## Interfaces and ownership
 
@@ -45,19 +24,18 @@ read API supplies no terminal/window matching or public attention-event stream.
 
 The pure read facade exports validators, selectors and schema descriptors only.
 It does not import collecting or action modules. Collection authenticates an
-existing provider endpoint or provider-owned session registration; it neither
-starts a provider nor reads terminal attachment or tmux state. Codex history is
-read through its daemon; Claude history projects bounded native transcript/SDK
-metadata without retaining conversation contents. The reusable core engine owns
+existing provider endpoint; it neither starts a provider nor reads terminal
+attachment or tmux state. Codex history is read through its daemon without
+retaining conversation contents. The reusable core engine owns
 reconciliation and evidence leases; the service hosts collection helpers and
 read fan-out. Clients own provider actions,
 TUI lifetime, terminal placement and viewers. Networking is a separate component.
 
-The implemented providers are Codex and Claude. Claude observation is accepted
-on Snap through its independent native gate; new Claude write selection still
-returns `unsupported_provider`.
+Codex is the only implemented native provider. Claude native selection returns
+`unsupported_provider`; no SDK/history, registry, job or hook implementation is
+retained. Frozen wire provider values can still be parsed as supplied data.
 Provider support binds required contracts, with versions/hashes as diagnostics
-and executable/incarnation guards.
+and executable/incarnation guards. Adding a provider requires independent proof.
 
 ## Discovery and monitoring
 
@@ -105,14 +83,6 @@ Unknown wait flags preserve known active runtime but leave phase unknown.
 
 Each adapter owns its native predicate; clients consume the normalized facts and
 declared limitations. They do not repeat daemon queries or native PID checks.
-The installed Claude adapter uses authenticated interactive registrations and
-status. Parked requires positive saved identity plus a
-healthy bounded native scan with no matching live incarnation or relevant
-unresolved conflict, under the accepted registration assumption. Normal
-exit, crash, Resume, UUID switches, duplicate contexts and cold start have native
-proof with Agent View on/off. Failed/lost live registration can cause
-false parked, including after source recovery; declare that limitation. Native
-PID/birth checks remain private authentication, never public attachment handles.
 
 Conversation activity has its own native clock and health. Collection, rename,
 Resume, enrichment and lease renewal never move it. Empty conversations have no
@@ -140,23 +110,12 @@ Direct reads with an unavailable daemon return no current rows and finite source
 failure; they never fall back to a private store. Existing watch/service rows may
 remain stale under bounded retention.
 
-Claude keeps runtime scope `provider_sessions`. The installed interactive adapter's
-runtime coverage is `partial`, with reason `interactive_registration_assumed`
-and limitations `interactive_runtime_only`, `native_registration_assumed`,
-`unregistered_interactive_runtime_unproved` and `background_runtime_unsupported`.
-These describe supported interactive observation rather than all Claude runtime
-contexts. A healthy bounded scan within that scope may support a parked fact;
-partial all-context coverage does not itself invalidate positive row evidence.
-Detected read faults, bounds, ambiguity and expiry still prevent an affected
-negative assertion. Source health, coverage and per-row evidence are separate.
 
 Capabilities declare usable evidence dimensions within the configured context;
 they are not exhaustive membership or action permission. Clients preserve
 unknown/stale facts and source coverage even when some dimensions are supported.
 Current scoped parked rows, unsupported contexts and stale unknown rows use the
 same shared fields; consumers handle those facts without provider-specific inference.
-Background runtime remains unsupported. Old background histories are outside the
-user's forward interactive workflow and require no legacy compatibility repair.
 
 Partial coverage may retain a disappeared unsaved runtime-only identity as stale
 unknown, with original clocks and `retained_after_gap`, while a direct read omits
@@ -182,9 +141,7 @@ versioned contract and clean rejection; no silent extension or converter.
 
 Direct snapshots and sampled watch use the same projection as service workers.
 The fast runtime cycle and slower history/enrichment cycle have independent
-receipts. Codex's fast cycle also samples saved-thread daemon state. Claude's
-interactive adapter refreshes disposition for positively saved UUIDs without
-rerunning the whole history SDK scan. Native runtime evidence obtained during
+receipts. Codex's fast cycle also samples saved-thread daemon state. Native runtime evidence obtained during
 metadata work is accepted under the short runtime lease and sample ordering
 rules; metadata-only refresh cannot renew state.
 
@@ -225,7 +182,7 @@ and own attachment/action validation. Agent Plus implementation and managed
 consumer selection are separate gates. Tmux Plus is unchanged.
 
 Read-client implementation can begin against this settled contract and synthetic
-conformance examples, using the independently accepted a11 producer.
+conformance examples, using the independently accepted a18 producer.
 Native claims and consumer rollout use an accepted producer artifact; planned
 behavior in a fixture is not deployed behavior. Attachment/actions and public
 notification events remain separate contracts. API 2 remains prerelease; this

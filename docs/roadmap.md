@@ -1,16 +1,34 @@
 # Agent Observer roadmap
 
-Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
+Current checkpoint, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
+removes native Claude support. [a18 evidence](evidence/2026-10-11-claude-retirement/REPORT.md)
+accepts Codex-only source, immutable artifacts, direct/cached native comparisons
+and scoped collector/read delivery on Snap and Starship. API 2/read 4/Service 2/
+Mesh SDK 1 are unchanged. Existing a16/a10 bridges and the historical writer
+remain independently selected. Native Claude sessions/settings remain external.
+
+Next work remains separately scoped:
+
+- Read-client ergonomics and consumer implementation against the settled read contract.
+- Native occurrence events/notification enrichment, if a concrete client requires them.
+- Mesh publisher extraction or transport upgrades in coordination with Mesh Plus.
+- Actions/attachment with separate native authority, potentially using tmux-observer.
+- Focused proof for accepted Codex edges, including physical suspend and TUI closure.
+- A new provider only after its runtime/identity/activity/capability investigation.
+
+Hosted CI and release publication require their own future receipts. The user
+requested commits here; this pass does not claim a push or hosted release.
+
+## Historical execution checkpoints
+
+Earlier plans and acceptance below preserve their original scope and selections.
+The old required-second-provider condition is superseded by Claude retirement.
 
 The [Mesh SDK v1 owner integration](mesh-sdk-v1-integration-plan.md) is
 [complete](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) through M0–M5 within
 its declared bounds: pure profile/read wiring, immutable conformance, independent
 native pull/push, bounded cost and reader-only selection/rollback on both hosts.
-Current managed source selects a17/Mesh a11 readers and retained a16/Mesh a10
+At that checkpoint, managed source selected a17/Mesh a11 readers and retained a16/Mesh a10
 bridge prefixes independently of a15 collection and the 0.4.0a16 writer. Hosted
 CI/release publication is a following receipt. Publisher extraction and Mesh's
 generic conformance/diagnostic/performance maintenance are separate future work.
@@ -43,7 +61,7 @@ The [architecture](architecture.md),
 [spike procedures](agent-session-spike-plan.md) and
 [design review](design-review.md) define the associated scope and acceptance.
 
-## Current track: contract and first-party clients
+## Historical contract and first-party client track
 
 The active [state-push refinement](state-push-design.md) is complete:
 [source/client review](state-push-design-review.md) and

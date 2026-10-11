@@ -1,5 +1,10 @@
 # Claude private observation sample
 
+Historical checkpoint after [Claude retirement](claude-retirement-plan.md),
+2026-10-11. Native Claude support and tooling described below are removed; the
+dated evidence keeps its original artifact bounds. Current clients use the
+[API 2 handoff](api-v2-client-handoff.md) and Codex-only a18 producer.
+
 I1 implementation boundary, 2026-10-08. The public fit remains
 [API 2 / wire 4 / service 2](claude-read-contract-review.md). This document
 describes an adapter interface, not additional public fields or provider APIs.
