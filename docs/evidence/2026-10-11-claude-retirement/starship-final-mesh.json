@@ -1,0 +1,59 @@
+[
+  {
+    "scope": "local",
+    "rows": 386,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      }
+    ]
+  },
+  {
+    "scope": "fleet",
+    "rows": 477,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62772738,
+            "bridgeId": "e1178278-3693-4e35-9bbf-b135148ba73d",
+            "marginMs": 100,
+            "nonce": "f9e04d6f6a9569e5b1c42529a1bf9068",
+            "payloadDigest": "sha256:8fa04e48ffa0b68be4e7e0eeffd6bb6a0fa89d9d3b807abfd78a5913b24bdc13",
+            "receivedAtMs": 81720611,
+            "sentAtMs": 81720473
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  }
+]

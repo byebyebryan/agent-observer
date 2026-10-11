@@ -1,117 +1,54 @@
 # Agent Observer
 
-Current direction, 2026-10-11: [Claude retirement](docs/claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
+Shared host-side discovery and monitoring for coding agents. Codex is the only
+implemented native provider; [Claude support is retired](docs/claude-retirement-plan.md).
+Claude stays under its native session management/Agent View. Observation owns
+no TUI/tmux attachment or provider action.
 
-The [Mesh SDK v1 integration](docs/evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
-is accepted and selected on Snap and Starship: Agent a17/Mesh a11 readers supply
-an explicit Observer-owned pure state profile. Separate a16/Mesh a10 bridges,
-the shared Mesh CLI, a15 collection and the 0.4.0a16 writer retain their selections.
-Independent package/native pull/push and reader rollback gates pass. See the
-[execution status](docs/mesh-sdk-v1-integration-status.md) for bounds; hosted CI and
-release publication remain following receipts, with this pass committed locally.
+## Current status
 
-Historical coordinated transport receipt, 2026-10-10: Mesh 0.1.0a9, Tmux Observer
-0.6.0a4 and Tmux Plus 0.12.0a4 are deployed on Snap and Starship. Agent's
-a13 reader and a12 bridge use new private a9 environments; its a15 collector
-and a16 writer retain their prior artifacts. The frozen networking contracts
-are unchanged. [Exact gates and limits](https://github.com/byebyebryan/mesh-plus/blob/main/docs/evidence/2026-10-10-fleet-adoption/README.md)
-keep source, packaged, installed and operational acceptance distinct.
+[Observer a18](artifacts/observer-0.5.0a18.json) removes the Claude adapter,
+SDK/history worker, hint listener, service metadata memo and native notification
+intake. Codex-only collector and a18/Mesh a11 read artifacts are independently
+accepted on Snap and Starship. The [retirement report](docs/evidence/2026-10-11-claude-retirement/REPORT.md)
+records source, exact installed bytes, native comparisons, pull/push and scoped
+operational gates. The retained a16/Mesh a10 bridges and historical 0.4.0a16
+writer have independent selections. No downstream client migration is implied.
 
-Shared host-side discovery and state observation for Codex and Claude Code
-sessions. Agent Observer gives consumers a consistent view of session identity,
-runtime state, and observation freshness while preserving native workflows.
+The provider-neutral [API 2](docs/api-v2.md), snapshot/watch wire 4, Service 2
+and Mesh SDK 1 are unchanged. Frozen schemas and supplied synthetic observations
+can contain reserved Claude vocabulary; that does not enable native collection.
+Claude selection and its old configuration options are unsupported. The
+[client handoff](docs/api-v2-client-handoff.md) gives current commands and bounds.
+Provider upgrades bind to required contracts, not release-number allowlists.
 
-The initial consumer projects are
-[ESP32 RLCD](https://github.com/byebyebryan/esp32-rlcd) and
-[Agent Plus](https://github.com/byebyebryan/rofi-agent-plus).
-[WSNav](https://github.com/byebyebryan/wsnav) contributes historical lifecycle
-work and may become a consumer later; it is currently inactive and may be
-simplified.
+Codex's owning daemon supplies running/parked and work phase. `idle` means
+running/waiting; a current saved-thread `notLoaded` response establishes parked.
+Missing loaded membership, TUI closure and tmux presence do not supply runtime
+authority. Stable identity is the thread ID; the session-tree root is separate
+metadata. Native children remain in canonical views and are hidden by default.
+Age/order use original conversation activity, with blocked, waiting, working,
+then unknown/parked urgency. Missing clocks and uncertain kinds stay explicit.
 
-## Status
+One local service runs shared collection and supplies cached pull/push; pure read
+clients own selection, display, timers and reconnect. The reusable core preserves
+independent evidence leases, source failures and bounded unsaved-row retention.
+Heartbeats never renew native facts. Optional Mesh readers use an explicit pure
+Observer profile through Mesh's SDK; Mesh owns networking and remote proofs.
+See [architecture](docs/architecture.md), [Mesh reads](docs/mesh-read-client.md)
+and [read cache](docs/read-cache-client.md).
 
-The a13 [read cache and timed human watches](docs/read-cache-client.md) are
-accepted through the [read-delivery pass](docs/evidence/2026-10-09-read-delivery/REPORT.md).
-The current a17 [Mesh read client](docs/mesh-read-client.md) uses SDK 1 with
-separately retained a16/a10 bridges on Snap and Starship. Local/fleet cached pull
-and push, native comparisons, owned SSH-exit recovery and reader-only rollback/
-reselection pass. The [preceding a12/a4 acceptance](docs/evidence/2026-10-09-mesh-integration/REPORT.md)
-retains its historical bridge-restart bounds. Networking stays in Mesh
-Plus; core and the host-local collection service remain independent.
+Accepted limits remain: partial/bounded native inventory, unknown kinds for older
+Starship history, two native creation-time sampling races, and deferred physical
+suspend/post-TUI-closure lifetime checks. Current-state push does not promise
+all native transitions or notification replay. Notification/event enrichment,
+actions/attachment and client UI/device acceptance are separate work.
 
-The observation checkpoint is [a15 Claude collection repair](docs/evidence/2026-10-10-claude-collection-repair/REPORT.md).
-Normal collection/services select a15; the read CLI independently selects a17.
-The a10 bridge retains its a16 prefix and process. Retention reconciles on changed
-receipts or due deadlines, preserving the a11 finite-retention behavior and the
-accepted observation contract. Claude shares bounded activity/kind decoding and
-reuses normalized metadata after current file/directory guards; native runtime
-and phase checks remain fresh. The [collector follow-up](docs/collector-cost-follow-up.md)
-records source, installed/native and sustained-cost evidence. Mesh subscriber
-costs remain a separate networking follow-up.
-Codex is accepted on both hosts; Claude interactive discovery
-and monitoring are accepted on Snap. The reusable core owns reconciliation and
-evidence, passive adapters own native reads, and the service owns helper lifetime
-and cached pull/push. The normal writer remains a16 independently.
-
-[API 2](docs/api-v2.md), snapshot/watch wire 4 and service protocol 2 are unchanged.
-The [client handoff](docs/api-v2-client-handoff.md) supplies direct/cached commands,
-consumer obligations and current limits. Read-client development can proceed
-independently. Frontend migration, actions/attachment, networking and user-facing
-alerts remain separate.
-The [Claude wrap-up](docs/claude-observation-wrap-up.md) closes the interactive
-observation pass and records independent follow-ups.
-
-The active [state-push design](docs/state-push-design.md) and
-[review/validation](docs/evidence/2026-10-09-state-push-refinement/REPORT.md)
-refine existing complete-view discovery/monitoring delivery. Initial views,
-source expiry and reconnect/gap/resync establish current state without a new
-event protocol. The [a13 cache guide](docs/read-cache-client.md) supplies the
-implemented read-cache helper and timer conformance. The preceding
-[native occurrence-event research](docs/state-and-events-design.md) is retained,
-but notification normalization, hooks, event replay and Kitty/D-Bus integration
-are deferred. The 349 handoff is one client's request; device projections and
-alert policy remain external. Networking is in the separate mesh-plus thread.
-
-Codex queries its owning daemon for running/parked independently of TUI/tmux.
-Claude authenticates provider-owned interactive registrations and status.
-Healthy bounded scans with positive saved identity and no live matching
-incarnation or relevant unresolved conflict report parked under the accepted
-native-registration assumption. Normal exit, forced kill, exact Resume, same-process
-UUID changes, duplicate live contexts and Observer cold start have native proof.
-Agent View on/off both pass; ordinary provider settings remain unchanged.
-
-A live Claude session with failed/missing registration can be missed or falsely
-parked; runtime coverage remains partial with explicit limitations. Background
-runtime and attachment are unsupported; native job metadata only vetoes unsafe
-negatives. Two old stopped recap background histories remain unknown and are
-outside the user's forward interactive workflow. The
-setup-only SDK omission now has a saved row, while its cwd, kind and conversation
-age remain unavailable. Generic dialogs, excluded nested child history and
-Claude turn outcomes remain unproved.
-
-The preceding provider checkpoint's installed native comparisons match all six ordinary Claude running contexts,
-35 saved UUIDs and 33 known conversation clocks on Snap within the documented
-metadata gap. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
-cached pulls and pushed views pass independently. Fresh SDK-integration counts
-and sampling qualifications are in the 2026-10-11 report above. Age follows native conversation
-activity; leases, source faults, ambiguity and gaps remain explicit.
-The [shared-core retention pass](docs/runtime-only-retention-follow-up.md)
-retires disappeared unsaved rows at their original runtime lease: 90 seconds on
-Snap and 60 on Starship; sampled direct watch uses 60 seconds and applies expiry
-at the next sample. Repeated partial reads do not extend retention. Current rows
-and positive saved history survive, with original conversation age. Retirement
-omits observation memory and establishes no native lifecycle or action authority.
-
-The preceding [a9 interactive checkpoint](docs/evidence/2026-10-08-claude-interactive-observer/REPORT.md),
-[a8 Claude checkpoint](docs/evidence/2026-10-08-claude-observation/REPORT.md)
-and [a6 Codex gap closure](docs/evidence/2026-10-08-codex-observation-gaps/REPORT.md)
-retain their historical artifact bounds. Twenty-one older Starship kinds are an
-accepted forward-looking limit. Physical sleep/wake and Codex post-TUI-closure
-lifetime remain deferred. No ordinary session restart is required for observation.
+The initial consumers are [Agent Plus](https://github.com/byebyebryan/rofi-agent-plus)
+and [ESP32 RLCD](https://github.com/byebyebryan/esp32-rlcd). ESP32-349 supplies one
+client request; WSNav is historical and a possible future consumer. The contract
+remains provider-neutral so future providers can have independent adapters and
+capability/native acceptance gates. OpenCode support remains deprecated.
 
 ## Previous checkpoints
 
@@ -141,7 +78,8 @@ remaining native entry, foreground attach and physical wake limits.
 
 The [native delivery](docs/evidence/2026-10-07-native-delivery/REPORT.md) selected
 `0.4.0a15` on Snap and Starship with passive native wakeups and periodic
-reconciliation. Snap supports Codex/Claude; Starship supports Codex. The
+reconciliation. At that historical gate, Snap supported Codex/Claude and
+Starship supported Codex. The
 [a15 receipt](docs/evidence/2026-10-07-native-delivery/a15-image-memo-and-host-cost.json)
 records supported state, question, age, rename, reconnect and listener-lifetime
 proof. Matched incremental CPU meets the one-point target (+0.946/+0.153 points).
@@ -305,9 +243,9 @@ source/version capability handling, and reconciliation of stale or conflicting
 evidence. Its interface should work across consumer languages.
 
 Agent Plus uses these observations to mesh sessions across providers and hosts.
-Provider independence is an architectural requirement. Codex's delivery priority
-reflects usage frequency; the completed migration includes strong support for
-both Codex and Claude Code.
+Provider independence remains an architectural requirement. Codex is the current
+native implementation; another provider requires its own reviewed runtime,
+identity, activity, classification and failure predicates.
 
 Saved conversations, logical sessions, runtime workers, and attached terminal
 clients have separate identities and lifetimes. Session inventory is separate
@@ -325,23 +263,11 @@ client rather than adding actions to observation. The read client consumes the
 same public model as other consumers. Optional networking wraps local interfaces
 and reuses existing Host Mesh routing; it is not required by the core/read gate.
 
-Codex is the primary provider: it leads the first complete implementation and
-validation across the user's machines. Claude Code is the secondary provider,
-with strong support targeted at the user's single work machine. Priority sets
-delivery order; both providers require passive observation, exact identity,
-reliable recovery and explicit capability limits.
-
-The user's current workflows naturally separate Claude Code for work from
-Codex for mostly other activity, with occasional work use. Work context is a
-consumer organization concern, separate from provider and host identity.
-
-The historical proof covers Codex and Claude Code, including foreground and
-daemon/supervisor topologies where they can be isolated. Scoped policy changes
-apply to fresh launches; existing ordinary sessions remain intact. Codex and Claude Code are the only
-providers in the Agent Plus migration. OpenCode integration in Agent Plus is
-removed from the migrated candidate; an OpenCode adapter is
-outside this migration. Observer multi-host aggregation remains deferred;
-Agent Plus uses existing host routing to compose host-local observations.
+Codex is supported across the user's machines. Claude native use stays external;
+its historical observation implementation and operator proofs are retired.
+OpenCode remains deprecated. Provider and host identity are distinct from work
+context, which consumers may organize. Optional meshing belongs to Mesh Plus;
+attachment/action clients can later integrate tmux-observer independently.
 
 ## Starting points
 

@@ -1,10 +1,10 @@
 # Observation ownership and contract boundaries
 
-Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
-our only implemented native provider. The provider-neutral API 2/read wire 4/
-Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
-historical; reserved wire data is not an implemented adapter. Source removal
-is in progress; immutable-package/native and managed rollout gates follow.
+Current implementation, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
+leaves Codex as the only native adapter. API 2/read 4/Service 2/Mesh SDK 1 and
+shared-core invariants remain unchanged. The dedicated Claude adapter, history/
+SDK, hints, registration/job parsing and service metadata memo are removed.
+Supplied reserved provider data and generic multi-source tests remain pure.
 
 Date: 2026-10-08. This captures the user's clarified ownership direction after
 the [a4 Codex acceptance](evidence/2026-10-08-codex-evidence-repair/REPORT.md).
@@ -77,25 +77,9 @@ runtime authority: active is running, idle is running/waiting, and current
 and unsupported wait flags preserve the independently proved runtime fact
 while leaving phase uncertain as required by API 2.
 
-The [independent Claude gate](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
-accepts interactive-only observation on Snap. Exact provider registrations
-are authenticated by PID domain, process birth, source ownership and executable
-locator; they supply running and status evidence. These are provider-native
-identity checks, never terminal/client discovery. The mutating roster CLI is not
-invoked. Native jobs only veto unsafe negatives; no job lifecycle or attachment
-projection remains in the observation model.
-
-The [interactive Claude implementation](claude-interactive-observation-plan.md)
-uses the accepted registration assumption: a healthy bounded scan with no live
-matching incarnation or relevant unresolved conflict can classify positively
-saved UUIDs as parked. Normal exit, crash, cold start, UUID switches and duplicate
-contexts have native proof with Agent View on/off. Missing live registration can
-cause false parked after recovery; partial coverage declares that limit. No run
-ledger, hook dependency, client inventory or generic process census is required.
-Artifact/operational acceptance is independent of Agent View policy or clients.
-The [shared read alignment](claude-read-contract-review.md) now accepts contract
-fit in existing API 2/wire 4/service 2. Native and operational gates accept a9;
-independent read-client work can use that artifact and the settled interface.
+Claude's earlier observation checkpoints are historical after retirement.
+Native workflow/history/settings are outside this pass; no compatibility
+collector or background lifecycle support is retained.
 
 Future adapters must prove equivalent evidence for the shared semantics.
 They need not copy Codex's protocol, process layout or daemon topology. Missing
@@ -176,12 +160,11 @@ the mesh must not compare raw boottime values across hosts.
 
 `hostScope` is supplied scope, not host authentication. The network component
 binds it to the authenticated route. Project grouping across hosts is separate
-from logical session identity. Meshing can initially stay in existing clients;
-this pass does not require a new network runtime or public mesh schema.
-
-The user's following networking work is in the separate **mesh-plus** repository/
-thread. Observer's local state and proposed event products are its upstream
-inputs; no networking implementation or deployment is included in this pass.
+from logical session identity. The optional [Mesh read client](mesh-read-client.md)
+uses an explicit Observer-owned pure profile through Mesh SDK 1. Mesh Plus owns
+networking; core/local service remain independent. The retained reference bridge
+reads cached Service 2 without provider collection. Native event products,
+publisher extraction and Mesh transport upgrades need their own following gates.
 
 Context matching is deliberately outside observation. A separate layer may
 combine an exact session reference with tmux-observer, niri or other window
@@ -196,10 +179,12 @@ Distinct thread/tree-root TUI entry remains unproved. Neither this boundary nor
 an observed running row promises provider lifetime after TUI closure. The user
 has deferred that acceptance while assuming ordinary TUI contexts remain alive.
 
-## Pre-hardening source audit
+## Historical pre-hardening source audit
 
-This is an ownership audit, not a new native-state mismatch. a4's recorded
-Codex acceptance remains bounded by its existing report.
+This records a4 source before the a5 extraction; it is not a current defect list
+or a new native-state mismatch. a4's recorded Codex acceptance remains bounded
+by its existing report. The completed extraction and a18 removal supersede the
+old Claude dispatch/history routes described below.
 
 | Finding | Current evidence | Hardening needed |
 | --- | --- | --- |

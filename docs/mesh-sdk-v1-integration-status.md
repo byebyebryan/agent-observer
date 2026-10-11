@@ -1,5 +1,10 @@
 # Mesh SDK v1 integration execution
 
+This is the historical a17 integration checkpoint. The following
+[Claude retirement](claude-retirement-plan.md) selects Codex-only a18 collector/
+reader artifacts while retaining the same SDK 1 and a16/a10 bridge boundary.
+See the [current report](evidence/2026-10-11-claude-retirement/REPORT.md).
+
 Started 2026-10-11 following the user's goal-loop request, with accepted checkpoints
 committed as work proceeds. The [reviewed plan](mesh-sdk-v1-integration-plan.md)
 defines M0–M5 and the [planning report](evidence/2026-10-10-mesh-sdk-planning/REPORT.md)
@@ -14,7 +19,7 @@ retains its pre-implementation bounds. API 2/read 4/Service 2 are preserved.
 | M4 native/mixed-artifact | Complete within declared bounds | Independent native pull, real two-host SSH push and owned SSH-exit/reconnect pass. a11 owner readers use retained a10 bridges. Short matched CPU/PSS/latency windows accept the bounded SDK overhead; older-history metadata and sampling differences remain explicit. |
 | M5 operational selection | Complete | a17/a11 reader-only selection, a16 rollback and a17 reselection pass serially on Snap/Starship. Both ordinary collector/bridge incarnations, writer/provider settings, shared Mesh CLI and unrelated Starship edits are preserved. Dotfiles selection commit `50685bc`. |
 
-The current managed selection is a17/a11 reader, retained a16/a10 bridge,
+The selection at this checkpoint was a17/a11 reader, retained a16/a10 bridge,
 collector a15 and writer 0.4.0a16. The reference publisher stays supported. Mesh's portable
 conformance-kit/diagnostic follow-up is independent; its unimplemented testing
 surface is not a dependency. Provider workflows and settings remain outside this

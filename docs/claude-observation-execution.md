@@ -1,5 +1,10 @@
 # Claude observation execution
 
+Historical checkpoint after [Claude retirement](claude-retirement-plan.md),
+2026-10-11. Native Claude support and tooling described below are removed; the
+dated evidence keeps its original artifact bounds. Current clients use the
+[API 2 handoff](api-v2-client-handoff.md) and Codex-only a18 producer.
+
 Historical a8 execution pass. The completed
 [interactive successor](claude-observation-wrap-up.md) accepts and selects a9.
 The source and lifecycle rules below retain their original evidence bounds;
