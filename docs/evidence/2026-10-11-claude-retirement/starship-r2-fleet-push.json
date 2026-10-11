@@ -1,0 +1,230 @@
+[
+  {
+    "kind": "view",
+    "rows": 0,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "connecting"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": null,
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "connecting"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "view",
+    "rows": 128,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "connecting"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62235601,
+            "bridgeId": "a2a38fab-62ce-4049-b94a-5336d2b913ed",
+            "marginMs": 100,
+            "nonce": "aa191fd8dbfa3db64c287efa2fee367b",
+            "payloadDigest": "sha256:a40a20e1a6c3ad3fd01ab5fb1314390d878fddb128adea6476288426eb77094b",
+            "receivedAtMs": 81183478,
+            "sentAtMs": 81183302
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "view",
+    "rows": 512,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62235601,
+            "bridgeId": "a2a38fab-62ce-4049-b94a-5336d2b913ed",
+            "marginMs": 100,
+            "nonce": "aa191fd8dbfa3db64c287efa2fee367b",
+            "payloadDigest": "sha256:a40a20e1a6c3ad3fd01ab5fb1314390d878fddb128adea6476288426eb77094b",
+            "receivedAtMs": 81183478,
+            "sentAtMs": 81183302
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "view",
+    "rows": 512,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62235849,
+            "bridgeId": "a2a38fab-62ce-4049-b94a-5336d2b913ed",
+            "marginMs": 100,
+            "nonce": "fc4802f7e47f70598a84732bdb184bd0",
+            "payloadDigest": "sha256:789e80be5d119660421c56dfa82c5d40841d5d27489557776fa6f1c3bea36ea1",
+            "receivedAtMs": 81184015,
+            "sentAtMs": 81183551
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "view",
+    "rows": 512,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62235849,
+            "bridgeId": "a2a38fab-62ce-4049-b94a-5336d2b913ed",
+            "marginMs": 100,
+            "nonce": "fc4802f7e47f70598a84732bdb184bd0",
+            "payloadDigest": "sha256:789e80be5d119660421c56dfa82c5d40841d5d27489557776fa6f1c3bea36ea1",
+            "receivedAtMs": 81184015,
+            "sentAtMs": 81183551
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "view",
+    "rows": 512,
+    "hosts": [
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        }
+      },
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 62235849,
+            "bridgeId": "a2a38fab-62ce-4049-b94a-5336d2b913ed",
+            "marginMs": 100,
+            "nonce": "fc4802f7e47f70598a84732bdb184bd0",
+            "payloadDigest": "sha256:789e80be5d119660421c56dfa82c5d40841d5d27489557776fa6f1c3bea36ea1",
+            "receivedAtMs": 81184015,
+            "sentAtMs": 81183551
+          },
+          "routeToken": "sha256:051c642dc154f252d8b5e2530368575c56a1637e54d8c3b05cf968e2602bfd67",
+          "status": "ready"
+        }
+      }
+    ]
+  }
+]
