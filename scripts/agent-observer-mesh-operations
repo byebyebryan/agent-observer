@@ -78,6 +78,15 @@ def artifact(selection, host, profiles):
     return prefix, receipt
 
 
+def compatible_bridge(reader, bridge):
+    """Independent immutable artifacts must share the frozen delivery contract."""
+    require(reader["mesh"]["agentProfile"] == bridge["mesh"]["agentProfile"]
+            == "agent-observer.mesh-candidate.v1"
+            and reader["mesh"]["lockSha256"] == bridge["mesh"]["lockSha256"]
+            == "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489",
+            "mesh_bridge_contract_selection")
+
+
 def verify(host, candidate):
     home = Path.home()
     value = json.loads((SELECTION).read_text())
@@ -88,7 +97,7 @@ def verify(host, candidate):
     )
     prefix, receipt = artifact(value, host, value["profiles"])
     bridge = value.get("bridgeSelection", value)
-    require(bridge["mesh"] == value["mesh"], "mesh_bridge_contract_selection")
+    compatible_bridge(value, bridge)
     bridge_prefix, bridge_receipt = (
         (prefix, receipt) if bridge is value else artifact(bridge, host, value["profiles"])
     )

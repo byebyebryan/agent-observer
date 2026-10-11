@@ -60,6 +60,27 @@ class AgentProfileTests(unittest.TestCase):
             self.assertFalse(state.records)
             self.assertTrue(all(r["sourceId"] != "agent" for r in state.receipts))
 
+    def test_provider_only_frames_and_distinct_native_namespaces_roundtrip(self):
+        from agent_observer.public import store_namespace
+        for provider in ("codex", "claude"):
+            for home in ("/fixture/first", "/fixture/second"):
+                value = fixture()
+                value["sources"] = [s for s in value["sources"] if s["provider"] == provider]
+                source = value["sources"][0]
+                namespace = store_namespace(provider, home, "explicit", value["uid"])
+                source.update(configHome=home, configHomeKind="explicit", namespace=namespace)
+                snapshot = value["snapshot"]
+                snapshot["sources"] = [s for s in snapshot["sources"] if s["provider"] == provider]
+                snapshot["sources"][0].update(configHome=home, configHomeKind="explicit", namespace=namespace)
+                snapshot["sessions"] = [r for r in snapshot["sessions"] if r["identity"]["provider"] == provider]
+                for row in snapshot["sessions"]:
+                    row["identity"]["namespace"] = namespace
+                with self.subTest(provider=provider, home=home):
+                    state = self.codec.inspect_native(value)
+                    self.assertEqual(self.profile.restore_native(state.owner, state.records), value)
+                    self.assertTrue(all(r["sourceId"] == provider + ":" + namespace for r in state.receipts))
+                    self.assertTrue(all(self.profile.record_receipts(r, state) for r in state.records))
+
     def test_provider_namespace_receipts_and_unsaved_eligibility_are_independent(self):
         state = self.codec.inspect_native(fixture())
         codex, claude = copy.deepcopy(state.records[0]), copy.deepcopy(state.records[3])

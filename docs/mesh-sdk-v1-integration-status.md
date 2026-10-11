@@ -10,7 +10,7 @@ retains its pre-implementation bounds. API 2/read 4/Service 2 are preserved.
 | M0 prerequisites | Source/owned fixture validation complete | CI explicitly installs the checksummed upstream chezmoi 2.73.0 Linux artifact. Separate-prefix bridge authentication rejects foreign arguments/PID changes and rechecks before stop. Full checks pass with user-installed tooling excluded from PATH. Hosted CI remains a following source-publication receipt. |
 | M1 pure profile | Source tests complete | Frozen bindings, pure public/service facades, exact reconstruction and independent provider/namespace receipts. Callback tests block reference/collector imports. |
 | M2 explicit reader | Source tests complete | One profile through configured reader, guards and all view helpers; optional Mesh floor and CI wheel select SDK v1. Core/local commands remain Mesh-free. |
-| M3 immutable conformance | Pending | Released Mesh a11, Owner semantic fixtures and isolated new wheel. |
+| M3 immutable conformance | Source/owned delivery tests complete; package pending | Owner-native provider/namespace fixtures, receipt expiry and forgery checks, real IPC CLI/watch/cancellation and sibling isolation. Artifact admission now follows frozen SDK/profile/lock and installed bytes; mixed reader/bridge versions are independently verified. New a17 wheel follows the source checkpoint. |
 | M4 native/mixed-artifact | Pending | Independent native comparisons and a11 reader/a10 bridge delivery. |
 | M5 operational selection | Pending | Accepted concrete artifacts, scoped rollback and protected state preservation. |
 
@@ -19,3 +19,7 @@ writer 0.4.0a16. The reference publisher stays supported. Mesh's portable
 conformance-kit/diagnostic follow-up is independent; its unimplemented testing
 surface is not a dependency. Provider workflows and settings remain outside this
 execution. No frontend, terminal attachment, device or event-product work is included.
+
+The [integration evidence](evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
+records individual gates and retains the distinction between owned fixtures,
+immutable installation, independent native evidence and selection.
