@@ -16,8 +16,11 @@ Next work remains separately scoped:
 - Focused proof for accepted Codex edges, including physical suspend and TUI closure.
 - A new provider only after its runtime/identity/activity/capability investigation.
 
-Hosted CI and release publication require their own future receipts. The user
-requested commits here; this pass does not claim a push or hosted release.
+The following [operational cleanup](operational-cleanup-plan.md) is authorized
+for checkpoint commits, reviewed source/deployment publication, hosted CI and
+the exact a18 prerelease. Its [report](evidence/2026-10-11-ops-cleanup/REPORT.md)
+records acceptance separately; the retirement checkpoint alone supplies no
+hosted CI or release receipt.
 
 ## Historical execution checkpoints
 

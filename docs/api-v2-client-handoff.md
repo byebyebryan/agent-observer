@@ -8,6 +8,13 @@ profile. Separate a16/Mesh a10 bridges, the shared Mesh CLI and historical
 pass removes Claude native collection, SDK/history, hints and service memo.
 Claude remains under native session management/Agent View.
 
+The [operational cleanup](evidence/2026-10-11-ops-cleanup/REPORT.md) records current
+CLI/native comparisons and collection/subscriber costs. Collection is inexpensive
+in those windows, but a raw fleet watch uses roughly 8–10% of one core per reader
+plus bridge work. Share one validated client view among displays where practical;
+human rendering and each downstream client need separate resource acceptance.
+Mixed Observer/Mesh validation optimization remains a following checkpoint.
+
 API 2/read wire 4/Service 2/Mesh SDK 1 are unchanged. Reserved provider vocabulary
 and synthetic supplied data remain valid for pure conformance; Claude native
 selection and its old CLI/configuration options are unsupported. No dormant

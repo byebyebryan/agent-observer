@@ -57,8 +57,11 @@ performance guarantee. Use Codex on both hosts. Gaps,
 partial sources and unsupported activity remain explicit.
 
 Source CI checks are prepared in `.github/workflows/ci.yml`; no hosted result is
-claimed before publication/push and an actual run. The [operational execution record](operational-execution-status.md)
-tracks installed/native acceptance separately from tooling source checks.
+claimed before publication/push and an actual run. The current
+[operational cleanup report](evidence/2026-10-11-ops-cleanup/REPORT.md) distinguishes
+installed/native acceptance, collection/subscriber costs and publication.
+The earlier [operational execution record](operational-execution-status.md)
+retains its historical pilot scope.
 
 `scripts/check-native-recovery` is a separate **write/native** proof, not a passive
 read command. It requires an operator-established private namespace and masked

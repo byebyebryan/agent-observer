@@ -1,0 +1,96 @@
+{
+  "status": "measured",
+  "windows": [
+    {
+      "workload": "local-one",
+      "host": "starship",
+      "addedReaders": 1,
+      "scope": "local",
+      "warmupSeconds": 30,
+      "durationSeconds": 300.663,
+      "samples": 300,
+      "startupThroughWarmupSeconds": 30.003,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 6.31,
+          "percentOneCore": 2.099,
+          "mean": {
+            "rssBytes": 56668993,
+            "pssBytes": 32591636,
+            "fds": 13,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 78475264,
+            "pssBytes": 43780096,
+            "fds": 21,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 55623680,
+            "pssBytes": 32146432,
+            "fds": 13,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 10.23,
+          "percentOneCore": 3.402,
+          "mean": {
+            "rssBytes": 43511480,
+            "pssBytes": 31158562,
+            "fds": 10,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 45801472,
+            "pssBytes": 33453056,
+            "fds": 11,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 43241472,
+            "pssBytes": 30891008,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        },
+        "reader1": {
+          "cpuSeconds": 13.63,
+          "percentOneCore": 4.533,
+          "mean": {
+            "rssBytes": 40069079,
+            "pssBytes": 27642208,
+            "fds": 7,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 63811584,
+            "pssBytes": 39475200,
+            "fds": 13,
+            "processes": 2
+          },
+          "end": {
+            "rssBytes": 39485440,
+            "pssBytes": 27331584,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    }
+  ],
+  "limits": [
+    "ordinary active hosts",
+    "one-second tree sampling",
+    "remote SSH server/bridge excluded",
+    "concurrent host workloads"
+  ]
+}

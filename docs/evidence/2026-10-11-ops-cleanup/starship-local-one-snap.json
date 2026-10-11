@@ -1,0 +1,73 @@
+{
+  "status": "measured",
+  "windows": [
+    {
+      "workload": "baseline",
+      "host": "snap",
+      "addedReaders": 0,
+      "scope": null,
+      "warmupSeconds": 30,
+      "durationSeconds": 300.55,
+      "samples": 300,
+      "startupThroughWarmupSeconds": 30.003,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 1.98,
+          "percentOneCore": 0.659,
+          "mean": {
+            "rssBytes": 49888734,
+            "pssBytes": 27239199,
+            "fds": 12,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 71188480,
+            "pssBytes": 37707776,
+            "fds": 20,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 49745920,
+            "pssBytes": 27136000,
+            "fds": 12,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 0.0,
+          "percentOneCore": 0.0,
+          "mean": {
+            "rssBytes": 37019648,
+            "pssBytes": 25060990,
+            "fds": 8,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 37019648,
+            "pssBytes": 25154560,
+            "fds": 8,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 37019648,
+            "pssBytes": 25043968,
+            "fds": 8,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    }
+  ],
+  "limits": [
+    "ordinary active hosts",
+    "one-second tree sampling",
+    "remote SSH server/bridge excluded",
+    "concurrent host workloads"
+  ]
+}

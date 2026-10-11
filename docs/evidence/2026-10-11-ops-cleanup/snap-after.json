@@ -1,0 +1,489 @@
+{
+  "host": "snap",
+  "ordinaryProviderActions": false,
+  "protectedControlBookend": {
+    "hostScope": "snap",
+    "providerConfigurationAndUnitHashes": {
+      ".codex/config.toml": "fbfa91996e16619506878c91b2954d33c609fb2d2074785fe42a7cd75b943674",
+      ".claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+      ".config/agent-observer/workspace.json": "2b8c2fb1c3e085ed7295e35dde9e8e64a123de9518610ecfb1b5fd1c26de067a",
+      ".config/systemd/user/agent-observer.service": "47de82d8244f9d304da653e262ef5679ad8172d7a36e73fa13ecf92b92402db0"
+    },
+    "selectedLinks": {
+      "agent-observer": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader/bin/agent-observer",
+      "agent-observer-service": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590/bin/agent-observer-service",
+      "agent-observer-write": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+      "rofi-agent-plus": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus",
+      "rofi-agent-plus-rofi": "/home/bryan/.local/share/rofi-agent-plus/0.14.0a1-8ba19a0eba87944a/bin/rofi-agent-plus-rofi",
+      "rofi-tmux-plus": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus",
+      "rofi-tmux-plus-rofi": "../share/rofi/extensions/tmux-plus/bin/rofi-tmux-plus-rofi"
+    },
+    "unit": {
+      "ActiveState": "active",
+      "UnitFileState": "enabled",
+      "InvocationID": "53aa681411b04a9f9086308dfe2430d5",
+      "MainPID": "3134129"
+    },
+    "serviceId": "02eb348b-6967-4fb1-b116-2c99d3ed1f72",
+    "ordinaryCodexDaemon": {
+      "pid": 27595,
+      "startTicks": "46198",
+      "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+      "provider": "codex",
+      "version": "0.162.1",
+      "versionEvidence": "owned_release_path_and_inspected_sha256"
+    }
+  },
+  "preservation": {
+    "hashes": {
+      ".claude/settings.json": "3b5484078f4cf6483c41229fafae3bcf254193b328a84096de4de23259b5ab16",
+      ".claude.json": "5d5688092ebbe195d5c43cf28653e30d6321669c16490e41fbd1bfc0eeafc950",
+      ".codex/config.toml": "fbfa91996e16619506878c91b2954d33c609fb2d2074785fe42a7cd75b943674",
+      ".config/kitty/kitty.conf": "00036fa4ee8f801a1e689560fa8a30b44aa75b3862ef4d9d968a755a6e1c2426",
+      ".config/niri/config.kdl": "3784e83949109307d74bcb8ad1737d1d6db1699992d48180558e53b98acc971f",
+      ".local/share/chezmoi/dot_config/kitty/kitty.conf": "00036fa4ee8f801a1e689560fa8a30b44aa75b3862ef4d9d968a755a6e1c2426",
+      ".local/share/chezmoi/dot_config/niri/config.kdl.tmpl": "dd40363f1b550bed47a07b8b4f6c44977b5b903de1325381ed301fb99adceb11"
+    },
+    "nativeProcesses": [
+      {
+        "pid": 11341,
+        "startTicks": "19936",
+        "exe": "/opt/claude-code/bin/claude"
+      },
+      {
+        "pid": 13162,
+        "startTicks": "22229",
+        "exe": "/opt/claude-code/bin/claude"
+      },
+      {
+        "pid": 14953,
+        "startTicks": "24698",
+        "exe": "/opt/claude-code/bin/claude"
+      },
+      {
+        "pid": 27482,
+        "startTicks": "46134",
+        "exe": "/opt/openai-codex/bin/codex"
+      },
+      {
+        "pid": 27595,
+        "startTicks": "46198",
+        "exe": "/home/bryan/.codex/packages/app-server-daemon/releases/0.162.1-x86_64-unknown-linux-musl/bin/codex"
+      },
+      {
+        "pid": 27709,
+        "startTicks": "46247",
+        "exe": "/home/bryan/.codex/packages/app-server-daemon/releases/0.162.1-x86_64-unknown-linux-musl/bin/codex"
+      },
+      {
+        "pid": 31844,
+        "startTicks": "50460",
+        "exe": "/opt/openai-codex/bin/codex"
+      },
+      {
+        "pid": 34998,
+        "startTicks": "53410",
+        "exe": "/opt/openai-codex/bin/codex"
+      }
+    ],
+    "bridge": {
+      "pid": "1104683",
+      "birth": "1808135"
+    }
+  },
+  "continuity": {
+    "providerConfigurationAndUnitHashes": true,
+    "selectedLinks": true,
+    "unit": true,
+    "serviceId": true,
+    "ordinaryCodexDaemon": true,
+    "nativeProcesses": true,
+    "bridge": true,
+    "changedPrivateHashKeys": [
+      ".claude.json"
+    ]
+  },
+  "direct": {
+    "evaluationVersion": 1,
+    "hostScope": "snap",
+    "cliVersion": "agent-observer 0.5.0a18",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "nativeBeforeAt": {
+          "codex": 1791743474404
+        },
+        "cliCollectedAt": 1791743474903,
+        "nativeAfterAt": {
+          "codex": 1791743475037
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "daemon_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "one_configured_namespace",
+              "offline_runtime_state_unavailable",
+              "native_status_required",
+              "database_only_catalog",
+              "catalog_limit_1000",
+              "history_limit_1000",
+              "runtime_limit_512"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 91,
+          "providersChecked": [
+            "codex"
+          ],
+          "nativeReferenceProviders": [
+            "codex"
+          ]
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 91,
+            "nativeAfterRows": 91,
+            "cliRows": 91,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 54,
+              "classification": {
+                "user": 53,
+                "child": 38
+              }
+            },
+            "checks": {
+              "membership": 91,
+              "title": 45,
+              "cwd": 91,
+              "runtime": 91,
+              "phase": 91,
+              "activity": 54,
+              "kind": 91,
+              "sessionTreeRootId": 91,
+              "blockedReasons": 91,
+              "createdAt": 91,
+              "hasSavedHistory": 91,
+              "outcome": 54,
+              "outcomeAt": 52,
+              "title_unproved": 46,
+              "activity_unproved": 37,
+              "outcome_unproved": 37,
+              "outcomeAt_unproved": 39
+            },
+            "nativeActive": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740451000
+              },
+              {
+                "id": "01a12237-8266-7c20-a454-52ec766aa8b6",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740458000
+              },
+              {
+                "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791743246000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740451000
+              },
+              {
+                "id": "01a12237-8266-7c20-a454-52ec766aa8b6",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740458000
+              },
+              {
+                "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791743246000
+              }
+            ],
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 53,
+          "filteredChildren": 38
+        },
+        "nativeRuntime": {
+          "pid": 27595,
+          "startTicks": "46198",
+          "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+          "provider": "codex",
+          "version": "0.162.1",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {
+            "runtimeGaps": []
+          }
+        }
+      }
+    ]
+  },
+  "cached": {
+    "evaluationVersion": 1,
+    "hostScope": "snap",
+    "cliVersion": "agent-observer 0.5.0a18",
+    "selectedCli": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader/bin/agent-observer",
+    "referenceImportsObserver": false,
+    "ordinaryProviderActions": false,
+    "controlledNativeCasesRun": false,
+    "samples": [
+      {
+        "service": {
+          "serviceProtocol": 2,
+          "serviceId": "02eb348b-6967-4fb1-b116-2c99d3ed1f72",
+          "bootId": "85e753bf-dfd5-444c-b0a4-197150e5226d",
+          "hostScope": "snap",
+          "viewRevision": 1421,
+          "emittedAt": 1791743475798,
+          "emittedBoottimeMs": 96013237,
+          "clockDomain": "time:[4026531834]",
+          "sources": [
+            {
+              "components": [
+                {
+                  "accepted": 1421,
+                  "attempts": 1421,
+                  "expiresBoottimeMs": 96086601,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "runtime",
+                  "sampledBoottimeMs": 95996601
+                },
+                {
+                  "accepted": 296,
+                  "attempts": 296,
+                  "expiresBoottimeMs": 96265428,
+                  "health": "current",
+                  "inFlight": false,
+                  "lastResult": "accepted",
+                  "name": "history",
+                  "sampledBoottimeMs": 95905428
+                }
+              ],
+              "configHome": "/home/bryan/.codex",
+              "configHomeKind": "explicit",
+              "contextGeneration": 1,
+              "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+              "provider": "codex"
+            }
+          ]
+        },
+        "nativeBeforeAt": {
+          "codex": 1791743475760
+        },
+        "cliCollectedAt": 1791743459386,
+        "nativeAfterAt": {
+          "codex": 1791743475904
+        },
+        "sourceHealth": "current",
+        "errors": [],
+        "sources": [
+          {
+            "provider": "codex",
+            "sourceHealth": "current",
+            "coverage": {
+              "runtime": {
+                "reason": "native_snapshot",
+                "scope": "daemon_threads",
+                "status": "complete"
+              },
+              "saved": {
+                "reason": "native_snapshot",
+                "status": "complete"
+              }
+            },
+            "limitations": [
+              "one_configured_namespace",
+              "offline_runtime_state_unavailable",
+              "native_status_required",
+              "database_only_catalog",
+              "catalog_limit_1000",
+              "history_limit_1000",
+              "runtime_limit_512"
+            ],
+            "errors": []
+          }
+        ],
+        "identityScope": {
+          "hostProvenance": true,
+          "storeScopes": true,
+          "fullRowReferences": true,
+          "rowsChecked": 91,
+          "providersChecked": [
+            "codex"
+          ],
+          "nativeReferenceProviders": [
+            "codex"
+          ]
+        },
+        "providers": {
+          "codex": {
+            "nativeBeforeRows": 91,
+            "nativeAfterRows": 91,
+            "cliRows": 91,
+            "nativeCounts": {
+              "running": 3,
+              "activityKnown": 54,
+              "classification": {
+                "user": 53,
+                "child": 38
+              }
+            },
+            "checks": {
+              "membership": 91,
+              "title": 45,
+              "cwd": 91,
+              "runtime": 91,
+              "phase": 91,
+              "activity": 54,
+              "kind": 91,
+              "sessionTreeRootId": 91,
+              "blockedReasons": 91,
+              "createdAt": 91,
+              "hasSavedHistory": 91,
+              "outcome": 54,
+              "outcomeAt": 52,
+              "title_unproved": 46,
+              "activity_unproved": 37,
+              "outcome_unproved": 37,
+              "outcomeAt_unproved": 39
+            },
+            "nativeActive": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740451000
+              },
+              {
+                "id": "01a12237-8266-7c20-a454-52ec766aa8b6",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740458000
+              },
+              {
+                "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+                "nativeKind": "user",
+                "nativePhaseCandidate": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791743246000
+              }
+            ],
+            "active": [
+              {
+                "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740451000
+              },
+              {
+                "id": "01a12237-8266-7c20-a454-52ec766aa8b6",
+                "cliPhase": "working",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "working",
+                "nativeStatus": "active",
+                "activityAt": 1791740458000
+              },
+              {
+                "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+                "cliPhase": "waiting",
+                "cliKind": "user",
+                "nativeKind": "user",
+                "nativePhase": "waiting",
+                "nativeStatus": "idle",
+                "activityAt": 1791743246000
+              }
+            ],
+            "issues": []
+          }
+        },
+        "readClient": {
+          "defaultChildFiltering": true,
+          "includeChildrenInventory": true,
+          "attentionActivityOrdering": true,
+          "humanAgeRendering": true,
+          "exactReferenceShowRows": 3,
+          "doctorSessionCount": true,
+          "cliRows": 53,
+          "filteredChildren": 38
+        },
+        "nativeRuntime": {
+          "pid": 27595,
+          "startTicks": "46198",
+          "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+          "provider": "codex",
+          "version": "0.162.1",
+          "versionEvidence": "owned_release_path_and_inspected_sha256"
+        },
+        "nativeReferenceLimits": {
+          "codex": {
+            "runtimeGaps": []
+          }
+        }
+      }
+    ]
+  }
+}

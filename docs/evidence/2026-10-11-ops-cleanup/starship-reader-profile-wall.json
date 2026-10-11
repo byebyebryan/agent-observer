@@ -1,0 +1,876 @@
+{
+  "host": "starship",
+  "durationSeconds": 45.032,
+  "exit": 130,
+  "ownedReaderStopped": true,
+  "installedPrefix": "/home/bryan/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader",
+  "providerActions": false,
+  "rawPayloadsRetained": false,
+  "includesStartup": true,
+  "timer": "default_wallclock",
+  "profiledProcessOnly": true,
+  "instrumentedTimingNotNormalCpuBudget": true,
+  "selfSecondsByDomain": {
+    "jsonschema": 2.50823,
+    "mesh": 1.65128,
+    "observer": 3.7766,
+    "python": 36.73319,
+    "referencing": 0.32711
+  },
+  "topSelf": [
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'poll' of 'select.epoll' objects>",
+      "primitiveCalls": 1717,
+      "totalCalls": 1717,
+      "selfSeconds": 32.85899,
+      "cumulativeSeconds": 32.85902
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 231,
+      "function": "validate_shape",
+      "primitiveCalls": 35946,
+      "totalCalls": 1496972,
+      "selfSeconds": 2.49331,
+      "cumulativeSeconds": 5.26651
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 38,
+      "function": "tree",
+      "primitiveCalls": 316,
+      "totalCalls": 4105613,
+      "selfSeconds": 1.22205,
+      "cumulativeSeconds": 1.43793
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.isinstance>",
+      "primitiveCalls": 10324993,
+      "totalCalls": 10324993,
+      "selfSeconds": 0.70291,
+      "cumulativeSeconds": 0.71961
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 220,
+      "function": "_matches_type",
+      "primitiveCalls": 1156682,
+      "totalCalls": 1156682,
+      "selfSeconds": 0.6721,
+      "cumulativeSeconds": 0.97236
+    },
+    {
+      "domain": "jsonschema",
+      "file": "validators.py",
+      "line": 396,
+      "function": "descend",
+      "primitiveCalls": 4894,
+      "totalCalls": 347846,
+      "selfSeconds": 0.63668,
+      "cumulativeSeconds": 3.52408
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'get' of 'dict' objects>",
+      "primitiveCalls": 5259398,
+      "totalCalls": 5259398,
+      "selfSeconds": 0.46901,
+      "cumulativeSeconds": 0.46901
+    },
+    {
+      "domain": "python",
+      "file": "encoder.py",
+      "line": 207,
+      "function": "iterencode",
+      "primitiveCalls": 712,
+      "totalCalls": 712,
+      "selfSeconds": 0.42007,
+      "cumulativeSeconds": 0.42007
+    },
+    {
+      "domain": "jsonschema",
+      "file": "validators.py",
+      "line": 339,
+      "function": "evolve",
+      "primitiveCalls": 335954,
+      "totalCalls": 335954,
+      "selfSeconds": 0.35497,
+      "cumulativeSeconds": 0.76177
+    },
+    {
+      "domain": "jsonschema",
+      "file": "_types.py",
+      "line": 94,
+      "function": "is_type",
+      "primitiveCalls": 836483,
+      "totalCalls": 836483,
+      "selfSeconds": 0.29655,
+      "cumulativeSeconds": 0.49969
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 249,
+      "function": "<genexpr>",
+      "primitiveCalls": 2200760,
+      "totalCalls": 2200760,
+      "selfSeconds": 0.27344,
+      "cumulativeSeconds": 1.2458
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'isascii' of 'str' objects>",
+      "primitiveCalls": 4083692,
+      "totalCalls": 4083692,
+      "selfSeconds": 0.26096,
+      "cumulativeSeconds": 0.26096
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'search' of 're.Pattern' objects>",
+      "primitiveCalls": 924297,
+      "totalCalls": 924297,
+      "selfSeconds": 0.19931,
+      "cumulativeSeconds": 0.19931
+    },
+    {
+      "domain": "python",
+      "file": "copy.py",
+      "line": 198,
+      "function": "_deepcopy_dict",
+      "primitiveCalls": 6216,
+      "totalCalls": 91519,
+      "selfSeconds": 0.18201,
+      "cumulativeSeconds": 0.44074
+    },
+    {
+      "domain": "python",
+      "file": "__init__.py",
+      "line": 330,
+      "function": "_compile",
+      "primitiveCalls": 479247,
+      "totalCalls": 479247,
+      "selfSeconds": 0.17785,
+      "cumulativeSeconds": 0.31309
+    },
+    {
+      "domain": "jsonschema",
+      "file": "validators.py",
+      "line": 282,
+      "function": "__attrs_post_init__",
+      "primitiveCalls": 335960,
+      "totalCalls": 335960,
+      "selfSeconds": 0.17683,
+      "cumulativeSeconds": 0.20287
+    },
+    {
+      "domain": "python",
+      "file": "copy.py",
+      "line": 110,
+      "function": "deepcopy",
+      "primitiveCalls": 129,
+      "totalCalls": 1180280,
+      "selfSeconds": 0.17387,
+      "cumulativeSeconds": 0.45115
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 19,
+      "function": "plain_json",
+      "primitiveCalls": 28,
+      "totalCalls": 595962,
+      "selfSeconds": 0.17094,
+      "cumulativeSeconds": 0.29989
+    },
+    {
+      "domain": "jsonschema",
+      "file": "_keywords.py",
+      "line": 282,
+      "function": "type",
+      "primitiveCalls": 244377,
+      "totalCalls": 244377,
+      "selfSeconds": 0.17016,
+      "cumulativeSeconds": 0.51353
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 243,
+      "function": "<genexpr>",
+      "primitiveCalls": 947425,
+      "totalCalls": 947425,
+      "selfSeconds": 0.14324,
+      "cumulativeSeconds": 0.14324
+    },
+    {
+      "domain": "jsonschema",
+      "file": "validators.py",
+      "line": 452,
+      "function": "is_type",
+      "primitiveCalls": 836483,
+      "totalCalls": 836483,
+      "selfSeconds": 0.14215,
+      "cumulativeSeconds": 0.64185
+    },
+    {
+      "domain": "jsonschema",
+      "file": "_keywords.py",
+      "line": 290,
+      "function": "properties",
+      "primitiveCalls": 1698,
+      "totalCalls": 56878,
+      "selfSeconds": 0.12606,
+      "cumulativeSeconds": 3.50763
+    },
+    {
+      "domain": "referencing",
+      "file": "_core.py",
+      "line": 165,
+      "function": "create_resource",
+      "primitiveCalls": 336087,
+      "totalCalls": 336087,
+      "selfSeconds": 0.12064,
+      "cumulativeSeconds": 0.22731
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 23,
+      "function": "<genexpr>",
+      "primitiveCalls": 140,
+      "totalCalls": 673270,
+      "selfSeconds": 0.11925,
+      "cumulativeSeconds": 0.29981
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'fullmatch' of 're.Pattern' objects>",
+      "primitiveCalls": 402680,
+      "totalCalls": 402680,
+      "selfSeconds": 0.11734,
+      "cumulativeSeconds": 0.11734
+    },
+    {
+      "domain": "python",
+      "file": "__init__.py",
+      "line": 169,
+      "function": "fullmatch",
+      "primitiveCalls": 402680,
+      "totalCalls": 402680,
+      "selfSeconds": 0.11311,
+      "cumulativeSeconds": 0.50622
+    },
+    {
+      "domain": "python",
+      "file": "<attrs generated methods referencing._core.Resource>",
+      "line": 29,
+      "function": "__init__",
+      "primitiveCalls": 336087,
+      "totalCalls": 336087,
+      "selfSeconds": 0.10666,
+      "cumulativeSeconds": 0.10666
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.getattr>",
+      "primitiveCalls": 1402839,
+      "totalCalls": 1402854,
+      "selfSeconds": 0.10487,
+      "cumulativeSeconds": 0.10502
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 284,
+      "function": "validate_snapshot",
+      "primitiveCalls": 95,
+      "totalCalls": 95,
+      "selfSeconds": 0.08461,
+      "cumulativeSeconds": 5.31139
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.len>",
+      "primitiveCalls": 1193895,
+      "totalCalls": 1194237,
+      "selfSeconds": 0.08414,
+      "cumulativeSeconds": 0.08419
+    },
+    {
+      "domain": "referencing",
+      "file": "jsonschema.py",
+      "line": 47,
+      "function": "_dollar_id",
+      "primitiveCalls": 335672,
+      "totalCalls": 335672,
+      "selfSeconds": 0.0836,
+      "cumulativeSeconds": 0.14259
+    },
+    {
+      "domain": "jsonschema",
+      "file": "_keywords.py",
+      "line": 285,
+      "function": "<genexpr>",
+      "primitiveCalls": 498150,
+      "totalCalls": 498150,
+      "selfSeconds": 0.07126,
+      "cumulativeSeconds": 0.27361
+    },
+    {
+      "domain": "python",
+      "file": "<attrs generated methods jsonschema.validators.create.<locals>.Validator>",
+      "line": 26,
+      "function": "__init__",
+      "primitiveCalls": 335960,
+      "totalCalls": 335960,
+      "selfSeconds": 0.06834,
+      "cumulativeSeconds": 0.2712
+    },
+    {
+      "domain": "python",
+      "file": "~",
+      "line": 0,
+      "function": "<method 'items' of 'dict' objects>",
+      "primitiveCalls": 772649,
+      "totalCalls": 772649,
+      "selfSeconds": 0.0667,
+      "cumulativeSeconds": 0.0667
+    },
+    {
+      "domain": "python",
+      "file": "enum.py",
+      "line": 187,
+      "function": "__get__",
+      "primitiveCalls": 402344,
+      "totalCalls": 402344,
+      "selfSeconds": 0.0654,
+      "cumulativeSeconds": 0.09514
+    }
+  ],
+  "topObserver": [
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 231,
+      "function": "validate_shape",
+      "primitiveCalls": 35946,
+      "totalCalls": 1496972,
+      "selfSeconds": 2.49331,
+      "cumulativeSeconds": 5.26651
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 220,
+      "function": "_matches_type",
+      "primitiveCalls": 1156682,
+      "totalCalls": 1156682,
+      "selfSeconds": 0.6721,
+      "cumulativeSeconds": 0.97236
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 249,
+      "function": "<genexpr>",
+      "primitiveCalls": 2200760,
+      "totalCalls": 2200760,
+      "selfSeconds": 0.27344,
+      "cumulativeSeconds": 1.2458
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 243,
+      "function": "<genexpr>",
+      "primitiveCalls": 947425,
+      "totalCalls": 947425,
+      "selfSeconds": 0.14324,
+      "cumulativeSeconds": 0.14324
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 284,
+      "function": "validate_snapshot",
+      "primitiveCalls": 95,
+      "totalCalls": 95,
+      "selfSeconds": 0.08461,
+      "cumulativeSeconds": 5.31139
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 279,
+      "function": "identity_key",
+      "primitiveCalls": 35756,
+      "totalCalls": 35756,
+      "selfSeconds": 0.03407,
+      "cumulativeSeconds": 0.95344
+    },
+    {
+      "domain": "observer",
+      "file": "service_contract.py",
+      "line": 115,
+      "function": "validate_frame",
+      "primitiveCalls": 95,
+      "totalCalls": 95,
+      "selfSeconds": 0.0262,
+      "cumulativeSeconds": 5.47644
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 281,
+      "function": "<genexpr>",
+      "primitiveCalls": 214536,
+      "totalCalls": 214536,
+      "selfSeconds": 0.01483,
+      "cumulativeSeconds": 0.01483
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 86,
+      "function": "record_host",
+      "primitiveCalls": 87642,
+      "totalCalls": 87642,
+      "selfSeconds": 0.01154,
+      "cumulativeSeconds": 0.01154
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_cli.py",
+      "line": 83,
+      "function": "run",
+      "primitiveCalls": 17,
+      "totalCalls": 17,
+      "selfSeconds": 0.00712,
+      "cumulativeSeconds": 8.52586
+    },
+    {
+      "domain": "observer",
+      "file": "service_contract.py",
+      "line": 170,
+      "function": "<genexpr>",
+      "primitiveCalls": 70326,
+      "totalCalls": 70326,
+      "selfSeconds": 0.00619,
+      "cumulativeSeconds": 0.00619
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 89,
+      "function": "record_identity",
+      "primitiveCalls": 12168,
+      "totalCalls": 12168,
+      "selfSeconds": 0.00279,
+      "cumulativeSeconds": 0.3275
+    },
+    {
+      "domain": "observer",
+      "file": "cli.py",
+      "line": 79,
+      "function": "_watch_output",
+      "primitiveCalls": 14,
+      "totalCalls": 14,
+      "selfSeconds": 0.00232,
+      "cumulativeSeconds": 0.03192
+    },
+    {
+      "domain": "observer",
+      "file": "service_contract.py",
+      "line": 174,
+      "function": "<genexpr>",
+      "primitiveCalls": 18420,
+      "totalCalls": 18420,
+      "selfSeconds": 0.00154,
+      "cumulativeSeconds": 0.00154
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 43,
+      "function": "inspect_native",
+      "primitiveCalls": 63,
+      "totalCalls": 63,
+      "selfSeconds": 0.00083,
+      "cumulativeSeconds": 3.57904
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_cli.py",
+      "line": 197,
+      "function": "main",
+      "primitiveCalls": 1,
+      "totalCalls": 1,
+      "selfSeconds": 0.0005,
+      "cumulativeSeconds": 44.94785
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 424,
+      "function": "store_namespace",
+      "primitiveCalls": 190,
+      "totalCalls": 190,
+      "selfSeconds": 0.00046,
+      "cumulativeSeconds": 0.00345
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 418,
+      "function": "canonical",
+      "primitiveCalls": 489,
+      "totalCalls": 489,
+      "selfSeconds": 0.00045,
+      "cumulativeSeconds": 0.2525
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 82,
+      "function": "restore_native",
+      "primitiveCalls": 113,
+      "totalCalls": 113,
+      "selfSeconds": 0.00021,
+      "cumulativeSeconds": 0.00021
+    },
+    {
+      "domain": "observer",
+      "file": "cli.py",
+      "line": 85,
+      "function": "_write_output",
+      "primitiveCalls": 14,
+      "totalCalls": 14,
+      "selfSeconds": 0.00015,
+      "cumulativeSeconds": 0.00032
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 36,
+      "function": "validate_bridge",
+      "primitiveCalls": 32,
+      "totalCalls": 32,
+      "selfSeconds": 0.00014,
+      "cumulativeSeconds": 1.8988
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 29,
+      "function": "__post_init__",
+      "primitiveCalls": 52,
+      "totalCalls": 52,
+      "selfSeconds": 0.00012,
+      "cumulativeSeconds": 0.00039
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 55,
+      "function": "<genexpr>",
+      "primitiveCalls": 189,
+      "totalCalls": 189,
+      "selfSeconds": 0.0001,
+      "cumulativeSeconds": 0.0001
+    },
+    {
+      "domain": "observer",
+      "file": "mesh_profile.py",
+      "line": 74,
+      "function": "bind",
+      "primitiveCalls": 52,
+      "totalCalls": 52,
+      "selfSeconds": 0.0001,
+      "cumulativeSeconds": 0.00061
+    },
+    {
+      "domain": "observer",
+      "file": "contract.py",
+      "line": 1,
+      "function": "<module>",
+      "primitiveCalls": 1,
+      "totalCalls": 1,
+      "selfSeconds": 4e-05,
+      "cumulativeSeconds": 0.00197
+    }
+  ],
+  "topMesh": [
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 38,
+      "function": "tree",
+      "primitiveCalls": 316,
+      "totalCalls": 4105613,
+      "selfSeconds": 1.22205,
+      "cumulativeSeconds": 1.43793
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 19,
+      "function": "plain_json",
+      "primitiveCalls": 28,
+      "totalCalls": 595962,
+      "selfSeconds": 0.17094,
+      "cumulativeSeconds": 0.29989
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 23,
+      "function": "<genexpr>",
+      "primitiveCalls": 140,
+      "totalCalls": 673270,
+      "selfSeconds": 0.11925,
+      "cumulativeSeconds": 0.29981
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 113,
+      "function": "pairs",
+      "primitiveCalls": 37093,
+      "totalCalls": 37093,
+      "selfSeconds": 0.03395,
+      "cumulativeSeconds": 0.04349
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 57,
+      "function": "_validated_response",
+      "primitiveCalls": 28,
+      "totalCalls": 28,
+      "selfSeconds": 0.02866,
+      "cumulativeSeconds": 7.93739
+    },
+    {
+      "domain": "mesh",
+      "file": "reader.py",
+      "line": 340,
+      "function": "host_loop",
+      "primitiveCalls": 730,
+      "totalCalls": 730,
+      "selfSeconds": 0.01185,
+      "cumulativeSeconds": 1.67646
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 26,
+      "function": "check",
+      "primitiveCalls": 271481,
+      "totalCalls": 271481,
+      "selfSeconds": 0.01154,
+      "cumulativeSeconds": 0.01154
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 94,
+      "function": "<genexpr>",
+      "primitiveCalls": 73008,
+      "totalCalls": 73008,
+      "selfSeconds": 0.0099,
+      "cumulativeSeconds": 0.0099
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 206,
+      "function": "accept",
+      "primitiveCalls": 14,
+      "totalCalls": 14,
+      "selfSeconds": 0.00775,
+      "cumulativeSeconds": 2.45664
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 150,
+      "function": "<genexpr>",
+      "primitiveCalls": 25583,
+      "totalCalls": 25583,
+      "selfSeconds": 0.00431,
+      "cumulativeSeconds": 0.00658
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 136,
+      "function": "visit",
+      "primitiveCalls": 29,
+      "totalCalls": 2490,
+      "selfSeconds": 0.004,
+      "cumulativeSeconds": 0.01161
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 25,
+      "function": "<genexpr>",
+      "primitiveCalls": 12364,
+      "totalCalls": 38956,
+      "selfSeconds": 0.00331,
+      "cumulativeSeconds": 0.29845
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 50,
+      "function": "reconstructed",
+      "primitiveCalls": 50,
+      "totalCalls": 50,
+      "selfSeconds": 0.00267,
+      "cumulativeSeconds": 0.00576
+    },
+    {
+      "domain": "mesh",
+      "file": "state.py",
+      "line": 125,
+      "function": "<genexpr>",
+      "primitiveCalls": 15465,
+      "totalCalls": 15465,
+      "selfSeconds": 0.00207,
+      "cumulativeSeconds": 0.00341
+    },
+    {
+      "domain": "mesh",
+      "file": "transport.py",
+      "line": 117,
+      "function": "_receive",
+      "primitiveCalls": 115,
+      "totalCalls": 115,
+      "selfSeconds": 0.00206,
+      "cumulativeSeconds": 0.44187
+    },
+    {
+      "domain": "mesh",
+      "file": "state.py",
+      "line": 102,
+      "function": "inspect_state",
+      "primitiveCalls": 63,
+      "totalCalls": 63,
+      "selfSeconds": 0.00203,
+      "cumulativeSeconds": 4.17234
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 161,
+      "function": "validate_response",
+      "primitiveCalls": 14,
+      "totalCalls": 14,
+      "selfSeconds": 0.00198,
+      "cumulativeSeconds": 5.71298
+    },
+    {
+      "domain": "mesh",
+      "file": "reader.py",
+      "line": 229,
+      "function": "compose",
+      "primitiveCalls": 14,
+      "totalCalls": 14,
+      "selfSeconds": 0.00194,
+      "cumulativeSeconds": 5.978
+    },
+    {
+      "domain": "mesh",
+      "file": "transport.py",
+      "line": 18,
+      "function": "boottime_ms",
+      "primitiveCalls": 1855,
+      "totalCalls": 1855,
+      "selfSeconds": 0.00138,
+      "cumulativeSeconds": 0.00171
+    },
+    {
+      "domain": "mesh",
+      "file": "view.py",
+      "line": 273,
+      "function": "disconnect",
+      "primitiveCalls": 1,
+      "totalCalls": 1,
+      "selfSeconds": 0.00072,
+      "cumulativeSeconds": 0.00072
+    },
+    {
+      "domain": "mesh",
+      "file": "state.py",
+      "line": 70,
+      "function": "resolve_profile",
+      "primitiveCalls": 82,
+      "totalCalls": 82,
+      "selfSeconds": 0.00052,
+      "cumulativeSeconds": 0.00116
+    },
+    {
+      "domain": "mesh",
+      "file": "client.py",
+      "line": 236,
+      "function": "_read",
+      "primitiveCalls": 43,
+      "totalCalls": 43,
+      "selfSeconds": 0.00052,
+      "cumulativeSeconds": 1.3483
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 86,
+      "function": "validate",
+      "primitiveCalls": 124,
+      "totalCalls": 124,
+      "selfSeconds": 0.00043,
+      "cumulativeSeconds": 0.41148
+    },
+    {
+      "domain": "mesh",
+      "file": "state.py",
+      "line": 92,
+      "function": "check_binding",
+      "primitiveCalls": 83,
+      "totalCalls": 83,
+      "selfSeconds": 0.00035,
+      "cumulativeSeconds": 0.00092
+    },
+    {
+      "domain": "mesh",
+      "file": "protocol.py",
+      "line": 108,
+      "function": "decode_json",
+      "primitiveCalls": 47,
+      "totalCalls": 47,
+      "selfSeconds": 0.00034,
+      "cumulativeSeconds": 0.2425
+    }
+  ]
+}
