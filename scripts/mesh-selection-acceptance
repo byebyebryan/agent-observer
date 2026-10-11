@@ -13,11 +13,51 @@ def run(argv):
     return subprocess.run(argv, capture_output=True, check=True, timeout=45).stdout
 
 
+def bridge_identity(value, home):
+    """Authenticate the independently selected resident bridge, never a reader."""
+    bridge = value.get("bridgeSelection", value)
+    relative = Path(bridge["readerPrefix"])
+    if (
+        relative.is_absolute()
+        or ".." in relative.parts
+        or relative.parts[:3] != (".local", "share", "agent-observer")
+        or len(relative.parts) != 4
+    ):
+        raise ValueError("selection_bridge_prefix")
+    prefix = home / relative
+    unit = value["unit"]
+    pid = int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"]))
+    if pid <= 0:
+        raise ValueError("selection_unit_inactive")
+    process = Path(f"/proc/{pid}")
+    started = process.joinpath("stat").read_text().rsplit(")", 1)[1].split()[19]
+    argv = process.joinpath("cmdline").read_bytes().rstrip(b"\0").split(b"\0")
+    endpoint = Path(f"/run/user/{os.getuid()}") / value["socket"]
+    if (
+        process.stat().st_uid != os.getuid()
+        or process.joinpath("exe").resolve() != (prefix / "bin/python").resolve()
+        or argv[1:]
+        != [os.fsencode(prefix / "bin/mesh-plus"), b"serve", b"--source",
+            value["source"].encode(), b"--socket", os.fsencode(endpoint)]
+    ):
+        raise ValueError("selection_foreign_unit")
+    if (
+        pid != int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"]))
+        or process.joinpath("stat").read_text().rsplit(")", 1)[1].split()[19] != started
+    ):
+        raise ValueError("selection_unit_changed")
+    return {"pid": pid, "startTicks": started}
+
+
+def same_bridge(value, home, expected):
+    if bridge_identity(value, home) != expected:
+        raise ValueError("selection_unit_changed")
+
+
 def main(host, root, selection_path, observer_selection, baseline_path):
     home = Path.home()
     baseline = json.loads(baseline_path.read_text())
     value = json.loads(selection_path.read_text())
-    prefix = home / value["readerPrefix"]
     targets = baseline["targets"]
     expected_targets = {
         ".local/bin/agent-observer",
@@ -42,20 +82,7 @@ def main(host, root, selection_path, observer_selection, baseline_path):
         ]
     )
     unit = value["unit"]
-    pid = int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"]))
-
-    def birth():
-        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
-
-    started = birth()
-    argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
-    if str(prefix / "bin/mesh-plus").encode() not in argv or b"serve" not in argv:
-        raise ValueError("selection_foreign_unit")
-    if (
-        pid != int(run(["systemctl", "--user", "show", unit, "-p", "MainPID", "--value"]))
-        or birth() != started
-    ):
-        raise ValueError("selection_unit_changed")
+    identity = bridge_identity(value, home)
     desired = {
         t: run(
             ["chezmoi", "--source", str(root), "--refresh-externals=never", "cat", str(home / t)]
@@ -63,6 +90,7 @@ def main(host, root, selection_path, observer_selection, baseline_path):
         for t in targets
     }
     prior = None
+    same_bridge(value, home, identity)
     try:
         run(["systemctl", "--user", "stop", unit])
         for target, saved in targets.items():

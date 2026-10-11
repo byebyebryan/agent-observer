@@ -1,10 +1,8 @@
 """Portable managed-operation interfaces and owned rollback fixtures."""
 
-import importlib.util
 import subprocess
 import sys
 import unittest
-from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +16,7 @@ class ManagedOperationsTests(unittest.TestCase):
             text=True,
             check=False,
         )
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('"status": "accepted"', result.stdout)
 
     def test_explicit_paths_required(self):

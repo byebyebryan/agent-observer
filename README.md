@@ -384,7 +384,9 @@ From a clone, run:
 ./scripts/check
 ```
 
-The check requires Python 3.11 or newer and Git. It checks repository Markdown
+The check requires Python 3.11 or newer, Git and chezmoi for the isolated managed
+operations fixture. CI provisions a checksummed chezmoi tool; the fixture targets
+only disposable directories and owned processes. It checks repository Markdown
 links, whitespace, code fences and Git whitespace errors. It does not invoke
 providers, install hooks or start services. It also runs the observation invariant, collector and controlled transport tests. These are
 synthetic/controlled checks; native runtime acceptance is recorded separately in evidence.
