@@ -1,7 +1,11 @@
 # Candidate artifact operations
 
 The current collector manifest is [Observer a15](../artifacts/observer-0.5.0a15.json).
-The read CLI independently selects [a13](../artifacts/observer-0.5.0a13.json).
+The read CLI independently selects [a17](../artifacts/observer-0.5.0a17.json)
+with [Mesh a11](../artifacts/mesh-0.1.0a11.json). Separate a16/a10 bridges and the
+shared Mesh CLI retain their selection. The
+[SDK integration report](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) records
+exact installation, native delivery and reader-only rollback acceptance.
 It freezes the producer wheel independently of later operations/tooling/docs
 commits. The normal service link and user unit select a15 on Snap and Starship
 through the Observer-only chezmoi operations tuple. The writer independently
@@ -74,8 +78,9 @@ execution record for the exact isolation/proof matrix.
 The current host selection is configuration-owned in
 [dotfiles deployments/agent-observer.json](https://github.com/byebyebryan/dotfiles/blob/main/deployments/agent-observer.json).
 Collector, reader and writer prefixes are independent; use the selection rather
-than inferring one from another. The reader/bridge may advance after the a13
-artifact checkpoint described above. Source checkout identity is separate from
+than inferring one from another. The reader and bridge retain independently
+verified immutable archives; reader selection does not require a matching bridge
+package version. Source checkout identity is separate from
 installed runtime identity. Use a checkout of this repository at the reviewed
 operations-tooling commit on each host; no Snap development path is required.
 

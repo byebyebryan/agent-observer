@@ -1,11 +1,12 @@
 # Agent Observer
 
-The next networking checkpoint is the [Mesh SDK v1 integration plan](docs/mesh-sdk-v1-integration-plan.md).
-Its [planning review](docs/evidence/2026-10-10-mesh-sdk-planning/REPORT.md) verifies
-isolated a11 feasibility; owner implementation and rollout remain pending.
-The inspected managed configuration selects Agent a16 readers and separate
-a16 bridges with Mesh a10; collection remains a15 and the writer 0.4.0a16.
-Exact package, native and operational acceptance remain separate.
+The [Mesh SDK v1 integration](docs/evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
+is accepted and selected on Snap and Starship: Agent a17/Mesh a11 readers supply
+an explicit Observer-owned pure state profile. Separate a16/Mesh a10 bridges,
+the shared Mesh CLI, a15 collection and the 0.4.0a16 writer retain their selections.
+Independent package/native pull/push and reader rollback gates pass. See the
+[execution status](docs/mesh-sdk-v1-integration-status.md) for bounds; hosted CI and
+release publication remain following receipts, with this pass committed locally.
 
 Historical coordinated transport receipt, 2026-10-10: Mesh 0.1.0a9, Tmux Observer
 0.6.0a4 and Tmux Plus 0.12.0a4 are deployed on Snap and Starship. Agent's
@@ -29,15 +30,16 @@ simplified.
 
 The a13 [read cache and timed human watches](docs/read-cache-client.md) are
 accepted through the [read-delivery pass](docs/evidence/2026-10-09-read-delivery/REPORT.md).
-The a12 [Mesh read client](docs/mesh-read-client.md) and Mesh a4 bridge are
-[accepted and selected](docs/evidence/2026-10-09-mesh-integration/REPORT.md)
-on Snap and Starship. Local/fleet cached pull and push, native comparisons,
-bridge restart and scoped rollback/reselection pass. Networking stays in Mesh
+The current a17 [Mesh read client](docs/mesh-read-client.md) uses SDK 1 with
+separately retained a16/a10 bridges on Snap and Starship. Local/fleet cached pull
+and push, native comparisons, owned SSH-exit recovery and reader-only rollback/
+reselection pass. The [preceding a12/a4 acceptance](docs/evidence/2026-10-09-mesh-integration/REPORT.md)
+retains its historical bridge-restart bounds. Networking stays in Mesh
 Plus; core and the host-local collection service remain independent.
 
 The observation checkpoint is [a15 Claude collection repair](docs/evidence/2026-10-10-claude-collection-repair/REPORT.md).
-Normal collection/services select a15; the read CLI independently selects a13.
-The a4 bridge retains its a12 prefix and process. Retention reconciles on changed
+Normal collection/services select a15; the read CLI independently selects a17.
+The a10 bridge retains its a16 prefix and process. Retention reconciles on changed
 receipts or due deadlines, preserving the a11 finite-retention behavior and the
 accepted observation contract. Claude shares bounded activity/kind decoding and
 reuses normalized metadata after current file/directory guards; native runtime
@@ -85,10 +87,11 @@ setup-only SDK omission now has a saved row, while its cwd, kind and conversatio
 age remain unavailable. Generic dialogs, excluded nested child history and
 Claude turn outcomes remain unproved.
 
-Installed native comparisons match all six ordinary Claude running contexts,
+The preceding provider checkpoint's installed native comparisons match all six ordinary Claude running contexts,
 35 saved UUIDs and 33 known conversation clocks on Snap within the documented
 metadata gap. All 89 Snap and 354 Starship Codex rows agree. Direct reads,
-cached pulls and pushed views pass independently. Age follows native conversation
+cached pulls and pushed views pass independently. Fresh SDK-integration counts
+and sampling qualifications are in the 2026-10-11 report above. Age follows native conversation
 activity; leases, source faults, ambiguity and gaps remain explicit.
 The [shared-core retention pass](docs/runtime-only-retention-follow-up.md)
 retires disappeared unsaved rows at their original runtime lease: 90 seconds on

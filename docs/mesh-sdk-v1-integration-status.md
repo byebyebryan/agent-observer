@@ -12,10 +12,10 @@ retains its pre-implementation bounds. API 2/read 4/Service 2 are preserved.
 | M2 explicit reader | Source tests complete | One profile through configured reader, guards and all view helpers; optional Mesh floor and CI wheel select SDK v1. Core/local commands remain Mesh-free. |
 | M3 immutable conformance | Source and installed package complete | a17 source `3650e5e`, exact wheel/archive/SDK/profile gates pass on both hosts. All 466 checks pass on Python 3.14 with no skips; 3.11 has two unrelated memfd skips. a10 reference parity preserves native frames and expected 5/2/0 expiry counts. Hosted CI remains a publication receipt. |
 | M4 native/mixed-artifact | Complete within declared bounds | Independent native pull, real two-host SSH push and owned SSH-exit/reconnect pass. a11 owner readers use retained a10 bridges. Short matched CPU/PSS/latency windows accept the bounded SDK overhead; older-history metadata and sampling differences remain explicit. |
-| M5 operational selection | Pending | Accepted concrete artifacts, scoped rollback and protected state preservation. |
+| M5 operational selection | Complete | a17/a11 reader-only selection, a16 rollback and a17 reselection pass serially on Snap/Starship. Both ordinary collector/bridge incarnations, writer/provider settings, shared Mesh CLI and unrelated Starship edits are preserved. Dotfiles selection commit `50685bc`. |
 
-The current managed baseline remains a16/a10 reader and bridge, collector a15 and
-writer 0.4.0a16. The reference publisher stays supported. Mesh's portable
+The current managed selection is a17/a11 reader, retained a16/a10 bridge,
+collector a15 and writer 0.4.0a16. The reference publisher stays supported. Mesh's portable
 conformance-kit/diagnostic follow-up is independent; its unimplemented testing
 surface is not a dependency. Provider workflows and settings remain outside this
 execution. No frontend, terminal attachment, device or event-product work is included.
@@ -23,3 +23,8 @@ execution. No frontend, terminal attachment, device or event-product work is inc
 The [integration evidence](evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
 records individual gates and retains the distinction between owned fixtures,
 immutable installation, independent native evidence and selection.
+
+M0–M5 are complete within the report's declared bounds. Changes are committed
+locally; hosted CI and an a17 release publication are following receipts, not
+claims made by this pass. No ordinary session restart was needed. Moving the
+reference cached publisher into Observer remains separate work.

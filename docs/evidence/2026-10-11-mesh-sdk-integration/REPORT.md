@@ -127,9 +127,32 @@ measured cost in exchange for its independent native/receipt checks. Further
 generic reader validation/publication optimization belongs to Mesh's separate
 maintenance track and must preserve admission and original source leases.
 
-## Following gates
+## Operational selection and handoff
 
-Scoped reader selection remains pending. Ordinary
-providers, collector a15, writer 0.4.0a16, separate a16/a10 bridge and shared global
-Mesh CLI have not been changed by the package/native gates. Publisher extraction,
-event products and downstream migration remain separate work.
+[Selection receipts](selection.json) accept a17/a11 readers serially on Snap and
+Starship. Each host's normal CLI reads the complete two-host 512-row view after
+selection, after rollback to a16, and after reselection to a17. Only the managed
+Agent reader link changes. Candidate rendering, both immutable artifact gates,
+exact captured controls and the selected bridge's UID/arguments/interpreter/birth
+guard precede mutation. Rollback restores only the captured reader link; neither
+unit is stopped. The successful [procedure](reader-selection-proof.py) retains
+these explicit inputs and guards.
+
+Collector a15 and bridge a16/a10 retain their exact process incarnations. The
+writer, workspace/unit controls, provider settings and shared global Mesh CLI
+remain byte-identical. Starship's pre-existing Kitty/Niri source edits are
+unchanged. The canonical two-file selection is committed as dotfiles `50685bc`
+and reconciled on Starship without writing unrelated worktree files. Private
+captured rollback inputs remain in each host's
+`~/.local/state/agent-observer-sdk-v1-20261011-<host>/baseline.json`.
+
+The [current Mesh guide](../../mesh-read-client.md) and
+[API 2 client handoff](../../api-v2-client-handoff.md) describe the selected tuple
+and explicit-profile obligations. Ordinary provider workflows/settings and all
+public wire versions are preserved; no session restart was needed. This pass is
+committed locally. Hosted CI and an a17 GitHub release have not been published
+or accepted yet. Local immutable archives on both hosts are the artifact authority.
+
+M0–M5 are complete within the stated observation, short-cost and native bounds.
+Publisher extraction, Mesh generic maintenance, event products and downstream
+consumer/GUI migration remain independently scheduled work.
