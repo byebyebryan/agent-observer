@@ -20,7 +20,12 @@ and [Mesh a4](https://github.com/byebyebryan/mesh-plus/releases/tag/v0.1.0a4)
 as GitHub prereleases with exact wheels and manifests. PyPI publication is not
 implied; install the two downloaded wheels explicitly for Mesh commands.
 
-Observer a12 adds a read-only client of `mesh-plus>=0.1.0a4,<0.2`. Install the
+The SDK v1 source candidate uses `mesh-plus>=0.1.0a11,<0.2` and an explicit
+Observer-owned pure Agent profile. It uses the same profile through configured
+readers, guards, validation, current selection and native reconstruction. The
+Mesh reference publisher is retained independently; new package/native and
+operational gates remain in the [execution status](mesh-sdk-v1-integration-status.md).
+The original a12 dependency floor was a4. Install the
 optional `mesh` extra or explicitly install the reviewed Mesh wheel into the
 client environment. Core and local service remain dependency-free. Normal
 direct/service commands and `mesh api`/help work without Mesh installed.

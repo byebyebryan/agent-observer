@@ -106,7 +106,7 @@ class OptionalMeshSDKTest(unittest.IsolatedAsyncioTestCase):
             if fail_output:
                 raise OSError("output closed")
 
-        with patch("mesh_plus.configured_read.configured_reader", configured):
+        with patch("mesh_plus.api.configured_reader", configured):
             if wrong_request or fail_output:
                 with self.assertRaises(ProtocolError if wrong_request else OSError):
                     await mesh_cli.run(args, output=output)
@@ -114,6 +114,7 @@ class OptionalMeshSDKTest(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(await mesh_cli.run(args, output=output), 1)
         self.assertEqual(closed, [True])
         self.assertFalse(policies[0]["report_routes"])
+        self.assertEqual(policies[0]["profile"].descriptor.sdk_version, 1)
         self.assertEqual(len(outputs), 0 if wrong_request else 1)
 
     async def test_snapshot_validates_identity_and_closes_owned_stream(self):

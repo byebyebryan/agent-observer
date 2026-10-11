@@ -9,6 +9,7 @@ import re
 import secrets
 import sys
 import time
+from functools import partial
 from pathlib import Path
 
 from .contract import canonical, identity_key
@@ -82,27 +83,34 @@ async def ticked(stream):
 async def run(args, *, output=None, human_output=None):
     # Import only on explicit mesh reads. Core, host-local CLI and descriptors
     # remain usable with no Mesh package or network configuration installed.
+    from mesh_plus.api import (
+        ReadGuard,
+        configured_reader,
+        current_sessions,
+        reconstructed,
+        validate_response,
+    )
     from mesh_plus.catalog import MeshAuthority, SSHPlusAuthority
-    from mesh_plus.configured_read import configured_reader
-    from mesh_plus.observer import clock_domain
+    from mesh_plus.evidence import clock_domain
     from mesh_plus.protocol import check
     from mesh_plus.transport import boottime_ms
-    from mesh_plus.view import ReadGuard, current_sessions, reconstructed, validate_response
 
     from .cli import _watch_output, _write_output
+    from .mesh_profile import AgentProfile
 
     output = _watch_output if output is None else output
     human_output = (lambda value: _write_output((value + "\n").encode())) if human_output is None else human_output
     authority = MeshAuthority() if args.authority == "mesh" else SSHPlusAuthority()
+    profile = AgentProfile()
     reader = await configured_reader("agent", source=args.source, socket=args.socket, scope=args.scope,
                                      hosts=args.hosts, local_host=args.local_host, authority=authority,
-                                     report_routes=False)
+                                     report_routes=False, profile=profile)
     request_id = secrets.token_hex(16)
     operation = "watch" if args.command == "watch" else "snapshot"
     request = {"meshProtocol": 1, "requestId": request_id, "operation": operation,
                "profile": "agent-observer.mesh-candidate.v1", "access": "cached",
                "selection": {"mode": args.scope, "hostIds": args.hosts}, "extensions": {}}
-    guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None)
+    guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
     stream = reader.execute(request)
     events = ticked(stream) if args.human and operation == "watch" else stream
     count, result = 0, 0
@@ -115,7 +123,7 @@ async def run(args, *, output=None, human_output=None):
             elif operation == "watch" or "mesh" not in frame:
                 guard.accept(frame)
             else:
-                validate_response(frame)
+                validate_response(frame, profile=profile)
                 check(frame["protocol"] == request["profile"] and frame["mesh"]["requestId"] == request_id
                       and frame["mesh"]["operation"] == "snapshot", "read_request_binding")
                 check(args.scope != "hosts" or frame["mesh"]["scope"]["hostIds"] == args.hosts, "read_scope_binding")
@@ -133,8 +141,8 @@ async def run(args, *, output=None, human_output=None):
                     display = guard.view
                 else:
                     display = guard.view if frame["mesh"]["kind"] == "heartbeat" and guard.view is not None else frame
-                rows = guard.current(now, clock_domain()) if operation == "watch" else current_sessions(frame, now, clock_domain())
-                view = human_view(display, rows, reconstruct=reconstructed, now_ms=now)
+                rows = guard.current(now, clock_domain()) if operation == "watch" else current_sessions(frame, now, clock_domain(), profile=profile)
+                view = human_view(display, rows, reconstruct=partial(reconstructed, profile=profile), now_ms=now)
                 if isinstance(view, str):
                     human_output(view)
                 else:

@@ -131,7 +131,7 @@ class MeshHumanWatchTest(unittest.IsolatedAsyncioTestCase):
             clock[0] += 10000
             return clock[0]
 
-        with patch("mesh_plus.configured_read.configured_reader", configured), patch("agent_observer.mesh_cli.ticked", ticks), patch("mesh_plus.transport.boottime_ms", advance):
+        with patch("mesh_plus.api.configured_reader", configured), patch("agent_observer.mesh_cli.ticked", ticks), patch("mesh_plus.transport.boottime_ms", advance):
             await mesh_cli.run(args, human_output=outputs.append)
         self.assertEqual(closed, [True])
         self.assertIn("revoked", outputs[-1])
@@ -157,7 +157,7 @@ class MeshHumanWatchTest(unittest.IsolatedAsyncioTestCase):
         async def waiting(*args, **kwargs):
             return WaitingReader()
 
-        with patch("mesh_plus.configured_read.configured_reader", waiting):
+        with patch("mesh_plus.api.configured_reader", waiting):
             task = asyncio.create_task(mesh_cli.run(args, human_output=outputs.append))
             await asyncio.wait_for(gate.wait(), timeout=2)
             task.cancel()
