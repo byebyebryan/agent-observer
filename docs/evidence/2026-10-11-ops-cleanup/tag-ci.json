@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "conclusion": "success",
+  "headSha": "fa3cd58e30d4175eeeb328081b013aea40b1625f",
+  "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164591325",
+  "jobs": [
+    {
+      "name": "check",
+      "conclusion": "success",
+      "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164591325/job/114544401914"
+    },
+    {
+      "name": "mesh-reader",
+      "conclusion": "success",
+      "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38164591325/job/114544402084"
+    }
+  ],
+  "sourceCheckSummaries": [
+    "check\tRun ./scripts/check\t2026-10-11T18:38:14.8419115Z Ran 353 tests in 35.241s",
+    "check\tRun ./scripts/check\t2026-10-11T18:38:14.8419719Z OK (skipped=16)",
+    "check\tRun ./scripts/check\t2026-10-11T18:38:14.8789623Z PASS: 130 Markdown files, local links, whitespace, fences and Git diff checks",
+    "check\tRun ruff check scripts/candidate-artifact tests/test_candidate_artifact.py\t2026-10-11T18:38:14.9113866Z All checks passed!",
+    "mesh-reader\tRun ./scripts/check\t2026-10-11T18:38:20.6328170Z Ran 353 tests in 39.802s",
+    "mesh-reader\tRun ./scripts/check\t2026-10-11T18:38:20.6719323Z PASS: 130 Markdown files, local links, whitespace, fences and Git diff checks"
+  ]
+}

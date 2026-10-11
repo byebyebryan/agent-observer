@@ -67,5 +67,8 @@ only the accepted Starship creation-clock cases. Reader cost remains a separate
 performance follow-up. O3 passes 353 tests, scoped workflow lint and final
 direct/cached/Mesh native comparisons; fleet pull/push has 475 Codex rows.
 Dotfiles remote already contains the accepted selection under `6e30240`; no
-additional deployment push is required. O4/O5 publication remain pending. The
+additional deployment push is required. O4/O5 complete hosted main/tag CI,
+the exact a18 GitHub prerelease, fresh downloaded private verification on both
+hosts and current client/operator handoff. The closing source checkpoint is
+checked locally and on hosted main after push. The
 [acceptance report](evidence/2026-10-11-ops-cleanup/REPORT.md) records each gate.

@@ -3,7 +3,8 @@
 Date: 2026-10-11. The authorized [execution plan](../../operational-cleanup-plan.md)
 preserves API 2/read 4/Service 2/Mesh SDK 1 and all selected runtime artifacts.
 This report keeps source, installed/native, operating cost and publication
-acceptance distinct. O0–O3 are accepted; O4/O5 publication gates remain pending.
+acceptance distinct. O0–O5 are complete within the declared bounds. The reader
+performance follow-up remains explicit; no observation contract changes.
 
 ## Independent installed baseline
 
@@ -143,8 +144,44 @@ The final source gate passes 353 tests without skips, 133 Markdown checks and
 the workflow's scoped Ruff lint. Dotfiles remote `6e30240` already contains the
 accepted `5fea4d1` selection; it needs no additional push from this pass.
 
-Hosted main/tag CI, publication of the exact accepted a18 wheel/manifest and
-fresh downloaded-byte verification remain pending. A local test pass or pushed
-commit is not a hosted CI/release receipt. Later operator/documentation commits
-do not change a18's producer-source or wheel binding. Download verification
-changes no selection.
+## Hosted CI and immutable release
+
+Reviewed Observer source through `dda8888` is pushed. Hosted
+[main CI](https://github.com/byebyebryan/agent-observer/actions/runs/38164488334)
+and [tag CI](https://github.com/byebyebryan/agent-observer/actions/runs/38164591325)
+both pass core and optional-Mesh jobs. [Main](main-ci.json) and [tag](tag-ci.json)
+receipts retain exact source and job results. The core-only job has 16 intentional
+optional-Mesh skips; the Mesh job runs all 353 tests. The earlier hosted fixture
+failure is superseded by an actual successful run with the checksummed chezmoi
+fixture tool, not merely by a local fix.
+
+[Observer v0.5.0a18](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a18)
+is a GitHub prerelease with exactly the accepted wheel and manifest. The
+[release receipt](release.json) verifies the tag resolves to original producer
+`fa3cd58e30d4175eeeb328081b013aea40b1625f`. The wheel is not rebuilt from later
+operator/documentation commits. There is no PyPI or downstream publication.
+
+Fresh independent downloads and private core installations pass on
+[Snap](snap-release-verification.json) and
+[Starship](starship-release-verification.json): wheel/manifest SHA-256, complete
+installed package bytes, entrypoints, public schemas and Service 2 agree. No
+Claude SDK/native modules or bundled provider executable are present. Both
+verifiers report zero provider invocations and unchanged selected links.
+
+The closing documentation/evidence checkpoint receives the mandatory local
+source gate and a following hosted main check after push. That final source
+checkpoint does not change immutable runtime bytes or require service restart.
+
+## Closure and next ownership
+
+Current README, artifact operations and API client handoff link this operating
+baseline and published artifact. Core/runtime classifications and pull/push are
+revalidated independently of frontend acceptance. Native/provider policy, writer,
+bridge and consumer selections remain external to publication.
+
+The next substantial issue is mixed Observer/Mesh read validation cost. Native
+occurrence events, publisher extraction, actions/attachment and GUI/device
+acceptance remain separate tracks. Older unknown kinds and volatile unsaved-child
+creation timestamps retain their accepted limits. Physical suspend and post-TUI-
+closure lifetime proof remain deferred. No new strict memory cap or compatibility
+collector is introduced.

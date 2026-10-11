@@ -13,7 +13,10 @@ intake. Codex-only collector and a18/Mesh a11 read artifacts are independently
 accepted on Snap and Starship. The [retirement report](docs/evidence/2026-10-11-claude-retirement/REPORT.md)
 records source, exact installed bytes, native comparisons, pull/push and scoped
 operational gates. The retained a16/Mesh a10 bridges and historical 0.4.0a16
-writer have independent selections. No downstream client migration is implied.
+writer have independent selections. The exact
+[a18 GitHub prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a18)
+is published and independently downloaded/verified on both hosts. No downstream
+client migration is implied.
 
 The [operational cleanup](docs/evidence/2026-10-11-ops-cleanup/REPORT.md) records
 the following Codex-only cost baseline, subscriber measurements and separate

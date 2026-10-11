@@ -56,8 +56,10 @@ This is bounded sampled observation, not a lossless event feed or long-duration
 performance guarantee. Use Codex on both hosts. Gaps,
 partial sources and unsupported activity remain explicit.
 
-Source CI checks are prepared in `.github/workflows/ci.yml`; no hosted result is
-claimed before publication/push and an actual run. The current
+Source CI in `.github/workflows/ci.yml` passes hosted core/optional-Mesh jobs
+on main and the original a18 source tag. The exact a18 wheel/manifest are
+published as a GitHub prerelease and freshly downloaded/verified on both hosts.
+Later operator/documentation commits retain separate source provenance. The current
 [operational cleanup report](evidence/2026-10-11-ops-cleanup/REPORT.md) distinguishes
 installed/native acceptance, collection/subscriber costs and publication.
 The earlier [operational execution record](operational-execution-status.md)
