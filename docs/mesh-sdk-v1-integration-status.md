@@ -8,8 +8,8 @@ retains its pre-implementation bounds. API 2/read 4/Service 2 are preserved.
 | Phase | State | Evidence and following gate |
 | --- | --- | --- |
 | M0 prerequisites | Source/owned fixture validation complete | CI explicitly installs the checksummed upstream chezmoi 2.73.0 Linux artifact. Separate-prefix bridge authentication rejects foreign arguments/PID changes and rechecks before stop. Full checks pass with user-installed tooling excluded from PATH. Hosted CI remains a following source-publication receipt. |
-| M1 pure profile | Pending | Observer native/domain semantics only; no provider, transport or action I/O. |
-| M2 explicit reader | Pending | One profile through configured reader, guards and all view helpers. |
+| M1 pure profile | Source tests complete | Frozen bindings, pure public/service facades, exact reconstruction and independent provider/namespace receipts. Callback tests block reference/collector imports. |
+| M2 explicit reader | Source tests complete | One profile through configured reader, guards and all view helpers; optional Mesh floor and CI wheel select SDK v1. Core/local commands remain Mesh-free. |
 | M3 immutable conformance | Pending | Released Mesh a11, Owner semantic fixtures and isolated new wheel. |
 | M4 native/mixed-artifact | Pending | Independent native comparisons and a11 reader/a10 bridge delivery. |
 | M5 operational selection | Pending | Accepted concrete artifacts, scoped rollback and protected state preservation. |
