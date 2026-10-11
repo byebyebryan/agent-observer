@@ -1,129 +1,87 @@
 # Experimental notification source and client
 
-Date: 2026-10-06. Separate S6 checkpoint; not part of stable API v1 or a hook
-installation. Native/transport acceptance is recorded separately below.
+Current implementation, 2026-10-11: native intake and Kitty rendering support
+Codex only after [Claude retirement](claude-retirement-plan.md). The experimental
+wire remains version 1 and admits historical supplied data; that pure admission
+is not a native adapter or transport capability. The removed `claude-hook` format
+is unsupported. Normal native hooks/settings are outside this implementation.
 
-The later [ownership clarification](observation-boundaries.md) distinguishes
-provider refresh hints, Observer read push and user-facing alerts. This remains
-an experimental source/client contract, outside API 2's accepted read surface.
-Its suppression/disposition/formatting fields are client policy; future reusable
-native-event evidence needs a separately reviewed boundary and native gate.
+This policy-bearing experiment is separate from [API 2](api-v2.md), cached
+[state push](state-push-design.md) and any future reusable occurrence-event API.
+The [ownership boundary](observation-boundaries.md) distinguishes native refresh
+hints, replacement read views and user-facing alerts. A pushed state view does
+not promise every native transition or one completion notification per turn.
+The ESP32-349 handoff remains one client's request, not a settled alert contract.
 
-The [2026-10-09 state/event design](state-and-events-design.md) now settles that
-future boundary, with [independent research proof](evidence/2026-10-09-state-and-events-design/REPORT.md)
-and a separate implementation sequence. The ESP32-349 handoff is one client
-request. This historical experimental wire remains policy-bearing and is not
-the proposed pure event wire or a general consumer contract; no converter or
-production event acceptance is implied.
+## Current source boundary
 
-## Source boundary
+`notification_source.normalize` consumes explicitly supplied Codex callback
+bytes and a caller-supplied complete Observer identity. The native thread ID
+must match exactly. An optional validated public snapshot supplies title/kind
+by the full reference; no provider lookup, private saved store, process, cwd,
+terminal or window matching occurs. Missing enrichment leaves kind unknown and
+uses a UUID title. Unknown kinds retain the experimental fail-open policy;
+confirmed children and `codex_exec` callbacks are suppressed.
 
-`notification_source` consumes an explicitly invoked provider callback and a
-caller-supplied full Observer identity. Native UUID must match it exactly. An
-optional validated public snapshot supplies exact kind/title; no private SQLite,
-transcript, cwd/PID/title matching or provider executable is used for enrichment.
-Absent enrichment uses a UUID title and unknown kind. Known children are
-suppressed; unknown Codex classification retains the existing fail-open policy.
-Event kind describes callback context: Claude's explicit child fields can suppress
-a callback under the parent's UUID without changing the parent's Observer row.
-Snapshot title/kind are supplied enrichment, not a freshness or authorship claim.
-Codex's native name can settle after completion, leaving an initial UUID title.
+`agent-turn-complete` produces a static completion message and bounded thread/
+turn correlation. Unsupported event types are ignored with a finite reason.
+Prompts, responses, tool payloads, callback captions and transcript paths are
+discarded in memory. Receipt time never replaces conversation activity, phase
+or runtime evidence, and a callback supplies no action permission or final-
+success guarantee. Snapshot enrichment does not establish current authorship.
 
-Only bounded metadata crosses normalization: receipt UUID/time, complete identity,
-finite source/signal/disposition/reason, kind/title, static body and correlation.
-Prompts, responses, tool payloads, hook captions, transcript paths and raw callback
-text are discarded. Receipt time never replaces conversation activity, phase or
-runtime evidence. Caller-supplied identity/callbacks are not action permission.
+Normalization rejects a retired native provider before decoding callback bytes.
+Pure event validation and JSON forwarding retain frozen historical vocabulary;
+Kitty rendering rejects providers other than Codex. The source/read service
+never installs callback hooks or emits user-facing alerts on startup.
 
-Primary native references establish the following input semantics:
+## Explicit experimental client
 
-- [Codex notify](https://learn.chatgpt.com/docs/config-file/config-advanced#notifications)
-  supplies `agent-turn-complete`, thread/turn identifiers and content fields.
-  The adapter keeps identifiers and a static completion body; `codex_exec` is
-  suppressed. Missing/invalid turn IDs retain receipt-only correlation.
-- [Claude hooks](https://code.claude.com/docs/en/hooks) distinguish Notification,
-  Stop and SubagentStop. Notification permission/idle/elicitation signals map to
-  static attention messages. Stop can be followed by parallel-hook continuation;
-  it and UserPromptSubmit are wakeups only. `agent_id` proves a subagent;
-  `agent_type` alone can describe a top-level custom agent. Prompt IDs correlate
-  a user prompt, not unique permission/question/idle events. Background
-  `agent_completed`/`agent_needs_input` depend on an open Agent View and currently
-  have unproved target correlation here, so only wake. Hook delivery persists
-  when native alert channels are disabled; that does not prove custom delivery.
-
-Unknown notification types are ignored with a finite reason. A callback cannot
-settle the parent or create a final-success claim. Unattached/background events,
-missed hooks and unsupported source kinds have no synthetic completion fallback.
-Sampled watch remains a different read interface without lossless replay.
-
-## Explicit client
-
-The module CLI is deliberately separate:
+Use the accepted reader prefix's Python interpreter:
 
 ```sh
-python -m agent_observer.notification_client schema
-python -m agent_observer.notification_client normalize --identity FULL_REF_JSON --snapshot SNAPSHOT_JSON < CALLBACK_JSON
-python -m agent_observer.notification_client render --format kitty < EVENT_JSON
-python -m agent_observer.notification_client render --format claude-hook < EVENT_JSON
-python -m agent_observer.notification_client stream --format json < EVENTS_JSONL
+observer_python="$HOME/.local/share/agent-observer/0.5.0a18-06544d27ae62f590-mesh-a11-reader/bin/python"
+"$observer_python" -m agent_observer.notification_client schema
+"$observer_python" -m agent_observer.notification_client normalize --identity FULL_REF_JSON --snapshot SNAPSHOT_JSON < CALLBACK_JSON
+"$observer_python" -m agent_observer.notification_client render --format json < EVENT_JSON
+"$observer_python" -m agent_observer.notification_client render --format kitty < EVENT_JSON
+"$observer_python" -m agent_observer.notification_client stream --format json < EVENTS_JSONL
 ```
 
-The experimental event wire is 1; its exported schema and semantic validator
-reject extra fields/invalid identities/false correlations. Raw callbacks are
-bounded to 1 MiB/100,000 nodes; normalized frames to 16 KiB/256 nodes. Errors are
-finite and content-free. The ordinary read/write CLI neither imports this client
-nor publishes notifications. Stable API 1 still declares only its read/write
-schemas and pure facade; no public notification stability is implied.
+The placeholders are explicit caller inputs, not provider discovery commands.
+`render` and `stream` support `json` and `kitty`; `--tmux-passthrough` applies only
+to Kitty and wraps doubled escapes in tmux DCS. It selects no pane and proves no
+passthrough setting. Raw callbacks are bounded to 1 MiB/100,000 nodes; normalized
+frames to 16 KiB/256 nodes. Invalid input/transport returns exit 2 with a finite,
+content-free diagnostic. This is not a production hook installer.
 
-These operator commands can exit 2 on invalid input. Do not wire them directly
-into a controlling Claude Stop/tool hook: its adapter must return exit 0 and `{}`
-on observation failure, without decision fields. The isolated capture helper
-demonstrates that quiet failure boundary; it is not a production hook installer.
+The stream's 256-entry process-local LRU suppresses repeated receipt IDs. Codex
+completion additionally deduplicates by full identity plus native turn ID.
+Suppressed callbacks do not consume a later visible signal's deduplication key.
+Restart, eviction and missing turn IDs can produce duplicates. There is no
+durable journal, replay, exactly-once guarantee or desktop acknowledgement.
 
-The stream client's 256-entry process-local LRU suppresses repeated normalized
-receipts. Codex completion additionally uses full identity plus native turn ID;
-repeated callbacks for that same turn coalesce. Only visible notification signals
-consume a native dedupe key; ignored callbacks
-cannot suppress a later visible completion. Claude prompt ID is correlation
-only: distinct attention receipts survive even for the same prompt. Restart,
-eviction and missing native IDs can produce duplicates. There is no durable
-exactly-once journal, replay authority or desktop delivery acknowledgement.
+## Kitty and alert ownership
 
-## Kitty transport and ownership
+The renderer emits bounded base64 Kitty OSC 99 chunks with the Codex sender,
+static body, supplied/fallback title, unfocused-only policy and native focus
+action. Chunk identity is not a delivery acknowledgement. Rendering to stdout
+is an explicit publication boundary: the caller must establish its originating
+terminal/pane and remote route. No automatic TTY, Kitty window, tmux pane or
+remote attachment is inferred from a daemon environment or session PID.
 
-[Kitty OSC 99](https://sw.kovidgoyal.net/kitty/desktop-notifications/) supports
-separate base64 application name, title/body chunks and originating-window focus.
-The explicit renderer produces Codex/Claude sender, native/fallback title, static
-body, unfocused-only policy and native focus action. It emits no Ghostty fallback.
-Kitty output can explicitly request `--tmux-passthrough`; this wraps doubled
-escapes in tmux DCS. It does not select a pane or prove its passthrough setting.
-Chunk IDs are shared and bounded; encoding prevents escape-sequence injection.
-Claude-hook output contains only `terminalSequence`, with no decision/control
-fields; ignored/wakeup events return `{}`.
+A controlled sink proves formatting, not graphical sender/focus/Open behavior,
+duplicate native-alert policy or DMS/ESP32 delivery. Chezmoi owns ordinary
+helper/hook/settings selection; this experiment supplies no replacement or
+provider-policy acceptance. Device projections, alert policy, occurrence replay
+and shared-daemon per-viewer routing retain independent implementation/native
+and graphical gates.
 
-Rendering to stdout is an explicit publication transport boundary. The caller
-must establish the originating terminal/pane. No automatic TTY, Kitty window,
-tmux pane or remote routing is inferred from daemon startup environment or a
-session PID. A controlled sink/PTY proves formatting, not graphical sender,
-focus/Open, duplicate native-alert policy or DMS/349 mirroring. Claude hook
-terminalSequence requires an interactive UI path; detached daemon publication
-and shared-daemon per-viewer routing are not accepted by this client.
+## Historical evidence
 
-Chezmoi retains ownership of normal helper/hook/settings selection. Normal Codex
-external completion plus approval-only built-ins and Claude native Kitty policy
-remain unchanged. Any replacement needs scoped configuration/artifact/native
-duplicate tests, originating Kitty/tmux routing and graphical Open proof. 349
-keeps consuming the desktop notification stream; it gains no provider lookups.
-
-## Acceptance
-
-The [a4 packaged/native checkpoint](evidence/2026-10-06-notifications/REPORT.md)
-accepts the experimental subset independently of API v1 read/write acceptance.
-Source tests cover privacy, exact identity/title/kind, fail-open unknown Codex,
-child suppression, Stop continuation semantics, unsupported background targets,
-correlation/restart/LRU limits, strict framing and Kitty fields. Native callback
-capture proves Codex completion/turn IDs on both hosts, concurrent duplicate-title
-mapping, Claude parallel Stop continuation, child suppression, permission and
-idle signals with native alerts disabled. Actual Kitty/DMS/349 delivery, remote
-and unattached origin routing, question callback coverage and background manager
-target correlation remain separate limits. Normal wiring is unchanged.
+The [a4 notification checkpoint](evidence/2026-10-06-notifications/REPORT.md)
+retains its original Codex/Claude callback, privacy, correlation and controlled
+transport bounds. Its Claude intake/rendering and removed operator commands do
+not describe a18 support. The [pre-retirement guide](https://github.com/byebyebryan/agent-observer/blob/2fcacd1f7c85258b1fb857495978d61200315e52/docs/notification-client-contract.md)
+preserves those original instructions. The following [state/event research](state-and-events-design.md)
+and [execution proposal](state-and-events-execution-plan.md) remain deferred.

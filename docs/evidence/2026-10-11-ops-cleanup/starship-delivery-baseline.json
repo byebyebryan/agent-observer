@@ -1,0 +1,73 @@
+{
+  "status": "measured",
+  "windows": [
+    {
+      "workload": "baseline",
+      "host": "starship",
+      "addedReaders": 0,
+      "scope": null,
+      "warmupSeconds": 30,
+      "durationSeconds": 600.941,
+      "samples": 600,
+      "startupThroughWarmupSeconds": 30.001,
+      "roles": {
+        "observer": {
+          "cpuSeconds": 11.35,
+          "percentOneCore": 1.889,
+          "mean": {
+            "rssBytes": 57130994,
+            "pssBytes": 33001242,
+            "fds": 13,
+            "processes": 2
+          },
+          "peak": {
+            "rssBytes": 79728640,
+            "pssBytes": 45062144,
+            "fds": 20,
+            "processes": 3
+          },
+          "end": {
+            "rssBytes": 55914496,
+            "pssBytes": 32496640,
+            "fds": 12,
+            "processes": 2
+          },
+          "pssCompleteAtEnd": true
+        },
+        "bridge": {
+          "cpuSeconds": 0.0,
+          "percentOneCore": 0.0,
+          "mean": {
+            "rssBytes": 43560960,
+            "pssBytes": 31257701,
+            "fds": 8,
+            "processes": 1
+          },
+          "peak": {
+            "rssBytes": 43560960,
+            "pssBytes": 31262720,
+            "fds": 8,
+            "processes": 1
+          },
+          "end": {
+            "rssBytes": 43560960,
+            "pssBytes": 31276032,
+            "fds": 8,
+            "processes": 1
+          },
+          "pssCompleteAtEnd": true
+        }
+      },
+      "ordinaryHost": true,
+      "idleBenchmark": false,
+      "remoteSSHServerCostsIncluded": false,
+      "rawPayloadsRetained": false
+    }
+  ],
+  "limits": [
+    "ordinary active hosts",
+    "one-second tree sampling",
+    "remote SSH server/bridge excluded",
+    "concurrent host workloads"
+  ]
+}
