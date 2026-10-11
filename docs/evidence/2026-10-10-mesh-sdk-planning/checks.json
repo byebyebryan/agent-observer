@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "scope": "Documentation and synthetic repository checks; no native inventory acceptance",
+  "runs": [
+    {
+      "status": "passed",
+      "command": "./scripts/check",
+      "exitCode": 0,
+      "elapsedSeconds": 24.856,
+      "tests": 450,
+      "scope": "Documentation and synthetic repository check; no native inventory acceptance",
+      "hostedBaseline": "failure at 611be2c; operational prerequisite remains open",
+      "skipped": 4
+    },
+    {
+      "status": "passed",
+      "command": "isolated released-a11 Python 3.11.10 -B ./scripts/check",
+      "exitCode": 0,
+      "elapsedSeconds": 25.885,
+      "tests": 450,
+      "skipped": 2
+    }
+  ],
+  "hostedBaseline": "failure at 611be2c; operational prerequisite remains open"
+}

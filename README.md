@@ -1,6 +1,13 @@
 # Agent Observer
 
-Coordinated transport selection, 2026-10-10: Mesh 0.1.0a9, Tmux Observer
+The next networking checkpoint is the [Mesh SDK v1 integration plan](docs/mesh-sdk-v1-integration-plan.md).
+Its [planning review](docs/evidence/2026-10-10-mesh-sdk-planning/REPORT.md) verifies
+isolated a11 feasibility; owner implementation and rollout remain pending.
+The inspected managed configuration selects Agent a16 readers and separate
+a16 bridges with Mesh a10; collection remains a15 and the writer 0.4.0a16.
+Exact package, native and operational acceptance remain separate.
+
+Historical coordinated transport receipt, 2026-10-10: Mesh 0.1.0a9, Tmux Observer
 0.6.0a4 and Tmux Plus 0.12.0a4 are deployed on Snap and Starship. Agent's
 a13 reader and a12 bridge use new private a9 environments; its a15 collector
 and a16 writer retain their prior artifacts. The frozen networking contracts

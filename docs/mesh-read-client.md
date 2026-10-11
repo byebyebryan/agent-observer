@@ -1,5 +1,12 @@
 # Optional Mesh state read client
 
+The inspected current managed configuration selects Agent `0.5.0a16` readers
+and separate bridges with Mesh `0.1.0a10`; collection remains a15 and the writer
+`0.4.0a16`. The [SDK v1 plan](mesh-sdk-v1-integration-plan.md) and
+[planning review](evidence/2026-10-10-mesh-sdk-planning/REPORT.md) govern the next
+owner-profile pass; implementation and selection of Mesh a11 are pending.
+The following a12/a4 and a13 paragraphs retain their historical acceptance bounds.
+
 The [accepted a12/a4 candidate](evidence/2026-10-09-mesh-integration/REPORT.md)
 is selected on Snap and Starship. Both bridge units are enabled. Collection
 services stay a11 and the writer stays a16; the shared SSH Plus authority stays a1.

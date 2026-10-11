@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "kind": "disposable_frozen_profile_feasibility",
+  "versions": {
+    "agent-observer": "0.5.0a16",
+    "mesh-plus": "0.1.0a11"
+  },
+  "python": "3.11.10",
+  "fixtureCount": 6,
+  "selectionComparisons": 18,
+  "baselineMesh": "0.1.0a10",
+  "exactNativeAndSelectionParity": true,
+  "resultSha256": "de98459cb7803bb295caaf0a71d862e9106b3b9580180523fd6f0f56a02ef64f",
+  "negativeRejections": [
+    "wrong_host",
+    "duplicate_identity",
+    "receipt_acceptance_forgery",
+    "lease_upgrade",
+    "invalid_native_clock"
+  ],
+  "configuredLocalPollPush": true,
+  "guardDisconnectRevokes": true,
+  "ownedClose": true,
+  "blockedImports": [
+    "tmux_observer",
+    "mesh_plus.observer",
+    "provider collection/actions"
+  ],
+  "limits": [
+    "Synthetic frozen fixtures and owned IPC only",
+    "Not an implemented owner profile",
+    "No actual SSH/native provider inventory/deployment acceptance"
+  ],
+  "probeScriptSha256": "7cb43b132c5f40811a3b11b48ca817fb137d6621df99ef3667e2a55285e3c224",
+  "wheelSha256": {
+    "mesh": "9d3c2446b2391ab2271236804b4dfc03dfa5d29f2766d72b3d12086848b36359",
+    "observer": "94705baebfa51a9664e9dbfa7603dcb932d6301146cf9a59017017c5285b3b17"
+  },
+  "suiteResults": {
+    "observerMeshCLI": {
+      "tests": 7,
+      "skipped": 0,
+      "status": "passed"
+    },
+    "observerHumanWatch": {
+      "tests": 4,
+      "skipped": 0,
+      "status": "passed"
+    },
+    "meshSDKBoundary": {
+      "tests": 10,
+      "skipped": 0,
+      "status": "passed"
+    },
+    "meshFreeCLI": {
+      "tests": 7,
+      "skipped": 2,
+      "status": "passed"
+    }
+  }
+}

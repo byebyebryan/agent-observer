@@ -1,5 +1,13 @@
 # Agent Observer roadmap
 
+The next networking pass is [Mesh SDK v1 owner integration](mesh-sdk-v1-integration-plan.md).
+The [planning review](evidence/2026-10-10-mesh-sdk-planning/REPORT.md) closes source
+alignment and isolated package/fixture feasibility only. M0–M5 sequence portable
+checks and safe operations, pure profile, explicit read wiring, immutable
+conformance, independent native proof and staged selection. Current managed source
+selects Agent a16/Mesh a10 reader and bridge prefixes independently of a15
+collection and the 0.4.0a16 writer. Earlier selections below are dated checkpoints.
+
 The [read-delivery follow-up](read-delivery-follow-up-plan.md) publishes exact
 artifacts, measures sustained read costs and adds a13 pure read-cache/timer
 conformance and human-watch ergonomics. Its
