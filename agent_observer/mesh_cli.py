@@ -189,7 +189,7 @@ def parser():
             command.add_argument("--count", type=int, help="limit replacement/control frames")
         if name in {"list", "watch"}:
             command.add_argument("--include-children", action="store_true")
-            command.add_argument("--provider", action="append", choices=("codex", "claude"))
+            command.add_argument("--provider", action="append", choices=("codex",))
             command.add_argument("--order", choices=("activity", "created"), default="activity")
     return root
 

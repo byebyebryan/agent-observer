@@ -55,7 +55,7 @@ def document(path, limit=256 * 1024):
     return json.loads(path.read_bytes())
 
 
-def validate_selection(value, host):
+def validate_selection(value, host, *, prior=False):
     legacy = (
         value.get("manifestVersion") == 1
         and value.get("schemas") == {"snapshot": 3, "watch": 3, "write": 1}
@@ -93,7 +93,7 @@ def validate_selection(value, host):
         require(
             profile["providers"] == ["codex"]
             and profile["artifactProfile"] == "core"
-            or host == "snap"
+            or prior and host == "snap"
             and profile["providers"] == ["codex", "claude"]
             and profile["artifactProfile"] == "claude-history",
             "operations_provider_selection_invalid",
@@ -101,8 +101,8 @@ def validate_selection(value, host):
     return value
 
 
-def selection(host, path=None):
-    value = validate_selection(document(path or SELECTION), host)
+def selection(host, path=None, *, prior=False):
+    value = validate_selection(document(path or SELECTION), host, prior=prior)
     observed = (
         run(
             [
@@ -623,7 +623,13 @@ def self_test():
             },
         },
     }
-    validate_selection(claude, "snap")
+    validate_selection(claude, "snap", prior=True)
+    try:
+        validate_selection(claude, "snap")
+    except ValueError as error:
+        require(str(error) == "operations_provider_selection_invalid", "operations_self_test")
+    else:
+        raise ValueError("operations_retired_provider_selection")
     for host, profile in (
         ("snap", {"providers": ["codex", "claude"], "artifactProfile": "core"}),
         ("starship", {"providers": ["codex", "claude"], "artifactProfile": "claude-history"}),
@@ -918,7 +924,7 @@ def main():
         if args.operation == "verify":
             result = verify(value, args.host, user_home, args.live)
         elif args.operation == "apply":
-            previous = selection(args.host, args.previous_tuple) if args.previous_tuple else None
+            previous = selection(args.host, args.previous_tuple, prior=True) if args.previous_tuple else None
             result = apply(value, args.host, user_home, args.snapshot, args.apply, previous)
         else:
             result = rollback(value, args.host, user_home, args.snapshot)

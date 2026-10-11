@@ -35,7 +35,7 @@ def unit():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host-scope", choices=("snap", "starship"), required=True)
-    parser.add_argument("--provider", choices=("codex", "claude"), action="append", required=True)
+    parser.add_argument("--provider", choices=("codex",), action="append", required=True)
     parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
     parser.add_argument("--oracle", type=Path, required=True)
     args = parser.parse_args()
@@ -52,8 +52,6 @@ def main():
         values = {}
         if peer:
             values["codex"] = oracle["codex_reference"](peer)
-        if "claude" in args.provider:
-            values["claude"] = oracle["claude_reference"](Path.home() / ".claude", cache)
         return values
 
     try:

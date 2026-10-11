@@ -71,7 +71,7 @@ inventory or a saved-session absence predicate.
 
 ## Evidence and isolation
 
-The standalone [native harness](../../../scripts/native-claude-interactive-proof)
+The standalone [native harness](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/scripts/native-claude-interactive-proof)
 imports no Observer implementation. It uses the existing owned user/mount/PID
 namespace helper, private copied executable bytes, private authentication and
 workspaces, and masked ordinary provider paths. No tmux, window or client

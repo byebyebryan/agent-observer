@@ -31,7 +31,7 @@ def check(prefix, fixtures):
     with tempfile.TemporaryDirectory(prefix="notification-reference-") as scratch:
         path = Path(scratch) / "snapshot.json"
         path.write_text(json.dumps(snapshot))
-        for provider in ("codex", "claude"):
+        for provider in ("codex",):
             row = next(
                 r
                 for r in snapshot["sessions"]
@@ -49,12 +49,6 @@ def check(prefix, fixtures):
                         "thread-id": row["identity"]["nativeId"],
                         "turn-id": "99999999-1234-1234-1234-123456789abc",
                     },
-                )
-            else:
-                payload.update(
-                    session_id=row["identity"]["nativeId"],
-                    hook_event_name="Notification",
-                    notification_type="permission_prompt",
                 )
             event = json.loads(
                 command(
@@ -74,16 +68,12 @@ def check(prefix, fixtures):
                 raise ValueError("notification_public_lookup_failed")
             if b"\x1b]99;" not in command(prefix, ["render", "--format", "kitty"], event):
                 raise ValueError("notification_frame_failed")
-            if provider == "claude":
-                hook = json.loads(command(prefix, ["render", "--format", "claude-hook"], event))
-                if set(hook) != {"terminalSequence"}:
-                    raise ValueError("notification_hook_control")
     return {
         "status": "accepted",
         "selectedPrefix": str(prefix),
         "schemaVersion": 1,
         "referenceImportsObserver": False,
-        "providers": ["codex", "claude"],
+        "providers": ["codex"],
         "contentDiscarded": True,
         "exactPublicTitle": True,
         "controlledOutputOnly": True,

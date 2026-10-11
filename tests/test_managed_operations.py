@@ -52,6 +52,22 @@ class ManagedOperationsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "^mesh_bridge_contract_selection$"):
                 module.compatible_bridge(reader, {"mesh": {**bridge["mesh"], field: value}})
 
+    def test_retired_bridge_dependency_profile_does_not_leak_into_reader(self):
+        from unittest.mock import patch
+        loader = importlib.machinery.SourceFileLoader(
+            "mesh_profile_selection", str(ROOT / "scripts/agent-observer-mesh-operations"))
+        spec = importlib.util.spec_from_loader(loader.name, loader)
+        module = importlib.util.module_from_spec(spec)
+        loader.exec_module(module)
+        contract = {"agentProfile": "agent-observer.mesh-candidate.v1",
+                    "lockSha256": "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"}
+        bridge = {"mesh": contract, "profiles": {"snap": "claude-history"}}
+        reader = {"mesh": contract, "profiles": {"snap": "core"}, "bridgeSelection": bridge}
+        with patch.object(module, "artifact", side_effect=[("reader", {}), ("bridge", {})]) as gate:
+            module.selected_artifacts(reader, "snap")
+        self.assertEqual(gate.call_args_list[0].args, (reader, "snap", {"snap": "core"}))
+        self.assertEqual(gate.call_args_list[1].args, (bridge, "snap", {"snap": "claude-history"}))
+
 
 if __name__ == "__main__":
     unittest.main()

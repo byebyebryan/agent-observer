@@ -1,5 +1,11 @@
 # Agent Observer architecture boundaries
 
+Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
+our only implemented native provider. The provider-neutral API 2/read wire 4/
+Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
+historical; reserved wire data is not an implemented adapter. Source removal
+is in progress; immutable-package/native and managed rollout gates follow.
+
 The [Mesh SDK v1 integration](evidence/2026-10-11-mesh-sdk-integration/REPORT.md)
 implements the optional networking boundary: `agent_observer.mesh_profile`
 supplies the Observer-owned pure state profile explicitly to Mesh's read/guard/

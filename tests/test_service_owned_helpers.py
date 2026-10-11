@@ -12,7 +12,6 @@ from unittest.mock import patch
 
 from test_service_runtime import Running
 
-from agent_observer.claude_history import _run_worker
 from agent_observer.service_runtime import Runtime, Worker
 from agent_observer.observation_scheduler import Scheduler
 
@@ -58,34 +57,7 @@ class OwnedHelpersTest(unittest.TestCase):
                 if process.poll() is None:
                     os.killpg(process.pid, 9)
                     process.wait()
-    def test_shared_history_group_requires_its_own_leader(self):
-        with patch("agent_observer.claude_history.os.getpgrp", return_value=-1), patch("agent_observer.claude_history.subprocess.Popen") as spawn:
-            self.assertEqual(_run_worker(Path("/unused"), timeout=1, owned_worker_group=True), (None, "history_source_failed"))
-        spawn.assert_not_called()
 
-    def test_outer_deadline_stops_actual_history_helper(self):
-        with tempfile.TemporaryDirectory(prefix="ao-helper-proof-") as directory:
-            root = Path(directory)
-            marker, child = root / "pid.json", root / "fake_sdk.py"
-            child.write_text("import os,json,time\nfrom pathlib import Path\nPath(" + repr(str(marker)) + ").write_text(json.dumps([os.getpid(),os.getpgrp()]))\ntime.sleep(30)\n")
-            source_root = str(Path(__file__).resolve().parent.parent)
-            code = "import sys;sys.path.insert(0," + repr(source_root) + ");from pathlib import Path;from unittest.mock import patch;from agent_observer.claude_history import _run_worker\nwith patch('agent_observer.claude_history.Path.with_name',return_value=Path(" + repr(str(child)) + ")):_run_worker(Path(" + repr(str(root)) + "),timeout=30,owned_worker_group=True)"
-            parents = []
-            def factory(job):
-                process = subprocess.Popen([sys.executable, "-I", "-B", "-c", code], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
-                parents.append(process)
-                return process
-            with Running(collect=True, factory=factory, scheduler=Scheduler(("codex",), timeout_ms=1000)) as server:
-                deadline = time.monotonic() + 3
-                while not marker.exists() and time.monotonic() < deadline:
-                    time.sleep(0.01)
-                pid, group = json.loads(marker.read_text())
-                self.assertEqual(group, parents[0].pid)
-                while (alive(pid) or parents[0].returncode is None) and time.monotonic() < deadline:
-                    time.sleep(0.02)
-                self.assertFalse(alive(pid))
-                self.assertIsNotNone(parents[0].returncode)
-                self.assertEqual(server.state.receipts["codex"]["runtime"].lastResult, "collection_timeout")
 
     def test_exited_leader_is_not_reaped_before_group_cleanup(self):
         with tempfile.TemporaryDirectory(prefix="ao-helper-crash-") as directory:

@@ -1,5 +1,11 @@
 # Agent Observer roadmap
 
+Current direction, 2026-10-11: [Claude retirement](claude-retirement-plan.md) makes Codex
+our only implemented native provider. The provider-neutral API 2/read wire 4/
+Service 2/Mesh SDK 1 remain unchanged. Claude observation checkpoints below are
+historical; reserved wire data is not an implemented adapter. Source removal
+is in progress; immutable-package/native and managed rollout gates follow.
+
 The [Mesh SDK v1 owner integration](mesh-sdk-v1-integration-plan.md) is
 [complete](evidence/2026-10-11-mesh-sdk-integration/REPORT.md) through M0–M5 within
 its declared bounds: pure profile/read wiring, immutable conformance, independent

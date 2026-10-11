@@ -33,18 +33,7 @@ CODEX_DAEMON = Artifact(
     "f34a4d2301892ae96c90097786bfe5dc269f187b6f69faf42a7b357b8c081e35",
     "packages/app-server-daemon/releases/0.160.1-x86_64-unknown-linux-musl/bin/codex",
 )
-CLAUDE_PREVIOUS = Artifact(
-    "claude", "2.1.287",
-    "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
-    "/opt/claude-code/bin/claude",
-)
-CLAUDE = Artifact(
-    "claude", "2.1.289",
-    "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
-    "/opt/claude-code/bin/claude",
-)
-HISTORICAL_IMAGES = (CODEX, CODEX_DAEMON, CLAUDE_PREVIOUS, CLAUDE)
-
+HISTORICAL_IMAGES = (CODEX, CODEX_DAEMON)
 
 def historical_image(provider, digest):
     return next((a for a in HISTORICAL_IMAGES if a.provider == provider and a.sha256 == digest), None)
@@ -104,7 +93,7 @@ def _inspect_fd(fd, provider, *, timeout, cache=None):
 
 def inspect_installed(path: Path, provider: str, *, timeout=3.0, cache=None):
     try:
-        if provider not in {"codex", "claude"} or not path.is_absolute() or path.resolve(strict=True) != path:
+        if provider not in {"codex"} or not path.is_absolute() or path.resolve(strict=True) != path:
             raise ValueError("runtime_image_ownership_mismatch")
         fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
     except OSError:
@@ -119,10 +108,10 @@ def inspect_installed(path: Path, provider: str, *, timeout=3.0, cache=None):
 def inspect_process(pid: int, provider: str, *, cache=None, expected_path: Path | None = None):
     # /proc/PID/exe is deliberately a kernel symlink. Inspect the open image,
     # including a replaced/deleted executable, rather than the current PATH file.
-    if provider not in {"codex", "claude"}:
+    if provider not in {"codex"}:
         raise ValueError("runtime_provider_unsupported")
     process = Path(f"/proc/{pid}")
-    expected = expected_path or Path(CODEX.path if provider == "codex" else CLAUDE.path)
+    expected = expected_path or Path(CODEX.path)
     reported = os.readlink(process / "exe")
     if reported.endswith(" (deleted)"):
         reported = reported[:-10]

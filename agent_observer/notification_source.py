@@ -1,4 +1,4 @@
-"""Experimental metadata-only callback normalization; no publishing or provider reads."""
+"""Experimental Codex callback normalization; frozen event data admission is pure."""
 
 from __future__ import annotations
 
@@ -142,17 +142,18 @@ def normalize(data, identity, *, snapshot=None, received_at=None, receipt_id=Non
     """Caller supplies owning host/store identity; callback IDs must match it exactly.
 
     Raw message/title/transcript paths/tool payloads are discarded in memory.
-    Stop is a wakeup only. Claude manager background events lack accepted target
-    correlation. Prompt IDs correlate callbacks but do not identify attention events.
+    Only Codex native notifications are implemented.
     """
     identity_key(identity)
     provider = identity["provider"]
-    if identity["nativeIdKind"] != ("thread" if provider == "codex" else "session"):
+    if provider != "codex":
+        raise NotificationError("unsupported_provider")
+    if identity["nativeIdKind"] != "thread":
         raise NotificationError("event_identity_mismatch")
     payload = decode_document(data, max_bytes=MAX_HOOK_BYTES, max_depth=32, max_nodes=100000)
     if not isinstance(payload, dict):
         raise NotificationError("invalid_hook_metadata")
-    if payload.get("thread-id" if provider == "codex" else "session_id") != identity["nativeId"]:
+    if payload.get("thread-id") != identity["nativeId"]:
         raise NotificationError("event_identity_mismatch")
     row = None
     if snapshot is not None:
@@ -162,42 +163,11 @@ def normalize(data, identity, *, snapshot=None, received_at=None, receipt_id=Non
         row = next((r for r in snapshot["sessions"] if r["identity"] == identity), None)
     kind = row["kind"] if row else "unknown"
     signal, reason, source_event = "unsupported", "unsupported_event", "unsupported"
-    if provider == "codex":
-        if payload.get("type") == "agent-turn-complete":
-            signal, reason, source_event = "turn_complete", "native_signal", "agent-turn-complete"
-        native_id = _native_uuid(payload.get("turn-id"))
-        if payload.get("client") == "codex_exec":
-            reason = "noninteractive_suppressed"
-    else:
-        event = payload.get("hook_event_name")
-        if not isinstance(event, str):
-            raise NotificationError("invalid_hook_metadata")
-        native_id = _native_uuid(payload.get("prompt_id"))
-        if event == "Notification":
-            if not isinstance(payload.get("notification_type"), str):
-                raise NotificationError("invalid_hook_metadata")
-            source_event = event
-            signal = {
-                "permission_prompt": "permission",
-                "idle_prompt": "idle",
-                "elicitation_dialog": "question",
-                "elicitation_url_dialog": "question",
-            }.get(payload.get("notification_type"), "unsupported")
-            if signal != "unsupported":
-                reason = "native_signal"
-            elif payload.get("notification_type") in {"agent_completed", "agent_needs_input"}:
-                signal, reason = "wake", "background_target_unproved"
-        elif event in {"Stop", "SubagentStop", "UserPromptSubmit"}:
-            source_event, signal = event, "wake"
-            reason = "prompt_wakeup" if event == "UserPromptSubmit" else "response_end_only"
-        child_id = payload.get("agent_id")
-        if child_id is not None and (
-            not isinstance(child_id, str) or not 1 <= len(child_id) <= 128
-        ):
-            raise NotificationError("invalid_hook_metadata")
-        if child_id is not None or event == "SubagentStop":
-            kind = "child"
-        # agent_type can describe a top-level --agent session; never suppress by it.
+    if payload.get("type") == "agent-turn-complete":
+        signal, reason, source_event = "turn_complete", "native_signal", "agent-turn-complete"
+    native_id = _native_uuid(payload.get("turn-id"))
+    if payload.get("client") == "codex_exec":
+        reason = "noninteractive_suppressed"
     if kind == "child":
         reason = "child_suppressed"
     disposition = (
@@ -212,7 +182,7 @@ def normalize(data, identity, *, snapshot=None, received_at=None, receipt_id=Non
         "receiptId": receipt_id or str(uuid.uuid4()),
         "receivedAt": int(time.time() * 1000) if received_at is None else received_at,
         "identity": copy.deepcopy(identity),
-        "source": "codex_notify" if provider == "codex" else "claude_hook",
+        "source": "codex_notify",
         "sourceEvent": source_event,
         "signal": signal,
         "disposition": disposition,
@@ -220,12 +190,12 @@ def normalize(data, identity, *, snapshot=None, received_at=None, receipt_id=Non
         "kind": kind,
         "title": row["title"]
         if row
-        else ("Codex " if provider == "codex" else "Claude ") + identity["nativeId"],
+        else "Codex " + identity["nativeId"],
         "titleSource": "snapshot" if row else "fallback",
         "body": BODIES[signal],
         "correlation": {
             "nativeId": native_id,
-            "scope": ("native_turn" if provider == "codex" else "native_prompt")
+            "scope": "native_turn"
             if native_id
             else "receipt_only",
             "dedupeKey": _turn_key(identity, native_id)

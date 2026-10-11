@@ -77,7 +77,8 @@ try:
  bundled_executable=any(p.name!='.gitignore' for p in bundled.rglob('*')) if bundled.exists() else False
 except importlib.metadata.PackageNotFoundError:
  sdk_version=None;bundled_executable=False
-print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':sysconfig.get_path('purelib'),'module':contract.__file__,'sdk':sdk_version,'bundledExecutable':bundled_executable}))"""
+retired=any(p.name.startswith(('claude_','_claude_')) for p in Path(contract.__file__).parent.glob('*.py'))
+print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':sysconfig.get_path('purelib'),'module':contract.__file__,'sdk':sdk_version,'bundledExecutable':bundled_executable,'retiredNativeModules':retired}))"""
     metadata = json.loads(run([str(prefix / "bin/python"), "-I", "-B", "-c", code]))
     site = Path(metadata.pop("site"))
     if (
@@ -85,8 +86,8 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         or not site.is_relative_to(prefix)
         or not Path(metadata.pop("module")).is_relative_to(site)
         or metadata["bundledExecutable"]
-        or metadata["sdk"]
-        != (manifest["claudeHistorySdk"] if profile == "claude-history" else None)
+        or metadata["retiredNativeModules"]
+        or metadata["sdk"] is not None
     ):
         raise ValueError("candidate_profile_mismatch")
     with zipfile.ZipFile(wheel) as archive:
@@ -183,17 +184,6 @@ def install(prefix, wheel, manifest, profile):
             ],
             timeout=120,
         )
-        if profile == "claude-history":
-            run(
-                [
-                    str(prefix / "bin/pip"),
-                    "install",
-                    "--disable-pip-version-check",
-                    "--no-binary=claude-agent-sdk",
-                    "claude-agent-sdk==" + manifest["claudeHistorySdk"],
-                ],
-                timeout=180,
-            )
         result = verify(prefix, wheel, manifest, profile)
         (prefix / "candidate-receipt.json").write_text(json.dumps(result, indent=2) + "\n")
         return result
@@ -209,7 +199,7 @@ def main():
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--wheel", type=Path, required=True)
     parser.add_argument("--prefix", type=Path, required=True)
-    parser.add_argument("--profile", choices=("core", "claude-history"), default="core")
+    parser.add_argument("--profile", choices=("core",), default="core")
     args = parser.parse_args()
     try:
         manifest = document(args.manifest)

@@ -43,7 +43,7 @@ Existing SDK isolation/audit and helper deadline/group cleanup tests also pass.
 
 ## Controlled cost and parity
 
-The [read-only study operator](../../../scripts/study-claude-collection) uses the
+The [read-only study operator](https://github.com/byebyebryan/agent-observer/blob/b2125b47a0931c6ffbc35951859d7f87a10ac7e7/scripts/study-claude-collection) uses the
 exact selected Snap Python 3.12.8 and native files, retaining counters only.
 [Parser results](parser-source.json) compare 37 stable UUID candidates with zero
 activity/kind differences. Source files did not change within this study.

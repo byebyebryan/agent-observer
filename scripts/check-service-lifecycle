@@ -27,7 +27,7 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--host-scope", required=True)
-    parser.add_argument("--provider", action="append", choices=("codex", "claude"), required=True)
+    parser.add_argument("--provider", action="append", choices=("codex",), required=True)
     args = parser.parse_args()
     assert args.root.resolve(strict=True) == args.root and args.root.stat().st_uid == os.getuid()
     helpers = runpy.run_path(str(Path(__file__).with_name("check-shared-service")))

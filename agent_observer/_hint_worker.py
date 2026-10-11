@@ -48,7 +48,7 @@ def main():
     request = decode_document(sys.stdin.buffer.read(4097), max_bytes=4096)
     if not isinstance(request, dict) or set(request) != {"provider", "configHome", "epoch", "parentPid"}:
         raise ValueError("service_hint_request")
-    if request["provider"] not in {"codex", "claude"} or not isinstance(request["epoch"], str) or len(request["epoch"]) != 36:
+    if request["provider"] not in {"codex"} or not isinstance(request["epoch"], str) or len(request["epoch"]) != 36:
         raise ValueError("service_hint_request")
     adapter = adapter_for(request["provider"])
     home = Path(request["configHome"])

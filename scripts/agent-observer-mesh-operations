@@ -87,6 +87,17 @@ def compatible_bridge(reader, bridge):
             "mesh_bridge_contract_selection")
 
 
+def selected_artifacts(value, host):
+    """Each independently frozen environment supplies its own install profile."""
+    prefix, receipt = artifact(value, host, value["profiles"])
+    bridge = value.get("bridgeSelection", value)
+    compatible_bridge(value, bridge)
+    bridge_prefix, bridge_receipt = (
+        (prefix, receipt) if bridge is value else artifact(bridge, host, bridge.get("profiles", value["profiles"]))
+    )
+    return prefix, receipt, bridge_prefix, bridge_receipt
+
+
 def verify(host, candidate):
     home = Path.home()
     value = json.loads((SELECTION).read_text())
@@ -95,12 +106,7 @@ def verify(host, candidate):
         host in value["hosts"] and value["readerPrefix"] == base["readerPrefix"],
         "mesh_reader_selection",
     )
-    prefix, receipt = artifact(value, host, value["profiles"])
-    bridge = value.get("bridgeSelection", value)
-    compatible_bridge(value, bridge)
-    bridge_prefix, bridge_receipt = (
-        (prefix, receipt) if bridge is value else artifact(bridge, host, value["profiles"])
-    )
+    prefix, receipt, bridge_prefix, bridge_receipt = selected_artifacts(value, host)
     rendered = {}
     for target, mode in TARGETS.items():
         rendered[target] = run(
