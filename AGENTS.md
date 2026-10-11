@@ -8,51 +8,21 @@
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
-- `docs/claude-observation-wrap-up.md` records the completed Claude observation
-  checkpoint. The a11 read/service artifact is accepted and selected on Snap and
-  Starship; Claude native support is on Snap and Codex remains accepted on both.
-  `docs/claude-observation-execution.md` and its a8 report are historical evidence.
-  The implemented Claude track is `docs/claude-interactive-observation-plan.md`.
-  Interactive-only observation must use provider-owned evidence without client
-  inventory, tmux/TUI/window matching or attachment queries. Native process checks
-  authenticate exact provider registrations only. The user accepts the normal
-  native-registration assumption: positive saved UUID plus a healthy bounded
-  native scan with no live matching incarnation or relevant unresolved conflict
-  may become parked. Normal exit, crash and forced kill are supported targets;
-  check every matching registration so a stale record cannot hide a live one.
-  A live session with failed/lost registration can be falsely reported parked,
-  including after source recovery; this is an explicit accepted limitation,
-  never an exhaustive census claim. Detected source faults still prevent negative
-  assertions. Background runtime is unsupported; use only a minimal native
-  conflict guard, not full job lifecycle compatibility. No run ledger or mandatory
-  hook source is required. Report partial runtime coverage and the assumption.
-  I0–I4 are accepted: native scope, oracle/private interface, source, immutable
-  artifact/native proof and scoped Observer operations. I5 provider-policy
-  rollout is deferred; ordinary Agent View settings and sessions remain unchanged.
-  `docs/claude-read-contract-review.md` settles API 2/wire 4/service 2 fit with
-  existing fields and partial scope. Read clients use the accepted a11 artifact
-  and `docs/api-v2-client-handoff.md`, with their own implementation/native gates.
-  No frontend or provider-policy deployment is implied. Version only a concrete
-  required incompatible public change, not private adapter cleanup.
-  This design plan alone authorizes no new public wire or deployment.
-  `docs/evidence/2026-10-08-claude-interactive-source/REPORT.md` accepts tested
-  positive on/off registration/phase/Resume evidence but disproves an exhaustive
-  census: a failed registration can remain missing after directory recovery while
-  the interactive session is usable. Its original negative-gate rejection is
-  superseded by the user's narrower design acceptance, not by new completeness
-  evidence. Old background histories remaining unknown are outside the user's
-  forward interactive workflow, not a request for legacy compatibility.
-  `docs/runtime-only-retention-follow-up.md` records the accepted shared-core
-  finite retirement of disappeared unsaved rows in a11. Partial receipts cannot
-  slide the original runtime deadline; current rows and positive saved history
-  remain protected. Retirement supplies no native lifecycle or action authority.
-  The focused dead-unsaved native-admission predicate stays in the passive
-  Claude adapter. The a9 lifecycle/on-off proofs retain their historical bounds.
+- `docs/claude-retirement-plan.md` records the user's current direction:
+  retire and remove active Claude support. Codex is the only implemented provider
+  after the removal gate. Preserve provider-neutral core/read/Mesh interfaces;
+  frozen wire provider vocabulary and synthetic data admission do not enable a
+  native adapter. Remove Claude collection, SDK/history, hints, service memo and
+  Claude-specific notification/action tooling. Ordinary Claude native sessions,
+  history, settings, hooks and Agent View remain external and unchanged.
+  Claude observation documents and released artifacts are historical evidence,
+  not current support obligations. No compatibility collector is required.
+  New providers require independent native/capability and contract review.
 - The preceding Codex correction track is `docs/codex-daemon-authority-plan.md` and
   `docs/codex-daemon-authority-review.md`. Codex daemon queries own runtime
   classification; no TUI/tmux presence or attachment may decide running/parked
   or work phase. Clients own terminal lifetime/attachment. The original correction
-  accepted Codex first; Claude now has its independent completed observation gate.
+  accepted Codex first; the later Claude gate is historical after retirement.
   Post-TUI-closure validation is deferred. Preserve provider-neutral
   interfaces, but do not retain compatibility converters, private saved-store
   fallback or terminal/job field scaffolding merely for the old contract.
@@ -79,13 +49,13 @@
   focused independent proof. Existing pilot evidence retains its historical
   exact-artifact bounds. The API 2/schema-v4 command remains a prerelease contract.
 - Continue preflight and spike work on Snap in `~/code/agent-observer` and
-  independently validate Codex on Starship. Claude is available only on Snap
-  according to the user; reinspect it at its next provider checkpoint. Starship
+  independently validate Codex on Starship. Claude native use is external after
+  retirement. Starship
   evidence does not establish Snap versions or runtime behavior.
 - RLCD and Agent Plus drive the initial requirements. WSNav is historical
   evidence and a possible future consumer; its integration is not a gate.
 - Agent Plus meshes sessions across providers and hosts. Codex leads delivery;
-  Claude Code remains a required second provider for the completed migration.
+  The prior required-second-provider condition is superseded by Claude retirement.
   Preserve provider-independent contracts and separate usage context from
   provider/host identity. See `docs/native-runtime-migration-plan.md` for the
   delivery boundaries and `docs/design-review.md` for pending proof decisions.
