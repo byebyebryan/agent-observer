@@ -1,0 +1,3087 @@
+{
+  "fleet-summary": {
+    "operation": "snapshot",
+    "status": "complete",
+    "rows": 512,
+    "hosts": [
+      {
+        "hostId": "snap",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ipc",
+          "proof": null,
+          "routeToken": null,
+          "status": "ready"
+        },
+        "receiptCount": 4,
+        "serviceId": "0f19fb69-4a71-47e2-81af-349ad8f8f533"
+      },
+      {
+        "hostId": "starship",
+        "delivery": {
+          "epoch": 1,
+          "error": null,
+          "path": "ssh",
+          "proof": {
+            "bridgeClock": {
+              "bootId": "3b53c5dc-1562-4173-b4ec-0d1e55a1e836",
+              "timeNamespace": "time:4026531834"
+            },
+            "bridgeEncodedAtMs": 75255834,
+            "bridgeId": "d4e780d2-77c7-4d13-b63a-29707c879c0c",
+            "marginMs": 100,
+            "nonce": "ad5b6379f43dad966c5775f8e4f1d5c8",
+            "payloadDigest": "sha256:6b9ce61e0e6f41b1f31f9cd85df2c19fc490ebc93704a35c8234f023e2d07a8a",
+            "receivedAtMs": 56308285,
+            "sentAtMs": 56307873
+          },
+          "routeToken": "sha256:72805ab7f7be76281357992d190b559fd750debdb55d828c1295b8012942c6a7",
+          "status": "ready"
+        },
+        "receiptCount": 2,
+        "serviceId": "1b4cee8f-51af-4bc9-834c-e1f8c3288072"
+      }
+    ]
+  },
+  "snap-watch": {
+    "host": "snap",
+    "durationSeconds": 18.73,
+    "frames": [
+      {
+        "kind": "view",
+        "status": "pending",
+        "effectiveRows": 0,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3389,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2406,
+              510,
+              3390,
+              1341
+            ]
+          }
+        ]
+      }
+    ],
+    "completeFrames": 18,
+    "closed": {
+      "format": "mesh-plus.reader-metrics.v1",
+      "domain": "agent",
+      "byteScope": "completed-json-lines",
+      "activeConnections": 0,
+      "partial": false,
+      "connectionAttempts": 1,
+      "connectionsOpened": 1,
+      "connectionsClosed": 1,
+      "connectionFailures": 0,
+      "rotations": 0,
+      "cleanupFailures": 0,
+      "peakConnections": 1,
+      "catalogChecks": 0,
+      "catalogCheckMs": 0,
+      "instrumentedConnections": 1,
+      "uninstrumentedConnections": 0,
+      "receivedFrames": 25,
+      "sentFrames": 23,
+      "receivedBytes": 3065496,
+      "sentBytes": 5648,
+      "operations": {
+        "snapshotRequests": 18,
+        "proofRequests": 0,
+        "snapshotResultBytes": 2757468,
+        "proofResultBytes": 0,
+        "otherResultBytes": 0,
+        "requestTimeouts": 0,
+        "requestCancellations": 0,
+        "rotationRejections": 0,
+        "unprocessedResultBytes": 0
+      },
+      "byKind": {
+        "received": {
+          "hello": {
+            "frames": 1,
+            "bytes": 409
+          },
+          "subscribed": {
+            "frames": 1,
+            "bytes": 325
+          },
+          "data": {
+            "frames": 2,
+            "bytes": 306553
+          },
+          "result": {
+            "frames": 18,
+            "bytes": 2757468
+          },
+          "control": {
+            "frames": 3,
+            "bytes": 741
+          }
+        },
+        "sent": {
+          "hello": {
+            "frames": 1,
+            "bytes": 364
+          },
+          "subscribe": {
+            "frames": 1,
+            "bytes": 275
+          },
+          "request": {
+            "frames": 18,
+            "bytes": 4386
+          },
+          "credit": {
+            "frames": 2,
+            "bytes": 461
+          },
+          "close": {
+            "frames": 1,
+            "bytes": 162
+          }
+        }
+      },
+      "peakClientBufferedBytes": 153276,
+      "peakClientBufferedControlBytes": 246,
+      "peakSubscriptionQueueFrames": 1,
+      "peakRetainedHandles": 19
+    },
+    "postDisconnectRows": 0,
+    "nonmutation": true,
+    "providerActions": 0,
+    "rawPayloadsRetained": false
+  },
+  "watch": {
+    "host": "starship",
+    "durationSeconds": 19.03,
+    "frames": [
+      {
+        "kind": "view",
+        "status": "pending",
+        "effectiveRows": 0,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1368,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1369,
+              376
+            ]
+          }
+        ]
+      }
+    ],
+    "completeFrames": 16,
+    "closed": {
+      "format": "mesh-plus.reader-metrics.v1",
+      "domain": "agent",
+      "byteScope": "completed-json-lines",
+      "activeConnections": 0,
+      "partial": false,
+      "connectionAttempts": 1,
+      "connectionsOpened": 1,
+      "connectionsClosed": 1,
+      "connectionFailures": 0,
+      "rotations": 0,
+      "cleanupFailures": 0,
+      "peakConnections": 1,
+      "catalogChecks": 0,
+      "catalogCheckMs": 0,
+      "instrumentedConnections": 1,
+      "uninstrumentedConnections": 0,
+      "receivedFrames": 23,
+      "sentFrames": 21,
+      "receivedBytes": 8085241,
+      "sentBytes": 5164,
+      "operations": {
+        "snapshotRequests": 16,
+        "proofRequests": 0,
+        "snapshotResultBytes": 7185418,
+        "proofResultBytes": 0,
+        "otherResultBytes": 0,
+        "requestTimeouts": 0,
+        "requestCancellations": 0,
+        "rotationRejections": 0,
+        "unprocessedResultBytes": 0
+      },
+      "byKind": {
+        "received": {
+          "hello": {
+            "frames": 1,
+            "bytes": 413
+          },
+          "subscribed": {
+            "frames": 1,
+            "bytes": 325
+          },
+          "data": {
+            "frames": 2,
+            "bytes": 898345
+          },
+          "result": {
+            "frames": 16,
+            "bytes": 7185418
+          },
+          "control": {
+            "frames": 3,
+            "bytes": 740
+          }
+        },
+        "sent": {
+          "hello": {
+            "frames": 1,
+            "bytes": 368
+          },
+          "subscribe": {
+            "frames": 1,
+            "bytes": 275
+          },
+          "request": {
+            "frames": 16,
+            "bytes": 3898
+          },
+          "credit": {
+            "frames": 2,
+            "bytes": 461
+          },
+          "close": {
+            "frames": 1,
+            "bytes": 162
+          }
+        }
+      },
+      "peakClientBufferedBytes": 449172,
+      "peakClientBufferedControlBytes": 246,
+      "peakSubscriptionQueueFrames": 1,
+      "peakRetainedHandles": 17
+    },
+    "postDisconnectRows": 0,
+    "nonmutation": true,
+    "providerActions": 0,
+    "rawPayloadsRetained": false
+  },
+  "snap-fleet-watch": {
+    "host": "snap",
+    "durationSeconds": 18.415,
+    "frames": [
+      {
+        "kind": "view",
+        "status": "pending",
+        "effectiveRows": 0,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "effectiveRows": 128,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "snap",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          },
+          {
+            "host": "starship",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          }
+        ]
+      }
+    ],
+    "completeFrames": 27,
+    "closed": {
+      "format": "mesh-plus.reader-metrics.v1",
+      "domain": "agent",
+      "byteScope": "completed-json-lines",
+      "activeConnections": 0,
+      "partial": false,
+      "connectionAttempts": 2,
+      "connectionsOpened": 2,
+      "connectionsClosed": 2,
+      "connectionFailures": 0,
+      "rotations": 0,
+      "cleanupFailures": 0,
+      "peakConnections": 2,
+      "catalogChecks": 4,
+      "catalogCheckMs": 858,
+      "instrumentedConnections": 2,
+      "uninstrumentedConnections": 0,
+      "receivedFrames": 43,
+      "sentFrames": 41,
+      "receivedBytes": 9512089,
+      "sentBytes": 10530,
+      "operations": {
+        "snapshotRequests": 17,
+        "proofRequests": 12,
+        "snapshotResultBytes": 2604293,
+        "proofResultBytes": 5393820,
+        "otherResultBytes": 0,
+        "requestTimeouts": 0,
+        "requestCancellations": 0,
+        "rotationRejections": 0,
+        "unprocessedResultBytes": 0
+      },
+      "byKind": {
+        "received": {
+          "hello": {
+            "frames": 2,
+            "bytes": 822
+          },
+          "subscribed": {
+            "frames": 2,
+            "bytes": 650
+          },
+          "data": {
+            "frames": 6,
+            "bytes": 1511517
+          },
+          "result": {
+            "frames": 29,
+            "bytes": 7998113
+          },
+          "control": {
+            "frames": 4,
+            "bytes": 987
+          }
+        },
+        "sent": {
+          "hello": {
+            "frames": 2,
+            "bytes": 740
+          },
+          "subscribe": {
+            "frames": 2,
+            "bytes": 550
+          },
+          "request": {
+            "frames": 29,
+            "bytes": 7533
+          },
+          "credit": {
+            "frames": 6,
+            "bytes": 1383
+          },
+          "close": {
+            "frames": 2,
+            "bytes": 324
+          }
+        }
+      },
+      "peakClientBufferedBytes": 449203,
+      "peakClientBufferedControlBytes": 246,
+      "peakSubscriptionQueueFrames": 1,
+      "peakRetainedHandles": 18
+    },
+    "postDisconnectRows": 0,
+    "nonmutation": true,
+    "providerActions": 0,
+    "rawPayloadsRetained": false
+  },
+  "fleet-watch": {
+    "host": "starship",
+    "durationSeconds": 18.124,
+    "frames": [
+      {
+        "kind": "view",
+        "status": "pending",
+        "effectiveRows": 0,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "effectiveRows": 384,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "connecting",
+            "proof": false,
+            "sourceComponents": 0,
+            "originalAccepted": []
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3415,
+              1350
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2424,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3416,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1399,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "effectiveRows": 512,
+        "hosts": [
+          {
+            "host": "starship",
+            "path": "ipc",
+            "delivery": "ready",
+            "proof": false,
+            "sourceComponents": 2,
+            "originalAccepted": [
+              1400,
+              386
+            ]
+          },
+          {
+            "host": "snap",
+            "path": "ssh",
+            "delivery": "ready",
+            "proof": true,
+            "sourceComponents": 4,
+            "originalAccepted": [
+              2425,
+              514,
+              3417,
+              1351
+            ]
+          }
+        ]
+      }
+    ],
+    "completeFrames": 28,
+    "closed": {
+      "format": "mesh-plus.reader-metrics.v1",
+      "domain": "agent",
+      "byteScope": "completed-json-lines",
+      "activeConnections": 0,
+      "partial": false,
+      "connectionAttempts": 2,
+      "connectionsOpened": 2,
+      "connectionsClosed": 2,
+      "connectionFailures": 0,
+      "rotations": 0,
+      "cleanupFailures": 0,
+      "peakConnections": 2,
+      "catalogChecks": 4,
+      "catalogCheckMs": 556,
+      "instrumentedConnections": 2,
+      "uninstrumentedConnections": 0,
+      "receivedFrames": 43,
+      "sentFrames": 41,
+      "receivedBytes": 10110180,
+      "sentBytes": 10647,
+      "operations": {
+        "snapshotRequests": 14,
+        "proofRequests": 15,
+        "snapshotResultBytes": 6287703,
+        "proofResultBytes": 2308504,
+        "otherResultBytes": 0,
+        "requestTimeouts": 0,
+        "requestCancellations": 0,
+        "rotationRejections": 0,
+        "unprocessedResultBytes": 0
+      },
+      "byKind": {
+        "received": {
+          "hello": {
+            "frames": 2,
+            "bytes": 822
+          },
+          "subscribed": {
+            "frames": 2,
+            "bytes": 650
+          },
+          "data": {
+            "frames": 6,
+            "bytes": 1511514
+          },
+          "result": {
+            "frames": 29,
+            "bytes": 8596207
+          },
+          "control": {
+            "frames": 4,
+            "bytes": 987
+          }
+        },
+        "sent": {
+          "hello": {
+            "frames": 2,
+            "bytes": 740
+          },
+          "subscribe": {
+            "frames": 2,
+            "bytes": 550
+          },
+          "request": {
+            "frames": 29,
+            "bytes": 7650
+          },
+          "credit": {
+            "frames": 6,
+            "bytes": 1383
+          },
+          "close": {
+            "frames": 2,
+            "bytes": 324
+          }
+        }
+      },
+      "peakClientBufferedBytes": 449205,
+      "peakClientBufferedControlBytes": 246,
+      "peakSubscriptionQueueFrames": 1,
+      "peakRetainedHandles": 16
+    },
+    "postDisconnectRows": 0,
+    "nonmutation": true,
+    "providerActions": 0,
+    "rawPayloadsRetained": false
+  },
+  "ssh-disconnect": {
+    "ordinaryBridgeRestarted": false,
+    "ownedSSHProcessTerminatedOnce": true,
+    "uidParentBirthAndExecutableVerified": true,
+    "healthyLocalIsolation": true,
+    "reconnectFullResync": true,
+    "frames": [
+      {
+        "kind": "view",
+        "status": "pending",
+        "rows": 0,
+        "hosts": []
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "rows": 128,
+        "hosts": [
+          "snap"
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "rows": 128,
+        "hosts": [
+          "snap"
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "complete",
+        "rows": 512,
+        "hosts": [
+          "snap",
+          "starship"
+        ]
+      },
+      {
+        "kind": "resync",
+        "status": "partial",
+        "rows": 128,
+        "hosts": [
+          "snap"
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "rows": 128,
+        "hosts": [
+          "snap"
+        ]
+      },
+      {
+        "kind": "view",
+        "status": "partial",
+        "rows": 128,
+        "hosts": [
+          "snap"
+        ]
+      },
+      {
+        "kind": "resync",
+        "status": "complete",
+        "rows": 512,
+        "hosts": [
+          "snap",
+          "starship"
+        ]
+      }
+    ],
+    "reader": {
+      "format": "mesh-plus.reader-metrics.v1",
+      "domain": "agent",
+      "byteScope": "completed-json-lines",
+      "activeConnections": 0,
+      "partial": false,
+      "connectionAttempts": 3,
+      "connectionsOpened": 3,
+      "connectionsClosed": 3,
+      "connectionFailures": 0,
+      "rotations": 0,
+      "cleanupFailures": 0,
+      "peakConnections": 2,
+      "catalogChecks": 1,
+      "catalogCheckMs": 95,
+      "instrumentedConnections": 3,
+      "uninstrumentedConnections": 0,
+      "receivedFrames": 16,
+      "sentFrames": 18,
+      "receivedBytes": 2725688,
+      "sentBytes": 4719,
+      "operations": {
+        "snapshotRequests": 4,
+        "proofRequests": 3,
+        "snapshotResultBytes": 617376,
+        "proofResultBytes": 898904,
+        "otherResultBytes": 0,
+        "requestTimeouts": 0,
+        "requestCancellations": 0,
+        "rotationRejections": 0,
+        "unprocessedResultBytes": 0
+      },
+      "byKind": {
+        "received": {
+          "hello": {
+            "frames": 3,
+            "bytes": 1235
+          },
+          "subscribed": {
+            "frames": 3,
+            "bytes": 975
+          },
+          "data": {
+            "frames": 4,
+            "bytes": 1207198
+          },
+          "result": {
+            "frames": 6,
+            "bytes": 1516280
+          }
+        },
+        "sent": {
+          "hello": {
+            "frames": 3,
+            "bytes": 1116
+          },
+          "subscribe": {
+            "frames": 3,
+            "bytes": 825
+          },
+          "request": {
+            "frames": 6,
+            "bytes": 1536
+          },
+          "credit": {
+            "frames": 4,
+            "bytes": 920
+          },
+          "close": {
+            "frames": 2,
+            "bytes": 322
+          }
+        }
+      },
+      "peakClientBufferedBytes": 449170,
+      "peakClientBufferedControlBytes": 0,
+      "peakSubscriptionQueueFrames": 1,
+      "peakRetainedHandles": 5
+    },
+    "postDisconnectRows": 0
+  }
+}
