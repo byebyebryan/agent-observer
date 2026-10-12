@@ -9,10 +9,10 @@ remain independently selected. Native Claude sessions/settings remain external.
 
 Next work remains separately scoped:
 
-- [Mesh SDK maintenance and publisher ownership](mesh-sdk-maintenance-adoption-plan.md): adopt current owner tooling, then extract Agent's cached source behind an independently accepted generic Mesh publisher/factory seam. Local and fixed SSH publication require separate proof and scoped rollout.
+- [Mesh SDK maintenance and publisher ownership](mesh-sdk-maintenance-adoption-plan.md): Mesh's SDK v1 publisher/factory seam is accepted in its private a15 candidate. Implement and accept Agent's cached source, local/fixed SSH factory wiring and reader maintenance against that input; public release, resource checks and scoped rollout follow independently.
 - Read-client ergonomics and consumer implementation against the settled read contract.
 - Native occurrence events/notification enrichment, if a concrete client requires them.
-- Mesh publisher extraction or transport upgrades in coordination with Mesh Plus.
+- Optional Mesh transport upgrades, including WSS, in a separate coordinated pass.
 - Actions/attachment with separate native authority, potentially using tmux-observer.
 - Focused proof for accepted Codex edges, including physical suspend and TUI closure.
 - A new provider only after its runtime/identity/activity/capability investigation.
