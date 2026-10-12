@@ -44,10 +44,18 @@ class ManagedOperationsTests(unittest.TestCase):
         spec = importlib.util.spec_from_loader(loader.name, loader)
         module = importlib.util.module_from_spec(spec)
         loader.exec_module(module)
-        contract = {"agentProfile": "agent-observer.mesh-candidate.v1",
+        contract = {"manifestVersion": 1, "agentProfile": "agent-observer.mesh-candidate.v1",
                     "lockSha256": "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"}
         reader, bridge = {"mesh": {**contract, "version": "0.1.0a11"}}, {"mesh": {**contract, "version": "0.1.0a10"}}
         module.compatible_bridge(reader, bridge)
+        updated = {"mesh": {**contract, "manifestVersion": 2, "version": "0.1.0a15",
+                             "lockSha256": "f" * 64, "sdkInterface": 1,
+                             "stateSchemasSha256": "a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46"}}
+        module.compatible_bridge(updated, bridge)
+        module.compatible_bridge(reader, updated)
+        for changed in ({"sdkInterface": 2}, {"stateSchemasSha256": "a" * 64}):
+            with self.assertRaisesRegex(ValueError, "^mesh_bridge_contract_selection$"):
+                module.compatible_bridge(reader, {"mesh": {**updated["mesh"], **changed}})
         for field, value in (("agentProfile", "foreign"), ("lockSha256", "a" * 64)):
             with self.assertRaisesRegex(ValueError, "^mesh_bridge_contract_selection$"):
                 module.compatible_bridge(reader, {"mesh": {**bridge["mesh"], field: value}})
@@ -59,7 +67,7 @@ class ManagedOperationsTests(unittest.TestCase):
         spec = importlib.util.spec_from_loader(loader.name, loader)
         module = importlib.util.module_from_spec(spec)
         loader.exec_module(module)
-        contract = {"agentProfile": "agent-observer.mesh-candidate.v1",
+        contract = {"manifestVersion": 1, "agentProfile": "agent-observer.mesh-candidate.v1",
                     "lockSha256": "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"}
         bridge = {"mesh": contract, "profiles": {"snap": "claude-history"}}
         reader = {"mesh": contract, "profiles": {"snap": "core"}, "bridgeSelection": bridge}

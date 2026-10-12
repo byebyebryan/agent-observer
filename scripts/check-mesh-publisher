@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""Installed cached publisher local/fixed SSH proof; no provider actions or selection."""
+
+import argparse
+import asyncio
+import json
+import sys
+import tempfile
+from pathlib import Path
+
+
+async def cli_assessment(argv):
+    from mesh_plus.transport import finish_owned
+
+    async def retire(process):
+        if process.returncode is None:
+            process.terminate()
+            try:
+                await asyncio.wait_for(process.wait(), 3)
+            except TimeoutError:
+                process.kill()
+                await asyncio.wait_for(process.wait(), 3)
+
+    creation = asyncio.create_task(asyncio.create_subprocess_exec(
+        *argv, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL,
+    ))
+    try:
+        process = await finish_owned(creation)
+    except BaseException:
+        if creation.done() and not creation.cancelled() and creation.exception() is None:
+            await finish_owned(asyncio.create_task(retire(creation.result())))
+        raise
+    try:
+        output, _ = await asyncio.wait_for(process.communicate(), 20)
+        assert process.returncode == 0
+        return json.loads(output)
+    finally:
+        await finish_owned(asyncio.create_task(retire(process)))
+
+
+async def exercise(args):
+    from mesh_plus.api import (
+        Bridge,
+        Client,
+        Endpoint,
+        Reader,
+        ReadGuard,
+        configured_reader,
+        reconstructed,
+    )
+    from mesh_plus.cli import configured_adapter
+    from mesh_plus.transport import IPCServer, boottime_ms
+
+    from agent_observer.mesh_publisher import make_publisher
+
+    prefix = args.prefix.resolve(strict=True)
+    import agent_observer.mesh_publisher as owner
+    if not Path(owner.__file__).is_relative_to(prefix) or not Path(sys.executable).is_relative_to(prefix):
+        raise ValueError("installed_owner_required")
+    reports = []
+
+    async def check_reader(reader, label, *, expect_proof):
+        response = await reader.snapshot()
+        host = response["mesh"]["hosts"][0]
+        assert host["delivery"]["status"] == "ready"
+        assert (host["delivery"]["proof"] is not None) == expect_proof
+        frame = reconstructed(response, host, profile=reader.profile)
+        stream = reader.watch(request_id="a" * 32, proof_interval=.2)
+        guard = ReadGuard("agent", "a" * 32, profile=reader.profile)
+        try:
+            async with asyncio.timeout(30):
+                async for pushed in stream:
+                    guard.accept(pushed)
+                    if "mesh" not in pushed:
+                        raise ValueError(pushed["error"]["code"])
+                    if pushed["mesh"]["hosts"][0]["delivery"]["status"] == "ready":
+                        break
+                else:
+                    raise ValueError("publisher_watch_missing")
+            rows = guard.current(boottime_ms(), pushed["mesh"]["reader"]["clock"])
+            assert all(r["identity"]["hostScope"] == args.host_scope for r in rows)
+        finally:
+            guard.disconnect()
+            await stream.aclose()
+        assert reader.inspect()["activeConnections"] == 0
+        assert reader.inspect()["cleanupFailures"] == 0
+        reports.append({"carrier": label, "serviceId": frame["serviceId"],
+                        "rows": 0 if frame["snapshot"] is None else len(frame["snapshot"]["sessions"]),
+                        "ready": frame["state"] == "ready", "proofRequired": expect_proof,
+                        "currentPushRows": len(rows), "originalReceipts": frame["sources"],
+                        "activeConnectionsAfterClose": 0, "cleanupFailures": 0})
+
+    with tempfile.TemporaryDirectory(prefix=".agent-publisher-proof-", dir=Path.home()) as directory:
+        root = Path(directory)
+        config = root / "config/mesh-plus/sources.toml"
+        config.parent.mkdir(parents=True, mode=0o700)
+        config.write_text(f'version=1\nhost={json.dumps(args.host_scope)}\n[sources.agent]\ndomain="agent"\nsocket={json.dumps(str(args.service_socket))}\n')
+        config.chmod(0o600)
+        publisher = configured_adapter(config, "agent", publisher_factories={"agent": make_publisher})
+        assert type(publisher).__name__ == "CachedPublisher"
+        endpoint = root / "read.sock"
+        server = await IPCServer(endpoint, Bridge(publisher).serve).start()
+        try:
+            reader = await configured_reader("agent", source="agent", socket=endpoint, scope="local",
+                                              local_host=args.host_scope, profile=publisher.state_profile)
+            await check_reader(reader, "local-ipc", expect_proof=False)
+            # Exercise the installed public CLI through the same local factory.
+            assessment = await cli_assessment([
+                str(prefix / "bin/agent-observer"), "mesh", "assess", "--scope", "local",
+                "--local-host", args.host_scope, "--socket", str(endpoint), "--mode", "subscribe",
+                "--timeout-ms", "10000",
+            ])
+            assert assessment["ok"] and assessment["runtime"]["activeConnections"] == 0
+            if args.ssh:
+                from mesh_plus.testing.ssh_carrier import ssh_server
+
+                ssh_root = root / "ssh"
+                ssh_root.mkdir(mode=0o700)
+                dispatcher = ssh_root / "fixed-command"
+                # The public owned SSH fixture supplies its own reached marker.
+                # Validate and unwrap the exact normal SSH command, then exec
+                # the actual installed named launcher with the unchanged argv.
+                dispatcher.write_text(f'''#!{prefix}/bin/python
+import os,shlex
+argv=shlex.split(os.environ['SSH_ORIGINAL_COMMAND'])
+fixed=['mesh-plus','bridge','--source','agent','--stdio']
+assert len(argv)==10 and argv[:2]==['sh','-c']
+assert argv[3]=='mesh-plus-reached' and argv[4]=='b'*32 and argv[5:]==fixed
+env={{**os.environ,'XDG_CONFIG_HOME':{str(root / 'config')!r}}}
+os.execve({str(prefix / 'bin/mesh-plus')!r},fixed,env)
+''')
+                dispatcher.chmod(0o700)
+                async with ssh_server(ssh_root, [str(dispatcher)], "agent") as channel:
+                    clients = []
+                    codec = publisher.state_profile.bind(args.host_scope, "agent")
+
+                    async def connect():
+                        client = await Client.connect(await channel(), host=args.host_scope, source="agent",
+                                                      profile=publisher.profile, codec=publisher.validate)
+                        clients.append(client)
+                        return client
+
+                    async def catalog_check():
+                        return "sha256:" + "c" * 64
+
+                    remote = Reader("agent", [Endpoint(args.host_scope, False, "sha256:" + "b" * 64, connect, codec)],
+                                    local_host="proof-client", catalog_revision="sha256:" + "c" * 64,
+                                    catalog_check=catalog_check,
+                                    profile=publisher.state_profile)
+                    await check_reader(remote, "fixed-ssh-installed-launcher", expect_proof=True)
+                    assert all(c.channel.closed and c.channel.process.returncode is not None for c in clients)
+        finally:
+            await server.close()
+        assert publisher.native._active == 0
+    forbidden = [name for name in ("mesh_plus.observer", "agent_observer.collection",
+                                  "agent_observer.codex_snapshot", "agent_observer.service_runtime",
+                                  "agent_observer.write_client", "tmux_observer") if name in sys.modules]
+    assert not forbidden
+    return {"status": "passed", "hostScope": args.host_scope, "ownerModule": owner.__file__,
+            "prefix": str(prefix), "carriers": reports, "nativeChannelsAfterClose": 0,
+            "publicCliAssessment": assessment, "forbiddenImports": forbidden,
+            "limits": ["cached native source only", "ordinary daemon comparison is separate",
+                       "owned localhost SSH fixture; operational remote selection is separate",
+                       "no managed selection or provider actions"]}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--service-socket", type=Path, required=True)
+    parser.add_argument("--ssh", action="store_true")
+    args = parser.parse_args()
+    if not args.prefix.is_absolute() or not args.service_socket.is_absolute():
+        parser.error("absolute prefix and cached service socket required")
+    try:
+        print(json.dumps(asyncio.run(exercise(args)), indent=2))
+    except Exception:
+        print(json.dumps({"status": "failed", "error": "installed_publisher_gate"}), file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

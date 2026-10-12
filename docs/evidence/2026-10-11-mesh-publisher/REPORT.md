@@ -12,8 +12,11 @@ pending. API 2/read 4/Service 2 and Mesh SDK/Read/Delivery 1 remain unchanged.
 Mesh runtime `c46262c0f0185244e96c79ea2036e4f57b2e4e1e`, owner acceptance
 `de2ee36`, supplies the a15 private wheel with SHA256
 `42b25045f8f89afda61e56525f443a189dcc6769637aee5bcab959f096527f0f`.
-Its local bytes match Mesh's receipt. A13 remains the latest public Mesh release;
-a15 source/private acceptance permits owner integration, not managed adoption.
+Its local bytes match Mesh's receipt. At baseline a13 was the latest public Mesh
+release; a15 source/private acceptance permitted owner integration, not adoption.
+Mesh subsequently published exact a15 bytes on 2026-10-12; its release asset
+digest matches the accepted private wheel. Fresh downloads and owner gates
+still precede operational adoption.
 
 Both hosts still select a18/Mesh a11 readers, a18 collection and independently
 retained a16/Mesh a10 bridges. Installed operational artifact/endpoint checks
@@ -65,8 +68,9 @@ The read CLI adds explicit bounded `mesh assess` snapshot/subscribe diagnostics
 using `AgentProfile`, with catalog resolution inside the budget, no route writes
 and cleanup before returning. Acquisition and current receipts remain distinct;
 the command grants no retained authority. The released-reader CI input advances
-to a13. A separate job tests the exact a15 runtime source commit, explicitly
-distinct from private wheel/managed acceptance; hosted success is not yet claimed.
+to a13. After Mesh's a15 publication the publisher job selects its exact released
+wheel/hash. Hosted success is not yet claimed; candidate/native/managed receipts
+remain separate.
 
 ## Remaining owner gates
 
@@ -75,6 +79,36 @@ independent daemon parity, mixed old/new compatibility and attributed cost.
 The old operations verifier compares the entire Mesh lock; the additive WSS
 lock revision needs a reviewed Agent-contract comparison instead of a false
 incompatibility. WSS runtime remains out of scope.
+
+The artifact tooling now compares the twenty preserved packaged state schema
+resources directly, digest
+`a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46`.
+Mesh manifest 2 binds SDK 1, this state digest and an archived whole-lock receipt.
+The whole lock remains provenance; compatible state resources permit the
+additive WSS lock while WSS remains unselected. Old manifest-1 artifacts retain
+their original frozen check for rollback. Publisher role verification additionally
+checks the exact trusted launcher and resource-free public factory construction.
+No read/delivery/native protocol changed for this artifact metadata extension.
+
+The first a19 build was rejected: stale ignored `build/lib` files introduced
+eight retired Claude modules. Its wheel SHA256
+`7cc70f267f5da90a5c539bf66ac40df704da0ebc2886f454ea7a514549e48cd4`
+is retained as failed evidence and never selected. The clean tracked-source
+export at `4a7e7b1` produces a fresh a19 wheel, SHA256
+`0699594a5ec54a3f452688af2c901ab7c36f1e7c9243ccc5dcd8bc9d5b5afb21`.
+Only that clean candidate proceeds to installed acceptance. Failed prefixes
+were retired by the owned installer; accepted a18 bytes remain untouched.
+
+The clean a19 package passes static installed publisher-role verification.
+Further ordering validation reproduces a watch-start defect: a queued initial
+view from another connection can have the same view revision and original
+receipts but an earlier emission than a recently acquired status. Discarding
+that unchanged view stalls subscription until another collection. The a20
+source correction admits that same revision with unchanged receipts while
+retaining the emission watermark. Lower revisions still cannot supply a fresh
+status proof; newer-revision clock regression and receipt renewal still fail.
+A real controlled Unix case reproduces the stall before the correction.
+A20 uses a successor immutable artifact; a19 bytes are retained separately.
 
 U7–U8 require public immutable inputs, scoped independent reader/publisher
 selection, shared-owner launcher coordination and rollback. Provider sessions,

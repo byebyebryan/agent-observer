@@ -79,6 +79,15 @@ class SourceOrderingTest(unittest.TestCase):
             self.source._admit(self.frame, watch=False)
         self.assertEqual(self.source._position, (newest["viewRevision"], newest["emittedBoottimeMs"]))
 
+    def test_new_revision_cannot_regress_native_emission_clock(self):
+        self.source._admit(self.frame, watch=False)
+        bad = copy.deepcopy(self.frame)
+        bad["viewRevision"] += 1
+        bad["emittedBoottimeMs"] -= 1
+        with self.assertRaisesRegex(ContractError, "service_acquisition_clock_regression"):
+            self.source._admit(bad, watch=True)
+        self.assertEqual(self.source._position, (self.frame["viewRevision"], self.frame["emittedBoottimeMs"]))
+
     def test_scope_disappearance_and_reappearance_cannot_reset_receipts(self):
         self.source._admit(self.frame, watch=False)
         for bad in (copy.deepcopy(self.frame), copy.deepcopy(self.frame)):
@@ -173,6 +182,20 @@ class SourceAcquisitionTest(unittest.IsolatedAsyncioTestCase):
         frame = await self.source.snapshot()
         self.assertEqual(frame["snapshot"], self.frame["snapshot"])
         self.assertEqual(self.requests, [{"serviceProtocol": 2, "operation": "status", "hostScope": "fixture"}])
+        self.assertEqual(self.source._active, 0)
+
+    async def test_same_view_queued_before_status_still_supplies_watch_baseline(self):
+        self.frame["emittedBoottimeMs"] += 1
+        watermark = self.frame["emittedBoottimeMs"]
+        await self.source.snapshot()
+        self.frame["emittedBoottimeMs"] -= 1
+        stream = self.source._frames("watch")
+        try:
+            frame = await asyncio.wait_for(anext(stream), .2)
+            self.assertEqual(frame["viewRevision"], self.frame["viewRevision"])
+            self.assertEqual(self.source._position[1], watermark)
+        finally:
+            await stream.aclose()
         self.assertEqual(self.source._active, 0)
         a, b = await asyncio.gather(self.source.snapshot(), self.source.snapshot())
         self.assertEqual(a, b)

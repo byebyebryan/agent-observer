@@ -10,6 +10,9 @@ import sys
 import zipfile
 from pathlib import Path
 
+STATE_SCHEMAS_SHA256 = "a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46"
+LEGACY_LOCK_SHA256 = "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"
+
 
 def require(value):
     if not value:
@@ -19,21 +22,44 @@ def require(value):
 def mesh_manifest(path):
     require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 8192)
     mesh = json.loads(path.read_text())
-    require(isinstance(mesh, dict) and set(mesh) == {
+    require(isinstance(mesh, dict))
+    expected = {
         "manifestVersion", "package", "version", "wheel", "wheelSha256",
-        "sourceRevision", "lockSha256", "agentProfile"})
-    require(mesh["manifestVersion"] == 1 and mesh["package"] == "mesh-plus")
+        "sourceRevision", "lockSha256", "agentProfile"}
+    if mesh.get("manifestVersion") == 2:
+        expected |= {"stateSchemasSha256", "sdkInterface"}
+    require(set(mesh) == expected and type(mesh["manifestVersion"]) is int
+            and mesh["manifestVersion"] in {1, 2} and mesh["package"] == "mesh-plus")
     require(isinstance(mesh["version"], str) and re.fullmatch(r"[0-9][0-9A-Za-z.]*", mesh["version"]))
     require(path.name == "mesh-" + mesh["version"] + ".json")
     require(mesh["wheel"] == "mesh_plus-" + mesh["version"] + "-py3-none-any.whl")
     require(all(isinstance(mesh[k], str) and re.fullmatch(r"[0-9a-f]{" + str(n) + "}", mesh[k])
-                for k, n in (("wheelSha256", 64), ("sourceRevision", 40))))
-    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1"
-            and mesh["lockSha256"] == "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489")
+                for k, n in (("wheelSha256", 64), ("sourceRevision", 40), ("lockSha256", 64))))
+    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v1")
+    if mesh["manifestVersion"] == 1:
+        require(mesh["lockSha256"] == LEGACY_LOCK_SHA256)
+    else:
+        require(type(mesh["sdkInterface"]) is int and mesh["sdkInterface"] == 1
+                and mesh["stateSchemasSha256"] == STATE_SCHEMAS_SHA256)
     return mesh
 
 
-def verify(prefix, archive, profile):
+def state_schemas(bundle):
+    hashes = {n: hashlib.sha256(bundle.read(n)).hexdigest() for n in bundle.namelist()
+              if n.startswith("mesh_plus/schemas/") and n.endswith(".json")}
+    require(len(hashes) == 20)
+    digest = hashlib.sha256(json.dumps(hashes, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    require(digest == STATE_SCHEMAS_SHA256)
+    return digest
+
+
+def publisher_launcher(prefix):
+    shebang = (prefix / "bin/agent-observer").read_text().splitlines()[0]
+    return f"{shebang}\nfrom agent_observer.mesh_publisher import main\nraise SystemExit(main())\n"
+
+
+def verify(prefix, archive, profile, role="reader"):
+    require(role in {"reader", "publisher"})
     manifests = list(archive.glob("observer-*.json"))
     require(len(manifests) == 1)
     observer_manifest = manifests[0]
@@ -44,6 +70,13 @@ def verify(prefix, archive, profile):
     wheel = archive / mesh["wheel"]
     require(wheel.is_file() and not wheel.is_symlink()
             and hashlib.sha256(wheel.read_bytes()).hexdigest() == mesh["wheelSha256"])
+    if mesh["manifestVersion"] == 2:
+        lock = archive / "producer-lock.json"
+        require(lock.is_file() and not lock.is_symlink() and lock.stat().st_size <= 65536
+                and hashlib.sha256(lock.read_bytes()).hexdigest() == mesh["lockSha256"])
+        locked = json.loads(lock.read_text())
+        require(locked["meshProtocol"] == 1 and locked["deliveryVersion"] == 1
+                and locked["profiles"]["agent"] == mesh["agentProfile"])
     result = subprocess.run([str(archive / "candidate-artifact"), "verify", "--manifest",
                              str(observer_manifest), "--wheel", str(archive / observer["wheel"]),
                              "--prefix", str(prefix), "--profile", profile], capture_output=True, check=True, timeout=30)
@@ -68,6 +101,7 @@ print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata
             and metadata["sdkInterface"] == 1
             and metadata["profileDescriptor"]["profile_id"] == mesh["agentProfile"])
     with zipfile.ZipFile(wheel) as bundle:
+        state_digest = state_schemas(bundle)
         for entry in bundle.infolist():
             if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
                 continue
@@ -78,7 +112,26 @@ print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata
     shebang = (prefix / "bin/mesh-plus").read_text().splitlines()[0]
     require(shebang == (prefix / "bin/agent-observer").read_text().splitlines()[0]
             and Path(shebang[2:]).parent == prefix / "bin")
+    if role == "publisher":
+        require(mesh["manifestVersion"] == 2
+                and (prefix / "bin/mesh-plus").read_text() == publisher_launcher(prefix)
+                and (prefix / "bin/mesh-plus").stat().st_mode & 0o777 == 0o755)
+        code = """import json,sys
+from agent_observer.mesh_publisher import make_publisher
+from mesh_plus.api import CachedPublisher
+p=make_publisher('fixture','agent','/nonexistent/read.sock')
+assert type(p) is CachedPublisher and p.host=='fixture' and p.source=='agent'
+assert p.capabilities==('snapshot','proof','subscribe') and p.native._active==0
+assert not any(n in sys.modules for n in ('mesh_plus.observer','agent_observer.collection',
+ 'agent_observer.service_runtime','agent_observer.codex_snapshot','agent_observer.write_client'))
+print(json.dumps({'factory': 'agent_observer.mesh_publisher.make_publisher',
+ 'publisher': 'mesh_plus.api.CachedPublisher', 'constructionResources': 0}))"""
+        metadata["publisher"] = json.loads(subprocess.run(
+            [str(prefix / "bin/python"), "-I", "-B", "-c", code],
+            check=True, capture_output=True, timeout=30,
+        ).stdout)
     return {"status": "accepted", "observer": receipt, "mesh": mesh, "metadata": metadata,
+            "stateSchemasSha256": state_digest, "role": role,
             "installedMeshWheelBytesVerified": True, "collectorImports": 0, "providerInvocations": 0}
 
 
@@ -87,9 +140,10 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--archive", type=Path, required=True)
     parser.add_argument("--profile", choices=("core",), required=True)
+    parser.add_argument("--role", choices=("reader", "publisher"), default="reader")
     args = parser.parse_args()
     try:
-        print(json.dumps(verify(args.prefix, args.archive, args.profile), indent=2))
+        print(json.dumps(verify(args.prefix, args.archive, args.profile, args.role), indent=2))
         return 0
     except Exception:
         print(json.dumps({"status": "rejected", "reason": "mesh_artifact_invalid"}), file=sys.stderr)

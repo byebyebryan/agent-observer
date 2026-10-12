@@ -27,6 +27,19 @@ class MeshArtifactTest(unittest.TestCase):
                 path.write_text(json.dumps(value))
                 self.assertEqual(self.module.mesh_manifest(path), value)
 
+    def test_additive_lock_binds_reviewed_state_schemas_and_sdk(self):
+        value = {**self.manifest, "manifestVersion": 2, "lockSha256": "f" * 64,
+                 "stateSchemasSha256": self.module.STATE_SCHEMAS_SHA256, "sdkInterface": 1}
+        with tempfile.TemporaryDirectory() as name:
+            path = Path(name) / "mesh-0.1.0a9.json"
+            path.write_text(json.dumps(value))
+            self.assertEqual(self.module.mesh_manifest(path), value)
+            for fault in ({"sdkInterface": 2}, {"sdkInterface": True},
+                          {"stateSchemasSha256": "f" * 64}, {"lockSha256": "wrong"}):
+                path.write_text(json.dumps({**value, **fault}))
+                with self.assertRaises(ValueError):
+                    self.module.mesh_manifest(path)
+
     def test_ambiguous_or_malformed_artifact_fails_before_subprocess(self):
         for changed in ({"agentProfile": "unreviewed"}, {"lockSha256": "f" * 64},
                         {"wheel": "../foreign.whl"}, {"sourceRevision": "wrong"},

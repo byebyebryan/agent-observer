@@ -88,10 +88,12 @@ class CachedAgentSource:
         if service == self._service:
             if binding != self._binding or set(receipts) != set(self._receipts):
                 raise ContractError("service_acquisition_scope_changed")
-            if position[0] < self._position[0] or position[1] < self._position[1]:
+            if position[0] < self._position[0]:
                 if watch:
                     return False
                 raise ContractError("service_acquisition_superseded")
+            if position[0] > self._position[0] and position[1] < self._position[1]:
+                raise ContractError("service_acquisition_clock_regression")
             for key, current in receipts.items():
                 previous = self._receipts[key]
                 if current[0] < previous[0]:
@@ -106,6 +108,11 @@ class CachedAgentSource:
                 raise ContractError("service_incarnation_capacity")
             self._retired.add(self._service)
         # No await: concurrent operations cannot partially commit admission.
+        # Same-revision frames can be queued on another connection before a
+        # newer status emission. Their original receipts still describe the
+        # same view; suppressing the initial watch would stall subscription.
+        if service == self._service:
+            position = position[0], max(position[1], self._position[1])
         self._service, self._binding = service, binding
         self._position, self._receipts = position, receipts
         return True
