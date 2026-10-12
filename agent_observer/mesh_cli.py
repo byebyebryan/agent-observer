@@ -20,7 +20,7 @@ def interface():
     return {
         "meshProtocol": 1,
         "profile": "agent-observer.mesh-candidate.v1",
-        "operations": ["snapshot", "list", "watch"],
+        "operations": ["snapshot", "list", "watch", "assess"],
         "access": "cached",
         "readOnly": True,
         "routeReporting": False,
@@ -102,6 +102,16 @@ async def run(args, *, output=None, human_output=None):
     human_output = (lambda value: _write_output((value + "\n").encode())) if human_output is None else human_output
     authority = MeshAuthority() if args.authority == "mesh" else SSHPlusAuthority()
     profile = AgentProfile()
+    if args.command == "assess":
+        from mesh_plus.diagnostics import assess_configured
+
+        report = await assess_configured(
+            "agent", mode=args.mode, timeout_ms=args.timeout_ms, source=args.source,
+            socket=args.socket, scope=args.scope, hosts=args.hosts, local_host=args.local_host,
+            authority=authority, report_routes=False, profile=profile,
+        )
+        output(report)
+        return 0 if report["ok"] else 1
     reader = await configured_reader("agent", source=args.source, socket=args.socket, scope=args.scope,
                                      hosts=args.hosts, local_host=args.local_host, authority=authority,
                                      report_routes=False, profile=profile)
@@ -175,7 +185,7 @@ def parser():
     root = argparse.ArgumentParser(description=__doc__)
     commands = root.add_subparsers(dest="command", required=True)
     commands.add_parser("api", help="describe the optional state-only Mesh mode")
-    for name in ("snapshot", "list", "watch"):
+    for name in ("snapshot", "list", "watch", "assess"):
         command = commands.add_parser(name)
         command.add_argument("--scope", choices=("local", "fleet", "hosts"), default="fleet")
         command.add_argument("--hosts", nargs="+", default=[])
@@ -187,6 +197,9 @@ def parser():
         if name == "watch":
             command.add_argument("--human", action="store_true")
             command.add_argument("--count", type=int, help="limit replacement/control frames")
+        if name == "assess":
+            command.add_argument("--mode", choices=("snapshot", "subscribe"), default="snapshot")
+            command.add_argument("--timeout-ms", type=int, choices=range(1, 60001), default=5000, metavar="1..60000")
         if name in {"list", "watch"}:
             command.add_argument("--include-children", action="store_true")
             command.add_argument("--provider", action="append", choices=("codex",))

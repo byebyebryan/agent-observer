@@ -2,8 +2,9 @@
 
 2026-10-11. Execution of the
 [SDK maintenance/publisher plan](../../mesh-sdk-maintenance-adoption-plan.md).
-This checkpoint accepts U0's current installed baseline and the Mesh producer
-input only. Agent source, immutable candidates, resources and adoption remain
+U0 accepts the current installed baseline and Mesh producer input. U1–U3 now
+implement portable owner conformance, bounded cached Service 2 acquisition and
+the static lazy factory. Immutable candidates, resources and adoption remain
 pending. API 2/read 4/Service 2 and Mesh SDK/Read/Delivery 1 remain unchanged.
 
 ## Inputs and independent baseline
@@ -29,13 +30,45 @@ uses its a16/a10 prefix. Both need independently proved factory selection;
 upgrading a reader or changing local Python code does not extract the remote
 publisher. No shared launcher or normal service changed during baseline work.
 
-## Remaining owner gates
+## Source and portable checkpoint
 
-U1–U3 will supply owner conformance, bounded cached native acquisition and
-static lazy factory wiring. Service 2 has connection-local sequences and a
-stable source scope within an incarnation; cross-acquisition native ordering
-must remain distinct from that stream guard. Constructors own no IO, and each
-snapshot/watch operation must retire its resources even during cancellation.
+`mesh_source.CachedAgentSource` owns status/watch-only nonblocking Unix sockets.
+Socket path/inode/UID, host, boot/time namespace, Service 2 stream admission,
+operation kind, current receipt expiry and cross-acquisition ordering are checked.
+Delayed watch views are skipped after newer acquisitions; superseded status
+cannot supply a nonce proof. Native sources/components cannot disappear and
+reappear inside a stable Service 2 scope to reset counters. Original sample and
+expiry cannot change at equal acceptance. A retired service ID cannot return.
+Admission tracks bounded metadata only: 32 concurrent channels and 64 service
+incarnations, after which a new publisher is required. Constructors own no IO.
+Each operation closes its socket synchronously, including cancellation during
+connect/read, guard failure and repeated cancellation; no executor is retained.
+
+`mesh_publisher.make_publisher` uses public `CachedPublisher` plus `AgentProfile`.
+Its lazy `main` supplies the static Agent factory to Mesh's reviewed CLI. Core
+and local service import neither module; the authority help path imports no
+publisher/profile/native implementation. No reference-adapter subclass/import
+or generic proof implementation is copied. A trusted installed launcher still
+needs independent selection before this code serves the normal SSH command.
+
+`scripts/check-mesh-owner` passes seven independent profile cases and ten owned
+portable network cases with no skips against the accepted a15 wheel. These
+portable fixtures do not certify the native source. Twelve native-source tests
+and five factory/publisher cases exercise actual owned Unix IPC, a controlled
+Service 2 runtime, proof-after-nonce, native faults, cleanup and lazy dispatch.
+The targeted Mesh suite passes 41 tests with no skips. A passive ordinary Snap
+source snapshot/proof/watch also shows 91 rows/3 running, matching the baseline;
+zero channels remain after close and no provider/reference-adapter imports occur.
+This is source feasibility, not installed/native artifact acceptance.
+
+The read CLI adds explicit bounded `mesh assess` snapshot/subscribe diagnostics
+using `AgentProfile`, with catalog resolution inside the budget, no route writes
+and cleanup before returning. Acquisition and current receipts remain distinct;
+the command grants no retained authority. The released-reader CI input advances
+to a13. A separate job tests the exact a15 runtime source commit, explicitly
+distinct from private wheel/managed acceptance; hosted success is not yet claimed.
+
+## Remaining owner gates
 
 U4–U6 require exact successor artifacts, installed local/fixed SSH delivery,
 independent daemon parity, mixed old/new compatibility and attributed cost.

@@ -32,5 +32,31 @@ jobs:
           mkdir -p "$RUNNER_TEMP/observer-tools"
           tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
           echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
-      - run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a11/mesh_plus-0.1.0a11-py3-none-any.whl#sha256=9d3c2446b2391ab2271236804b4dfc03dfa5d29f2766d72b3d12086848b36359'
+      - run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a13/mesh_plus-0.1.0a13-py3-none-any.whl#sha256=62b42bc76e7d79d95d89c41ee6f73c5e0169d24e2f1ac911c151c13f1f2b6f07'
       - run: ./scripts/check
+      - run: ./scripts/check-mesh-owner --installed
+  mesh-publisher-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: byebyebryan/mesh-plus
+          ref: c46262c0f0185244e96c79ea2036e4f57b2e4e1e
+          path: .sdk/mesh-plus
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install operational fixture tool
+        run: |
+          curl -fsSL --retry 3 https://github.com/twpayne/chezmoi/releases/download/v2.73.0/chezmoi_2.73.0_linux_amd64.tar.gz -o "$RUNNER_TEMP/chezmoi.tar.gz"
+          printf '%s  %s\n' b597729b687af4488a848240134cb633de8ca0f04e0d26d48f400ee2ac338ffa "$RUNNER_TEMP/chezmoi.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/observer-tools"
+          tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
+          echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
+      - name: Install exact producer source checkpoint
+        run: |
+          test "$(git -C .sdk/mesh-plus rev-parse HEAD)" = c46262c0f0185244e96c79ea2036e4f57b2e4e1e
+          python -m pip install '.[dev]' .sdk/mesh-plus
+      - run: ./scripts/check
+      - run: ./scripts/check-mesh-owner --installed

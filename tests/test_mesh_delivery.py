@@ -119,6 +119,35 @@ class MeshOwnerDeliveryTests(unittest.IsolatedAsyncioTestCase):
             await task
         self.assertEqual(self.reader.inspect()["activeConnections"], 0)
 
+    async def test_bounded_assessment_uses_owner_profile_without_route_writes(self):
+        from mesh_plus import api
+
+        if not importlib.util.find_spec("mesh_plus.diagnostics"):
+            self.skipTest("optional Mesh diagnostics capability not installed")
+        from mesh_plus import configured_read, diagnostics
+
+        if not callable(getattr(diagnostics, "assess_configured", None)):
+            self.skipTest("optional Mesh assessment capability not installed")
+        from agent_observer import mesh_cli
+
+        real_configured = api.configured_reader
+        for mode in ("snapshot", "subscribe"):
+            args = mesh_cli.parser().parse_args(["assess", "--mode", mode, "--local-host", "fixture",
+                                                 "--socket", str(self.socket), "--timeout-ms", "2000"])
+            reports, bindings = [], []
+
+            async def configured(*values, _bindings=bindings, **kwargs):
+                _bindings.append(kwargs)
+                return await real_configured(*values, **kwargs)
+
+            with patch.object(configured_read, "configured_reader", configured):
+                self.assertEqual(await mesh_cli.run(args, output=reports.append), 0)
+            self.assertTrue(reports[0]["ok"])
+            self.assertIs(bindings[0]["profile"].__class__, self.publisher.state_profile.__class__)
+            self.assertFalse(bindings[0]["report_routes"])
+            self.assertEqual(reports[0]["runtime"]["activeConnections"], 0)
+            self.assertEqual(self.publisher.watchers, 0)
+
     async def test_aggregate_admission_rejects_native_and_receipt_forgeries(self):
         from mesh_plus.api import validate_response
         from mesh_plus.protocol import ProtocolError
