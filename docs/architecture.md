@@ -14,7 +14,7 @@ Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
 | Reusable core engine | Shared evidence ordering, reconciliation, leases and finite retention |
 | Local service | Owned collection/hint helper lifetime, scheduling, Unix cached pull/push |
 | Pure/read CLI | Strict admission, identity selection, age/order/display and client expiry |
-| Observer Mesh profile | Pure Agent ownership/identity/projection through SDK 1 |
+| Observer Mesh profile/source/factory | Pure Agent projection; owned cached Service 2 acquisition and lazy publisher construction |
 | Mesh Plus | Transport, catalog, remote proof, generic admission and delivery lifecycle |
 | External clients | User intent, terminal/window matching, TUI lifetime, actions and alerts |
 
@@ -22,13 +22,18 @@ Neither core nor service discovers client inventory, tmux sessions, TUI presence
 or windows. Codex daemon status owns running/parked and work phase. Native hints
 request earlier reads and supply no runtime evidence. Push distributes complete
 leased views; heartbeats do not renew facts and consumers handle idle expiry,
-gap/resync and new incarnations. Native occurrence normalization/replay and
-publisher extraction remain separate future work.
+gap/resync and new incarnations. Native occurrence normalization/replay remains
+separate future work. Publisher ownership is implemented in the optional
+networking component through Mesh's supported generic SDK 1 helper;
+core/local service remain independent.
 
-Normal collector/read selection uses a18; optional readers use Mesh a11. The
-separate retained a16/a10 bridge reads cached Service 2, and does not collect
-providers. Its own archived dependency profile is verified independently from
-the new Codex-only reader. The historical writer has a separate action gate.
+Normal collection uses a18; reads and Agent publication select a20/Mesh a15 on
+both hosts. The shared launcher supplies lazy Agent and independently selected
+Tmux factories. The retained a16/a10 reference bridge and a18/a11 reader remain
+rollback artifacts with their original dependency profiles. The historical
+writer has a separate action gate. The
+[publisher handoff](mesh-publisher-operator-handoff.md) records current role
+ownership, exact selectors and resource/native/operational bounds.
 See the [client handoff](api-v2-client-handoff.md) and [roadmap](roadmap.md).
 
 ## Historical design and acceptance checkpoints

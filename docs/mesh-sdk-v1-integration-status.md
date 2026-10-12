@@ -4,6 +4,8 @@ This is the historical a17 integration checkpoint. The following
 [Claude retirement](claude-retirement-plan.md) selects Codex-only a18 collector/
 reader artifacts while retaining the same SDK 1 and a16/a10 bridge boundary.
 See the [current report](evidence/2026-10-11-claude-retirement/REPORT.md).
+The following [owned publisher/read handoff](mesh-publisher-operator-handoff.md)
+selects a20/Mesh a15 reads/publication, keeping a18 collection independent.
 
 Started 2026-10-11 following the user's goal-loop request, with accepted checkpoints
 committed as work proceeds. The [reviewed plan](mesh-sdk-v1-integration-plan.md)

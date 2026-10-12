@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Bounded installed fleet snapshot/watch gate with all selected hosts settled."""
+
+import argparse
+import asyncio
+import json
+import os
+import sys
+from pathlib import Path
+
+
+async def exercise(args):
+    from mesh_plus.api import ReadGuard, configured_reader, current_sessions
+    from mesh_plus.catalog import SSHPlusAuthority
+    from mesh_plus.evidence import clock_domain
+    from mesh_plus.transport import boottime_ms
+
+    from agent_observer.mesh_profile import AgentProfile
+
+    profile = AgentProfile()
+    reader = await configured_reader("agent", source="agent", socket=args.socket, scope="fleet",
+                                     authority=SSHPlusAuthority(), report_routes=False, profile=profile)
+    expected = {e.host for e in reader.endpoints}
+    if expected != set(args.hosts):
+        raise ValueError("fleet_host_scope")
+    snapshot = await reader.snapshot(timeout_ms=15000)
+    if snapshot["mesh"]["status"] != "complete":
+        raise ValueError("fleet_snapshot_incomplete")
+    now = boottime_ms()
+    snapshot_rows = current_sessions(snapshot, now, clock_domain(), profile=profile)
+    stream = reader.watch(request_id="a" * 32)
+    guard = ReadGuard("agent", "a" * 32, host_ids=[e.host for e in reader.endpoints], profile=profile)
+    transitions = []
+    try:
+        async with asyncio.timeout(30):
+            async for frame in stream:
+                guard.accept(frame)
+                if "mesh" not in frame:
+                    raise ValueError("fleet_watch_base_error")
+                transitions.append({"kind": frame["mesh"]["kind"], "status": frame["mesh"]["status"],
+                                    "delivery": {h["hostId"]: h["delivery"]["status"] for h in frame["mesh"]["hosts"]}})
+                if (frame["mesh"]["status"] == "complete"
+                        and all(h["delivery"]["status"] == "ready" for h in frame["mesh"]["hosts"])):
+                    rows = guard.current(boottime_ms(), clock_domain())
+                    break
+            else:
+                raise ValueError("fleet_watch_missing")
+        hosts = []
+        for host in frame["mesh"]["hosts"]:
+            owned = [r for r in rows if r["identity"]["hostScope"] == host["hostId"]]
+            hosts.append({"host": host["hostId"], "local": host["local"], "delivery": host["delivery"]["status"],
+                          "proofRequired": not host["local"], "proofPresent": host["delivery"]["proof"] is not None,
+                          "rows": len(owned), "running": sum(r["runtime"]["value"] == "running" for r in owned),
+                          "receipts": host["receipts"]})
+            if not host["local"] and host["delivery"]["proof"] is None:
+                raise ValueError("fleet_remote_proof_missing")
+    finally:
+        guard.disconnect()
+        await stream.aclose()
+    metrics = reader.inspect()
+    if metrics["activeConnections"] or metrics["cleanupFailures"]:
+        raise ValueError("fleet_cleanup_incomplete")
+    return {"status": "passed", "cliVersion": __import__("agent_observer").__version__,
+            "ownerModule": sys.modules["agent_observer.mesh_profile"].__file__,
+            "snapshotRows": len(snapshot_rows), "watchRows": len(rows), "hosts": hosts,
+            "transitions": transitions, "runtime": metrics, "retainedAuthority": False,
+            "limits": ["one complete cached fleet sample", "native comparison separate", "no actions or route writes"]}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--hosts", nargs="+", required=True)
+    parser.add_argument("--socket", type=Path, default=Path(f"/run/user/{os.getuid()}/mesh-plus-agent/read.sock"))
+    args = parser.parse_args()
+    print(json.dumps(asyncio.run(exercise(args)), indent=2))
+
+
+if __name__ == "__main__":
+    main()

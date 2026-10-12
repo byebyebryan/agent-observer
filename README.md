@@ -9,11 +9,12 @@ no TUI/tmux attachment or provider action.
 
 [Observer a18](artifacts/observer-0.5.0a18.json) removes the Claude adapter,
 SDK/history worker, hint listener, service metadata memo and native notification
-intake. Codex-only collector and a18/Mesh a11 read artifacts are independently
-accepted on Snap and Starship. The [retirement report](docs/evidence/2026-10-11-claude-retirement/REPORT.md)
+intake. Codex-only a18 collection remains independently selected on both hosts;
+reads and owned publication now use a20/Mesh a15. The
+[retirement report](docs/evidence/2026-10-11-claude-retirement/REPORT.md)
 records source, exact installed bytes, native comparisons, pull/push and scoped
-operational gates. The retained a16/Mesh a10 bridges and historical 0.4.0a16
-writer have independent selections. The exact
+operational gates. The retained a16/Mesh a10 bridges and a18/a11 readers are
+rollback artifacts; the historical 0.4.0a16 writer stays independently selected. The exact
 [a18 GitHub prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a18)
 is published and independently downloaded/verified on both hosts. No downstream
 client migration is implied.
@@ -46,8 +47,16 @@ Observer profile through Mesh's SDK; Mesh owns networking and remote proofs.
 See [architecture](docs/architecture.md), [Mesh reads](docs/mesh-read-client.md)
 and [read cache](docs/read-cache-client.md).
 
+The [owned publisher checkpoint](docs/evidence/2026-10-11-mesh-publisher/REPORT.md)
+adds the a20/Mesh a15 reader and Agent-owned cached source/factory on both hosts.
+Collection stays a18 and the writer stays independently selected. The shared
+launcher composes lazy Agent and Tmux factories through SDK 1; no reference
+adapter implements Agent acquisition. See the
+[operator handoff](docs/mesh-publisher-operator-handoff.md) for cached read/assess,
+complete fleet validation, exact role selections and scoped rollback.
+
 Accepted limits remain: partial/bounded native inventory, unknown kinds for older
-Starship history, two native creation-time sampling races, and deferred physical
+Starship history, native creation-time sampling races, and deferred physical
 suspend/post-TUI-closure lifetime checks. Current-state push does not promise
 all native transitions or notification replay. Notification/event enrichment,
 actions/attachment and client UI/device acceptance are separate work.

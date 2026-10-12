@@ -1,10 +1,12 @@
 # API 2 client handoff
 
-Date: 2026-10-11. [Observer a18](evidence/2026-10-11-claude-retirement/REPORT.md)
-is the independently accepted Codex-only collector and read artifact on Snap and
-Starship. The optional reader uses Mesh a11/SDK 1 with an explicit Observer-owned
-profile. Separate a16/Mesh a10 bridges, the shared Mesh CLI and historical
-0.4.0a16 writer retain their independently selected artifacts. The retirement
+Updated 2026-10-12. [Observer a18](evidence/2026-10-11-claude-retirement/REPORT.md)
+remains the independently selected Codex-only collector on Snap and Starship.
+[a20/Mesh a15](mesh-publisher-operator-handoff.md) selects the reader and owned
+Agent publisher through SDK 1 and the explicit Observer profile. The shared CLI
+composes lazy Agent and separately selected Tmux factories. Historical a18/a11
+readers and a16/a10 bridges remain rollback artifacts; the 0.4.0a16 writer stays
+independent. The retirement
 pass removes Claude native collection, SDK/history, hints and service memo.
 Claude remains under native session management/Agent View.
 
@@ -19,13 +21,14 @@ API 2/read wire 4/Service 2/Mesh SDK 1 are unchanged. Reserved provider vocabula
 and synthetic supplied data remain valid for pure conformance; Claude native
 selection and its old CLI/configuration options are unsupported. No dormant
 adapter or compatibility collector remains. This handoff supplies no consumer,
-provider-policy, frontend, attachment/action or Mesh-upgrade acceptance.
+provider-policy, frontend or attachment/action acceptance. The separate publisher
+receipt accepts the selected Mesh upgrade within its declared operational scope.
 
 ## Bind to the contract
 
 Use [API 2](api-v2.md), snapshot/watch wire 4 and
 [service protocol 2](service-protocol-v2.md). Writer wire 2 is independent of the
-pure read facade. The [reader manifest](../artifacts/observer-0.5.0a18.json) identifies the
+pure read facade. The [reader manifest](../artifacts/observer-0.5.0a20.json) identifies the
 accepted candidate; provider release numbers are diagnostic provenance, not
 support allowlists. Do not carry forward wire-2/wire-3 readers or protocol-1
 caches. Reject unsupported input and rebuild the consumer cache from a new view.

@@ -1,15 +1,22 @@
 # Agent Observer roadmap
 
-Current checkpoint, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
+Retirement checkpoint, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
 removes native Claude support. [a18 evidence](evidence/2026-10-11-claude-retirement/REPORT.md)
 accepts Codex-only source, immutable artifacts, direct/cached native comparisons
 and scoped collector/read delivery on Snap and Starship. API 2/read 4/Service 2/
 Mesh SDK 1 are unchanged. Existing a16/a10 bridges and the historical writer
 remain independently selected. Native Claude sessions/settings remain external.
 
+The following [publisher ownership checkpoint](mesh-publisher-operator-handoff.md)
+selects a20/Mesh a15 readers and Agent-owned publication on both hosts, with
+shared lazy Agent/Tmux factories, complete fleet pull/push, native comparisons,
+bounded resources and scoped rollback. Collection stays a18. The
+[execution receipt](evidence/2026-10-11-mesh-publisher/REPORT.md) supersedes the
+old retained-reference bridge selection above.
+
 Next work remains separately scoped:
 
-- [Mesh SDK maintenance and publisher ownership](mesh-sdk-maintenance-adoption-plan.md): Mesh's SDK v1 publisher/factory seam is accepted in its private a15 candidate. Implement and accept Agent's cached source, local/fixed SSH factory wiring and reader maintenance against that input; public release, resource checks and scoped rollout follow independently.
+- Mixed Observer/Mesh validation and copy-cost optimization after the accepted publisher extraction; preserve original leases and owned-frame semantics.
 - Read-client ergonomics and consumer implementation against the settled read contract.
 - Native occurrence events/notification enrichment, if a concrete client requires them.
 - Optional Mesh transport upgrades, including WSS, in a separate coordinated pass.
