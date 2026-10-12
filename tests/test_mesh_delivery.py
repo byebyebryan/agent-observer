@@ -146,6 +146,9 @@ class MeshOwnerDeliveryTests(unittest.IsolatedAsyncioTestCase):
             self.assertIs(bindings[0]["profile"].__class__, self.publisher.state_profile.__class__)
             self.assertFalse(bindings[0]["report_routes"])
             self.assertEqual(reports[0]["runtime"]["activeConnections"], 0)
+            async with asyncio.timeout(2):
+                while self.publisher.watchers:
+                    await asyncio.sleep(.01)
             self.assertEqual(self.publisher.watchers, 0)
 
     async def test_aggregate_admission_rejects_native_and_receipt_forgeries(self):

@@ -175,7 +175,7 @@ class HintPortTest(unittest.TestCase):
                 while time.monotonic() < deadline:
                     try:
                         fields = Path(f"/proc/{child}/stat").read_text().rsplit(")", 1)[1].split()
-                    except FileNotFoundError:
+                    except (FileNotFoundError, ProcessLookupError):
                         break
                     if fields[0] == "Z" or fields[19] != before:
                         break
