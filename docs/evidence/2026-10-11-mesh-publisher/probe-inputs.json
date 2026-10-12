@@ -1,0 +1,10 @@
+{
+  "scriptsRetainedAt": "/tmp/observer-publisher-owner-20261011",
+  "sha256": {
+    "capacity_probe.py": "ca11bd2913722ffc9d6526a769ccd566736b1ec036b514475eed924f6e54dea0",
+    "service-fixture.json": "8aa22561f135cfe8b0c4cfe1b34ccd08da8c913430a7c53a9bfab16050c9ec58",
+    "profile_publisher.py": "502e995bf0b29dabd59364fd38095d9286276a62fc35d81957c5e0da76941b5b"
+  },
+  "providerActions": false,
+  "rawProviderPayloadsRetained": false
+}

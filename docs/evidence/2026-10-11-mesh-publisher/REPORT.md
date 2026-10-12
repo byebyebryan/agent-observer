@@ -4,8 +4,10 @@
 [SDK maintenance/publisher plan](../../mesh-sdk-maintenance-adoption-plan.md).
 U0 accepts the current installed baseline and Mesh producer input. U1–U3 now
 implement portable owner conformance, bounded cached Service 2 acquisition and
-the static lazy factory. Immutable candidates, resources and adoption remain
-pending. API 2/read 4/Service 2 and Mesh SDK/Read/Delivery 1 remain unchanged.
+the static lazy factory. U4–U6 now accept the a20 installed candidate, native
+comparison and bounded local resources. Fleet/resource expansion and scoped
+adoption remain pending. API 2/read 4/Service 2 and Mesh SDK/Read/Delivery 1 are
+unchanged. The following installed/resource receipts were collected 2026-10-12.
 
 ## Inputs and independent baseline
 
@@ -72,13 +74,11 @@ to a13. After Mesh's a15 publication the publisher job selects its exact release
 wheel/hash. Hosted success is not yet claimed; candidate/native/managed receipts
 remain separate.
 
-## Remaining owner gates
+## Installed candidate and local resource gates
 
-U4–U6 require exact successor artifacts, installed local/fixed SSH delivery,
+U4–U6 separate exact successor artifacts, installed local/fixed SSH delivery,
 independent daemon parity, mixed old/new compatibility and attributed cost.
-The old operations verifier compares the entire Mesh lock; the additive WSS
-lock revision needs a reviewed Agent-contract comparison instead of a false
-incompatibility. WSS runtime remains out of scope.
+WSS runtime remains out of scope.
 
 The artifact tooling now compares the twenty preserved packaged state schema
 resources directly, digest
@@ -109,6 +109,67 @@ retaining the emission watermark. Lower revisions still cannot supply a fresh
 status proof; newer-revision clock regression and receipt renewal still fail.
 A real controlled Unix case reproduces the stall before the correction.
 A20 uses a successor immutable artifact; a19 bytes are retained separately.
+
+The accepted a20 wheel comes from a clean tracked-source export of
+`42484d38051083266b3b01ddaa6143380f492bc5`, SHA256
+`8241cafc13dbfdfe43da0b092dbce99328ee6cc0b0b74faa04b428dfa54a9b1a`.
+Both hosts install it independently in unused
+`0.5.0a20-8241cafc13dbfdfe-mesh-a15-publisher` prefixes, paired with the freshly
+downloaded exact Mesh a15 release. Core/native schemas, installed package bytes,
+pure profile, dependency receipts and trusted publisher launcher/factory pass
+on each host. Installed portable conformance passes seven profile and ten network
+cases with no skips on each host.
+
+The installed cached-source gate executes local IPC and the fixed Mesh bridge
+argv over actual owned localhost SSH, through the installed named launcher and
+the same static Agent factory. Its private dispatcher validates/unpacks the
+normal reached wrapper; the public SSH fixture supplies its own reached marker.
+This proves exact fixed bridge argv/factory/native acquisition under owned SSH,
+not ordinary remote launcher selection. Snap has 92 rows, Starship 388; watch
+and nonce-bound proof are ready, with original receipts, zero retained native
+channels and no provider/reference-adapter imports. Installed public `mesh assess`
+subscribe also retires its connections. All fixture listeners/SSH processes are
+owned and retired; normal provider/service selection remains unchanged.
+
+Two bracketing independent daemon comparisons against each candidate local
+publisher match runtime/phase/membership: Snap 92 rows/4 running; Starship
+388 rows/7 running. The four Starship unsaved-child creation races and 46 older
+unknown kinds remain explicit. Active counts changed from baseline through
+ordinary provider activity; this is sampled native evidence, not a process census.
+Both reader generations pass against both publisher generations on each host.
+
+`measure-mesh-publisher` records matched 120-second ordinary local one-reader
+windows after ten-second warmup, separately attributing reader and publisher.
+
+| Host | Old publisher CPU | New publisher CPU | Old reader CPU | New reader CPU | New publisher peak PSS |
+| --- | --- | --- | --- | --- | --- |
+| Snap | 0.790% | 1.239% | 1.023% | 1.214% | 22.0 MB |
+| Starship | 3.628% | 4.784% | 4.044% | 3.835% | 28.6 MB |
+
+The owned publisher adds 0.449/1.156 percentage points in these windows.
+Twelve instrumented native cached proofs per host attribute dominant work to
+Observer `validate_shape`/type checks and Mesh `tree`, with additional generic
+owned-frame copies/validation. Instrumented timings are not normal CPU budgets.
+The increase is understood and bounded for this acceptance; this extraction
+does not claim a performance improvement. Publisher FD peaks remain 11 and
+reader peaks 7, with no extra background processes. Reader/copy optimization
+remains its independent following checkpoint.
+
+A controlled 1512-row Codex capacity sample (1000 saved plus 512 runtime bound)
+is 1,623,160 native bytes. Four native proof acquisitions and watch admission pass
+on each installed candidate. Proof latency is 621–647 ms on Snap and 540–570 ms
+on Starship; PSS peaks are 43.8/45.3 MB including the retained synthetic input.
+FD count returns to 7 and owned native channels to zero after cleanup. This
+single-consumer controlled bound does not establish a global/fleet memory or
+CPU guarantee, exhaustive inventory, maximum wire capacity or provider semantics.
+
+Controlled actual Service 2/SDK lifecycle cases prove exact-identity pushed
+updates with original acceptance/expiry, decreasing remaining leases, source
+restart revocation/resync, complete-empty versus missing source and cleanup.
+These synthetic lifecycle semantics are separate from ordinary provider evidence.
+The source suite passes 376 tests; no native adapter or collector cadence changed.
+
+## Remaining operational gates
 
 U7–U8 require public immutable inputs, scoped independent reader/publisher
 selection, shared-owner launcher coordination and rollback. Provider sessions,

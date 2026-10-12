@@ -1,0 +1,118 @@
+{
+  "host": "snap",
+  "proofs": 12,
+  "instrumented": true,
+  "topSelfTime": [
+    {
+      "module": "agent_observer/contract.py",
+      "function": "validate_shape",
+      "calls": 341328,
+      "selfSeconds": 0.7035,
+      "totalSeconds": 1.472
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "_matches_type",
+      "calls": 265824,
+      "selfSeconds": 0.1904,
+      "totalSeconds": 0.2765
+    },
+    {
+      "module": "mesh_plus/protocol.py",
+      "function": "tree",
+      "calls": 217800,
+      "selfSeconds": 0.0805,
+      "totalSeconds": 0.0935
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "<genexpr>",
+      "calls": 504108,
+      "selfSeconds": 0.078,
+      "totalSeconds": 0.3545
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "<genexpr>",
+      "calls": 205284,
+      "selfSeconds": 0.036,
+      "totalSeconds": 0.036
+    },
+    {
+      "module": "agent_observer/bounded_json.py",
+      "function": "decode_document",
+      "calls": 12,
+      "selfSeconds": 0.0288,
+      "totalSeconds": 0.0699
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "validate_snapshot",
+      "calls": 60,
+      "selfSeconds": 0.0226,
+      "totalSeconds": 1.5645
+    },
+    {
+      "module": "/usr/lib/python3.14/copy.py",
+      "function": "deepcopy",
+      "calls": 108900,
+      "selfSeconds": 0.0194,
+      "totalSeconds": 0.049
+    },
+    {
+      "module": "/usr/lib/python3.14/copy.py",
+      "function": "_deepcopy_dict",
+      "calls": 8340,
+      "selfSeconds": 0.0184,
+      "totalSeconds": 0.0489
+    },
+    {
+      "module": "agent_observer/service_contract.py",
+      "function": "validate_frame",
+      "calls": 60,
+      "selfSeconds": 0.0079,
+      "totalSeconds": 1.6207
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "identity_key",
+      "calls": 5580,
+      "selfSeconds": 0.007,
+      "totalSeconds": 0.1826
+    },
+    {
+      "module": "agent_observer/bounded_json.py",
+      "function": "<genexpr>",
+      "calls": 62040,
+      "selfSeconds": 0.0046,
+      "totalSeconds": 0.0046
+    },
+    {
+      "module": "/usr/lib/python3.14/copy.py",
+      "function": "_keep_alive",
+      "calls": 10716,
+      "selfSeconds": 0.0033,
+      "totalSeconds": 0.0052
+    },
+    {
+      "module": "agent_observer/contract.py",
+      "function": "<genexpr>",
+      "calls": 33480,
+      "selfSeconds": 0.003,
+      "totalSeconds": 0.003
+    },
+    {
+      "module": "agent_observer/bounded_json.py",
+      "function": "_pairs",
+      "calls": 8340,
+      "selfSeconds": 0.0027,
+      "totalSeconds": 0.0027
+    }
+  ],
+  "copySelfSeconds": 0.0422,
+  "limits": [
+    "instrumented attribution only",
+    "ordinary cached native proofs",
+    "not a normal CPU window"
+  ]
+}
