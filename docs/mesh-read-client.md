@@ -1,9 +1,11 @@
 # Optional Mesh state read client
 
-The current managed selection uses Codex-only Agent `0.5.0a18` readers with Mesh
-`0.1.0a11` and the explicit Observer-owned profile. The a18 collector, retained
-separate a16/a10 bridge, global Mesh CLI and historical writer have independent
-selections. The [retirement report](evidence/2026-10-11-claude-retirement/REPORT.md)
+The current managed selection uses Codex-only Agent `0.5.0a20` readers and owned
+Agent publication with Mesh `0.1.0a15` and the explicit Observer-owned profile.
+The a18 collector, Tmux factory and historical writer remain independent.
+The [publisher handoff](mesh-publisher-operator-handoff.md) records cached reads,
+complete fleet gates and rollback; old a18/a11 reader and a16/a10 bridge artifacts
+remain retained. The [retirement report](evidence/2026-10-11-claude-retirement/REPORT.md)
 records exact artifacts, native/cached pull/push and scoped operational proof.
 Frozen supplied-data provider vocabulary remains valid; no Claude native
 collection is implemented. The SDK v1 acceptance and earlier selections below
@@ -64,15 +66,15 @@ presentation, reconnect and guard revocation. Publisher ownership source is
 implemented in the private a19 candidate; normal bridge selection remains
 independent pending its [execution gates](mesh-sdk-maintenance-adoption-plan.md).
 
-The a19 candidate also supplies `mesh assess --mode snapshot|subscribe` with
+The selected a20 client supplies `mesh assess --mode snapshot|subscribe` with
 `--timeout-ms 1..60000` and the normal scope/source/socket/authority options.
 It requires Mesh's `assess_configured` capability, supplied by the reviewed a15
-input and released a13 diagnostics; the currently selected a18/a11 CLI does not
-offer this new command. For an accepted candidate prefix:
+input and released a13 diagnostics. The selected a20/a15 CLI offers this command;
+retained a18/a11 rollback clients do not. For an accepted prefix:
 
 ```sh
-/absolute/a19-prefix/bin/agent-observer mesh assess --scope local --local-host snap --mode snapshot --timeout-ms 5000
-/absolute/a19-prefix/bin/agent-observer mesh assess --scope fleet --mode subscribe --timeout-ms 10000
+/absolute/a20-prefix/bin/agent-observer mesh assess --scope local --local-host snap --mode snapshot --timeout-ms 5000
+/absolute/a20-prefix/bin/agent-observer mesh assess --scope fleet --mode subscribe --timeout-ms 10000
 ./scripts/check-mesh-owner
 ```
 

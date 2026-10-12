@@ -1,5 +1,12 @@
 # Mesh SDK v1 maintenance and publisher ownership
 
+Execution update, 2026-10-12: the
+[accepted checkpoint](evidence/2026-10-11-mesh-publisher/REPORT.md) and
+[operator handoff](mesh-publisher-operator-handoff.md) implement this plan with
+a20/Mesh a15 on Snap and Starship. Mesh a15 was released unchanged during
+execution. The planning body below preserves the original input/dependency
+state; its private-only and pending statements are historical.
+
 Planning checkpoint updated, 2026-10-11, after Mesh accepted its publisher seam.
 The user requested a pass to bring Observer's Mesh integration up to date, then
 explicitly included publisher ownership extraction. The current observation and

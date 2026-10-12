@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "launcher": "/home/bryan/.local/bin/mesh-plus",
+  "domains": [
+    {
+      "domain": "agent",
+      "source": "agent",
+      "profile": "agent-observer.mesh-candidate.v1",
+      "rows": 389,
+      "nonceBound": true,
+      "host": "starship"
+    },
+    {
+      "domain": "tmux",
+      "source": "tmux_default",
+      "profile": "tmux-observer.mesh-candidate.v1",
+      "rows": 7,
+      "nonceBound": true,
+      "host": "starship"
+    }
+  ],
+  "limits": [
+    "cached local stdio",
+    "actual cross-host path following",
+    "no actions"
+  ]
+}

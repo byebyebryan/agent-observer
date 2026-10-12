@@ -152,6 +152,8 @@ def main(host, root, selection_path, observer_selection, baseline_path):
                     "--refresh-externals=never",
                     "apply",
                     "--force",
+                    "--exclude",
+                    "scripts",
                     *selected,
                 ]
             )

@@ -4,9 +4,10 @@
 [SDK maintenance/publisher plan](../../mesh-sdk-maintenance-adoption-plan.md).
 U0 accepts the current installed baseline and Mesh producer input. U1–U3 now
 implement portable owner conformance, bounded cached Service 2 acquisition and
-the static lazy factory. U4–U6 now accept the a20 installed candidate, native
-comparison and bounded local resources. Fleet/resource expansion and scoped
-adoption remain pending. API 2/read 4/Service 2 and Mesh SDK/Read/Delivery 1 are
+the static lazy factory. U4–U6 accept the a20 installed candidate, native
+comparison and bounded local/fleet resources. U7–U8 accept scoped reader/
+publisher adoption, rollback and current handoff on both hosts. API 2/read 4/
+Service 2 and Mesh SDK/Read/Delivery 1 are
 unchanged. The following installed/resource receipts were collected 2026-10-12.
 
 ## Inputs and independent baseline
@@ -169,11 +170,92 @@ restart revocation/resync, complete-empty versus missing source and cleanup.
 These synthetic lifecycle semantics are separate from ordinary provider evidence.
 The source suite passes 376 tests; no native adapter or collector cadence changed.
 
-## Remaining operational gates
+## Publication, scoped adoption and closure
 
-U7–U8 require public immutable inputs, scoped independent reader/publisher
-selection, shared-owner launcher coordination and rollback. Provider sessions,
-settings/hooks, collector cadence, writer, authority and consumer behavior
-remain protected. Baseline receipts and protected-control hashes are retained
-under `/tmp/observer-publisher-owner-20261011`; no conversation bodies, tools,
-credentials or raw provider payloads are repository evidence.
+The [a20 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a20)
+publishes the unchanged accepted wheel/manifests. Both hosts freshly download
+and verify its SHA256. Main and tag
+[hosted CI](https://github.com/byebyebryan/agent-observer/actions/runs/38225037208)
+pass at `92955b9856b4adb01da65dce8dc4843a1bbd6192`, with core, released a13 reader
+and released a15 publisher jobs. The preceding hosted run exposed test-only
+asynchronous peer-disconnect and `/proc` retirement races; bounded eventual
+server cleanup and accepted ESRCH exit observation repair the assertions without
+changing accepted a20 runtime bytes.
+
+During this pass Tmux independently selected its a7/a15 cohort and lazy factory.
+The Agent dry-run caught that concurrent change before apply. The final shared
+launcher preserves the Tmux-selected a15/dependency/facade path and adds a lazy
+Agent factory from the independently selected a20 prefix. Both domains pass
+actual installed stdio cached snapshot/proof/watch. There is no copied CLI,
+wire/config code selector, Agent reference fallback or Tmux implementation edit.
+Future shared launcher changes must retain both accepted factories.
+
+Snap and Starship separately select the a20 reader first against their old
+reference bridge, then authenticate/stop only the Agent mesh unit, apply exact
+launcher/unit controls with chezmoi scripts excluded, and start the owned
+publisher. Collection stays a18 with its prior PID/birth/cadence/hints; writer,
+provider settings, SSH authority and Tmux deployment are protected. Unrelated
+dotfiles drift stays unstaged. Managed source commits are Snap `1347066` and
+Starship `b39337b` with the same three selected-file changes and separate parents.
+
+Each host independently passes installed artifact/role/rendered control/socket
+peer/incarnation gates and two native comparison rounds after selection.
+Complete actual fleet snapshot/watch gates from both endpoints agree at 482
+rows (Snap 93/4 running, Starship 389/8 running in that sample); every remote
+host has a current nonce-bound proof. Both readers retire all owned connections.
+The ordinary shared SSH command now invokes the same Agent source/factory as
+local serving. `assess` alone would not establish complete fleet settlement;
+the explicit fleet gate checks all declared hosts and catalog ordering.
+
+Captured prior-control rollback and reselection pass on both hosts: a18 CLI and
+prior cached read are ready, then a20's operations gate passes again. The
+collector unit and all fresh-scope protected hashes remain unchanged. Early
+whole-loop Codex configuration hashes differ through unrelated concurrent work;
+this pass changed no provider config, and the immediately captured rollout/rollback
+hashes prove scoped preservation. The existing native workflow and session
+ownership remain outside meshing.
+
+Final 120-second normal fleet-one windows after ten-second warmup report:
+
+| Host | Collector CPU | Resident Agent bridge CPU | Reader plus local SSH children CPU |
+| --- | --- | --- | --- |
+| Snap | 0.889% | 1.030% | 10.534% |
+| Starship | 2.260% | 4.770% | 8.211% |
+
+Remote SSH server/bridge costs are excluded from each local reader figure and
+reported in their own host/bridge observations. These ordinary concurrent-host
+windows are not an idle benchmark or a global performance promise. One initial
+Starship resource window overlapped this pass's bridge reselection and failed
+its incarnation check; the discarded window is not acceptance. The final window
+starts after verified reselection. All owned readers retire; existing broad
+read-validation/copy CPU cost remains the explicitly deferred optimization.
+
+The [operator handoff](../../mesh-publisher-operator-handoff.md), architecture,
+roadmap and client guidance now describe owned publication and independent role
+selection. Source, installed, native, resource, release and operational receipts
+remain distinct. No frontend/client/device, notification enrichment/replay,
+WSS, attachment/action, physical suspend or post-TUI-closure acceptance is implied.
+Baseline/protected-control snapshots remain under
+`/tmp/observer-publisher-owner-20261011`; repository evidence contains bounded
+metadata/codes only, with no conversation bodies, tool payloads or credentials.
+
+## Completion audit
+
+| Plan gate | Authoritative evidence | Disposition |
+| --- | --- | --- |
+| U0 baseline/input | Both-host baseline artifact checks/native rounds; exact Mesh private/released hash and producer provenance | Accepted |
+| U1 owner tooling | `check-mesh-owner`, seven profile/ten network cases per installed host; owner-bound bounded CLI assessment; released a13/a15 CI jobs | Accepted |
+| U2 native feasibility | Owned status/watch-only sockets, cold-service passivity and fault/cancellation/ordering cases; reproduced/fixed queued initial-view race | Accepted |
+| U3 ownership | Packaged `mesh_source`/`mesh_publisher`, public generic helper, lazy static factories and forbidden-import/failure checks | Accepted |
+| U4 immutable inputs | a20 producer `42484d3`, exact wheel/manifests/lock/schema digest; independent installed role receipts and both reader/publisher generations | Accepted |
+| U5 native delivery | Installed local/owned fixed SSH gates; independent ordinary daemon comparisons; controlled update/restart/loss/empty/cleanup; selected two-endpoint complete fleet/proofs | Accepted within native/controlled distinctions |
+| U6 resources | Matched old/new local windows, instrumented attribution, 1512-row declared Codex case, selected ordinary fleet windows, cleanup receipts | Accepted within declared bounds; validation/copy optimization remains separate |
+| U7 rollout | Independent reader then publisher selection, both-domain shared-launcher proof, published/downloaded bytes, role/control/kernel-peer checks, protected rollback/reselection on both hosts | Accepted |
+| U8 closure | Source checks, current architecture/client/operator guidance, committed checkpoints, main/tag hosted success and immutable release | Accepted; final guidance commit has its own following hosted receipt |
+
+The accepted exclusions remain original scope limits, rather than missing
+observation/publisher ownership: native occurrence/replay/alerts, WSS adoption,
+attachment/actions, frontend/device acceptance, physical suspend and
+post-TUI-closure native lifetime. Current-state native inventory remains bounded;
+older unknown kinds and native creation-clock races remain explicit. The measured
+read/copy cost is documented without a performance-improvement claim.

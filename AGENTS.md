@@ -8,6 +8,14 @@
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
+- `docs/mesh-publisher-operator-handoff.md` records the accepted a20/Mesh a15
+  read/publisher selection on Snap and Starship. Collection stays a18 and the
+  historical writer stays independent. The optional networking component owns
+  cached Service 2 acquisition and the lazy Agent factory; core/local service
+  remain Mesh-free. Mesh owns generic copied envelopes/proofs/delivery. Preserve
+  the shared launcher's independently selected lazy Agent and Tmux factories;
+  changes require both domain cached/proof/watch and scoped rollback gates.
+  The execution receipt is `docs/evidence/2026-10-11-mesh-publisher/REPORT.md`.
 - `docs/claude-retirement-plan.md` records the accepted a18 Claude retirement:
   Codex is the only implemented native provider, selected on Snap and Starship.
   Preserve provider-neutral core/read/Mesh interfaces;
