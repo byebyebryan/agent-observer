@@ -1,0 +1,32 @@
+{
+  "manifestVersion": 3,
+  "package": "agent-observer",
+  "version": "0.5.0a19",
+  "wheel": "agent_observer-0.5.0a19-py3-none-any.whl",
+  "wheelSha256": "0699594a5ec54a3f452688af2c901ab7c36f1e7c9243ccc5dcd8bc9d5b5afb21",
+  "sourceRevision": "4a7e7b1604885847f416f2518aa044a27a33e0f6",
+  "apiVersion": 2,
+  "schemas": {
+    "snapshot": 4,
+    "watch": 4
+  },
+  "write": {
+    "schema": 2
+  },
+  "service": {
+    "protocol": 2,
+    "schemas": {
+      "request": 2,
+      "frame": 2
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-write",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1"
+  ]
+}

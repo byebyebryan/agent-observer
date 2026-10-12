@@ -60,7 +60,31 @@ Observer profile owns pure native validation, identity, projection and receipt
 selection. SDK 1 owns compulsory generic admission, proof, expiry and cleanup.
 Never treat `AgentCodec.validate_bridge` alone as a transport/proof validator.
 Keep original clocks and component receipts; consumers own BOOTTIME timers,
-presentation, reconnect and guard revocation. Publisher extraction is deferred.
+presentation, reconnect and guard revocation. Publisher ownership source is
+implemented in the private a19 candidate; normal bridge selection remains
+independent pending its [execution gates](mesh-sdk-maintenance-adoption-plan.md).
+
+The a19 candidate also supplies `mesh assess --mode snapshot|subscribe` with
+`--timeout-ms 1..60000` and the normal scope/source/socket/authority options.
+It requires Mesh's `assess_configured` capability, supplied by the reviewed a15
+input and released a13 diagnostics; the currently selected a18/a11 CLI does not
+offer this new command. For an accepted candidate prefix:
+
+```sh
+/absolute/a19-prefix/bin/agent-observer mesh assess --scope local --local-host snap --mode snapshot --timeout-ms 5000
+/absolute/a19-prefix/bin/agent-observer mesh assess --scope fleet --mode subscribe --timeout-ms 10000
+./scripts/check-mesh-owner
+```
+
+Assessment includes catalog resolution in the acquisition budget, supplies the
+pure owner profile and disables route writes. Its redacted JSON distinguishes
+delivery acquisition, current/expired/nonpositive receipts and partial hosts.
+Success means at least one delivery was acquired; inspect the per-host sample
+before claiming complete coverage. Cleanup closes owned connections and revokes
+watch authority before returning. This one sample neither retains authority nor
+establishes native completeness. The conformance helper uses independent portable
+profile/network cases; `--installed` prevents checkout imports. Native acquisition,
+fixed SSH, resource and operational acceptance remain separate.
 
 `snapshot` and ordinary `watch` print lossless validated
 `agent-observer.mesh-candidate.v1` frames as JSON/NDJSON. They include native
