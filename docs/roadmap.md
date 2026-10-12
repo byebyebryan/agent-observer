@@ -14,6 +14,11 @@ bounded resources and scoped rollback. Collection stays a18. The
 [execution receipt](evidence/2026-10-11-mesh-publisher/REPORT.md) supersedes the
 old retained-reference bridge selection above.
 
+The coordinated [allocation candidate](evidence/2026-10-12-shape-cost/REPORT.md)
+is under validation in private a21; normal a18/a20 selections remain unchanged.
+It removes redundant type-dispatch allocations while retaining every native
+admission boundary and the existing API/SDK.
+
 Next work remains separately scoped:
 
 - Mixed Observer/Mesh validation and copy-cost optimization after the accepted publisher extraction; preserve original leases and owned-frame semantics.

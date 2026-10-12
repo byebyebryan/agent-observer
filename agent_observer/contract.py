@@ -218,6 +218,24 @@ def schema_document(name):
 
 
 def _matches_type(value, kind):
+    # The supported vocabulary selects exactly one predicate. Keep the legacy
+    # lookup for unusual spec objects, including its malformed-key behavior.
+    value_type = type(value)
+    if type(kind) is str and (value is None or value_type is dict or value_type is list
+                             or value_type is str or value_type is int or value_type is bool):
+        if kind == "null":
+            return value is None
+        if kind == "object":
+            return isinstance(value, dict)
+        if kind == "array":
+            return isinstance(value, list)
+        if kind == "string":
+            return isinstance(value, str)
+        if kind == "integer":
+            return type(value) is int
+        if kind == "boolean":
+            return type(value) is bool
+        return False
     return {
         "null": value is None,
         "object": isinstance(value, dict),
@@ -245,8 +263,10 @@ def validate_shape(value, spec):
     ):
         raise ContractError("invalid_contract_value")
     if "type" in spec:
-        types = spec["type"] if isinstance(spec["type"], list) else [spec["type"]]
-        if not any(_matches_type(value, kind) for kind in types):
+        types = spec["type"]
+        matched = (any(_matches_type(value, kind) for kind in types) if isinstance(types, list)
+                   else _matches_type(value, types))
+        if not matched:
             raise ContractError("invalid_contract_type")
     if isinstance(value, dict):
         properties = spec.get("properties", {})

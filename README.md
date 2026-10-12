@@ -55,6 +55,10 @@ adapter implements Agent acquisition. See the
 [operator handoff](docs/mesh-publisher-operator-handoff.md) for cached read/assess,
 complete fleet validation, exact role selections and scoped rollback.
 
+The coordinated [pure validation allocation candidate](docs/evidence/2026-10-12-shape-cost/REPORT.md)
+prepares private a21 without changing validation boundaries, APIs or selected
+artifacts. Installed/carrier/resource acceptance remains active.
+
 Accepted limits remain: partial/bounded native inventory, unknown kinds for older
 Starship history, native creation-time sampling races, and deferred physical
 suspend/post-TUI-closure lifetime checks. Current-state push does not promise
