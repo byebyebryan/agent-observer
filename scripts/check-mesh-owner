@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Independent portable owner conformance; cached native/operational gates follow."""
+
+import argparse
+import importlib.metadata
+import json
+import sys
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--installed", action="store_true", help="use installed owner bytes without checkout imports")
+    args = parser.parse_args()
+    if not args.installed:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from mesh_plus.testing import network_suite, profile_suite, run_suite
+
+    from agent_observer.mesh_profile import AgentProfile
+
+    def profile(domain):
+        if domain != "agent":
+            raise ValueError("owner_conformance_scope")
+        return AgentProfile()
+
+    reports = {
+        "profile": run_suite(profile_suite(profile, domain="agent"), domain="agent"),
+        "network": run_suite(network_suite(profile, domain="agent"), domain="agent"),
+    }
+    report = {"status": "passed" if all(r["ok"] for r in reports.values()) else "failed",
+              "meshVersion": importlib.metadata.version("mesh-plus"), "installedOwner": args.installed,
+              "ownerModule": sys.modules["agent_observer.mesh_profile"].__file__, "reports": reports,
+              "limits": ["portable fixtures only", "native source, fixed SSH, resource and managed gates separate"]}
+    print(json.dumps(report, indent=2))
+    return 0 if report["status"] == "passed" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
