@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "rows": 1512,
+  "nativeFrameBytes": 1623160,
+  "proofElapsedMs": [
+    621.368,
+    620.712,
+    636.293,
+    646.207
+  ],
+  "before": {
+    "Rss": 37437440,
+    "Pss": 25755648,
+    "fds": 7
+  },
+  "peak": {
+    "Rss": 55529472,
+    "Pss": 43825152,
+    "fds": 9
+  },
+  "end": {
+    "Rss": 54059008,
+    "Pss": 42217472,
+    "fds": 7
+  },
+  "activeNativeChannelsAfterClose": 0,
+  "limits": [
+    "controlled cached frames",
+    "declared Codex 1000 saved plus 512 runtime bound",
+    "single consumer",
+    "not a native/provider census or fleet budget"
+  ]
+}

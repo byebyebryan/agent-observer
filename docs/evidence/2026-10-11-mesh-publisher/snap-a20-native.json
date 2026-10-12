@@ -1,0 +1,211 @@
+{
+  "status": "passed",
+  "hostScope": "snap",
+  "ownerModule": "/home/bryan/.local/share/agent-observer/0.5.0a20-8241cafc13dbfdfe-mesh-a15-publisher/lib/python3.14/site-packages/agent_observer/mesh_publisher.py",
+  "prefix": "/home/bryan/.local/share/agent-observer/0.5.0a20-8241cafc13dbfdfe-mesh-a15-publisher",
+  "carriers": [
+    {
+      "carrier": "local-ipc",
+      "serviceId": "02eb348b-6967-4fb1-b116-2c99d3ed1f72",
+      "rows": 92,
+      "ready": true,
+      "proofRequired": false,
+      "currentPushRows": 92,
+      "originalReceipts": [
+        {
+          "components": [
+            {
+              "accepted": 3436,
+              "attempts": 3436,
+              "expiresBoottimeMs": 142566609,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 142476609
+            },
+            {
+              "accepted": 733,
+              "attempts": 733,
+              "expiresBoottimeMs": 142836609,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 142476609
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "activeConnectionsAfterClose": 0,
+      "cleanupFailures": 0
+    },
+    {
+      "carrier": "fixed-ssh-installed-launcher",
+      "serviceId": "02eb348b-6967-4fb1-b116-2c99d3ed1f72",
+      "rows": 92,
+      "ready": true,
+      "proofRequired": true,
+      "currentPushRows": 92,
+      "originalReceipts": [
+        {
+          "components": [
+            {
+              "accepted": 3436,
+              "attempts": 3436,
+              "expiresBoottimeMs": 142566609,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "runtime",
+              "sampledBoottimeMs": 142476609
+            },
+            {
+              "accepted": 733,
+              "attempts": 733,
+              "expiresBoottimeMs": 142836609,
+              "health": "current",
+              "inFlight": false,
+              "lastResult": "accepted",
+              "name": "history",
+              "sampledBoottimeMs": 142476609
+            }
+          ],
+          "configHome": "/home/bryan/.codex",
+          "configHomeKind": "explicit",
+          "contextGeneration": 1,
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "provider": "codex"
+        }
+      ],
+      "activeConnectionsAfterClose": 0,
+      "cleanupFailures": 0
+    }
+  ],
+  "nativeChannelsAfterClose": 0,
+  "publicCliAssessment": {
+    "acquired": true,
+    "elapsedMs": 246.699,
+    "format": "mesh-plus.diagnostics.v2",
+    "limits": [
+      "One cached evidence sample; cleanup revokes watch authority",
+      "Acquisition deadline excludes bounded owned cleanup grace"
+    ],
+    "mode": "subscribe",
+    "ok": true,
+    "operation": "assess",
+    "runtime": {
+      "activeConnections": 0,
+      "byKind": {
+        "received": {
+          "data": {
+            "bytes": 109682,
+            "frames": 1
+          },
+          "hello": {
+            "bytes": 409,
+            "frames": 1
+          },
+          "result": {
+            "bytes": 109598,
+            "frames": 1
+          },
+          "subscribed": {
+            "bytes": 325,
+            "frames": 1
+          }
+        },
+        "sent": {
+          "cancel": {
+            "bytes": 208,
+            "frames": 1
+          },
+          "close": {
+            "bytes": 161,
+            "frames": 1
+          },
+          "credit": {
+            "bytes": 230,
+            "frames": 1
+          },
+          "hello": {
+            "bytes": 364,
+            "frames": 1
+          },
+          "request": {
+            "bytes": 486,
+            "frames": 2
+          },
+          "subscribe": {
+            "bytes": 275,
+            "frames": 1
+          }
+        }
+      },
+      "byteScope": "completed-json-lines",
+      "catalogCheckMs": 0,
+      "catalogChecks": 0,
+      "cleanupFailures": 0,
+      "connectionAttempts": 1,
+      "connectionFailures": 0,
+      "connectionsClosed": 1,
+      "connectionsOpened": 1,
+      "domain": "agent",
+      "format": "mesh-plus.reader-metrics.v1",
+      "instrumentedConnections": 1,
+      "operations": {
+        "otherResultBytes": 0,
+        "proofRequests": 0,
+        "proofResultBytes": 0,
+        "requestCancellations": 1,
+        "requestTimeouts": 0,
+        "rotationRejections": 0,
+        "snapshotRequests": 2,
+        "snapshotResultBytes": 109598,
+        "unprocessedResultBytes": 0
+      },
+      "partial": false,
+      "peakClientBufferedBytes": 109681,
+      "peakClientBufferedControlBytes": 0,
+      "peakConnections": 1,
+      "peakRetainedHandles": 3,
+      "peakSubscriptionQueueFrames": 1,
+      "receivedBytes": 220014,
+      "receivedFrames": 4,
+      "rotations": 0,
+      "sentBytes": 1724,
+      "sentFrames": 7,
+      "uninstrumentedConnections": 0
+    },
+    "sample": {
+      "currentRecordsAtSample": 92,
+      "deliveryStatus": "complete",
+      "hosts": [
+        {
+          "currentReceipts": 2,
+          "delivery": "ready",
+          "error": null,
+          "evidence": "current",
+          "expiredReceipts": 0,
+          "index": 0,
+          "receipts": 2
+        }
+      ],
+      "rawRecords": 92,
+      "retainedAuthority": false,
+      "sampleBoottimeMs": 142489320
+    }
+  },
+  "forbiddenImports": [],
+  "limits": [
+    "cached native source only",
+    "ordinary daemon comparison is separate",
+    "owned localhost SSH fixture; operational remote selection is separate",
+    "no managed selection or provider actions"
+  ]
+}

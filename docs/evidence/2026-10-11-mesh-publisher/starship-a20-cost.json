@@ -1,0 +1,123 @@
+{
+  "hostScope": "starship",
+  "windows": [
+    {
+      "publisher": "baseline",
+      "durationSeconds": 120.189,
+      "samples": 120,
+      "roles": {
+        "publisher": {
+          "percentOneCore": 3.628,
+          "cpuSeconds": 4.36,
+          "peak": {
+            "pssBytes": 26753024,
+            "rssBytes": 39317504,
+            "fds": 11,
+            "processes": 1
+          },
+          "end": {
+            "ticks": 601,
+            "rssBytes": 39317504,
+            "pssBytes": 26753024,
+            "pssComplete": true,
+            "fds": 10,
+            "processes": 1
+          }
+        },
+        "reader": {
+          "percentOneCore": 4.044,
+          "cpuSeconds": 4.86,
+          "peak": {
+            "pssBytes": 29489152,
+            "rssBytes": 41820160,
+            "fds": 7,
+            "processes": 1
+          },
+          "end": {
+            "ticks": 582,
+            "rssBytes": 41365504,
+            "pssBytes": 29050880,
+            "pssComplete": true,
+            "fds": 7,
+            "processes": 1
+          }
+        }
+      }
+    },
+    {
+      "publisher": "candidate",
+      "durationSeconds": 120.194,
+      "samples": 120,
+      "roles": {
+        "publisher": {
+          "percentOneCore": 4.784,
+          "cpuSeconds": 5.75,
+          "peak": {
+            "pssBytes": 28613632,
+            "rssBytes": 41201664,
+            "fds": 11,
+            "processes": 1
+          },
+          "end": {
+            "ticks": 734,
+            "rssBytes": 38744064,
+            "pssBytes": 26181632,
+            "pssComplete": true,
+            "fds": 10,
+            "processes": 1
+          }
+        },
+        "reader": {
+          "percentOneCore": 3.835,
+          "cpuSeconds": 4.61,
+          "peak": {
+            "pssBytes": 27510784,
+            "rssBytes": 40034304,
+            "fds": 7,
+            "processes": 1
+          },
+          "end": {
+            "ticks": 520,
+            "rssBytes": 40034304,
+            "pssBytes": 27510784,
+            "pssComplete": true,
+            "fds": 7,
+            "processes": 1
+          }
+        }
+      }
+    }
+  ],
+  "mixedReaders": [
+    {
+      "publisher": "baseline",
+      "readerCli": "/home/bryan/.local/bin/agent-observer",
+      "rows": 388,
+      "status": "complete"
+    },
+    {
+      "publisher": "baseline",
+      "readerCli": "/home/bryan/.local/share/agent-observer/0.5.0a20-8241cafc13dbfdfe-mesh-a15-publisher/bin/agent-observer",
+      "rows": 388,
+      "status": "complete"
+    },
+    {
+      "publisher": "candidate",
+      "readerCli": "/home/bryan/.local/bin/agent-observer",
+      "rows": 388,
+      "status": "complete"
+    },
+    {
+      "publisher": "candidate",
+      "readerCli": "/home/bryan/.local/share/agent-observer/0.5.0a20-8241cafc13dbfdfe-mesh-a15-publisher/bin/agent-observer",
+      "rows": 388,
+      "status": "complete"
+    }
+  ],
+  "limits": [
+    "ordinary host",
+    "local one-reader windows",
+    "one-second sampling",
+    "fleet and capacity separate"
+  ]
+}
