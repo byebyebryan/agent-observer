@@ -9,6 +9,7 @@ remain independently selected. Native Claude sessions/settings remain external.
 
 Next work remains separately scoped:
 
+- [Mesh SDK maintenance and publisher ownership](mesh-sdk-maintenance-adoption-plan.md): adopt current owner tooling, then extract Agent's cached source behind an independently accepted generic Mesh publisher/factory seam. Local and fixed SSH publication require separate proof and scoped rollout.
 - Read-client ergonomics and consumer implementation against the settled read contract.
 - Native occurrence events/notification enrichment, if a concrete client requires them.
 - Mesh publisher extraction or transport upgrades in coordination with Mesh Plus.
