@@ -1,5 +1,10 @@
 # Agent-owned publisher and read operations
 
+Historical API 2 / wire 4 / Service 2 checkpoint. Current read-client work uses the
+[API 3 handoff](api-v3-client-handoff.md); current role/profile adoption is recorded
+in the [native timing receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md).
+The commands/artifacts below retain their original version bounds.
+
 Accepted 2026-10-12, Observer a20 with Mesh a15 / SDK interface 1. API 2,
 snapshot/watch 4, Service 2 and Mesh Read/Delivery 1 remain unchanged. The
 [execution receipt](evidence/2026-10-11-mesh-publisher/REPORT.md) separates source,

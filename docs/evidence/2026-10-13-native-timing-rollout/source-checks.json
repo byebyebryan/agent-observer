@@ -1,0 +1,18 @@
+{
+  "observer": {
+    "command": "prefix/bin/python scripts/check",
+    "tests": 397,
+    "skipped": 0,
+    "markdownFiles": 149,
+    "status": "passed"
+  },
+  "managedOperationsRegression": {
+    "tests": 5,
+    "status": "passed"
+  },
+  "managedDotfiles": {
+    "command": "bash scripts/check",
+    "status": "passed",
+    "scope": "full current managed source, preserves foreign dirty files"
+  }
+}

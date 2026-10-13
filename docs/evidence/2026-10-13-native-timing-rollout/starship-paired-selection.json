@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "host": "starship",
+  "stages": [
+    {
+      "stage": "baseline",
+      "serviceProtocol": 2,
+      "serviceId": "a222939c-a5c9-4ce9-a2c5-fbf758a406c8",
+      "rows": 384,
+      "readPublisherAccepted": true,
+      "assessmentCleanup": true
+    },
+    {
+      "stage": "candidate",
+      "serviceProtocol": 3,
+      "serviceId": "4c561973-b388-4399-bfc5-d03808ab4e87",
+      "rows": 384,
+      "readPublisherAccepted": true,
+      "assessmentCleanup": true
+    },
+    {
+      "stage": "rollback",
+      "serviceProtocol": 2,
+      "serviceId": "a11ef0c1-3b69-43e8-946b-9fe8d0e26d03",
+      "rows": 384,
+      "readPublisherAccepted": true,
+      "assessmentCleanup": true
+    },
+    {
+      "stage": "reselected",
+      "serviceProtocol": 3,
+      "serviceId": "f7ad0566-55b4-4c69-b7fb-185f8c9278e7",
+      "rows": 384,
+      "readPublisherAccepted": true,
+      "assessmentCleanup": true
+    }
+  ],
+  "selectedTargets": 13,
+  "protectedBefore": {
+    "tmuxOwner": {
+      "pid": 1105,
+      "startTicks": "1007"
+    },
+    "tmuxSelectionSha256": "140d1528b8a4859459b5d6ea8cbd7e88cd86905d9cfd42d450dae5f96cefde8a",
+    "writerLink": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+    "codexConfigSha256": "968884df1cc98295be3cbba121bb6d82fc0e3ae1dcf3302eb67c6a30608d6a0c",
+    "claudeSettingsSha256": null
+  },
+  "protectedAfter": {
+    "tmuxOwner": {
+      "pid": 1105,
+      "startTicks": "1007"
+    },
+    "tmuxSelectionSha256": "140d1528b8a4859459b5d6ea8cbd7e88cd86905d9cfd42d450dae5f96cefde8a",
+    "writerLink": "/home/bryan/.local/share/agent-observer/0.4.0a16-a9c13aee3d04144c/bin/agent-observer-write",
+    "codexConfigSha256": "968884df1cc98295be3cbba121bb6d82fc0e3ae1dcf3302eb67c6a30608d6a0c",
+    "claudeSettingsSha256": null
+  },
+  "ordinaryProviderActions": 0,
+  "writerUnchanged": true,
+  "tmuxOwnerAndSelectionUnchanged": true,
+  "finalSelection": "0.6.0a2/mesh0.1.0a16",
+  "harnessSha256": "2b393de7dc6fa4bff2d15d99732911c6bdb0dec06c7872f32b7c1aa80e7793cb"
+}

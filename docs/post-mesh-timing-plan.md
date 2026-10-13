@@ -5,6 +5,11 @@
 native-manager launcher proposal. This updates planning only; no Observer
 runtime/schema, provider workflow, Mesh package or artifact selection changes.
 
+The following [execution ledger](native-timing-execution.md) now records the
+implemented API 3/wire 5/Service 3 extension, accepted Mesh a16 Agent profile v2
+through SDK 1, and paired a2 managed adoption. The baseline/proposal language
+below is this plan's dated input, not the current selection.
+
 ## Verified handoff and baseline
 
 Mesh's [final decision](https://github.com/byebyebryan/mesh-plus/blob/40bea63/docs/evidence/2026-10-12-performance/decision.md)

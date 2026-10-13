@@ -1,17 +1,19 @@
 # Native timing execution
 
-2026-10-12. Execution of the approved [post-Mesh plan](post-mesh-timing-plan.md).
-The selected a18 collector/a20 reader and Mesh a15 remain the baseline until
-the following independent gates pass. Agent Plus and attachment stay parked.
+Updated 2026-10-13. Execution of the approved [post-Mesh plan](post-mesh-timing-plan.md).
+All producer C0–C6 gates below are complete. Snap and Starship select a2/Mesh a16;
+the former a18 collector/a20 reader/Mesh a15 tuple remains coordinated rollback
+material. Agent Plus and attachment stay parked.
 
 ## C0 decisions
 
-The successor is Observer `0.6.0a1`, API 3, snapshot/watch 5 and Service 3.
+The first core candidate was Observer `0.6.0a1`; delivery uses `0.6.0a2`,
+API 3, snapshot/watch 5 and Service 3.
 These are breaking prerelease interfaces; there is no old-wire converter.
 The independently selected historical writer is unaffected. Mesh's successor
-Agent profile will use native wire 5 with SDK interface 1; Tmux's profile and
-factory are unchanged. Its packaged schema/descriptor require a separate C4
-review in Mesh before selection.
+Agent profile uses native wire 5 with SDK interface 1; Tmux's profile and
+factory are unchanged. Its packaged schema/descriptor passed the independent C4
+Mesh/profile gate before selection.
 
 Adopt `lastUpdated`, `latestTurn` and `capabilities.timing` from the
 [timing proposal](timing-contract-proposal.md). Turn IDs are opaque and nullable;
@@ -54,16 +56,17 @@ need Mesh's accepted clock/proof bridge; local device wall time is insufficient.
 | C0 schema/ownership decisions | Implemented strict API 3/wire 5/Service 3; [field specification](api-v3.md) |
 | C1–C2 local core/service/read | Passed 395 local tests (24 optional Mesh tests excluded in the Mesh-free environment), 146 Markdown checks; 18 new production timing tests |
 | C3 exact artifacts and independent two-host native proof | a1 core/local gate accepted; [report](evidence/2026-10-12-native-timing/REPORT.md) |
-| C4 successor Mesh Agent profile and fleet proof | Pending |
-| C5 resource/managed rollback and selection | Pending |
-| C6 read-consumer handoff | Pending |
+| C4 successor Mesh Agent profile and fleet proof | Accepted a2/Mesh a16, seven profile/ten network cases per host, installed IPC/SSH and private/normal two-host fleet proof; [report](evidence/2026-10-13-native-timing-rollout/REPORT.md) |
+| C5 resource/managed rollback and selection | Accepted paired rollout/rollback/reselection, owned baseline/candidate and selected-unit five-minute resource windows, selected direct/cached native and both-host fleet reads; [report](evidence/2026-10-13-native-timing-rollout/REPORT.md) |
+| C6 read-consumer handoff | [Producer handoff delivered](api-v3-client-handoff.md); client device/feed/presentation acceptance is separate |
 
 The [acceptance matrix](timing-acceptance-plan.md) defines the required proof.
 This ledger records progress, not deployment or native acceptance by declaration.
 
 The old a15 Mesh-capable test environment correctly rejects the new source with
 `mesh_sdk_incompatible`; its strict wire-4 profile is not silently expanded.
-Full Mesh-capable checks resume under the separately accepted successor package.
+Full Mesh-capable checks use the separately accepted Mesh a16 package. SDK 1,
+Read/Delivery 1 and Tmux profile v1 stay unchanged.
 The historical wire-4 schema bytes remain in frozen fixtures. Active native
 validation scripts now require wire 5/Service 3; historical artifacts keep their
 original script/source provenance.

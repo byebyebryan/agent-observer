@@ -1,8 +1,8 @@
 # Agent Observer architecture boundaries
 
-Current implementation, 2026-10-11: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
+Current implementation, 2026-10-13: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
-interfaces remain provider-neutral: API 2, read wire 4, Service 2 and Mesh SDK 1.
+interfaces remain provider-neutral: API 3, read wire 5, Service 3 and Mesh SDK 1.
 Native Claude workflows remain external. No Claude collector, SDK/history
 worker, registration parser, hint listener or service metadata memo remains.
 Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
@@ -14,7 +14,7 @@ Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
 | Reusable core engine | Shared evidence ordering, reconciliation, leases and finite retention |
 | Local service | Owned collection/hint helper lifetime, scheduling, Unix cached pull/push |
 | Pure/read CLI | Strict admission, identity selection, age/order/display and client expiry |
-| Observer Mesh profile/source/factory | Pure Agent projection; owned cached Service 2 acquisition and lazy publisher construction |
+| Observer Mesh profile/source/factory | Pure Agent projection; owned cached Service 3 acquisition and lazy publisher construction |
 | Mesh Plus | Transport, catalog, remote proof, generic admission and delivery lifecycle |
 | External clients | User intent, terminal/window matching, TUI lifetime, actions and alerts |
 
@@ -27,21 +27,25 @@ separate future work. Publisher ownership is implemented in the optional
 networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
-Normal collection uses a18; reads and Agent publication select a20/Mesh a15 on
-both hosts. The shared launcher supplies lazy Agent and independently selected
-Tmux factories. The retained a16/a10 reference bridge and a18/a11 reader remain
-rollback artifacts with their original dependency profiles. The historical
-writer has a separate action gate. The
-[publisher handoff](mesh-publisher-operator-handoff.md) records current role
-ownership, exact selectors and resource/native/operational bounds.
-See the [client handoff](api-v2-client-handoff.md) and [roadmap](roadmap.md).
+Normal collection, reads and Agent publication use a2/Mesh a16 on both hosts.
+The shared launcher supplies lazy Agent and independently selected Tmux factories;
+Agent uses explicit profile v2 and Tmux keeps profile v1/native a7. The prior
+collector a18 / read-publisher a20 / Mesh a15 tuple is retained for coordinated
+rollback. The historical writer has a separate action gate.
 
-The [post-Mesh timing reconciliation](post-mesh-timing-plan.md) leaves those
-roles and SDK 1 unchanged. Native turn/update metadata is the next separate
-producer proposal; a successor strict Agent profile still needs Mesh-owned
-acceptance. Agent Plus and attachment are parked. The read CLI and physical
-dashboards are the immediate consumers; native provider UI management remains
-external. WSS and the private a21 allocation candidate are not selected.
+Native latest-turn and thread-update metadata preserve conversation activity,
+runtime and phase meanings. Core selects whole timing observations by source
+sample/read order, with original runtime/history attribution and independent
+receipt expiry. Native update is not phase entry; turn elapsed includes blocked
+time. Neither the service nor delivery invents an exact current-phase clock.
+The [API 3 handoff](api-v3-client-handoff.md) and
+[Mesh/operational receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md)
+record current commands, clock limits, selectors and acceptance boundaries.
+
+Agent Plus and attachment are parked. The read CLI and physical dashboards are
+immediate consumers, with separate presentation/device gates. Native provider
+UI management remains external. IPC/SSH are selected; WSS and the private a21
+allocation candidate are not promoted. See the [roadmap](roadmap.md).
 
 ## Historical design and acceptance checkpoints
 

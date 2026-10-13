@@ -7,83 +7,57 @@ no TUI/tmux attachment or provider action.
 
 ## Current status
 
-The new source timing candidate is `0.6.0a1`, [API 3/wire 5/Service 3](docs/api-v3.md).
-It adds native latest-turn and thread-update metadata with independently bound
-receipts, while preserving discovery, phase and activity meaning. The
-[execution ledger](docs/native-timing-execution.md) separates local checks from
-pending exact native, Mesh profile and operational adoption. The selected
-baseline described below remains a18 collection/a20 reads; this candidate is
-not selected by its source version declaration.
+[Observer `0.6.0a2`](artifacts/observer-0.6.0a2.json) supplies
+[API 3 / snapshot-watch 5 / Service 3](docs/api-v3.md), including native latest-turn
+and thread-update timing. Snap and Starship select it for collection, read CLI
+and Agent publication, with Mesh `0.1.0a16` and explicit Agent profile v2 through
+SDK 1. Tmux keeps its independently selected native owner/profile/factory; the
+historical `0.4.0a16` writer remains unchanged. These installed/local commits are
+not a new GitHub release. The [execution ledger](docs/native-timing-execution.md)
+and [operational receipt](docs/evidence/2026-10-13-native-timing-rollout/REPORT.md)
+separate native, transport, resource and managed adoption evidence.
 
-[Observer a18](artifacts/observer-0.5.0a18.json) removes the Claude adapter,
-SDK/history worker, hint listener, service metadata memo and native notification
-intake. Codex-only a18 collection remains independently selected on both hosts;
-reads and owned publication now use a20/Mesh a15. The
-[retirement report](docs/evidence/2026-10-11-claude-retirement/REPORT.md)
-records source, exact installed bytes, native comparisons, pull/push and scoped
-operational gates. The retained a16/Mesh a10 bridges and a18/a11 readers are
-rollback artifacts; the historical 0.4.0a16 writer stays independently selected. The exact
-[a18 GitHub prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.5.0a18)
-is published and independently downloaded/verified on both hosts. No downstream
-client migration is implied.
+Use the [API 3 read-client handoff](docs/api-v3-client-handoff.md) for new CLI,
+RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
+cached pull/push; optional Mesh supplies remote proofs/delivery. Neither core nor
+service inspects tmux/TUI/window inventory. Codex's owning daemon is the authority:
+`idle` is running/waiting, and a current positive saved-thread `notLoaded` read
+establishes parked. Thread identity and session-tree root remain distinct.
 
-The [operational cleanup](docs/evidence/2026-10-11-ops-cleanup/REPORT.md) records
-the following Codex-only cost baseline, subscriber measurements and separate
-hosted CI/publication gates. Older CPU reports retain their historical provider
-sets; they are not the current a18 operating baseline.
+Age/order still use original conversation activity, with blocked, waiting,
+working, then unknown/parked urgency. Native latest-turn start/completion/duration
+and thread-update clocks are separate fields. A thread update can advance during
+work and is not phase entry. Timing binds to its original independently expiring
+component receipt; heartbeats and copied views never renew native facts. Exact
+blocked/current-phase age remains unavailable, and remote human timing displays
+use source-sampled ages rather than receiving-host wall time.
 
-The provider-neutral [API 2](docs/api-v2.md), snapshot/watch wire 4, Service 2
-and Mesh SDK 1 are unchanged. Frozen schemas and supplied synthetic observations
-can contain reserved Claude vocabulary; that does not enable native collection.
-Claude selection and its old configuration options are unsupported. The
-[client handoff](docs/api-v2-client-handoff.md) gives current commands and bounds.
-Provider upgrades bind to required contracts, not release-number allowlists.
+Independent native comparisons run on ordinary and isolated sessions on both
+hosts. Exact installed publisher IPC/SSH, profile/network conformance, private
+and normal two-host fleet, and coordinated old/new role rollback/reselection
+have separate receipts. Five-minute resource windows are bounded descriptive
+measurements, not causal performance claims or long-term capacity certification.
+Older a18/a20/Mesh a15 artifacts remain the accepted rollback tuple.
 
-Codex's owning daemon supplies running/parked and work phase. `idle` means
-running/waiting; a current saved-thread `notLoaded` response establishes parked.
-Missing loaded membership, TUI closure and tmux presence do not supply runtime
-authority. Stable identity is the thread ID; the session-tree root is separate
-metadata. Native children remain in canonical views and are hidden by default.
-Age/order use original conversation activity, with blocked, waiting, working,
-then unknown/parked urgency. Missing clocks and uncertain kinds stay explicit.
+Codex is the only native provider. [Claude retirement](docs/claude-retirement-plan.md)
+removed its adapter, SDK/history worker, hints, memo and native notification
+intake; native Claude sessions/settings/Agent View remain external. Contracts
+stay provider-neutral, but reserved synthetic vocabulary does not enable an
+adapter. OpenCode remains deprecated. Provider upgrades bind to required
+contracts/capabilities, not daily version allowlists.
 
-One local service runs shared collection and supplies cached pull/push; pure read
-clients own selection, display, timers and reconnect. The reusable core preserves
-independent evidence leases, source failures and bounded unsaved-row retention.
-Heartbeats never renew native facts. Optional Mesh readers use an explicit pure
-Observer profile through Mesh's SDK; Mesh owns networking and remote proofs.
-See [architecture](docs/architecture.md), [Mesh reads](docs/mesh-read-client.md)
-and [read cache](docs/read-cache-client.md).
-
-The [owned publisher checkpoint](docs/evidence/2026-10-11-mesh-publisher/REPORT.md)
-adds the a20/Mesh a15 reader and Agent-owned cached source/factory on both hosts.
-Collection stays a18 and the writer stays independently selected. The shared
-launcher composes lazy Agent and Tmux factories through SDK 1; no reference
-adapter implements Agent acquisition. See the
-[operator handoff](docs/mesh-publisher-operator-handoff.md) for cached read/assess,
-complete fleet validation, exact role selections and scoped rollback.
-
-Accepted limits remain: partial/bounded native inventory, unknown kinds for older
-Starship history, native creation-time sampling races, and deferred physical
-suspend/post-TUI-closure lifetime checks. Current-state push does not promise
-all native transitions or notification replay. Notification/event enrichment,
-actions/attachment and client UI/device acceptance are separate work.
-
-The immediate consumers are the read CLI and physical dashboards:
-[ESP32 RLCD](https://github.com/byebyebryan/esp32-rlcd) and ESP32-349.
-Agent Plus, its proposed temporary native-manager entry and attachment work are
-parked; the managed desktop keybind is removed. WSNav is historical and a possible
-future consumer. The contract
-remains provider-neutral so future providers can have independent adapters and
-capability/native acceptance gates. OpenCode support remains deprecated.
-
-The [post-Mesh timing plan](docs/post-mesh-timing-plan.md) reconciles Mesh's
-completed performance pass: retain a20/Mesh a15 and a18 collection on IPC/SSH,
-leave private a21 unpromoted, then deliver native turn/update metadata through
-separate local/native/profile/operational gates. The timing schema is still a
-proposal; SDK 1 has no upgrade prerequisite and WSS remains optional.
+Accepted limits include bounded/partial native inventories, older historical
+unknown kinds, creation/sampling races, and deferred physical-suspend and
+post-TUI-closure lifetime checks. Current-state push does not promise all native
+transitions or notification replay. Agent Plus, its temporary launcher proposal,
+attachment/actions and richer notification events are parked/deferred; the
+managed desktop keybind is removed. Physical dashboards and the read CLI are
+the immediate consumers, with independent UI/feed/device acceptance.
 
 ## Previous checkpoints
+
+The dated records below retain their historical artifact and contract bounds.
+Use the API 3 handoff above for current read-client work.
 
 The [shared observation service design](docs/shared-observation-service-plan.md)
 captures first-class pull/push and one local collector for multiple clients.
@@ -245,8 +219,8 @@ cwd and creation metadata through a bounded passive helper. It does not export
 SDK summaries or conversation contents.
 
 The retained a16 [API v1 candidate](docs/api-v1.md) keeps its historical
-JSON/CLI and pure Python surface. Current API 2 read clients use
-[API 2](docs/api-v2.md). `agent-observer api` reports the invoked artifact's versions.
+JSON/CLI and pure Python surface. Current read clients use
+[API 3](docs/api-v3.md). `agent-observer api` reports the invoked artifact's versions.
 
 ## Command candidate
 
@@ -260,8 +234,8 @@ Run Observer on the selected host. `--host-scope` is supplied by the consumer's
 Host Mesh authority. It does not authenticate a host. Provider configuration
 roots can be supplied explicitly. The Codex collector reads the existing
 owning daemon without private saved-store fallback. It never starts a missing
-daemon or invokes a provider action. See the [API 2 handoff](docs/api-v2-client-handoff.md)
-for direct and cached commands against the accepted candidate and normal service.
+daemon or invokes a provider action. See the [API 3 handoff](docs/api-v3-client-handoff.md)
+for direct and cached commands against the accepted artifact and normal service.
 
 ## Scope
 
