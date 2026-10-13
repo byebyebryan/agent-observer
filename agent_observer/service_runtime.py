@@ -174,6 +174,7 @@ class Runtime:
                    "component": job.component, "configHome": self.state.configs[job.provider][0],
                    "configHomeKind": self.state.configs[job.provider][1],
                    "timeoutMs": self.scheduler.timeout,
+                   "sampledBoottimeMs": job.started,
                    "workspaceConfig": self.workspace_config if job.component == "history" else None}
         parent, child, process = None, None, None
         try:

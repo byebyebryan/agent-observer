@@ -24,6 +24,7 @@ from .codex_endpoint import (
 )
 from .codex_metadata import MetadataError, live_thread_metadata
 from .codex_transport import SOURCE_KINDS, PassiveClient, TransportError
+from .timing import codex_turn, stale as timing_stale, unknown as timing_unknown
 
 # Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
 # verified running disposable tool; all were active with an empty flags list.
@@ -395,6 +396,8 @@ def collect_codex(
                 try:
                     client.timeout = remaining()
                     turn_metadata = client.latest_turn(identifier)
+                    row["latestTurn"] = codex_turn(turn_metadata, observed_at=_clock())
+                    row.setdefault("timingObservedBoottimeMs", {})["latestTurn"] = int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
                     row["activity"] = codex_activity(
                         turn_metadata, completion_only=True,
                     )
@@ -405,6 +408,8 @@ def collect_codex(
                     row["outcome"] = codex_outcome(turn_metadata, completion_only=True)
                 except (TransportError, SnapshotError) as error:
                     row["activity"] = unavailable(str(error))
+                    row["latestTurn"] = timing_unknown("latestTurn", "native_turn_read_failed", "unavailable", observed_at=_clock())
+                    row.setdefault("timingObservedBoottimeMs", {})["latestTurn"] = int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
             selected = sorted((rows[identifier] for identifier in saved_ids), key=ordering)[
                 :history_limit
             ]
@@ -454,6 +459,9 @@ def collect_codex(
                 preserve_runtime = False
         if not preserve_runtime:
             for row in rows.values():
+                for name in ("lastUpdated", "latestTurn"):
+                    if name in row:
+                        row[name] = timing_stale(row[name], name, "observation_gap")
                 for dimension in ("work", "presence", "runtimeDisposition"):
                     evidence = row[dimension]
                     if evidence["value"] != "unknown":

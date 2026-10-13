@@ -24,6 +24,9 @@ def _semantic(snapshot):
     value["sources"].sort(key=lambda source: (source["provider"], source["namespace"]))
     value["sessions"].sort(key=lambda row: identity_key(row["identity"]))
     for row in value["sessions"]:
+        for name in ("lastUpdated", "latestTurn"):
+            row[name]["observedAt"] = None
+            row[name]["receipt"] = None
         for name in ("phase", "runtime", "outcome"):
             if row[name] and row[name]["clock"] == "sample":
                 row[name]["observedAt"] = None

@@ -263,7 +263,7 @@ class ImageMemoTest(unittest.TestCase):
                 "component": "runtime",
                 "configHome": directory,
                 "configHomeKind": "explicit",
-                "timeoutMs": 1000,
+                "timeoutMs": 1000, "sampledBoottimeMs": 0,
                 "workspaceConfig": None,
                 "imageMemoFd": descriptor,
             }

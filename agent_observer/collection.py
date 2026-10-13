@@ -10,6 +10,7 @@ import uuid
 from pathlib import Path
 
 from .activity import unavailable
+from . import timing
 from .contract import (
     SCHEMA_VERSION,
     SOURCE,
@@ -103,6 +104,8 @@ def project_source(native):
             "blockedReasons": ["approval", "question"] if supported else [],
             "runtime": ["running", "parked"] if supported else [],
             "activity": native.get("activitySupported") is True,
+            "timing": {name: any(row.get("savedIdentity") is True and row.get(name, {}).get("health") == "current"
+                                 for row in native.get("sessions", [])) for name in ("lastUpdated", "latestTurn")},
         },
         "errors": list(dict.fromkeys(item["code"] for item in native.get("errors", [])
                                       if isinstance(item, dict) and isinstance(item.get("code"), str))),
@@ -114,7 +117,7 @@ def project_source(native):
     return result
 
 
-def project_session(native, source):
+def project_session(native, source, *, timing_origin=None):
     identity = copy.deepcopy(native["identity"])
     identity["namespace"] = source["namespace"]
     if identity["provider"] != "codex":
@@ -146,11 +149,13 @@ def project_session(native, source):
         "outcome": fact(native.get("outcome"), {v: v for v in ("completed", "failed", "cancelled")}),
         "blockedReasons": reasons, "createdAt": times.get("createdAt"),
         "activity": copy.deepcopy(native.get("activity", unavailable("activity_source_unproved", "unsupported"))),
+        **{name: timing.project(native, name, saved=native.get("savedIdentity") is True,
+                               origin=timing_origin) for name in ("lastUpdated", "latestTurn")},
         "workspace": None, "metadataIssues": list(native.get("metadataIssues", [])),
     }
 
 
-def compose_snapshot(*, host_scope, provider_snapshots):
+def compose_snapshot(*, host_scope, provider_snapshots, timing_origin=None):
     result = {
         "schemaVersion": SCHEMA_VERSION,
         "collectionId": str(uuid.uuid4()),
@@ -184,12 +189,14 @@ def compose_snapshot(*, host_scope, provider_snapshots):
                 or row["identity"]["provider"] != native["provider"]
             ):
                 raise ValueError("session_provenance_mismatch")
-            projected = project_session(row, source)
+            projected = project_session(row, source, timing_origin=timing_origin)
             key = identity_key(projected["identity"])
             duplicate = identities.get(key)
             if duplicate is not None:
                 for dimension in ("phase", "runtime", "outcome"):
                     duplicate[dimension] = unknown("identity_ambiguous", "ambiguous")
+                for name in ("lastUpdated", "latestTurn"):
+                    duplicate[name] = timing.unknown(name, "identity_ambiguous", "ambiguous")
                 duplicate["metadataIssues"] = list(
                     dict.fromkeys(duplicate["metadataIssues"] + ["duplicate_native_identity"])
                 )

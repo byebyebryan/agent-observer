@@ -6,8 +6,9 @@ import copy
 from dataclasses import dataclass, field
 
 from .observation_evidence import RuntimeOnlyRetention, retain_missing, stale_row
+from . import timing
 from .contract import (
-    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, ContractError, canonical, identity_key,
+    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, SCHEMA_VERSION, ContractError, canonical, identity_key,
     store_namespace, validate_snapshot,
 )
 
@@ -82,7 +83,7 @@ class ObservationEngine:
             self.publish()
         return accepted
 
-    def _accept_sample(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
+    def _accept_sample(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None, origin=None):
         validate_snapshot(value)
         if value["host"]["authority"] != self.host_scope or value["host"]["uid"] != self.uid or len(value["sources"]) != 1:
             raise ContractError("service_worker_scope")
@@ -96,6 +97,15 @@ class ObservationEngine:
         if sampled_ms < self.context_samples[provider] or (receipt.sampledBoottimeMs is not None and sampled_ms < receipt.sampledBoottimeMs):
             receipt.inFlight = False
             return False
+        origin = component if origin is None else origin
+        for row in value["sessions"]:
+            for name in ("lastUpdated", "latestTurn"):
+                binding = row[name]["receipt"]
+                if binding is None and row[name]["health"] == "current":
+                    raise ContractError("service_worker_timing_binding")
+                if binding is not None and (binding["component"] != origin or binding["sampledBoottimeMs"] != sampled_ms
+                                            or binding["observedBoottimeMs"] > self.clock()):
+                    raise ContractError("service_worker_timing_binding")
         context = canonical(source["runtime"]) if source["runtime"] else None
         if context is not None and context != self.contexts[provider]:
             self.contexts[provider] = context
@@ -107,6 +117,12 @@ class ObservationEngine:
         receipt = self.receipts[provider][component]
         previous = receipt.data
         receipt.data = copy.deepcopy(value)
+        for row in receipt.data["sessions"]:
+            for name in ("lastUpdated", "latestTurn"):
+                record = row[name]
+                binding = record["receipt"]
+                if binding is not None:
+                    binding["contextGeneration"] = self.generations[provider]
         self._retirement_dirty.add(provider)
         receipt.inFlight = False
         receipt.lastResult = "accepted"
@@ -134,7 +150,7 @@ class ObservationEngine:
             if runtime.sampledBoottimeMs is None or sampled_ms >= runtime.sampledBoottimeMs:
                 self.attempt(provider, "runtime")
                 self._accept_sample(provider, "runtime", value, sampled_ms=sampled_ms,
-                                    ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000))
+                                    ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000), origin="history")
         return True
 
     def expire(self, now=None):
@@ -199,7 +215,8 @@ class ObservationEngine:
             "runtimeNamespace": None, "runtime": None, "discovery": None, "sourceHealth": "unavailable",
             "coverage": {"saved": {"status": "unavailable", "reason": "not_observed"},
                          "runtime": {"status": "unavailable", "reason": "not_observed", "scope": self.profiles[provider].runtime_scope}},
-            "capabilities": {"phase": [], "blockedReasons": [], "runtime": [], "activity": False},
+            "capabilities": {"phase": [], "blockedReasons": [], "runtime": [], "activity": False,
+                             "timing": {"lastUpdated": False, "latestTurn": False}},
             "errors": [], "limitations": ["source_not_observed"],
         }
 
@@ -288,11 +305,22 @@ class ObservationEngine:
                     if row["createdAt"] is None:
                         row["createdAt"] = saved["createdAt"]
                     row["metadataIssues"] = list(dict.fromkeys((row["metadataIssues"] + saved["metadataIssues"])[:128]))
+                for name in ("lastUpdated", "latestTurn"):
+                    candidates = [(r[key][name], receipts[c].expiresBoottimeMs)
+                                  for c, r in (("runtime", rt_rows), ("history", hi_rows)) if key in r]
+                    selected = timing.select(candidates, name)
+                    binding = selected["receipt"]
+                    owner = receipts[binding["component"]] if binding is not None else None
+                    if owner is None or not owner.current() or binding["contextGeneration"] != self.generations[provider] or binding["sampledBoottimeMs"] != owner.sampledBoottimeMs:
+                        selected = timing.stale(selected, name, "service_timing_expired")
+                    row[name] = selected
                 rows.append(row)
             source["capabilities"]["activity"] = any(r["activity"]["health"] == "current" for r in rows if r["identity"]["provider"] == provider)
+            source["capabilities"]["timing"] = {name: any(r[name]["health"] == "current" for r in rows if r["identity"]["provider"] == provider)
+                                                for name in ("lastUpdated", "latestTurn")}
             sources.append(source)
         value = {
-            "schemaVersion": 4, "collectionId": self.collection_id(), "collectedAt": self.wall_clock(),
+            "schemaVersion": SCHEMA_VERSION, "collectionId": self.collection_id(), "collectedAt": self.wall_clock(),
             "host": {"authority": self.host_scope, "authoritySource": "caller", "nativeHostname": self.native_hostname, "uid": self.uid},
             "sourceHealth": "current" if all(s["sourceHealth"] == "current" for s in sources) else "partial" if rows or any(s["sourceHealth"] in {"current", "partial"} for s in sources) else "unavailable",
             "sources": sources, "sessions": [], "errors": [], "limitations": ["shared_sampled_service", "no_native_event_replay", "runtime_only_retention_runtime_lease"],

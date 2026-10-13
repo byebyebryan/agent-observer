@@ -282,7 +282,7 @@ def codex_reference(client):
         ) else "working" if status == "active" and flags == [] else None if status == "notLoaded" else "unknown"
         runtime = "parked" if status == "notLoaded" else "running" if status in ("idle", "active", "systemError") else "unknown"
         blocked_reasons = sorted({"approval" if f == "waitingOnApproval" else "question" for f in flags}) if phase == "blocked" else []
-        at, reason, outcome, outcome_at = None, None, None, None
+        at, reason, outcome, outcome_at, latest_turn = None, None, None, None, None
         try:
             turns = client.call("thread/turns/list", {"threadId": sid, "limit": 1, "sortDirection": "desc", "itemsView": "notLoaded"})["data"]
             if turns:
@@ -296,10 +296,19 @@ def codex_reference(client):
                     outcome_at = turn["completedAt"] * 1000 if outcome else None
                 elif turn.get("status") == "inProgress":
                     outcome = "unknown"
+                if saved_identity:
+                    latest_turn = {"id": turn.get("id"),
+                                   "status": {"inProgress": "in_progress", "completed": "completed", "failed": "failed", "interrupted": "cancelled"}.get(turn.get("status"), "unknown"),
+                                   "startedAt": turn["startedAt"] * 1000 if type(turn.get("startedAt")) is int else None,
+                                   "completedAt": turn["completedAt"] * 1000 if type(turn.get("completedAt")) is int else None,
+                                   "durationMs": turn.get("durationMs"),
+                                   "timestampPrecisionMs": 1000 if type(turn.get("startedAt")) is int or type(turn.get("completedAt")) is int else None}
             reason = "no_native_turn_clock" if at is None else "native_turn_metadata"
         except (ValueError, OSError, KeyError):
             reason = "native_turn_read_unavailable"
         rows[sid] = {"title": bounded_text(r.get("name")), "cwd": bounded_text(r.get("cwd"), 4096), "sessionTreeRootId": r.get("sessionId"), "createdAt": r.get("createdAt") * 1000 if type(r.get("createdAt")) is int else None, "hasSavedHistory": saved_identity, "runtime": runtime, "phase": phase, "blockedReasons": blocked_reasons, "kind": kind, "activity": at, "activityReason": reason, "status": status, "activeFlags": flags, "outcome": outcome, "outcomeAt": outcome_at}
+        rows[sid].update(lastUpdated=r["updatedAt"] * 1000 if saved_identity and type(r.get("updatedAt")) is int else None,
+                         latestTurn=latest_turn)
     if birth(client.pid)[0] != client.start:
         raise ValueError("native_runtime_changed")
     loaded_after = set(client.pages("thread/loaded/list"))
@@ -365,6 +374,9 @@ def compare(before, snapshot, after, provider):
         if provider == "codex":
             comparisons.update(sessionTreeRootId=c["nativeIds"]["sessionTreeRootId"], blockedReasons=c["blockedReasons"], createdAt=c["createdAt"], hasSavedHistory=c["hasSavedHistory"],
                                outcome=c["outcome"]["value"], outcomeAt=c["outcome"]["observedAt"])
+            comparisons.update(lastUpdated=c["lastUpdated"]["at"], latestTurn=c["latestTurn"]["value"])
+            if not b["hasSavedHistory"] and (c["lastUpdated"]["at"] is not None or c["latestTurn"]["value"] is not None):
+                issues.append({"id": sid, "field": "timingAdmission", "result": "unproved_clock_promoted"})
         for field, observed in comparisons.items():
             expected = b.get(field)
             if a.get(field) != expected:
@@ -463,7 +475,7 @@ def main():
             snapshot = json.loads(payload)
             service = None
             if args.service_socket:
-                if snapshot.get("serviceProtocol") != 2 or snapshot.get("hostScope") != args.host_scope or snapshot.get("uid") != os.geteuid() or snapshot.get("snapshot") is None:
+                if snapshot.get("serviceProtocol") != 3 or snapshot.get("hostScope") != args.host_scope or snapshot.get("uid") != os.geteuid() or snapshot.get("snapshot") is None:
                     raise ValueError("service_scope_unavailable")
                 service = {k: snapshot[k] for k in ("serviceProtocol", "serviceId", "bootId", "hostScope", "viewRevision", "emittedAt", "emittedBoottimeMs", "clockDomain", "sources")}
                 snapshot = snapshot["snapshot"]

@@ -22,7 +22,7 @@ def report(error):
     code = str(error)
     if not code.replace("_", "").isalnum() or len(code) > 128:
         code = "service_io_unavailable"
-    print(canonical({"serviceProtocol": 2, "error": code}), file=sys.stderr)
+    print(canonical({"serviceProtocol": 3, "error": code}), file=sys.stderr)
     return 2
 
 
@@ -44,7 +44,7 @@ def human_watch(stream, args, *, cache, now, wall, output):
             lines.extend(f"  {item['provider']} {item['component']}: {item['health']}"
                          for item in view["components"])
             if view["snapshot"] is not None:
-                lines.append(human_rows(view["snapshot"], now_ms=wall(), include_children=args.include_children,
+                lines.append(human_rows(view["snapshot"], now_ms=wall(), now_boottime_ms=current, include_children=args.include_children,
                                         providers=args.provider, order=args.order))
             output("\n".join(lines))
             render_at, expiry = current + 5000, view["nextExpiryBoottimeMs"]

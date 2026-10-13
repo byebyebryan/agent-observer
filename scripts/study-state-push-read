@@ -77,7 +77,7 @@ def main():
                         line, _, rest = pending.partition(b"\n")
                         pending = bytearray(rest)
                         frame = json.loads(line)
-                        assert frame["serviceProtocol"] == 2 and frame["hostScope"] == args.host_scope and frame["uid"] == os.geteuid()
+                        assert frame["serviceProtocol"] == 3 and frame["hostScope"] == args.host_scope and frame["uid"] == os.geteuid()
                         assert frame["sequence"] == sequence + 1 and frame["viewRevision"] >= revision
                         assert frame["clockDomain"] == os.readlink("/proc/self/ns/time")
                         assert frame["bootId"] == Path("/proc/sys/kernel/random/boot_id").read_text().strip()

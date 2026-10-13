@@ -27,14 +27,14 @@ from agent_observer.contract import (
 from agent_observer.read_client import human_rows, ordered_rows, select
 from agent_observer.watch import SampledWatch
 
-FIXTURES = Path(__file__).parent / "fixtures/contract-v4"
+FIXTURES = Path(__file__).parent / "fixtures/contract-v5"
 
 
 def fixture(name="snapshot"):
     return json.loads((FIXTURES / f"{name}.json").read_text())
 
 
-class ContractV4Test(unittest.TestCase):
+class ContractV5Test(unittest.TestCase):
 
     def test_codex_question_requires_a_proved_runtime_source_capability(self):
         value = fixture()

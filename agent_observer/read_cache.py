@@ -1,4 +1,4 @@
-"""Pure local Service 2 consumer cache; no transport, collectors or alert policy."""
+"""Pure local Service 3 consumer cache; no transport, collectors or alert policy."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import re
 from .contract import ContractError
 from .observation_evidence import stale_row
 from .service_contract import StreamGuard
+from . import timing
 
 
 class ReadCache:
@@ -119,6 +120,15 @@ class ReadCache:
                             metadata_reason="read_cache_metadata_expired")
             if lease["history"]:
                 row["workspace"] = copy.deepcopy(raw["workspace"])
+            source = next(s for s in frame["sources"] if (s["provider"], s["namespace"]) == (identity["provider"], identity["namespace"]))
+            owners = {c["name"]: c for c in source["components"]}
+            for name in ("lastUpdated", "latestTurn"):
+                record = raw[name]
+                binding = record["receipt"]
+                live = binding is not None and lease[binding["component"]] and (
+                    binding["sampledBoottimeMs"] == owners[binding["component"]]["sampledBoottimeMs"]
+                    and binding["contextGeneration"] == source["contextGeneration"])
+                row[name] = copy.deepcopy(record) if live else timing.stale(record, name, "read_cache_timing_expired")
             if not all(lease.values()) and row["outcome"]["source"] is not None:
                 outcome = row["outcome"]
                 if outcome["value"] != "unknown":
@@ -135,6 +145,9 @@ class ReadCache:
                 source["coverage"]["saved"].update(status="unavailable", reason="read_cache_expired")
             if not all(lease.values()):
                 source["sourceHealth"] = "partial" if any(lease.values()) else "stale"
+            source["capabilities"]["timing"] = {name: any(r[name]["health"] == "current" for r in rows
+                                                        if (r["identity"]["provider"], r["identity"]["namespace"]) == (source["provider"], source["namespace"]))
+                                                for name in ("lastUpdated", "latestTurn")}
         live_count = sum(item["current"] for item in components)
         snapshot["sourceHealth"] = (snapshot["sourceHealth"] if live_count == len(components)
                                     else "partial" if live_count else "stale")

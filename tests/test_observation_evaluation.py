@@ -112,11 +112,11 @@ class ObservationEvaluationTest(unittest.TestCase):
                 self.assertFalse(result["storeScopes"] and result["fullRowReferences"])
 
     def native(self, **fields):
-        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionTreeRootId": SID, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True}
+        row = {"title": "Native title", "cwd": "/tmp/project", "runtime": "running", "phase": "working", "activity": 100, "kind": "user", "sessionTreeRootId": SID, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True, "lastUpdated": None, "latestTurn": None}
         return {"rows": {SID: {**row, **fields}}}
 
     def public(self, **fields):
-        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionTreeRootId": SID}, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True, "outcome": {"value": "unknown", "observedAt": None}}
+        row = {"identity": {"provider": "codex", "nativeId": SID}, "title": "Native title", "cwd": "/tmp/project", "runtime": {"value": "running"}, "phase": {"value": "working"}, "activity": {"at": 100}, "kind": "user", "nativeIds": {"sessionTreeRootId": SID}, "blockedReasons": [], "createdAt": 50, "hasSavedHistory": True, "outcome": {"value": "unknown", "observedAt": None}, "lastUpdated": {"at": None}, "latestTurn": {"value": None}}
         return {"sessions": [{**row, **fields}]}
 
     def test_runtime_only_missing_clock_is_unknown_and_remains_unproved(self):
