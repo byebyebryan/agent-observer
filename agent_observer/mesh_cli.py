@@ -19,7 +19,7 @@ from .read_client import human_snapshots
 def interface():
     return {
         "meshProtocol": 1,
-        "profile": "agent-observer.mesh-candidate.v2",
+        "profile": "agent-observer.mesh-candidate.v3",
         "operations": ["snapshot", "list", "watch", "assess"],
         "access": "cached",
         "readOnly": True,
@@ -118,7 +118,7 @@ async def run(args, *, output=None, human_output=None):
     request_id = secrets.token_hex(16)
     operation = "watch" if args.command == "watch" else "snapshot"
     request = {"meshProtocol": 1, "requestId": request_id, "operation": operation,
-               "profile": "agent-observer.mesh-candidate.v2", "access": "cached",
+               "profile": "agent-observer.mesh-candidate.v3", "access": "cached",
                "selection": {"mode": args.scope, "hostIds": args.hosts}, "extensions": {}}
     guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
     stream = reader.execute(request)
@@ -158,7 +158,7 @@ async def run(args, *, output=None, human_output=None):
                 else:
                     qualification, snapshots = view
                     human_output(qualification + "\n" + human_snapshots(
-                        snapshots, now_ms=int(time.time() * 1000), include_children=args.include_children,
+                        snapshots, now_ms=int(time.time() * 1000), include_children=args.include_children, include_system=args.include_system,
                         providers=args.provider, order=args.order))
                 deadlines = [r["expiresAtMs"] for h in display["mesh"].get("hosts", []) for r in h["receipts"]
                              if r["health"] in {"current", "partial"} and r["expiresAtMs"] > now]
@@ -193,7 +193,7 @@ def parser():
         command.add_argument("--socket", type=Path, default=Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")) / "mesh-plus-agent/read.sock")
         command.add_argument("--authority", choices=("ssh-plus", "mesh"), default="ssh-plus")
         command.add_argument("--local-host", help="explicit standalone identity; bypass the catalog")
-        command.set_defaults(human=name == "list", count=None, include_children=False, provider=None, order="activity")
+        command.set_defaults(human=name == "list", count=None, include_children=False, include_system=False, provider=None, order="activity")
         if name == "watch":
             command.add_argument("--human", action="store_true")
             command.add_argument("--count", type=int, help="limit replacement/control frames")
@@ -202,6 +202,7 @@ def parser():
             command.add_argument("--timeout-ms", type=int, choices=range(1, 60001), default=5000, metavar="1..60000")
         if name in {"list", "watch"}:
             command.add_argument("--include-children", action="store_true")
+            command.add_argument("--include-system", action="store_true")
             command.add_argument("--provider", action="append", choices=("codex",))
             command.add_argument("--order", choices=("activity", "created"), default="activity")
     return root
@@ -219,7 +220,7 @@ def main(argv=None):
         root.error("--local-host requires local or fleet scope without --hosts")
     if args.count is not None and not 1 <= args.count <= 100000:
         root.error("--count must be 1..100000")
-    if not args.human and (args.provider or args.include_children or args.order != "activity"):
+    if not args.human and (args.provider or args.include_children or args.include_system or args.order != "activity"):
         root.error("presentation filters require list or watch --human; raw frames are lossless")
     try:
         return asyncio.run(run(args))

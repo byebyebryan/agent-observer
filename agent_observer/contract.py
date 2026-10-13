@@ -11,7 +11,7 @@ from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 MAX_BYTES = 8 * 1024 * 1024
 MAX_SNAPSHOT_BYTES = MAX_BYTES - 1024
 MAX_NODES = 2_000_000
@@ -186,7 +186,7 @@ SESSION = obj(
         obj(sessionId=text(36, pattern=UUID)),
     ]},
     title=text(256),
-    kind=choice("user", "child", "unknown"),
+    kind=choice("user", "child", "system", "unknown"),
     cwd=text(nullable=True),
     cwdSource=text(128, pattern=CODE, nullable=True),
     inventory=choice("live", "saved"),

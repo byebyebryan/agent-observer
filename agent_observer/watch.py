@@ -61,7 +61,7 @@ class SampledWatch:
         self.gapped = True
         return self.frame("gap", reason)
 
-    def sample(self, snapshot, *, include_children=True, providers=None, order="activity",
+    def sample(self, snapshot, *, include_children=True, include_system=True, providers=None, order="activity",
                sampled_ms=None):
         value = copy.deepcopy(validate_snapshot(snapshot))
         now = self.clock()
@@ -77,7 +77,7 @@ class SampledWatch:
             evicted = retain_missing(self.previous, value, retention=self.retention, now=now)
         self.retention.prune(value["sessions"])
         validate_snapshot(value)
-        projected = listing(value, include_children=include_children, providers=providers, order=order)
+        projected = listing(value, include_children=include_children, include_system=include_system, providers=providers, order=order)
         signature = _semantic(projected)
         frames = []
         if evicted:

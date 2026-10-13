@@ -118,7 +118,7 @@ class CachedAgentSource:
         return True
 
     async def _frames(self, operation):
-        request = validate_request({"serviceProtocol": 3, "operation": operation, "hostScope": self.host})
+        request = validate_request({"serviceProtocol": 4, "operation": operation, "hostScope": self.host})
         node = self._socket_policy()
         uid = os.geteuid()
         boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()

@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agent-observer:service-request:3",
+  "$id": "urn:agent-observer:service-request:4",
   "type": "object",
   "properties": {
     "serviceProtocol": {
-      "const": 3
+      "const": 4
     },
     "operation": {
       "enum": [

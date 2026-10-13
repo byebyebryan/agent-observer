@@ -72,6 +72,11 @@ def validate_selection(value, host, *, prior=False):
         and value.get("schemas") == {"snapshot": 5, "watch": 5}
         and value.get("serviceProtocol") == 3
     )
+    current = current or (
+        value.get("manifestVersion") == 4 and value.get("apiVersion") == 4
+        and value.get("schemas") == {"snapshot": 6, "watch": 6}
+        and value.get("serviceProtocol") == 4
+    )
     require(
         (current or (prior and legacy)) and host in value["hosts"] and value["unit"] == UNIT,
         "operations_selection_invalid",

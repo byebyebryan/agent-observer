@@ -28,7 +28,7 @@ class LocalHumanWatchTest(unittest.TestCase):
                 closed.append(True)
 
         subject = cache()
-        args = argparse.Namespace(include_children=False, provider=None, order="activity", count=2)
+        args = argparse.Namespace(include_children=False, include_system=False, provider=None, order="activity", count=2)
         service_cli.human_watch(stream(), args, cache=subject, now=lambda: next(times),
                                wall=lambda: 1700000020000, output=outputs.append)
         self.assertEqual(closed, [True])
@@ -52,7 +52,7 @@ class LocalHumanWatchTest(unittest.TestCase):
         def output(value):
             raise OSError("closed output")
 
-        args = argparse.Namespace(include_children=False, provider=None, order="activity", count=None)
+        args = argparse.Namespace(include_children=False, include_system=False, provider=None, order="activity", count=None)
         with self.assertRaises(OSError):
             service_cli.human_watch(stream(), args, cache=subject, now=lambda: 15000,
                                    wall=lambda: 1700000020000, output=output)

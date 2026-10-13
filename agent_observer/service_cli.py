@@ -44,7 +44,7 @@ def human_watch(stream, args, *, cache, now, wall, output):
             lines.extend(f"  {item['provider']} {item['component']}: {item['health']}"
                          for item in view["components"])
             if view["snapshot"] is not None:
-                lines.append(human_rows(view["snapshot"], now_ms=wall(), now_boottime_ms=current, include_children=args.include_children,
+                lines.append(human_rows(view["snapshot"], now_ms=wall(), now_boottime_ms=current, include_children=args.include_children, include_system=args.include_system,
                                         providers=args.provider, order=args.order))
             output("\n".join(lines))
             render_at, expiry = current + 5000, view["nextExpiryBoottimeMs"]
@@ -71,6 +71,7 @@ def main(argv=None):
         sub.add_argument("--json", action="store_true")
         if name in {"list", "watch"}:
             sub.add_argument("--include-children", action="store_true")
+            sub.add_argument("--include-system", action="store_true")
             sub.add_argument("--provider", action="append", choices=("codex",))
             sub.add_argument("--order", choices=("activity", "created"), default="activity")
         if name == "watch":
@@ -107,7 +108,7 @@ def main(argv=None):
                     if frame["snapshot"] is None:
                         raise ContractError("service_warming")
                     from .read_client import human_rows, listing
-                    options = dict(include_children=args.include_children, providers=args.provider, order=args.order)
+                    options = dict(include_children=args.include_children, include_system=args.include_system, providers=args.provider, order=args.order)
                     if args.json:
                         frame["snapshot"] = listing(frame["snapshot"], **options)
                         print(canonical(frame))
@@ -116,7 +117,7 @@ def main(argv=None):
                 elif args.command == "watch":
                     if frame["snapshot"] is not None:
                         from .read_client import listing
-                        frame["snapshot"] = listing(frame["snapshot"], include_children=args.include_children, providers=args.provider, order=args.order)
+                        frame["snapshot"] = listing(frame["snapshot"], include_children=args.include_children, include_system=args.include_system, providers=args.provider, order=args.order)
                     _watch_output(frame)
                     if args.count is not None and count >= args.count:
                         break

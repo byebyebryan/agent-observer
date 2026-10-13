@@ -1,7 +1,7 @@
-"""API v3: pure consumer validation and selection; no provider/action imports.
+"""API v4: pure consumer validation and selection; no provider/action imports.
 
 The acceptance record is separate from this interface's version declaration.
-Observation wire 5 is independent of the separately gated write client.
+Observation wire 6 is independent of the separately gated write client.
 """
 
 from .bounded_json import WireError
@@ -19,13 +19,13 @@ from .contract import (
 from .read_client import diagnostic, listing, ordered_rows, select
 from .timing import age_ms, ongoing_turn_age_ms
 
-API_VERSION = 3
+API_VERSION = 4
 
 
 def interface():
     return {
         "apiVersion": API_VERSION,
-        "schemas": {"snapshot": 5, "watch": 5},
+        "schemas": {"snapshot": 6, "watch": 6},
         "readCommands": ["snapshot", "list", "show", "watch", "schema"],
         "hostLocal": True,
         "nativeEventReplay": False,
