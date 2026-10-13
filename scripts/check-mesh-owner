@@ -4,6 +4,7 @@
 import argparse
 import importlib.metadata
 import json
+import runpy
 import sys
 from pathlib import Path
 
@@ -14,18 +15,30 @@ def main():
     args = parser.parse_args()
     if not args.installed:
         sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from mesh_plus.testing import network_suite, profile_suite, run_suite
+    from mesh_plus.testing import ProfileCase, network_suite, profile_suite, run_suite
 
     from agent_observer.mesh_profile import AgentProfile
+    root = Path(__file__).resolve().parents[1]
+    cases = tuple(ProfileCase(**case) for case in json.loads((root / "tests/fixtures/mesh-v2/corpus.json").read_text())["cases"])
+    fixture = runpy.run_path(str(root / "tests/mesh_native_fixture.py"))
 
     def profile(domain):
         if domain != "agent":
             raise ValueError("owner_conformance_scope")
         return AgentProfile()
 
+    def publisher(domain, host, source, selected):
+        if domain != "agent":
+            raise ValueError("owner_conformance_scope")
+        value = fixture["CachedPublisher"](host)
+        value.source = source
+        value.codec = selected.bind(host, source)
+        value.validate = value.codec.validate_bridge
+        return value
+
     reports = {
-        "profile": run_suite(profile_suite(profile, domain="agent"), domain="agent"),
-        "network": run_suite(network_suite(profile, domain="agent"), domain="agent"),
+        "profile": run_suite(profile_suite(profile, domain="agent", cases=cases), domain="agent", profile=AgentProfile()),
+        "network": run_suite(network_suite(profile, domain="agent", publisher_factory=publisher, cases=cases), domain="agent", profile=AgentProfile()),
     }
     report = {"status": "passed" if all(r["ok"] for r in reports.values()) else "failed",
               "meshVersion": importlib.metadata.version("mesh-plus"), "installedOwner": args.installed,

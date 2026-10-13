@@ -84,7 +84,8 @@ class OptionalMeshSDKTest(unittest.IsolatedAsyncioTestCase):
 
         args = mesh_cli.parser().parse_args(["watch" if watch else "snapshot", "--local-host", "fixture"])
         args.count = 1
-        sdk = Reader("agent", [Endpoint("fixture", True, None, None)], local_host="fixture")
+        from agent_observer.mesh_profile import AgentProfile
+        sdk = Reader("agent", [Endpoint("fixture", True, None, None)], local_host="fixture", profile=AgentProfile())
         closed, outputs, policies = [], [], []
 
         class FakeReader:

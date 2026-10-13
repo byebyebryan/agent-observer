@@ -53,6 +53,12 @@ class ManagedOperationsTests(unittest.TestCase):
                              "stateSchemasSha256": "a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46"}}
         module.compatible_bridge(updated, bridge)
         module.compatible_bridge(reader, updated)
+        timing = {"mesh": {**updated["mesh"], "manifestVersion": 3,
+                           "agentProfile": "agent-observer.mesh-candidate.v2",
+                           "stateSchemasSha256": "b15f8c69909ec2574ba2adc17a3ccda5b44ab4ec1a1173a50732fd134c183900"}}
+        module.compatible_bridge(timing, timing)
+        with self.assertRaisesRegex(ValueError, "^mesh_bridge_contract_selection$"):
+            module.compatible_bridge(timing, updated)
         for changed in ({"sdkInterface": 2}, {"stateSchemasSha256": "a" * 64}):
             with self.assertRaisesRegex(ValueError, "^mesh_bridge_contract_selection$"):
                 module.compatible_bridge(reader, {"mesh": {**updated["mesh"], **changed}})

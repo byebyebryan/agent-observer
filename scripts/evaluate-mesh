@@ -34,7 +34,7 @@ import json,subprocess,sys
 if sys.argv[1:3] == ['service','snapshot']:
  result=subprocess.run({mesh_argv!r},capture_output=True,check=True,timeout=30)
  frame=json.loads(result.stdout)
- assert frame['protocol']=='agent-observer.mesh-candidate.v1'
+ assert frame['protocol']=='agent-observer.mesh-candidate.v2'
  assert frame['mesh']['scope']['hostIds']==[{args.host_scope!r}]
  host=frame['mesh']['hosts'][0]
  assert host['delivery']['status']=='ready' and host['owner'] is not None
@@ -51,7 +51,7 @@ else:
             argv.extend(["--provider", provider])
         result = subprocess.run(argv, capture_output=True, check=True, timeout=300, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
         receipt = json.loads(result.stdout)
-        receipt["meshRead"] = {"cli": str(args.cli), "profile": "agent-observer.mesh-candidate.v1",
+        receipt["meshRead"] = {"cli": str(args.cli), "profile": "agent-observer.mesh-candidate.v2",
                                "access": "cached", "scope": "local", "wrapperImportsObserver": False}
         receipt["selectedCli"] = str(args.cli)
         print(json.dumps(receipt, indent=2))

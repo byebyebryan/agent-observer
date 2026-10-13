@@ -102,7 +102,8 @@ class MeshHumanWatchTest(unittest.IsolatedAsyncioTestCase):
         from mesh_plus.transport import boottime_ms
 
         args = mesh_cli.parser().parse_args(["watch", "--human", "--local-host", "fixture", "--count", "2"])
-        sdk = Reader("agent", [Endpoint("fixture", True, None, None)], local_host="fixture")
+        from agent_observer.mesh_profile import AgentProfile
+        sdk = Reader("agent", [Endpoint("fixture", True, None, None)], local_host="fixture", profile=AgentProfile())
         closed, outputs = [], []
 
         class FakeReader:
