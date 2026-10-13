@@ -19,7 +19,7 @@ from .read_client import human_snapshots
 def interface():
     return {
         "meshProtocol": 1,
-        "profile": "agent-observer.mesh-candidate.v1",
+        "profile": "agent-observer.mesh-candidate.v2",
         "operations": ["snapshot", "list", "watch", "assess"],
         "access": "cached",
         "readOnly": True,
@@ -118,7 +118,7 @@ async def run(args, *, output=None, human_output=None):
     request_id = secrets.token_hex(16)
     operation = "watch" if args.command == "watch" else "snapshot"
     request = {"meshProtocol": 1, "requestId": request_id, "operation": operation,
-               "profile": "agent-observer.mesh-candidate.v1", "access": "cached",
+               "profile": "agent-observer.mesh-candidate.v2", "access": "cached",
                "selection": {"mode": args.scope, "hostIds": args.hosts}, "extensions": {}}
     guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
     stream = reader.execute(request)

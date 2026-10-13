@@ -12,7 +12,7 @@ license = { file = "LICENSE" }
 dependencies = []
 
 [project.optional-dependencies]
-mesh = ["mesh-plus>=0.1.0a11,<0.2"]
+mesh = ["mesh-plus>=0.1.0a16,<0.2"]
 dev = ["ruff==0.16.3"]
 
 [project.scripts]

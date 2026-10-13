@@ -40,6 +40,20 @@ class MeshArtifactTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.module.mesh_manifest(path)
 
+    def test_timing_profile_requires_its_independent_schema_bundle(self):
+        value = {**self.manifest, "manifestVersion": 3, "lockSha256": "f" * 64, "sdkInterface": 1,
+                 "stateSchemasSha256": self.module.TIMING_STATE_SCHEMAS_SHA256,
+                 "agentProfile": "agent-observer.mesh-candidate.v2"}
+        with tempfile.TemporaryDirectory() as name:
+            path = Path(name) / "mesh-0.1.0a9.json"
+            path.write_text(json.dumps(value))
+            self.assertEqual(self.module.mesh_manifest(path), value)
+            for fault in ({"agentProfile": "agent-observer.mesh-candidate.v1"},
+                          {"stateSchemasSha256": self.module.STATE_SCHEMAS_SHA256}):
+                path.write_text(json.dumps({**value, **fault}))
+                with self.assertRaises(ValueError):
+                    self.module.mesh_manifest(path)
+
     def test_ambiguous_or_malformed_artifact_fails_before_subprocess(self):
         for changed in ({"agentProfile": "unreviewed"}, {"lockSha256": "f" * 64},
                         {"wheel": "../foreign.whl"}, {"sourceRevision": "wrong"},

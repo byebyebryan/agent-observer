@@ -82,15 +82,19 @@ def artifact(selection, host, profiles):
 def compatible_bridge(reader, bridge):
     """Independent immutable artifacts must share the frozen delivery contract."""
     state_digest = "a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46"
+    timing_digest = "b15f8c69909ec2574ba2adc17a3ccda5b44ab4ec1a1173a50732fd134c183900"
     legacy_lock = "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"
     for value in (reader, bridge):
         mesh = value["mesh"]
         require((mesh["manifestVersion"] == 1 and mesh["lockSha256"] == legacy_lock)
                 or (mesh["manifestVersion"] == 2 and mesh.get("sdkInterface") == 1
-                    and mesh.get("stateSchemasSha256") == state_digest),
+                    and mesh.get("stateSchemasSha256") == state_digest)
+                or (mesh["manifestVersion"] == 3 and mesh.get("sdkInterface") == 1
+                    and mesh.get("stateSchemasSha256") == timing_digest
+                    and mesh.get("agentProfile") == "agent-observer.mesh-candidate.v2"),
                 "mesh_bridge_contract_selection")
     require(reader["mesh"]["agentProfile"] == bridge["mesh"]["agentProfile"]
-            == "agent-observer.mesh-candidate.v1",
+            and reader["mesh"]["agentProfile"] in {"agent-observer.mesh-candidate.v1", "agent-observer.mesh-candidate.v2"},
             "mesh_bridge_contract_selection")
 
 

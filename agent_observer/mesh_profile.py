@@ -1,7 +1,7 @@
 """Pure Agent state semantics for the optional Mesh SDK v1 reader.
 
 Mesh validates transport envelopes, proofs and leases. These callbacks validate
-and project native Service 2 data only; they never acquire provider/service data.
+and project native Service 3 data only; they never acquire provider/service data.
 """
 
 from __future__ import annotations
@@ -17,7 +17,14 @@ from .public import interface as read_interface
 from .service_public import interface as service_interface
 from .service_public import validate_frame
 
-PROFILE_ID = "agent-observer.mesh-candidate.v1"
+PROFILE_ID = "agent-observer.mesh-candidate.v2"
+
+
+def timing_descriptor():
+    try:
+        return descriptor("agent", profile_id=PROFILE_ID)
+    except TypeError:
+        check(False, "mesh_sdk_incompatible")
 
 
 @dataclass(frozen=True)
@@ -46,7 +53,7 @@ class AgentCodec:
         check(match is not None, "owner_clock_domain")
         snapshot = frame["snapshot"]
         return NativeState(
-            owner={"protocol": "agent-observer.snapshot", "version": 4,
+            owner={"protocol": "agent-observer.snapshot", "version": 5,
                    "metadata": None if snapshot is None else {k: v for k, v in snapshot.items() if k != "sessions"},
                    "service": {k: v for k, v in frame.items() if k != "snapshot"}},
             records=() if snapshot is None else tuple(snapshot["sessions"]),
@@ -61,10 +68,10 @@ class AgentCodec:
 
 @dataclass(frozen=True)
 class AgentProfile:
-    descriptor: ProfileDescriptor = field(default_factory=lambda: descriptor("agent"))
+    descriptor: ProfileDescriptor = field(default_factory=timing_descriptor)
 
     def __post_init__(self):
-        expected = descriptor("agent")
+        expected = timing_descriptor()
         check(SDK_INTERFACE_VERSION == 1 and self.descriptor == expected
               and expected.native_protocol == "agent-observer.snapshot"
               and expected.native_version == read_interface()["schemas"]["snapshot"]
