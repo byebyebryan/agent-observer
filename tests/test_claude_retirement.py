@@ -51,13 +51,13 @@ class ClaudeRetirementTest(unittest.TestCase):
             close.assert_not_called()
 
     def test_notification_native_intake_rejects_retired_before_decoding_content(self):
-        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v5/snapshot.json").read_bytes())
+        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v6/snapshot.json").read_bytes())
         ref = next(r["identity"] for r in snapshot["sessions"] if r["identity"]["provider"] == "claude")
         with self.assertRaisesRegex(NotificationError, "^unsupported_provider$"):
             normalize(b"invalid private contents", ref)
 
     def test_reserved_data_and_read_wire_are_preserved_without_native_implementation(self):
-        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v5/snapshot.json").read_bytes())
+        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v6/snapshot.json").read_bytes())
         self.assertTrue(any(r["identity"]["provider"] == "claude" for r in snapshot["sessions"]))
         package = ROOT / "agent_observer"
         self.assertFalse(any(p.name.startswith(("claude_", "_claude_")) for p in package.glob("*.py")))

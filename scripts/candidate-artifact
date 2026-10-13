@@ -22,7 +22,7 @@ def document(path):
         raise ValueError("manifest_limit")
     value = json.loads(path.read_text())
     if (
-        value.get("manifestVersion") not in {1, 2, 3, 4}
+        value.get("manifestVersion") not in {1, 2, 3, 4, 5}
         or value.get("package") != "agent-observer"
         or not re.fullmatch(r"[0-9a-f]{64}", value.get("wheelSha256", ""))
         or not re.fullmatch(r"[0-9a-f]{40}", value.get("sourceRevision", ""))
@@ -31,12 +31,14 @@ def document(path):
         or value.get("manifestVersion") == 2 and value.get("schemas") != {"snapshot": 3, "watch": 3, "write": 1}
         or value.get("manifestVersion") == 3 and (value.get("service") != {"protocol": 2, "schemas": {"request": 2, "frame": 2}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 2 or value.get("schemas") != {"snapshot": 4, "watch": 4})
         or value.get("manifestVersion") == 4 and (value.get("service") != {"protocol": 3, "schemas": {"request": 3, "frame": 3}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 3 or value.get("schemas") != {"snapshot": 5, "watch": 5})
-        or value.get("manifestVersion") == 1 and ("service" in value or "write" in value or value.get("schemas", {}).get("snapshot") in {4, 5})
+        or value.get("manifestVersion") == 5 and (value.get("service") != {"protocol": 4, "schemas": {"request": 4, "frame": 4}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 4 or value.get("schemas") != {"snapshot": 6, "watch": 6})
+        or value.get("manifestVersion") == 1 and ("service" in value or "write" in value or value.get("schemas", {}).get("snapshot") in {4, 5, 6})
         or value.get("schemas") not in (
             {"snapshot": 2, "watch": 2, "write": 1},
             {"snapshot": 3, "watch": 3, "write": 1},
             {"snapshot": 4, "watch": 4},
             {"snapshot": 5, "watch": 5},
+            {"snapshot": 6, "watch": 6},
         )
         or value.get("schemas", {}).get("snapshot") == 3 and value.get("apiVersion") != 1
     ):
@@ -122,7 +124,7 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         schema = json.loads(run([str(prefix / "bin/agent-observer"), "schema", "--kind", name]))
         if schema["properties"]["schemaVersion"] != {"const": manifest["schemas"][name]}:
             raise ValueError("schema_mismatch")
-    if manifest["schemas"]["snapshot"] in {3, 4, 5}:
+    if manifest["schemas"]["snapshot"] in {3, 4, 5, 6}:
         interface = json.loads(run([str(prefix / "bin/agent-observer"), "api"]))
         if interface.get("apiVersion") != manifest["apiVersion"] or interface.get("schemas") != manifest["schemas"]:
             raise ValueError("api_mismatch")
@@ -130,9 +132,9 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         schema = json.loads(
             run([str(prefix / "bin/agent-observer-write"), "schema", "--kind", name])
         )
-        if schema["properties"]["schemaVersion"] != {"const": (manifest["write"]["schema"] if manifest["manifestVersion"] in {3, 4} else manifest["schemas"]["write"])}:
+        if schema["properties"]["schemaVersion"] != {"const": (manifest["write"]["schema"] if manifest["manifestVersion"] in {3, 4, 5} else manifest["schemas"]["write"])}:
             raise ValueError("schema_mismatch")
-    if manifest["manifestVersion"] in {2, 3, 4}:
+    if manifest["manifestVersion"] in {2, 3, 4, 5}:
         service = json.loads(run([str(prefix / "bin/agent-observer"), "service", "api"]))
         if service.get("serviceProtocol") != manifest["service"]["protocol"] or service.get("observationApiVersion") != manifest["apiVersion"] or service.get("embeddedSnapshotVersion") != manifest["schemas"]["snapshot"]:
             raise ValueError("service_api_mismatch")
@@ -153,7 +155,7 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         "installedWheelBytesVerified": True,
         "entrypointsVerified": True,
         "schemaVersionsVerified": True,
-        **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4} else {}),
+        **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4, 5} else {}),
         "providerInvocations": 0,
         "selectedLinksChanged": False,
     }

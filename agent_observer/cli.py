@@ -123,6 +123,7 @@ def main(argv=None):
         command_parser.add_argument("--json", action="store_true")
         if command in {"list", "watch"}:
             command_parser.add_argument("--include-children", action="store_true")
+            command_parser.add_argument("--include-system", action="store_true")
             command_parser.add_argument(
                 "--order", choices=("activity", "created"), default="activity"
             )
@@ -157,7 +158,7 @@ def main(argv=None):
                 try:
                     snapshot = _snapshot(args)
                     frames = watch.sample(
-                        snapshot, include_children=args.include_children,
+                        snapshot, include_children=args.include_children, include_system=args.include_system,
                         providers=args.provider, order=args.order,
                         sampled_ms=sampled_ms,
                     )
@@ -172,7 +173,7 @@ def main(argv=None):
         value = _snapshot(args)
         if args.command == "list":
             options = dict(
-                include_children=args.include_children, providers=args.provider, order=args.order
+                include_children=args.include_children, include_system=args.include_system, providers=args.provider, order=args.order
             )
             print(
                 canonical(listing(value, **options)) if args.json else human_rows(value, now_ms=time.time_ns() // 1_000_000, **options)
@@ -183,7 +184,7 @@ def main(argv=None):
             print(
                 canonical(row)
                 if args.json
-                else human_rows({**value, "sessions": [row]}, now_ms=time.time_ns() // 1_000_000, include_children=True)
+                else human_rows({**value, "sessions": [row]}, now_ms=time.time_ns() // 1_000_000, include_children=True, include_system=True)
             )
         elif args.command == "doctor":
             report = diagnostic(value)

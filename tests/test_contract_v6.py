@@ -27,7 +27,7 @@ from agent_observer.contract import (
 from agent_observer.read_client import human_rows, ordered_rows, select
 from agent_observer.watch import SampledWatch
 
-FIXTURES = Path(__file__).parent / "fixtures/contract-v5"
+FIXTURES = Path(__file__).parent / "fixtures/contract-v6"
 
 
 def fixture(name="snapshot"):

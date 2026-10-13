@@ -1,7 +1,7 @@
 """Pure Agent state semantics for the optional Mesh SDK v1 reader.
 
 Mesh validates transport envelopes, proofs and leases. These callbacks validate
-and project native Service 3 data only; they never acquire provider/service data.
+and project native Service 4 data only; they never acquire provider/service data.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .public import interface as read_interface
 from .service_public import interface as service_interface
 from .service_public import validate_frame
 
-PROFILE_ID = "agent-observer.mesh-candidate.v2"
+PROFILE_ID = "agent-observer.mesh-candidate.v3"
 
 
 def timing_descriptor():
@@ -53,7 +53,7 @@ class AgentCodec:
         check(match is not None, "owner_clock_domain")
         snapshot = frame["snapshot"]
         return NativeState(
-            owner={"protocol": "agent-observer.snapshot", "version": 5,
+            owner={"protocol": "agent-observer.snapshot", "version": 6,
                    "metadata": None if snapshot is None else {k: v for k, v in snapshot.items() if k != "sessions"},
                    "service": {k: v for k, v in frame.items() if k != "snapshot"}},
             records=() if snapshot is None else tuple(snapshot["sessions"]),

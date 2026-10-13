@@ -12,6 +12,7 @@ from pathlib import Path
 
 STATE_SCHEMAS_SHA256 = "a5cd4814025777aa093cc3bf0d5791a78230ae0d08d2c15e6e4b0f98062fdd46"
 TIMING_STATE_SCHEMAS_SHA256 = "b15f8c69909ec2574ba2adc17a3ccda5b44ab4ec1a1173a50732fd134c183900"
+SYSTEM_STATE_SCHEMAS_SHA256 = "20197ad58fa893cf9364d939eff8d62935fb0a2665fa326b8b3ce81140d7cf02"
 LEGACY_LOCK_SHA256 = "2b93e1c1e0b533be00e6646ea0ef62aefec357ba00e1e8a51489578ccde38489"
 
 
@@ -27,31 +28,32 @@ def mesh_manifest(path):
     expected = {
         "manifestVersion", "package", "version", "wheel", "wheelSha256",
         "sourceRevision", "lockSha256", "agentProfile"}
-    if mesh.get("manifestVersion") in {2, 3}:
+    if mesh.get("manifestVersion") in {2, 3, 4}:
         expected |= {"stateSchemasSha256", "sdkInterface"}
     require(set(mesh) == expected and type(mesh["manifestVersion"]) is int
-            and mesh["manifestVersion"] in {1, 2, 3} and mesh["package"] == "mesh-plus")
+            and mesh["manifestVersion"] in {1, 2, 3, 4} and mesh["package"] == "mesh-plus")
     require(isinstance(mesh["version"], str) and re.fullmatch(r"[0-9][0-9A-Za-z.]*", mesh["version"]))
     require(path.name == "mesh-" + mesh["version"] + ".json")
     require(mesh["wheel"] == "mesh_plus-" + mesh["version"] + "-py3-none-any.whl")
     require(all(isinstance(mesh[k], str) and re.fullmatch(r"[0-9a-f]{" + str(n) + "}", mesh[k])
                 for k, n in (("wheelSha256", 64), ("sourceRevision", 40), ("lockSha256", 64))))
     timing = mesh["manifestVersion"] == 3
-    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v" + ("2" if timing else "1"))
+    system = mesh["manifestVersion"] == 4
+    require(mesh["agentProfile"] == "agent-observer.mesh-candidate.v" + ("3" if system else "2" if timing else "1"))
     if mesh["manifestVersion"] == 1:
         require(mesh["lockSha256"] == LEGACY_LOCK_SHA256)
     else:
         require(type(mesh["sdkInterface"]) is int and mesh["sdkInterface"] == 1
-                and mesh["stateSchemasSha256"] == (TIMING_STATE_SCHEMAS_SHA256 if timing else STATE_SCHEMAS_SHA256))
+                and mesh["stateSchemasSha256"] == (SYSTEM_STATE_SCHEMAS_SHA256 if system else TIMING_STATE_SCHEMAS_SHA256 if timing else STATE_SCHEMAS_SHA256))
     return mesh
 
 
-def state_schemas(bundle, *, timing=False):
+def state_schemas(bundle, *, timing=False, system=False):
     hashes = {n: hashlib.sha256(bundle.read(n)).hexdigest() for n in bundle.namelist()
               if n.startswith("mesh_plus/schemas/") and n.endswith(".json")}
-    require(len(hashes) == (21 if timing else 20))
+    require(len(hashes) == (22 if system else 21 if timing else 20))
     digest = hashlib.sha256(json.dumps(hashes, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-    require(digest == (TIMING_STATE_SCHEMAS_SHA256 if timing else STATE_SCHEMAS_SHA256))
+    require(digest == (SYSTEM_STATE_SCHEMAS_SHA256 if system else TIMING_STATE_SCHEMAS_SHA256 if timing else STATE_SCHEMAS_SHA256))
     return digest
 
 
@@ -72,13 +74,17 @@ def verify(prefix, archive, profile, role="reader"):
     wheel = archive / mesh["wheel"]
     require(wheel.is_file() and not wheel.is_symlink()
             and hashlib.sha256(wheel.read_bytes()).hexdigest() == mesh["wheelSha256"])
-    if mesh["manifestVersion"] in {2, 3}:
+    if mesh["manifestVersion"] in {2, 3, 4}:
         lock = archive / "producer-lock.json"
         require(lock.is_file() and not lock.is_symlink() and lock.stat().st_size <= 65536
                 and hashlib.sha256(lock.read_bytes()).hexdigest() == mesh["lockSha256"])
         locked = json.loads(lock.read_text())
         require(locked["meshProtocol"] == 1 and locked["deliveryVersion"] == 1)
-        if mesh["manifestVersion"] == 3:
+        if mesh["manifestVersion"] == 4:
+            require(locked["lockRevision"] == 4 and locked["profileExtensions"][mesh["agentProfile"]]
+                    == {"domain": "agent", "sdkInterface": 1, "nativeProtocol": "agent-observer.snapshot",
+                        "nativeVersion": 6, "serviceProtocol": 4, "schema": "contracts/agent-profile-v3/profile.schema.json"})
+        elif mesh["manifestVersion"] == 3:
             require(locked["lockRevision"] == 3 and locked["profileExtensions"][mesh["agentProfile"]]
                     == {"domain": "agent", "sdkInterface": 1, "nativeProtocol": "agent-observer.snapshot",
                         "nativeVersion": 5, "serviceProtocol": 3, "schema": "contracts/agent-profile-v2/profile.schema.json"})
@@ -108,7 +114,7 @@ print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata
             and metadata["sdkInterface"] == 1
             and metadata["profileDescriptor"]["profile_id"] == mesh["agentProfile"])
     with zipfile.ZipFile(wheel) as bundle:
-        state_digest = state_schemas(bundle, timing=mesh["manifestVersion"] == 3)
+        state_digest = state_schemas(bundle, timing=mesh["manifestVersion"] == 3, system=mesh["manifestVersion"] == 4)
         for entry in bundle.infolist():
             if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
                 continue
@@ -120,7 +126,7 @@ print(json.dumps({'site':sysconfig.get_path('purelib'),'mesh':importlib.metadata
     require(shebang == (prefix / "bin/agent-observer").read_text().splitlines()[0]
             and Path(shebang[2:]).parent == prefix / "bin")
     if role == "publisher":
-        require(mesh["manifestVersion"] in {2, 3}
+        require(mesh["manifestVersion"] in {2, 3, 4}
                 and (prefix / "bin/mesh-plus").read_text() == publisher_launcher(prefix)
                 and (prefix / "bin/mesh-plus").stat().st_mode & 0o777 == 0o755)
         code = """import json,sys

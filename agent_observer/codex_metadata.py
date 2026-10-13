@@ -12,14 +12,13 @@ import re
 import time
 import unicodedata
 
-from .timing import codex_updated
-
 from .observation_model import (
     Evidence,
     NativeIdentity,
     SessionObservation,
     bounded_native_title,
 )
+from .timing import codex_updated
 
 _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re.ASCII)
 _WAIT_FLAGS = frozenset({"waitingOnApproval", "waitingOnUserInput"})
@@ -107,7 +106,14 @@ def _thread_classification(source, thread_source):
         if source_is_bounded:
             return source_kind, "user", None
         return source_kind, "unknown", "thread_classification_unavailable"
-    return source_kind, "unknown", None
+    if thread_source == "system":
+        source_is_bounded = source is None or (isinstance(source, str) and source in _SOURCES)
+        if source_is_bounded:
+            return source_kind, "system", None
+        return source_kind, "unknown", "thread_classification_unavailable"
+    return source_kind, "unknown", (
+        "thread_classification_unsupported" if thread_source not in (None, "unknown") else None
+    )
 
 
 def _projection(payload, *, host_scope, namespace, runtime_version):

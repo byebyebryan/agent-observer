@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def fixture():
-    value = json.loads((ROOT / "tests/fixtures/service-v3/view.json").read_text())
+    value = json.loads((ROOT / "tests/fixtures/service-v4/view.json").read_text())
     for source in value["sources"]:
         for item in source["components"]:
             item["expiresBoottimeMs"] = (20000 if item["name"] == "runtime" else 40000) if source["provider"] == "codex" else 30000

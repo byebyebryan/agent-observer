@@ -1,4 +1,4 @@
-"""Prerelease local service protocol 3; pure, bounded and provider independent."""
+"""Prerelease local service protocol 4; pure, bounded and provider independent."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .contract import (
     validate_snapshot,
 )
 
-SERVICE_PROTOCOL = 3
+SERVICE_PROTOCOL = 4
 MAX_REQUEST_BYTES = 16 * 1024
 MAX_OVERHEAD_BYTES = 16 * 1024
 MAX_FRAME_BYTES = MAX_BYTES + MAX_OVERHEAD_BYTES
@@ -81,7 +81,7 @@ _FRAME_META["properties"]["snapshot"] = {"type": ["object", "null"]}
 def interface():
     return {
         "serviceProtocol": SERVICE_PROTOCOL, "stability": "prerelease",
-        "observationApiVersion": 3, "embeddedSnapshotVersion": 5,
+        "observationApiVersion": 4, "embeddedSnapshotVersion": 6,
         "hostLocal": True, "operations": list(OPERATIONS),
         "nativeEventReplay": False, "durableReplay": False,
         "limits": {"requestBytes": MAX_REQUEST_BYTES, "frameBytes": MAX_FRAME_BYTES,

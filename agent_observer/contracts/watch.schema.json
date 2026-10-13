@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agent-observer:watch:5",
+  "$id": "urn:agent-observer:watch:6",
   "type": "object",
   "properties": {
     "schemaVersion": {
-      "const": 5
+      "const": 6
     },
     "streamId": {
       "type": "string",
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "schemaVersion": {
-              "const": 5
+              "const": 6
             },
             "collectionId": {
               "type": "string",
@@ -544,6 +544,7 @@
                     "enum": [
                       "user",
                       "child",
+                      "system",
                       "unknown"
                     ]
                   },

@@ -15,11 +15,11 @@ def _activity_time(row):
     return evidence["at"] if evidence["health"] == "current" else evidence.get("lastKnownAt")
 
 
-def ordered_rows(snapshot, *, include_children=False, providers=None, order="activity"):
-    return ordered_snapshots([snapshot], include_children=include_children, providers=providers, order=order)
+def ordered_rows(snapshot, *, include_children=False, include_system=False, providers=None, order="activity"):
+    return ordered_snapshots([snapshot], include_children=include_children, include_system=include_system, providers=providers, order=order)
 
 
-def ordered_snapshots(snapshots, *, include_children=False, providers=None, order="activity"):
+def ordered_snapshots(snapshots, *, include_children=False, include_system=False, providers=None, order="activity"):
     """Order independently validated host snapshots for a presentation client."""
     for snapshot in snapshots:
         validate_snapshot(snapshot)
@@ -30,6 +30,7 @@ def ordered_snapshots(snapshots, *, include_children=False, providers=None, orde
         for snapshot in snapshots
         for row in snapshot["sessions"]
         if (include_children or row["kind"] != "child")
+        and (include_system or row["kind"] != "system")
         and (not providers or row["identity"]["provider"] in providers)
     ]
 
@@ -49,7 +50,7 @@ def select(snapshot, reference):
     key = identity_key(reference)
     rows = [
         row
-        for row in ordered_rows(snapshot, include_children=True)
+        for row in ordered_rows(snapshot, include_children=True, include_system=True)
         if identity_key(row["identity"]) == key
     ]
     if len(rows) != 1:

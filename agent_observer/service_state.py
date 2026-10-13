@@ -36,7 +36,7 @@ class ServiceState(ObservationEngine):
         self.expire(now)
         snapshot = self.snapshot if (include_snapshot if include_snapshot is not None else kind in {"view", "resync", "status"}) else None
         return validate_frame({
-            "serviceProtocol": 3, "serviceId": self.service_id, "bootId": self.boot_id,
+            "serviceProtocol": 4, "serviceId": self.service_id, "bootId": self.boot_id,
             "uid": self.uid, "hostScope": self.host_scope, "sequence": sequence,
             "viewRevision": self.revision, "kind": kind,
             "state": "ready" if self.snapshot is not None else "warming",

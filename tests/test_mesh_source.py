@@ -25,7 +25,7 @@ from agent_observer.service_public import ContractError, canonical, validate_fra
 def native_frame():
     from agent_observer.public import store_namespace
 
-    frame = json.loads(Path(__file__).with_name("fixtures").joinpath("service-v3/view.json").read_text())
+    frame = json.loads(Path(__file__).with_name("fixtures").joinpath("service-v4/view.json").read_text())
     delta = boottime_ms() - 100 - frame["emittedBoottimeMs"]
     frame.update(uid=os.geteuid(), bootId=Path("/proc/sys/kernel/random/boot_id").read_text().strip(),
                  clockDomain=os.readlink("/proc/self/ns/time"), sequence=1,
@@ -181,7 +181,7 @@ class SourceAcquisitionTest(unittest.IsolatedAsyncioTestCase):
     async def test_checked_snapshot_requests_status_and_owns_each_socket(self):
         frame = await self.source.snapshot()
         self.assertEqual(frame["snapshot"], self.frame["snapshot"])
-        self.assertEqual(self.requests, [{"serviceProtocol": 3, "operation": "status", "hostScope": "fixture"}])
+        self.assertEqual(self.requests, [{"serviceProtocol": 4, "operation": "status", "hostScope": "fixture"}])
         self.assertEqual(self.source._active, 0)
 
     async def test_same_view_queued_before_status_still_supplies_watch_baseline(self):

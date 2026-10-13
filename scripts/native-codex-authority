@@ -151,7 +151,7 @@ def main():
             stream = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             stream.settimeout(5)
             stream.connect(str(path))
-            stream.sendall((json.dumps({"serviceProtocol": 3, "operation": "watch", "hostScope": proof.host}) + "\n").encode())
+            stream.sendall((json.dumps({"serviceProtocol": 4, "operation": "watch", "hostScope": proof.host}) + "\n").encode())
             pending = bytearray()
             push_frames = 0
             sequence = 0

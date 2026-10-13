@@ -7,6 +7,12 @@ no TUI/tmux attachment or provider action.
 
 ## Current status
 
+The [system classification candidate](docs/api-v4.md) supplies API 4 / wire 6 /
+Service 4 through explicit Mesh Agent v3. It preserves known internal helpers
+and hides them from ordinary rosters, with `--include-system` diagnostics.
+Exact artifact and both-host adoption gates are separate from this source change.
+
+
 [Observer `0.6.0a2`](artifacts/observer-0.6.0a2.json) supplies
 [API 3 / snapshot-watch 5 / Service 3](docs/api-v3.md), including native latest-turn
 and thread-update timing. Snap and Starship select it for collection, read CLI
