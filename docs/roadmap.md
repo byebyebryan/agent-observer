@@ -1,44 +1,33 @@
 # Agent Observer roadmap
 
-Retirement checkpoint, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
-removes native Claude support. [a18 evidence](evidence/2026-10-11-claude-retirement/REPORT.md)
-accepts Codex-only source, immutable artifacts, direct/cached native comparisons
-and scoped collector/read delivery on Snap and Starship. API 2/read 4/Service 2/
-Mesh SDK 1 are unchanged. Existing a16/a10 bridges and the historical writer
-remain independently selected. Native Claude sessions/settings remain external.
+Current producer checkpoint, 2026-10-13: Codex-only
+[Observer a2](../artifacts/observer-0.6.0a2.json) supplies API 3/read 5/Service 3
+and is selected with Mesh a16/profile v2 on Snap and Starship. Native turn/update
+metadata preserves activity/order and original independently expiring receipts.
+The [execution ledger](native-timing-execution.md) and
+[operational receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md) cover
+local/native, installed IPC/SSH, two-host fleet and coordinated rollback gates.
+SDK 1 and Read/Delivery 1 remain unchanged. Tmux's a7/profile v1 factory and the
+historical writer retain independent ownership. Claude native use stays external
+following retirement; the old a18/a20/Mesh a15 tuple remains a rollback artifact.
 
-The following [publisher ownership checkpoint](mesh-publisher-operator-handoff.md)
-selects a20/Mesh a15 readers and Agent-owned publication on both hosts, with
-shared lazy Agent/Tmux factories, complete fleet pull/push, native comparisons,
-bounded resources and scoped rollback. Collection stays a18. The
-[execution receipt](evidence/2026-10-11-mesh-publisher/REPORT.md) supersedes the
-old retained-reference bridge selection above.
+The [read-client handoff](api-v3-client-handoff.md) is ready for downstream work.
+Remaining work has separate scope:
 
-Next work remains separately scoped:
+- RLCD/349 roster, feed, clock presentation and physical rendering acceptance.
+- Further validation/copy-cost optimization under a separate fixed-trace study;
+  existing fleet-watcher cost is not solved by adding native timing.
+- Continuously advancing remote age policy, if needed beyond source-sampled age;
+  no exact blocked/current-phase clock is promised.
+- Native occurrence events/notification enrichment, if a concrete client needs it.
+- Optional Mesh transport/WSS adoption with its own capacity/credential gates.
+- Physical-suspend and post-TUI-closure proof for the accepted Codex limits.
+- A new provider only after runtime/identity/activity/capability review.
+- Source push/release/hosted CI when explicitly requested as a separate delivery.
 
-- Native turn/update timing through the [post-Mesh execution plan](post-mesh-timing-plan.md), preserving activity and independent evidence leases.
-- Read CLI and RLCD/349 consumer implementation; timing remains a proposed successor until its producer/profile gates pass.
-- Further validation/copy-cost optimization only as a separate fixed-trace investigation; Mesh's private a21 candidate is not promoted.
-- Native occurrence events/notification enrichment, if a concrete client requires them.
-- Optional Mesh transport upgrades, including WSS, in a separate coordinated pass.
-- Agent Plus and actions/attachment are parked; the proposed temporary native-manager desktop entry is retired.
-- Focused proof for accepted Codex edges, including physical suspend and TUI closure.
-- A new provider only after its runtime/identity/activity/capability investigation.
-
-Mesh's completed performance decision retains released a15/SDK 1 and IPC/SSH
-with ordinary roles preserved and trial cleanup accepted. No Mesh upgrade or
-WSS adoption blocks independent timing work. Its current strict Agent native
-profile still binds wire 4: new fields require a separately reviewed successor
-profile, rather than an unversioned schema extension or automatic selection.
-
-The following [operational cleanup](operational-cleanup-plan.md) completes current
-guidance, two-host native revalidation, collector/subscriber cost attribution,
-reviewed source publication, hosted main/tag CI and the exact a18 prerelease with
-fresh downloaded-byte verification. Its
-[report](evidence/2026-10-11-ops-cleanup/REPORT.md) separates those receipts from
-the retirement checkpoint. Mixed Observer/Mesh read validation remains the
-next performance issue: raw fleet watches use roughly 8–10% of one core per
-reader plus bridge cost; collector baselines are below 2% in this pass.
+Agent Plus and attachment/actions remain parked; its temporary native-manager
+entry is retired. Private a21 allocation work is not merged/promoted. Producer
+acceptance does not imply a frontend or device gate.
 
 ## Historical execution checkpoints
 

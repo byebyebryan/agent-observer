@@ -1,0 +1,130 @@
+{
+  "status": "passed",
+  "host": "snap",
+  "exports": [
+    {
+      "argv": [
+        "api"
+      ],
+      "bytes": 154,
+      "sha256": "965cd26680c83dc54a94d0266b52802efbe86175884c335b2232f94d4762616e",
+      "descriptor": {
+        "apiVersion": 3,
+        "hostLocal": true,
+        "nativeEventReplay": false,
+        "readCommands": [
+          "snapshot",
+          "list",
+          "show",
+          "watch",
+          "schema"
+        ],
+        "schemas": {
+          "snapshot": 5,
+          "watch": 5
+        }
+      }
+    },
+    {
+      "argv": [
+        "service",
+        "api"
+      ],
+      "bytes": 284,
+      "sha256": "f171687b47bcda8d92f3388cfec8a7a6672b83fb58db6b6449275ed671fd98d7",
+      "descriptor": {
+        "durableReplay": false,
+        "embeddedSnapshotVersion": 5,
+        "hostLocal": true,
+        "limits": {
+          "envelopeBytes": 16384,
+          "frameBytes": 8404992,
+          "requestBytes": 16384
+        },
+        "nativeEventReplay": false,
+        "observationApiVersion": 3,
+        "operations": [
+          "status",
+          "snapshot",
+          "watch"
+        ],
+        "serviceProtocol": 3,
+        "stability": "prerelease"
+      }
+    },
+    {
+      "argv": [
+        "mesh",
+        "api"
+      ],
+      "bytes": 242,
+      "sha256": "0e7bef1f9c951d34ef6bff1a0b56615f84bad2367f2a4096f542bce1df2b38dc",
+      "descriptor": {
+        "access": "cached",
+        "meshProtocol": 1,
+        "nativeEventReplay": false,
+        "operations": [
+          "snapshot",
+          "list",
+          "watch",
+          "assess"
+        ],
+        "profile": "agent-observer.mesh-candidate.v2",
+        "readOnly": true,
+        "requires": [
+          "configured_reader",
+          "ReadGuard"
+        ],
+        "routeReporting": false
+      }
+    },
+    {
+      "argv": [
+        "schema",
+        "--kind",
+        "snapshot"
+      ],
+      "bytes": 14023,
+      "sha256": "800f25dae369da8edd9862245f9591dd57c81f6fbd5dad50de21b4808bd37761",
+      "descriptor": null
+    },
+    {
+      "argv": [
+        "schema",
+        "--kind",
+        "watch"
+      ],
+      "bytes": 14658,
+      "sha256": "590189900db9840ac1f00367090e96b4087b35ad37e4cc107e2caf2469ff207b",
+      "descriptor": null
+    },
+    {
+      "argv": [
+        "service",
+        "schema",
+        "--kind",
+        "request"
+      ],
+      "bytes": 407,
+      "sha256": "88b6c47c4dad5709366ac72f4680405a983818eba9e24ddbe6b671a9ef44970e",
+      "descriptor": null
+    },
+    {
+      "argv": [
+        "service",
+        "schema",
+        "--kind",
+        "frame"
+      ],
+      "bytes": 16655,
+      "sha256": "fae3cdccd263a8fb31ad8636bdfa3f0accfb4c75f0ba9cd806eaeaf2f7f8cdaa",
+      "descriptor": null
+    }
+  ],
+  "humanColumns": [
+    "ACTIVITY_AGE",
+    "NATIVE_TURN",
+    "THREAD_UPDATE_AGE"
+  ],
+  "ordinaryProviderActions": 0
+}

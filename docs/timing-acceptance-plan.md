@@ -11,6 +11,12 @@ or select private a21, implement local timing before successor Agent profile
 adoption, and keep Agent Plus/attachment parked. Native/profile/operational
 gates below remain separate and no timing version is implemented by this update.
 
+The subsequent [execution ledger](native-timing-execution.md) and
+[rollout receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md) now accept
+API 3/wire 5/Service 3, explicit Agent profile v2 over SDK 1, exact native proof,
+managed selection and producer handoff. The proposal/offline language below
+records the plan's earlier state; consumer/device work remains separate.
+
 ## Completed offline scope
 
 The [offline report](evidence/2026-10-12-timing-design/REPORT.md) binds a standalone
@@ -43,7 +49,7 @@ Earlier ordinary/native clock receipts keep their independent topology bounds.
 | C3 — immutable native proof | Build clean exact bytes; independent installed public CLI vs native ordinary/owned sessions on Snap and Starship | Identity/phase/turn/update/activity comparisons, held working/blocked/terminal/missing/race/gap/recovery; sanitized bounded receipts |
 | C4 — Mesh acceptance | Owner adoption of separately accepted successor Agent profile/descriptor with original leases and clock handling | Mixed-host pull/push/proof/resync/restart/stale/partial/sibling failure and cleanup; Tmux unchanged; no automatic old-wire converter |
 | C5 — resources/operations | Compare exact accepted baseline/successor, frame growth and sustained cached consumers; scoped selector/unit/publisher change and rollback | Attribution, ordinary native/state preservation, exact selected bytes and managed rollback/reselection |
-| C6 — consumer handoff | Export accepted schemas/examples/commands and supported clock semantics | RLCD/349 independently accept roster/clock/age policy, feed loss and physical rendering; attachment/actions stay external |
+| C6 — consumer handoff | Export accepted schemas/examples/commands and supported clock semantics | Producer schemas/commands/clock-policy handoff delivered; RLCD/349 independently accept roster/clock/age policy, feed loss and physical rendering as separate consumer gates; attachment/actions stay external |
 
 The proposal anticipates API 3, snapshot/watch 5 and Service 3; C0 decides their
 actual required scope. Mesh's generic SDK can remain 1 when signatures and

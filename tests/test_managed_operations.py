@@ -2,8 +2,11 @@
 
 import importlib.machinery
 import importlib.util
+import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,6 +14,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ManagedOperationsTests(unittest.TestCase):
+    def test_scoped_render_ignores_unrelated_global_template_dependencies(self):
+        loader = importlib.machinery.SourceFileLoader(
+            "scoped_observer_operations", str(ROOT / "scripts/agent-observer-operations"))
+        spec = importlib.util.spec_from_loader(loader.name, loader)
+        module = importlib.util.module_from_spec(spec)
+        loader.exec_module(module)
+        fixture = ROOT / "tests/fixtures/managed-operations"
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "source"
+            shutil.copytree(fixture / "source", source)
+            (source / ".chezmoiignore").write_text(
+                '{{ includeTemplate "unrelated-desktop-profile.tmpl" . }}\n')
+            module.ROOT = source
+            selection = json.loads((fixture / "selection.json").read_text())
+            values = module.rendered(Path.home(), selection)
+            self.assertEqual(set(values), set(module.PAIRS.values()))
+            self.assertTrue(all(value["value"] for value in values.values()))
+
     def test_owned_process_restore_guards(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / "scripts/agent-observer-operations"), "--self-test"],

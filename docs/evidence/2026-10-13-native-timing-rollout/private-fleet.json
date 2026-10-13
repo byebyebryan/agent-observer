@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "scope": "installed candidate shared launcher, two-host private Agent service and ordinary cached Tmux source",
+  "domains": [
+    {
+      "domain": "agent",
+      "profile": "agent-observer.mesh-candidate.v2",
+      "snapshotRows": 481,
+      "watchRows": 481,
+      "hosts": [
+        {
+          "host": "snap",
+          "proof": false,
+          "delivery": "ready"
+        },
+        {
+          "host": "starship",
+          "proof": true,
+          "delivery": "ready"
+        }
+      ],
+      "expiryDisconnectCleanup": "passed"
+    },
+    {
+      "domain": "tmux",
+      "profile": "tmux-observer.mesh-candidate.v1",
+      "snapshotRows": 2,
+      "watchRows": 2,
+      "hosts": [
+        {
+          "host": "snap",
+          "proof": false,
+          "delivery": "ready"
+        },
+        {
+          "host": "starship",
+          "proof": true,
+          "delivery": "ready"
+        }
+      ],
+      "expiryDisconnectCleanup": "passed"
+    }
+  ],
+  "normalSelectionsChanged": false,
+  "harnessSha256": "641f6e2ea902c7615c1cc736e6fd7f108a55543a8aeb6a338828ce5947179521"
+}

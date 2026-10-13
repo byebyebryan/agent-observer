@@ -1,8 +1,11 @@
 # Observation API 3 / wire 5 / Service 3
 
-The `0.6.0a1` source candidate adds native timing to the passive provider-neutral
-read interface. Operational selections remain a18 collection and a20/Mesh a15
-until the [execution gates](native-timing-execution.md) accept exact replacements.
+The `0.6.0a2` artifact adds native timing to the passive provider-neutral
+read interface. Snap and Starship select its collector/read/publisher tuple with
+Mesh a16 and the explicit Agent v2 profile. The
+[execution gates](native-timing-execution.md) and
+[read-client handoff](api-v3-client-handoff.md) separate producer acceptance from
+downstream device/UI work.
 API 3 is a breaking prerelease extension, with no old-wire conversion. The
 independent historical writer and Tmux profile are unaffected.
 
@@ -93,6 +96,8 @@ valid. Exact blocked/current-phase age remains unavailable; the first extension
 contains no observed-phase series. Clients independently accept age labels,
 ordering, feeds and physical rendering.
 
-Mesh's wire-4 profile cannot admit this extension. A separately reviewed Agent
-profile and exact package gate follow local/native acceptance; SDK 1 and IPC/SSH
-remain the intended networking boundary. See the [timing matrix](timing-acceptance-plan.md).
+Mesh's frozen wire-4 Agent profile cannot admit this extension. The separately
+reviewed `agent-observer.mesh-candidate.v2` profile in Mesh a16 binds native wire 5
+and Service 3. SDK 1 and IPC/SSH remain the networking boundary; Tmux's v1 profile
+is unchanged. See the [timing matrix](timing-acceptance-plan.md) and
+[Mesh/operational proof](evidence/2026-10-13-native-timing-rollout/REPORT.md).

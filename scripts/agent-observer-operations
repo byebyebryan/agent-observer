@@ -149,7 +149,9 @@ def node(path):
 def projection(value):
     with tempfile.TemporaryDirectory(prefix="observer-managed-selection-") as directory:
         source = Path(directory)
-        for name in (*PAIRS, ".chezmoidata/machines.yaml", ".chezmoiignore"):
+        # This projection contains only the scoped targets. Global ignore rules
+        # can import unrelated desktop templates and are not part of this gate.
+        for name in (*PAIRS, ".chezmoidata/machines.yaml"):
             target = source / name
             target.parent.mkdir(parents=True, exist_ok=True)
             # Template permissions are part of chezmoi's target metadata. A

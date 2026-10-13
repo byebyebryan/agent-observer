@@ -1,5 +1,10 @@
 # Optional Mesh state read client
 
+Historical API 2 / wire 4 / Service 2 checkpoint. Current read-client work uses the
+[API 3 handoff](api-v3-client-handoff.md); current role/profile adoption is recorded
+in the [native timing receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md).
+The commands/artifacts below retain their original version bounds.
+
 The current managed selection uses Codex-only Agent `0.5.0a20` readers and owned
 Agent publication with Mesh `0.1.0a15` and the explicit Observer-owned profile.
 The a18 collector, Tmux factory and historical writer remain independent.

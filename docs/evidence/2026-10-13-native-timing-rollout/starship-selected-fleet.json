@@ -1,0 +1,178 @@
+{
+  "status": "passed",
+  "cliVersion": "0.6.0a2",
+  "ownerModule": "/home/bryan/.local/share/agent-observer/0.6.0a2-b22d2b5795a9b3dd-mesh-a16-timing/lib/python3.14/site-packages/agent_observer/mesh_profile.py",
+  "snapshotRows": 481,
+  "watchRows": 481,
+  "hosts": [
+    {
+      "host": "starship",
+      "local": true,
+      "delivery": "ready",
+      "proofRequired": false,
+      "proofPresent": false,
+      "rows": 384,
+      "running": 4,
+      "receipts": [
+        {
+          "sourceId": "codex:sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "component": "runtime",
+          "accepted": 5,
+          "health": "current",
+          "remainingMs": 41035,
+          "expiresAtMs": 2572374
+        },
+        {
+          "sourceId": "codex:sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "component": "history",
+          "accepted": 1,
+          "health": "current",
+          "remainingMs": 119410,
+          "expiresAtMs": 2650749
+        }
+      ]
+    },
+    {
+      "host": "snap",
+      "local": false,
+      "delivery": "ready",
+      "proofRequired": true,
+      "proofPresent": true,
+      "rows": 97,
+      "running": 4,
+      "receipts": [
+        {
+          "sourceId": "codex:sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "component": "runtime",
+          "accepted": 4,
+          "health": "current",
+          "remainingMs": 60756,
+          "expiresAtMs": 2591620
+        },
+        {
+          "sourceId": "codex:sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "component": "history",
+          "accepted": 1,
+          "health": "current",
+          "remainingMs": 299854,
+          "expiresAtMs": 2830718
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "kind": "view",
+      "status": "pending",
+      "delivery": {
+        "starship": "connecting",
+        "snap": "connecting"
+      }
+    },
+    {
+      "kind": "view",
+      "status": "partial",
+      "delivery": {
+        "starship": "connecting",
+        "snap": "ready"
+      }
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "delivery": {
+        "starship": "ready",
+        "snap": "ready"
+      }
+    }
+  ],
+  "runtime": {
+    "format": "mesh-plus.reader-metrics.v1",
+    "domain": "agent",
+    "byteScope": "completed-json-lines",
+    "activeConnections": 0,
+    "partial": false,
+    "connectionAttempts": 4,
+    "connectionsOpened": 4,
+    "connectionsClosed": 4,
+    "connectionFailures": 0,
+    "rotations": 0,
+    "cleanupFailures": 0,
+    "peakConnections": 2,
+    "catalogChecks": 1,
+    "catalogCheckMs": 48,
+    "instrumentedConnections": 4,
+    "uninstrumentedConnections": 0,
+    "receivedFrames": 12,
+    "sentFrames": 18,
+    "receivedBytes": 2560664,
+    "sentBytes": 4674,
+    "operations": {
+      "snapshotRequests": 2,
+      "proofRequests": 3,
+      "snapshotResultBytes": 1351016,
+      "proofResultBytes": 354696,
+      "otherResultBytes": 0,
+      "requestTimeouts": 0,
+      "requestCancellations": 1,
+      "rotationRejections": 0,
+      "unprocessedResultBytes": 0
+    },
+    "byKind": {
+      "received": {
+        "hello": {
+          "frames": 4,
+          "bytes": 1644
+        },
+        "result": {
+          "frames": 4,
+          "bytes": 1705712
+        },
+        "subscribed": {
+          "frames": 2,
+          "bytes": 644
+        },
+        "data": {
+          "frames": 2,
+          "bytes": 852664
+        }
+      },
+      "sent": {
+        "hello": {
+          "frames": 4,
+          "bytes": 1480
+        },
+        "request": {
+          "frames": 5,
+          "bytes": 1332
+        },
+        "close": {
+          "frames": 4,
+          "bytes": 644
+        },
+        "subscribe": {
+          "frames": 2,
+          "bytes": 550
+        },
+        "credit": {
+          "frames": 2,
+          "bytes": 460
+        },
+        "cancel": {
+          "frames": 1,
+          "bytes": 208
+        }
+      }
+    },
+    "peakClientBufferedBytes": 675591,
+    "peakClientBufferedControlBytes": 0,
+    "peakSubscriptionQueueFrames": 1,
+    "peakRetainedHandles": 3
+  },
+  "retainedAuthority": false,
+  "limits": [
+    "one complete cached fleet sample",
+    "native comparison separate",
+    "no actions or route writes"
+  ]
+}

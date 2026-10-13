@@ -8,14 +8,18 @@
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
   Native refresh hints do not grant runtime evidence or alert/action authority.
-- `docs/mesh-publisher-operator-handoff.md` records the accepted a20/Mesh a15
-  read/publisher selection on Snap and Starship. Collection stays a18 and the
-  historical writer stays independent. The optional networking component owns
-  cached Service 2 acquisition and the lazy Agent factory; core/local service
-  remain Mesh-free. Mesh owns generic copied envelopes/proofs/delivery. Preserve
-  the shared launcher's independently selected lazy Agent and Tmux factories;
-  changes require both domain cached/proof/watch and scoped rollback gates.
-  The execution receipt is `docs/evidence/2026-10-11-mesh-publisher/REPORT.md`.
+- `docs/api-v3-client-handoff.md` and
+  `docs/evidence/2026-10-13-native-timing-rollout/REPORT.md` record the accepted
+  a2/Mesh a16 collector/read/publisher selection on Snap and Starship: API 3,
+  snapshot/watch 5, Service 3 and explicit Agent profile v2 through SDK 1.
+  The historical writer remains independent; a18 collection/a20 reads/Mesh a15
+  are retained as a coordinated rollback tuple. The optional network component
+  owns cached Service 3 acquisition and the lazy Agent factory; core/local
+  service stay Mesh-free. Mesh owns copied envelopes/proofs/delivery. Preserve
+  Tmux's independently selected a7/profile v1 factory, owner and controls.
+  Shared-launcher changes require both domain cached/proof/watch and paired
+  collector/read/publisher rollback gates. Native timing does not provide exact
+  phase entry or a receiving-device clock bridge.
 - `docs/claude-retirement-plan.md` records the accepted a18 Claude retirement:
   Codex is the only implemented native provider, selected on Snap and Starship.
   Preserve provider-neutral core/read/Mesh interfaces;
@@ -55,7 +59,7 @@
   Routine upgrades preserving required contracts do not require release
   registration; changed contract semantics, topologies or new capabilities need
   focused independent proof. Existing pilot evidence retains its historical
-  exact-artifact bounds. The API 2/schema-v4 command remains a prerelease contract.
+  exact-artifact bounds. The API 3/schema-v5/Service 3 command remains a prerelease contract.
 - Continue preflight and spike work on Snap in `~/code/agent-observer` and
   independently validate Codex on Starship. Claude native use is external after
   retirement. Starship

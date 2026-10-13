@@ -1,5 +1,10 @@
 # API 2 client handoff
 
+Historical API 2 / wire 4 / Service 2 checkpoint. Current read-client work uses the
+[API 3 handoff](api-v3-client-handoff.md); current role/profile adoption is recorded
+in the [native timing receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md).
+The commands/artifacts below retain their original version bounds.
+
 Updated 2026-10-12. [Observer a18](evidence/2026-10-11-claude-retirement/REPORT.md)
 remains the independently selected Codex-only collector on Snap and Starship.
 [a20/Mesh a15](mesh-publisher-operator-handoff.md) selects the reader and owned

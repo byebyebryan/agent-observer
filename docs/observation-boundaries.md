@@ -1,8 +1,9 @@
 # Observation ownership and contract boundaries
 
-Current implementation, 2026-10-11: [Claude retirement](claude-retirement-plan.md)
-leaves Codex as the only native adapter. API 2/read 4/Service 2/Mesh SDK 1 and
-shared-core invariants remain unchanged. The dedicated Claude adapter, history/
+Current implementation, 2026-10-13: [Claude retirement](claude-retirement-plan.md)
+leaves Codex as the only native adapter. API 3/read 5/Service 3 and explicit
+Agent Mesh profile v2 extend native timing; SDK 1 and shared-core ownership
+invariants remain unchanged. The dedicated Claude adapter, history/
 SDK, hints, registration/job parsing and service metadata memo are removed.
 Supplied reserved provider data and generic multi-source tests remain pure.
 
@@ -12,8 +13,9 @@ The source audit below records the pre-extraction baseline. The
 [completion loop](codex-observation-completion-plan.md) now accepts source
 extraction/enforcement, installed/native proof and the separate read/service
 operational gate. This ownership document alone does not accept new API fields,
-event guarantees or adapters. [API 2](api-v2.md), read wire 4 and
-service protocol 2 remain the accepted prerelease read contracts.
+event guarantees or adapters. The later [API 3](api-v3.md), read wire 5 and
+Service 3 are the accepted prerelease read contracts; the
+[client handoff](api-v3-client-handoff.md) describes their receipt/clock extension.
 
 ## Component ownership
 
