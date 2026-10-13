@@ -1,0 +1,204 @@
+{
+  "kind": "offline-native-metadata-replay-and-synthetic-timing-spike",
+  "inputSha256": "903ffe4cf4ab23a13f964a486066bf0a1fdee72d23d67e309c25a44a62105bdb",
+  "scriptSha256": "47313f23cf5d171ad729b2104034404e2c705685b3fa3f999a3529cb64836f3b",
+  "providerReads": 0,
+  "providerActions": 0,
+  "publicContractChanged": false,
+  "semantics": "observed_phase_streak_not_exact_or_lower_bound_phase_age",
+  "replayClock": "sample_wall_time_offsets_for_deterministic_replay_only",
+  "rows": [
+    {
+      "label": "empty_idle",
+      "phase": "waiting",
+      "turnId": null,
+      "nativeStartedAt": null,
+      "nativeUpdatedAt": 1791842903,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 0,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "working_generation_held",
+      "phase": "working",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842903,
+      "nativeTurnElapsedMs": 1569,
+      "firstObservedOffsetMs": 1258,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "working_generation_held_again",
+      "phase": "working",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842903,
+      "nativeTurnElapsedMs": 2773,
+      "firstObservedOffsetMs": 1258,
+      "observationSpanMs": 1204
+    },
+    {
+      "label": "completed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842905,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 2516,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "quiet_read_after_completion",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842905,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 2516,
+      "observationSpanMs": 1207
+    },
+    {
+      "label": "renamed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842905,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 2516,
+      "observationSpanMs": 1216
+    },
+    {
+      "label": "metadata_patch_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842905,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 2516,
+      "observationSpanMs": 2424
+    },
+    {
+      "label": "resumed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "nativeStartedAt": 1791842903,
+      "nativeUpdatedAt": 1791842905,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 2516,
+      "observationSpanMs": 3643
+    },
+    {
+      "label": "approval_turn_working",
+      "phase": "working",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "nativeStartedAt": 1791842909,
+      "nativeUpdatedAt": 1791842909,
+      "nativeTurnElapsedMs": 1734,
+      "firstObservedOffsetMs": 7423,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "approval_blocked",
+      "phase": "blocked",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "nativeStartedAt": 1791842909,
+      "nativeUpdatedAt": 1791842910,
+      "nativeTurnElapsedMs": 2990,
+      "firstObservedOffsetMs": 8679,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "approval_blocked_again",
+      "phase": "blocked",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "nativeStartedAt": 1791842909,
+      "nativeUpdatedAt": 1791842910,
+      "nativeTurnElapsedMs": 4199,
+      "firstObservedOffsetMs": 8679,
+      "observationSpanMs": 1209
+    },
+    {
+      "label": "approval_answered_working",
+      "phase": "working",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "nativeStartedAt": 1791842909,
+      "nativeUpdatedAt": 1791842910,
+      "nativeTurnElapsedMs": 4508,
+      "firstObservedOffsetMs": 10197,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "approval_turn_completed",
+      "phase": "waiting",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "nativeStartedAt": 1791842909,
+      "nativeUpdatedAt": 1791842915,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 12014,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "question_turn_working",
+      "phase": "working",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "nativeStartedAt": 1791842915,
+      "nativeUpdatedAt": 1791842915,
+      "nativeTurnElapsedMs": 1591,
+      "firstObservedOffsetMs": 13280,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "question_blocked",
+      "phase": "blocked",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "nativeStartedAt": 1791842915,
+      "nativeUpdatedAt": 1791842916,
+      "nativeTurnElapsedMs": 2849,
+      "firstObservedOffsetMs": 14538,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "question_blocked_again",
+      "phase": "blocked",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "nativeStartedAt": 1791842915,
+      "nativeUpdatedAt": 1791842916,
+      "nativeTurnElapsedMs": 4058,
+      "firstObservedOffsetMs": 14538,
+      "observationSpanMs": 1209
+    },
+    {
+      "label": "question_turn_completed",
+      "phase": "waiting",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "nativeStartedAt": 1791842915,
+      "nativeUpdatedAt": 1791842919,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 15803,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "interrupt_turn_working",
+      "phase": "working",
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "nativeStartedAt": 1791842919,
+      "nativeUpdatedAt": 1791842919,
+      "nativeTurnElapsedMs": 1373,
+      "firstObservedOffsetMs": 17062,
+      "observationSpanMs": 0
+    },
+    {
+      "label": "interrupted_waiting",
+      "phase": "waiting",
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "nativeStartedAt": 1791842919,
+      "nativeUpdatedAt": 1791842920,
+      "nativeTurnElapsedMs": null,
+      "firstObservedOffsetMs": 17119,
+      "observationSpanMs": 0
+    }
+  ],
+  "tests": 13,
+  "passed": true
+}

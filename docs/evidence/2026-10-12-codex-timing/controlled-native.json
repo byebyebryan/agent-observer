@@ -1,0 +1,475 @@
+{
+  "kind": "controlled-native-app-server-local-model-stub",
+  "realModelRequests": 0,
+  "ordinaryProviderActions": 0,
+  "binarySha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+  "samples": [
+    {
+      "label": "empty_idle",
+      "sampledAtMs": 1791842903311,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842903,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": null,
+      "turnStatus": null,
+      "startedAt": null,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "working_generation_held",
+      "sampledAtMs": 1791842904569,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842903,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842903,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "working_generation_held_again",
+      "sampledAtMs": 1791842905773,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842903,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842903,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "completed_waiting",
+      "sampledAtMs": 1791842905827,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842905,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "completed",
+      "startedAt": 1791842903,
+      "completedAt": 1791842905,
+      "durationMs": 2466
+    },
+    {
+      "label": "quiet_read_after_completion",
+      "sampledAtMs": 1791842907034,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842905,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "completed",
+      "startedAt": 1791842903,
+      "completedAt": 1791842905,
+      "durationMs": 2466
+    },
+    {
+      "label": "renamed_waiting",
+      "sampledAtMs": 1791842907043,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842905,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "completed",
+      "startedAt": 1791842903,
+      "completedAt": 1791842905,
+      "durationMs": 2466
+    },
+    {
+      "label": "metadata_patch_waiting",
+      "sampledAtMs": 1791842908251,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842905,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "completed",
+      "startedAt": 1791842903,
+      "completedAt": 1791842905,
+      "durationMs": 2466
+    },
+    {
+      "label": "resumed_waiting",
+      "sampledAtMs": 1791842909470,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842905,
+      "recencyAt": 1791842903,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "turnStatus": "completed",
+      "startedAt": 1791842903,
+      "completedAt": 1791842905,
+      "durationMs": 2466
+    },
+    {
+      "label": "approval_turn_working",
+      "sampledAtMs": 1791842910734,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842909,
+      "recencyAt": 1791842909,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842909,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "approval_blocked",
+      "sampledAtMs": 1791842911990,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnApproval"
+        ]
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842910,
+      "recencyAt": 1791842909,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842909,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "approval_blocked_again",
+      "sampledAtMs": 1791842913199,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnApproval"
+        ]
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842910,
+      "recencyAt": 1791842909,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842909,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "approval_answered_working",
+      "sampledAtMs": 1791842913508,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842910,
+      "recencyAt": 1791842909,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842909,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "approval_turn_completed",
+      "sampledAtMs": 1791842915325,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842915,
+      "recencyAt": 1791842909,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "turnStatus": "completed",
+      "startedAt": 1791842909,
+      "completedAt": 1791842915,
+      "durationMs": 5806
+    },
+    {
+      "label": "question_turn_working",
+      "sampledAtMs": 1791842916591,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842915,
+      "recencyAt": 1791842915,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842915,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "question_blocked",
+      "sampledAtMs": 1791842917849,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnUserInput"
+        ]
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842916,
+      "recencyAt": 1791842915,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842915,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "question_blocked_again",
+      "sampledAtMs": 1791842919058,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnUserInput"
+        ]
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842916,
+      "recencyAt": 1791842915,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842915,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "question_turn_completed",
+      "sampledAtMs": 1791842919114,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842919,
+      "recencyAt": 1791842915,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "turnStatus": "completed",
+      "startedAt": 1791842915,
+      "completedAt": 1791842919,
+      "durationMs": 3769
+    },
+    {
+      "label": "interrupt_turn_working",
+      "sampledAtMs": 1791842920373,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842919,
+      "recencyAt": 1791842919,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "turnStatus": "inProgress",
+      "startedAt": 1791842919,
+      "completedAt": null,
+      "durationMs": null
+    },
+    {
+      "label": "interrupted_waiting",
+      "sampledAtMs": 1791842920430,
+      "status": {
+        "type": "idle"
+      },
+      "createdAt": 1791842903,
+      "updatedAt": 1791842920,
+      "recencyAt": 1791842919,
+      "sectionPresent": false,
+      "sectionEnteredAt": null,
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "turnStatus": "interrupted",
+      "startedAt": 1791842919,
+      "completedAt": 1791842920,
+      "durationMs": 1260
+    }
+  ],
+  "passed": true,
+  "threadId": "01a13228-e508-7610-a535-679de3c7150c",
+  "ownedServerRetired": true,
+  "localModelRequests": 6,
+  "statusNotifications": [
+    {
+      "method": "thread/status/changed",
+      "at": 1791842903321,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842905780,
+      "status": {
+        "type": "idle"
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842909477,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842910760,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnApproval"
+        ]
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842913200,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842915282,
+      "status": {
+        "type": "idle"
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842915334,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842916599,
+      "status": {
+        "type": "active",
+        "activeFlags": [
+          "waitingOnUserInput"
+        ]
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842919059,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842919101,
+      "status": {
+        "type": "idle"
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842919122,
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    },
+    {
+      "method": "thread/status/changed",
+      "at": 1791842920378,
+      "status": {
+        "type": "idle"
+      },
+      "turnStatus": null,
+      "hasNativeTimestamp": false
+    }
+  ]
+}

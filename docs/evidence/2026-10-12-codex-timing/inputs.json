@@ -1,0 +1,51 @@
+{
+  "nativeBinarySha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+  "provenanceOnly": true,
+  "schemaSha256": "d8b6934897c959f589fdf33be4f750a81f46f075df77bedcaaa92e15ad80a2b1",
+  "nativeClockProperties": {
+    "createdAt": {
+      "description": "Unix timestamp (in seconds) when the thread was created.",
+      "format": "int64",
+      "type": "integer"
+    },
+    "updatedAt": {
+      "description": "Unix timestamp (in seconds) when the thread was last updated.",
+      "format": "int64",
+      "type": "integer"
+    },
+    "recencyAt": {
+      "description": "Unix timestamp (in seconds) used for thread recency ordering.",
+      "format": "int64",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "sectionEnteredAt": {
+      "default": null,
+      "description": "Unix timestamp in seconds when the thread entered its current section.",
+      "format": "int64",
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  },
+  "sectionMeaning": "An independently persisted, user-visible thread section.",
+  "statusNotificationProperties": [
+    "status",
+    "threadId"
+  ],
+  "oldWireRejectsNewClock": true,
+  "oldWireRejectionReason": "invalid_contract_fields",
+  "harnessHashes": {
+    "native_probe.py": "b29e0d3768f7679f059306a43143417b90b72e207ef181121ba175d1cc0486e9",
+    "metadata_probe.py": "7f058373a19120927bbea2784304fbc3063c7d6996ef9b08815886d432c3ddef",
+    "ordinary_probe.py": "920c5af82fa8d29b42173740fd5e5d72a16531d53e2e10deed1d1bdc43c02ef7"
+  },
+  "earlierAttempts": [
+    "first native run omitted recency/section fields; second run expanded coverage",
+    "first section call used the wrong RPC prefix; corrected from generated ClientRequest schema"
+  ],
+  "temporaryStudy": "/tmp/observer-codex-timing-20261012-8q315wm5"
+}

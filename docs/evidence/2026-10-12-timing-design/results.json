@@ -1,0 +1,642 @@
+{
+  "kind": "observer-only-offline-timing-design",
+  "providerReads": 0,
+  "providerActions": 0,
+  "productionImports": false,
+  "nativeQueriesReplayed": false,
+  "clockMode": "fixture-wall-offsets-and-synthetic-monotonic-inputs-no-live-clock-proof",
+  "sha256": {
+    "timing_model.py": "add8a9e650448b3eabeb8f8a62886e92630dffa5275e79ac8e2384f4984338a8",
+    "test_timing_model.py": "287686dd3b642dec7a5193dbf4788e3923e3552360a21dd21d69ee3e4889f8dd",
+    "run-offline.py": "ac62219dbd9667682510e429caae1a836b5816a58703f2f1170978ba132f3ecd",
+    "controlled-native.json": "903ffe4cf4ab23a13f964a486066bf0a1fdee72d23d67e309c25a44a62105bdb"
+  },
+  "acceptance": {
+    "tests": 54,
+    "passed": true,
+    "cases": [
+      "test_timing_model.AdmissionCases.test_boolean_timer_now_is_not_a_monotonic_timestamp",
+      "test_timing_model.AdmissionCases.test_duplicate_rows_invalid_scope_and_boolean_clocks_are_rejected",
+      "test_timing_model.AdmissionCases.test_future_receipt_and_unknown_source_are_rejected",
+      "test_timing_model.AdmissionCases.test_owned_context_count_and_row_admission_are_bounded",
+      "test_timing_model.CapturedReplay.test_captured_native_approval_cycle_keeps_turn_start_and_resets_observed_phase",
+      "test_timing_model.NativeClockCases.test_blocked_and_working_share_native_turn_age",
+      "test_timing_model.NativeClockCases.test_cross_session_clock_context_and_observer_are_not_joined",
+      "test_timing_model.NativeClockCases.test_display_ticks_use_monotonic_elapsed_not_new_local_wall_time",
+      "test_timing_model.NativeClockCases.test_duplicate_receipt_components_are_not_two_independent_sources",
+      "test_timing_model.NativeClockCases.test_expiring_new_in_progress_cannot_restore_old_completion",
+      "test_timing_model.NativeClockCases.test_failed_new_metadata_does_not_restore_older_current_history",
+      "test_timing_model.NativeClockCases.test_idle_in_progress_and_working_terminal_samples_do_not_form_timer",
+      "test_timing_model.NativeClockCases.test_invalid_native_timing_inputs_do_not_mutate_phase_tracker",
+      "test_timing_model.NativeClockCases.test_known_empty_latest_turn_supersedes_old_history",
+      "test_timing_model.NativeClockCases.test_latest_receipt_owns_metadata_lease_in_either_component",
+      "test_timing_model.NativeClockCases.test_metadata_and_runtime_expire_independently",
+      "test_timing_model.NativeClockCases.test_missing_new_turn_start_never_fills_from_old_turn",
+      "test_timing_model.NativeClockCases.test_native_future_clock_is_not_rewritten_or_clamped",
+      "test_timing_model.NativeClockCases.test_native_turn_identity_disagreement_suppresses_derived_timer",
+      "test_timing_model.NativeClockCases.test_new_start_after_status_observation_suppresses_derived_timer",
+      "test_timing_model.NativeClockCases.test_observation_order_not_largest_event_timestamp_selects_latest",
+      "test_timing_model.NativeClockCases.test_provider_without_native_turn_id_can_supply_explicit_boundaries",
+      "test_timing_model.NativeClockCases.test_resumed_waiting_history_is_not_idle_entry_time",
+      "test_timing_model.NativeClockCases.test_same_time_conflicting_turns_are_ambiguous",
+      "test_timing_model.NativeClockCases.test_same_time_same_turn_uses_the_earlier_lease",
+      "test_timing_model.NativeClockCases.test_terminal_duration_can_be_finer_than_seconds_boundaries",
+      "test_timing_model.NativeClockCases.test_unproved_unsaved_clock_does_not_erase_phase",
+      "test_timing_model.PhaseCases.test_arrival_after_expiry_cannot_create_current_phase_time",
+      "test_timing_model.PhaseCases.test_capacity_is_bounded_and_does_not_evict_existing_current_series",
+      "test_timing_model.PhaseCases.test_changed_phase_resets_series",
+      "test_timing_model.PhaseCases.test_clock_regression_is_terminal_until_a_new_owner",
+      "test_timing_model.PhaseCases.test_collection_finishing_after_its_lease_is_not_current",
+      "test_timing_model.PhaseCases.test_complete_omission_does_not_assert_parked",
+      "test_timing_model.PhaseCases.test_equal_sample_order_is_explicitly_ambiguous",
+      "test_timing_model.PhaseCases.test_expired_capacity_and_anti_replay_use_source_watermarks",
+      "test_timing_model.PhaseCases.test_failure_and_recovery_never_bridge_the_gap",
+      "test_timing_model.PhaseCases.test_generation_change_rejects_late_old_context",
+      "test_timing_model.PhaseCases.test_hidden_same_turn_cycle_disproves_lower_bound_age",
+      "test_timing_model.PhaseCases.test_identity_uses_host_provider_store_and_id_kind",
+      "test_timing_model.PhaseCases.test_known_to_missing_turn_identity_starts_new_observation_series",
+      "test_timing_model.PhaseCases.test_late_success_cannot_undo_a_newer_failure",
+      "test_timing_model.PhaseCases.test_metadata_only_new_turn_cannot_start_a_phase_anchor",
+      "test_timing_model.PhaseCases.test_metadata_only_refresh_cannot_renew_phase_lease",
+      "test_timing_model.PhaseCases.test_missing_partial_row_breaks_only_its_series",
+      "test_timing_model.PhaseCases.test_missing_to_known_turn_identity_is_not_backdated",
+      "test_timing_model.PhaseCases.test_new_generation_must_be_registered_by_the_owner",
+      "test_timing_model.PhaseCases.test_old_observer_and_wrong_clock_domain_are_rejected",
+      "test_timing_model.PhaseCases.test_read_duration_consumes_the_original_lease",
+      "test_timing_model.PhaseCases.test_reader_arrival_reconnect_and_output_mutation_do_not_reset_producer",
+      "test_timing_model.PhaseCases.test_repeats_and_reader_ticks_preserve_first_observation",
+      "test_timing_model.PhaseCases.test_restart_recovers_turn_start_but_observed_phase_starts_now",
+      "test_timing_model.PhaseCases.test_same_phase_new_turn_resets_series",
+      "test_timing_model.PhaseCases.test_unknown_phase_and_parked_break_the_observed_series",
+      "test_timing_model.PhaseCases.test_wall_clock_jump_does_not_rewrite_observed_anchor"
+    ],
+    "failedCases": []
+  },
+  "mutations": [
+    {
+      "variant": "repeated_reads_reset_phase_anchor",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.PhaseCases.test_capacity_is_bounded_and_does_not_evict_existing_current_series",
+        "test_timing_model.PhaseCases.test_hidden_same_turn_cycle_disproves_lower_bound_age",
+        "test_timing_model.PhaseCases.test_missing_partial_row_breaks_only_its_series",
+        "test_timing_model.PhaseCases.test_reader_arrival_reconnect_and_output_mutation_do_not_reset_producer",
+        "test_timing_model.PhaseCases.test_repeats_and_reader_ticks_preserve_first_observation",
+        "test_timing_model.PhaseCases.test_wall_clock_jump_does_not_rewrite_observed_anchor"
+      ]
+    },
+    {
+      "variant": "expiry_keeps_current_phase",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.PhaseCases.test_metadata_only_refresh_cannot_renew_phase_lease",
+        "test_timing_model.PhaseCases.test_read_duration_consumes_the_original_lease"
+      ]
+    },
+    {
+      "variant": "new_turn_id_does_not_reset_series",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.PhaseCases.test_known_to_missing_turn_identity_starts_new_observation_series",
+        "test_timing_model.PhaseCases.test_metadata_only_new_turn_cannot_start_a_phase_anchor",
+        "test_timing_model.PhaseCases.test_missing_to_known_turn_identity_is_not_backdated",
+        "test_timing_model.PhaseCases.test_same_phase_new_turn_resets_series"
+      ]
+    },
+    {
+      "variant": "expired_latest_promotes_old_completion",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.NativeClockCases.test_expiring_new_in_progress_cannot_restore_old_completion",
+        "test_timing_model.NativeClockCases.test_same_time_same_turn_uses_the_earlier_lease"
+      ]
+    },
+    {
+      "variant": "equal_time_selects_longer_lease",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.NativeClockCases.test_same_time_same_turn_uses_the_earlier_lease"
+      ]
+    },
+    {
+      "variant": "different_turn_ids_form_timer",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.NativeClockCases.test_native_turn_identity_disagreement_suppresses_derived_timer"
+      ]
+    },
+    {
+      "variant": "late_success_undoes_newer_failure",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.PhaseCases.test_expired_capacity_and_anti_replay_use_source_watermarks",
+        "test_timing_model.PhaseCases.test_late_success_cannot_undo_a_newer_failure"
+      ]
+    },
+    {
+      "variant": "native_epoch_delta_is_clamped",
+      "detected": true,
+      "failedCases": [
+        "test_timing_model.NativeClockCases.test_native_future_clock_is_not_rewritten_or_clamped"
+      ]
+    }
+  ],
+  "nativeReplay": [
+    {
+      "label": "empty_idle",
+      "phase": "waiting",
+      "turnId": null,
+      "startedAt": null,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842903000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 1,
+        "phase": "waiting",
+        "turnId": null,
+        "firstObservedAt": 1791842903311,
+        "observedSpanMs": 0,
+        "expiresMs": 60000
+      }
+    },
+    {
+      "label": "working_generation_held",
+      "phase": "working",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842903000,
+      "turnTimer": {
+        "ageMs": 1569,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 2,
+        "phase": "working",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842904569,
+        "observedSpanMs": 0,
+        "expiresMs": 61258
+      }
+    },
+    {
+      "label": "working_generation_held_again",
+      "phase": "working",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842903000,
+      "turnTimer": {
+        "ageMs": 2773,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 2,
+        "phase": "working",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842904569,
+        "observedSpanMs": 1204,
+        "expiresMs": 62462
+      }
+    },
+    {
+      "label": "completed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": 1791842905000,
+      "nativeDurationMs": 2466,
+      "nativeUpdatedAt": 1791842905000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 3,
+        "phase": "waiting",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842905827,
+        "observedSpanMs": 0,
+        "expiresMs": 62516
+      }
+    },
+    {
+      "label": "quiet_read_after_completion",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": 1791842905000,
+      "nativeDurationMs": 2466,
+      "nativeUpdatedAt": 1791842905000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 3,
+        "phase": "waiting",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842905827,
+        "observedSpanMs": 1207,
+        "expiresMs": 63723
+      }
+    },
+    {
+      "label": "renamed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": 1791842905000,
+      "nativeDurationMs": 2466,
+      "nativeUpdatedAt": 1791842905000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 3,
+        "phase": "waiting",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842905827,
+        "observedSpanMs": 1216,
+        "expiresMs": 63732
+      }
+    },
+    {
+      "label": "metadata_patch_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": 1791842905000,
+      "nativeDurationMs": 2466,
+      "nativeUpdatedAt": 1791842905000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 3,
+        "phase": "waiting",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842905827,
+        "observedSpanMs": 2424,
+        "expiresMs": 64940
+      }
+    },
+    {
+      "label": "resumed_waiting",
+      "phase": "waiting",
+      "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+      "startedAt": 1791842903000,
+      "completedAt": 1791842905000,
+      "nativeDurationMs": 2466,
+      "nativeUpdatedAt": 1791842905000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 3,
+        "phase": "waiting",
+        "turnId": "01a13228-e510-7cb1-ac40-af21820fe56b",
+        "firstObservedAt": 1791842905827,
+        "observedSpanMs": 3643,
+        "expiresMs": 66159
+      }
+    },
+    {
+      "label": "approval_turn_working",
+      "phase": "working",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "startedAt": 1791842909000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842909000,
+      "turnTimer": {
+        "ageMs": 1734,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 4,
+        "phase": "working",
+        "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+        "firstObservedAt": 1791842910734,
+        "observedSpanMs": 0,
+        "expiresMs": 67423
+      }
+    },
+    {
+      "label": "approval_blocked",
+      "phase": "blocked",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "startedAt": 1791842909000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842910000,
+      "turnTimer": {
+        "ageMs": 2990,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 5,
+        "phase": "blocked",
+        "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+        "firstObservedAt": 1791842911990,
+        "observedSpanMs": 0,
+        "expiresMs": 68679
+      }
+    },
+    {
+      "label": "approval_blocked_again",
+      "phase": "blocked",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "startedAt": 1791842909000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842910000,
+      "turnTimer": {
+        "ageMs": 4199,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 5,
+        "phase": "blocked",
+        "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+        "firstObservedAt": 1791842911990,
+        "observedSpanMs": 1209,
+        "expiresMs": 69888
+      }
+    },
+    {
+      "label": "approval_answered_working",
+      "phase": "working",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "startedAt": 1791842909000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842910000,
+      "turnTimer": {
+        "ageMs": 4508,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 6,
+        "phase": "working",
+        "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+        "firstObservedAt": 1791842913508,
+        "observedSpanMs": 0,
+        "expiresMs": 70197
+      }
+    },
+    {
+      "label": "approval_turn_completed",
+      "phase": "waiting",
+      "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+      "startedAt": 1791842909000,
+      "completedAt": 1791842915000,
+      "nativeDurationMs": 5806,
+      "nativeUpdatedAt": 1791842915000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 7,
+        "phase": "waiting",
+        "turnId": "01a13228-fd1f-7233-8667-72452b072643",
+        "firstObservedAt": 1791842915325,
+        "observedSpanMs": 0,
+        "expiresMs": 72014
+      }
+    },
+    {
+      "label": "question_turn_working",
+      "phase": "working",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "startedAt": 1791842915000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842915000,
+      "turnTimer": {
+        "ageMs": 1591,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 8,
+        "phase": "working",
+        "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+        "firstObservedAt": 1791842916591,
+        "observedSpanMs": 0,
+        "expiresMs": 73280
+      }
+    },
+    {
+      "label": "question_blocked",
+      "phase": "blocked",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "startedAt": 1791842915000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842916000,
+      "turnTimer": {
+        "ageMs": 2849,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 9,
+        "phase": "blocked",
+        "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+        "firstObservedAt": 1791842917849,
+        "observedSpanMs": 0,
+        "expiresMs": 74538
+      }
+    },
+    {
+      "label": "question_blocked_again",
+      "phase": "blocked",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "startedAt": 1791842915000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842916000,
+      "turnTimer": {
+        "ageMs": 4058,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 9,
+        "phase": "blocked",
+        "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+        "firstObservedAt": 1791842917849,
+        "observedSpanMs": 1209,
+        "expiresMs": 75747
+      }
+    },
+    {
+      "label": "question_turn_completed",
+      "phase": "waiting",
+      "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+      "startedAt": 1791842915000,
+      "completedAt": 1791842919000,
+      "nativeDurationMs": 3769,
+      "nativeUpdatedAt": 1791842919000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 10,
+        "phase": "waiting",
+        "turnId": "01a13229-13fe-76f3-975f-49564c412259",
+        "firstObservedAt": 1791842919114,
+        "observedSpanMs": 0,
+        "expiresMs": 75803
+      }
+    },
+    {
+      "label": "interrupt_turn_working",
+      "phase": "working",
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "startedAt": 1791842919000,
+      "completedAt": null,
+      "nativeDurationMs": null,
+      "nativeUpdatedAt": 1791842919000,
+      "turnTimer": {
+        "ageMs": 1373,
+        "precisionMs": 1000,
+        "basis": "native_turn_start",
+        "association": "compatible_non_atomic_samples"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 11,
+        "phase": "working",
+        "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+        "firstObservedAt": 1791842920373,
+        "observedSpanMs": 0,
+        "expiresMs": 77062
+      }
+    },
+    {
+      "label": "interrupted_waiting",
+      "phase": "waiting",
+      "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+      "startedAt": 1791842919000,
+      "completedAt": 1791842920000,
+      "nativeDurationMs": 1260,
+      "nativeUpdatedAt": 1791842920000,
+      "turnTimer": {
+        "ageMs": null,
+        "reason": "samples_incompatible_or_unavailable"
+      },
+      "observedSeries": {
+        "basis": "observed_series",
+        "observerId": "offline-replay",
+        "clockDomain": "fixture-wall-offsets",
+        "generation": 0,
+        "series": 12,
+        "phase": "waiting",
+        "turnId": "01a13229-22cb-7c33-b92d-0a71fe3ac60e",
+        "firstObservedAt": 1791842920430,
+        "observedSpanMs": 0,
+        "expiresMs": 77119
+      }
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,1186 @@
+{
+  "kind": "ordinary-managed-daemon-passive-sample",
+  "host": "starship",
+  "provider": {
+    "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+    "provider": "codex",
+    "version": "0.162.1",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  },
+  "ordinaryProviderActions": 0,
+  "referenceImportsObserver": false,
+  "providerConfigUnchanged": true,
+  "daemonIncarnationUnchanged": true,
+  "samples": [
+    {
+      "round": 1,
+      "sampledAtMs": 1791842904645,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 8775,
+      "rows": [
+        {
+          "threadId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1789493902,
+          "updatedAt": 1791842890,
+          "recencyAt": 1791841794,
+          "startedAt": 1791841794,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841794000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791513629,
+          "updatedAt": 1791842863,
+          "recencyAt": 1791842099,
+          "startedAt": 1791842099,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842099000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1250d-e6b5-7b61-bd85-35015dd30db7",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791623030,
+          "updatedAt": 1791842891,
+          "recencyAt": 1791841486,
+          "startedAt": 1791841486,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841486000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12999-db1f-70c1-921d-ae7d850fb638",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842903,
+          "updatedAt": 1791842903,
+          "recencyAt": 1791842903,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12999-e868-7802-aeb7-0f2492d21095",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842903,
+          "updatedAt": 1791842903,
+          "recencyAt": 1791842903,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-edb5-74b1-a37a-8e53e05a5aad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842904,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791842904,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-fe28-7d02-881e-80bbd843e77d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842904,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791842904,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12f29-7ccc-7f02-a8f2-4b489fc80525",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791792610,
+          "updatedAt": 1791842898,
+          "recencyAt": 1791842224,
+          "startedAt": 1791842224,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842224000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1315e-9c3f-7543-b265-9ca9a4b053d9",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842904,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791842904,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a1316d-0c2b-7610-abcf-22a649e9e202",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791830592,
+          "updatedAt": 1791842582,
+          "recencyAt": 1791842532,
+          "startedAt": 1791842532,
+          "completedAt": 1791842582,
+          "durationMs": 50381,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842582000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ef1-071a-7570-90d0-596b22a7edf2",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791788910,
+          "updatedAt": 1791793028,
+          "recencyAt": 1791790320,
+          "startedAt": 1791790320,
+          "completedAt": 1791793028,
+          "durationMs": 2707997,
+          "turnStatus": "interrupted",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793028000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12eae-2046-7283-9f39-e3429c684081",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791784525,
+          "updatedAt": 1791788215,
+          "recencyAt": 1791787518,
+          "startedAt": 1791787518,
+          "completedAt": 1791788215,
+          "durationMs": 696995,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791788215000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a129da-2471-7ff1-8bb3-a658dd2bccb5",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791703524,
+          "updatedAt": 1791787222,
+          "recencyAt": 1791787178,
+          "startedAt": 1791787178,
+          "completedAt": 1791787222,
+          "durationMs": 44251,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791787222000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "sampledAtMs": 1791842906882,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 8775,
+      "rows": [
+        {
+          "threadId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1789493902,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791841794,
+          "startedAt": 1791841794,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841794000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791513629,
+          "updatedAt": 1791842863,
+          "recencyAt": 1791842099,
+          "startedAt": 1791842099,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842099000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1250d-e6b5-7b61-bd85-35015dd30db7",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791623030,
+          "updatedAt": 1791842891,
+          "recencyAt": 1791841486,
+          "startedAt": 1791841486,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841486000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12999-db1f-70c1-921d-ae7d850fb638",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842906,
+          "updatedAt": 1791842906,
+          "recencyAt": 1791842906,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12999-e868-7802-aeb7-0f2492d21095",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842906,
+          "updatedAt": 1791842906,
+          "recencyAt": 1791842906,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-edb5-74b1-a37a-8e53e05a5aad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842906,
+          "updatedAt": 1791842906,
+          "recencyAt": 1791842906,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-fe28-7d02-881e-80bbd843e77d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842906,
+          "updatedAt": 1791842906,
+          "recencyAt": 1791842906,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12f29-7ccc-7f02-a8f2-4b489fc80525",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791792610,
+          "updatedAt": 1791842898,
+          "recencyAt": 1791842224,
+          "startedAt": 1791842224,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842224000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1315e-9c3f-7543-b265-9ca9a4b053d9",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842906,
+          "updatedAt": 1791842906,
+          "recencyAt": 1791842906,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a1316d-0c2b-7610-abcf-22a649e9e202",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791830592,
+          "updatedAt": 1791842582,
+          "recencyAt": 1791842532,
+          "startedAt": 1791842532,
+          "completedAt": 1791842582,
+          "durationMs": 50381,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842582000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ef1-071a-7570-90d0-596b22a7edf2",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791788910,
+          "updatedAt": 1791793028,
+          "recencyAt": 1791790320,
+          "startedAt": 1791790320,
+          "completedAt": 1791793028,
+          "durationMs": 2707997,
+          "turnStatus": "interrupted",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793028000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12eae-2046-7283-9f39-e3429c684081",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791784525,
+          "updatedAt": 1791788215,
+          "recencyAt": 1791787518,
+          "startedAt": 1791787518,
+          "completedAt": 1791788215,
+          "durationMs": 696995,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791788215000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a129da-2471-7ff1-8bb3-a658dd2bccb5",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791703524,
+          "updatedAt": 1791787222,
+          "recencyAt": 1791787178,
+          "startedAt": 1791787178,
+          "completedAt": 1791787222,
+          "durationMs": 44251,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791787222000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "sampledAtMs": 1791842909110,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 8775,
+      "rows": [
+        {
+          "threadId": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1789493902,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791841794,
+          "startedAt": 1791841794,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841794000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a11e88-946a-7b33-afbb-d4b729c9616d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791513629,
+          "updatedAt": 1791842863,
+          "recencyAt": 1791842099,
+          "startedAt": 1791842099,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842099000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1250d-e6b5-7b61-bd85-35015dd30db7",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791623030,
+          "updatedAt": 1791842891,
+          "recencyAt": 1791841486,
+          "startedAt": 1791841486,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841486000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12999-db1f-70c1-921d-ae7d850fb638",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842908,
+          "updatedAt": 1791842908,
+          "recencyAt": 1791842908,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12999-e868-7802-aeb7-0f2492d21095",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842908,
+          "updatedAt": 1791842908,
+          "recencyAt": 1791842908,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-edb5-74b1-a37a-8e53e05a5aad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842908,
+          "updatedAt": 1791842908,
+          "recencyAt": 1791842908,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12e5d-fe28-7d02-881e-80bbd843e77d",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842908,
+          "updatedAt": 1791842908,
+          "recencyAt": 1791842908,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a12f29-7ccc-7f02-a8f2-4b489fc80525",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791792610,
+          "updatedAt": 1791842898,
+          "recencyAt": 1791842224,
+          "startedAt": 1791842224,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791842224000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1315e-9c3f-7543-b265-9ca9a4b053d9",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842908,
+          "updatedAt": 1791842908,
+          "recencyAt": 1791842908,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": null,
+          "turnLimit": "native_turn_metadata_unavailable",
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": null,
+              "health": "unavailable",
+              "reason": "native_read_failed",
+              "source": null
+            },
+            "kind": "child",
+            "hasSavedHistory": false
+          }
+        },
+        {
+          "threadId": "01a1316d-0c2b-7610-abcf-22a649e9e202",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791830592,
+          "updatedAt": 1791842582,
+          "recencyAt": 1791842532,
+          "startedAt": 1791842532,
+          "completedAt": 1791842582,
+          "durationMs": 50381,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842582000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ef1-071a-7570-90d0-596b22a7edf2",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791788910,
+          "updatedAt": 1791793028,
+          "recencyAt": 1791790320,
+          "startedAt": 1791790320,
+          "completedAt": 1791793028,
+          "durationMs": 2707997,
+          "turnStatus": "interrupted",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793028000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12eae-2046-7283-9f39-e3429c684081",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791784525,
+          "updatedAt": 1791788215,
+          "recencyAt": 1791787518,
+          "startedAt": 1791787518,
+          "completedAt": 1791788215,
+          "durationMs": 696995,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791788215000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a129da-2471-7ff1-8bb3-a658dd2bccb5",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791703524,
+          "updatedAt": 1791787222,
+          "recencyAt": 1791787178,
+          "startedAt": 1791787178,
+          "completedAt": 1791787222,
+          "durationMs": 44251,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791787222000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    }
+  ]
+}
