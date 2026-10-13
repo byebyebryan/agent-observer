@@ -1,4 +1,4 @@
-"""API 2 observation wire 4; bounded pure validation without action imports."""
+"""API 3 observation wire 5; bounded pure validation without action imports."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 MAX_BYTES = 8 * 1024 * 1024
 MAX_SNAPSHOT_BYTES = MAX_BYTES - 1024
 MAX_NODES = 2_000_000
@@ -98,6 +98,28 @@ ACTIVITY = obj(
     reason=text(128, pattern=CODE),
 )
 ACTIVITY["properties"]["lastKnownAt"] = TIME
+PRECISION = {"type": ["integer", "null"], "minimum": 1, "maximum": 4_000_000_000_000}
+TIMING_RECEIPT = {"anyOf": [obj(
+    component=choice("runtime", "history"), sampledBoottimeMs=INTEGER,
+    observedBoottimeMs=INTEGER, contextGeneration=INTEGER,
+), {"type": "null"}]}
+TURN = obj(
+    id=text(512, nullable=True),
+    status=choice("in_progress", "completed", "failed", "cancelled", "unknown"),
+    startedAt=TIME, completedAt=TIME, durationMs=TIME, timestampPrecisionMs=PRECISION,
+)
+LATEST_TURN = obj(
+    value={"anyOf": [TURN, {"type": "null"}]}, observedAt=TIME,
+    source=text(128, pattern=CODE, nullable=True), health=HEALTH,
+    reason=text(128, pattern=CODE), receipt=TIMING_RECEIPT,
+)
+LATEST_TURN["properties"]["lastKnownValue"] = TURN
+LAST_UPDATED = obj(
+    at=TIME, timestampPrecisionMs=PRECISION, observedAt=TIME,
+    source=text(128, pattern=CODE, nullable=True), health=HEALTH,
+    reason=text(128, pattern=CODE), receipt=TIMING_RECEIPT,
+)
+LAST_UPDATED["properties"].update(lastKnownAt=TIME, lastKnownTimestampPrecisionMs=PRECISION)
 RUNTIME_INFO = obj(
     version=text(64),
     binarySha256=text(64, pattern=r"^[0-9a-f]{64}$"),
@@ -152,6 +174,7 @@ SOURCE = obj(
         blockedReasons=array(choice("approval", "question"), 2),
         runtime=array(choice("running", "parked"), 2),
         activity=BOOL,
+        timing=obj(lastUpdated=BOOL, latestTurn=BOOL),
     ),
     errors=array(text(128, pattern=CODE), 128),
     limitations=array(text(128, pattern=CODE), 128),
@@ -174,6 +197,8 @@ SESSION = obj(
     blockedReasons=array(choice("approval", "question"), 2),
     createdAt=TIME,
     activity=ACTIVITY,
+    lastUpdated=LAST_UPDATED,
+    latestTurn=LATEST_TURN,
     workspace=WORKSPACE,
     metadataIssues=array(text(128, pattern=CODE), 128),
 )
@@ -363,6 +388,40 @@ def validate_snapshot(value):
             or row["activity"]["source"] is None
         ):
             raise ContractError("invalid_last_known_activity")
+        for name in ("lastUpdated", "latestTurn"):
+            record = row[name]
+            key = "at" if name == "lastUpdated" else "value"
+            known = "lastKnownAt" if name == "lastUpdated" else "lastKnownValue"
+            if record["health"] == "current" and (record["source"] is None or record["observedAt"] is None):
+                raise ContractError("missing_timing_provenance")
+            if record["health"] == "current" and not sources[identity["provider"], identity["namespace"]]["capabilities"]["timing"][name]:
+                raise ContractError("timing_capability_missing")
+            if record["health"] != "current" and record[key] is not None:
+                raise ContractError("invalid_current_timing")
+            if known in record and (record["health"] != "stale" or record[key] is not None
+                                    or record[known] is None or record["source"] is None or record["observedAt"] is None):
+                raise ContractError("invalid_last_known_timing")
+            if name == "lastUpdated":
+                if (record["at"] is None) != (record["timestampPrecisionMs"] is None):
+                    raise ContractError("timing_precision_conflict")
+                if ("lastKnownAt" in record) != ("lastKnownTimestampPrecisionMs" in record) or (
+                    "lastKnownAt" in record and record["lastKnownTimestampPrecisionMs"] is None
+                ):
+                    raise ContractError("timing_precision_conflict")
+            else:
+                for turn in (record["value"], record.get("lastKnownValue")):
+                    if turn is None:
+                        continue
+                    start, end = turn["startedAt"], turn["completedAt"]
+                    if (start is not None and end is not None and end < start
+                            or (start is None and end is None) != (turn["timestampPrecisionMs"] is None)
+                            or turn["id"] == ""
+                            or turn["status"] == "in_progress" and (end is not None or turn["durationMs"] is not None)):
+                        raise ContractError("invalid_turn_timing")
+            receipt = record["receipt"]
+            if receipt is not None and (record["observedAt"] is None
+                                       or receipt["observedBoottimeMs"] < receipt["sampledBoottimeMs"]):
+                raise ContractError("invalid_timing_receipt")
         phase = row["phase"]
         if (row["runtime"]["value"] == "parked") != (phase is None):
             raise ContractError("parked_phase_conflict")

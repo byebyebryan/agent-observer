@@ -130,8 +130,14 @@ class CodexAuthorityTest(unittest.TestCase):
         with Running(state=state) as server:
             for sample, expected in ((healthy, "parked"), (partial, "unknown"), (healthy, "parked")):
                 state.attempt("codex", "history")
-                state.accept("codex", "history", sample, sampled_ms=state.clock(), ttl_ms=60000)
-                request = {"serviceProtocol": 2, "hostScope": state.host_scope}
+                sampled = state.clock()
+                for row in sample["sessions"]:
+                    for name in ("lastUpdated", "latestTurn"):
+                        if row[name]["health"] == "current":
+                            row[name]["receipt"] = {"component": "history", "sampledBoottimeMs": sampled,
+                                                    "observedBoottimeMs": sampled, "contextGeneration": 0}
+                state.accept("codex", "history", sample, sampled_ms=sampled, ttl_ms=60000)
+                request = {"serviceProtocol": 3, "hostScope": state.host_scope}
                 frames = []
                 for operation in ("snapshot", "watch"):
                     with server.connect((canonical({**request, "operation": operation}) + "\n").encode()) as peer:
@@ -220,7 +226,7 @@ class CodexAuthorityTest(unittest.TestCase):
         self.assertFalse(discovery["historyClocks"])
 
     def test_read_contract_excludes_actions_and_old_wire(self):
-        self.assertEqual(interface()["schemas"], {"snapshot": 4, "watch": 4})
+        self.assertEqual(interface()["schemas"], {"snapshot": 5, "watch": 5})
         self.assertNotIn("writeCommands", interface())
         old = (Path(__file__).parent / "fixtures/contract-v3/snapshot.json").read_bytes()
         with self.assertRaises(ContractError):

@@ -1,4 +1,4 @@
-"""Prerelease local service protocol 2; pure, bounded and provider independent."""
+"""Prerelease local service protocol 3; pure, bounded and provider independent."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .contract import (
     validate_snapshot,
 )
 
-SERVICE_PROTOCOL = 2
+SERVICE_PROTOCOL = 3
 MAX_REQUEST_BYTES = 16 * 1024
 MAX_OVERHEAD_BYTES = 16 * 1024
 MAX_FRAME_BYTES = MAX_BYTES + MAX_OVERHEAD_BYTES
@@ -81,7 +81,7 @@ _FRAME_META["properties"]["snapshot"] = {"type": ["object", "null"]}
 def interface():
     return {
         "serviceProtocol": SERVICE_PROTOCOL, "stability": "prerelease",
-        "observationApiVersion": 2, "embeddedSnapshotVersion": 4,
+        "observationApiVersion": 3, "embeddedSnapshotVersion": 5,
         "hostLocal": True, "operations": list(OPERATIONS),
         "nativeEventReplay": False, "durableReplay": False,
         "limits": {"requestBytes": MAX_REQUEST_BYTES, "frameBytes": MAX_FRAME_BYTES,
@@ -173,6 +173,23 @@ def validate_frame(value, *, expected_host=None, expected_uid=None):
                 raise ContractError("service_workspace_without_lease")
             if (row["activity"]["health"] == "current" or row["outcome"]["value"] != "unknown") and not any(c["health"] in {"current", "partial"} for c in components.values()):
                 raise ContractError("service_metadata_without_lease")
+            source = sources[row["identity"]["provider"]]
+            for name in ("lastUpdated", "latestTurn"):
+                record = row[name]
+                binding = record["receipt"]
+                if binding is not None and (binding["observedBoottimeMs"] > value["emittedBoottimeMs"]
+                                            or binding["contextGeneration"] > source["contextGeneration"]):
+                    raise ContractError("service_timing_clock")
+                if record["health"] != "current":
+                    continue
+                if binding is None:
+                    raise ContractError("service_timing_without_receipt")
+                owner = components[binding["component"]]
+                if (binding["sampledBoottimeMs"] != owner["sampledBoottimeMs"]
+                        or binding["contextGeneration"] != source["contextGeneration"]
+                        or owner["health"] not in {"current", "partial"}
+                        or binding["observedBoottimeMs"] >= owner["expiresBoottimeMs"]):
+                    raise ContractError("service_timing_without_lease")
     if len(canonical({**value, "snapshot": None}).encode()) + 1 > MAX_OVERHEAD_BYTES:
         raise ContractError("service_overhead_limit")
     if len(canonical(value).encode()) + 1 > MAX_FRAME_BYTES:

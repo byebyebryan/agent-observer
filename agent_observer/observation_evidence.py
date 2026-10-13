@@ -3,6 +3,7 @@
 import copy
 
 from .contract import MAX_SESSIONS, MAX_SNAPSHOT_BYTES, canonical, identity_key
+from .timing import stale as stale_timing
 
 
 class RuntimeOnlyRetention:
@@ -43,6 +44,8 @@ def stale_row(row, *, runtime=False, metadata=False, reason="service_source_expi
                     fact["lastKnownValue"] = fact["value"]
                 fact.update(value="unknown", health="stale", reason=reason)
     if metadata:
+        for name in ("lastUpdated", "latestTurn"):
+            row[name] = stale_timing(row[name], name, metadata_reason)
         activity = row["activity"]
         if activity["source"] is not None:
             if activity["at"] is not None:

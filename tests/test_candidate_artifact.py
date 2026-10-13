@@ -13,6 +13,18 @@ HELPER = runpy.run_path(str(ROOT / "scripts/candidate-artifact"))
 
 
 class CandidateArtifactTest(unittest.TestCase):
+    def test_timing_manifest_keeps_independent_writer_and_requires_new_tuple(self):
+        manifest = HELPER["document"](ROOT / "artifacts/observer-0.5.0a20.json")
+        manifest.update(manifestVersion=4, apiVersion=3, schemas={"snapshot": 5, "watch": 5},
+                        service={"protocol": 3, "schemas": {"request": 3, "frame": 3}})
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "manifest.json"
+            path.write_text(json.dumps(manifest))
+            self.assertEqual(HELPER["document"](path)["write"], {"schema": 2})
+            manifest["apiVersion"] = 2
+            path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, "manifest_invalid"):
+                HELPER["document"](path)
     def test_service_manifest_is_a_separate_versioned_extension(self):
         manifest = HELPER["document"](ROOT / "artifacts/observer-0.3.0a2.json")
         manifest.update(manifestVersion=2, entrypoints=["agent-observer", "agent-observer-write", "agent-observer-service"], service={"protocol": 1, "schemas": {"request": 1, "frame": 1}})

@@ -29,11 +29,13 @@ def main():
 
     request_limit = MAX_CONFIG_BYTES + 16384
     request = decode_document(sys.stdin.buffer.read(request_limit + 1), max_bytes=request_limit)
-    keys = {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig"}
+    keys = {"hostScope", "provider", "component", "configHome", "configHomeKind", "timeoutMs", "workspaceConfig", "sampledBoottimeMs"}
     if not keys <= set(request) or set(request) - keys - {"imageMemoFd"}:
         raise ValueError("service_worker_request")
     if type(request["timeoutMs"]) is not int or not 1000 <= request["timeoutMs"] <= 30000:
         raise ValueError("service_worker_timeout")
+    if type(request["sampledBoottimeMs"]) is not int or request["sampledBoottimeMs"] < 0:
+        raise ValueError("service_worker_clock")
     if os.getpgrp() != os.getpid() or os.getsid(0) != os.getpid():
         raise ValueError("service_worker_ownership")
     signal.setitimer(signal.ITIMER_REAL, request["timeoutMs"] / 1000)
@@ -70,7 +72,8 @@ def main():
         native = adapter.collect(home, host_scope=request["hostScope"],
                                  include_history=component == "history", image_cache=memo,
                                  owned_worker_group=True)
-        value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native])
+        value = compose_snapshot(host_scope=request["hostScope"], provider_snapshots=[native],
+                                 timing_origin={"component": component, "sampledBoottimeMs": request["sampledBoottimeMs"]})
         if component == "history":
             enrich(value, request["workspaceConfig"])
         if channel is not None:

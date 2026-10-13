@@ -29,7 +29,7 @@ def run(cli, args, value=None, accepted=True):
 def check(prefix, fixtures):
     cli, writer = prefix / "bin/agent-observer", prefix / "bin/agent-observer-write"
     interface = run(cli, ["api"])
-    if interface["apiVersion"] != 2 or interface["schemas"] != {"snapshot": 4, "watch": 4}:
+    if interface["apiVersion"] != 3 or interface["schemas"] != {"snapshot": 5, "watch": 5}:
         raise ValueError("interface_mismatch")
     validators = {}
     for kind in ("snapshot", "watch"):
@@ -43,7 +43,7 @@ def check(prefix, fixtures):
         value = json.loads((fixtures / "write-v2" / (kind + ".json")).read_text())
         validators["write-" + kind].validate(value)
     counts = {}
-    for path in sorted((fixtures / "contract-v4").glob("*.json")):
+    for path in sorted((fixtures / "contract-v5").glob("*.json")):
         value = json.loads(path.read_text())
         if path.stem == "gap":
             validators["watch"].validate(value)
@@ -67,7 +67,7 @@ def check(prefix, fixtures):
             if run(cli, ["show", "--input", "-", "--ref", json.dumps(row["identity"]), "--json"], value) != row:
                 raise ValueError("exact_reference_mismatch")
         counts[path.stem] = len(value["sessions"])
-    original = json.loads((fixtures / "contract-v4/snapshot.json").read_text())
+    original = json.loads((fixtures / "contract-v5/snapshot.json").read_text())
     wrong = copy.deepcopy(original)
     wrong["schemaVersion"] = 2
     run(cli, ["list", "--input", "-", "--json"], wrong, accepted=False)

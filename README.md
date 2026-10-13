@@ -7,6 +7,14 @@ no TUI/tmux attachment or provider action.
 
 ## Current status
 
+The new source timing candidate is `0.6.0a1`, [API 3/wire 5/Service 3](docs/api-v3.md).
+It adds native latest-turn and thread-update metadata with independently bound
+receipts, while preserving discovery, phase and activity meaning. The
+[execution ledger](docs/native-timing-execution.md) separates local checks from
+pending exact native, Mesh profile and operational adoption. The selected
+baseline described below remains a18 collection/a20 reads; this candidate is
+not selected by its source version declaration.
+
 [Observer a18](artifacts/observer-0.5.0a18.json) removes the Claude adapter,
 SDK/history worker, hint listener, service metadata memo and native notification
 intake. Codex-only a18 collection remains independently selected on both hosts;

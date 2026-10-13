@@ -88,7 +88,7 @@ class ObservationBoundaryTest(unittest.TestCase):
     def test_private_collector_rejects_unsupported_before_memo_or_provider_io(self):
         request = {"hostScope": "fixture", "provider": "codex", "component": "runtime",
                    "configHome": "/fixture/claude", "configHomeKind": "explicit",
-                   "timeoutMs": 1000, "workspaceConfig": None, "imageMemoFd": 99}
+                   "timeoutMs": 1000, "sampledBoottimeMs": 0, "workspaceConfig": None, "imageMemoFd": 99}
         with patch.dict("agent_observer.adapters._ADAPTERS", {}, clear=True), patch.object(_service_worker.sys, "stdin", SimpleNamespace(buffer=io.BytesIO(json.dumps(request).encode()))), \
              patch.object(_service_worker.signal, "signal"), \
              patch.object(_service_worker.signal, "setitimer"), \

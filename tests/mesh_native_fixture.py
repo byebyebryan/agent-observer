@@ -16,7 +16,7 @@ from agent_observer.service_public import validate_frame
 
 
 def native_frame(host="fixture"):
-    path = Path(__file__).parent / "fixtures/service-v2/view.json"
+    path = Path(__file__).parent / "fixtures/service-v3/view.json"
     frame = json.loads(path.read_text())
     clock = clock_domain()
     shift = boottime_ms() - 100 - frame["emittedBoottimeMs"]

@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def fixture():
-    value = json.loads((ROOT / "tests/fixtures/service-v2/view.json").read_text())
+    value = json.loads((ROOT / "tests/fixtures/service-v3/view.json").read_text())
     value["clockDomain"] = "time:[1]"
     return value
 

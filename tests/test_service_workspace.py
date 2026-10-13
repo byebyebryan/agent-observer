@@ -42,7 +42,7 @@ class ServiceWorkspaceTest(unittest.TestCase):
     def request(self, component, config):
         return {"hostScope": "fixture", "provider": "codex", "component": component,
                 "configHome": "/fixture/codex", "configHomeKind": "explicit",
-                "timeoutMs": 1000, "workspaceConfig": config}
+                "timeoutMs": 1000, "sampledBoottimeMs": 0, "workspaceConfig": config}
 
     def test_history_worker_matches_direct_mapping_and_runtime_cannot_renew_it(self):
         with tempfile.TemporaryDirectory() as directory:

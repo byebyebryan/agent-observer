@@ -9,7 +9,10 @@ fresh work evidence. No preview, turn, originator or arbitrary payload escapes.
 from __future__ import annotations
 
 import re
+import time
 import unicodedata
+
+from .timing import codex_updated
 
 from .observation_model import (
     Evidence,
@@ -169,6 +172,10 @@ def live_thread_metadata(payload, *, host_scope, namespace, runtime_version, obs
         namespace=namespace,
         runtime_version=runtime_version,
     )
+    metadata["lastUpdated"] = codex_updated(payload, observed_at=observed_at)
+    metadata["timingObservedBoottimeMs"] = {
+        "lastUpdated": int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000),
+    }
     status = payload.get("status")
     if (
         not isinstance(status, dict)

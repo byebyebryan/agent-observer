@@ -56,7 +56,7 @@ raise SystemExit(main(['mesh', 'snapshot', '--local-host', 'fixture']))
                 run.assert_not_called()
 
     def test_cross_host_urgency_age_and_child_filter_are_presentation_only(self):
-        first = json.loads((ROOT / "tests/fixtures/contract-v4/snapshot.json").read_text())
+        first = json.loads((ROOT / "tests/fixtures/contract-v5/snapshot.json").read_text())
         second = copy.deepcopy(first)
         second["host"]["authority"] = "other"
         for row in second["sessions"]:

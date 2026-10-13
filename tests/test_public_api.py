@@ -12,7 +12,7 @@ from agent_observer import public
 
 class PublicApiTest(unittest.TestCase):
     def fixture(self):
-        return json.loads((Path(__file__).parent / "fixtures/contract-v4/snapshot.json").read_text())
+        return json.loads((Path(__file__).parent / "fixtures/contract-v5/snapshot.json").read_text())
 
     def test_pure_facade_and_cli_declare_the_same_interface_without_adapters(self):
         result = subprocess.run([sys.executable, "-I", "-c", """
@@ -27,7 +27,7 @@ print(public.canonical(public.interface()))
         self.assertEqual(json.loads(result.stdout), public.interface())
         cli = subprocess.run([sys.executable, "-m", "agent_observer.cli", "api"], capture_output=True, check=True)
         self.assertEqual(json.loads(cli.stdout), public.interface())
-        self.assertEqual(public.interface()["schemas"], {"snapshot": 4, "watch": 4})
+        self.assertEqual(public.interface()["schemas"], {"snapshot": 5, "watch": 5})
 
     def test_wrong_provider_scope_topology_and_metadata_are_rejected(self):
         mutations = (

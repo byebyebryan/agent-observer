@@ -51,13 +51,13 @@ class ClaudeRetirementTest(unittest.TestCase):
             close.assert_not_called()
 
     def test_notification_native_intake_rejects_retired_before_decoding_content(self):
-        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v4/snapshot.json").read_bytes())
+        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v5/snapshot.json").read_bytes())
         ref = next(r["identity"] for r in snapshot["sessions"] if r["identity"]["provider"] == "claude")
         with self.assertRaisesRegex(NotificationError, "^unsupported_provider$"):
             normalize(b"invalid private contents", ref)
 
     def test_reserved_data_and_read_wire_are_preserved_without_native_implementation(self):
-        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v4/snapshot.json").read_bytes())
+        snapshot = parse_snapshot((ROOT / "tests/fixtures/contract-v5/snapshot.json").read_bytes())
         self.assertTrue(any(r["identity"]["provider"] == "claude" for r in snapshot["sessions"]))
         package = ROOT / "agent_observer"
         self.assertFalse(any(p.name.startswith(("claude_", "_claude_")) for p in package.glob("*.py")))
@@ -67,7 +67,7 @@ class ClaudeRetirementTest(unittest.TestCase):
                     self.assertNotIn("claude", node.module or "")
                 elif isinstance(node, ast.Import):
                     self.assertFalse(any("claude" in a.name for a in node.names))
-        # Baseline a17 digests; independent of shallow CI Git history.
+        # Historical wire 4 a17 bytes stay frozen; wire 5 has a separate schema.
         frozen = {'snapshot.schema.json': '95ba9e3ef4ad5dc059f7a344b5946ea59193a9b061b7d747927d6aceb2eb0e39', 'watch.schema.json': 'c4c4a8e61a85e4260d2791bf9df48c116076232323b76e63c191a137739a4e97', 'service-frame.schema.json': 'f43ebea80a47f9db2379a576ca089fde25994e4229606473e5937f1379cbb984'}
         for name, digest in frozen.items():
-            self.assertEqual(digest, hashlib.sha256((package / "contracts" / name).read_bytes()).hexdigest())
+            self.assertEqual(digest, hashlib.sha256((ROOT / "tests/fixtures/contract-v4" / name).read_bytes()).hexdigest())

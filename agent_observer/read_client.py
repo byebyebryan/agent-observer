@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 
 from .contract import SCHEMA_VERSION, ContractError, identity_key, validate_snapshot
+from .timing import age_ms, ongoing_turn_age_ms
 
 _ATTENTION = {"blocked": 0, "waiting": 1, "working": 2, "unknown": 3}
 
@@ -81,11 +82,11 @@ def human_rows(snapshot, *, now_ms=None, **options):
     return human_snapshots([snapshot], now_ms=now_ms, **options)
 
 
-def human_snapshots(snapshots, *, now_ms, **options):
+def human_snapshots(snapshots, *, now_ms, now_boottime_ms=None, **options):
     """Human-only cross-host view; never rewrites a transport envelope."""
     if type(now_ms) is not int or now_ms < 0:
         raise ContractError("invalid_display_time")
-    lines = ["HOST  PROVIDER  PHASE  RUNTIME  AGE  ID  TITLE"]
+    lines = ["HOST  PROVIDER  PHASE  RUNTIME  ACTIVITY_AGE  NATIVE_TURN  THREAD_UPDATE_AGE  ID  TITLE"]
     for row in ordered_snapshots(snapshots, **options):
         identity = row["identity"]
         at = _activity_time(row)
@@ -105,5 +106,18 @@ def human_snapshots(snapshots, *, now_ms, **options):
         runtime = row["runtime"]["value"]
         if row["inventory"] == "saved" and runtime == "unknown":
             runtime = "saved/unknown"
-        lines.append(f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value'] if row['phase'] else '-'}  {runtime}  {activity}  {identity['nativeId']}  {row['title']}")
+        def age(value):
+            if value is None:
+                return "unknown"
+            seconds = value // 1000
+            return next(f"{seconds // unit}{label}" for unit, label in ((86400, "d"), (3600, "h"), (60, "m"), (1, "s")) if seconds >= unit or unit == 1)
+        updated = age(age_ms(row["lastUpdated"], row["lastUpdated"]["at"], now_boottime_ms=now_boottime_ms))
+        record = row["latestTurn"]
+        turn = record["value"]
+        native_turn = record["health"] if record["health"] != "current" else "none" if turn is None else turn["status"]
+        if turn is not None and turn["status"] == "in_progress":
+            native_turn += ":" + age(ongoing_turn_age_ms(row, now_boottime_ms=now_boottime_ms))
+        elif turn is not None and turn["durationMs"] is not None:
+            native_turn += ":" + str(turn["durationMs"]) + "ms"
+        lines.append(f"{identity['hostScope']}  {identity['provider']}  {row['phase']['value'] if row['phase'] else '-'}  {runtime}  {activity}  {native_turn}  {updated}  {identity['nativeId']}  {row['title']}")
     return "\n".join(lines)
