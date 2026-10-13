@@ -61,11 +61,19 @@ suspend/post-TUI-closure lifetime checks. Current-state push does not promise
 all native transitions or notification replay. Notification/event enrichment,
 actions/attachment and client UI/device acceptance are separate work.
 
-The initial consumers are [Agent Plus](https://github.com/byebyebryan/rofi-agent-plus)
-and [ESP32 RLCD](https://github.com/byebyebryan/esp32-rlcd). ESP32-349 supplies one
-client request; WSNav is historical and a possible future consumer. The contract
+The immediate consumers are the read CLI and physical dashboards:
+[ESP32 RLCD](https://github.com/byebyebryan/esp32-rlcd) and ESP32-349.
+Agent Plus, its proposed temporary native-manager entry and attachment work are
+parked; the managed desktop keybind is removed. WSNav is historical and a possible
+future consumer. The contract
 remains provider-neutral so future providers can have independent adapters and
 capability/native acceptance gates. OpenCode support remains deprecated.
+
+The [post-Mesh timing plan](docs/post-mesh-timing-plan.md) reconciles Mesh's
+completed performance pass: retain a20/Mesh a15 and a18 collection on IPC/SSH,
+leave private a21 unpromoted, then deliver native turn/update metadata through
+separate local/native/profile/operational gates. The timing schema is still a
+proposal; SDK 1 has no upgrade prerequisite and WSS remains optional.
 
 ## Previous checkpoints
 

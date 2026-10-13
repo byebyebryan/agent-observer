@@ -5,6 +5,11 @@ physical-dashboard direction. Codex is the only native provider. The current
 API 2/read 4/Service 2/Mesh SDK 1 remains selected; this document proposes a
 following timing checkpoint and changes no implemented wire or deployment.
 
+The [post-Mesh reconciliation](post-mesh-timing-plan.md) supersedes the earlier
+wait and temporary-Agent-Plus-launcher disposition below. Mesh's decision pass
+is complete; native timing can proceed independently against SDK 1/IPC/SSH.
+Agent Plus and its temporary desktop entry are parked, with Mod+A removed.
+
 The following [turn/phase timing spike](codex-phase-timing-spike.md) validates
 native turn elapsed time and a separate observed-phase-streak prototype. Public
 implementation remains deferred while the externally owned Mesh loop finishes.
