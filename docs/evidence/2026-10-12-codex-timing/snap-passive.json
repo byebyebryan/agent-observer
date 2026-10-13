@@ -1,0 +1,832 @@
+{
+  "kind": "ordinary-managed-daemon-passive-sample",
+  "host": "snap",
+  "provider": {
+    "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+    "provider": "codex",
+    "version": "0.162.1",
+    "versionEvidence": "owned_release_path_and_inspected_sha256"
+  },
+  "ordinaryProviderActions": 0,
+  "referenceImportsObserver": false,
+  "providerConfigUnchanged": true,
+  "daemonIncarnationUnchanged": true,
+  "samples": [
+    {
+      "round": 1,
+      "sampledAtMs": 1791842903219,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 5887,
+      "rows": [
+        {
+          "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1790981308,
+          "updatedAt": 1791842902,
+          "recencyAt": 1791841986,
+          "startedAt": 1791841986,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841986000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12237-8266-7c20-a454-52ec766aa8b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791575425,
+          "updatedAt": 1791799103,
+          "recencyAt": 1791797989,
+          "startedAt": 1791797989,
+          "completedAt": 1791799103,
+          "durationMs": 1114754,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791799103000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791575800,
+          "updatedAt": 1791842864,
+          "recencyAt": 1791833937,
+          "startedAt": 1791833937,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791833937000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791788347,
+          "updatedAt": 1791842894,
+          "recencyAt": 1791842299,
+          "startedAt": 1791842299,
+          "completedAt": 1791842894,
+          "durationMs": 595166,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842894000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f1ed-7fe3-9478-a90ecc0b0bad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842709,
+          "updatedAt": 1791842713,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842713,
+          "durationMs": 2486,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842713000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f452-7fa3-a62a-22f9ac2418b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842710,
+          "updatedAt": 1791842714,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842714,
+          "durationMs": 3233,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842714000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a131ad-ae76-75b0-8c46-2034a1124cfd",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791834828,
+          "updatedAt": 1791835452,
+          "recencyAt": 1791835420,
+          "startedAt": 1791835420,
+          "completedAt": 1791835452,
+          "durationMs": 32183,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791835452000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f7d-a5c1-7943-b473-81b595d22c4f",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791798126,
+          "updatedAt": 1791830225,
+          "recencyAt": 1791830216,
+          "startedAt": 1791830216,
+          "completedAt": 1791830225,
+          "durationMs": 9569,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791830225000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f12-6c0b-7df3-b57f-cc58bb7e72fa",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791791098,
+          "updatedAt": 1791793360,
+          "recencyAt": 1791793339,
+          "startedAt": 1791793339,
+          "completedAt": 1791793360,
+          "durationMs": 20485,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793360000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "unknown",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "sampledAtMs": 1791842904506,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 5887,
+      "rows": [
+        {
+          "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1790981308,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791841986,
+          "startedAt": 1791841986,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841986000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12237-8266-7c20-a454-52ec766aa8b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791575425,
+          "updatedAt": 1791799103,
+          "recencyAt": 1791797989,
+          "startedAt": 1791797989,
+          "completedAt": 1791799103,
+          "durationMs": 1114754,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791799103000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791575800,
+          "updatedAt": 1791842864,
+          "recencyAt": 1791833937,
+          "startedAt": 1791833937,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791833937000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791788347,
+          "updatedAt": 1791842894,
+          "recencyAt": 1791842299,
+          "startedAt": 1791842299,
+          "completedAt": 1791842894,
+          "durationMs": 595166,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842894000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f1ed-7fe3-9478-a90ecc0b0bad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842709,
+          "updatedAt": 1791842713,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842713,
+          "durationMs": 2486,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842713000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f452-7fa3-a62a-22f9ac2418b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842710,
+          "updatedAt": 1791842714,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842714,
+          "durationMs": 3233,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842714000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a131ad-ae76-75b0-8c46-2034a1124cfd",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791834828,
+          "updatedAt": 1791835452,
+          "recencyAt": 1791835420,
+          "startedAt": 1791835420,
+          "completedAt": 1791835452,
+          "durationMs": 32183,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791835452000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f7d-a5c1-7943-b473-81b595d22c4f",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791798126,
+          "updatedAt": 1791830225,
+          "recencyAt": 1791830216,
+          "startedAt": 1791830216,
+          "completedAt": 1791830225,
+          "durationMs": 9569,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791830225000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f12-6c0b-7df3-b57f-cc58bb7e72fa",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791791098,
+          "updatedAt": 1791793360,
+          "recencyAt": 1791793339,
+          "startedAt": 1791793339,
+          "completedAt": 1791793360,
+          "durationMs": 20485,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793360000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "unknown",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "sampledAtMs": 1791842905786,
+      "inventoryBound": 16,
+      "loadedPageHasMore": false,
+      "serviceRevision": 5887,
+      "rows": [
+        {
+          "threadId": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1790981308,
+          "updatedAt": 1791842904,
+          "recencyAt": 1791841986,
+          "startedAt": 1791841986,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791841986000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12237-8266-7c20-a454-52ec766aa8b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791575425,
+          "updatedAt": 1791799103,
+          "recencyAt": 1791797989,
+          "startedAt": 1791797989,
+          "completedAt": 1791799103,
+          "durationMs": 1114754,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791799103000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "active",
+            "activeFlags": []
+          },
+          "createdAt": 1791575800,
+          "updatedAt": 1791842864,
+          "recencyAt": 1791833937,
+          "startedAt": 1791833937,
+          "completedAt": null,
+          "durationMs": null,
+          "turnStatus": "inProgress",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "working",
+            "activity": {
+              "at": 1791833937000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791788347,
+          "updatedAt": 1791842894,
+          "recencyAt": 1791842299,
+          "startedAt": 1791842299,
+          "completedAt": 1791842894,
+          "durationMs": 595166,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842894000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f1ed-7fe3-9478-a90ecc0b0bad",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842709,
+          "updatedAt": 1791842713,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842713,
+          "durationMs": 2486,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842713000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a13225-f452-7fa3-a62a-22f9ac2418b6",
+          "loaded": true,
+          "nativeStatus": {
+            "type": "idle"
+          },
+          "createdAt": 1791842710,
+          "updatedAt": 1791842714,
+          "recencyAt": 1791842711,
+          "startedAt": 1791842711,
+          "completedAt": 1791842714,
+          "durationMs": 3233,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "running",
+            "phase": "waiting",
+            "activity": {
+              "at": 1791842714000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a131ad-ae76-75b0-8c46-2034a1124cfd",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791834828,
+          "updatedAt": 1791835452,
+          "recencyAt": 1791835420,
+          "startedAt": 1791835420,
+          "completedAt": 1791835452,
+          "durationMs": 32183,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791835452000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f7d-a5c1-7943-b473-81b595d22c4f",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791798126,
+          "updatedAt": 1791830225,
+          "recencyAt": 1791830216,
+          "startedAt": 1791830216,
+          "completedAt": 1791830225,
+          "durationMs": 9569,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791830225000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "user",
+            "hasSavedHistory": true
+          }
+        },
+        {
+          "threadId": "01a12f12-6c0b-7df3-b57f-cc58bb7e72fa",
+          "loaded": false,
+          "nativeStatus": {
+            "type": "notLoaded"
+          },
+          "createdAt": 1791791098,
+          "updatedAt": 1791793360,
+          "recencyAt": 1791793339,
+          "startedAt": 1791793339,
+          "completedAt": 1791793360,
+          "durationMs": 20485,
+          "turnStatus": "completed",
+          "turnLimit": null,
+          "sectionPresent": false,
+          "sectionEnteredAt": null,
+          "observer": {
+            "runtime": "parked",
+            "phase": null,
+            "activity": {
+              "at": 1791793360000,
+              "health": "current",
+              "reason": "native_conversation_event",
+              "source": "codex_turn_metadata"
+            },
+            "kind": "unknown",
+            "hasSavedHistory": true
+          }
+        }
+      ]
+    }
+  ]
+}
