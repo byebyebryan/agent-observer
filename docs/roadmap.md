@@ -16,13 +16,20 @@ old retained-reference bridge selection above.
 
 Next work remains separately scoped:
 
-- Mixed Observer/Mesh validation and copy-cost optimization after the accepted publisher extraction; preserve original leases and owned-frame semantics.
-- Read-client ergonomics and consumer implementation against the settled read contract.
+- Native turn/update timing through the [post-Mesh execution plan](post-mesh-timing-plan.md), preserving activity and independent evidence leases.
+- Read CLI and RLCD/349 consumer implementation; timing remains a proposed successor until its producer/profile gates pass.
+- Further validation/copy-cost optimization only as a separate fixed-trace investigation; Mesh's private a21 candidate is not promoted.
 - Native occurrence events/notification enrichment, if a concrete client requires them.
 - Optional Mesh transport upgrades, including WSS, in a separate coordinated pass.
-- Actions/attachment with separate native authority, potentially using tmux-observer.
+- Agent Plus and actions/attachment are parked; the proposed temporary native-manager desktop entry is retired.
 - Focused proof for accepted Codex edges, including physical suspend and TUI closure.
 - A new provider only after its runtime/identity/activity/capability investigation.
+
+Mesh's completed performance decision retains released a15/SDK 1 and IPC/SSH
+with ordinary roles preserved and trial cleanup accepted. No Mesh upgrade or
+WSS adoption blocks independent timing work. Its current strict Agent native
+profile still binds wire 4: new fields require a separately reviewed successor
+profile, rather than an unversioned schema extension or automatic selection.
 
 The following [operational cleanup](operational-cleanup-plan.md) completes current
 guidance, two-host native revalidation, collector/subscriber cost attribution,

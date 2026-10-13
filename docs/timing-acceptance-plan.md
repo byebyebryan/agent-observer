@@ -2,8 +2,14 @@
 
 2026-10-12. Companion to the [draft specification](timing-contract-proposal.md)
 and [offline execution](timing-design-execution.md). This plan does not authorize
-an immediate networking/profile/deployment change. The current Mesh performance
+an immediate networking/profile/deployment change. The completed Mesh performance
 pass and its separate candidate retain their ownership and exact artifact bounds.
+
+The [post-Mesh reconciliation](post-mesh-timing-plan.md) updates the execution
+ordering after the completed external decision: keep SDK 1/IPC/SSH, do not merge
+or select private a21, implement local timing before successor Agent profile
+adoption, and keep Agent Plus/attachment parked. Native/profile/operational
+gates below remain separate and no timing version is implemented by this update.
 
 ## Completed offline scope
 

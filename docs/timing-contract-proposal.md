@@ -2,9 +2,11 @@
 
 2026-10-12. T1–T3 of the [offline execution](timing-design-execution.md).
 This is a reviewed producer design, not an implemented/exported contract.
-API 2/read 4/Service 2/Mesh SDK 1 remains selected. Networking, profile/lock
-adoption and production implementation wait for the independently owned Mesh
-pass. The [offline report](evidence/2026-10-12-timing-design/REPORT.md) records
+API 2/read 4/Service 2/Mesh SDK 1 remains selected. The Mesh decision pass is now
+complete; the [post-Mesh plan](post-mesh-timing-plan.md) specifies local timing
+implementation first and separate successor-profile adoption. No current Mesh
+upgrade or transport switch is required. The
+[offline report](evidence/2026-10-12-timing-design/REPORT.md) records
 the actual proof bounds; earlier [native timing evidence](evidence/2026-10-12-codex-timing/REPORT.md)
 establishes Codex clocks on the sampled contexts.
 

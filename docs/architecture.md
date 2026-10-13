@@ -36,6 +36,13 @@ writer has a separate action gate. The
 ownership, exact selectors and resource/native/operational bounds.
 See the [client handoff](api-v2-client-handoff.md) and [roadmap](roadmap.md).
 
+The [post-Mesh timing reconciliation](post-mesh-timing-plan.md) leaves those
+roles and SDK 1 unchanged. Native turn/update metadata is the next separate
+producer proposal; a successor strict Agent profile still needs Mesh-owned
+acceptance. Agent Plus and attachment are parked. The read CLI and physical
+dashboards are the immediate consumers; native provider UI management remains
+external. WSS and the private a21 allocation candidate are not selected.
+
 ## Historical design and acceptance checkpoints
 
 The following dated checkpoints retain their original scope and artifacts.
