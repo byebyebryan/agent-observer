@@ -1,0 +1,41 @@
+{
+  "observer": {
+    "manifestVersion": 4,
+    "package": "agent-observer",
+    "version": "0.6.0a1",
+    "wheel": "agent_observer-0.6.0a1-py3-none-any.whl",
+    "wheelSha256": "900846c03350f6302a88062b6538b77a7b9417d7fc1b0d0b908cc82398b2e909",
+    "sourceRevision": "280ddab6e8f8a28fa92e08461a4888e0a504d4ca",
+    "apiVersion": 3,
+    "schemas": {
+      "snapshot": 5,
+      "watch": 5
+    },
+    "write": {
+      "schema": 2
+    },
+    "service": {
+      "protocol": 3,
+      "schemas": {
+        "request": 3,
+        "frame": 3
+      }
+    },
+    "entrypoints": [
+      "agent-observer",
+      "agent-observer-write",
+      "agent-observer-service"
+    ],
+    "nativeContracts": [
+      "codex_daemon_status_v2",
+      "codex_database_only_catalog_v1",
+      "codex_saved_native_timing_v1"
+    ]
+  },
+  "controlledHarnesses": {
+    "native_timing_proof.py": "0a653f3f90e6d1ce6116859e1e98e35348d65ea7452518af3801a1b28911447b",
+    "parked_failure_proof_2.py": "47bf13f168c56767a7155e1a8cf1586f7b19f1296325ff44c14d1a1efd53c2ee"
+  },
+  "ordinaryOracleSource": "280ddab6e8f8a28fa92e08461a4888e0a504d4ca",
+  "scope": "candidate a1 core/local read, prior to v2 Mesh profile or operational selection"
+}

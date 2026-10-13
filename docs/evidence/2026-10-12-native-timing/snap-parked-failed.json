@@ -1,0 +1,249 @@
+{
+  "kind": "controlled-native-parked-failed-cached",
+  "threadId": "01a1339a-5b95-7fa2-a687-0212e96fa0f1",
+  "realModelRequests": 0,
+  "ordinaryProviderActions": false,
+  "passed": true,
+  "parked": {
+    "identity": {
+      "hostScope": "timing-fixture",
+      "namespace": "sha256:d8787083dc0a14d36f79568f2875fff611d75f5485365468b0ff21ba0b213b01",
+      "nativeId": "01a1339a-5b95-7fa2-a687-0212e96fa0f1",
+      "nativeIdKind": "thread",
+      "provider": "codex"
+    },
+    "runtime": {
+      "clock": "sample",
+      "health": "current",
+      "observedAt": 1791867537272,
+      "reason": "native_snapshot",
+      "source": "codex_rpc",
+      "value": "parked"
+    },
+    "phase": null,
+    "latestTurn": {
+      "health": "current",
+      "observedAt": 1791867537276,
+      "reason": "native_latest_turn",
+      "receipt": null,
+      "source": "codex_turn_metadata",
+      "value": {
+        "completedAt": 1791867431000,
+        "durationMs": 15,
+        "id": "01a1339f-2a31-7712-b3b0-a72e1b4585f6",
+        "startedAt": 1791867431000,
+        "status": "failed",
+        "timestampPrecisionMs": 1000
+      }
+    },
+    "lastUpdated": {
+      "at": 1791867431000,
+      "health": "current",
+      "observedAt": 1791867537272,
+      "reason": "native_thread_update",
+      "receipt": null,
+      "source": "codex_thread_metadata",
+      "timestampPrecisionMs": 1000
+    }
+  },
+  "parkedCached": {
+    "runtime": {
+      "clock": "sample",
+      "health": "current",
+      "observedAt": 1791867537717,
+      "reason": "native_snapshot",
+      "source": "codex_rpc",
+      "value": "parked"
+    },
+    "latestTurn": {
+      "health": "current",
+      "observedAt": 1791867537719,
+      "reason": "native_latest_turn",
+      "receipt": {
+        "component": "history",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075158,
+        "sampledBoottimeMs": 220074965
+      },
+      "source": "codex_turn_metadata",
+      "value": {
+        "completedAt": 1791867431000,
+        "durationMs": 15,
+        "id": "01a1339f-2a31-7712-b3b0-a72e1b4585f6",
+        "startedAt": 1791867431000,
+        "status": "failed",
+        "timestampPrecisionMs": 1000
+      }
+    },
+    "lastUpdated": {
+      "at": 1791867431000,
+      "health": "current",
+      "observedAt": 1791867537717,
+      "reason": "native_thread_update",
+      "receipt": {
+        "component": "history",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075156,
+        "sampledBoottimeMs": 220074965
+      },
+      "source": "codex_thread_metadata",
+      "timestampPrecisionMs": 1000
+    }
+  },
+  "failed": {
+    "runtime": {
+      "clock": "sample",
+      "health": "current",
+      "observedAt": 1791867538152,
+      "reason": "native_snapshot",
+      "source": "codex_rpc",
+      "value": "running"
+    },
+    "phase": {
+      "clock": null,
+      "health": "unsupported",
+      "observedAt": null,
+      "reason": "native_runtime_error",
+      "source": null,
+      "value": "unknown"
+    },
+    "outcome": {
+      "clock": "native",
+      "health": "current",
+      "observedAt": 1791867537000,
+      "reason": "latest_terminal_turn",
+      "source": "codex_turn_metadata",
+      "value": "failed"
+    },
+    "latestTurn": {
+      "health": "current",
+      "observedAt": 1791867538154,
+      "reason": "native_latest_turn",
+      "receipt": null,
+      "source": "codex_turn_metadata",
+      "value": {
+        "completedAt": 1791867537000,
+        "durationMs": 15,
+        "id": "01a133a0-c9e4-7d83-bf55-79b087e7c860",
+        "startedAt": 1791867537000,
+        "status": "failed",
+        "timestampPrecisionMs": 1000
+      }
+    },
+    "lastUpdated": {
+      "at": 1791867537000,
+      "health": "current",
+      "observedAt": 1791867538152,
+      "reason": "native_thread_update",
+      "receipt": null,
+      "source": "codex_thread_metadata",
+      "timestampPrecisionMs": 1000
+    }
+  },
+  "failedCached": {
+    "runtime": {
+      "clock": "sample",
+      "health": "current",
+      "observedAt": 1791867538389,
+      "reason": "native_snapshot",
+      "source": "codex_rpc",
+      "value": "running"
+    },
+    "phase": {
+      "clock": null,
+      "health": "unsupported",
+      "observedAt": null,
+      "reason": "native_runtime_error",
+      "source": null,
+      "value": "unknown"
+    },
+    "latestTurn": {
+      "health": "current",
+      "observedAt": 1791867538390,
+      "reason": "native_latest_turn",
+      "receipt": {
+        "component": "runtime",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075829,
+        "sampledBoottimeMs": 220075785
+      },
+      "source": "codex_turn_metadata",
+      "value": {
+        "completedAt": 1791867537000,
+        "durationMs": 15,
+        "id": "01a133a0-c9e4-7d83-bf55-79b087e7c860",
+        "startedAt": 1791867537000,
+        "status": "failed",
+        "timestampPrecisionMs": 1000
+      }
+    },
+    "lastUpdated": {
+      "at": 1791867537000,
+      "health": "current",
+      "observedAt": 1791867538389,
+      "reason": "native_thread_update",
+      "receipt": {
+        "component": "runtime",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075828,
+        "sampledBoottimeMs": 220075785
+      },
+      "source": "codex_thread_metadata",
+      "timestampPrecisionMs": 1000
+    }
+  },
+  "failedPushed": {
+    "runtime": {
+      "clock": "sample",
+      "health": "current",
+      "observedAt": 1791867538389,
+      "reason": "native_snapshot",
+      "source": "codex_rpc",
+      "value": "running"
+    },
+    "phase": {
+      "clock": null,
+      "health": "unsupported",
+      "observedAt": null,
+      "reason": "native_runtime_error",
+      "source": null,
+      "value": "unknown"
+    },
+    "latestTurn": {
+      "health": "current",
+      "observedAt": 1791867538390,
+      "reason": "native_latest_turn",
+      "receipt": {
+        "component": "runtime",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075829,
+        "sampledBoottimeMs": 220075785
+      },
+      "source": "codex_turn_metadata",
+      "value": {
+        "completedAt": 1791867537000,
+        "durationMs": 15,
+        "id": "01a133a0-c9e4-7d83-bf55-79b087e7c860",
+        "startedAt": 1791867537000,
+        "status": "failed",
+        "timestampPrecisionMs": 1000
+      }
+    },
+    "lastUpdated": {
+      "at": 1791867537000,
+      "health": "current",
+      "observedAt": 1791867538389,
+      "reason": "native_thread_update",
+      "receipt": {
+        "component": "runtime",
+        "contextGeneration": 1,
+        "observedBoottimeMs": 220075828,
+        "sampledBoottimeMs": 220075785
+      },
+      "source": "codex_thread_metadata",
+      "timestampPrecisionMs": 1000
+    }
+  },
+  "ownedProcessesRetired": true,
+  "localHttpCalls": 1
+}

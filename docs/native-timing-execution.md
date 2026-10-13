@@ -53,7 +53,7 @@ need Mesh's accepted clock/proof bridge; local device wall time is insufficient.
 | --- | --- |
 | C0 schema/ownership decisions | Implemented strict API 3/wire 5/Service 3; [field specification](api-v3.md) |
 | C1–C2 local core/service/read | Passed 395 local tests (24 optional Mesh tests excluded in the Mesh-free environment), 146 Markdown checks; 18 new production timing tests |
-| C3 exact artifacts and independent two-host native proof | Pending |
+| C3 exact artifacts and independent two-host native proof | a1 core/local gate accepted; [report](evidence/2026-10-12-native-timing/REPORT.md) |
 | C4 successor Mesh Agent profile and fleet proof | Pending |
 | C5 resource/managed rollback and selection | Pending |
 | C6 read-consumer handoff | Pending |
