@@ -10,8 +10,12 @@ records the exact installed artifacts. Source publication remains separate.
 ## Classification and selection
 
 `kind` is `user`, `child`, `system` or `unknown`. Codex's supported
-`threadSource=system` tag classifies an internal client helper. This is an
+`threadSource=system` and `threadSource=thread_title` tags classify internal client
+helpers. Codex uses `thread_title` for its built-in temporary title generator.
+Other feature tags remain unknown until their ownership is established. This is an
 optional client-supplied analytics classification, not an OS process type.
+The [title-helper correction](evidence/2026-10-14-title-helper/REPORT.md) records
+the source/native proof and its separate installed rollout boundary.
 Ephemeral persistence alone does not classify a system thread. Valid native
 child signals retain their existing precedence; inconsistent, malformed or
 unsupported classification stays unknown with a bounded metadata issue.

@@ -21,8 +21,8 @@ class SystemClassificationTest(unittest.TestCase):
         fixture = native_fixture.CodexMetadataTest()
         fixture.setUp()
         for ephemeral in (False, True):
-            for kind in ("user", "system"):
-                payload = {**fixture.row, "threadSource": kind, "ephemeral": ephemeral}
+            for tag, kind in (("user", "user"), ("system", "system"), ("thread_title", "system")):
+                payload = {**fixture.row, "threadSource": tag, "ephemeral": ephemeral}
                 saved = saved_thread_metadata(payload, **fixture.scope)
                 live = live_thread_metadata(payload, **fixture.scope, observed_at=100)
                 self.assertEqual(saved["threadKind"], kind)
@@ -33,6 +33,25 @@ class SystemClassificationTest(unittest.TestCase):
         future = saved_thread_metadata({**fixture.row, "threadSource": "future_label"}, **fixture.scope)
         self.assertEqual(future["threadKind"], "unknown")
         self.assertIn("thread_classification_unsupported", future["metadataIssues"])
+
+    def test_title_helper_tag_retains_child_precedence_and_unknown_boundaries(self):
+        fixture = native_fixture.CodexMetadataTest()
+        fixture.setUp()
+        child = saved_thread_metadata(
+            {**fixture.row, "source": {"subAgent": "review"}, "threadSource": "thread_title"},
+            **fixture.scope,
+        )
+        self.assertEqual(child["threadKind"], "child")
+        malformed = saved_thread_metadata(
+            {**fixture.row, "source": {"subAgent": {}}, "threadSource": "thread_title"},
+            **fixture.scope,
+        )
+        self.assertEqual(malformed["threadKind"], "unknown")
+        for tag in ("future_feature", ["thread_title"], {"feature": "thread_title"}):
+            with self.subTest(tag=tag):
+                value = saved_thread_metadata({**fixture.row, "threadSource": tag}, **fixture.scope)
+                self.assertEqual(value["threadKind"], "unknown")
+                self.assertIn("thread_classification_unsupported", value["metadataIssues"])
 
     def fixture(self):
         value = json.loads((ROOT / "tests/fixtures/contract-v6/snapshot.json").read_text())
