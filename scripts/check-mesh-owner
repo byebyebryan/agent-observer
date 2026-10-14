@@ -19,7 +19,7 @@ def main():
 
     from agent_observer.mesh_profile import AgentProfile
     root = Path(__file__).resolve().parents[1]
-    cases = tuple(ProfileCase(**case) for case in json.loads((root / "tests/fixtures/mesh-v2/corpus.json").read_text())["cases"])
+    cases = tuple(ProfileCase(**case) for case in json.loads((root / "tests/fixtures/mesh-v3/corpus.json").read_text())["cases"])
     fixture = runpy.run_path(str(root / "tests/mesh_native_fixture.py"))
 
     def profile(domain):

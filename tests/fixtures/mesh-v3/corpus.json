@@ -50,7 +50,7 @@
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -507,7 +507,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -841,7 +841,7 @@
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -1102,13 +1102,13 @@
                   "sentAtMs": 1800,
                   "receivedAtMs": 2000,
                   "marginMs": 100,
-                  "payloadDigest": "sha256:dbb0d5838e584c549391fa31542a911d77e32e3d0c4832ee782ebddc86505fd5"
+                  "payloadDigest": "sha256:b0602399be4503158ae6bf486ff975f5e3d0ef594037665afacd49c2b230f41b"
                 }
               },
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -2869,7 +2869,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -3391,7 +3391,7 @@
         "fixture-remote": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -6555,7 +6555,7 @@
               "viewState": "historical",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -7562,7 +7562,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -8175,7 +8175,7 @@
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -9182,7 +9182,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -10645,7 +10645,7 @@
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -11670,7 +11670,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -13132,7 +13132,7 @@
               "viewState": "warming",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": null,
                 "service": {
                   "serviceProtocol": 4,
@@ -13301,7 +13301,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": null,
             "service": {
               "serviceProtocol": 4,
@@ -13483,7 +13483,7 @@
               "viewState": "current",
               "owner": {
                 "protocol": "agent-observer.snapshot",
-                "version": 5,
+                "version": 6,
                 "metadata": {
                   "schemaVersion": 6,
                   "collectionId": "00000000-0000-0000-0000-000000000001",
@@ -14486,7 +14486,7 @@
         "fixture": {
           "owner": {
             "protocol": "agent-observer.snapshot",
-            "version": 5,
+            "version": 6,
             "metadata": {
               "schemaVersion": 6,
               "collectionId": "00000000-0000-0000-0000-000000000001",

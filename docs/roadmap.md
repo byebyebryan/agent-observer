@@ -1,20 +1,22 @@
 # Agent Observer roadmap
 
 Current producer checkpoint, 2026-10-13: Codex-only
-[Observer a2](../artifacts/observer-0.6.0a2.json) supplies API 3/read 5/Service 3
-and is selected with Mesh a16/profile v2 on Snap and Starship. Native turn/update
+[Observer 0.7.0a1](../artifacts/observer-0.7.0a1.json) supplies API 4/read 6/Service 4
+and is selected with Mesh a17/profile v3 on Snap and Starship. Known system
+classification is preserved and ordinary rosters exclude it. Native turn/update
 metadata preserves activity/order and original independently expiring receipts.
-The [execution ledger](native-timing-execution.md) and
-[operational receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md) cover
+The [API 4 handoff](api-v4.md) and
+[operational receipt](evidence/2026-10-13-system-classification/REPORT.md) cover
 local/native, installed IPC/SSH, two-host fleet and coordinated rollback gates.
 SDK 1 and Read/Delivery 1 remain unchanged. Tmux's a7/profile v1 factory and the
 historical writer retain independent ownership. Claude native use stays external
-following retirement; the old a18/a20/Mesh a15 tuple remains a rollback artifact.
+following retirement; the previous 0.6.0a2/Mesh a16 tuple remains a rollback artifact.
 
-The [read-client handoff](api-v3-client-handoff.md) is ready for downstream work.
-Remaining work has separate scope:
+The read-client handoff is ready for downstream work. The RLCD title-first
+roster, system exclusion, feed loss/recovery and physical readability pass is
+accepted separately in the device repository. Remaining work has separate scope:
 
-- RLCD/349 roster, feed, clock presentation and physical rendering acceptance.
+- 349 roster/feed adoption and any further RLCD product changes.
 - Further validation/copy-cost optimization under a separate fixed-trace study;
   existing fleet-watcher cost is not solved by adding native timing.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
