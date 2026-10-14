@@ -1,9 +1,46 @@
 # Optional Mesh state read client
 
-Historical API 2 / wire 4 / Service 2 checkpoint. Current read-client work uses the
-[API 3 handoff](api-v3-client-handoff.md); current role/profile adoption is recorded
-in the [native timing receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md).
-The commands/artifacts below retain their original version bounds.
+## Current API 4 and optional preparation
+
+Ordinary collection/publication/read selection is Observer a1 / Mesh a17,
+API 4, snapshot-watch 6, Service 4 and explicit Agent profile v3. Read the
+[current handoff](api-v4.md). Core/local service stay Mesh-free; optional reads
+use existing cached IPC/SSH and never query provider or attachment inventory.
+
+The distinct [Observer a2](../artifacts/observer-0.7.0a2.json) /
+[Mesh a18](../artifacts/mesh-0.1.0a18.json) preparation candidate adds:
+
+```sh
+agent-observer mesh watch --human --prepared
+agent-observer mesh watch --human --prepared --scope hosts --hosts snap starship
+agent-observer mesh watch --human --prepared --local-host snap --scope local
+```
+
+`--prepared` is explicit and available only with human watch. Existing snapshot,
+list and raw watch paths keep their prior admission and lossless wire behavior.
+The flag requires preparation interface 1; unsupported dependencies fail closed
+before reader construction, without a legacy fallback. Source/candidate acceptance
+and operational selection are recorded separately in the
+[ledger](evidence/2026-10-14-prepared-reads/REPORT.md).
+
+For Python clients, the [optional read interface](prepared-agent-read-interface.md)
+provides `AgentPreparation` and `PreparedAgentWatch`. Repeated `read(now_ms, clock)`
+returns owned current rows plus original retained source context. It performs no
+full native revalidation, raw snapshot export or reconstruction on a timer tick.
+Context is not a valid wire response or fresh authority. Call `snapshot()` only
+when a lossless raw export is needed. Keep one caller-owned watch/clock, disconnect
+on every failure/EOF/cancellation, and create a new helper on reconnect.
+
+Preparation adds no discovery/phase/age fields, source-to-device clock bridge,
+UI ordering or notification policy. Preserve full identity and original receipt
+expiry; heartbeats do not renew evidence. Both runtime-only and saved rows remain
+available for a client's own classification/runtime selection.
+
+## Historical read-client checkpoints
+
+The commands/artifacts below retain their original version bounds. API 2 and
+API 3 selection statements are dated checkpoints, superseded by the API 4 handoff
+above; they do not select the preparation candidate.
 
 The current managed selection uses Codex-only Agent `0.5.0a20` readers and owned
 Agent publication with Mesh `0.1.0a15` and the explicit Observer-owned profile.

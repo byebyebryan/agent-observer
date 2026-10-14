@@ -1,0 +1,331 @@
+{
+  "status": "passed",
+  "ownerModule": "/tmp/agent-prepared-20261014-installed/lib/python3.14/site-packages/agent_observer/mesh_read.py",
+  "seconds": 40,
+  "samples": [
+    {
+      "kind": "view",
+      "status": "pending",
+      "currentRows": 0,
+      "rawRows": 0,
+      "rawDigest": "1d8a1f5d771bc32d71e1bc61d7667258bfe609ac6815946b843df6b630b01e40",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "connecting",
+          "proof": false,
+          "view": "unavailable"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "connecting",
+          "proof": false,
+          "view": "unavailable"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "partial",
+      "currentRows": 97,
+      "rawRows": 97,
+      "rawDigest": "c7ccd4729c0ca95050cbe74b3b5296ac91f81de4da0652d6561019c88c9b4c0c",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "connecting",
+          "proof": false,
+          "view": "unavailable"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "partial",
+      "currentRows": 97,
+      "rawRows": 97,
+      "rawDigest": "447970772d4025fc94150884531b7c03dc34d20251419675f5563fed6c617c88",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "connecting",
+          "proof": false,
+          "view": "unavailable"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "a6f3ea4b0ef88647105690f3b0e95cf5616d0781e723922f3b6789fb7de376d9",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "21ee14fd1eb3374d1b3440a09e74d1c0961c508047e8b152035970522a3934dc",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "fef56523ee535e4475f87d85a6409d344308a914436fc5c65875d27a67c5813e",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "49c5cb9d3cb4243867a2cac8c2bb7e9593c5b858db090b734b3c72940fc0cddd",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "0b83bd57778b9ad54a4b4bfd657759f66d5a0daafa691313abe49d7cae33b74b",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "979c08e887707e2789e542cc911ae4bc92bc9e130ad2de71185480949da4c99a",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "0cb92eb155836e187da8d2c526f5ab27f33ef89a3d8f7f5b25e1ae557539b527",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "b3816b3b7a3e8c4e90903aac20a093828cb93b246a2a3eeac75d3224d4d18844",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "a53b0beb9784a990e5af1326085b6fccf5810d597f02514edac20186619e517b",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "ebc4bdeff62bf4219ba9d848f286cff4cecbabb551e7c4494eb5406e5fd7caf0",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "aa7946a9eda4629098ca5730e6188b2c9c4b46430b4ccac0ce485607dcec140a",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    },
+    {
+      "kind": "view",
+      "status": "complete",
+      "currentRows": 480,
+      "rawRows": 480,
+      "rawDigest": "fa915dd6b036d69ad12766f510c5282ac62ed51d502689a93f7fb73f6a165893",
+      "hosts": [
+        {
+          "hostId": "snap",
+          "delivery": "ready",
+          "proof": false,
+          "view": "current"
+        },
+        {
+          "hostId": "starship",
+          "delivery": "ready",
+          "proof": true,
+          "view": "current"
+        }
+      ]
+    }
+  ],
+  "replacements": 15,
+  "currentAfterDisconnect": 0,
+  "rawAfterDisconnect": null,
+  "activeConnectionsAfter": 0,
+  "limits": [
+    "installed ordinary cached IPC/fixed SSH parity",
+    "native daemon completeness checked independently",
+    "no provider actions, route writes or dashboard selection"
+  ]
+}

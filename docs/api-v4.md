@@ -23,6 +23,13 @@ those rows visible. Exact identity `select` and `show` preserve diagnostic acces
 Unknown classifications remain visible. Filtering happens after reconciliation,
 so a retained unknown identity positively classified as system stops appearing.
 
+An optional [prepared watch helper](prepared-agent-read-interface.md) is additive
+local Python read support. It retains this same wire/profile, delegates current
+expiry to Mesh and keeps source context separate from authority. Its
+[package/native/operational gates](evidence/2026-10-14-prepared-reads/REPORT.md)
+are independent of the a1 producer acceptance. Preparation does not add phase
+entry timestamps, alter activity/order or certify a device integration.
+
 Classification never determines runtime, phase, history presence or activity.
 Daemon idle remains running/waiting, and parked still requires its reviewed
 positive native predicate. All [API 3 timing semantics](api-v3.md) remain.
