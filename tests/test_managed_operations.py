@@ -4,6 +4,7 @@ import importlib.machinery
 import importlib.util
 import json
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -24,6 +25,10 @@ class ManagedOperationsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             source = Path(directory) / "source"
             shutil.copytree(fixture / "source", source)
+            # Select a controlled fixture host rather than the runner's hostname.
+            (source / ".chezmoidata/machines.yaml").write_text(json.dumps({
+                "machine": {"by_hostname": {socket.gethostname(): "starship"}}
+            }) + "\n")
             (source / ".chezmoiignore").write_text(
                 '{{ includeTemplate "unrelated-desktop-profile.tmpl" . }}\n')
             module.ROOT = source
