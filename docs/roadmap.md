@@ -6,9 +6,9 @@ Agent publishers a1/a17, Tmux and the historical writer keep their independent
 selections. The dated a1 collector acceptance below remains historical.
 
 Current producer checkpoint, 2026-10-14: Codex-only
-[Observer 0.7.0a1](../artifacts/observer-0.7.0a1.json) supplies API 4/read 6/Service 4
-and remains selected for collection/publication with Mesh a17/profile v3 on
-Snap and Starship. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
+[Observer 0.7.0a3](../artifacts/observer-0.7.0a3.json) supplies API 4/read 6/Service 4
+and selects core-only collectors on Snap and Starship. Agent publication retains
+a1/Mesh a17/profile v3. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
 metadata preserves activity/order and original independently expiring receipts.
 The [API 4 handoff](api-v4.md) and
 [operational receipt](evidence/2026-10-13-system-classification/REPORT.md) cover

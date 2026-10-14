@@ -2,7 +2,8 @@
 
 Observed 2026-10-13 PDT / 2026-10-14 UTC. This independent producer source
 checkpoint starts from `e3d87bb`, preserving the prepared-read implementation.
-It does not select a new installed artifact or change the RLCD consumer.
+The initial source proof precedes the packaged collector acceptance below;
+RLCD consumer acceptance belongs to its independent device pass.
 
 ## Trigger and cause
 
@@ -87,3 +88,9 @@ Operator receipts are summarized in [acceptance](acceptance.json). Native metada
 and operation snapshots remain private local evidence; no raw provider payload
 is committed. Hosted wheels remain a separate distribution checkpoint. This
 accepts the producer correction before the independent RLCD failure/wire pass.
+
+Source through `e399dd0` is published and its [hosted checks](https://github.com/byebyebryan/agent-observer/actions/runs/38536245587)
+pass. Scoped dotfiles publication `7afbe06` selects only the collector correction,
+preserving the prepared reader/publisher fields. Both ordinary source checkouts
+retain independent foreign commits; owned collector fields are reconciled without
+resetting those trees or publishing unrelated changes.
