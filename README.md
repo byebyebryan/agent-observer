@@ -7,23 +7,18 @@ no TUI/tmux attachment or provider action.
 
 ## Current status
 
-The [system classification candidate](docs/api-v4.md) supplies API 4 / wire 6 /
-Service 4 through explicit Mesh Agent v3. It preserves known internal helpers
-and hides them from ordinary rosters, with `--include-system` diagnostics.
-Exact artifact and both-host adoption gates are separate from this source change.
+[Observer `0.7.0a1`](artifacts/observer-0.7.0a1.json) supplies
+[API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) through explicit Mesh
+Agent v3 with [Mesh `0.1.0a17`](artifacts/mesh-0.1.0a17.json). Snap and Starship
+select this tuple for collection, read CLI and Agent publication. It preserves
+known internal helpers and hides them from ordinary rosters, with
+`--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
+separates native, artifact, transport, resource and managed adoption evidence.
+Tmux keeps its independently selected native owner/profile/factory; the historical
+`0.4.0a16` writer remains unchanged. These local commits and installed packages
+are not a new GitHub release. The previous a2/Mesh a16 tuple is retained for rollback.
 
-
-[Observer `0.6.0a2`](artifacts/observer-0.6.0a2.json) supplies
-[API 3 / snapshot-watch 5 / Service 3](docs/api-v3.md), including native latest-turn
-and thread-update timing. Snap and Starship select it for collection, read CLI
-and Agent publication, with Mesh `0.1.0a16` and explicit Agent profile v2 through
-SDK 1. Tmux keeps its independently selected native owner/profile/factory; the
-historical `0.4.0a16` writer remains unchanged. These installed/local commits are
-not a new GitHub release. The [execution ledger](docs/native-timing-execution.md)
-and [operational receipt](docs/evidence/2026-10-13-native-timing-rollout/REPORT.md)
-separate native, transport, resource and managed adoption evidence.
-
-Use the [API 3 read-client handoff](docs/api-v3-client-handoff.md) for new CLI,
+Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
 cached pull/push; optional Mesh supplies remote proofs/delivery. Neither core nor
 service inspects tmux/TUI/window inventory. Codex's owning daemon is the authority:
@@ -43,7 +38,7 @@ hosts. Exact installed publisher IPC/SSH, profile/network conformance, private
 and normal two-host fleet, and coordinated old/new role rollback/reselection
 have separate receipts. Five-minute resource windows are bounded descriptive
 measurements, not causal performance claims or long-term capacity certification.
-Older a18/a20/Mesh a15 artifacts remain the accepted rollback tuple.
+Older a18/a20/Mesh a15 artifacts retain their historical acceptance bounds.
 
 Codex is the only native provider. [Claude retirement](docs/claude-retirement-plan.md)
 removed its adapter, SDK/history worker, hints, memo and native notification
@@ -63,7 +58,7 @@ the immediate consumers, with independent UI/feed/device acceptance.
 ## Previous checkpoints
 
 The dated records below retain their historical artifact and contract bounds.
-Use the API 3 handoff above for current read-client work.
+Use the API 4 handoff above for current read-client work.
 
 The [shared observation service design](docs/shared-observation-service-plan.md)
 captures first-class pull/push and one local collector for multiple clients.

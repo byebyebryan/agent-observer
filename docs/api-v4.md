@@ -1,9 +1,11 @@
 # Observation API 4 system classification
 
-The dashboard refinement candidate is Observer 0.7.0a1, API 4,
+The accepted dashboard refinement tuple is Observer 0.7.0a1, API 4,
 snapshot/watch 6 and Service 4. Explicit Mesh Agent profile v3 through SDK 1
-carries these records. The accepted API 3 tuple remains selected until independent
-artifact, native, delivery and operational gates accept its replacement.
+carries these records with Mesh 0.1.0a17. Snap and Starship select this tuple after
+independent artifact, native, delivery and paired rollback/reselection gates.
+The [acceptance receipt](evidence/2026-10-13-system-classification/REPORT.md)
+records the exact installed artifacts. Source publication remains separate.
 
 ## Classification and selection
 
@@ -32,3 +34,23 @@ profile v2 do not accept the new tuple. No converter or automatic downgrade is
 provided. Mesh SDK 1, Read 1, Delivery 1, Tmux v1 and the selected historical
 writer remain independent. Immutable producer/read/publisher packages, native
 metadata comparisons and both-host cached IPC/SSH proofs gate adoption.
+
+## Read-client handoff
+
+The [API 3 handoff](api-v3-client-handoff.md) retains the timing, identity,
+component freshness and ownership rules. Select API 4/read 6/Service 4 and the
+explicit Agent v3 profile together; old clients must reject the new tuple.
+
+```sh
+agent-observer api
+agent-observer service list --host-scope starship
+agent-observer service list --host-scope starship --include-system
+agent-observer mesh list
+agent-observer mesh list --include-system
+```
+
+Raw snapshots include system rows, so downstream applications must apply their
+own reviewed selection policy. The RLCD excludes confirmed child/system and
+positively parked rows from membership, counts, overflow and retained context;
+it retains running rows of unknown kind. Classification alone never proves
+runtime disposition.

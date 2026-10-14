@@ -2,7 +2,7 @@
 
 Current implementation, 2026-10-13: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
-interfaces remain provider-neutral: API 3, read wire 5, Service 3 and Mesh SDK 1.
+interfaces remain provider-neutral: API 4, read wire 6, Service 4 and Mesh SDK 1.
 Native Claude workflows remain external. No Claude collector, SDK/history
 worker, registration parser, hint listener or service metadata memo remains.
 Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
@@ -14,7 +14,7 @@ Archived artifacts and frozen supplied-data vocabulary are historical/pure data.
 | Reusable core engine | Shared evidence ordering, reconciliation, leases and finite retention |
 | Local service | Owned collection/hint helper lifetime, scheduling, Unix cached pull/push |
 | Pure/read CLI | Strict admission, identity selection, age/order/display and client expiry |
-| Observer Mesh profile/source/factory | Pure Agent projection; owned cached Service 3 acquisition and lazy publisher construction |
+| Observer Mesh profile/source/factory | Pure Agent projection; owned cached Service 4 acquisition and lazy publisher construction |
 | Mesh Plus | Transport, catalog, remote proof, generic admission and delivery lifecycle |
 | External clients | User intent, terminal/window matching, TUI lifetime, actions and alerts |
 
@@ -27,19 +27,20 @@ separate future work. Publisher ownership is implemented in the optional
 networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
-Normal collection, reads and Agent publication use a2/Mesh a16 on both hosts.
+Normal collection, reads and Agent publication use 0.7.0a1/Mesh a17 on both hosts.
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
-Agent uses explicit profile v2 and Tmux keeps profile v1/native a7. The prior
-collector a18 / read-publisher a20 / Mesh a15 tuple is retained for coordinated
-rollback. The historical writer has a separate action gate.
+Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
+0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical
+writer has a separate action gate. Known system rows remain in raw observations
+and are excluded from ordinary human rosters after reconciliation.
 
 Native latest-turn and thread-update metadata preserve conversation activity,
 runtime and phase meanings. Core selects whole timing observations by source
 sample/read order, with original runtime/history attribution and independent
 receipt expiry. Native update is not phase entry; turn elapsed includes blocked
 time. Neither the service nor delivery invents an exact current-phase clock.
-The [API 3 handoff](api-v3-client-handoff.md) and
-[Mesh/operational receipt](evidence/2026-10-13-native-timing-rollout/REPORT.md)
+The [API 4 handoff](api-v4.md) and
+[Mesh/operational receipt](evidence/2026-10-13-system-classification/REPORT.md)
 record current commands, clock limits, selectors and acceptance boundaries.
 
 Agent Plus and attachment are parked. The read CLI and physical dashboards are

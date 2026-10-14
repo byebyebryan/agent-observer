@@ -1,0 +1,12 @@
+{
+  "manifestVersion": 4,
+  "package": "mesh-plus",
+  "version": "0.1.0a17",
+  "wheel": "mesh_plus-0.1.0a17-py3-none-any.whl",
+  "wheelSha256": "270bf1ce2a1ea950f1d6a1318ad2c6a1f45c8696460b1711a87efae98ea71154",
+  "sourceRevision": "ad3c256fef463396481ff6fd7acfac76d2ca4eb0",
+  "lockSha256": "fe850dcdd83f48f867ed2f4e5ee0057abbc894653a670414ee08c8f48fa88a83",
+  "agentProfile": "agent-observer.mesh-candidate.v3",
+  "sdkInterface": 1,
+  "stateSchemasSha256": "20197ad58fa893cf9364d939eff8d62935fb0a2665fa326b8b3ce81140d7cf02"
+}
