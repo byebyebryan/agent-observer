@@ -1,0 +1,3459 @@
+{
+  "host": "snap",
+  "windows": [
+    {
+      "label": "one_fleet_prepared",
+      "seconds": 300.02556105999975,
+      "unitCpuPercentOneCore": {
+        "agent-observer.service": 1.4481096159440687,
+        "mesh-plus-agent.service": 1.725665300552377
+      },
+      "before": {
+        "agent-observer.service": {
+          "ActiveState": "active",
+          "MainPID": "3135429",
+          "NRestarts": "0",
+          "MemoryCurrent": "28991488",
+          "CPUUsageNSec": "378379950000"
+        },
+        "mesh-plus-agent.service": {
+          "ActiveState": "active",
+          "MainPID": "824127",
+          "NRestarts": "0",
+          "MemoryCurrent": "22978560",
+          "CPUUsageNSec": "1909242000"
+        },
+        "rlcd-agent-dashboard.service": {
+          "ActiveState": "inactive",
+          "MainPID": "0",
+          "NRestarts": "0",
+          "MemoryCurrent": "[not set]",
+          "CPUUsageNSec": "[not set]"
+        }
+      },
+      "after": {
+        "agent-observer.service": {
+          "ActiveState": "active",
+          "MainPID": "3135429",
+          "NRestarts": "0",
+          "MemoryCurrent": "30429184",
+          "CPUUsageNSec": "382724649000"
+        },
+        "mesh-plus-agent.service": {
+          "ActiveState": "active",
+          "MainPID": "824127",
+          "NRestarts": "0",
+          "MemoryCurrent": "22663168",
+          "CPUUsageNSec": "7086679000"
+        },
+        "rlcd-agent-dashboard.service": {
+          "ActiveState": "inactive",
+          "MainPID": "0",
+          "NRestarts": "0",
+          "MemoryCurrent": "[not set]",
+          "CPUUsageNSec": "[not set]"
+        }
+      },
+      "samples": [
+        {
+          "atSeconds": 0.015,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28991488",
+              "CPUUsageNSec": "378379950000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22978560",
+              "CPUUsageNSec": "1909242000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 202,
+                  "rssBytes": 50446336,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 1,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 10.039,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28942336",
+              "CPUUsageNSec": "378442135000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22683648",
+              "CPUUsageNSec": "2016313000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 394,
+                  "rssBytes": 50511872,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 3,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 20.083,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28942336",
+              "CPUUsageNSec": "378512162000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22499328",
+              "CPUUsageNSec": "2118073000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 505,
+                  "rssBytes": 51736576,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 5,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 30.109,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28737536",
+              "CPUUsageNSec": "378756060000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22679552",
+              "CPUUsageNSec": "2446741000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 722,
+                  "rssBytes": 50728960,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 8,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 40.133,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28737536",
+              "CPUUsageNSec": "378821648000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22441984",
+              "CPUUsageNSec": "2551471000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 838,
+                  "rssBytes": 50737152,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 9,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 50.173,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28737536",
+              "CPUUsageNSec": "378882555000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22441984",
+              "CPUUsageNSec": "2651662000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 968,
+                  "rssBytes": 50606080,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 9,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 60.215,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28815360",
+              "CPUUsageNSec": "379175914000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22675456",
+              "CPUUsageNSec": "2977719000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1157,
+                  "rssBytes": 51302400,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 11,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 70.239,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29278208",
+              "CPUUsageNSec": "379224969000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22261760",
+              "CPUUsageNSec": "3082378000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1285,
+                  "rssBytes": 51027968,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 11,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 80.264,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "30089216",
+              "CPUUsageNSec": "379525853000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "23080960",
+              "CPUUsageNSec": "3362087000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1426,
+                  "rssBytes": 51048448,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 13,
+                  "rssBytes": 11243520,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 90.287,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29065216",
+              "CPUUsageNSec": "379791637000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "23064576",
+              "CPUUsageNSec": "3651051000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1673,
+                  "rssBytes": 51204096,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 16,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 100.332,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28958720",
+              "CPUUsageNSec": "379850304000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22724608",
+              "CPUUsageNSec": "3755737000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1820,
+                  "rssBytes": 50941952,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 18,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 110.372,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29319168",
+              "CPUUsageNSec": "379915603000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22724608",
+              "CPUUsageNSec": "3860868000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 1948,
+                  "rssBytes": 50966528,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 18,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 120.398,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29253632",
+              "CPUUsageNSec": "380154490000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "23068672",
+              "CPUUsageNSec": "4089676000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2084,
+                  "rssBytes": 50798592,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 20,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 130.423,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28835840",
+              "CPUUsageNSec": "380222561000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22704128",
+              "CPUUsageNSec": "4200232000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2216,
+                  "rssBytes": 50745344,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 22,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 140.46,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28835840",
+              "CPUUsageNSec": "380288787000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22437888",
+              "CPUUsageNSec": "4304430000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2407,
+                  "rssBytes": 50610176,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 24,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 150.489,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29306880",
+              "CPUUsageNSec": "380534638000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22487040",
+              "CPUUsageNSec": "4531462000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2537,
+                  "rssBytes": 50831360,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 26,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 160.513,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29306880",
+              "CPUUsageNSec": "380598324000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22306816",
+              "CPUUsageNSec": "4638777000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2744,
+                  "rssBytes": 50700288,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 29,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 170.54,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29163520",
+              "CPUUsageNSec": "380663392000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22487040",
+              "CPUUsageNSec": "4760696000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 2877,
+                  "rssBytes": 50753536,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 29,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 180.574,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29220864",
+              "CPUUsageNSec": "380928692000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22859776",
+              "CPUUsageNSec": "5104600000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3072,
+                  "rssBytes": 50749440,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 32,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 190.609,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29220864",
+              "CPUUsageNSec": "380994011000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22310912",
+              "CPUUsageNSec": "5207251000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3199,
+                  "rssBytes": 50638848,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 33,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 200.636,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "41594880",
+              "CPUUsageNSec": "381145893000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22491136",
+              "CPUUsageNSec": "5312346000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3338,
+                  "rssBytes": 50626560,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 35,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 210.667,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29286400",
+              "CPUUsageNSec": "381574569000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22585344",
+              "CPUUsageNSec": "5781104000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3515,
+                  "rssBytes": 50728960,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 36,
+                  "rssBytes": 11423744,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 220.7,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29569024",
+              "CPUUsageNSec": "381631608000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22450176",
+              "CPUUsageNSec": "5886253000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3720,
+                  "rssBytes": 50663424,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 39,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 230.732,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29609984",
+              "CPUUsageNSec": "381699800000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22446080",
+              "CPUUsageNSec": "5993697000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 3850,
+                  "rssBytes": 50647040,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 40,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 240.777,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29487104",
+              "CPUUsageNSec": "381981890000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22659072",
+              "CPUUsageNSec": "6328740000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4042,
+                  "rssBytes": 51052544,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 41,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 250.821,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29261824",
+              "CPUUsageNSec": "382046706000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22491136",
+              "CPUUsageNSec": "6434948000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4170,
+                  "rssBytes": 50978816,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 43,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 260.864,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29257728",
+              "CPUUsageNSec": "382111018000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22298624",
+              "CPUUsageNSec": "6544496000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4309,
+                  "rssBytes": 51060736,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 44,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 270.907,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29073408",
+              "CPUUsageNSec": "382366268000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22822912",
+              "CPUUsageNSec": "6770433000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4440,
+                  "rssBytes": 51081216,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 44,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 280.953,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28901376",
+              "CPUUsageNSec": "382434985000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22298624",
+              "CPUUsageNSec": "6875367000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4643,
+                  "rssBytes": 51269632,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 47,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 290.995,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28971008",
+              "CPUUsageNSec": "382499839000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "22732800",
+              "CPUUsageNSec": "6980545000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 842692,
+              "tree": {
+                "842692": {
+                  "birth": "9145469",
+                  "cpuTicks": 4723,
+                  "rssBytes": 51085312,
+                  "fds": 11
+                },
+                "842721": {
+                  "birth": "9145488",
+                  "cpuTicks": 47,
+                  "rssBytes": 11661312,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "two_fleet_prepared",
+      "seconds": 300.0214188989921,
+      "unitCpuPercentOneCore": {
+        "agent-observer.service": 1.849132978691688,
+        "mesh-plus-agent.service": 3.9214190250733205
+      },
+      "before": {
+        "agent-observer.service": {
+          "ActiveState": "active",
+          "MainPID": "3135429",
+          "NRestarts": "0",
+          "MemoryCurrent": "29474816",
+          "CPUUsageNSec": "382959853000"
+        },
+        "mesh-plus-agent.service": {
+          "ActiveState": "active",
+          "MainPID": "824127",
+          "NRestarts": "0",
+          "MemoryCurrent": "24252416",
+          "CPUUsageNSec": "7866003000"
+        },
+        "rlcd-agent-dashboard.service": {
+          "ActiveState": "inactive",
+          "MainPID": "0",
+          "NRestarts": "0",
+          "MemoryCurrent": "[not set]",
+          "CPUUsageNSec": "[not set]"
+        }
+      },
+      "after": {
+        "agent-observer.service": {
+          "ActiveState": "active",
+          "MainPID": "3135429",
+          "NRestarts": "0",
+          "MemoryCurrent": "29274112",
+          "CPUUsageNSec": "388507648000"
+        },
+        "mesh-plus-agent.service": {
+          "ActiveState": "active",
+          "MainPID": "824127",
+          "NRestarts": "0",
+          "MemoryCurrent": "25939968",
+          "CPUUsageNSec": "19631100000"
+        },
+        "rlcd-agent-dashboard.service": {
+          "ActiveState": "inactive",
+          "MainPID": "0",
+          "NRestarts": "0",
+          "MemoryCurrent": "[not set]",
+          "CPUUsageNSec": "[not set]"
+        }
+      },
+      "samples": [
+        {
+          "atSeconds": 0.028,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29474816",
+              "CPUUsageNSec": "382959900000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "24252416",
+              "CPUUsageNSec": "7866003000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 190,
+                  "rssBytes": 50446336,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 2,
+                  "rssBytes": 10457088,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 189,
+                  "rssBytes": 50278400,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 2,
+                  "rssBytes": 11489280,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 10.065,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29208576",
+              "CPUUsageNSec": "383058480000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "23982080",
+              "CPUUsageNSec": "8074455000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 316,
+                  "rssBytes": 50323456,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 3,
+                  "rssBytes": 10457088,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 318,
+                  "rssBytes": 50413568,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 2,
+                  "rssBytes": 11489280,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 20.105,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "40292352",
+              "CPUUsageNSec": "383453151000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25858048",
+              "CPUUsageNSec": "8766794000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 513,
+                  "rssBytes": 51466240,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 4,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 516,
+                  "rssBytes": 51617792,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 4,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 30.145,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29097984",
+              "CPUUsageNSec": "383679296000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25616384",
+              "CPUUsageNSec": "9224713000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 714,
+                  "rssBytes": 51597312,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 6,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 722,
+                  "rssBytes": 51396608,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 7,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 40.187,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28815360",
+              "CPUUsageNSec": "383778614000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25620480",
+              "CPUUsageNSec": "9445503000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 851,
+                  "rssBytes": 51720192,
+                  "fds": 14
+                },
+                "872909": {
+                  "birth": "9181504",
+                  "cpuTicks": 0,
+                  "rssBytes": 3903488,
+                  "fds": 5
+                },
+                "872934": {
+                  "birth": "9181506",
+                  "cpuTicks": 0,
+                  "rssBytes": 196608,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 8,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 860,
+                  "rssBytes": 51466240,
+                  "fds": 14
+                },
+                "872911": {
+                  "birth": "9181504",
+                  "cpuTicks": 0,
+                  "rssBytes": 3772416,
+                  "fds": 5
+                },
+                "872935": {
+                  "birth": "9181506",
+                  "cpuTicks": 0,
+                  "rssBytes": 540672,
+                  "fds": 3
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 8,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 50.215,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29077504",
+              "CPUUsageNSec": "383868577000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25616384",
+              "CPUUsageNSec": "9662627000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 982,
+                  "rssBytes": 51752960,
+                  "fds": 14
+                },
+                "873466": {
+                  "birth": "9182504",
+                  "cpuTicks": 1,
+                  "rssBytes": 10653696,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 9,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 989,
+                  "rssBytes": 51429376,
+                  "fds": 14
+                },
+                "873469": {
+                  "birth": "9182504",
+                  "cpuTicks": 1,
+                  "rssBytes": 9867264,
+                  "fds": 3
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 9,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 60.242,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28946432",
+              "CPUUsageNSec": "384223913000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25894912",
+              "CPUUsageNSec": "10373807000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1171,
+                  "rssBytes": 51437568,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 11,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1175,
+                  "rssBytes": 51568640,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 11,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 70.287,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29093888",
+              "CPUUsageNSec": "384326457000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25845760",
+              "CPUUsageNSec": "10589905000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1300,
+                  "rssBytes": 51404800,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 12,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1304,
+                  "rssBytes": 51765248,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 11,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 80.322,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28946432",
+              "CPUUsageNSec": "384428791000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25845760",
+              "CPUUsageNSec": "10809482000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1436,
+                  "rssBytes": 51404800,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 14,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1438,
+                  "rssBytes": 51871744,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 13,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 90.362,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29003776",
+              "CPUUsageNSec": "384720044000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25804800",
+              "CPUUsageNSec": "11368613000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1697,
+                  "rssBytes": 51539968,
+                  "fds": 14
+                },
+                "875995": {
+                  "birth": "9186524",
+                  "cpuTicks": 0,
+                  "rssBytes": 4030464,
+                  "fds": 5
+                },
+                "876000": {
+                  "birth": "9186525",
+                  "cpuTicks": 0,
+                  "rssBytes": 1757184,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 17,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1645,
+                  "rssBytes": 51785728,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 15,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 100.404,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29003776",
+              "CPUUsageNSec": "384805310000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25833472",
+              "CPUUsageNSec": "11587246000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1825,
+                  "rssBytes": 51429376,
+                  "fds": 14
+                },
+                "876561": {
+                  "birth": "9187524",
+                  "cpuTicks": 0,
+                  "rssBytes": 8810496,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 19,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1774,
+                  "rssBytes": 51421184,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 17,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 110.422,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29003776",
+              "CPUUsageNSec": "384895206000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25804800",
+              "CPUUsageNSec": "11798066000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 1955,
+                  "rssBytes": 51466240,
+                  "fds": 14
+                },
+                "877202": {
+                  "birth": "9188524",
+                  "cpuTicks": 2,
+                  "rssBytes": 4894720,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 20,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 1904,
+                  "rssBytes": 51421184,
+                  "fds": 14
+                },
+                "877215": {
+                  "birth": "9188528",
+                  "cpuTicks": 0,
+                  "rssBytes": 3837952,
+                  "fds": 5
+                },
+                "877239": {
+                  "birth": "9188530",
+                  "cpuTicks": 0,
+                  "rssBytes": 3956736,
+                  "fds": 5
+                },
+                "877242": {
+                  "birth": "9188531",
+                  "cpuTicks": 0,
+                  "rssBytes": 3248128,
+                  "fds": 3
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 18,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 120.461,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29294592",
+              "CPUUsageNSec": "385252766000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25911296",
+              "CPUUsageNSec": "12369935000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2095,
+                  "rssBytes": 51384320,
+                  "fds": 14
+                },
+                "877895": {
+                  "birth": "9189524",
+                  "cpuTicks": 4,
+                  "rssBytes": 15634432,
+                  "fds": 3
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 22,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2092,
+                  "rssBytes": 51269632,
+                  "fds": 14
+                },
+                "877907": {
+                  "birth": "9189528",
+                  "cpuTicks": 1,
+                  "rssBytes": 9015296,
+                  "fds": 3
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 20,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 130.486,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29163520",
+              "CPUUsageNSec": "385359693000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25858048",
+              "CPUUsageNSec": "12586511000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2226,
+                  "rssBytes": 51470336,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 23,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2223,
+                  "rssBytes": 51265536,
+                  "fds": 14
+                },
+                "878510": {
+                  "birth": "9190528",
+                  "cpuTicks": 5,
+                  "rssBytes": 23085056,
+                  "fds": 3
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 20,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 140.511,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28663808",
+              "CPUUsageNSec": "385694513000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25796608",
+              "CPUUsageNSec": "13033790000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2367,
+                  "rssBytes": 51527680,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 25,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2367,
+                  "rssBytes": 51335168,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 22,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 150.535,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28741632",
+              "CPUUsageNSec": "386014435000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25661440",
+              "CPUUsageNSec": "13733886000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2497,
+                  "rssBytes": 50257920,
+                  "fds": 14
+                },
+                "883801": {
+                  "birth": "9192525",
+                  "cpuTicks": 8,
+                  "rssBytes": 0,
+                  "fds": 0
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 27,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2494,
+                  "rssBytes": 51376128,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 23,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 160.561,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28741632",
+              "CPUUsageNSec": "386092768000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25796608",
+              "CPUUsageNSec": "13956812000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2701,
+                  "rssBytes": 51527680,
+                  "fds": 11
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 28,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2702,
+                  "rssBytes": 51605504,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 25,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 170.585,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29089792",
+              "CPUUsageNSec": "386169727000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25792512",
+              "CPUUsageNSec": "14168517000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 2828,
+                  "rssBytes": 51359744,
+                  "fds": 14
+                },
+                "885790": {
+                  "birth": "9194544",
+                  "cpuTicks": 0,
+                  "rssBytes": 3805184,
+                  "fds": 5
+                },
+                "885804": {
+                  "birth": "9194545",
+                  "cpuTicks": 0,
+                  "rssBytes": 3600384,
+                  "fds": 5
+                },
+                "864718": {
+                  "birth": "9176503",
+                  "cpuTicks": 28,
+                  "rssBytes": 10854400,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 2837,
+                  "rssBytes": 51458048,
+                  "fds": 11
+                },
+                "864716": {
+                  "birth": "9176503",
+                  "cpuTicks": 25,
+                  "rssBytes": 11743232,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 180.609,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "28839936",
+              "CPUUsageNSec": "386472278000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "26054656",
+              "CPUUsageNSec": "14888961000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3023,
+                  "rssBytes": 51429376,
+                  "fds": 14
+                },
+                "886608": {
+                  "birth": "9195544",
+                  "cpuTicks": 1,
+                  "rssBytes": 12406784,
+                  "fds": 3
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 2,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3029,
+                  "rssBytes": 51265536,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 1,
+                  "rssBytes": 11198464,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 190.632,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29220864",
+              "CPUUsageNSec": "386549944000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25812992",
+              "CPUUsageNSec": "15112258000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3157,
+                  "rssBytes": 51200000,
+                  "fds": 14
+                },
+                "887185": {
+                  "birth": "9196544",
+                  "cpuTicks": 3,
+                  "rssBytes": 21233664,
+                  "fds": 3
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 3,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3164,
+                  "rssBytes": 50958336,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 2,
+                  "rssBytes": 11198464,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 200.658,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29401088",
+              "CPUUsageNSec": "386626476000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25989120",
+              "CPUUsageNSec": "15324286000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3291,
+                  "rssBytes": 51253248,
+                  "fds": 14
+                },
+                "887626": {
+                  "birth": "9197544",
+                  "cpuTicks": 6,
+                  "rssBytes": 21213184,
+                  "fds": 3
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 4,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3297,
+                  "rssBytes": 50921472,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 2,
+                  "rssBytes": 11198464,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 210.686,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29229056",
+              "CPUUsageNSec": "386883684000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25796608",
+              "CPUUsageNSec": "15914786000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3433,
+                  "rssBytes": 51470336,
+                  "fds": 11
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 4,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3496,
+                  "rssBytes": 51167232,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 3,
+                  "rssBytes": 11198464,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 220.71,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29384704",
+              "CPUUsageNSec": "386960128000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25796608",
+              "CPUUsageNSec": "16132915000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3574,
+                  "rssBytes": 51408896,
+                  "fds": 11
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 5,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3638,
+                  "rssBytes": 51027968,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 4,
+                  "rssBytes": 11198464,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 230.734,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29536256",
+              "CPUUsageNSec": "387042440000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25939968",
+              "CPUUsageNSec": "16364864000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3785,
+                  "rssBytes": 51499008,
+                  "fds": 11
+                },
+                "885956": {
+                  "birth": "9194880",
+                  "cpuTicks": 6,
+                  "rssBytes": 11087872,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3847,
+                  "rssBytes": 51003392,
+                  "fds": 11
+                },
+                "886077": {
+                  "birth": "9194925",
+                  "cpuTicks": 6,
+                  "rssBytes": 11137024,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 240.759,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29024256",
+              "CPUUsageNSec": "387354696000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25800704",
+              "CPUUsageNSec": "16976505000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3931,
+                  "rssBytes": 50634752,
+                  "fds": 11
+                },
+                "890065": {
+                  "birth": "9201326",
+                  "cpuTicks": 0,
+                  "rssBytes": 9994240,
+                  "fds": 4
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3887,
+                  "rssBytes": 51003392,
+                  "fds": 11
+                },
+                "889936": {
+                  "birth": "9201196",
+                  "cpuTicks": 0,
+                  "rssBytes": 10645504,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 250.78,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29048832",
+              "CPUUsageNSec": "387431505000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25800704",
+              "CPUUsageNSec": "17193988000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 3978,
+                  "rssBytes": 51503104,
+                  "fds": 11
+                },
+                "890791": {
+                  "birth": "9202553",
+                  "cpuTicks": 0,
+                  "rssBytes": 9474048,
+                  "fds": 4
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 3928,
+                  "rssBytes": 51003392,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 260.803,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29241344",
+              "CPUUsageNSec": "387713910000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25804800",
+              "CPUUsageNSec": "17689748000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 4026,
+                  "rssBytes": 51388416,
+                  "fds": 11
+                },
+                "891554": {
+                  "birth": "9203397",
+                  "cpuTicks": 1,
+                  "rssBytes": 11259904,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 4101,
+                  "rssBytes": 51572736,
+                  "fds": 11
+                },
+                "890795": {
+                  "birth": "9202571",
+                  "cpuTicks": 1,
+                  "rssBytes": 11411456,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 270.827,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29818880",
+              "CPUUsageNSec": "388043683000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25894912",
+              "CPUUsageNSec": "18411058000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 4306,
+                  "rssBytes": 51507200,
+                  "fds": 11
+                },
+                "892366": {
+                  "birth": "9204457",
+                  "cpuTicks": 0,
+                  "rssBytes": 10563584,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 4245,
+                  "rssBytes": 50855936,
+                  "fds": 11
+                },
+                "892337": {
+                  "birth": "9204338",
+                  "cpuTicks": 1,
+                  "rssBytes": 10895360,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 280.852,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29233152",
+              "CPUUsageNSec": "388134783000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "25788416",
+              "CPUUsageNSec": "18641527000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 4608,
+                  "rssBytes": 52248576,
+                  "fds": 11
+                },
+                "892366": {
+                  "birth": "9204457",
+                  "cpuTicks": 2,
+                  "rssBytes": 11096064,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 4542,
+                  "rssBytes": 54153216,
+                  "fds": 11
+                },
+                "892337": {
+                  "birth": "9204338",
+                  "cpuTicks": 3,
+                  "rssBytes": 10895360,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "atSeconds": 290.877,
+          "units": {
+            "agent-observer.service": {
+              "ActiveState": "active",
+              "MainPID": "3135429",
+              "NRestarts": "0",
+              "MemoryCurrent": "29126656",
+              "CPUUsageNSec": "388215620000"
+            },
+            "mesh-plus-agent.service": {
+              "ActiveState": "active",
+              "MainPID": "824127",
+              "NRestarts": "0",
+              "MemoryCurrent": "26128384",
+              "CPUUsageNSec": "18872853000"
+            },
+            "rlcd-agent-dashboard.service": {
+              "ActiveState": "inactive",
+              "MainPID": "0",
+              "NRestarts": "0",
+              "MemoryCurrent": "[not set]",
+              "CPUUsageNSec": "[not set]"
+            }
+          },
+          "readers": [
+            {
+              "pid": 864658,
+              "tree": {
+                "864658": {
+                  "birth": "9176485",
+                  "cpuTicks": 4828,
+                  "rssBytes": 52006912,
+                  "fds": 11
+                },
+                "892366": {
+                  "birth": "9204457",
+                  "cpuTicks": 4,
+                  "rssBytes": 11259904,
+                  "fds": 7
+                }
+              }
+            },
+            {
+              "pid": 864659,
+              "tree": {
+                "864659": {
+                  "birth": "9176485",
+                  "cpuTicks": 4765,
+                  "rssBytes": 54239232,
+                  "fds": 11
+                },
+                "892337": {
+                  "birth": "9204338",
+                  "cpuTicks": 4,
+                  "rssBytes": 10895360,
+                  "fds": 7
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "normal-workload descriptive samples; not causal AB benchmark",
+    "no_added_reader retains existing dashboard/other readers",
+    "owned CLI/descendant snapshots; remote SSH server cost excluded",
+    "startup excluded; original services/provider settings preserved"
+  ]
+}

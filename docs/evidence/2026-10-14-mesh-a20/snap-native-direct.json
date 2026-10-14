@@ -1,0 +1,391 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.7.0a4",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791998628052
+      },
+      "cliCollectedAt": 1791998628386,
+      "nativeAfterAt": {
+        "codex": 1791998628532
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 98,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 98,
+          "nativeAfterRows": 98,
+          "cliRows": 98,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 61,
+            "classification": {
+              "user": 59,
+              "unknown": 1,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 98,
+            "title": 52,
+            "cwd": 98,
+            "runtime": 98,
+            "phase": 98,
+            "activity": 61,
+            "kind": 97,
+            "sessionTreeRootId": 98,
+            "blockedReasons": 98,
+            "createdAt": 98,
+            "hasSavedHistory": 98,
+            "outcome": 61,
+            "outcomeAt": 59,
+            "lastUpdated": 98,
+            "latestTurn": 61,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39,
+            "latestTurn_unproved": 37,
+            "kind_unproved": 1
+          },
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791996940000
+            },
+            {
+              "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+              "title": "mesh-plus",
+              "cwd": "/home/bryan/code/mesh-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791994817000
+            },
+            {
+              "id": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+              "title": "codex-plus",
+              "cwd": "/home/bryan/code/codex-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791998351000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791996940000
+            },
+            {
+              "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+              "title": "mesh-plus",
+              "cwd": "/home/bryan/code/mesh-plus",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791994817000
+            },
+            {
+              "id": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+              "title": "codex-plus",
+              "cwd": "/home/bryan/code/codex-plus",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791998351000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 3,
+        "doctorSessionCount": true,
+        "cliRows": 60,
+        "filteredChildren": 38
+      },
+      "nativeRuntime": {
+        "pid": 62725,
+        "startTicks": "107740",
+        "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+        "provider": "codex",
+        "version": "0.162.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791998629115
+      },
+      "cliCollectedAt": 1791998629461,
+      "nativeAfterAt": {
+        "codex": 1791998629617
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 98,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 98,
+          "nativeAfterRows": 98,
+          "cliRows": 98,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 61,
+            "classification": {
+              "user": 59,
+              "unknown": 1,
+              "child": 38
+            }
+          },
+          "checks": {
+            "membership": 98,
+            "title": 52,
+            "cwd": 98,
+            "runtime": 98,
+            "phase": 98,
+            "activity": 61,
+            "kind": 97,
+            "sessionTreeRootId": 98,
+            "blockedReasons": 98,
+            "createdAt": 98,
+            "hasSavedHistory": 98,
+            "outcome": 61,
+            "outcomeAt": 59,
+            "lastUpdated": 97,
+            "latestTurn": 61,
+            "title_unproved": 46,
+            "activity_unproved": 37,
+            "outcome_unproved": 37,
+            "outcomeAt_unproved": 39,
+            "latestTurn_unproved": 37,
+            "kind_unproved": 1
+          },
+          "nativeActive": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791996940000
+            },
+            {
+              "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+              "title": "mesh-plus",
+              "cwd": "/home/bryan/code/mesh-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791994817000
+            },
+            {
+              "id": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+              "title": "codex-plus",
+              "cwd": "/home/bryan/code/codex-plus",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791998351000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "title": "agent-observer",
+              "cwd": "/home/bryan/code/agent-observer",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791996940000
+            },
+            {
+              "id": "01a1223d-3bf0-7623-bdba-746f2c5fc9ad",
+              "title": "mesh-plus",
+              "cwd": "/home/bryan/code/mesh-plus",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791994817000
+            },
+            {
+              "id": "01a12ee8-6f67-7f23-808b-c2a08f1a9b80",
+              "title": "codex-plus",
+              "cwd": "/home/bryan/code/codex-plus",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791998351000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": [
+            {
+              "id": "01a0fece-0176-7a33-abb3-e99fdb38417a",
+              "field": "lastUpdated",
+              "result": "sampling_race"
+            }
+          ]
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 3,
+        "doctorSessionCount": true,
+        "cliRows": 60,
+        "filteredChildren": 38
+      },
+      "nativeRuntime": {
+        "pid": 62725,
+        "startTicks": "107740",
+        "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+        "provider": "codex",
+        "version": "0.162.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}

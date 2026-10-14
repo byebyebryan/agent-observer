@@ -1,9 +1,10 @@
 # Agent Observer
 
 The [native title-helper correction](docs/evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
-Agent publishers a1/a17, Tmux and the historical writer keep their independent
-selections. The dated a1 collector acceptance below remains historical.
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
+publishers separately select a4/Mesh a20.
+Tmux and the historical writer keep their independent selections. The dated
+a1 collector acceptance below remains historical.
 
 Shared host-side discovery and monitoring for coding agents. Codex is the only
 implemented native provider; [Claude support is retired](docs/claude-retirement-plan.md).
@@ -18,9 +19,10 @@ ready; dashboard adoption has its own bundle, service and device acceptance.
 ## Current status
 
 [Observer `0.7.0a3`](artifacts/observer-0.7.0a3.json) supplies
-[API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) through explicit Mesh
-Agent v3 with [Mesh `0.1.0a17`](artifacts/mesh-0.1.0a17.json). Snap and Starship select core-only a3 collectors. Agent publishers retain their
-independently accepted a1/a17 tuple. The collection correction preserves
+[API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) locally. Snap and Starship
+select core-only a3 collectors. Optional Agent publishers use explicit profile v3
+with [Mesh `0.1.0a20`](artifacts/mesh-0.1.0a20.json) and the independently accepted
+a4 owner package. The collection correction preserves
 known internal helpers and hides them from ordinary rosters, with
 `--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
 separates native, artifact, transport, resource and managed adoption evidence.
@@ -29,14 +31,17 @@ Tmux keeps its independently selected native owner/profile/factory; the historic
 are not a new GitHub release. The previous 0.6.0a2/Mesh a16 tuple is retained for rollback.
 
 Both hosts separately select the read CLI from
-[Observer `0.7.0a2`](artifacts/observer-0.7.0a2.json) /
-[Mesh `0.1.0a18`](artifacts/mesh-0.1.0a18.json). The explicit
+[Observer `0.7.0a4`](artifacts/observer-0.7.0a4.json) /
+[Mesh `0.1.0a20`](artifacts/mesh-0.1.0a20.json). The explicit
 `agent-observer mesh watch --human --prepared` path preserves the same wire and
 expiry meanings. Installed/native comparison and reader-only rollback pass;
-ordinary CLI defaults remain legacy. At the sampled three-read cadence, the
-changing-watch benchmark saves about 36% total consumer CPU and 86% repeated-read
-CPU. Whole fleet watches still use 12–16% of one core, and the current RLCD
-application remains on its previous bundle. Hosted wheel releases are pending.
+Ordinary CLI defaults remain legacy. The earlier prepared-helper benchmark
+saves about 36% total consumer CPU and
+86% repeated-read CPU at its sampled cadence. The [a20 adoption ledger](docs/evidence/2026-10-14-mesh-a20/REPORT.md)
+separately records acquisition-ordering correction, installed/native and paired
+Tmux checks, staged role rollback, and mixed cost results. It establishes no
+universal a20 CPU saving. RLCD retains its independent bundle/dependency pair;
+hosted wheel releases remain pending.
 
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies

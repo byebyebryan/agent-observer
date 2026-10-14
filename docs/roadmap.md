@@ -1,14 +1,15 @@
 # Agent Observer roadmap
 
 The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
-Agent publishers a1/a17, Tmux and the historical writer keep their independent
-selections. The dated a1 collector acceptance below remains historical.
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
+publishers separately select a4/Mesh a20.
+Tmux and the historical writer keep their independent selections. The dated
+a1 collector acceptance below remains historical.
 
 Current producer checkpoint, 2026-10-14: Codex-only
 [Observer 0.7.0a3](../artifacts/observer-0.7.0a3.json) supplies API 4/read 6/Service 4
-and selects core-only collectors on Snap and Starship. Agent publication retains
-a1/Mesh a17/profile v3. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
+and selects core-only collectors on Snap and Starship. Agent publication separately selects
+a4/Mesh a20/profile v3. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
 metadata preserves activity/order and original independently expiring receipts.
 The [API 4 handoff](api-v4.md) and
 [operational receipt](evidence/2026-10-13-system-classification/REPORT.md) cover
@@ -17,8 +18,9 @@ SDK 1 and Read/Delivery 1 remain unchanged. Tmux's a7/profile v1 factory and the
 historical writer retain independent ownership. Claude native use stays external
 following retirement; the previous 0.6.0a2/Mesh a16 tuple remains a rollback artifact.
 
-The [prepared read acceptance](evidence/2026-10-14-prepared-reads/REPORT.md)
-separately selects Observer 0.7.0a2/Mesh a18 read CLI on both hosts. API and
+The a2/a18 helper accepted in the
+[prepared-read ledger](evidence/2026-10-14-prepared-reads/REPORT.md) is retained
+in the a4/a20 read CLI on both hosts. API and
 profile meanings stay unchanged. Static Agent preparation and owned current-row
 reads meet the consumer cost targets at observed cadence, with legacy defaults,
 installed/native equality and reader-only rollback. The
@@ -35,7 +37,7 @@ accepted separately in the device repository. Remaining work has separate scope:
 - Profile remaining complete watch costs separately: installed prepared fleet
   CLI readers still use 12–16% of one core; source/publisher cost and remote SSH
   server work have their own ownership and measurement bounds.
-- Hosted publication of the accepted Mesh a18 SDK and exact Observer a2 wheel;
+- Hosted publication of the accepted Mesh a20 SDK and exact Observer a4 wheel;
   source push and green CI are already recorded independently.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
   no exact blocked/current-phase clock is promised.
@@ -47,6 +49,11 @@ accepted separately in the device repository. Remaining work has separate scope:
 Agent Plus and attachment/actions remain parked; its temporary native-manager
 entry is retired. Private a21 allocation work is not merged/promoted. Producer
 acceptance does not imply a frontend or device gate.
+
+The [a20 owner adoption](evidence/2026-10-14-mesh-a20/REPORT.md) corrects
+independent acquisition ordering and qualifies the optional roles separately.
+SDK 1/preparation 1 and API 4 meanings remain unchanged; complete local cost
+results are mixed, with further fleet/application costs reported separately.
 
 ## Historical execution checkpoints
 

@@ -6,19 +6,21 @@ not modified RLCD source, bundle, firmware, USB transport or application service
 
 ## Accepted input and boundary
 
-Use the exact [Observer 0.7.0a2](../artifacts/observer-0.7.0a2.json) and
-[Mesh 0.1.0a18](../artifacts/mesh-0.1.0a18.json) wheel pair. Hashes:
+The [a20 follow-up](evidence/2026-10-14-mesh-a20/REPORT.md) accepts the exact
+[Observer 0.7.0a4](../artifacts/observer-0.7.0a4.json) and
+[Mesh 0.1.0a20](../artifacts/mesh-0.1.0a20.json) wheel pair. The earlier a2/a18
+helper acceptance remains separate historical evidence. Hashes:
 
-- Observer: `d4a37999bcf5652d877572230746d9d0c3c306362b4c174b29cd642414f5768d`.
-- Mesh: `035f0a54a06581e702ad79cce93ecf56f3d5dcf8d28535b533c0098e97ae2098`.
+- Observer: `26662b4e3a7c50ede7a243f82efd374ae8bc4303db0c7682909e4bbc76099757`.
+- Mesh: `e02306b2323ddd845fec2c1ee82dd25b429878edefcee4cf8ac2b552535fc200`.
 
 Both hosts archive these bytes under
-`~/.local/share/agent-observer/0.7.0a2-d4a37999bcf5652d-mesh-a18-prepared/artifact/`.
+`~/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/artifact/`.
 The package pair is independently installed/native-tested; hosted wheel
 publication is separate. Archive checksums take precedence over package names.
 Observation remains API 4 / read 6 / Service 4 / explicit Agent profile v3,
 SDK 1 plus optional preparation/read interface 1. No wire migration is needed.
-Collectors and resident publishers retain a1/a17. Ordinary CLI defaults remain
+Collectors retain core-only a3; resident Agent publishers select a4/a20. Ordinary CLI defaults remain
 legacy; `mesh watch --human --prepared` exercises the optional path.
 
 The [local interface](prepared-agent-read-interface.md) owns no network task,
@@ -107,7 +109,7 @@ Installed prepared fleet CLI watches still use roughly **12–16% of one core**
 in five-minute normal-workflow windows. The unchanged RLCD application uses
 roughly **19–22%**. Reader/carrier/admission pipeline and remote source costs are
 outside the consumer benchmark; measure the complete application before claiming
-the daily CPU issue is closed. Hosted Mesh a18/Observer a2 distribution remains
+the daily CPU issue is closed. Hosted Mesh a20/Observer a4 distribution remains
 separate from the exact locally archived and accepted bytes.
 
 Bring a producer/SDK defect back as a separate checkpoint with normalized input
@@ -115,3 +117,10 @@ shape, original receipt/clock/delivery facts and exact artifacts. Avoid frontend
 workarounds that renew leases, treat omission as parked, or access private guard
 internals. Rich occurrence notifications, attachment/actions, exact phase age
 and new providers remain outside this handoff.
+
+The a20 source/publisher correction separates watch receipt histories from
+serialized snapshot/proof acquisitions. Original expiry, identity and the
+prepared local interface remain unchanged. Recreate guards/processes when
+adopting the installed pair. Mixed local CPU results are not a general SDK
+speedup; accept the complete RLCD application independently. Its selected
+a1/a17 dependency environment and bundle were preserved by Observer rollout.
