@@ -32,7 +32,8 @@ separate future work. Publisher ownership is implemented in the optional
 networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
-Normal collection and Agent publication retain 0.7.0a1/Mesh a17 on both hosts.
+Normal collection selects core-only 0.7.0a3 on both hosts. Agent publication
+retains 0.7.0a1/Mesh a17.
 The read CLI separately selects 0.7.0a2/Mesh a18 with an explicit optional
 prepared human watch. The [accepted read helper](prepared-agent-read-interface.md)
 belongs to the optional networking/read component: Mesh owns full admission,

@@ -17,10 +17,10 @@ ready; dashboard adoption has its own bundle, service and device acceptance.
 
 ## Current status
 
-[Observer `0.7.0a1`](artifacts/observer-0.7.0a1.json) supplies
+[Observer `0.7.0a3`](artifacts/observer-0.7.0a3.json) supplies
 [API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) through explicit Mesh
-Agent v3 with [Mesh `0.1.0a17`](artifacts/mesh-0.1.0a17.json). Snap and Starship
-retain this tuple for collection and Agent publication. It preserves
+Agent v3 with [Mesh `0.1.0a17`](artifacts/mesh-0.1.0a17.json). Snap and Starship select core-only a3 collectors. Agent publishers retain their
+independently accepted a1/a17 tuple. The collection correction preserves
 known internal helpers and hides them from ordinary rosters, with
 `--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
 separates native, artifact, transport, resource and managed adoption evidence.
