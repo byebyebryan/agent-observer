@@ -1,9 +1,9 @@
 # Agent Observer roadmap
 
-Current producer checkpoint, 2026-10-13: Codex-only
+Current producer checkpoint, 2026-10-14: Codex-only
 [Observer 0.7.0a1](../artifacts/observer-0.7.0a1.json) supplies API 4/read 6/Service 4
-and is selected with Mesh a17/profile v3 on Snap and Starship. Known system
-classification is preserved and ordinary rosters exclude it. Native turn/update
+and remains selected for collection/publication with Mesh a17/profile v3 on
+Snap and Starship. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
 metadata preserves activity/order and original independently expiring receipts.
 The [API 4 handoff](api-v4.md) and
 [operational receipt](evidence/2026-10-13-system-classification/REPORT.md) cover
@@ -12,23 +12,32 @@ SDK 1 and Read/Delivery 1 remain unchanged. Tmux's a7/profile v1 factory and the
 historical writer retain independent ownership. Claude native use stays external
 following retirement; the previous 0.6.0a2/Mesh a16 tuple remains a rollback artifact.
 
+The [prepared read acceptance](evidence/2026-10-14-prepared-reads/REPORT.md)
+separately selects Observer 0.7.0a2/Mesh a18 read CLI on both hosts. API and
+profile meanings stay unchanged. Static Agent preparation and owned current-row
+reads meet the consumer cost targets at observed cadence, with legacy defaults,
+installed/native equality and reader-only rollback. The
+[RLCD handoff](rlcd-prepared-read-handoff.md) is ready for independent adoption.
+
 The read-client handoff is ready for downstream work. The RLCD title-first
 roster, system exclusion, feed loss/recovery and physical readability pass is
 accepted separately in the device repository. Remaining work has separate scope:
 
 - 349 roster/feed adoption and any further RLCD product changes.
-- The [prepared Agent read-client pass](prepared-read-client-plan.md): certify
-  Observer's rules for Mesh's existing opt-in guard, measure changing-publication
-  and export costs, accept the CLI/package independently, then hand adoption to
-  RLCD. This is planned; the a1/a17 selection remains. Existing fleet-watcher cost
-  is not solved by adding native timing.
+- RLCD adoption of the accepted optional prepared helper, including matched
+  application CPU and bundle/service/device rollback. Its current application
+  still uses about 19–22% of one core; consumer savings do not establish that fix.
+- Profile remaining complete watch costs separately: installed prepared fleet
+  CLI readers still use 12–16% of one core; source/publisher cost and remote SSH
+  server work have their own ownership and measurement bounds.
+- Hosted publication of the accepted Mesh a18 SDK and exact Observer a2 wheel;
+  source push and green CI are already recorded independently.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
   no exact blocked/current-phase clock is promised.
 - Native occurrence events/notification enrichment, if a concrete client needs it.
 - Optional Mesh transport/WSS adoption with its own capacity/credential gates.
 - Physical-suspend and post-TUI-closure proof for the accepted Codex limits.
 - A new provider only after runtime/identity/activity/capability review.
-- Source push/release/hosted CI when explicitly requested as a separate delivery.
 
 Agent Plus and attachment/actions remain parked; its temporary native-manager
 entry is retired. Private a21 allocation work is not merged/promoted. Producer

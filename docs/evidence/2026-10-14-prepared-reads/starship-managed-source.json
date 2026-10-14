@@ -1,0 +1,20 @@
+{
+  "agent-observer.json": {
+    "beforeSha256": "73f67b279eb9d76d23521267fbfbb7244fdcfd1ab0312ac55a877d9d0d2665b5",
+    "changedFields": [
+      "readerPrefix"
+    ],
+    "afterSha256": "3edc5f601dc11289a57a3b2b2a0bf953287aceca9d91b6e4502bf73e15aa9deb"
+  },
+  "agent-observer-mesh.json": {
+    "beforeSha256": "cc8a611440f6d1bf897c6d175dbf54e1340df1b00dfa083e8192e5b5a48f62ab",
+    "changedFields": [
+      "readerPrefix",
+      "archive",
+      "observer",
+      "mesh",
+      "role"
+    ],
+    "afterSha256": "31fee54866fc37247fa6d224603c24a3c111bd6975142f4d5ce2cc33a906e872"
+  }
+}

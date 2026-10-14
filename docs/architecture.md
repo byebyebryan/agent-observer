@@ -1,6 +1,6 @@
 # Agent Observer architecture boundaries
 
-Current implementation, 2026-10-13: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
+Current implementation, 2026-10-14: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
 interfaces remain provider-neutral: API 4, read wire 6, Service 4 and Mesh SDK 1.
 Native Claude workflows remain external. No Claude collector, SDK/history
@@ -27,7 +27,17 @@ separate future work. Publisher ownership is implemented in the optional
 networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
-Normal collection, reads and Agent publication use 0.7.0a1/Mesh a17 on both hosts.
+Normal collection and Agent publication retain 0.7.0a1/Mesh a17 on both hosts.
+The read CLI separately selects 0.7.0a2/Mesh a18 with an explicit optional
+prepared human watch. The [accepted read helper](prepared-agent-read-interface.md)
+belongs to the optional networking/read component: Mesh owns full admission,
+immutable generations, expiry and delivery; Observer compiles deterministic
+Agent rules and retains the header once per replacement. Timer reads return
+owned current rows without revalidating/reconstructing full history. Polling and
+ordinary watch defaults keep their existing paths. No task, reconnect, alert,
+selection or device clock policy moves into the helper. The
+[acceptance ledger](evidence/2026-10-14-prepared-reads/REPORT.md) distinguishes
+consumer savings, remaining whole-pipeline cost and independent RLCD adoption.
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
 Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
 0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical

@@ -2,13 +2,14 @@
 
 ## Current API 4 and optional preparation
 
-Ordinary collection/publication/read selection is Observer a1 / Mesh a17,
+Collection/publication retains Observer a1 / Mesh a17; the read CLI separately
+selects Observer a2 / Mesh a18 on Snap and Starship. Both use
 API 4, snapshot-watch 6, Service 4 and explicit Agent profile v3. Read the
 [current handoff](api-v4.md). Core/local service stay Mesh-free; optional reads
 use existing cached IPC/SSH and never query provider or attachment inventory.
 
 The distinct [Observer a2](../artifacts/observer-0.7.0a2.json) /
-[Mesh a18](../artifacts/mesh-0.1.0a18.json) preparation candidate adds:
+[Mesh a18](../artifacts/mesh-0.1.0a18.json) accepted preparation package adds:
 
 ```sh
 agent-observer mesh watch --human --prepared
@@ -20,8 +21,11 @@ agent-observer mesh watch --human --prepared --local-host snap --scope local
 list and raw watch paths keep their prior admission and lossless wire behavior.
 The flag requires preparation interface 1; unsupported dependencies fail closed
 before reader construction, without a legacy fallback. Source/candidate acceptance
-and operational selection are recorded separately in the
+and reader-only rollback/reselection are recorded separately in the
 [ledger](evidence/2026-10-14-prepared-reads/REPORT.md).
+Exact wheels are archived on both hosts; hosted publication is independently
+pending. The [RLCD adoption handoff](rlcd-prepared-read-handoff.md) preserves its
+separate immutable application and device gates.
 
 For Python clients, the [optional read interface](prepared-agent-read-interface.md)
 provides `AgentPreparation` and `PreparedAgentWatch`. Repeated `read(now_ms, clock)`
