@@ -24,6 +24,8 @@ _UUID = re.compile(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\Z", re
 _WAIT_FLAGS = frozenset({"waitingOnApproval", "waitingOnUserInput"})
 _STATUS = frozenset({"notLoaded", "idle", "active", "systemError"})
 _SOURCES = frozenset({"cli", "vscode", "exec", "appServer", "unknown"})
+# Native feature tags require explicit helper ownership; unknown tags stay unknown.
+_SYSTEM_THREAD_SOURCES = frozenset({"system", "thread_title"})
 _MAX_HISTORY_UNIX_SECONDS = 4_000_000_000
 
 
@@ -106,7 +108,7 @@ def _thread_classification(source, thread_source):
         if source_is_bounded:
             return source_kind, "user", None
         return source_kind, "unknown", "thread_classification_unavailable"
-    if thread_source == "system":
+    if isinstance(thread_source, str) and thread_source in _SYSTEM_THREAD_SOURCES:
         source_is_bounded = source is None or (isinstance(source, str) and source in _SOURCES)
         if source_is_bounded:
             return source_kind, "system", None
