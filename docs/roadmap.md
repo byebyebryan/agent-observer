@@ -17,8 +17,11 @@ roster, system exclusion, feed loss/recovery and physical readability pass is
 accepted separately in the device repository. Remaining work has separate scope:
 
 - 349 roster/feed adoption and any further RLCD product changes.
-- Further validation/copy-cost optimization under a separate fixed-trace study;
-  existing fleet-watcher cost is not solved by adding native timing.
+- The [prepared Agent read-client pass](prepared-read-client-plan.md): certify
+  Observer's rules for Mesh's existing opt-in guard, measure changing-publication
+  and export costs, accept the CLI/package independently, then hand adoption to
+  RLCD. This is planned; the a1/a17 selection remains. Existing fleet-watcher cost
+  is not solved by adding native timing.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
   no exact blocked/current-phase clock is promised.
 - Native occurrence events/notification enrichment, if a concrete client needs it.
