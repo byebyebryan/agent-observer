@@ -5,6 +5,11 @@ implemented native provider; [Claude support is retired](docs/claude-retirement-
 Claude stays under its native session management/Agent View. Observation owns
 no TUI/tmux attachment or provider action.
 
+The next [read-client pass](docs/prepared-read-client-plan.md) follows the first
+real RLCD integration: certify Agent preparation against Mesh's existing opt-in
+watch guard and measure complete read costs before separate client adoption.
+The plan does not change the currently selected producer or dashboard artifacts.
+
 ## Current status
 
 [Observer `0.7.0a1`](artifacts/observer-0.7.0a1.json) supplies
