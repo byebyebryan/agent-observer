@@ -1,7 +1,9 @@
 # Optional prepared Agent read interface 1
 
-R1 specification, 2026-10-14 UTC. Implementation and native adoption require
-the independent gates in the [execution plan](prepared-read-client-plan.md).
+Accepted local interface, 2026-10-14 UTC. Observer 0.7.0a2/Mesh a18 passes
+source, immutable package, native read and reader-only selection gates in the
+[acceptance ledger](evidence/2026-10-14-prepared-reads/REPORT.md). The
+[RLCD handoff](rlcd-prepared-read-handoff.md) retains independent client adoption.
 This additive local Python interface preserves API 4, Service 4, Agent profile
 v3 and Mesh SDK 1. It is not a wire response, collector or transport owner.
 

@@ -49,3 +49,19 @@ exploratory/failed runs separately and repeat decision measurements from frozen
 installed bytes. No profile/owner preparation is automatically selected by a
 successful matrix. Independent native daemon, fixed SSH, live read-selection and
 downstream application proof follow in their own gates.
+
+`compare_deployed.py` compares the old installed a1/a17 legacy tuple with the
+complete a2/a18 prepared tuple over eight serial ABBA/BAAB trials at two hosts /
+500 rows / three reads per publication. It copies the frozen harness to a
+temporary directory, making only the prepared import lazy and omitting missing
+old diagnostic files; fixture-root resolution is explicit. Timing/oracle/schema
+checks remain unchanged. This separate upgrade result does not attribute SDK
+improvements solely to Agent preparation.
+
+`select_reader.py` verifies reader-only rollback/reselection and protected
+controls without restarting services. It mutates only its explicit read CLI
+symlink. `resources.py` runs four descriptive five-minute steady windows, excludes
+ten seconds of startup, records owned CLI/SSH process birth/CPU/RSS/FD and unit
+cgroup samples, then stops only its owned reader process groups. Existing
+applications remain running. Remote SSH server costs and per-window publication
+counts are not captured; summed RSS is not PSS or a strict memory budget.

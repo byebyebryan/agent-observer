@@ -1,8 +1,10 @@
 # Prepared Agent reads and first-consumer follow-up
 
-Date: 2026-10-13 local / 2026-10-14 UTC. Status: proposed execution plan following
-the first real RLCD consumer review. This pass records the plan; implementation,
-artifact publication, operational selection and RLCD adoption have not started.
+Date: 2026-10-13 local / 2026-10-14 UTC. Status: Observer execution accepted
+through R0–R6 within the [receipt](evidence/2026-10-14-prepared-reads/REPORT.md).
+The original plan below retains its proposed gates. Source, installed/native
+acceptance, scoped read selection and the RLCD handoff are complete. Hosted
+wheel release awaits the independent Mesh release; RLCD adoption remains external.
 
 ## Outcome and current boundary
 
@@ -26,8 +28,8 @@ Its [prepared consumer interface 1](https://github.com/byebyebryan/mesh-plus/blo
 and [changing-watch qualification](https://github.com/byebyebryan/mesh-plus/blob/b3deb1fab10b3f247643274fa3dd956b0b2b5572/docs/evidence/2026-10-14-watch/README.md)
 already supply generic immutable admission and current-row expiry checks. They
 are additive to SDK 1 and do not change the accepted wire, profile or lock.
-That candidate is unreleased and unselected; its fixture compiler does not
-certify Observer's Agent semantics. Reuse this seam instead of implementing a
+At preflight that candidate was unreleased and unselected; its fixture compiler
+does not certify Observer's Agent semantics. Reuse this seam instead of implementing a
 second Mesh admission cache here.
 
 ## What the RLCD integration taught us
@@ -261,7 +263,8 @@ certification or the handoff.
 Review each checkpoint, run the applicable checks and commit separately during
 an authorized implementation loop. Summarize achieved targets, exclusions,
 remaining collector/publisher costs and the next independently owned client step.
-This planning change is not execution or publication authorization.
+The original planning change was not execution or publication authorization;
+the subsequent user-authorized loop is recorded in the acceptance ledger.
 
 ## Deferred work
 

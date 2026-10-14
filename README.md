@@ -5,23 +5,33 @@ implemented native provider; [Claude support is retired](docs/claude-retirement-
 Claude stays under its native session management/Agent View. Observation owns
 no TUI/tmux attachment or provider action.
 
-The next [read-client pass](docs/prepared-read-client-plan.md) follows the first
-real RLCD integration: certify Agent preparation against Mesh's existing opt-in
-watch guard and measure complete read costs before separate client adoption.
-The plan does not change the currently selected producer or dashboard artifacts.
+The [prepared read-client pass](docs/evidence/2026-10-14-prepared-reads/REPORT.md)
+certifies Agent rules and an optional owned watch helper after the first RLCD
+integration. The [RLCD adoption handoff](docs/rlcd-prepared-read-handoff.md) is
+ready; dashboard adoption has its own bundle, service and device acceptance.
 
 ## Current status
 
 [Observer `0.7.0a1`](artifacts/observer-0.7.0a1.json) supplies
 [API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) through explicit Mesh
 Agent v3 with [Mesh `0.1.0a17`](artifacts/mesh-0.1.0a17.json). Snap and Starship
-select this tuple for collection, read CLI and Agent publication. It preserves
+retain this tuple for collection and Agent publication. It preserves
 known internal helpers and hides them from ordinary rosters, with
 `--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
 separates native, artifact, transport, resource and managed adoption evidence.
 Tmux keeps its independently selected native owner/profile/factory; the historical
 `0.4.0a16` writer remains unchanged. These local commits and installed packages
-are not a new GitHub release. The previous a2/Mesh a16 tuple is retained for rollback.
+are not a new GitHub release. The previous 0.6.0a2/Mesh a16 tuple is retained for rollback.
+
+Both hosts separately select the read CLI from
+[Observer `0.7.0a2`](artifacts/observer-0.7.0a2.json) /
+[Mesh `0.1.0a18`](artifacts/mesh-0.1.0a18.json). The explicit
+`agent-observer mesh watch --human --prepared` path preserves the same wire and
+expiry meanings. Installed/native comparison and reader-only rollback pass;
+ordinary CLI defaults remain legacy. At the sampled three-read cadence, the
+changing-watch benchmark saves about 36% total consumer CPU and 86% repeated-read
+CPU. Whole fleet watches still use 12–16% of one core, and the current RLCD
+application remains on its previous bundle. Hosted wheel releases are pending.
 
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
