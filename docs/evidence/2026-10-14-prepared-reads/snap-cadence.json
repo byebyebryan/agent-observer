@@ -1,0 +1,322 @@
+{
+  "evidence": "bounded installed cached fleet watch; not independent native completeness",
+  "python": "3.14.8 (main, Oct  2 2026, 10:23:31) [GCC 16.2.1 20260810]",
+  "packages": {
+    "agent-observer": "0.7.0a1",
+    "mesh-plus": "0.1.0a17",
+    "jsonschema": "4.26.0"
+  },
+  "profile": "agent-observer.mesh-candidate.v3",
+  "seconds": 60.009,
+  "frameCounts": {
+    "view": 20
+  },
+  "nativeViewChanges": {
+    "starship": 4,
+    "snap": 3
+  },
+  "oneHzReadsPerReplacement": 3.0,
+  "shapes": [
+    {
+      "atSeconds": 0.007,
+      "hosts": {
+        "snap": {
+          "rows": 0,
+          "delivery": "connecting",
+          "view": "unavailable"
+        },
+        "starship": {
+          "rows": 0,
+          "delivery": "connecting",
+          "view": "unavailable"
+        }
+      }
+    },
+    {
+      "atSeconds": 0.372,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 0,
+          "delivery": "connecting",
+          "view": "unavailable"
+        }
+      }
+    },
+    {
+      "atSeconds": 0.59,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 0,
+          "delivery": "connecting",
+          "view": "unavailable"
+        }
+      }
+    },
+    {
+      "atSeconds": 1.753,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 2.775,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 8.142,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 9.639,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 11.023,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 18.472,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 19.002,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 20.323,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 28.521,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 29.161,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 39.214,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 39.72,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 44.385,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 45.396,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 48.661,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 56.05,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    },
+    {
+      "atSeconds": 58.818,
+      "hosts": {
+        "snap": {
+          "rows": 97,
+          "delivery": "ready",
+          "view": "current"
+        },
+        "starship": {
+          "rows": 386,
+          "delivery": "ready",
+          "view": "current"
+        }
+      }
+    }
+  ],
+  "activeConnectionsAfter": 0
+}
