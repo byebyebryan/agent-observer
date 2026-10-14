@@ -1,9 +1,10 @@
 # Agent Observer architecture boundaries
 
 The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
-Agent publishers a1/a17, Tmux and the historical writer keep their independent
-selections. The dated a1 collector acceptance below remains historical.
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
+publishers separately select a4/Mesh a20.
+Tmux and the historical writer keep their independent selections. The dated
+a1 collector acceptance below remains historical.
 
 Current implementation, 2026-10-14: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
@@ -33,8 +34,8 @@ networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
 Normal collection selects core-only 0.7.0a3 on both hosts. Agent publication
-retains 0.7.0a1/Mesh a17.
-The read CLI separately selects 0.7.0a2/Mesh a18 with an explicit optional
+separately selects 0.7.0a4/Mesh a20.
+The read CLI separately selects 0.7.0a4/Mesh a20 with an explicit optional
 prepared human watch. The [accepted read helper](prepared-agent-read-interface.md)
 belongs to the optional networking/read component: Mesh owns full admission,
 immutable generations, expiry and delivery; Observer compiles deterministic
@@ -63,6 +64,11 @@ Agent Plus and attachment are parked. The read CLI and physical dashboards are
 immediate consumers, with separate presentation/device gates. Native provider
 UI management remains external. IPC/SSH are selected; WSS and the private a21
 allocation candidate are not promoted. See the [roadmap](roadmap.md).
+
+The [a20 owner adoption](evidence/2026-10-14-mesh-a20/REPORT.md) corrects
+independent acquisition ordering and qualifies the optional roles separately.
+SDK 1/preparation 1 and API 4 meanings remain unchanged; complete local cost
+results are mixed, with further fleet/application costs reported separately.
 
 ## Historical design and acceptance checkpoints
 

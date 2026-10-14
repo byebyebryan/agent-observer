@@ -1,0 +1,168 @@
+{
+  "host": "starship",
+  "windows": [
+    {
+      "variant": "baseline",
+      "position": 0,
+      "seconds": 120.21912885400525,
+      "rowsBefore": 387,
+      "rowsAfter": 387,
+      "roots": {
+        "publisher": [
+          3445338,
+          9012449
+        ],
+        "reader": [
+          3445436,
+          9012542
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 6.271880416931499,
+          "peak": {
+            "rssBytes": 46608384,
+            "pssBytes": 33960960,
+            "fds": 11,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 6.671151318805122,
+          "peak": {
+            "rssBytes": 48136192,
+            "pssBytes": 36013056,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "position": 1,
+      "seconds": 120.22535813300055,
+      "rowsBefore": 387,
+      "rowsAfter": 387,
+      "roots": {
+        "publisher": [
+          3457911,
+          9025652
+        ],
+        "reader": [
+          3457997,
+          9025742
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 6.163425183398173,
+          "peak": {
+            "rssBytes": 46080000,
+            "pssBytes": 33551360,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 6.595946248899799,
+          "peak": {
+            "rssBytes": 49557504,
+            "pssBytes": 37054464,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "position": 2,
+      "seconds": 120.21917816599307,
+      "rowsBefore": 387,
+      "rowsAfter": 387,
+      "roots": {
+        "publisher": [
+          3470224,
+          9038853
+        ],
+        "reader": [
+          3470283,
+          9038944
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 5.564835912255829,
+          "peak": {
+            "rssBytes": 45985792,
+            "pssBytes": 33471488,
+            "fds": 11,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 5.989061071486093,
+          "peak": {
+            "rssBytes": 50003968,
+            "pssBytes": 37623808,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "position": 3,
+      "seconds": 120.21983707799518,
+      "rowsBefore": 387,
+      "rowsAfter": 387,
+      "roots": {
+        "publisher": [
+          3481260,
+          9052054
+        ],
+        "reader": [
+          3481300,
+          9052143
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 6.105481573093481,
+          "peak": {
+            "rssBytes": 46395392,
+            "pssBytes": 33773568,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 6.612885355053566,
+          "peak": {
+            "rssBytes": 50860032,
+            "pssBytes": 38714368,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      }
+    }
+  ],
+  "scope": "complete owned local publisher/prepared human CLI; ordinary cached Service 4",
+  "limits": [
+    "ABBA serial; ordinary source/load changes are uncontrolled",
+    "startup excluded; collection and remote/server cost excluded",
+    "frame/render counts not collected; original cadence/leases unchanged",
+    "no source/device/application CPU saving claim"
+  ]
+}

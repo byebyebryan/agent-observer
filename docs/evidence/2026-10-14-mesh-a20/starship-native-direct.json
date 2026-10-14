@@ -1,0 +1,385 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "starship",
+  "cliVersion": "agent-observer 0.7.0a4",
+  "selectedCli": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1791998630100
+      },
+      "cliCollectedAt": 1791998630599,
+      "nativeAfterAt": {
+        "codex": 1791998630996
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 385,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 385,
+          "nativeAfterRows": 385,
+          "cliRows": 385,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 137,
+            "classification": {
+              "user": 87,
+              "unknown": 46,
+              "child": 252
+            }
+          },
+          "checks": {
+            "membership": 385,
+            "title_unproved": 276,
+            "cwd": 385,
+            "runtime": 385,
+            "phase": 385,
+            "activity_unproved": 248,
+            "kind": 339,
+            "sessionTreeRootId": 385,
+            "blockedReasons": 385,
+            "createdAt": 385,
+            "hasSavedHistory": 385,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 250,
+            "lastUpdated": 385,
+            "latestTurn_unproved": 248,
+            "title": 109,
+            "activity": 137,
+            "kind_unproved": 46,
+            "outcome": 136,
+            "outcomeAt": 135,
+            "latestTurn": 137
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791998506000
+            },
+            {
+              "id": "01a137cc-d2fe-7c50-bfe7-e078bf8b5fd9",
+              "title": "rl",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791997797000
+            },
+            {
+              "id": "01a1390a-328b-7012-8208-9e8509e1c6e7",
+              "title": "agent-dashboard",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791995445000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791998506000
+            },
+            {
+              "id": "01a137cc-d2fe-7c50-bfe7-e078bf8b5fd9",
+              "title": "rl",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791997797000
+            },
+            {
+              "id": "01a1390a-328b-7012-8208-9e8509e1c6e7",
+              "title": "agent-dashboard",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791995445000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 3,
+        "doctorSessionCount": true,
+        "cliRows": 133,
+        "filteredChildren": 252
+      },
+      "nativeRuntime": {
+        "pid": 17438,
+        "startTicks": "114655",
+        "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+        "provider": "codex",
+        "version": "0.162.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1791998632059
+      },
+      "cliCollectedAt": 1791998632565,
+      "nativeAfterAt": {
+        "codex": 1791998632927
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 385,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 385,
+          "nativeAfterRows": 385,
+          "cliRows": 385,
+          "nativeCounts": {
+            "running": 3,
+            "activityKnown": 137,
+            "classification": {
+              "user": 87,
+              "unknown": 46,
+              "child": 252
+            }
+          },
+          "checks": {
+            "membership": 385,
+            "title_unproved": 276,
+            "cwd": 385,
+            "runtime": 385,
+            "phase": 385,
+            "activity_unproved": 248,
+            "kind": 339,
+            "sessionTreeRootId": 385,
+            "blockedReasons": 385,
+            "createdAt": 385,
+            "hasSavedHistory": 385,
+            "outcome_unproved": 249,
+            "outcomeAt_unproved": 250,
+            "lastUpdated": 385,
+            "latestTurn_unproved": 248,
+            "title": 109,
+            "activity": 137,
+            "kind_unproved": 46,
+            "outcome": 136,
+            "outcomeAt": 135,
+            "latestTurn": 137
+          },
+          "nativeActive": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "working",
+              "nativeStatus": "active",
+              "activityAt": 1791998506000
+            },
+            {
+              "id": "01a137cc-d2fe-7c50-bfe7-e078bf8b5fd9",
+              "title": "rl",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791997797000
+            },
+            {
+              "id": "01a1390a-328b-7012-8208-9e8509e1c6e7",
+              "title": "agent-dashboard",
+              "cwd": "/home/bryan/code/esp32-349",
+              "nativeKind": "user",
+              "nativePhaseCandidate": "waiting",
+              "nativeStatus": "idle",
+              "activityAt": 1791995445000
+            }
+          ],
+          "active": [
+            {
+              "id": "01a0a625-fddb-7a12-aaa6-0da3bd3fcc1e",
+              "title": "fluid-2.5d",
+              "cwd": "/home/bryan/code/cubey",
+              "cliPhase": "working",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "working",
+              "nativeStatus": "active",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791998506000
+            },
+            {
+              "id": "01a137cc-d2fe-7c50-bfe7-e078bf8b5fd9",
+              "title": "rl",
+              "cwd": "/home/bryan/code/powered-descent-lab",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791997797000
+            },
+            {
+              "id": "01a1390a-328b-7012-8208-9e8509e1c6e7",
+              "title": "agent-dashboard",
+              "cwd": "/home/bryan/code/esp32-349",
+              "cliPhase": "waiting",
+              "cliKind": "user",
+              "nativeKind": "user",
+              "nativePhase": "waiting",
+              "nativeStatus": "idle",
+              "nativeJobState": null,
+              "nativeTempo": null,
+              "workerVersion": null,
+              "activityAt": 1791995445000
+            }
+          ],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 3,
+        "doctorSessionCount": true,
+        "cliRows": 133,
+        "filteredChildren": 252
+      },
+      "nativeRuntime": {
+        "pid": 17438,
+        "startTicks": "114655",
+        "sha256": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1",
+        "provider": "codex",
+        "version": "0.162.1",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}
