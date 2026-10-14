@@ -42,3 +42,48 @@ Package the correction and accept/select its collector separately; the existing
 RLCD system exclusion then removes the helper identities from rows and counts.
 No dashboard label blacklist, project deduplication, thread archive or firmware
 flash is needed for this correction.
+
+## Packaged producer and managed acceptance
+
+The correction is now independently installed and selected for collection on
+Snap and Starship as [Observer 0.7.0a3](../../../artifacts/observer-0.7.0a3.json).
+Its wheel is `b2df912102505295e57ffc0d1685fa393815330e3a9121aa6471411306e19f70`,
+built from source freeze `2356323d032fbf06169bdc342d8a04590c16a411` in a clean
+Git archive, not the development build cache. Both hosts retain wheel, manifest
+and verifier bytes under
+`~/.local/share/agent-observer/0.7.0a3-b2df912102505295-title-helper/artifact/`.
+The collector environment is core-only; API 4/read 6/Service 4 stay unchanged.
+
+Exact installed-byte, entrypoint and schema verification passes on both hosts.
+The installed classification/metadata/service-contract subset passes 30 tests
+with one expected optional-Mesh skip. The full source gate passes 411 tests
+using the independently accepted a2/a18 environment, without skips.
+
+The independent stdlib native evaluator recognizes the source-confirmed helper
+tag. Direct packaged comparisons report zero mismatches across 385 Starship
+and 98 Snap identities. These later inventories have five/four running rows;
+the two earlier native title helpers have already disappeared from their owning
+daemons. Their absence in this later sample is not a claim about filtering.
+The earlier passive helper comparisons and installed fixtures establish the tag
+correction without creating a provider thread or invoking a model.
+
+After selection, cached Service 4/native comparisons agree on identity, kind,
+runtime, phase, activity and outcome. Snap has zero reported differences.
+Starship's currently active dashboard conversation has one `lastUpdated`
+difference: cached `1791966767000` versus native `1791966779000`. The cache
+preserves its original runtime receipt and sampled BOOTTIME; the later native
+update is a twelve-second sampling lag, not refreshed timing authority. This
+receipt does not claim simultaneous cached/native timing equality.
+
+Both unchanged a1/a17 publisher environments pass the installed cached Agent v3
+IPC and owned localhost-SSH gate against the selected collector. On each host,
+scoped candidate render/dry-run, six-target selection, rollback to the prior
+collector, and reselection pass. The read CLI remains a2/a18, publishers remain
+a1/a17, and protected reader/writer/launcher/configuration bytes plus publisher,
+Tmux, RLCD and 349 service identities/restart counts remain equal. Native endpoint
+selection and Codex configuration remain equal; no provider action is performed.
+
+Operator receipts are summarized in [acceptance](acceptance.json). Native metadata
+and operation snapshots remain private local evidence; no raw provider payload
+is committed. Hosted wheels remain a separate distribution checkpoint. This
+accepts the producer correction before the independent RLCD failure/wire pass.

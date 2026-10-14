@@ -1,0 +1,45 @@
+{
+  "status": "accepted",
+  "observerVersion": "0.7.0a3",
+  "wheelSha256": "b2df912102505295e57ffc0d1685fa393815330e3a9121aa6471411306e19f70",
+  "sourceRevision": "2356323d032fbf06169bdc342d8a04590c16a411",
+  "contracts": {
+    "api": 4,
+    "read": 6,
+    "service": 4,
+    "agentProfile": "v3"
+  },
+  "fullSourceTests": 411,
+  "installedSubset": {
+    "tests": 30,
+    "expectedOptionalSkips": 1
+  },
+  "hosts": {
+    "starship": {
+      "directNativeRows": 385,
+      "directIssues": 0,
+      "cachedDifferences": [
+        {
+          "id": "01a13701-d738-7662-915a-3166d2ac69dc",
+          "field": "lastUpdated",
+          "result": "mismatch",
+          "native": 1791966779000,
+          "cli": 1791966767000
+        }
+      ],
+      "cachedPublisherIpcSsh": "passed",
+      "selectionRollbackReselection": "passed",
+      "protectedRolesAndNativeEndpointEqual": true,
+      "providerActions": 0
+    },
+    "snap": {
+      "directNativeRows": 98,
+      "directIssues": 0,
+      "cachedDifferences": [],
+      "cachedPublisherIpcSsh": "passed",
+      "selectionRollbackReselection": "passed",
+      "protectedRolesAndNativeEndpointEqual": true,
+      "providerActions": 0
+    }
+  }
+}

@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
+Agent publishers a1/a17, Tmux and the historical writer keep their independent
+selections. The dated a1 collector acceptance below remains historical.
+
 Current producer checkpoint, 2026-10-14: Codex-only
 [Observer 0.7.0a1](../artifacts/observer-0.7.0a1.json) supplies API 4/read 6/Service 4
 and remains selected for collection/publication with Mesh a17/profile v3 on

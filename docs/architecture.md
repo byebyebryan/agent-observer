@@ -1,5 +1,10 @@
 # Agent Observer architecture boundaries
 
+The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
+Agent publishers a1/a17, Tmux and the historical writer keep their independent
+selections. The dated a1 collector acceptance below remains historical.
+
 Current implementation, 2026-10-14: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
 interfaces remain provider-neutral: API 4, read wire 6, Service 4 and Mesh SDK 1.

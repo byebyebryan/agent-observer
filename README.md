@@ -1,5 +1,10 @@
 # Agent Observer
 
+The [native title-helper correction](docs/evidence/2026-10-14-title-helper/REPORT.md)
+selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI a2/a18,
+Agent publishers a1/a17, Tmux and the historical writer keep their independent
+selections. The dated a1 collector acceptance below remains historical.
+
 Shared host-side discovery and monitoring for coding agents. Codex is the only
 implemented native provider; [Claude support is retired](docs/claude-retirement-plan.md).
 Claude stays under its native session management/Agent View. Observation owns
