@@ -220,6 +220,32 @@ class AgentPreparationTests(unittest.TestCase):
 
 @unittest.skipUnless(supported(), "optional prepared Mesh capability not installed")
 class PreparedDeliveryTests(unittest.IsolatedAsyncioTestCase):
+    async def test_explicit_prepared_cli_and_output_failure_close_owned_delivery(self):
+        from mesh_native_fixture import CachedPublisher
+        from mesh_plus.api import Bridge
+        from mesh_plus.transport import IPCServer
+
+        from agent_observer import mesh_cli
+
+        publisher = CachedPublisher()
+        with tempfile.TemporaryDirectory(prefix="agent-prepared-cli-") as directory:
+            socket = Path(directory) / "read.sock"
+            server = await IPCServer(socket, Bridge(publisher).serve).start()
+            args = mesh_cli.parser().parse_args(["watch", "--human", "--prepared", "--count", "2",
+                                                "--local-host", "fixture", "--socket", str(socket)])
+            outputs = []
+            try:
+                self.assertEqual(await mesh_cli.run(args, human_output=outputs.append), 0)
+                self.assertTrue(any("AGE" in output for output in outputs))
+                self.assertIn("revoked", outputs[-1])
+                def fail(_value):
+                    raise OSError("owned_output_failed")
+                with self.assertRaisesRegex(OSError, "owned_output_failed"):
+                    await mesh_cli.run(args, human_output=fail)
+            finally:
+                await server.close()
+            self.assertEqual(publisher.watchers, 0)
+
     async def test_owned_ipc_replacement_and_disconnect_preserve_native_raw_context(self):
         from mesh_native_fixture import CachedPublisher
         from mesh_plus.api import Bridge, configured_reader

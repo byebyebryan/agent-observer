@@ -32,8 +32,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/observer-tools"
           tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
           echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
-      - name: Install accepted Agent v3 SDK source
-        run: python -m pip install '.[dev]' 'mesh-plus @ git+https://github.com/byebyebryan/mesh-plus.git@ad3c256fef463396481ff6fd7acfac76d2ca4eb0'
+      - name: Install qualified Agent v3 prepared SDK source
+        run: python -m pip install '.[dev]' 'mesh-plus @ git+https://github.com/byebyebryan/mesh-plus.git@37c3e01c36866b73734b6ec28d3b7686012c90c0'
       - run: ./scripts/check
       - run: ./scripts/check-mesh-owner --installed
   mesh-publisher:

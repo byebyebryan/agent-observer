@@ -26,6 +26,7 @@ def interface():
         "routeReporting": False,
         "nativeEventReplay": False,
         "requires": ["configured_reader", "ReadGuard"],
+        "optionalPreparedWatch": {"interface": 1, "humanOnly": True},
     }
 
 
@@ -55,6 +56,17 @@ def human_view(frame, current_rows, *, reconstruct, now_ms=None):
         snapshot["sessions"] = [row for row in snapshot["sessions"] if identity_key(row["identity"]) in current]
         snapshots.append(snapshot)
     return "\n".join([f"Mesh {mesh['status']} ({mesh['kind']}); cached state", *qualifiers]), snapshots
+
+
+def prepared_human_view(read, *, now_ms):
+    """Project owned current rows with retained metadata; never a wire export."""
+    def snapshot(_frame, host):
+        metadata = host["owner"]["metadata"]
+        return {"snapshot": None if metadata is None else {
+            **metadata, "sessions": [r for r in read.sessions
+                                     if r["identity"]["hostScope"] == host["hostId"]]}}
+
+    return human_view({"mesh": read.context}, read.sessions, reconstruct=snapshot, now_ms=now_ms)
 
 
 async def ticked(stream):
@@ -112,15 +124,20 @@ async def run(args, *, output=None, human_output=None):
         )
         output(report)
         return 0 if report["ok"] else 1
-    reader = await configured_reader("agent", source=args.source, socket=args.socket, scope=args.scope,
-                                     hosts=args.hosts, local_host=args.local_host, authority=authority,
-                                     report_routes=False, profile=profile)
     request_id = secrets.token_hex(16)
     operation = "watch" if args.command == "watch" else "snapshot"
     request = {"meshProtocol": 1, "requestId": request_id, "operation": operation,
                "profile": "agent-observer.mesh-candidate.v3", "access": "cached",
                "selection": {"mode": args.scope, "hostIds": args.hosts}, "extensions": {}}
-    guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
+    prepared = getattr(args, "prepared", False)
+    if prepared:
+        from .mesh_read import PreparedAgentWatch
+        guard = PreparedAgentWatch(request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
+    else:
+        guard = ReadGuard("agent", request_id, host_ids=args.hosts if args.scope == "hosts" else None, profile=profile)
+    reader = await configured_reader("agent", source=args.source, socket=args.socket, scope=args.scope,
+                                     hosts=args.hosts, local_host=args.local_host, authority=authority,
+                                     report_routes=False, profile=profile)
     stream = reader.execute(request)
     events = ticked(stream) if args.human and operation == "watch" else stream
     count, result = 0, 0
@@ -145,14 +162,25 @@ async def run(args, *, output=None, human_output=None):
                 return 1
             if args.human:
                 now = boottime_ms()
-                if frame is None:
-                    if guard.view is None:
-                        continue
-                    display = guard.view
+                if prepared:
+                    read = guard.read(now, clock_domain())
+                    if read.context is None:
+                        if frame is None:
+                            continue
+                        display = frame
+                        view = human_view(frame, [], reconstruct=None, now_ms=now)
+                    else:
+                        display = {"mesh": read.context}
+                        view = prepared_human_view(read, now_ms=now)
                 else:
-                    display = guard.view if frame["mesh"]["kind"] == "heartbeat" and guard.view is not None else frame
-                rows = guard.current(now, clock_domain()) if operation == "watch" else current_sessions(frame, now, clock_domain(), profile=profile)
-                view = human_view(display, rows, reconstruct=partial(reconstructed, profile=profile), now_ms=now)
+                    if frame is None:
+                        if guard.view is None:
+                            continue
+                        display = guard.view
+                    else:
+                        display = guard.view if frame["mesh"]["kind"] == "heartbeat" and guard.view is not None else frame
+                    rows = guard.current(now, clock_domain()) if operation == "watch" else current_sessions(frame, now, clock_domain(), profile=profile)
+                    view = human_view(display, rows, reconstruct=partial(reconstructed, profile=profile), now_ms=now)
                 if isinstance(view, str):
                     human_output(view)
                 else:
@@ -193,9 +221,10 @@ def parser():
         command.add_argument("--socket", type=Path, default=Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")) / "mesh-plus-agent/read.sock")
         command.add_argument("--authority", choices=("ssh-plus", "mesh"), default="ssh-plus")
         command.add_argument("--local-host", help="explicit standalone identity; bypass the catalog")
-        command.set_defaults(human=name == "list", count=None, include_children=False, include_system=False, provider=None, order="activity")
+        command.set_defaults(human=name == "list", count=None, include_children=False, include_system=False, provider=None, order="activity", prepared=False)
         if name == "watch":
             command.add_argument("--human", action="store_true")
+            command.add_argument("--prepared", action="store_true", help="opt in to certified generation reuse; requires --human and Mesh preparation 1")
             command.add_argument("--count", type=int, help="limit replacement/control frames")
         if name == "assess":
             command.add_argument("--mode", choices=("snapshot", "subscribe"), default="snapshot")
@@ -220,6 +249,8 @@ def main(argv=None):
         root.error("--local-host requires local or fleet scope without --hosts")
     if args.count is not None and not 1 <= args.count <= 100000:
         root.error("--count must be 1..100000")
+    if args.prepared and not args.human:
+        root.error("--prepared requires watch --human")
     if not args.human and (args.provider or args.include_children or args.include_system or args.order != "activity"):
         root.error("presentation filters require list or watch --human; raw frames are lossless")
     try:
