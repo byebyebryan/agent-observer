@@ -1,4 +1,4 @@
-"""Agent-owned cached Service 2 acquisition; no provider or Mesh imports."""
+"""Agent-owned cached Service 4 acquisition; no provider or Mesh imports."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import socket
 import stat
 import struct
 import time
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from .service_public import (
@@ -28,12 +29,19 @@ def boottime_ms():
     return int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
 
 
-class CachedAgentSource:
-    """Operation-owned sockets and bounded native ordering across acquisitions.
+@dataclass
+class _History:
+    service: str | None = None
+    position: tuple[int, int] = (0, 0)
+    receipts: dict = field(default_factory=dict)
 
-    Service 2 fixes source/component scope inside one service incarnation.
-    Delayed watch views are skipped after a newer acquisition. Delayed status
-    reads fail instead of supplying an older nonce-bound proof. Retired service
+
+class CachedAgentSource:
+    """Operation-owned sockets and bounded per-stream native ordering.
+
+    Service 4 fixes source/component scope inside one service incarnation.
+    Each watch owns its history; serialized status reads share another. Their
+    independently sampled replies may complete in either order. Retired service
     IDs cannot become current again; exhaustion requires a fresh publisher.
     """
 
@@ -43,10 +51,13 @@ class CachedAgentSource:
         self.host, self.path, self.timeout = host, Path(path), timeout
         self._service = None
         self._binding = None
-        self._position = (0, 0)
+        self._components = None
         self._receipts = {}
         self._retired = set()
         self._active = 0
+        self._read_history = _History()
+        self._read_lock = asyncio.Lock()
+        self._pending_reads = 0
 
     def _socket_policy(self):
         path, uid = self.path, os.geteuid()
@@ -70,7 +81,7 @@ class CachedAgentSource:
         except TimeoutError:
             raise ContractError("service_transport_timeout") from None
 
-    def _admit(self, frame, *, watch):
+    def _admit(self, frame, *, history):
         service = frame["serviceId"]
         if service in self._retired:
             raise ContractError("service_publisher_retired")
@@ -86,16 +97,29 @@ class CachedAgentSource:
             for s in frame["sources"] for c in s["components"]
         }
         if service == self._service:
-            if binding != self._binding or set(receipts) != set(self._receipts):
+            if binding != self._binding or set(receipts) != self._components:
                 raise ContractError("service_acquisition_scope_changed")
-            if position[0] < self._position[0]:
-                if watch:
-                    return False
+            watermarks = dict(self._receipts)
+            for key, current in receipts.items():
+                previous = watermarks[key]
+                if current[0] == previous[0] and current[1:] != previous[1:]:
+                    raise ContractError("service_receipt_renewal")
+                if current[0] > previous[0]:
+                    if (previous[1] is not None and current[1] is not None
+                            and current[1] < previous[1]):
+                        raise ContractError("service_receipt_clock_regression")
+                    watermarks[key] = current
+        elif self._service is not None and len(self._retired) >= MAX_INCARNATIONS - 1:
+            raise ContractError("service_incarnation_capacity")
+        else:
+            watermarks = receipts
+        if service == history.service:
+            if position[0] < history.position[0]:
                 raise ContractError("service_acquisition_superseded")
-            if position[0] > self._position[0] and position[1] < self._position[1]:
+            if position[1] < history.position[1]:
                 raise ContractError("service_acquisition_clock_regression")
             for key, current in receipts.items():
-                previous = self._receipts[key]
+                previous = history.receipts[key]
                 if current[0] < previous[0]:
                     raise ContractError("service_receipt_regression")
                 if current[0] == previous[0] and current[1:] != previous[1:]:
@@ -103,18 +127,13 @@ class CachedAgentSource:
                 if (previous[1] is not None and current[1] is not None
                         and current[1] < previous[1]):
                     raise ContractError("service_receipt_clock_regression")
-        elif self._service is not None:
-            if len(self._retired) >= MAX_INCARNATIONS - 1:
-                raise ContractError("service_incarnation_capacity")
+        if service != self._service and self._service is not None:
             self._retired.add(self._service)
         # No await: concurrent operations cannot partially commit admission.
-        # Same-revision frames can be queued on another connection before a
-        # newer status emission. Their original receipts still describe the
-        # same view; suppressing the initial watch would stall subscription.
-        if service == self._service:
-            position = position[0], max(position[1], self._position[1])
         self._service, self._binding = service, binding
-        self._position, self._receipts = position, receipts
+        self._components = set(receipts)
+        self._receipts = watermarks
+        history.service, history.position, history.receipts = service, position, receipts
         return True
 
     async def _frames(self, operation):
@@ -124,6 +143,7 @@ class CachedAgentSource:
         boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
         domain = os.readlink("/proc/self/ns/time")
         guard = StreamGuard(expected_host=self.host, expected_uid=uid)
+        history = self._read_history if operation == "status" else _History()
         loop = asyncio.get_running_loop()
         if self._active >= MAX_CHANNELS:
             raise ContractError("service_acquisition_capacity")
@@ -166,7 +186,12 @@ class CachedAgentSource:
                 if any(c["health"] in {"current", "partial"} and c["expiresBoottimeMs"] <= now
                        for s in frame["sources"] for c in s["components"]):
                     raise ContractError("service_frame_expired")
-                if frame["kind"] != "heartbeat" and self._admit(frame, watch=operation == "watch"):
+                # A delayed first reply cannot resurrect an old endpoint after
+                # another operation has connected to its replacement.
+                current = self._socket_policy()
+                if (current.st_dev, current.st_ino) != (node.st_dev, node.st_ino):
+                    raise ContractError("service_socket_changed")
+                if frame["kind"] != "heartbeat" and self._admit(frame, history=history):
                     yield frame
                 if operation == "status":
                     return
@@ -177,11 +202,23 @@ class CachedAgentSource:
             self._active -= 1
 
     async def snapshot(self):
-        iterator = self._frames("status")
+        if self._pending_reads >= MAX_CHANNELS:
+            raise ContractError("service_acquisition_capacity")
+        self._pending_reads += 1
+
+        async def acquire():
+            async with self._read_lock:
+                iterator = self._frames("status")
+                try:
+                    return await anext(iterator)
+                finally:
+                    await iterator.aclose()
+
         try:
-            return await anext(iterator)
+            # Queue time is part of the caller's existing absolute read budget.
+            return await self._io(acquire(), self.timeout)
         finally:
-            await iterator.aclose()
+            self._pending_reads -= 1
 
     async def watch(self):
         from mesh_plus.api import CachedPublication
