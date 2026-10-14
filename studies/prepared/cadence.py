@@ -3,20 +3,21 @@
 
 import argparse
 import asyncio
-from collections import Counter
 import importlib.metadata
 import json
 import os
-from pathlib import Path
 import secrets
 import sys
 import time
+from collections import Counter
+from pathlib import Path
 
 
 async def measure(seconds):
-    from agent_observer.mesh_profile import AgentProfile
     from mesh_plus.api import ReadGuard, configured_reader
     from mesh_plus.catalog import SSHPlusAuthority
+
+    from agent_observer.mesh_profile import AgentProfile
 
     profile = AgentProfile()
     reader = await configured_reader(
