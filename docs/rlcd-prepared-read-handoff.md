@@ -1,19 +1,26 @@
 # RLCD: optional prepared Agent read adoption
 
 Producer acceptance: [R0–R5 ledger](evidence/2026-10-14-prepared-reads/REPORT.md).
-This is a request for an independently owned client adoption pass. Observer has
-not modified RLCD source, bundle, firmware, USB transport or application service.
+The independently owned RLCD adoption pass now implements this seam. Its source,
+bundle, firmware, USB and application-service acceptance remain in the device
+repository; the producer checkpoint remains frozen throughout client work.
 
 The [2026-10-15 CPU delivery plan](cpu-reduction-execution-plan.md) now sequences
 the existing CPU source corrections through an independent producer gate before
 client adoption. [C0–C2 are accepted](evidence/2026-10-15-cpu-delivery/REPORT.md);
-the a5/a20 pair below is now the accepted input. The user requests
-syncing RLCD work to **Starship and flashing its hardware there**. Start from the
-current accepted wire-2/failure-refinement application (`9cc159d` at planning),
-preserve its behavior, and verify the live Starship RLCD identity
-`94:A9:90:F3:43:74` before the exclusive flash/capture window. The older Snap
-hardware record and stale local checkout are not the delivery target. No live
-selection or hardware change was performed by this planning update.
+the a5/a20 pair below is the accepted input. C3–C4 adopt prepared reads from
+the previous wire-2/failure-refinement application, sync the reviewed source to
+**Starship**, verify/flash/read back RLCD `94:A9:90:F3:43:74`, and accept real
+feed/expiry and paired rollback. Selected client source is `19323e6`, bundle
+`807eab96b48825ae`, Observer a5/Mesh a20. This document retains the seam and
+required gates as the reference for later consumers; it is no longer pending
+RLCD implementation.
+
+The [independent client acceptance](https://github.com/byebyebryan/esp32-rlcd/blob/358d265/docs/evidence/2026-10-15-prepared-reads/REPORT.md)
+also completes the warmed cost and publication gate: 12.76% of one core in the
+selected Starship service versus 20.99% before, with essentially flat memory.
+These are descriptive ordinary-workload windows; matched controlled application
+cost/output and separate endpoint costs are reported in that receipt.
 
 ## Accepted input and boundary
 
@@ -39,7 +46,7 @@ timer, reconnect, device clock, membership policy, ordering or notification.
 Mesh owns full admission, proof, expiry and delivery. Observer owns deterministic
 Agent rules and the small retained-header/current-row facade.
 
-## Suggested change to Fleet
+## Implemented seam in Fleet
 
 Replace ReadGuard with the explicit owner helper, retaining the same configured
 Reader, AgentProfile, request, host scope, authority and route-reporting policy:
@@ -94,7 +101,7 @@ expiry anchored to request send and ACK distinct from source freshness. Source
 context does not supply a device clock bridge or prove completeness on omission.
 Keep serial busy/absent/reset recovery and application service supervision.
 
-## Required client acceptance
+## Client acceptance requirements
 
 1. Use exact installed wheels in an isolated candidate dashboard bundle. Confirm
    no checkout or historical fallback imports. Keep the current accepted bundle
@@ -116,12 +123,13 @@ allocation peaks are about **35% higher**, with lower steady retained bytes in
 that sample; 1,000 small-inventory replacements plateau. Single-read lifetime
 savings are only about 10%. These bound expectations, not an application promise.
 
-Installed prepared fleet CLI watches still use roughly **12–16% of one core**
-in five-minute normal-workflow windows. The unchanged RLCD application uses
-roughly **19–22%**. Reader/carrier/admission pipeline and remote source costs are
-outside the consumer benchmark; measure the complete application before claiming
-the daily CPU issue is closed. Hosted Mesh a20/Observer a4 distribution remains
-separate from the exact locally archived and accepted bytes.
+Historical installed prepared fleet CLI watches used roughly **12–16% of one
+core**, and the old RLCD application used roughly **19–22%** in five-minute
+normal-workflow windows. The client pass independently compares old/new
+application and dependency tuples, plus installed service CPU and memory.
+Reader/carrier/admission pipeline and remote source costs remain distinct from
+the consumer benchmark. Hosted wheel distribution remains separate from the
+exact locally archived and accepted bytes.
 
 Bring a producer/SDK defect back as a separate checkpoint with normalized input
 shape, original receipt/clock/delivery facts and exact artifacts. Avoid frontend
@@ -133,5 +141,6 @@ The a20 source/publisher correction separates watch receipt histories from
 serialized snapshot/proof acquisitions. Original expiry, identity and the
 prepared local interface remain unchanged. Recreate guards/processes when
 adopting the installed pair. Mixed local CPU results are not a general SDK
-speedup; accept the complete RLCD application independently. Its selected
-a1/a17 dependency environment and bundle were preserved by Observer rollout.
+speedup; accept the complete RLCD application independently. Its former
+a1/a17 dependency environment and bundle were preserved by Observer rollout and
+are retained for the independently exercised client rollback.

@@ -25,7 +25,7 @@ in the a5/a20 read CLI on both hosts. API and
 profile meanings stay unchanged. Static Agent preparation and owned current-row
 reads meet the consumer cost targets at observed cadence, with legacy defaults,
 installed/native equality and reader-only rollback. The
-[RLCD handoff](rlcd-prepared-read-handoff.md) is ready for independent adoption.
+[RLCD handoff](rlcd-prepared-read-handoff.md) records independent adoption.
 
 The read-client handoff is ready for downstream work. The RLCD title-first
 roster, system exclusion, feed loss/recovery and physical readability pass is
@@ -34,20 +34,21 @@ accepted separately in the device repository. Remaining work has separate scope.
 The [CPU delivery plan](cpu-reduction-execution-plan.md) sequences the measured
 Observer corrections, independent RLCD prepared adoption, Starship source sync /
 hardware flash and whole-application acceptance before residual Mesh/read spikes.
-Its Observer C0–C2 gates are accepted with a5/a20 roles selected on both hosts.
-Independent client adoption and Starship hardware acceptance follow; the device
-selection remains unchanged at this checkpoint.
+Its C0–C5 gates are accepted with a5/a20 roles selected on both hosts and the
+prepared RLCD bundle selected on Starship. Verified flash/readback, live feed,
+expiry/recovery and actual old-pair rollback pass. The separate warmed service
+windows use 20.99% before and 12.76% after, with essentially flat memory. The
+controlled combined pipeline improves 38.96%; ordinary workloads remain
+descriptive. C6 starts from this new baseline.
 
 - 349 roster/feed adoption and any further RLCD product changes.
-- RLCD adoption of the accepted optional prepared helper, including matched
-  application CPU and bundle/service/device rollback. Its current application
-  still uses about 19–22% of one core; consumer savings do not establish that fix.
-- Measure the client application after the accepted [CPU source corrections](evidence/2026-10-15-cpu-delivery/REPORT.md):
-  one local wire admission and cheaper strict type predicates. The installed
-  controlled consumer improves 12–15%; application adoption and savings remain
-  separate. Remaining repeated native-body admission/proof composition belongs
-  to a focused Mesh study; presentation-only revalidation has a separate owner
-  path. Collection, extra SSH publishers and RLCD costs remain separately measured.
+- Residual repeated native-body acquisition/admission and proof/carrier composition
+  in a focused Mesh study. The controlled second prepared reader adds about
+  8.54 points of one core for the same publisher pair. Presentation-only
+  revalidation has its separate owner path. Preserve original receipts,
+  per-acquisition proof, ordering, mutation and paired Tmux gates; no slower
+  monitoring or discovery truncation is implied. Collection, extra SSH sources
+  and RLCD application costs remain separately measured.
 - Hosted publication of the accepted Mesh a20 SDK and exact Observer a4 wheel;
   source push and green CI are already recorded independently.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
