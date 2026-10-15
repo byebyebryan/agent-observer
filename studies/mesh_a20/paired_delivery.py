@@ -33,10 +33,12 @@ async def run(args):
         root = Path(directory)
         launcher = root / "mesh-plus"
         original = (Path.home() / ".local/bin/mesh-plus").read_text()
-        old = "/.local/share/agent-observer/0.7.0a1-07196b5445766002-mesh-a17-system/"
-        new = "/.local/share/agent-observer/" + (args.binding_prefix or args.prefix.name) + "/"
+        old = "/.local/share/agent-observer/" + (args.binding_prefix or
+            "0.7.0a1-07196b5445766002-mesh-a17-system") + "/"
+        new = "/.local/share/agent-observer/" + args.prefix.name + "/"
         if args.live_launcher:
-            if original.count(new) != 2:
+            binding = old if args.binding_prefix else new
+            if original.count(binding) != 2:
                 raise ValueError("selected_shared_launcher_binding")
             launcher.write_text(original)
         else:

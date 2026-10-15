@@ -6,8 +6,8 @@ not modified RLCD source, bundle, firmware, USB transport or application service
 
 The [2026-10-15 CPU delivery plan](cpu-reduction-execution-plan.md) now sequences
 the existing CPU source corrections through an independent producer gate before
-client adoption. Its new candidate bytes are not yet accepted; the a4/a20 pair
-below remains the accepted input until that gate closes. The user requests
+client adoption. [C0–C2 are accepted](evidence/2026-10-15-cpu-delivery/REPORT.md);
+the a5/a20 pair below is now the accepted input. The user requests
 syncing RLCD work to **Starship and flashing its hardware there**. Start from the
 current accepted wire-2/failure-refinement application (`9cc159d` at planning),
 preserve its behavior, and verify the live Starship RLCD identity
@@ -17,21 +17,21 @@ selection or hardware change was performed by this planning update.
 
 ## Accepted input and boundary
 
-The [a20 follow-up](evidence/2026-10-14-mesh-a20/REPORT.md) accepts the exact
-[Observer 0.7.0a4](../artifacts/observer-0.7.0a4.json) and
+The [CPU delivery checkpoint](evidence/2026-10-15-cpu-delivery/REPORT.md) accepts the exact
+[Observer 0.7.0a5](../artifacts/observer-0.7.0a5.json) and
 [Mesh 0.1.0a20](../artifacts/mesh-0.1.0a20.json) wheel pair. The earlier a2/a18
 helper acceptance remains separate historical evidence. Hashes:
 
-- Observer: `26662b4e3a7c50ede7a243f82efd374ae8bc4303db0c7682909e4bbc76099757`.
+- Observer: `25cd5663560c973b55fc322b9504e287f5a2a6706ef1c377100c6bf900752ee5`.
 - Mesh: `e02306b2323ddd845fec2c1ee82dd25b429878edefcee4cf8ac2b552535fc200`.
 
 Both hosts archive these bytes under
-`~/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/artifact/`.
+`~/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/artifact/`.
 The package pair is independently installed/native-tested; hosted wheel
 publication is separate. Archive checksums take precedence over package names.
 Observation remains API 4 / read 6 / Service 4 / explicit Agent profile v3,
 SDK 1 plus optional preparation/read interface 1. No wire migration is needed.
-Collectors retain core-only a3; resident Agent publishers select a4/a20. Ordinary CLI defaults remain
+Collectors retain core-only a3; resident Agent publishers select a5/a20. Ordinary CLI defaults remain
 legacy; `mesh watch --human --prepared` exercises the optional path.
 
 The [local interface](prepared-agent-read-interface.md) owns no network task,

@@ -1,0 +1,10 @@
+{
+  "status": "accepted",
+  "host": "snap",
+  "stage": "publisher",
+  "rows": {
+    "oldReader": 101,
+    "newReader": 101
+  },
+  "otherUnitsUnchanged": true
+}

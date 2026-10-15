@@ -1,0 +1,39 @@
+{
+  "observerSource": {
+    "tests": 423,
+    "expectedOptionalMeshSkips": 34,
+    "markdownFiles": 161,
+    "status": "passed"
+  },
+  "installedOwner": {
+    "snap": {
+      "profileCases": 7,
+      "networkCases": 10,
+      "status": "passed"
+    },
+    "starship": {
+      "profileCases": 7,
+      "networkCases": 10,
+      "status": "passed"
+    }
+  },
+  "managedSourceFullCheck": "passed",
+  "protectedControls": {
+    "snap": {
+      "protectedHashDiff": [],
+      "unitIncarnationChanges": [
+        "mesh-plus-agent.service"
+      ]
+    },
+    "starship": {
+      "externalHashChanges": [
+        ".codex/config.toml"
+      ],
+      "unitIncarnationChanges": [
+        "mesh-plus-agent.service"
+      ],
+      "externalBytesPreserved": true
+    }
+  },
+  "scope": "C0-C2 producer only; no RLCD migration or hardware proof"
+}

@@ -1,0 +1,332 @@
+{
+  "host": "snap",
+  "windows": [
+    {
+      "variant": "baseline",
+      "position": 0,
+      "seconds": 120.24686629802454,
+      "rowsBefore": 102,
+      "rowsAfter": 102,
+      "roots": {
+        "publisher": [
+          1392988,
+          18913157
+        ],
+        "reader": [
+          1393008,
+          18913203
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 1.9543128834440209,
+          "peak": {
+            "rssBytes": 35762176,
+            "pssBytes": 23136256,
+            "fds": 11,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 2.553081086031125,
+          "peak": {
+            "rssBytes": 38334464,
+            "pssBytes": 25677824,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      },
+      "readerTelemetry": {
+        "workload": "reader",
+        "scope": "local",
+        "profiled": false,
+        "seconds": 130.49644114999683,
+        "cpuSeconds": 3.429901812,
+        "counts": {
+          "frame:view": 19,
+          "delivery:snap:connecting:None": 1,
+          "humanRenders": 39,
+          "delivery:snap:ready:None": 18,
+          "native:snap:same": 12,
+          "native:snap:changed": 5
+        },
+        "rowCounts": [
+          0,
+          102
+        ],
+        "packages": {
+          "agent-observer": "0.7.0a4",
+          "mesh-plus": "0.1.0a20",
+          "jsonschema": "4.26.0"
+        },
+        "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/lib/python3.14/site-packages/agent_observer",
+        "ownerDigests": {
+          "contract.py": "fe885aded35895ac6acca8852e31b82f2a77b6ee62aaebf047b3e5fe82d28473",
+          "service_contract.py": "5d692007e824f94bf8bde86e22f48f4bb5f7312795b0e38ed241ab31e191a509",
+          "service_client.py": "c184c8f654646caaedc57ed02fd3b13c6ba118002c89d7d5837c1e8e066fe90d",
+          "mesh_source.py": "b7eadb866e77d2fa216180da0dae199440360b8a492dc71d4a22bbd54c9209d9"
+        },
+        "spans": {},
+        "limits": [
+          "ordinary active sources; not a controlled timing comparison",
+          "process CPU only; remote publisher, collector, SSH child/server CPU excluded",
+          "publisher workload owns one watch and a cached proof read every five seconds; not full Bridge/carrier",
+          "cProfile overhead can change cadence and cause timeout/resync; use only for call-path diagnosis",
+          "spans are synchronous thread CPU; nested inclusive values must not be summed",
+          "source overrides are identified by file digests; distribution metadata may describe another checkout"
+        ]
+      },
+      "telemetryScope": "includes startup/warmup; CPU window excludes ten-second warmup"
+    },
+    {
+      "variant": "candidate",
+      "position": 1,
+      "seconds": 120.2953809290193,
+      "rowsBefore": 102,
+      "rowsAfter": 102,
+      "roots": {
+        "publisher": [
+          1399779,
+          18926268
+        ],
+        "reader": [
+          1399786,
+          18926308
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 1.4215009643711851,
+          "peak": {
+            "rssBytes": 35774464,
+            "pssBytes": 23115776,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 2.1530336243984616,
+          "peak": {
+            "rssBytes": 37818368,
+            "pssBytes": 25156608,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      },
+      "readerTelemetry": {
+        "workload": "reader",
+        "scope": "local",
+        "profiled": false,
+        "seconds": 130.50540184200509,
+        "cpuSeconds": 3.0554785300000002,
+        "counts": {
+          "frame:view": 20,
+          "delivery:snap:connecting:None": 1,
+          "humanRenders": 33,
+          "delivery:snap:ready:None": 19,
+          "native:snap:same": 12,
+          "native:snap:changed": 6
+        },
+        "rowCounts": [
+          0,
+          102
+        ],
+        "packages": {
+          "agent-observer": "0.7.0a5",
+          "mesh-plus": "0.1.0a20",
+          "jsonschema": "4.26.0"
+        },
+        "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/lib/python3.14/site-packages/agent_observer",
+        "ownerDigests": {
+          "contract.py": "34a9e57b5fc858c349ea2a658292cad30ff00cf2827787516563d85b974cafd9",
+          "service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+          "service_client.py": "2475aadae57d227e740e143113b5442277713b64f9a87cafce2486f2c378cd1d",
+          "mesh_source.py": "c65159e4ccdf9022d6ad7c06a0626454ba0bb8ba3bbe05de425d349f57f891e7"
+        },
+        "spans": {},
+        "limits": [
+          "ordinary active sources; not a controlled timing comparison",
+          "process CPU only; remote publisher, collector, SSH child/server CPU excluded",
+          "publisher workload owns one watch and a cached proof read every five seconds; not full Bridge/carrier",
+          "cProfile overhead can change cadence and cause timeout/resync; use only for call-path diagnosis",
+          "spans are synchronous thread CPU; nested inclusive values must not be summed",
+          "source overrides are identified by file digests; distribution metadata may describe another checkout"
+        ]
+      },
+      "telemetryScope": "includes startup/warmup; CPU window excludes ten-second warmup"
+    },
+    {
+      "variant": "candidate",
+      "position": 2,
+      "seconds": 120.31102805401315,
+      "rowsBefore": 102,
+      "rowsAfter": 102,
+      "roots": {
+        "publisher": [
+          1404603,
+          18939371
+        ],
+        "reader": [
+          1404606,
+          18939411
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 1.4130043001850103,
+          "peak": {
+            "rssBytes": 36016128,
+            "pssBytes": 23281664,
+            "fds": 10,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 2.111194660276427,
+          "peak": {
+            "rssBytes": 37953536,
+            "pssBytes": 25319424,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      },
+      "readerTelemetry": {
+        "workload": "reader",
+        "scope": "local",
+        "profiled": false,
+        "seconds": 130.52347484399797,
+        "cpuSeconds": 2.853943477,
+        "counts": {
+          "frame:view": 19,
+          "delivery:snap:connecting:None": 1,
+          "humanRenders": 32,
+          "delivery:snap:ready:None": 18,
+          "native:snap:same": 12,
+          "native:snap:changed": 5
+        },
+        "rowCounts": [
+          0,
+          102
+        ],
+        "packages": {
+          "agent-observer": "0.7.0a5",
+          "mesh-plus": "0.1.0a20",
+          "jsonschema": "4.26.0"
+        },
+        "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/lib/python3.14/site-packages/agent_observer",
+        "ownerDigests": {
+          "contract.py": "34a9e57b5fc858c349ea2a658292cad30ff00cf2827787516563d85b974cafd9",
+          "service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+          "service_client.py": "2475aadae57d227e740e143113b5442277713b64f9a87cafce2486f2c378cd1d",
+          "mesh_source.py": "c65159e4ccdf9022d6ad7c06a0626454ba0bb8ba3bbe05de425d349f57f891e7"
+        },
+        "spans": {},
+        "limits": [
+          "ordinary active sources; not a controlled timing comparison",
+          "process CPU only; remote publisher, collector, SSH child/server CPU excluded",
+          "publisher workload owns one watch and a cached proof read every five seconds; not full Bridge/carrier",
+          "cProfile overhead can change cadence and cause timeout/resync; use only for call-path diagnosis",
+          "spans are synchronous thread CPU; nested inclusive values must not be summed",
+          "source overrides are identified by file digests; distribution metadata may describe another checkout"
+        ]
+      },
+      "telemetryScope": "includes startup/warmup; CPU window excludes ten-second warmup"
+    },
+    {
+      "variant": "baseline",
+      "position": 3,
+      "seconds": 120.22272251101094,
+      "rowsBefore": 102,
+      "rowsAfter": 102,
+      "roots": {
+        "publisher": [
+          1409418,
+          18952477
+        ],
+        "reader": [
+          1409424,
+          18952523
+        ]
+      },
+      "roles": {
+        "publisher": {
+          "cpuPercentOneCore": 1.8632085126793259,
+          "peak": {
+            "rssBytes": 36003840,
+            "pssBytes": 23339008,
+            "fds": 11,
+            "processes": 1
+          },
+          "pssComplete": true
+        },
+        "reader": {
+          "cpuPercentOneCore": 2.395553802016276,
+          "peak": {
+            "rssBytes": 37974016,
+            "pssBytes": 25387008,
+            "fds": 7,
+            "processes": 1
+          },
+          "pssComplete": true
+        }
+      },
+      "readerTelemetry": {
+        "workload": "reader",
+        "scope": "local",
+        "profiled": false,
+        "seconds": 130.5041276710108,
+        "cpuSeconds": 3.243364829,
+        "counts": {
+          "frame:view": 18,
+          "delivery:snap:connecting:None": 1,
+          "humanRenders": 40,
+          "delivery:snap:ready:None": 17,
+          "native:snap:same": 11,
+          "native:snap:changed": 5
+        },
+        "rowCounts": [
+          0,
+          102
+        ],
+        "packages": {
+          "agent-observer": "0.7.0a4",
+          "mesh-plus": "0.1.0a20",
+          "jsonschema": "4.26.0"
+        },
+        "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/lib/python3.14/site-packages/agent_observer",
+        "ownerDigests": {
+          "contract.py": "fe885aded35895ac6acca8852e31b82f2a77b6ee62aaebf047b3e5fe82d28473",
+          "service_contract.py": "5d692007e824f94bf8bde86e22f48f4bb5f7312795b0e38ed241ab31e191a509",
+          "service_client.py": "c184c8f654646caaedc57ed02fd3b13c6ba118002c89d7d5837c1e8e066fe90d",
+          "mesh_source.py": "b7eadb866e77d2fa216180da0dae199440360b8a492dc71d4a22bbd54c9209d9"
+        },
+        "spans": {},
+        "limits": [
+          "ordinary active sources; not a controlled timing comparison",
+          "process CPU only; remote publisher, collector, SSH child/server CPU excluded",
+          "publisher workload owns one watch and a cached proof read every five seconds; not full Bridge/carrier",
+          "cProfile overhead can change cadence and cause timeout/resync; use only for call-path diagnosis",
+          "spans are synchronous thread CPU; nested inclusive values must not be summed",
+          "source overrides are identified by file digests; distribution metadata may describe another checkout"
+        ]
+      },
+      "telemetryScope": "includes startup/warmup; CPU window excludes ten-second warmup"
+    }
+  ],
+  "scope": "complete owned local publisher/prepared human CLI; ordinary cached Service 4",
+  "limits": [
+    "ABBA serial; ordinary source/load changes are uncontrolled",
+    "startup excluded; collection and remote/server cost excluded",
+    "optional reader telemetry counts include startup/warmup; cadence/leases unchanged",
+    "no source/device/application CPU saving claim"
+  ]
+}

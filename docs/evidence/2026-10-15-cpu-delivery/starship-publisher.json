@@ -1,0 +1,10 @@
+{
+  "status": "accepted",
+  "host": "starship",
+  "stage": "publisher",
+  "rows": {
+    "oldReader": 392,
+    "newReader": 392
+  },
+  "otherUnitsUnchanged": true
+}

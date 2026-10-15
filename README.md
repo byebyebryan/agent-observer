@@ -2,7 +2,7 @@
 
 The [native title-helper correction](docs/evidence/2026-10-14-title-helper/REPORT.md)
 selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a4/Mesh a20.
+publishers separately select a5/Mesh a20.
 Tmux and the historical writer keep their independent selections. The dated
 a1 collector acceptance below remains historical.
 
@@ -22,7 +22,7 @@ ready; dashboard adoption has its own bundle, service and device acceptance.
 [API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) locally. Snap and Starship
 select core-only a3 collectors. Optional Agent publishers use explicit profile v3
 with [Mesh `0.1.0a20`](artifacts/mesh-0.1.0a20.json) and the independently accepted
-a4 owner package. The collection correction preserves
+a5 owner package. The collection correction preserves
 known internal helpers and hides them from ordinary rosters, with
 `--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
 separates native, artifact, transport, resource and managed adoption evidence.
@@ -31,7 +31,7 @@ Tmux keeps its independently selected native owner/profile/factory; the historic
 are not a new GitHub release. The previous 0.6.0a2/Mesh a16 tuple is retained for rollback.
 
 Both hosts separately select the read CLI from
-[Observer `0.7.0a4`](artifacts/observer-0.7.0a4.json) /
+[Observer `0.7.0a5`](artifacts/observer-0.7.0a5.json) /
 [Mesh `0.1.0a20`](artifacts/mesh-0.1.0a20.json). The explicit
 `agent-observer mesh watch --human --prepared` path preserves the same wire and
 expiry meanings. Installed/native comparison and reader-only rollback pass;
@@ -47,8 +47,11 @@ The [remaining CPU study](docs/evidence/2026-10-15-cpu/REPORT.md) traces most re
 cost to repeated full-roster validation. Source corrections remove duplicate
 local wire admission and unnecessary type predicates. Fixed synthetic comparisons
 save 27% snapshot validation, 56% wire admission and 12% complete consumer CPU;
-new artifact/managed acceptance is pending. Installed and RLCD selections remain
-independent.
+the [a5 delivery checkpoint](docs/evidence/2026-10-15-cpu-delivery/REPORT.md)
+accepts installed/native and staged reader/publisher rollout on both hosts.
+Ordinary local combined costs improve in descriptive ABBA windows; controlled
+consumer savings are 12–15%. RLCD adoption remains independent and follows this
+frozen producer checkpoint.
 
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
