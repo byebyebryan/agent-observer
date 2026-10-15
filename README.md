@@ -43,6 +43,13 @@ Tmux checks, staged role rollback, and mixed cost results. It establishes no
 universal a20 CPU saving. RLCD retains its independent bundle/dependency pair;
 hosted wheel releases remain pending.
 
+The [remaining CPU study](docs/evidence/2026-10-15-cpu/REPORT.md) traces most read
+cost to repeated full-roster validation. Source corrections remove duplicate
+local wire admission and unnecessary type predicates. Fixed synthetic comparisons
+save 27% snapshot validation, 56% wire admission and 12% complete consumer CPU;
+new artifact/managed acceptance is pending. Installed and RLCD selections remain
+independent.
+
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
 cached pull/push; optional Mesh supplies remote proofs/delivery. Neither core nor

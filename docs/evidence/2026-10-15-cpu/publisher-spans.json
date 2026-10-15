@@ -1,0 +1,190 @@
+{
+  "snap": {
+    "baseline": {
+      "workload": "publisher",
+      "scope": "fleet",
+      "profiled": false,
+      "seconds": 45.006556858978,
+      "cpuSeconds": 0.884704151,
+      "counts": {
+        "publisher:watch": 3,
+        "publisher:proof": 9
+      },
+      "rowCounts": [],
+      "packages": {
+        "agent-observer": "0.7.0a4",
+        "mesh-plus": "0.1.0a20",
+        "jsonschema": "4.26.0"
+      },
+      "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/lib/python3.14/site-packages/agent_observer",
+      "ownerDigests": {
+        "contract.py": "fe885aded35895ac6acca8852e31b82f2a77b6ee62aaebf047b3e5fe82d28473",
+        "service_contract.py": "5d692007e824f94bf8bde86e22f48f4bb5f7312795b0e38ed241ab31e191a509",
+        "service_client.py": "c184c8f654646caaedc57ed02fd3b13c6ba118002c89d7d5837c1e8e066fe90d",
+        "mesh_source.py": "b7eadb866e77d2fa216180da0dae199440360b8a492dc71d4a22bbd54c9209d9"
+      },
+      "spans": {
+        "agent_observer.contract.validate_snapshot": {
+          "calls": 63,
+          "cpuNs": 649742324,
+          "exclusiveCpuNs": 649742324
+        },
+        "agent_observer.service_contract.validate_frame": {
+          "calls": 69,
+          "cpuNs": 727300194,
+          "exclusiveCpuNs": 77557870
+        },
+        "AgentCodec.inspect_native": {
+          "calls": 27,
+          "cpuNs": 314893271,
+          "exclusiveCpuNs": 610536
+        },
+        "AgentCodec.validate_bridge": {
+          "calls": 12,
+          "cpuNs": 136902008,
+          "exclusiveCpuNs": 49678
+        }
+      }
+    },
+    "candidate": {
+      "workload": "publisher",
+      "scope": "fleet",
+      "profiled": false,
+      "seconds": 45.00486176999402,
+      "cpuSeconds": 0.54219581,
+      "counts": {
+        "publisher:proof": 9,
+        "publisher:watch": 2
+      },
+      "rowCounts": [],
+      "packages": {
+        "agent-observer": "0.7.0a3",
+        "mesh-plus": "0.1.0a20",
+        "jsonschema": "4.26.0"
+      },
+      "ownerRoot": "/home/bryan/code/agent-observer/agent_observer",
+      "ownerDigests": {
+        "contract.py": "34a9e57b5fc858c349ea2a658292cad30ff00cf2827787516563d85b974cafd9",
+        "service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+        "service_client.py": "2475aadae57d227e740e143113b5442277713b64f9a87cafce2486f2c378cd1d",
+        "mesh_source.py": "c65159e4ccdf9022d6ad7c06a0626454ba0bb8ba3bbe05de425d349f57f891e7"
+      },
+      "spans": {
+        "agent_observer.contract.validate_snapshot": {
+          "calls": 46,
+          "cpuNs": 348802377,
+          "exclusiveCpuNs": 348802377
+        },
+        "agent_observer.service_contract.validate_frame": {
+          "calls": 50,
+          "cpuNs": 402003510,
+          "exclusiveCpuNs": 53201133
+        },
+        "AgentCodec.inspect_native": {
+          "calls": 24,
+          "cpuNs": 209693370,
+          "exclusiveCpuNs": 583872
+        },
+        "AgentCodec.validate_bridge": {
+          "calls": 11,
+          "cpuNs": 94605143,
+          "exclusiveCpuNs": 46224
+        }
+      }
+    }
+  },
+  "starship": {
+    "baseline": {
+      "workload": "publisher",
+      "scope": "fleet",
+      "profiled": false,
+      "seconds": 45.00580502100638,
+      "cpuSeconds": 3.010100066,
+      "counts": {
+        "publisher:watch": 4,
+        "publisher:proof": 9
+      },
+      "rowCounts": [],
+      "packages": {
+        "agent-observer": "0.7.0a4",
+        "mesh-plus": "0.1.0a20",
+        "jsonschema": "4.26.0"
+      },
+      "ownerRoot": "/home/bryan/.local/share/agent-observer/0.7.0a4-26662b4e3a7c50ed-mesh-a20-ordering/lib/python3.14/site-packages/agent_observer",
+      "ownerDigests": {
+        "contract.py": "fe885aded35895ac6acca8852e31b82f2a77b6ee62aaebf047b3e5fe82d28473",
+        "service_contract.py": "5d692007e824f94bf8bde86e22f48f4bb5f7312795b0e38ed241ab31e191a509",
+        "service_client.py": "c184c8f654646caaedc57ed02fd3b13c6ba118002c89d7d5837c1e8e066fe90d",
+        "mesh_source.py": "b7eadb866e77d2fa216180da0dae199440360b8a492dc71d4a22bbd54c9209d9"
+      },
+      "spans": {
+        "agent_observer.contract.validate_snapshot": {
+          "calls": 69,
+          "cpuNs": 2264829757,
+          "exclusiveCpuNs": 2264829757
+        },
+        "agent_observer.service_contract.validate_frame": {
+          "calls": 75,
+          "cpuNs": 2495023607,
+          "exclusiveCpuNs": 230193850
+        },
+        "AgentCodec.inspect_native": {
+          "calls": 30,
+          "cpuNs": 1075547059,
+          "exclusiveCpuNs": 610560
+        },
+        "AgentCodec.validate_bridge": {
+          "calls": 13,
+          "cpuNs": 468857739,
+          "exclusiveCpuNs": 61360
+        }
+      }
+    },
+    "candidate": {
+      "workload": "publisher",
+      "scope": "fleet",
+      "profiled": false,
+      "seconds": 45.00756012200145,
+      "cpuSeconds": 1.910984418,
+      "counts": {
+        "publisher:watch": 3,
+        "publisher:proof": 9
+      },
+      "rowCounts": [],
+      "packages": {
+        "agent-observer": "0.7.0a4",
+        "mesh-plus": "0.1.0a20",
+        "jsonschema": "4.26.0"
+      },
+      "ownerRoot": "/tmp/agent-observer-cpu-candidate-20261015/agent_observer",
+      "ownerDigests": {
+        "contract.py": "34a9e57b5fc858c349ea2a658292cad30ff00cf2827787516563d85b974cafd9",
+        "service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+        "service_client.py": "2475aadae57d227e740e143113b5442277713b64f9a87cafce2486f2c378cd1d",
+        "mesh_source.py": "c65159e4ccdf9022d6ad7c06a0626454ba0bb8ba3bbe05de425d349f57f891e7"
+      },
+      "spans": {
+        "agent_observer.contract.validate_snapshot": {
+          "calls": 51,
+          "cpuNs": 1271996139,
+          "exclusiveCpuNs": 1271996139
+        },
+        "agent_observer.service_contract.validate_frame": {
+          "calls": 55,
+          "cpuNs": 1443013639,
+          "exclusiveCpuNs": 171017500
+        },
+        "AgentCodec.inspect_native": {
+          "calls": 27,
+          "cpuNs": 758810670,
+          "exclusiveCpuNs": 563490
+        },
+        "AgentCodec.validate_bridge": {
+          "calls": 12,
+          "cpuNs": 339875940,
+          "exclusiveCpuNs": 58380
+        }
+      }
+    }
+  }
+}

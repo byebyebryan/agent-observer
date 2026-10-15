@@ -1,0 +1,154 @@
+{
+  "baseline": {
+    "scope": "fleet",
+    "profiled": false,
+    "seconds": 60.0096172389749,
+    "cpuSeconds": 10.843514275999999,
+    "counts": {
+      "frame:view": 19,
+      "humanRenders": 25
+    },
+    "rowCounts": [
+      0,
+      101,
+      490
+    ],
+    "packages": {
+      "agent-observer": "0.7.0a4",
+      "mesh-plus": "0.1.0a20",
+      "jsonschema": "4.26.0"
+    },
+    "spans": {
+      "mesh_plus.view._validated_response": {
+        "calls": 38,
+        "cpuNs": 5486766771,
+        "exclusiveCpuNs": 3665110331
+      },
+      "Reader.compose": {
+        "calls": 19,
+        "cpuNs": 4270701572,
+        "exclusiveCpuNs": 214086781
+      },
+      "PreparedReadGuard._prepare": {
+        "calls": 19,
+        "cpuNs": 480967165,
+        "exclusiveCpuNs": 480967165
+      },
+      "PreparedAgentWatch.accept": {
+        "calls": 19,
+        "cpuNs": 2286482241,
+        "exclusiveCpuNs": 375363096
+      },
+      "PreparedAgentWatch.read": {
+        "calls": 24,
+        "cpuNs": 301726520,
+        "exclusiveCpuNs": 301726520
+      },
+      "agent_observer.read_client.ordered_snapshots": {
+        "calls": 24,
+        "cpuNs": 1190036269,
+        "exclusiveCpuNs": 106346090
+      },
+      "agent_observer.contract.validate_snapshot": {
+        "calls": 176,
+        "cpuNs": 4346301413,
+        "exclusiveCpuNs": 4346301413
+      },
+      "agent_observer.service_contract.validate_frame": {
+        "calls": 132,
+        "cpuNs": 3617169776,
+        "exclusiveCpuNs": 354558542
+      },
+      "AgentCodec.validate_bridge": {
+        "calls": 46,
+        "cpuNs": 1298617894,
+        "exclusiveCpuNs": 311816
+      },
+      "AgentCodec.inspect_native": {
+        "calls": 86,
+        "cpuNs": 2320859781,
+        "exclusiveCpuNs": 1996083
+      }
+    }
+  },
+  "typeCandidate": {
+    "scope": "fleet",
+    "profiled": false,
+    "seconds": 60.00376353098545,
+    "cpuSeconds": 9.998471339,
+    "counts": {
+      "frame:view": 19,
+      "delivery:snap:connecting:None": 1,
+      "delivery:starship:connecting:None": 3,
+      "humanRenders": 25,
+      "delivery:snap:ready:None": 18,
+      "native:snap:same": 15,
+      "delivery:starship:ready:None": 16,
+      "native:starship:same": 11,
+      "native:starship:changed": 4,
+      "native:snap:changed": 2
+    },
+    "rowCounts": [
+      0,
+      101,
+      490
+    ],
+    "packages": {
+      "agent-observer": "0.7.0a3",
+      "mesh-plus": "0.1.0a20",
+      "jsonschema": "4.26.0"
+    },
+    "spans": {
+      "mesh_plus.view._validated_response": {
+        "calls": 38,
+        "cpuNs": 5076902648,
+        "exclusiveCpuNs": 3676815630
+      },
+      "Reader.compose": {
+        "calls": 19,
+        "cpuNs": 4087829507,
+        "exclusiveCpuNs": 214280969
+      },
+      "PreparedReadGuard._prepare": {
+        "calls": 19,
+        "cpuNs": 451003052,
+        "exclusiveCpuNs": 451003052
+      },
+      "PreparedAgentWatch.accept": {
+        "calls": 19,
+        "cpuNs": 2020250752,
+        "exclusiveCpuNs": 365893590
+      },
+      "PreparedAgentWatch.read": {
+        "calls": 24,
+        "cpuNs": 323160012,
+        "exclusiveCpuNs": 323160012
+      },
+      "agent_observer.read_client.ordered_snapshots": {
+        "calls": 24,
+        "cpuNs": 904738009,
+        "exclusiveCpuNs": 96705885
+      },
+      "agent_observer.contract.validate_snapshot": {
+        "calls": 176,
+        "cpuNs": 3396429537,
+        "exclusiveCpuNs": 3396429537
+      },
+      "agent_observer.service_contract.validate_frame": {
+        "calls": 132,
+        "cpuNs": 2955917750,
+        "exclusiveCpuNs": 367520337
+      },
+      "AgentCodec.validate_bridge": {
+        "calls": 46,
+        "cpuNs": 1102784167,
+        "exclusiveCpuNs": 259968
+      },
+      "AgentCodec.inspect_native": {
+        "calls": 86,
+        "cpuNs": 1855402217,
+        "exclusiveCpuNs": 2008666
+      }
+    }
+  }
+}

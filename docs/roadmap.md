@@ -34,9 +34,12 @@ accepted separately in the device repository. Remaining work has separate scope:
 - RLCD adoption of the accepted optional prepared helper, including matched
   application CPU and bundle/service/device rollback. Its current application
   still uses about 19–22% of one core; consumer savings do not establish that fix.
-- Profile remaining complete watch costs separately: installed prepared fleet
-  CLI readers still use 12–16% of one core; source/publisher cost and remote SSH
-  server work have their own ownership and measurement bounds.
+- Package and independently accept the [CPU source corrections](evidence/2026-10-15-cpu/REPORT.md):
+  one local wire admission and cheaper strict type predicates. The controlled
+  consumer improves 12%; installed fleet/application savings and rollout are
+  pending. Remaining repeated native-body admission/proof composition belongs
+  to a focused Mesh study; presentation-only revalidation has a separate owner
+  path. Collection, extra SSH publishers and RLCD costs remain separately measured.
 - Hosted publication of the accepted Mesh a20 SDK and exact Observer a4 wheel;
   source push and green CI are already recorded independently.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
