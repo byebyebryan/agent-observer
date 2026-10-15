@@ -28,7 +28,12 @@ installed/native equality and reader-only rollback. The
 
 The read-client handoff is ready for downstream work. The RLCD title-first
 roster, system exclusion, feed loss/recovery and physical readability pass is
-accepted separately in the device repository. Remaining work has separate scope:
+accepted separately in the device repository. Remaining work has separate scope.
+
+The [CPU delivery plan](cpu-reduction-execution-plan.md) sequences the measured
+Observer corrections, independent RLCD prepared adoption, Starship source sync /
+hardware flash and whole-application acceptance before residual Mesh/read spikes.
+It is a plan; installed roles and the device selection have not changed.
 
 - 349 roster/feed adoption and any further RLCD product changes.
 - RLCD adoption of the accepted optional prepared helper, including matched

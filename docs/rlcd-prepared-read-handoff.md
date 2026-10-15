@@ -4,6 +4,17 @@ Producer acceptance: [R0–R5 ledger](evidence/2026-10-14-prepared-reads/REPORT.
 This is a request for an independently owned client adoption pass. Observer has
 not modified RLCD source, bundle, firmware, USB transport or application service.
 
+The [2026-10-15 CPU delivery plan](cpu-reduction-execution-plan.md) now sequences
+the existing CPU source corrections through an independent producer gate before
+client adoption. Its new candidate bytes are not yet accepted; the a4/a20 pair
+below remains the accepted input until that gate closes. The user requests
+syncing RLCD work to **Starship and flashing its hardware there**. Start from the
+current accepted wire-2/failure-refinement application (`9cc159d` at planning),
+preserve its behavior, and verify the live Starship RLCD identity
+`94:A9:90:F3:43:74` before the exclusive flash/capture window. The older Snap
+hardware record and stale local checkout are not the delivery target. No live
+selection or hardware change was performed by this planning update.
+
 ## Accepted input and boundary
 
 The [a20 follow-up](evidence/2026-10-14-mesh-a20/REPORT.md) accepts the exact
