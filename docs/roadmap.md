@@ -2,14 +2,15 @@
 
 The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
 selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a4/Mesh a20.
+publishers separately select a5/Mesh a20.
 Tmux and the historical writer keep their independent selections. The dated
 a1 collector acceptance below remains historical.
 
 Current producer checkpoint, 2026-10-14: Codex-only
 [Observer 0.7.0a3](../artifacts/observer-0.7.0a3.json) supplies API 4/read 6/Service 4
 and selects core-only collectors on Snap and Starship. Agent publication separately selects
-a4/Mesh a20/profile v3. Known system classification is preserved and ordinary rosters exclude it. Native turn/update
+a5/Mesh a20/profile v3 after the [CPU delivery checkpoint](evidence/2026-10-15-cpu-delivery/REPORT.md).
+Known system classification is preserved and ordinary rosters exclude it. Native turn/update
 metadata preserves activity/order and original independently expiring receipts.
 The [API 4 handoff](api-v4.md) and
 [operational receipt](evidence/2026-10-13-system-classification/REPORT.md) cover
@@ -20,7 +21,7 @@ following retirement; the previous 0.6.0a2/Mesh a16 tuple remains a rollback art
 
 The a2/a18 helper accepted in the
 [prepared-read ledger](evidence/2026-10-14-prepared-reads/REPORT.md) is retained
-in the a4/a20 read CLI on both hosts. API and
+in the a5/a20 read CLI on both hosts. API and
 profile meanings stay unchanged. Static Agent preparation and owned current-row
 reads meet the consumer cost targets at observed cadence, with legacy defaults,
 installed/native equality and reader-only rollback. The
@@ -33,16 +34,18 @@ accepted separately in the device repository. Remaining work has separate scope.
 The [CPU delivery plan](cpu-reduction-execution-plan.md) sequences the measured
 Observer corrections, independent RLCD prepared adoption, Starship source sync /
 hardware flash and whole-application acceptance before residual Mesh/read spikes.
-It is a plan; installed roles and the device selection have not changed.
+Its Observer C0–C2 gates are accepted with a5/a20 roles selected on both hosts.
+Independent client adoption and Starship hardware acceptance follow; the device
+selection remains unchanged at this checkpoint.
 
 - 349 roster/feed adoption and any further RLCD product changes.
 - RLCD adoption of the accepted optional prepared helper, including matched
   application CPU and bundle/service/device rollback. Its current application
   still uses about 19–22% of one core; consumer savings do not establish that fix.
-- Package and independently accept the [CPU source corrections](evidence/2026-10-15-cpu/REPORT.md):
-  one local wire admission and cheaper strict type predicates. The controlled
-  consumer improves 12%; installed fleet/application savings and rollout are
-  pending. Remaining repeated native-body admission/proof composition belongs
+- Measure the client application after the accepted [CPU source corrections](evidence/2026-10-15-cpu-delivery/REPORT.md):
+  one local wire admission and cheaper strict type predicates. The installed
+  controlled consumer improves 12–15%; application adoption and savings remain
+  separate. Remaining repeated native-body admission/proof composition belongs
   to a focused Mesh study; presentation-only revalidation has a separate owner
   path. Collection, extra SSH publishers and RLCD costs remain separately measured.
 - Hosted publication of the accepted Mesh a20 SDK and exact Observer a4 wheel;

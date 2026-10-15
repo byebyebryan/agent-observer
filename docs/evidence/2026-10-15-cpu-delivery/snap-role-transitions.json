@@ -1,0 +1,62 @@
+{
+  "reader": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "reader",
+    "rows": {
+      "oldReader": 102,
+      "newReader": 102
+    },
+    "otherUnitsUnchanged": true
+  },
+  "rollback-reader": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "rollback-reader",
+    "rows": {
+      "oldReader": 101,
+      "newReader": 101
+    },
+    "otherUnitsUnchanged": true
+  },
+  "reselect-reader": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "reselect-reader",
+    "rows": {
+      "oldReader": 101,
+      "newReader": 101
+    },
+    "otherUnitsUnchanged": true
+  },
+  "publisher": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "publisher",
+    "rows": {
+      "oldReader": 101,
+      "newReader": 101
+    },
+    "otherUnitsUnchanged": true
+  },
+  "rollback-publisher": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "rollback-publisher",
+    "rows": {
+      "oldReader": 101,
+      "newReader": 101
+    },
+    "otherUnitsUnchanged": true
+  },
+  "reselect-publisher": {
+    "status": "accepted",
+    "host": "snap",
+    "stage": "reselect-publisher",
+    "rows": {
+      "oldReader": 101,
+      "newReader": 101
+    },
+    "otherUnitsUnchanged": true
+  }
+}

@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--owner-root', type=Path)
 parser.add_argument('--repo', type=Path, default=Path(__file__).resolve().parents[2])
 parser.add_argument('--output', type=Path, required=True)
+parser.add_argument('--rows', type=int, choices=(50, 250), default=250)
 args = parser.parse_args()
 if args.owner_root:
     sys.path.insert(0, str(args.owner_root))
@@ -26,7 +27,7 @@ from agent_observer.read_client import human_snapshots
 
 async def run():
     profile = AgentProfile()
-    original = await seed(2, 250)
+    original = await seed(2, args.rows)
     host = original['mesh']['hosts'][0]
     native = profile.restore_native(host['owner'], [r for r in original['sessions'] if r['identity']['hostScope']==host['hostId']])
     snapshot = native['snapshot']
@@ -69,6 +70,7 @@ async def run():
         report[name] = {'cpuNs': elapsed, 'oracle': actual}
     import agent_observer
     report['ownerRoot'] = str(Path(agent_observer.__file__).parent)
+    report['rowsPerHost'] = args.rows
     report['kind'] = 'synthetic CPU; unchanged SDK; no provider or network delivery'
     report['limits'] = ['fixture construction and warm-up excluded',
                         'wire case compares the old double admission with the candidate guard parser',

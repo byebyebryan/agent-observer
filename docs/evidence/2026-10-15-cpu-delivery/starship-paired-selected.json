@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "host": "starship",
+  "tmuxVersion": "0.6.0a7",
+  "tmuxOwnerFilesVerified": 31,
+  "carriers": [
+    {
+      "domain": "agent",
+      "carrier": "ipc",
+      "profile": "agent-observer.mesh-candidate.v3",
+      "snapshotRows": 392,
+      "currentWatchRows": 392,
+      "proof": false,
+      "connectionsAfter": 0
+    },
+    {
+      "domain": "agent",
+      "carrier": "owned-fixed-ssh",
+      "profile": "agent-observer.mesh-candidate.v3",
+      "snapshotRows": 392,
+      "currentWatchRows": 392,
+      "proof": true,
+      "connectionsAfter": 0
+    },
+    {
+      "domain": "tmux",
+      "carrier": "ipc",
+      "profile": "tmux-observer.mesh-candidate.v1",
+      "snapshotRows": 4,
+      "currentWatchRows": 4,
+      "proof": false,
+      "connectionsAfter": 0
+    },
+    {
+      "domain": "tmux",
+      "carrier": "owned-fixed-ssh",
+      "profile": "tmux-observer.mesh-candidate.v1",
+      "snapshotRows": 4,
+      "currentWatchRows": 4,
+      "proof": true,
+      "connectionsAfter": 0
+    }
+  ],
+  "normalSelectionsChanged": false,
+  "providerActions": 0,
+  "limits": [
+    "cached current owners",
+    "owned localhost SSH; ordinary cross-host gate follows",
+    "no GUI/action or native collection proof"
+  ]
+}

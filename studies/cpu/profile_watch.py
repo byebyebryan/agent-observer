@@ -14,6 +14,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--scope', choices=('local', 'fleet'), default='fleet')
 parser.add_argument('--workload', choices=('reader', 'publisher'), default='reader')
 parser.add_argument('--host-scope')
+parser.add_argument('--local-host')
+parser.add_argument('--socket', type=Path)
 parser.add_argument('--seconds', type=int, default=45)
 parser.add_argument('--profile', action='store_true')
 parser.add_argument('--spans', action='store_true')
@@ -119,7 +121,12 @@ async def run():
         if publisher.native._active:
             raise ValueError('source_cleanup')
         return
-    cli_args = mesh_cli.parser().parse_args(['watch', '--human', '--prepared', '--scope', args.scope])
+    argv = ['watch', '--human', '--prepared', '--scope', args.scope]
+    if args.local_host:
+        argv += ['--local-host', args.local_host]
+    if args.socket:
+        argv += ['--socket', str(args.socket)]
+    cli_args = mesh_cli.parser().parse_args(argv)
     async with asyncio.timeout(args.seconds):
         try:
             await mesh_cli.run(cli_args, human_output=discard_human)
@@ -132,7 +139,7 @@ if args.profile:
     profiler.enable()
 try:
     asyncio.run(run())
-except TimeoutError:
+except (TimeoutError, KeyboardInterrupt):
     pass
 finally:
     if args.profile:

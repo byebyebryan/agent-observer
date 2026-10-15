@@ -2,7 +2,7 @@
 
 The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
 selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a4/Mesh a20.
+publishers separately select a5/Mesh a20.
 Tmux and the historical writer keep their independent selections. The dated
 a1 collector acceptance below remains historical.
 
@@ -34,8 +34,9 @@ networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
 Normal collection selects core-only 0.7.0a3 on both hosts. Agent publication
-separately selects 0.7.0a4/Mesh a20.
-The read CLI separately selects 0.7.0a4/Mesh a20 with an explicit optional
+separately selects 0.7.0a5/Mesh a20 after the
+[CPU delivery checkpoint](evidence/2026-10-15-cpu-delivery/REPORT.md).
+The read CLI separately selects 0.7.0a5/Mesh a20 with an explicit optional
 prepared human watch. The [accepted read helper](prepared-agent-read-interface.md)
 belongs to the optional networking/read component: Mesh owns full admission,
 immutable generations, expiry and delivery; Observer compiles deterministic

@@ -49,8 +49,13 @@ def run(args):
                     "--scope", "local", "--local-host", args.host, "--socket", str(endpoint)], timeout=30))
                 if snapshot["mesh"]["status"] != "complete":
                     raise ValueError("snapshot_not_complete")
-                reader = subprocess.Popen([str(cli), "mesh", "watch", "--human", "--prepared",
-                    "--scope", "local", "--local-host", args.host, "--socket", str(endpoint)],
+                telemetry = root / (str(position) + "-reader.json")
+                command = ([str(publisher_prefix / "bin/python"), "-I", "-B", str(args.reader_harness),
+                    "--scope", "local", "--local-host", args.host, "--socket", str(endpoint),
+                    "--seconds", str(args.seconds + 30), "--output", str(telemetry)]
+                    if args.reader_harness else [str(cli), "mesh", "watch", "--human", "--prepared",
+                    "--scope", "local", "--local-host", args.host, "--socket", str(endpoint)])
+                reader = subprocess.Popen(command,
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
                 roots = {"publisher": (publisher.pid, counters(publisher.pid)["birth"]),
                          "reader": (reader.pid, counters(reader.pid)["birth"])}
@@ -77,12 +82,16 @@ def run(args):
                         "peak": {key: max(s[role][key] for s in samples)
                             for key in ("rssBytes", "pssBytes", "fds", "processes")},
                         "pssComplete": after[role]["pssComplete"]} for role in roots}}
+                if args.reader_harness:
+                    stop(reader)
+                    report["readerTelemetry"] = json.loads(telemetry.read_text())
+                    report["telemetryScope"] = "includes startup/warmup; CPU window excludes ten-second warmup"
                 results.append(report)
                 args.output.write_text(json.dumps({"host": args.host, "windows": results,
                     "scope": "complete owned local publisher/prepared human CLI; ordinary cached Service 4",
                     "limits": ["ABBA serial; ordinary source/load changes are uncontrolled",
                                "startup excluded; collection and remote/server cost excluded",
-                               "frame/render counts not collected; original cadence/leases unchanged",
+                               "optional reader telemetry counts include startup/warmup; cadence/leases unchanged",
                                "no source/device/application CPU saving claim"]}, indent=2) + "\n")
                 print(json.dumps({"host": args.host, "position": position, "variant": variant,
                     "cpu": {role: value["cpuPercentOneCore"] for role, value in report["roles"].items()}}), flush=True)
@@ -101,6 +110,7 @@ if __name__ == "__main__":
     parser.add_argument("--baseline-cli", type=Path, required=True)
     parser.add_argument("--service-socket", type=Path, required=True)
     parser.add_argument("--resource-helper", type=Path, required=True)
+    parser.add_argument("--reader-harness", type=Path)
     parser.add_argument("--seconds", type=int, choices=range(120, 601), default=120)
     parser.add_argument("--output", type=Path, required=True)
     run(parser.parse_args())
