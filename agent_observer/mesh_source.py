@@ -16,7 +16,6 @@ from .service_public import (
     StreamGuard,
     canonical,
     interface,
-    parse_frame,
     validate_request,
 )
 
@@ -174,7 +173,7 @@ class CachedAgentSource:
                         raise ContractError("service_frame_limit")
                 line, _, rest = pending.partition(b"\n")
                 pending = bytearray(rest)
-                frame = guard.accept(parse_frame(bytes(line) + b"\n"))
+                frame = guard.parse(bytes(line) + b"\n")
                 now = boottime_ms()
                 if (frame["bootId"] != boot or frame["clockDomain"] != domain
                         or frame["emittedBoottimeMs"] > now):

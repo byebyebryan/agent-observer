@@ -213,6 +213,13 @@ class StreamGuard:
         self.binding, self.emitted = None, 0
         self.gapped = False
 
+    def parse(self, data):
+        """Bounded wire decoding and one full admission before stream ordering."""
+        return self.accept(decode_document(
+            data, max_bytes=MAX_FRAME_BYTES, max_nodes=MAX_NODES + 4096,
+            max_depth=34, line_framed=True,
+        ))
+
     def accept(self, value):
         validate_frame(value, expected_host=self.expected_host, expected_uid=self.expected_uid)
         if self.service_id is None:

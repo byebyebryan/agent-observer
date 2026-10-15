@@ -1,0 +1,125 @@
+{
+  "snap": {
+    "seconds": 45.04586722498061,
+    "units": {
+      "agent-observer.service": {
+        "pid": 3135429,
+        "stable": true,
+        "cpuPercentOneCore": 1.6611401802139953
+      },
+      "mesh-plus-agent.service": {
+        "pid": 1013673,
+        "stable": true,
+        "cpuPercentOneCore": 0.0
+      },
+      "rlcd-agent-dashboard.service": {
+        "pid": 0,
+        "stable": true,
+        "cpuPercentOneCore": 0.0
+      }
+    },
+    "stableProcesses": [
+      {
+        "pid": 651856,
+        "birth": 17253476,
+        "parent": 651855,
+        "role": "extra-agent-source",
+        "cpuPercentOneCore": 2.175560290815162
+      },
+      {
+        "pid": 1013673,
+        "birth": 9238753,
+        "parent": 1772,
+        "role": "mesh-plus-agent.service",
+        "cpuPercentOneCore": 0.0
+      },
+      {
+        "pid": 3135429,
+        "birth": 5747670,
+        "parent": 1772,
+        "role": "agent-observer.service",
+        "cpuPercentOneCore": 0.8435846025609813
+      },
+      {
+        "pid": 3135432,
+        "birth": 5747676,
+        "parent": 3135429,
+        "role": "agent-observer.service",
+        "cpuPercentOneCore": 0.06659878441270904
+      }
+    ],
+    "processesCreatedOrLost": 0,
+    "limits": [
+      "ordinary workload, no added reader",
+      "unit cgroups include helpers",
+      "process CPU excludes created/lost processes and reaped children",
+      "extra sources classified by explicit --source agent, not assumed SSH ownership",
+      "do not add overlapping unit and process CPU values"
+    ]
+  },
+  "starship": {
+    "seconds": 45.021700808021706,
+    "units": {
+      "agent-observer.service": {
+        "pid": 2273193,
+        "stable": true,
+        "cpuPercentOneCore": 1.8451968386142885
+      },
+      "mesh-plus-agent.service": {
+        "pid": 3643559,
+        "stable": true,
+        "cpuPercentOneCore": 4.3666520027375775
+      },
+      "rlcd-agent-dashboard.service": {
+        "pid": 2398940,
+        "stable": true,
+        "cpuPercentOneCore": 19.851124767831077
+      }
+    },
+    "stableProcesses": [
+      {
+        "pid": 2273193,
+        "birth": 5750985,
+        "parent": 1041,
+        "role": "agent-observer.service",
+        "cpuPercentOneCore": 1.243844612596738
+      },
+      {
+        "pid": 2273196,
+        "birth": 5750990,
+        "parent": 2273193,
+        "role": "agent-observer.service",
+        "cpuPercentOneCore": 0.022211510939227463
+      },
+      {
+        "pid": 2398940,
+        "birth": 5931069,
+        "parent": 1041,
+        "role": "rlcd-agent-dashboard.service",
+        "cpuPercentOneCore": 18.83536127646489
+      },
+      {
+        "pid": 3053697,
+        "birth": 17259333,
+        "parent": 2398940,
+        "role": "rlcd-agent-dashboard.service",
+        "cpuPercentOneCore": 0.022211510939227463
+      },
+      {
+        "pid": 3643559,
+        "birth": 9251227,
+        "parent": 1041,
+        "role": "mesh-plus-agent.service",
+        "cpuPercentOneCore": 4.375667655027811
+      }
+    ],
+    "processesCreatedOrLost": 0,
+    "limits": [
+      "ordinary workload, no added reader",
+      "unit cgroups include helpers",
+      "process CPU excludes created/lost processes and reaped children",
+      "extra sources classified by explicit --source agent, not assumed SSH ownership",
+      "do not add overlapping unit and process CPU values"
+    ]
+  }
+}

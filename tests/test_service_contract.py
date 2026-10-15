@@ -7,6 +7,7 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from agent_observer.contract import ContractError, canonical
 from agent_observer.service_contract import (
@@ -27,6 +28,26 @@ def fixture():
 
 
 class ServiceContractTest(unittest.TestCase):
+    def test_guard_wire_admission_preserves_bounds_scope_and_order(self):
+        value = fixture()
+        wire = (canonical(value) + "\n").encode()
+        guard = StreamGuard(expected_host="fixture", expected_uid=1000)
+        with patch("agent_observer.service_contract.validate_frame", wraps=validate_frame) as validate:
+            self.assertEqual(guard.parse(wire), value)
+            self.assertEqual(validate.call_count, 1)
+        with self.assertRaisesRegex(ContractError, "service_stream_order"):
+            guard.parse(wire)
+        for bad in (wire[:-1], wire + wire, wire.replace(b'"uid":1000', b'"uid":true')):
+            with self.subTest(wire=bad[:40]), self.assertRaises(ValueError):
+                StreamGuard(expected_host="fixture", expected_uid=1000).parse(bad)
+        with self.assertRaisesRegex(ContractError, "service_host_mismatch"):
+            StreamGuard(expected_host="foreign").parse(wire)
+        with self.assertRaisesRegex(ContractError, "service_uid_mismatch"):
+            StreamGuard(expected_uid=1001).parse(wire)
+        value["snapshot"]["sessions"][0]["prompt"] = "forbidden"
+        with self.assertRaises(ContractError):
+            StreamGuard().parse((canonical(value) + "\n").encode())
+
     def test_roundtrip_and_bundled_schemas(self):
         value = fixture()
         self.assertEqual(parse_frame((canonical(value) + "\n").encode(), expected_host="fixture", expected_uid=1000), value)

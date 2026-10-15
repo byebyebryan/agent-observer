@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 
 from .contract import ContractError, canonical
-from .service_contract import MAX_FRAME_BYTES, StreamGuard, parse_frame, validate_request
+from .service_contract import MAX_FRAME_BYTES, StreamGuard, validate_request
 
 
 def frames(path, *, host_scope, operation="watch", timeout=15.0, tick_interval=None):
@@ -69,7 +69,7 @@ def frames(path, *, host_scope, operation="watch", timeout=15.0, tick_interval=N
                     raise ContractError("service_frame_limit")
             line, _, rest = pending.partition(b"\n")
             pending = bytearray(rest)
-            frame = guard.accept(parse_frame(bytes(line) + b"\n"))
+            frame = guard.parse(bytes(line) + b"\n")
             if frame["bootId"] != boot or frame["clockDomain"] != domain:
                 raise ContractError("service_clock_context")
             now = int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)

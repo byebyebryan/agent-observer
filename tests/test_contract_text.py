@@ -7,6 +7,28 @@ from agent_observer.contract import ContractError, validate_shape
 
 
 class ContractTextTests(unittest.TestCase):
+    def test_scalar_and_union_types_preserve_exact_integer_boolean_admission(self):
+        values = (None, {}, [], "text", 0, True, 1.0, (), b"text")
+        kinds = ("null", "object", "array", "string", "integer", "boolean", "unsupported")
+        predicates = {
+            "null": lambda v: v is None, "object": lambda v: isinstance(v, dict),
+            "array": lambda v: isinstance(v, list), "string": lambda v: isinstance(v, str),
+            "integer": lambda v: type(v) is int, "boolean": lambda v: type(v) is bool,
+        }
+        for kind in kinds:
+            for value in values:
+                for types in (kind, [kind], ["null", kind]):
+                    expected = predicates.get(kind, lambda v: False)(value)
+                    expected |= isinstance(types, list) and "null" in types and value is None
+                    # An unconstrained array still needs an item schema.
+                    spec = {"type": types, "items": {}}
+                    with self.subTest(kind=types, value=value):
+                        if expected:
+                            validate_shape(value, spec)
+                        else:
+                            with self.assertRaisesRegex(ContractError, "invalid_contract_type"):
+                                validate_shape(value, spec)
+
     def test_ascii_controls_and_printable_characters_match_unicode_oracle(self):
         for ordinal in range(128):
             value = "prefix" + chr(ordinal) + "suffix"

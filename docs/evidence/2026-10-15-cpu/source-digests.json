@@ -1,0 +1,9 @@
+{
+  "studies/cpu/profile_watch.py": "efe8fbac0a05b731684ab5ffb2f606287405b0cf59db33bbfe0196fd59677f3f",
+  "studies/cpu/benchmark.py": "fbe169584c5c764c69470b7d0af26c8ce41f97d01da3cb8c140a08e07342faa0",
+  "studies/cpu/units.py": "a5363d8ac1af5739ed0a6503bdaea7836b1cc5d17bc03ac061411e2a292d60f0",
+  "agent_observer/contract.py": "34a9e57b5fc858c349ea2a658292cad30ff00cf2827787516563d85b974cafd9",
+  "agent_observer/service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+  "agent_observer/service_client.py": "2475aadae57d227e740e143113b5442277713b64f9a87cafce2486f2c378cd1d",
+  "agent_observer/mesh_source.py": "c65159e4ccdf9022d6ad7c06a0626454ba0bb8ba3bbe05de425d349f57f891e7"
+}
