@@ -30,6 +30,13 @@ The primary delivery batch is C0–C5. C6 is independently schedulable and does 
 block that delivery. A producer defect found in C3/C4 reopens an Observer checkpoint;
 freeze and validate the corrected producer before resuming client changes.
 
+Delivery status, 2026-10-15: **C0–C5 accepted**. The
+[producer/client ledger](evidence/2026-10-15-cpu-delivery/REPORT.md) records exact
+selections, independent gates, Starship flash/rollback and measured cost; its
+[completion audit](evidence/2026-10-15-cpu-delivery/completion-audit.json) maps the
+requirements to evidence. The inputs and execution requirements below preserve
+the original plan. C6 remains independently schedulable.
+
 ## Current inputs and authority
 
 - Observer source on Snap is `62deb31`, one local commit beyond the previous

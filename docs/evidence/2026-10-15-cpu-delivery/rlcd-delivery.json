@@ -1,0 +1,101 @@
+{
+  "status": "accepted",
+  "checkpoints": [
+    "C3",
+    "C4",
+    "C5"
+  ],
+  "producerSourceFreeze": "6542b9204fb78ee64daeabed7c42910bfb2dbeb1",
+  "observer": "0.7.0a5",
+  "mesh": "0.1.0a20",
+  "api": 4,
+  "snapshotWatch": 6,
+  "service": 4,
+  "profile": "agent-observer.mesh-candidate.v3",
+  "sdk": 1,
+  "preparation": 1,
+  "read": 1,
+  "clientSourceFreeze": "19323e6fb3894895b882f70dc569f36fee4bcdd9",
+  "clientAcceptanceCommit": "358d2657a2c0191bd619b739e2fe1d60493044fd",
+  "clientReceipt": "https://github.com/byebyebryan/esp32-rlcd/blob/358d265/docs/evidence/2026-10-15-prepared-reads/REPORT.md",
+  "bundle": {
+    "id": "807eab96b48825ae",
+    "manifestSha256": "807eab96b48825ae94f1ce6bfe5a7f85f235e446ad3a8e3d1565542196f073c5"
+  },
+  "device": {
+    "mac": "94:a9:90:f3:43:74",
+    "phase": "candidate",
+    "appBytes": 1242640,
+    "appSha256": "0ecdc4cd7e3f87a664ad3554f865751106dc2e6601494494e21770319a1f4eca",
+    "readbackEqual": true,
+    "protectedPrefixEqual": true
+  },
+  "controlledCost": {
+    "meanPercentOneCore": {
+      "D0": 21.642007792685693,
+      "D1": 18.426247910932517,
+      "D2": 13.211124455340155
+    },
+    "clientReductionPercent": 28.302687995954756,
+    "totalReductionPercent": 38.95610526577348,
+    "semanticParity": true
+  },
+  "liveCost": {
+    "baselinePercentOneCore": 20.99370873885941,
+    "candidatePercentOneCore": 12.763378483143226,
+    "relativeReductionPercent": 39.20379366072571,
+    "baselineMeanPssMiB": 47.967220052083334,
+    "candidateMeanPssMiB": 47.40597330729167,
+    "candidatePeakPssMiB": 47.4375,
+    "candidateMeanRssMiB": 68.506640625,
+    "candidatePeakRssMiB": 68.5078125,
+    "scope": "descriptive ordinary workload; controlled attribution is separate"
+  },
+  "fanout": {
+    "meanPercentOneCore": {
+      "1": 13.110511287728542,
+      "2": 21.647739585357083
+    },
+    "extraReaderPercentOneCore": 8.537228297628541,
+    "semanticParity": true
+  },
+  "managedPin": "447aa18",
+  "finalGate": {
+    "stage": "final",
+    "bundle": "807eab96b48825ae",
+    "manifestSha256": "807eab96b48825ae94f1ce6bfe5a7f85f235e446ad3a8e3d1565542196f073c5",
+    "pid": 4071804,
+    "sourceAdmittedAck": {
+      "event": "device_ack_recovered",
+      "request": 15,
+      "sequence": 15,
+      "rows": 9,
+      "source_admitted": true
+    },
+    "health": {
+      "event": "device_health",
+      "health": 0,
+      "partial": 0,
+      "rows": 9,
+      "attention": 0,
+      "waiting": 3,
+      "working": 6,
+      "unknown": 0,
+      "frame_us": 17544,
+      "miss": 0,
+      "heap": 292171,
+      "stack": 4776
+    },
+    "singleSerialOwner": true,
+    "protectedUnitsUnchanged": true
+  },
+  "limits": [
+    "ordinary service CPU is descriptive; matched controlled pipeline is separate",
+    "full fixture CPU includes publisher/Reader/application/supervisor; excludes real SSH/providers/serial",
+    "native frame/request counts not captured by ordinary resource sampler",
+    "stable-process remote source accounting excludes short-lived helpers and SSH server/crypto",
+    "manual panel/readability and host reboot not claimed",
+    "hosted wheel release and residual C6 work remain separate"
+  ],
+  "clientCI": "https://github.com/byebyebryan/esp32-rlcd/actions/runs/38815316921"
+}

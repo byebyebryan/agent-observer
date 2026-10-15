@@ -13,8 +13,9 @@ no TUI/tmux attachment or provider action.
 
 The [prepared read-client pass](docs/evidence/2026-10-14-prepared-reads/REPORT.md)
 certifies Agent rules and an optional owned watch helper after the first RLCD
-integration. The [RLCD adoption handoff](docs/rlcd-prepared-read-handoff.md) is
-ready; dashboard adoption has its own bundle, service and device acceptance.
+integration. The [RLCD adoption handoff](docs/rlcd-prepared-read-handoff.md) now
+records independently accepted adoption, with its own bundle, service and
+Starship device gates.
 
 ## Current status
 
@@ -40,7 +41,7 @@ saves about 36% total consumer CPU and
 86% repeated-read CPU at its sampled cadence. The [a20 adoption ledger](docs/evidence/2026-10-14-mesh-a20/REPORT.md)
 separately records acquisition-ordering correction, installed/native and paired
 Tmux checks, staged role rollback, and mixed cost results. It establishes no
-universal a20 CPU saving. RLCD retains its independent bundle/dependency pair;
+universal a20 CPU saving. RLCD independently selects its prepared a5/a20 bundle;
 hosted wheel releases remain pending.
 
 The [remaining CPU study](docs/evidence/2026-10-15-cpu/REPORT.md) traces most read
@@ -50,8 +51,12 @@ save 27% snapshot validation, 56% wire admission and 12% complete consumer CPU;
 the [a5 delivery checkpoint](docs/evidence/2026-10-15-cpu-delivery/REPORT.md)
 accepts installed/native and staged reader/publisher rollout on both hosts.
 Ordinary local combined costs improve in descriptive ABBA windows; controlled
-consumer savings are 12–15%. RLCD adoption remains independent and follows this
-frozen producer checkpoint.
+consumer savings are 12–15%. The independent RLCD delivery now selects prepared
+reads on Starship after verified flash, real-feed expiry/recovery and paired
+rollback. Its warmed service uses 12.76% of one core versus 20.99% before, with
+essentially flat memory. Ordinary activity varies; the separately matched
+controlled application comparison saves 38.96%. Remaining acquisition/admission,
+proof/carrier and per-reader costs have their own next-pass boundary.
 
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies

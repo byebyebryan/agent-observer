@@ -46,6 +46,9 @@ ordinary watch defaults keep their existing paths. No task, reconnect, alert,
 selection or device clock policy moves into the helper. The
 [acceptance ledger](evidence/2026-10-14-prepared-reads/REPORT.md) distinguishes
 consumer savings, remaining whole-pipeline cost and independent RLCD adoption.
+The later [C0–C5 delivery](evidence/2026-10-15-cpu-delivery/REPORT.md) accepts
+prepared RLCD adoption and Starship hardware independently, with unchanged
+observation contracts and separately measured client/endpoint costs.
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
 Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
 0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical
