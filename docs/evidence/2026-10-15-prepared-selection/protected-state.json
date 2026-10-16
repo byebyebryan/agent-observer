@@ -1,0 +1,69 @@
+{
+  "before": {
+    "agent-observer.service": [
+      "ActiveState=active",
+      "MainPID=2273193",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=57509851267"
+    ],
+    "mesh-plus-agent.service": [
+      "ActiveState=active",
+      "MainPID=3899267",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=189941447410"
+    ],
+    "rlcd-agent-dashboard.service": [
+      "ActiveState=active",
+      "MainPID=4071804",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=192560298795"
+    ],
+    "mesh-plus-tmux.service": [
+      "ActiveState=inactive",
+      "MainPID=0",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=0"
+    ],
+    "links": {
+      "/home/bryan/.local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/bin/agent-observer",
+      "/home/bryan/.local/bin/mesh-plus": "/home/bryan/.local/bin/mesh-plus"
+    }
+  },
+  "after": {
+    "agent-observer.service": [
+      "ActiveState=active",
+      "MainPID=2273193",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=57509851267"
+    ],
+    "mesh-plus-agent.service": [
+      "ActiveState=active",
+      "MainPID=3899267",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=189941447410"
+    ],
+    "rlcd-agent-dashboard.service": [
+      "ActiveState=active",
+      "MainPID=4071804",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=192560298795"
+    ],
+    "mesh-plus-tmux.service": [
+      "ActiveState=inactive",
+      "MainPID=0",
+      "NRestarts=0",
+      "ExecMainStartTimestampMonotonic=0"
+    ],
+    "links": {
+      "/home/bryan/.local/bin/agent-observer": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/bin/agent-observer",
+      "/home/bryan/.local/bin/mesh-plus": "/home/bryan/.local/bin/mesh-plus"
+    }
+  },
+  "equal": true,
+  "providerActions": 0,
+  "serviceRestartsByTask": 0,
+  "selectedLinksChangedByTask": false,
+  "limits": [
+    "unit/process/link readbacks only; unrelated external work may change provider/session state"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "status": "Observer producer accepted for independent pinned integration within stated native coverage",
+  "branch": "cpu-prepared-admission",
+  "runtimeSourceCommit": "fefa52d9f1fc850753cc72292c37dae78fa1c112",
+  "wheel": {
+    "version": "0.7.0a6",
+    "path": "/home/bryan/code/agent-observer/dist/private/0.7.0a6-fefa52d-e01a7129/agent_observer-0.7.0a6-py3-none-any.whl",
+    "sha256": "e01a712934a1c13aaf5dca011321ce62e9cadd6abf2d4b89bd263f57a56e8125",
+    "requiresPython": ">=3.11",
+    "coreDependencies": [],
+    "optionalMesh": "mesh-plus>=0.1.0a22,<0.2"
+  },
+  "mesh": {
+    "version": "0.1.0a22",
+    "path": "/home/bryan/code/mesh-plus/dist/private/0.1.0a22-f1ced05-5ac484d7/mesh_plus-0.1.0a22-py3-none-any.whl",
+    "sha256": "5ac484d7dcb3f60665a66b5b6dcff780a967afa1d24a8c092800a430399f3314",
+    "requiresPython": ">=3.11",
+    "dependencies": [
+      "jsonschema>=4.26,<5"
+    ],
+    "optionalWSS": "websockets>=17.1,<18",
+    "descriptors": {
+      "sdk": 1,
+      "preparation": 1,
+      "admission": 1,
+      "selection": 1,
+      "lock": 4
+    }
+  },
+  "contracts": {
+    "observationApi": 4,
+    "snapshotWatch": 6,
+    "service": 4,
+    "agentProfile": "agent-observer.mesh-candidate.v3",
+    "sdk": 1,
+    "preparation": 1,
+    "admission": 1,
+    "selection": 1,
+    "agentRead": 2
+  },
+  "apis": {
+    "imports": "from agent_observer.mesh_profile import AgentProfile; from agent_observer.mesh_read import AgentSelection, PreparedAgentWatch",
+    "reader": "configure Reader with the same AgentProfile instance as PreparedAgentWatch; consume reader.execute_admitted(request) or reader.watch_admitted(...)",
+    "selection": "PreparedAgentWatch(request_id, host_ids=hosts, profile=profile, selection=AgentSelection(providers=frozenset(...), kinds=frozenset(...), runtime_values=frozenset(...), runtime_healths=frozenset(...)))",
+    "read": "read = watch.read(now_ms, reader_clock); read.context retained Mesh header; read.sessions selected owned full records; read.summaries frozen full-identity/kind/runtime summaries for every current row",
+    "defaults": "selection=None keeps full current rows and summaries=None; None filters accept all values; empty frozensets accept none",
+    "positiveExclusion": "caller can retire exact current child/system/parked identities from summaries beyond any display prefix; absent/unselected is not retirement evidence",
+    "snapshot": "watch.snapshot() retains the full raw roster independent of selection",
+    "lifecycle": "serialize calls, disconnect in finally and close the owned reader iterator; reconnect constructs a fresh helper",
+    "native": "optional AgentCodec.admit_bridge(payload)->NativeState fully validates once; standalone methods remain strict; Mesh owns all envelope/proof/lease safety"
+  },
+  "correctness": "validation.json",
+  "native": {
+    "starshipDirect": "395 exact native identities over two rounds; no direct mismatch",
+    "starshipCached": "395 identity/runtime/phase/activity matches; lastUpdated lags 9-26 seconds on changing rows",
+    "snap": "existing 0.163.0 native daemon, baseline a5 and candidate all empty; empty-source coverage only",
+    "ownedSelectedFleet": "30 seconds from each host; selected/full-current summary and raw export parity; complete cleanup"
+  },
+  "performance": "performance.json",
+  "performanceReductionPercent": {
+    "100RecordOldPairToOwnedSelected": 17.74369626891875,
+    "500RecordOldPairToOwnedSelected": 21.60252390038989,
+    "500RecordOwnedFullToSelected": 5.512785659592778,
+    "500RecordRawToOwnedFull": 13.6034641068421,
+    "readerNativeBridgeAdmission": 42.1581941798119
+  },
+  "limits": [
+    "fixed synthetic work only; no live service/RLCD CPU reduction asserted",
+    "Snap populated-state native gate is not claimed",
+    "fresh correlated source replies, source cadence and transport bytes remain unchanged",
+    "no production rollout, downstream source edit, provider action, service restart, Tmux/writer/device change"
+  ],
+  "cleanup": "all owned channels/watchers/servers/benchmarks closed; immutable artifacts and isolated prefixes retained for review",
+  "rollback": "no operational change to roll back; consumer retains and proves its prior exact Observer a5/Mesh a20/bundle tuple before later adoption",
+  "report": "REPORT.md"
+}

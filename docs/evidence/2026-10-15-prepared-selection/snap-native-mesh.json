@@ -1,0 +1,280 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.7.0a6",
+  "selectedCli": "/home/bryan/.cache/agent-observer-cpu-fefa52d-e01a7129/installed/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "service": {
+        "serviceProtocol": 4,
+        "serviceId": "fd1a6f81-9038-41b7-aa31-2ff80f288b40",
+        "bootId": "eda0f0ce-5494-4ec7-982f-05861c999557",
+        "hostScope": "snap",
+        "viewRevision": 6641,
+        "emittedAt": 1792121031488,
+        "emittedBoottimeMs": 211726925,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 6638,
+                "attempts": 6638,
+                "expiresBoottimeMs": 211797666,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 211707666
+              },
+              {
+                "accepted": 1406,
+                "attempts": 1406,
+                "expiresBoottimeMs": 212026748,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 211666748
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 5,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1792121031137
+      },
+      "cliCollectedAt": 1792121012280,
+      "nativeAfterAt": {
+        "codex": 1792121031565
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 0,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 0,
+          "nativeAfterRows": 0,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 0,
+            "activityKnown": 0,
+            "classification": {}
+          },
+          "checks": {},
+          "nativeActive": [],
+          "active": [],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3211422,
+        "startTicks": "20608543",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "service": {
+        "serviceProtocol": 4,
+        "serviceId": "fd1a6f81-9038-41b7-aa31-2ff80f288b40",
+        "bootId": "eda0f0ce-5494-4ec7-982f-05861c999557",
+        "hostScope": "snap",
+        "viewRevision": 6641,
+        "emittedAt": 1792121032403,
+        "emittedBoottimeMs": 211727839,
+        "clockDomain": "time:[4026531834]",
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 6638,
+                "attempts": 6638,
+                "expiresBoottimeMs": 211797666,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 211707666
+              },
+              {
+                "accepted": 1406,
+                "attempts": 1406,
+                "expiresBoottimeMs": 212026748,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 211666748
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 5,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "nativeBeforeAt": {
+        "codex": 1792121032052
+      },
+      "cliCollectedAt": 1792121012280,
+      "nativeAfterAt": {
+        "codex": 1792121032481
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 0,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 0,
+          "nativeAfterRows": 0,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 0,
+            "activityKnown": 0,
+            "classification": {}
+          },
+          "checks": {},
+          "nativeActive": [],
+          "active": [],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3211422,
+        "startTicks": "20608543",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ],
+  "meshRead": {
+    "cli": "/home/bryan/.cache/agent-observer-cpu-fefa52d-e01a7129/installed/bin/agent-observer",
+    "profile": "agent-observer.mesh-candidate.v3",
+    "access": "cached",
+    "scope": "local",
+    "wrapperImportsObserver": false
+  }
+}

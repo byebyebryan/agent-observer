@@ -41,6 +41,14 @@ windows use 20.99% before and 12.76% after, with essentially flat memory. The
 controlled combined pipeline improves 38.96%; ordinary workloads remain
 descriptive. C6 starts from this new baseline.
 
+The independent [C6 Observer checkpoint](evidence/2026-10-15-prepared-selection/REPORT.md)
+accepts a6/a22 immutable producer artifacts, combined native admission and
+read interface 2 with explicit selection and all-current identity summaries.
+Fixed 500-row CPU improves 21.60% with matching semantics. Snap's current daemon
+and baseline/candidate readers are empty, so populated native state proof is
+Starship-bound. RLCD owns subsequent pinned adoption, live CPU and device/feed
+acceptance. Normal role selections remain a5/a20.
+
 - 349 roster/feed adoption and any further RLCD product changes.
 - Residual repeated native-body acquisition/admission and proof/carrier composition
   in a focused Mesh study. The controlled second prepared reader adds about

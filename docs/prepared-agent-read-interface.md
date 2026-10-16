@@ -5,7 +5,9 @@ Mesh 0.1.0a22 or newer with admission 1, selection 1 and preparation 1.
 `agent_observer.mesh_read.READ_INTERFACE_VERSION` is 2. API 4, read wire 6,
 Service 4, Agent profile v3 and SDK 1 retain their meanings. Independent producer
 acceptance and performance bounds belong to the accompanying evidence receipt;
-consumer adoption and production selection remain separate.
+consumer adoption and production selection remain separate. The
+[a6/a22 receipt](evidence/2026-10-15-prepared-selection/REPORT.md) records exact
+artifacts, correctness, cost and bounded native coverage.
 
 `PreparedAgentWatch` accepts either strict ordinary watch JSON or the opaque
 `AdmittedResponse` replacements from `reader.execute_admitted(request)` /

@@ -58,6 +58,14 @@ essentially flat memory. Ordinary activity varies; the separately matched
 controlled application comparison saves 38.96%. Remaining acquisition/admission,
 proof/carrier and per-reader costs have their own next-pass boundary.
 
+The independent [owned/selected-read checkpoint](docs/evidence/2026-10-15-prepared-selection/REPORT.md)
+accepts Observer a6 / Mesh a22 for pinned integration, with read interface 2,
+single native admission, header-only context and complete-current identity
+summaries alongside explicitly selected records. Fixed 500-row CPU improves
+21.60% against the old pair with equal semantics. Normal role selections remain
+a5/a20; RLCD adoption and live/device acceptance are separate. Populated native
+coverage comes from Starship; the current Snap daemon and both readers are empty.
+
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
 cached pull/push; optional Mesh supplies remote proofs/delivery. Neither core nor

@@ -1,0 +1,60 @@
+{
+  "direct": {
+    "rows": 0,
+    "health": "current",
+    "sources": [
+      {
+        "provider": "codex",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "runtime": {
+          "binarySha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+          "bootId": "eda0f0ce-5494-4ec7-982f-05861c999557",
+          "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+          "pid": 3211422,
+          "startTicks": 20608543,
+          "topology": "native_managed_endpoint",
+          "version": "0.163.0"
+        }
+      }
+    ]
+  },
+  "service": {
+    "rows": 0,
+    "health": "current",
+    "sources": [
+      {
+        "provider": "codex",
+        "coverage": {
+          "runtime": {
+            "reason": "native_snapshot",
+            "scope": "daemon_threads",
+            "status": "complete"
+          },
+          "saved": {
+            "reason": "native_snapshot",
+            "status": "complete"
+          }
+        },
+        "runtime": {
+          "binarySha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+          "bootId": "eda0f0ce-5494-4ec7-982f-05861c999557",
+          "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+          "pid": 3211422,
+          "startTicks": 20608543,
+          "topology": "native_managed_endpoint",
+          "version": "0.163.0"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "sourcePython314": {
+    "tests": 434,
+    "skips": 0,
+    "log": "source-check.log.gz",
+    "mesh": "in-tree generic implementation; immutable-wheel gates recorded separately"
+  },
+  "sourcePython311": {
+    "python": "3.11.17",
+    "tests": 434,
+    "skips": 0,
+    "meshWheel": "0.1.0a22 / 5ac484d7",
+    "log": "python311-check.log.gz"
+  },
+  "meshFree": {
+    "tests": 434,
+    "skips": 43,
+    "log": "final-core-check.log.gz"
+  },
+  "installedFocused": {
+    "python314Tests": 26,
+    "python311Tests": 26,
+    "skips": 0,
+    "logs": [
+      "installed-focused.log.gz",
+      "installed311-focused.log.gz"
+    ],
+    "cwd": "/tmp",
+    "sourceOverrides": false
+  },
+  "installedConformance": {
+    "perHost": {
+      "profileCases": 7,
+      "networkCases": 10,
+      "skips": 0
+    },
+    "hosts": [
+      "starship",
+      "snap"
+    ],
+    "reports": [
+      "installed-owner.json",
+      "snap-owner.json"
+    ]
+  },
+  "package": "55 module/schema files exactly match fefa52d; all installed wheel bytes/entrypoints/schema/lock verified",
+  "adversarialCoverage": [
+    "strict mutable re-admission and one combined native validation",
+    "whole-current-roster identity summaries beyond 32",
+    "independent host/component expiry and partial host retention",
+    "unknown running kinds; child/system/parked exclusions remain caller policy",
+    "failed outcome and retry fields preserved losslessly",
+    "raw exports, selected rows, summaries and context mutation isolation",
+    "gap/resync, heartbeat, disconnect, clock/capability faults and owned IPC cleanup"
+  ],
+  "nativeCoverage": {
+    "starship": "395 exact direct identities; cache identity/runtime/phase/activity parity, 9-26 second sampled native-update lag",
+    "snap": "existing daemon and baseline/candidate all return empty inventory; empty-source transport coverage only"
+  },
+  "productionRollout": false,
+  "finalDocumentationGate": {
+    "command": "./scripts/check",
+    "tests": 434,
+    "skips": 43,
+    "markdownFiles": 162,
+    "log": "acceptance-check.log.gz"
+  }
+}
