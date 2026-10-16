@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "challengeValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "maximum": 9007199254740991,
+          "minimum": -9007199254740991,
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/challengeValue"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/challengeValue"
+          },
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "urn:agent-observer:sync-request:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "additionalProperties": false,
+      "properties": {
+        "hostScope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+          "type": "string"
+        },
+        "operation": {
+          "const": "baseline"
+        },
+        "syncProtocol": {
+          "enum": [
+            "agent-observer.sync",
+            "agent-observer.active-sync"
+          ]
+        },
+        "version": {
+          "const": 1
+        }
+      },
+      "required": [
+        "syncProtocol",
+        "version",
+        "hostScope",
+        "operation"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "baseTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "hostScope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+          "type": "string"
+        },
+        "maxBytes": {
+          "maximum": 8388608,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxTransactions": {
+          "maximum": 4,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "operation": {
+          "const": "changes"
+        },
+        "syncProtocol": {
+          "enum": [
+            "agent-observer.sync",
+            "agent-observer.active-sync"
+          ]
+        },
+        "targetTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "version": {
+          "const": 1
+        }
+      },
+      "required": [
+        "syncProtocol",
+        "version",
+        "hostScope",
+        "operation",
+        "baseTag",
+        "targetTag",
+        "maxTransactions",
+        "maxBytes"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "challenge": {
+          "additionalProperties": {
+            "$ref": "#/$defs/challengeValue"
+          },
+          "type": "object"
+        },
+        "hostScope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+          "type": "string"
+        },
+        "operation": {
+          "const": "head"
+        },
+        "syncProtocol": {
+          "enum": [
+            "agent-observer.sync",
+            "agent-observer.active-sync"
+          ]
+        },
+        "version": {
+          "const": 1
+        }
+      },
+      "required": [
+        "syncProtocol",
+        "version",
+        "hostScope",
+        "operation",
+        "challenge"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "hostScope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+          "type": "string"
+        },
+        "operation": {
+          "const": "watch"
+        },
+        "syncProtocol": {
+          "enum": [
+            "agent-observer.sync",
+            "agent-observer.active-sync"
+          ]
+        },
+        "version": {
+          "const": 1
+        }
+      },
+      "required": [
+        "syncProtocol",
+        "version",
+        "hostScope",
+        "operation",
+        "cursor"
+      ],
+      "type": "object"
+    }
+  ]
+}

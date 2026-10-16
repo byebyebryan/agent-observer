@@ -24,6 +24,11 @@ class ServiceState(ObservationEngine):
                  boot_id=None, clock_domain=None):
         self.service_id = str(uuid.uuid4())
         self.active_projector = ActiveFeedProjector(service_id=self.service_id)
+        # Sync is opt-in. A cold baseline can initialize its shared cache;
+        # proofs/heads never trigger a roster normalization or provider read.
+        self._sync_cache = None
+        self._sync_accepting = False
+        self.sync_reserver = None
         super().__init__(host_scope=host_scope, configs=configs,
                          uid=os.geteuid() if uid is None else uid, clock=clock,
                          wall_clock=lambda: time.time_ns() // 1_000_000,
@@ -42,6 +47,74 @@ class ServiceState(ObservationEngine):
             [self.source_meta(provider) for provider in self.configs],
             revision=self.revision, now_ms=self.clock(),
         )
+        if self._sync_cache is not None:
+            self._sync_cache.publish()
+
+    def attempt(self, provider, component):
+        super().attempt(provider, component)
+        if self._sync_cache is not None and not self._sync_accepting:
+            self._sync_cache.publish(diagnostics_only=True)
+
+    def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
+        # History acceptance can internally attempt/promote runtime. Neither
+        # its intermediate receipts nor its half-reconciled roster may escape
+        # as a separate sync transaction.
+        self._sync_accepting = True
+        try:
+            accepted = super().accept(provider, component, value, sampled_ms=sampled_ms,
+                                      ttl_ms=ttl_ms, runtime_ttl_ms=runtime_ttl_ms)
+        finally:
+            self._sync_accepting = False
+        if not accepted and self._sync_cache is not None:
+            self._sync_cache.publish(diagnostics_only=True)
+        return accepted
+
+    def _sync_owner(self):
+        if self._sync_cache is None:
+            from .sync_state import OwnerSyncCache
+
+            self._sync_cache = OwnerSyncCache(self, backend="encoded")
+        return self._sync_cache
+
+    def sync_baseline(self, view):
+        return self._sync_owner().baseline(view)
+
+    def sync_head(self, view, challenge):
+        return self._sync_owner().head(view, challenge)
+
+    def sync_changes(self, view, base_tag, target_tag, *, max_transactions=4,
+                     max_bytes=8 * 1024 * 1024):
+        return self._sync_owner().changes(view, base_tag, target_tag,
+                                          max_transactions=max_transactions,
+                                          max_bytes=max_bytes)
+
+    def sync_current_tag(self, view):
+        return None if self._sync_cache is None else self._sync_cache.current_tag(view)
+
+    def sync_cursor(self, view):
+        return None if self._sync_cache is None else self._sync_cache.cursor(view)
+
+    def sync_tag_for_cursor(self, view, cursor):
+        return None if self._sync_cache is None else self._sync_cache.tag_for_cursor(view, cursor)
+
+    def sync_control(self, view, status, reason="sync_control"):
+        return self._sync_owner().control(view, status, reason)
+
+    def sync_retained_buffers(self):
+        return () if self._sync_cache is None else self._sync_cache.retained_buffers()
+
+    def sync_owned_encoded_bytes(self):
+        return 0 if self._sync_cache is None else self._sync_cache.owned_encoded_bytes()
+
+    def sync_pin_buffers(self, parts):
+        return self._sync_owner().pin_buffers(parts)
+
+    def sync_discard_buffers(self, parts):
+        if self._sync_cache is not None:
+            self._sync_cache.discard_query_buffers(parts)
+
+    def sync_retained_bytes(self):
+        return sum(map(len, self.sync_retained_buffers()))
 
     @property
     def active_projection(self):

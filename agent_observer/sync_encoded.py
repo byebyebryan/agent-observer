@@ -1,4 +1,4 @@
-"""Experimental encoded-only owner tables; never selected by the service.
+"""Private encoded-only owner tables for the new opt-in sync service family.
 
 The Patricia commitment and sparse-path algorithms are Observer's own
 ``sync_commitment`` implementation. Leaves retain canonical JSON bytes only.

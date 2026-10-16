@@ -6,6 +6,7 @@ import errno
 import fcntl
 import json
 import os
+import re
 import selectors
 import signal
 import socket
@@ -13,6 +14,7 @@ import stat
 import struct
 import subprocess
 import sys
+import traceback
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -22,10 +24,25 @@ from ._image_memo import send as send_memo
 from .active_contract import MAX_REQUEST_BYTES as MAX_ACTIVE_REQUEST_BYTES
 from .active_contract import validate_request as validate_active_request
 from .bounded_json import decode_document
-from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
+from .contract import MAX_SNAPSHOT_BYTES, ContractError, canonical, parse_snapshot
 from .observation_scheduler import Scheduler
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, validate_request
+from .sync_contract import (
+    MAX_REQUEST_BYTES as MAX_SYNC_REQUEST_BYTES,
+)
+from .sync_contract import (
+    MAX_REQUEST_DEPTH as MAX_SYNC_REQUEST_DEPTH,
+)
+from .sync_contract import (
+    MAX_REQUEST_NODES as MAX_SYNC_REQUEST_NODES,
+)
+from .sync_contract import (
+    validate_request as validate_sync_request,
+)
+from .sync_native import MAX_HEAD_BYTES, MAX_MESSAGE_BYTES
 from .workspace import MAX_CONFIG_BYTES, validate_config
+
+MAX_SYNC_ENCODED_BYTES = 32 * 1024 * 1024
 
 
 def birth(pid):
@@ -133,6 +150,12 @@ class Peer:
     recover: bool = False
     write_started: int = 0
     last_sent: int = 0
+    sync_view: str | None = None
+    sync_cursor: tuple | None = None
+    sync_send_cursor: tuple | None = None
+    sync_pending_cursor: tuple | None = None
+    sync_close: bool = False
+    sync_pins: object | None = None
 
 
 @dataclass
@@ -173,6 +196,7 @@ class Runtime:
         self.native_hints, self.hint_factory = native_hints, hint_factory
         self.hint_diagnostics, self.hints = hint_diagnostics, None
         self.image_memos = {provider: ImageMemo(provider) for provider in state.configs}
+        self._sync_reserver = self._reserve_sync
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -245,6 +269,9 @@ class Runtime:
         self.image_memos[provider] = replacement if replacement is not None else ImageMemo(provider)
 
     def _drop(self, peer):
+        self._release_sync_pins(peer)
+        if peer.sync_view is not None:
+            peer.parts = ()
         if peer not in self.peers:
             return
         self.peers.remove(peer)
@@ -255,16 +282,59 @@ class Runtime:
         peer.sock.close()
         self.counts["droppedConnections"] += 1
 
+    @staticmethod
+    def _release_sync_pins(peer):
+        pins, peer.sync_pins = peer.sync_pins, None
+        if pins is not None:
+            pins.release()
+
     def _prune(self):
         keep = {p.body_revision for p in self.peers if p.body_revision is not None}
         keep.update(self.latest.values())
         self.bodies = {rev: body for rev, body in self.bodies.items() if rev in keep}
 
     def encoded_bytes(self):
-        return sum(len(body) for body in self.bodies.values()) + sum(
+        return self.sync_encoded_bytes() + sum(len(body) for body in self.bodies.values()) + sum(
             sum(len(part) for index, part in enumerate(p.parts) if not (index == 1 and p.body_revision is not None))
-            for p in self.peers
+            for p in self.peers if p.sync_view is None
         )
+
+    def _sync_buffers(self):
+        retained = getattr(self.state, "sync_retained_buffers", None)
+        return {} if retained is None else {id(value): value for value in retained()}
+
+    def sync_encoded_bytes(self):
+        buffers = self._sync_buffers()
+        references = 0
+        for peer in self.peers:
+            if peer.sync_view is not None and peer.parts:
+                buffers.update((id(part), part) for part in peer.parts)
+                references += sys.getsizeof(peer.parts)
+        owned = getattr(self.state, "sync_owned_encoded_bytes", None)
+        internal = 0 if owned is None else owned()
+        return sum(len(value) for value in buffers.values()) + references + internal
+
+    def _sync_room(self, reserve):
+        while self.sync_encoded_bytes() + reserve > MAX_SYNC_ENCODED_BYTES:
+            peers = [peer for peer in self.peers if peer.sync_view is not None and peer.parts]
+            if not peers:
+                return False
+            self._drop(min(peers, key=lambda peer: peer.write_started))
+            self._prune()
+        return True
+
+    def _reserve_sync(self, additional_bytes):
+        if type(additional_bytes) is not int or additional_bytes < 0:
+            raise ValueError("service_encoding_limit")
+        if not self._sync_room(additional_bytes):
+            return False
+        try:
+            self._room(additional_bytes)
+        except ValueError as error:
+            if error.args != ("service_encoding_limit",):
+                raise
+            return False
+        return True
 
     def _room(self, reserve, *, protected=None):
         while self.encoded_bytes() + reserve > self.encoded_limit:
@@ -342,6 +412,126 @@ class Runtime:
         self.selector.modify(peer.sock, selectors.EVENT_READ | selectors.EVENT_WRITE, ("peer", peer))
         self.counts["frames"] += 1
 
+    def _queue_sync(self, peer, lines, *, cursor=None, close=False):
+        parts = (lines,) if isinstance(lines, bytes) else tuple(lines)
+        limit = MAX_HEAD_BYTES if peer.operation == "head" else MAX_MESSAGE_BYTES
+        if (not parts or len(parts) > 5
+                or any(type(part) is not bytes or not part.endswith(b"\n") or len(part) > limit for part in parts)):
+            self.state.sync_discard_buffers(parts)
+            raise ValueError("service_sync_encoding")
+        if peer not in self.peers:
+            self.state.sync_discard_buffers(parts)
+            return
+        shared = self._sync_buffers()
+        for other in self.peers:
+            if other.sync_view is not None:
+                shared.update((id(part), part) for part in other.parts)
+        new = {id(part): part for part in parts if id(part) not in shared}
+        if not self._reserve_sync(sum(len(part) for part in new.values()) + sys.getsizeof(parts)):
+            self.state.sync_discard_buffers(parts)
+            self._drop(peer)
+            return
+        if peer not in self.peers:
+            self.state.sync_discard_buffers(parts)
+            return
+        try:
+            pins = self.state.sync_pin_buffers(parts)
+        except ValueError as error:
+            # Heap admission is independent of the encoded-byte preflight.
+            # Reject only this delivery, including any superseded frame pin.
+            self.state.sync_discard_buffers(parts)
+            self._drop(peer)
+            traceback.clear_frames(error.__traceback__)
+            return
+        if peer not in self.peers:
+            pins.release()
+            self.state.sync_discard_buffers(parts)
+            return
+        self._release_sync_pins(peer)
+        peer.parts = parts
+        peer.sync_pins = pins
+        peer.part = peer.offset = 0
+        peer.body_revision = None
+        peer.sync_send_cursor = None if cursor is None else tuple(cursor)
+        peer.sync_close = close
+        peer.write_started = self.state.clock()
+        self.selector.modify(peer.sock, selectors.EVENT_READ | selectors.EVENT_WRITE, ("peer", peer))
+        self.counts["frames"] += len(parts)
+
+    def _sync_watch_next(self, peer, *, initial=False):
+        current = self.state.sync_cursor(peer.sync_view)
+        if current is None:
+            self._queue_sync(peer, self.state.sync_control(
+                peer.sync_view, "baseline_required", "sync_cache_unavailable"), close=True)
+            return
+        cursor = tuple(current)
+        if cursor == peer.sync_cursor:
+            reason = "watch_subscribed" if initial else "service_alive"
+            self._queue_sync(peer, self.state.sync_control(peer.sync_view, "complete", reason), cursor=cursor)
+            return
+        base = self.state.sync_tag_for_cursor(peer.sync_view, peer.sync_cursor)
+        if base is None:
+            self._queue_sync(peer, self.state.sync_control(
+                peer.sync_view, "baseline_required", "sync_base_evicted"), close=True)
+            return
+        target = self.state.sync_current_tag(peer.sync_view)
+        # These getters only read the committed cache. If another serialized
+        # publisher advances between reads, use explicit recovery, never pair
+        # a newer root with the previously captured cursor.
+        if tuple(target[1:]) != cursor[1:]:
+            self._queue_sync(peer, self.state.sync_control(
+                peer.sync_view, "baseline_required", "sync_head_moved"), close=True)
+            return
+        result = self.state.sync_changes(peer.sync_view, base, target,
+                                         max_transactions=4, max_bytes=8 * 1024 * 1024)
+        self._queue_sync(peer, result, cursor=cursor, close=isinstance(result, bytes))
+
+    def _sync_request(self, peer, request):
+        peer.sync_view = "active" if request["syncProtocol"] == "agent-observer.active-sync" else "full"
+        peer.family = "sync-" + peer.sync_view
+        peer.operation = request["operation"]
+        validate_sync_request(request, expected_host=self.state.host_scope)
+        try:
+            if peer.operation == "baseline":
+                self._queue_sync(peer, self.state.sync_baseline(peer.sync_view), close=True)
+            elif peer.operation == "head":
+                # This route deliberately does not enter frame/active_frame or
+                # expiry/publication. The owner cache supplies its fresh small head.
+                self._queue_sync(peer, self.state.sync_head(peer.sync_view, request["challenge"]), close=True)
+            elif peer.operation == "changes":
+                result = self.state.sync_changes(peer.sync_view, request["baseTag"], request["targetTag"],
+                                                 max_transactions=request["maxTransactions"],
+                                                 max_bytes=request["maxBytes"])
+                self._queue_sync(peer, result, close=True)
+            else:
+                peer.sync_cursor = tuple(request["cursor"])
+                self._sync_watch_next(peer, initial=True)
+        except ValueError as error:
+            reason = (error.args[0] if isinstance(error, ContractError) and len(error.args) == 1
+                      and type(error.args[0]) is str and re.fullmatch(r"[a-z][a-z0-9_]{0,127}", error.args[0])
+                      else "sync_source_unavailable")
+            self._queue_sync(peer, self.state.sync_control(peer.sync_view, "error", reason), close=True)
+
+    def _sync_tick(self, peer, now):
+        if peer.operation != "watch" or peer.sync_close:
+            return
+        current = self.state.sync_cursor(peer.sync_view)
+        cursor = None if current is None else tuple(current)
+        if current is None and peer.parts:
+            self._drop(peer)
+            return
+        if peer.parts and cursor != peer.sync_send_cursor:
+            if peer.sync_pending_cursor is None:
+                peer.sync_pending_cursor = cursor
+            elif peer.sync_pending_cursor != cursor:
+                # One pending base reference is bounded; another move cannot
+                # replace a transaction which this subscriber has not read.
+                self._drop(peer)
+        elif not peer.parts and (
+            cursor != peer.sync_cursor or now - peer.last_sent >= self.heartbeat
+        ):
+            self._sync_watch_next(peer)
+
     def _request(self, peer):
         data = peer.sock.recv(16384)
         if not data:
@@ -351,16 +541,23 @@ class Runtime:
             self._drop(peer)
             return
         peer.incoming.extend(data)
-        if len(peer.incoming) > max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES):
+        if len(peer.incoming) > max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES):
             self._drop(peer)
             return
         if b"\n" not in peer.incoming:
             return
         request = decode_document(bytes(peer.incoming),
-                                  max_bytes=max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES),
-                                  max_nodes=128, max_depth=6, line_framed=True)
-        if not isinstance(request, dict) or ("serviceProtocol" in request) == ("activeFeedProtocol" in request):
+                                  max_bytes=max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES),
+                                  max_nodes=MAX_SYNC_REQUEST_NODES, max_depth=MAX_SYNC_REQUEST_DEPTH,
+                                  line_framed=True)
+        if not isinstance(request, dict) or sum(key in request for key in (
+            "serviceProtocol", "activeFeedProtocol", "syncProtocol",
+        )) != 1:
             raise ValueError("service_request_family")
+        if "syncProtocol" in request:
+            peer.incoming.clear()
+            self._sync_request(peer, request)
+            return
         if "activeFeedProtocol" in request:
             validate_active_request(request)
             peer.family = "active"
@@ -395,8 +592,18 @@ class Runtime:
         if peer.part < len(peer.parts):
             return
         peer.parts = ()
+        self._release_sync_pins(peer)
         peer.body_revision = None
         peer.last_sent = self.state.clock()
+        if peer.sync_view is not None:
+            peer.sync_cursor = peer.sync_send_cursor
+            peer.sync_send_cursor = peer.sync_pending_cursor = None
+            if peer.sync_close or peer.operation != "watch":
+                self._drop(peer)
+            else:
+                self.selector.modify(peer.sock, selectors.EVENT_READ, ("peer", peer))
+            self._prune()
+            return
         peer.sent_revision = peer.frame_revision
         if peer.operation != "watch":
             self._drop(peer)
@@ -472,6 +679,8 @@ class Runtime:
         del self.workers[provider]
 
     def run(self, stop):
+        if hasattr(self.state, "sync_reserver"):
+            self.state.sync_reserver = self._sync_reserver
         try:
             with Endpoint(self.path) as listener:
                 self.selector.register(listener, selectors.EVENT_READ, ("listener", None))
@@ -510,9 +719,16 @@ class Runtime:
                                 self.image_memos[job.provider].close()
                                 self.scheduler.finish(job, now, success=False)
                                 self.state.fail(job.provider, job.component)
+                    self._sync_room(0)
                     for peer in list(self.peers):
                         if peer.operation is None and now - peer.since >= self.io_timeout or peer.parts and now - peer.write_started >= self.io_timeout:
                             self._drop(peer)
+                            continue
+                        if peer.sync_view is not None:
+                            try:
+                                self._sync_tick(peer, now)
+                            except (ValueError, OSError):
+                                self._drop(peer)
                             continue
                         if peer.operation == "watch" and self.state.revision > peer.sent_revision:
                             if peer.parts:
@@ -562,6 +778,8 @@ class Runtime:
                                 self._drop(obj)
                     self._prune()
         finally:
+            if getattr(self.state, "sync_reserver", None) is self._sync_reserver:
+                self.state.sync_reserver = None
             if self.hints:
                 self.hints.close()
             for peer in list(self.peers):
