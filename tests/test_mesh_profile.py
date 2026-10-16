@@ -122,6 +122,29 @@ class AgentProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(ProtocolError, "^owner_clock_domain$"):
             self.codec.inspect_native(invalid)
 
+    def test_combined_domain_admission_is_strict_and_validates_native_once(self):
+        from mesh_plus.protocol import ProtocolError
+
+        from agent_observer import mesh_profile
+        from agent_observer.public import ContractError
+
+        frame = fixture()
+        payload = {"hostId": "fixture", "sourceId": "agent", "ownerFrame": frame}
+        with patch.object(mesh_profile, "validate_frame", wraps=mesh_profile.validate_frame) as validate:
+            state = self.codec.admit_bridge(payload)
+        self.assertEqual(validate.call_count, 1)
+        self.assertEqual(self.profile.restore_native(state.owner, state.records), frame)
+        for key in ("hostId", "sourceId"):
+            with self.subTest(binding=key), self.assertRaisesRegex(ProtocolError, "bridge_source_binding"):
+                self.codec.admit_bridge({**payload, key: "foreign"})
+        # Every mutable input must be admitted anew, even after a valid call.
+        frame["snapshot"]["sessions"][0]["unexpected"] = True
+        for callback in (self.codec.admit_bridge, self.codec.validate_bridge):
+            with self.subTest(callback=callback.__name__), self.assertRaises(ContractError):
+                callback(payload)
+        with self.assertRaises(ContractError):
+            self.codec.inspect_native(frame)
+
     def test_reference_and_collector_imports_blocked_for_every_callback(self):
         code = '''import builtins,json,sys
 sys.path.insert(0,sys.argv[1])

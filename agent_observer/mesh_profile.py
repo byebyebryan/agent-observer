@@ -47,6 +47,17 @@ class AgentCodec:
               "bridge_source_binding")
         validate_frame(payload["ownerFrame"], expected_host=self.host)
 
+    def admit_bridge(self, payload):
+        """Validate domain binding and native facts together for Mesh admission.
+
+        The returned state is a local intermediate, never transport/proof
+        authority. Mesh must still validate its complete envelope and proof.
+        Standalone callbacks above/below remain strict for arbitrary inputs.
+        """
+        check(payload["hostId"] == self.host and payload["sourceId"] == self.source,
+              "bridge_source_binding")
+        return self.inspect_native(payload["ownerFrame"])
+
     def inspect_native(self, frame):
         validate_frame(frame, expected_host=self.host)
         match = re.fullmatch(r"time:\[([0-9]+)\]", frame["clockDomain"])
