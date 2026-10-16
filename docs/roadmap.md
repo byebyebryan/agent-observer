@@ -1,5 +1,13 @@
 # Agent Observer roadmap
 
+The agreed [active-feed design](active-feed-proposal.md) is now implemented for
+producer qualification through a [separate opt-in interface](active-feed-interface.md).
+The checkpoint covers actual-value/census provenance, the ServiceState cache,
+strict native wire and optional source/profile/read facade. Installed artifact,
+native, transport and controlled scaling gates remain prerequisites to handoff.
+RLCD owns later consumer and coordinated service adoption; normal selections
+remain independent of source acceptance.
+
 The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
 selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
 publishers separately select a5/Mesh a20.

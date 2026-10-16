@@ -66,6 +66,15 @@ summaries alongside explicitly selected records. Fixed 500-row CPU improves
 a5/a20; RLCD adoption and live/device acceptance are separate. Populated native
 coverage comes from Starship; the current Snap daemon and both readers are empty.
 
+The opt-in [active-feed interface](docs/active-feed-interface.md) implements the
+agreed [projection design](docs/active-feed-proposal.md): the local service caches
+one fixed Codex active projection per owner generation, and a separate Mesh
+profile delivers it without the dormant roster. Original field, membership and
+complete-census leases remain independent. Its new producer artifact is under
+qualification; normal services and full-feed defaults keep their selections.
+Using the endpoint requires adoption of the new service artifact as well as the
+optional source, profile and read facade.
+
 Use the [API 4 read-client handoff](docs/api-v4.md) for new CLI,
 RLCD or 349 work. Core owns discovery/monitoring; one local service supplies
 cached pull/push; optional Mesh supplies remote proofs/delivery. Neither core nor

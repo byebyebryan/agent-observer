@@ -57,6 +57,15 @@ retain positive retirement, presentation and display limits. Normal roles remain
 on a5/a20 until separate adoption; populated native acceptance is Starship-bound
 while the current Snap source is empty.
 
+The opt-in [active feed](active-feed-interface.md) adds transient actual-value
+support to the reusable engine and a pure projection cache in ServiceState.
+Local IPC, remote proofs and repeated reads reuse that generation. The separate
+native wire/profile carries selected API 4 bodies plus bounded scope coverage
+and recent-member exceptions; it does not reinterpret the full Service 4 wire.
+The optional facade checks each original support and translated host deadline
+after Mesh validates the current generation. Core and service stay Mesh-free.
+This producer checkpoint is under qualification and does not select normal roles.
+
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
 Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
 0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical

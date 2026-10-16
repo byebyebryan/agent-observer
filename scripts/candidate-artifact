@@ -17,6 +17,30 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def active_feed_manifest(value):
+    """Optional v5 extension; older manifests do not imply active support."""
+    if "activeFeed" not in value:
+        return None
+    active = value["activeFeed"]
+    if (
+        type(value.get("manifestVersion")) is not int or value["manifestVersion"] != 5
+        or not isinstance(active, dict)
+        or set(active) != {"protocol", "schemas", "schemaSha256", "selectorDigest"}
+        or type(active.get("protocol")) is not int or active["protocol"] != 1
+        or not isinstance(active.get("schemas"), dict)
+        or set(active["schemas"]) != {"request", "frame"}
+        or any(type(version) is not int or version != 1 for version in active["schemas"].values())
+        or not isinstance(active.get("schemaSha256"), dict)
+        or set(active["schemaSha256"]) != {"request", "frame"}
+        or any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)
+               for value in active["schemaSha256"].values())
+        or not isinstance(active.get("selectorDigest"), str)
+        or not re.fullmatch(r"sha256:[0-9a-f]{64}", active["selectorDigest"])
+    ):
+        raise ValueError("active_feed_manifest_invalid")
+    return active
+
+
 def document(path):
     if path.stat().st_size > 32768:
         raise ValueError("manifest_limit")
@@ -43,6 +67,7 @@ def document(path):
         or value.get("schemas", {}).get("snapshot") == 3 and value.get("apiVersion") != 1
     ):
         raise ValueError("manifest_invalid")
+    active_feed_manifest(value)
     return value
 
 
@@ -67,7 +92,49 @@ def run(argv, timeout=30):
     return output.stdout
 
 
+def verify_active_feed(prefix, site, active, api_version):
+    """Compare installed public declarations with exact packaged schema bytes."""
+    executable = str(prefix / "bin/agent-observer")
+    interface = json.loads(run([executable, "service", "active-api"]))
+    if (
+        not isinstance(interface, dict)
+        or type(interface.get("activeFeedProtocol")) is not int
+        or interface["activeFeedProtocol"] != active["protocol"]
+        or type(interface.get("observationApiVersion")) is not int
+        or interface["observationApiVersion"] != api_version
+        or not isinstance(interface.get("selector"), dict)
+        or interface.get("selectorDigest") != active["selectorDigest"]
+    ):
+        raise ValueError("active_feed_api_mismatch")
+    selector = json.dumps(interface["selector"], sort_keys=True, ensure_ascii=True,
+                          allow_nan=False, separators=(",", ":")).encode()
+    if "sha256:" + hashlib.sha256(selector).hexdigest() != active["selectorDigest"]:
+        raise ValueError("active_feed_selector_mismatch")
+    for kind in ("request", "frame"):
+        path = site / "agent_observer" / "contracts" / f"active-{kind}.schema.json"
+        if (not path.is_file() or path.is_symlink() or path.stat().st_size > 1024 * 1024
+                or digest(path) != active["schemaSha256"][kind]):
+            raise ValueError("active_feed_schema_bytes_mismatch")
+        packaged = json.loads(path.read_bytes())
+        declared = json.loads(run([executable, "service", "active-schema", "--kind", kind]))
+        if not isinstance(packaged, dict) or not isinstance(packaged.get("properties"), dict):
+            raise ValueError("active_feed_schema_mismatch")
+        properties = packaged["properties"]
+        binding = properties.get("activeFeedProtocol")
+        protocol = binding.get("const") if isinstance(binding, dict) else None
+        if (
+            declared != packaged
+            or type(protocol) is not int or protocol != active["protocol"]
+            or packaged.get("$id") != f"urn:agent-observer:active-{kind}:{active['schemas'][kind]}"
+            or properties.get("selector") != {"const": interface["selector"]}
+            or properties.get("selectorDigest") != {"const": active["selectorDigest"]}
+        ):
+            raise ValueError("active_feed_schema_mismatch")
+    return True
+
+
 def verify(prefix, wheel, manifest, profile):
+    active = active_feed_manifest(manifest)
     wheel_check(wheel, manifest)
     if prefix.resolve(strict=True) != prefix or prefix.stat().st_uid != os.geteuid():
         raise ValueError("prefix_ownership_invalid")
@@ -145,6 +212,8 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
             schema = json.loads(run([str(prefix / "bin/agent-observer"), "service", "schema", "--kind", kind]))
             if schema["properties"]["serviceProtocol"] != {"const": version}:
                 raise ValueError("service_schema_mismatch")
+    if active is not None:
+        verify_active_feed(prefix, site, active, manifest["apiVersion"])
     return {
         "status": "accepted",
         "prefix": str(prefix),
@@ -156,12 +225,14 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         "entrypointsVerified": True,
         "schemaVersionsVerified": True,
         **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4, 5} else {}),
+        **({"activeFeedVerified": True} if active is not None else {}),
         "providerInvocations": 0,
         "selectedLinksChanged": False,
     }
 
 
 def install(prefix, wheel, manifest, profile):
+    active_feed_manifest(manifest)
     wheel_check(wheel, manifest)
     if prefix.exists():
         return verify(prefix, wheel, manifest, profile)

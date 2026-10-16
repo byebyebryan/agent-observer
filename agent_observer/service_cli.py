@@ -61,8 +61,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("api")
+    commands.add_parser("active-api")
     schema = commands.add_parser("schema")
     schema.add_argument("--kind", choices=("request", "frame"), required=True)
+    active_schema = commands.add_parser("active-schema")
+    active_schema.add_argument("--kind", choices=("request", "frame"), required=True)
     for name in ("status", "snapshot", "list", "watch"):
         sub = commands.add_parser(name)
         sub.add_argument("--socket", type=Path, default=socket_path())
@@ -81,6 +84,13 @@ def main(argv=None):
     if args.command == "watch" and args.human and args.json:
         parser.error("--human and --json are mutually exclusive")
     try:
+        if args.command in {"active-api", "active-schema"}:
+            from .active_contract import interface as active_interface
+            from .active_contract import schema_document as active_schema_document
+
+            print(canonical(active_interface() if args.command == "active-api"
+                            else active_schema_document(args.kind)))
+            return 0
         if args.command in {"api", "schema"}:
             print(canonical(interface() if args.command == "api" else schema_document(args.kind)))
             return 0

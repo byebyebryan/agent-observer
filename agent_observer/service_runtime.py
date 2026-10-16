@@ -16,11 +16,15 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from ._image_memo import ImageMemo, receive as receive_memo, send as send_memo
+from ._image_memo import ImageMemo
+from ._image_memo import receive as receive_memo
+from ._image_memo import send as send_memo
+from .active_contract import MAX_REQUEST_BYTES as MAX_ACTIVE_REQUEST_BYTES
+from .active_contract import validate_request as validate_active_request
 from .bounded_json import decode_document
 from .contract import MAX_SNAPSHOT_BYTES, canonical, parse_snapshot
-from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, parse_request
 from .observation_scheduler import Scheduler
+from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, validate_request
 from .workspace import MAX_CONFIG_BYTES, validate_config
 
 
@@ -115,6 +119,7 @@ class Peer:
     sock: socket.socket
     since: int
     incoming: bytearray = field(default_factory=bytearray)
+    family: str = "service"
     operation: str | None = None
     sequence: int = 0
     parts: tuple = ()
@@ -122,7 +127,7 @@ class Peer:
     offset: int = 0
     sent_revision: int = 0
     frame_revision: int = 0
-    body_revision: int | None = None
+    body_revision: int | tuple[str, int] | None = None
     pending: int | None = None
     skipped: bool = False
     recover: bool = False
@@ -163,7 +168,7 @@ class Runtime:
         self.peers = set()
         self.workers = {}
         self.bodies = {}
-        self.latest = None
+        self.latest = {}
         self.counts = {"acceptedConnections": 0, "droppedConnections": 0, "frames": 0, "workerStarts": 0}
         self.native_hints, self.hint_factory = native_hints, hint_factory
         self.hint_diagnostics, self.hints = hint_diagnostics, None
@@ -252,8 +257,7 @@ class Runtime:
 
     def _prune(self):
         keep = {p.body_revision for p in self.peers if p.body_revision is not None}
-        if self.latest is not None:
-            keep.add(self.latest)
+        keep.update(self.latest.values())
         self.bodies = {rev: body for rev, body in self.bodies.items() if rev in keep}
 
     def encoded_bytes(self):
@@ -262,37 +266,72 @@ class Runtime:
             for p in self.peers
         )
 
-    def _body(self, revision, snapshot):
-        if revision in self.bodies:
-            return
-        self.latest = None
-        self._prune()
-        reserve = MAX_SNAPSHOT_BYTES + MAX_OVERHEAD_BYTES
+    def _room(self, reserve, *, protected=None):
         while self.encoded_bytes() + reserve > self.encoded_limit:
+            # The two families share one budget. An idle family's latest body
+            # is only a cache, not a reason to evict a pinned slow reader.
+            pinned = {p.body_revision for p in self.peers if p.body_revision is not None}
+            cached = next((name for name, key in self.latest.items()
+                           if key != protected and key not in pinned), None)
+            if cached is not None:
+                del self.latest[cached]
+                self._prune()
+                continue
             candidates = [p for p in self.peers if p.parts]
             if not candidates:
                 raise ValueError("service_encoding_limit")
             self._drop(min(candidates, key=lambda p: p.write_started))
             self._prune()
+
+    def _body(self, revision, snapshot, *, overhead=MAX_OVERHEAD_BYTES):
+        family = revision[0] if isinstance(revision, tuple) else "service"
+        if revision in self.bodies:
+            self.latest[family] = revision
+            self._room(overhead, protected=revision)
+            return
+        self.latest.pop(family, None)
+        self._prune()
         body = canonical(snapshot).encode()
+        self._room(len(body) + overhead)
         self.bodies[revision] = body
-        self.latest = revision
+        self.latest[family] = revision
 
     def _queue(self, peer, kind, reason="observed_view"):
         peer.sequence += 1
-        frame = self.state.frame(kind, peer.sequence, reason=reason)
+        make_frame = self.state.active_frame if peer.family == "active" else self.state.frame
+        payload_key = "projection" if peer.family == "active" else "snapshot"
+        frame = make_frame(kind, peer.sequence, reason=reason)
         if kind == "heartbeat" and frame["viewRevision"] != peer.sent_revision:
-            frame = self.state.frame("view", peer.sequence, reason="lease_expired")
-        snapshot = frame.pop("snapshot")
+            frame = make_frame("view", peer.sequence, reason="lease_expired")
+        if frame["kind"] == "error":
+            peer.operation = "error"
+        snapshot = frame.pop(payload_key)
         peer.body_revision = None
-        if snapshot is not None:
-            self._body(frame["viewRevision"], snapshot)
-            if peer not in self.peers:
-                return
-            peer.body_revision = frame["viewRevision"]
-            peer.parts = ((canonical(frame)[:-1] + ',"snapshot":').encode(), self.bodies[peer.body_revision], b"}\n")
-        else:
-            peer.parts = ((canonical({**frame, "snapshot": None}) + "\n").encode(),)
+        try:
+            if snapshot is not None:
+                # Frame construction can expire leases and advance the revision.
+                # Resolve the key only after constructing the authoritative frame.
+                revision = ("active", frame["viewRevision"]) if peer.family == "active" else frame["viewRevision"]
+                prefix = (canonical(frame)[:-1] + ',"' + payload_key + '":').encode()
+                self._body(revision, snapshot, overhead=len(prefix) + 2)
+                if peer not in self.peers:
+                    return
+                peer.body_revision = revision
+                peer.parts = (prefix, self.bodies[revision], b"}\n")
+            else:
+                control = (canonical({**frame, payload_key: None}) + "\n").encode()
+                self._room(len(control))
+                if peer not in self.peers:
+                    return
+                peer.parts = (control,)
+        except ValueError as error:
+            if error.args != ("service_encoding_limit",):
+                raise
+            # A protocol-valid frame can exceed a deliberately smaller runtime
+            # budget. Unsolicited watch updates must fail this peer, not hosting.
+            self._drop(peer)
+            self._prune()
+            return
         peer.part = peer.offset = 0
         peer.frame_revision = frame["viewRevision"]
         peer.write_started = self.state.clock()
@@ -312,17 +351,27 @@ class Runtime:
             self._drop(peer)
             return
         peer.incoming.extend(data)
-        if len(peer.incoming) > MAX_REQUEST_BYTES:
+        if len(peer.incoming) > max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES):
             self._drop(peer)
             return
         if b"\n" not in peer.incoming:
             return
-        request = parse_request(bytes(peer.incoming))
+        request = decode_document(bytes(peer.incoming),
+                                  max_bytes=max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES),
+                                  max_nodes=128, max_depth=6, line_framed=True)
+        if not isinstance(request, dict) or ("serviceProtocol" in request) == ("activeFeedProtocol" in request):
+            raise ValueError("service_request_family")
+        if "activeFeedProtocol" in request:
+            validate_active_request(request)
+            peer.family = "active"
+        else:
+            validate_request(request)
         peer.incoming.clear()
         peer.operation = request["operation"]
         if request["hostScope"] != self.state.host_scope:
             peer.operation = "error"
-            self._queue(peer, "error", "service_host_mismatch")
+            reason = "active_host_mismatch" if peer.family == "active" else "service_host_mismatch"
+            self._queue(peer, "error", reason)
             return
         kind = "status" if peer.operation == "status" or self.state.snapshot is None else "view"
         self._queue(peer, kind)

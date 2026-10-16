@@ -5,12 +5,19 @@ from __future__ import annotations
 import copy
 from dataclasses import dataclass, field
 
-from .observation_evidence import RuntimeOnlyRetention, retain_missing, stale_row
 from . import timing
 from .contract import (
-    MAX_SESSIONS, MAX_SNAPSHOT_BYTES, SCHEMA_VERSION, ContractError, canonical, identity_key,
-    store_namespace, validate_snapshot,
+    MAX_SESSIONS,
+    MAX_SNAPSHOT_BYTES,
+    SCHEMA_VERSION,
+    ContractError,
+    canonical,
+    identity_key,
+    store_namespace,
+    validate_snapshot,
 )
+from .observation_evidence import RuntimeOnlyRetention, retain_missing, stale_row
+from .observation_support import empty_support, fact_support
 
 
 @dataclass
@@ -34,7 +41,7 @@ class Receipt:
 
 class ObservationEngine:
     def __init__(self, *, host_scope, configs, uid, clock, wall_clock,
-                 collection_id, native_hostname, profiles):
+                 collection_id, native_hostname, profiles, support_incarnation=None):
         self.host_scope, self.uid = host_scope, uid
         self.clock, self.wall_clock = clock, wall_clock
         self.collection_id, self.native_hostname = collection_id, native_hostname
@@ -51,6 +58,12 @@ class ObservationEngine:
         self._retirement_due = dict.fromkeys(configs)
         self.snapshot = None
         self.revision = 0
+        self.support_incarnation = support_incarnation
+        self.projection_support = {}
+        self.projection_census = {}
+        self._component_support = {provider: {name: {} for name in ("runtime", "history")}
+                                   for provider in configs}
+        self._runtime_census = {}
 
     def source_meta(self, provider):
         home, selector = self.configs[provider]
@@ -134,6 +147,8 @@ class ObservationEngine:
         receipt.health = "current" if coverage == "complete" else "partial" if coverage == "partial" else "unavailable"
         if receipt.expiresBoottimeMs <= self.clock():
             receipt.health = "stale"
+        if self.support_incarnation is not None:
+            self._capture_support(provider, component, source)
         # Retain evidence belonging to this component across an incomplete read.
         # Only positive saved-history identity is retained by the metadata
         # component. Runtime retention uses its own daemon census coverage.
@@ -145,6 +160,7 @@ class ObservationEngine:
                            retention=retention, now=self.clock())
         if retention is not None:
             retention.prune(receipt.data["sessions"])
+        self._prune_support(provider, component)
         if component == "history" and source["coverage"]["runtime"]["status"] in {"complete", "partial"}:
             runtime = self.receipts[provider]["runtime"]
             if runtime.sampledBoottimeMs is None or sampled_ms >= runtime.sampledBoottimeMs:
@@ -152,6 +168,69 @@ class ObservationEngine:
                 self._accept_sample(provider, "runtime", value, sampled_ms=sampled_ms,
                                     ttl_ms=runtime_ttl_ms if runtime_ttl_ms is not None else min(ttl_ms, 60000), origin="history")
         return True
+
+    def _capture_support(self, provider, component, source):
+        """Capture actual inputs before incomplete-read retention mutates rows."""
+        receipt = self.receipts[provider][component]
+        meta = self.source_meta(provider)
+        token = fact_support(self.support_incarnation, meta, component, receipt)
+        previous = self._component_support[provider][component]
+        captured = {}
+        observed = []
+        for row in receipt.data["sessions"]:
+            key = identity_key(row["identity"])
+            if "retained_after_gap" in row["metadataIssues"]:
+                # An upstream retained row is context, not an actual new sample.
+                captured[key] = copy.deepcopy(previous.get(key, empty_support()))
+                continue
+            observed.append(key)
+            support = empty_support()
+            if component == "runtime":
+                for name in ("runtime", "phase"):
+                    if row[name] is not None and row[name]["health"] == "current":
+                        support[name] = token
+            support["kind"] = token
+            if row["hasSavedHistory"]:
+                support["savedIdentity"] = token
+            for name in ("activity", "outcome"):
+                if ((row[name]["health"] == "current" and row[name]["source"] is not None)
+                        or name == "outcome" and row[name]["reason"] == "turn_in_progress"):
+                    support[name] = token
+            if component == "history" and row["workspace"] is not None:
+                support["workspace"] = token
+            for name in ("lastUpdated", "latestTurn"):
+                binding = row[name]["receipt"]
+                if binding is not None and row[name]["health"] == "current":
+                    owner = self.receipts[provider][binding["component"]]
+                    if (binding["contextGeneration"] == meta["contextGeneration"]
+                            and binding["sampledBoottimeMs"] == owner.sampledBoottimeMs):
+                        support[name] = fact_support(self.support_incarnation, meta,
+                                                     binding["component"], owner)
+            captured[key] = copy.deepcopy(support)
+        # Retain references only alongside the rows retain_missing may retain.
+        # Pruning immediately after that operation removes all unused entries.
+        self._component_support[provider][component] = {**previous, **captured}
+        if component == "runtime":
+            coverage = source["coverage"]["runtime"]
+            self._runtime_census[provider] = {
+                "status": coverage["status"], "reason": coverage["reason"],
+                "support": copy.deepcopy(token), "identities": tuple(sorted(observed)),
+            }
+            if coverage["status"] == "complete" and (
+                    len(observed) != len(receipt.data["sessions"])
+                    or any(row["runtime"]["value"] == "unknown" for row in receipt.data["sessions"])
+                    or coverage["scope"] == "daemon_threads"
+                    and source["coverage"]["saved"]["status"] != "complete"):
+                self._runtime_census[provider].update(status="partial", reason="bounded_census")
+
+    def _prune_support(self, provider, component):
+        if self.support_incarnation is None:
+            return
+        data = self.receipts[provider][component].data
+        present = {identity_key(row["identity"]) for row in data["sessions"]} if data else set()
+        support = self._component_support[provider][component]
+        self._component_support[provider][component] = {key: value for key, value in support.items()
+                                                        if key in present}
 
     def expire(self, now=None):
         now = self.clock() if now is None else now
@@ -197,6 +276,7 @@ class ObservationEngine:
                         kept.append(row)
                         candidates.add(key)
                 receipt.data["sessions"] = kept
+                self._prune_support(provider, name)
                 changed = changed or len(rows) != len(receipt.data["sessions"])
             retention.prune(runtime.data["sessions"] if runtime.data else [])
             # Only unprotected survivors can retire by time alone. Current
@@ -223,6 +303,8 @@ class ObservationEngine:
     def publish(self):
         self._retire_runtime_only(self.clock())
         rows, sources = [], []
+        projected_support = {}
+        support_enabled = self.support_incarnation is not None
         for provider, receipts in self.receipts.items():
             runtime, history = receipts["runtime"], receipts["history"]
             base = runtime.data or history.data
@@ -240,25 +322,32 @@ class ObservationEngine:
             source["sourceHealth"] = "current" if runtime.health == history.health == "current" and not source["errors"] else "partial" if runtime.current() or history.current() else "stale" if base else "unavailable"
             rt_rows = {identity_key(r["identity"]): r for r in runtime.data["sessions"]} if runtime.data else {}
             hi_rows = {identity_key(r["identity"]): r for r in history.data["sessions"]} if history.data else {}
+            rt_support, hi_support = (self._component_support[provider][name]
+                                      for name in ("runtime", "history"))
             for key in rt_rows.keys() | hi_rows.keys():
                 raw = rt_rows.get(key) or hi_rows[key]
                 has_runtime = key in rt_rows
+                support = (copy.deepcopy((rt_support if has_runtime else hi_support).get(key, empty_support()))
+                           if support_enabled else {})
                 row = stale_row(raw, runtime=not has_runtime or not runtime.current(),
                                 metadata=not (runtime.current() if has_runtime else history.current()))
                 # Workspace is collected only by the history component, even
                 # when the runtime roster remains healthy.
                 row["workspace"] = None
+                support["workspace"] = None
                 saved = hi_rows.get(key)
                 if saved:
                     if saved["hasSavedHistory"] and not row["hasSavedHistory"]:
                         row["hasSavedHistory"] = True
                         row["inventory"] = "saved"
+                        support["savedIdentity"] = hi_support.get(key, {}).get("savedIdentity")
                     saved = stale_row(saved, runtime=True, metadata=not history.current())
                     fallback = self.profiles[provider].display_name + " " + row["identity"]["nativeId"]
                     if row["title"] == fallback or key not in rt_rows or not runtime.current():
                         row["title"] = saved["title"]
                     if row["kind"] == "unknown" and history.current():
                         row["kind"] = saved["kind"]
+                        support["kind"] = hi_support.get(key, {}).get("kind")
                     for name in ("activity", "outcome"):
                         current = row[name]
                         candidate = saved[name]
@@ -275,6 +364,7 @@ class ObservationEngine:
                                 continue
                             if hi_known:
                                 row[name] = candidate
+                                support[name] = hi_support.get(key, {}).get(name)
                                 continue
                         if name == "outcome":
                             # In-progress metadata is explicit negative knowledge
@@ -287,10 +377,12 @@ class ObservationEngine:
                             hi_observed = "retained_after_gap" not in hi_rows[key]["metadataIssues"]
                             rt_latest = rt_observed and (not hi_observed or runtime.sampledBoottimeMs >= history.sampledBoottimeMs)
                             hi_latest = hi_observed and (not rt_observed or history.sampledBoottimeMs >= runtime.sampledBoottimeMs)
-                            pending = (rt_rows[key] if rt_latest and rt_rows[key][name]["reason"] == "turn_in_progress"
-                                       else hi_rows[key] if hi_latest and hi_rows[key][name]["reason"] == "turn_in_progress" else None)
+                            pending_component = ("runtime" if rt_latest and rt_rows[key][name]["reason"] == "turn_in_progress"
+                                                 else "history" if hi_latest and hi_rows[key][name]["reason"] == "turn_in_progress" else None)
+                            pending = (rt_rows if pending_component == "runtime" else hi_rows).get(key) if pending_component else None
                             if pending is not None:
                                 row[name] = copy.deepcopy(pending[name])
+                                support[name] = (rt_support if pending_component == "runtime" else hi_support).get(key, {}).get(name)
                                 continue
                         # History can establish metadata/outcome, never runtime phase.
                         if name == "outcome" and history.current():
@@ -298,23 +390,40 @@ class ObservationEngine:
                         at_key = "at" if name == "activity" else "observedAt"
                         if current["health"] != "current" or (candidate["health"] == "current" and (candidate.get(at_key) or 0) > (current.get(at_key) or 0)):
                             row[name] = candidate
+                            support[name] = hi_support.get(key, {}).get(name)
                     if row["cwd"] is None:
                         row["cwd"], row["cwdSource"] = saved["cwd"], saved["cwdSource"]
                     if history.current() and row["cwd"] == saved["cwd"]:
                         row["workspace"] = saved["workspace"]
+                        support["workspace"] = hi_support.get(key, {}).get("workspace")
                     if row["createdAt"] is None:
                         row["createdAt"] = saved["createdAt"]
                     row["metadataIssues"] = list(dict.fromkeys((row["metadataIssues"] + saved["metadataIssues"])[:128]))
                 for name in ("lastUpdated", "latestTurn"):
-                    candidates = [(r[key][name], receipts[c].expiresBoottimeMs)
+                    candidates = [(r[key][name], receipts[c].expiresBoottimeMs,
+                                   self._component_support[provider][c].get(key, {}).get(name))
                                   for c, r in (("runtime", rt_rows), ("history", hi_rows)) if key in r]
-                    selected = timing.select(candidates, name)
+                    selected = timing.select([(record, expiry) for record, expiry, _ in candidates], name)
+                    # Follow timing.select's observation-order/lease tie choice,
+                    # rather than attributing equal values to a newer receipt.
+                    if not support_enabled or selected["receipt"] is None:
+                        support[name] = None
+                    else:
+                        def order(item):
+                            binding = item[0]["receipt"]
+                            return (-1, -1) if binding is None else (binding["sampledBoottimeMs"], binding["observedBoottimeMs"])
+                        newest = max(map(order, candidates))
+                        winner = min((item for item in candidates if order(item) == newest),
+                                     key=lambda item: item[1] if item[1] is not None else -1)
+                        support[name] = winner[2]
                     binding = selected["receipt"]
                     owner = receipts[binding["component"]] if binding is not None else None
                     if owner is None or not owner.current() or binding["contextGeneration"] != self.generations[provider] or binding["sampledBoottimeMs"] != owner.sampledBoottimeMs:
                         selected = timing.stale(selected, name, "service_timing_expired")
                     row[name] = selected
                 rows.append(row)
+                if self.support_incarnation is not None:
+                    projected_support[key] = copy.deepcopy(support)
             source["capabilities"]["activity"] = any(r["activity"]["health"] == "current" for r in rows if r["identity"]["provider"] == provider)
             source["capabilities"]["timing"] = {name: any(r[name]["health"] == "current" for r in rows if r["identity"]["provider"] == provider)
                                                 for name in ("lastUpdated", "latestTurn")}
@@ -344,4 +453,18 @@ class ObservationEngine:
                     if coverage["status"] == "complete":
                         coverage.update(status="partial", reason="service_view_limit")
         self.snapshot = validate_snapshot(value)
+        if self.support_incarnation is not None:
+            self.projection_support = {identity_key(row["identity"]): projected_support[identity_key(row["identity"])]
+                                       for row in value["sessions"]}
+            self.projection_census = {}
+            for source in sources:
+                provider = source["provider"]
+                census = copy.deepcopy(self._runtime_census.get(provider, {
+                    "status": "unavailable", "reason": "not_observed", "support": None, "identities": (),
+                }))
+                if not self.receipts[provider]["runtime"].current() and census["status"] != "unsupported":
+                    census.update(status="unavailable", reason=source["coverage"]["runtime"]["reason"])
+                elif dropped and census["status"] == "complete":
+                    census.update(status="partial", reason="service_view_limit")
+                self.projection_census[provider] = census
         self.revision += 1

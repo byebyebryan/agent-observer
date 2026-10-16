@@ -135,13 +135,20 @@ class CachedAgentSource:
         history.service, history.position, history.receipts = service, position, receipts
         return True
 
+    def _make_request(self, operation):
+        """Protected family hook; the default remains the strict full feed."""
+        return validate_request({"serviceProtocol": 4, "operation": operation, "hostScope": self.host})
+
+    def _make_guard(self, uid):
+        return StreamGuard(expected_host=self.host, expected_uid=uid)
+
     async def _frames(self, operation):
-        request = validate_request({"serviceProtocol": 4, "operation": operation, "hostScope": self.host})
+        request = self._make_request(operation)
         node = self._socket_policy()
         uid = os.geteuid()
         boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
         domain = os.readlink("/proc/self/ns/time")
-        guard = StreamGuard(expected_host=self.host, expected_uid=uid)
+        guard = self._make_guard(uid)
         history = self._read_history if operation == "status" else _History()
         loop = asyncio.get_running_loop()
         if self._active >= MAX_CHANNELS:
