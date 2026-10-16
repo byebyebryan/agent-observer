@@ -1,10 +1,11 @@
 # Agent Observer architecture boundaries
 
-The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a5/Mesh a20.
-Tmux and the historical writer keep their independent selections. The dated
-a1 collector acceptance below remains historical.
+Current publication, 2026-10-16: Observer 0.7.0a7 and paired Mesh 0.1.0a23
+publish the exact qualified active-feed artifacts. The
+[RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
+records a7 collectors and separate a7/a23 active publishers on both hosts.
+The full read/publisher a5/a20 tuple, Tmux and historical writer are independent.
+Software deployment and paired rollback passed; physical RLCD checks remain deferred.
 
 Current implementation, 2026-10-14: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh
@@ -33,8 +34,8 @@ separate future work. Publisher ownership is implemented in the optional
 networking component through Mesh's supported generic SDK 1 helper;
 core/local service remain independent.
 
-Normal collection selects core-only 0.7.0a3 on both hosts. Agent publication
-separately selects 0.7.0a5/Mesh a20 after the
+Before active-feed adoption, collection selected core-only 0.7.0a3 on both hosts.
+Full Agent publication separately selected 0.7.0a5/Mesh a20 after the
 [CPU delivery checkpoint](evidence/2026-10-15-cpu-delivery/REPORT.md).
 The read CLI separately selects 0.7.0a5/Mesh a20 with an explicit optional
 prepared human watch. The [accepted read helper](prepared-agent-read-interface.md)
@@ -53,9 +54,9 @@ The independent [a6/a22 producer checkpoint](evidence/2026-10-15-prepared-select
 adds optional read interface 2. Mesh owns process-local immutable admission,
 header exports, static selection and dynamic expiry; Observer supplies explicit
 Agent filters and complete-current identity/kind/runtime summaries. Consumers
-retain positive retirement, presentation and display limits. Normal roles remain
-on a5/a20 until separate adoption; populated native acceptance is Starship-bound
-while the current Snap source is empty.
+retain positive retirement, presentation and display limits. At that checkpoint
+normal roles stayed on a5/a20; populated native acceptance was Starship-bound
+while the Snap source was empty. The later a7 checkpoint includes populated Snap evidence.
 
 The opt-in [active feed](active-feed-interface.md) adds transient actual-value
 support to the reusable engine and a pure projection cache in ServiceState.
@@ -69,8 +70,10 @@ accepts bounded installed/native/transport and controlled scaling evidence;
 normal role adoption remains a separate gate. Generation CPU increases while
 active cached reads shrink; the receipt reports both costs and their cadence.
 
-The shared launcher supplies lazy Agent and independently selected Tmux factories;
-Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
+The shared launcher supplies lazy full Agent and independently selected Tmux factories;
+full Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. RLCD's
+separate active source resolves its a7/a23 launcher before package imports,
+binds the explicit active v1 profile and never falls back to the full feed. The prior
 0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical
 writer has a separate action gate. Known system rows remain in raw observations
 and are excluded from ordinary human rosters after reconciliation.

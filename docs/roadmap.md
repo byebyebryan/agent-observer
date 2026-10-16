@@ -1,5 +1,12 @@
 # Agent Observer roadmap
 
+The hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7)
+publishes the qualified wheel unchanged, paired with Mesh 0.1.0a23. The
+[RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
+closes software integration, configured fleet, collector/active publisher/client
+selection and paired rollback. Physical ACK/panel/reboot checks remain deferred.
+Full diagnostics/read CLI, Tmux and the historical writer keep independent tuples.
+
 The agreed [active-feed design](active-feed-proposal.md) is now implemented for
 the accepted [a7/a23 producer checkpoint](evidence/2026-10-16-active-feed/REPORT.md)
 through a [separate opt-in interface](active-feed-interface.md). The checkpoint
@@ -7,16 +14,16 @@ covers actual-value/census provenance, the ServiceState cache, strict native
 wire and optional source/profile/read facade, with bounded installed/native,
 transport and controlled scaling evidence. Generation overhead and remaining
 native field/capacity limits are explicit.
-RLCD owns later consumer and coordinated service adoption; normal selections
-remain independent of source acceptance.
+The later RLCD receipt above owns consumer and coordinated service adoption;
+source acceptance alone does not select normal services.
 
-The [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a5/Mesh a20.
+The earlier [native title-helper correction](evidence/2026-10-14-title-helper/REPORT.md)
+selected core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and full Agent
+publishers separately selected a5/Mesh a20.
 Tmux and the historical writer keep their independent selections. The dated
 a1 collector acceptance below remains historical.
 
-Current producer checkpoint, 2026-10-14: Codex-only
+Preceding producer checkpoint, 2026-10-14: Codex-only
 [Observer 0.7.0a3](../artifacts/observer-0.7.0a3.json) supplies API 4/read 6/Service 4
 and selects core-only collectors on Snap and Starship. Agent publication separately selects
 a5/Mesh a20/profile v3 after the [CPU delivery checkpoint](evidence/2026-10-15-cpu-delivery/REPORT.md).
@@ -67,8 +74,8 @@ acceptance. Normal role selections remain a5/a20.
   per-acquisition proof, ordering, mutation and paired Tmux gates; no slower
   monitoring or discovery truncation is implied. Collection, extra SSH sources
   and RLCD application costs remain separately measured.
-- Hosted publication of the accepted Mesh a20 SDK and exact Observer a4 wheel;
-  source push and green CI are already recorded independently.
+- Public-download verification of each future package release, preserving exact
+  accepted bytes, paired dependencies and independent deployment receipts.
 - Continuously advancing remote age policy, if needed beyond source-sampled age;
   no exact blocked/current-phase clock is promised.
 - Native occurrence events/notification enrichment, if a concrete client needs it.
