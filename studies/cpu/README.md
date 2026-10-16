@@ -58,3 +58,31 @@ application savings, immutable artifact acceptance or managed rollout.
 
 Results and follow-up ownership are in the
 [CPU report](../../docs/evidence/2026-10-15-cpu/REPORT.md).
+
+## Owned admission and explicit selection
+
+`selected_read.py` compares the complete synchronous compose/admit/prepare/read
+path using two owned synthetic Agent hosts and either 100 or 500 total records.
+The selected bodies and whole-current-roster summaries have one full-body
+semantic signature across variants. Running unknown-kind, child and system
+records are included; no display limit is imposed. One warm-up and fixture IPC
+setup are excluded. The fixed workload has 15 replacements and four reads each.
+
+```sh
+rtk proxy /baseline/prefix/bin/python -I -B studies/cpu/selected_read.py \
+  --rows 500 --output /private/baseline.json
+rtk proxy /candidate/prefix/bin/python -I -B studies/cpu/selected_read.py \
+  --rows 500 --owned --mode selected --output /private/candidate.json
+```
+
+Use `--mode full` to retain full-row reads and isolate the owned-admission change.
+Omit `--owned` to exercise strict raw admission. Optional source overrides are
+`--owner-root` and `--mesh-root`; these identify experimental modules and do not
+establish installed artifact provenance. Counted aggregate admissions and native
+snapshot validations describe only the measured synchronous path, excluding
+fixture setup. All variants retain complete raw snapshots, expiry checks and
+proof arithmetic. Record process CPU and serial ABBA order, then compare exact
+signatures and cleanup; do not interpret CPU milliseconds as live service CPU
+or dashboard/device acceptance. Provider/collector/publisher/acquisition/SSH and
+device costs are outside this workload. First selected read compiles the entire
+generation, while later reads avoid decoding rejected full bodies.

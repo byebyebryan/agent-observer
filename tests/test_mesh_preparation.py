@@ -131,6 +131,16 @@ class AgentPreparationTests(unittest.TestCase):
         watch.accept(resync)
         self.assertTrue(watch.read(now, clock).sessions)
 
+    def test_replacement_context_does_not_export_raw_records(self):
+        from agent_observer.mesh_read import PreparedAgentWatch
+
+        frame = dict(golden_frames())["agent-fleet"]
+        watch = PreparedAgentWatch(REQUEST)
+        with patch.object(type(watch._guard), "snapshot", side_effect=AssertionError("raw export")):
+            watch.accept(frame)
+            now, clock = frame["mesh"]["reader"]["encodedAtMs"], frame["mesh"]["reader"]["clock"]
+            self.assertEqual(watch.read(now, clock).context, frame["mesh"])
+
     def test_failed_admission_clock_capacity_and_changed_binding_revoke_context(self):
         from jsonschema import ValidationError
         from mesh_plus.protocol import ProtocolError

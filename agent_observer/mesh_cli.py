@@ -26,7 +26,7 @@ def interface():
         "routeReporting": False,
         "nativeEventReplay": False,
         "requires": ["configured_reader", "ReadGuard"],
-        "optionalPreparedWatch": {"interface": 1, "humanOnly": True},
+        "optionalPreparedWatch": {"interface": 2, "humanOnly": True},
     }
 
 
