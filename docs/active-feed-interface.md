@@ -1,8 +1,9 @@
 # Opt-in active Agent feed interface 1
 
-This G1 candidate implements the [agreed active-feed plan](active-feed-proposal.md).
-Source and controlled-fixture checks are available; exact immutable package,
-installed/native, fixed-SSH and controlled performance qualification are pending.
+This G1 implementation follows the [agreed active-feed plan](active-feed-proposal.md).
+The [a7/a23 producer receipt](evidence/2026-10-16-active-feed/REPORT.md) accepts
+the exact immutable package with bounded installed/native, fixed-SSH and
+controlled performance evidence, including added generation cost and limits.
 This document does not select a service, publisher, reader or downstream bundle.
 RLCD owns its later consumer and operational gates. The existing full API 4,
 Service 4 and Agent profile v3 remain available with their original semantics.

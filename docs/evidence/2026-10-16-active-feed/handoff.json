@@ -1,0 +1,153 @@
+{
+  "status": "accepted_bounded_observer_producer",
+  "branch": "active-feed-20261016",
+  "runtimeSource": "7807160384ba39b4d438c5c7f1b5f316c3608dcd",
+  "schemaSource": "4ffd376441fcb556cbe291d55d983e0814c20551",
+  "observer": {
+    "version": "0.7.0a7",
+    "wheel": "/home/bryan/code/agent-observer/dist/private/0.7.0a7-7807160-5eafd4c1/agent_observer-0.7.0a7-py3-none-any.whl",
+    "sha256": "5eafd4c126fb31a0574c3c0500998084c6ccc8d4d813df1805e6d21ce4b85bb0",
+    "manifest": "artifacts/observer-0.7.0a7.json",
+    "python": ">=3.11",
+    "dependencies": [],
+    "optionalMesh": "mesh-plus>=0.1.0a23,<0.2"
+  },
+  "meshIndependentlyQualified": {
+    "version": "0.1.0a23",
+    "runtimeSource": "19788054edcd859f6228a90026695280f746723d",
+    "wheel": "/home/bryan/code/mesh-plus/dist/private/0.1.0a23-1978805-73455186/mesh_plus-0.1.0a23-py3-none-any.whl",
+    "sha256": "73455186e187198c8e44b6ae6c381926809931a176f17614864141c62ff850c2",
+    "lockRevision": 5,
+    "profile": {
+      "sdk_version": 1,
+      "profile_id": "agent-observer.mesh-active.v1",
+      "native_protocol": "agent-observer.active-feed",
+      "native_version": 1,
+      "contract_digest": "sha256:9f29bfd0fe1803f4ccf30c4cbfbc8f63de4423fdb6eda234291685d99bef46ae",
+      "frame_bytes": 8404992
+    },
+    "jsonschema": ">=4.26,<5",
+    "scope": "Observer exact-wheel profile/source/factory/read facade and owned IPC/fixed-SSH qualification; Mesh owns its separate package/catalog acceptance"
+  },
+  "interfaces": {
+    "activeNative": 1,
+    "activeRead": 1,
+    "sdk": 1,
+    "preparation": 1,
+    "admission": 1,
+    "read": 1,
+    "delivery": 1,
+    "oldObserverApi": 4,
+    "oldSnapshotWatch": 6,
+    "oldService": 4,
+    "oldWrite": 2,
+    "selectorDigest": "sha256:73d08f0217e03cea283820e18abed0b06cd5e4c52428e431bab5da1d760ff9d6",
+    "publicFacade": "agent_observer.mesh_active_read.PreparedActiveAgentWatch",
+    "profile": "agent_observer.mesh_active_profile.ActiveAgentProfile",
+    "cachedSource": "agent_observer.mesh_active_source.CachedActiveAgentSource",
+    "publisherFactory": "agent_observer.mesh_publisher.make_publisher(host, source, socket, *, profile_id=FULL_PROFILE_ID)",
+    "activeProfileId": "agent-observer.mesh-active.v1",
+    "fullProfileId": "agent-observer.mesh-candidate.v3"
+  },
+  "acceptance": {
+    "source": {
+      "tests": 523,
+      "skips": 0
+    },
+    "installed": {
+      "python314": {
+        "tests": 523,
+        "skips": 0
+      },
+      "python311": {
+        "tests": 523,
+        "skips": 0
+      }
+    },
+    "native": {
+      "starship": {
+        "identities": 399,
+        "selected": 9,
+        "baselineTimingRaces": 2,
+        "candidateIssues": 0,
+        "ownedServiceTimingRaces": 1
+      },
+      "snap": {
+        "identities": 102,
+        "selected": 1,
+        "issues": 0
+      },
+      "sourceRuntimeIndependentlyBound": true,
+      "sameCachedGenerationFullBodyAndOriginalReceiptParity": true,
+      "fieldCoverage": "known values only; per-field unproved counters and timestamp bounds retained"
+    },
+    "transport": {
+      "ownedIpcAndFixedSsh": true,
+      "memberAndCompleteEmpty": true,
+      "originalExpiry": true,
+      "independentFields": true,
+      "partialMissedNegative": true,
+      "newIncarnationRecovery": true,
+      "cleanup": true
+    },
+    "performance": {
+      "report": "producer-performance.json",
+      "serialTrials": 24,
+      "scales": [
+        100,
+        500,
+        2000
+      ],
+      "selected": 10,
+      "generations": 6,
+      "readsPerGeneration": 4,
+      "producerMeasuredCpuReductionPercent": [
+        36.6048622,
+        56.12038835,
+        59.81068263
+      ],
+      "cachedReadCpuReductionPercent": [
+        68.29131419,
+        93.69526804,
+        98.48245178
+      ],
+      "generationCpuIncreasePercentRange": [
+        30.064,
+        38.187
+      ],
+      "unchangedFullWorkloadCpuIncreasePercentRange": [
+        8.7625,
+        10.0646
+      ],
+      "allSelectedBodyOriginalLeaseWholeMembershipSignaturesEqual": true,
+      "nativeCollectionAndMeshExcluded": true,
+      "memoryNotMeasured": true
+    },
+    "capacity5000": "Rejected at unchanged native4096 input ceiling, no authority created"
+  },
+  "adoptionRequirements": [
+    "Select new service/collector artifact as well as publisher, Mesh and consumer; old service lacks active endpoint/provenance",
+    "Configure distinct source bound to active profile via explicit trusted factory; no silent full-feed fallback",
+    "Reconcile all identities/scopes before display caps; use read.scopes/read.nonmembers for authority, context is informational",
+    "Retain existing uncertain presentation context after positive expiry; partial omission and pruned/missed negatives do not retire",
+    "Retain original full-feed tuple and paired collector/read/publisher rollback; Tmux/writer independent",
+    "RLCD owns normal-service selection, real cross-host configured fleet, live CPU/device and downstream acceptance"
+  ],
+  "limits": [
+    "Ordinary read-only native evidence, no controlled provider/session transitions",
+    "Source/field refs exact-match-or-context-only; max32 receipts per host; no historical support bank",
+    "4096 identity/1MiB ledger/8404992 frame ceilings; combinations can hit byte ceiling sooner",
+    "Native catalog/classification limits unchanged; synthetic2000 scale is not native2000 completeness",
+    "Producer and peer transport percentages have different boundaries and cannot be added",
+    "Fixed-SSH carrier gate is disposable localhost; real cross-host native services were checked via independent IPC per host, not newly selected normal fleet",
+    "No digest proof/replay/deltas/prior-ID query/presentation timeout"
+  ],
+  "protected": {
+    "normalServicesRestarted": 0,
+    "selectedLinksChanged": false,
+    "providerActions": 0,
+    "siblingRepoEdits": false,
+    "originalCheckoutClean": true
+  },
+  "report": "REPORT.md"
+}

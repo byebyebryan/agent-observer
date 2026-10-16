@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "oldSchemaCount": 7,
+  "oldSchemasSha256": {
+    "agent_observer/contracts/service-frame.schema.json": "97441fd743d2cb14a2457f82513e4fd837a98abee8e64c601e0bca946a7c897e",
+    "agent_observer/contracts/service-request.schema.json": "decf5ab4b7bbdfa4f11d7e09ae2721e53b5eab977936ace50c362151fe585bdc",
+    "agent_observer/contracts/snapshot.schema.json": "f3f493a206e3375ac81d6432d4d8168f9116a529bfc56caf368c492de2424905",
+    "agent_observer/contracts/watch.schema.json": "709a385673852af433090922d0ea1f7f9a4e0e31a0fb7823bee8d412442d7a3c",
+    "agent_observer/contracts/write-plan.schema.json": "93bb02e6e35c3f2e60a988806dc9e3c2ae99b6d1879b5eddd289992381c909ac",
+    "agent_observer/contracts/write-request.schema.json": "ab451060861f86e41ab65945ba7ec2ce8a421071bc52452e097c08063a940c53",
+    "agent_observer/contracts/write-result.schema.json": "6ff06a8b7f5d7927b0f88fdab1962af53e5a73f104dc67f8948b424166694726"
+  },
+  "addedSchemas": [
+    "agent_observer/contracts/active-frame.schema.json",
+    "agent_observer/contracts/active-request.schema.json"
+  ]
+}
