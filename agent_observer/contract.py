@@ -1,4 +1,4 @@
-"""API 3 observation wire 5; bounded pure validation without action imports."""
+"""API 4 observation wire 6; bounded pure validation without action imports."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import unicodedata
 from pathlib import PurePosixPath
 
 from .bounded_json import decode_document
+from .contract_shape import compile_shape
 
 SCHEMA_VERSION = 6
 MAX_BYTES = 8 * 1024 * 1024
@@ -233,6 +234,13 @@ class ContractError(ValueError):
     """Finite code; never includes input values or field contents."""
 
 
+# These versioned schema definitions are fixed contract inputs. Compile their
+# complete shape checks once; the public dynamic interpreter remains available
+# for caller-supplied schemas, and all cross-field semantics still run below.
+_SESSION_SHAPE = compile_shape(SESSION, ContractError, ASCII_CONTROLS)
+_SNAPSHOT_SHAPE = compile_shape(SNAPSHOT, ContractError, ASCII_CONTROLS)
+
+
 def schema_document(name):
     spec = {"snapshot": SNAPSHOT, "watch": WATCH}[name]
     return {
@@ -434,7 +442,7 @@ def validate_record(row, host_scope, sources):
     the equivalent source sequence. Source-wide namespace/capability validation
     remains the caller's responsibility; this checks every row cross-reference.
     """
-    validate_shape(row, SESSION)
+    _SESSION_SHAPE(row)
     if isinstance(sources, dict):
         indexed = sources
     else:
@@ -448,7 +456,7 @@ def validate_record(row, host_scope, sources):
 
 
 def validate_snapshot(value):
-    validate_shape(value, SNAPSHOT)
+    _SNAPSHOT_SHAPE(value)
     sources = {}
     for source in value["sources"]:
         key = source["provider"], source["namespace"]
