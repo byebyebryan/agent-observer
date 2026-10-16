@@ -80,6 +80,23 @@ class SyncEncodedStateTest(reference.SyncStateTest):
         with self.assertRaises(ContractError):
             OwnerSyncCache(self.state, backend="unknown")
 
+    def test_membership_and_seal_maps_share_only_the_exact_token_buffer(self):
+        self.accept(component="history")
+        cache = self.state._sync_cache
+        current = cache.ensure("full").current
+        membership = next(current.tables["memberships"].items())
+        key, _token = membership
+        global_entry = current.tables["memberships"].lookup_encoded(key)
+        grouped = current.groups[tuple(key[0])].lookup_encoded(key[1:])
+        self.assertIs(global_entry[1], grouped[1])
+        self.assertIsNot(global_entry[0], grouped[0])
+        before = global_entry[1]
+        value = reference.provider_snapshot("codex")
+        value["sessions"][0]["kind"] = "unknown"
+        self.accept(value, component="history")
+        # Original roots retain their original shared bytes after replacement.
+        self.assertIs(current.tables["memberships"].lookup_encoded(key)[1], before)
+
     def test_body_removal_checks_original_value_without_decoding_it(self):
         from agent_observer.sync_state import _Operations, _remove
 

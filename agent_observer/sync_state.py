@@ -736,7 +736,14 @@ class OwnerSyncCache:
             group = groups.get(cohort)
             if group is None:
                 group = _table_stage("cohort-members", tables["memberships"].stage)
-            groups[cohort] = group.put(grouped, token)
+            if self.backend == "encoded":
+                # Both commitment spaces contain the same canonical token.
+                # Share its physical bytes while retaining separate keys,
+                # old-value checks, nodes and independently computed roots.
+                value_bytes = tables["memberships"].last_encoded[1]
+                groups[cohort] = group.put_value_bytes(grouped, value_bytes)
+            else:
+                groups[cohort] = group.put(grouped, token)
 
     def _publish_view(self, slot, *, diagnostics_only=False, generation=None, seed=None):
         if generation is None:

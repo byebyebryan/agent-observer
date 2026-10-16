@@ -254,7 +254,10 @@ class EncodedTableStage:
             expected = None if found is ABSENT else found[2]
         return self._store(key, value, expected, False)
 
-    def put_value_bytes(self, key, value, *, expected):
+    def put_value_bytes(self, key, value, *, expected=ANY):
+        if expected is ANY:
+            found = self._found(key)
+            expected = None if found is ABSENT else found[2]
         key_bytes = self._encode(key, key=True)
         if key_bytes in self.entries:
             raise ContractError("sync_duplicate_owner_edit")
