@@ -6,6 +6,7 @@ import itertools
 import json
 import random
 import sys
+import tracemalloc
 import types
 import unittest
 from collections.abc import Mapping
@@ -80,6 +81,64 @@ def reference_root(space, entries):
 
 
 class CanonicalTest(unittest.TestCase):
+    def test_freeze_reusing_shares_only_unchanged_prior_paths(self):
+        prior = sync.freeze(
+            {
+                "identity": ["host", "provider", "namespace", "thread", "id"],
+                "runtime": {"value": "running", "source": "native"},
+                "lastUpdated": {"at": 100, "source": "native"},
+            }
+        )
+        incoming = sync.thaw(prior)
+        incoming["lastUpdated"]["at"] = 101
+        result = sync.freeze_reusing(incoming, prior)
+        self.assertIsNot(result, prior)
+        self.assertIs(result["identity"], prior["identity"])
+        self.assertIs(result["runtime"], prior["runtime"])
+        self.assertIsNot(result["lastUpdated"], prior["lastUpdated"])
+        self.assertEqual(prior["lastUpdated"]["at"], 100)
+        incoming["runtime"]["value"] = "mutated"
+        incoming["identity"].append("mutated")
+        self.assertEqual(result["runtime"]["value"], "running")
+        self.assertEqual(len(result["identity"]), 5)
+        self.assertIs(sync.freeze_reusing(sync.thaw(prior), prior), prior)
+        # Key iteration order is not a different canonical object value.
+        self.assertIs(
+            sync.freeze_reusing(dict(reversed(list(sync.thaw(prior).items()))), prior), prior
+        )
+
+    def test_freeze_reusing_obeys_typed_json_and_validates_all_inputs(self):
+        for value, earlier in (
+            (True, 1),
+            (1, True),
+            (None, {}),
+            ({}, []),
+            ([], {}),
+            ({"missing": None}, {}),
+            ({}, {"missing": None}),
+            ("é", "e\u0301"),
+            ([1, 2], [2, 1]),
+        ):
+            with self.subTest(value=value, earlier=earlier):
+                old = sync.freeze(earlier)
+                result = sync.freeze_reusing(value, old)
+                self.assertEqual(sync.canonical(result), sync.canonical(value))
+                self.assertNotEqual(sync.canonical(result), sync.canonical(old))
+        old = sync.freeze([1, {"x": [True, None]}])
+        self.assertIs(sync.freeze_reusing((1, {"x": (True, None)}), old), old)
+        mutable_prior = {"x": [1]}
+        result = sync.freeze_reusing({"x": [1]}, mutable_prior)
+        mutable_prior["x"].append(2)
+        self.assertEqual(sync.thaw(result), {"x": [1]})
+        cycle = []
+        cycle.append(cycle)
+        for invalid in (cycle, {"x": cycle}, {"x": 1.0}, {"x": "\ud800"}, {1: "key"}):
+            with self.assertRaises(ValueError):
+                sync.freeze_reusing(invalid, old)
+        with self.assertRaises(ValueError):
+            sync.freeze_reusing({}, cycle)
+        self.assertEqual(sync.thaw(sync.freeze_reusing({"x": [1]}, sync.ABSENT)), {"x": [1]})
+
     def test_unicode_short_escapes_scalar_order_and_absence_are_exact(self):
         value = {"z": None, "é": "é\n", "a": True}
         self.assertEqual(
@@ -710,6 +769,269 @@ class PersistentMapTest(unittest.TestCase):
 
 
 class AllocationTest(unittest.TestCase):
+    def test_budgeted_arena_priors_share_paths_and_reject_unowned_or_mutable_priors(self):
+        account = sync.AllocationAccount()
+        with account.json_arena() as arena:
+            (old,) = arena.retain_json({"stable": [1, {"native": True}], "updated": {"at": 1}})
+            incoming = sync.thaw(old)
+            incoming["updated"]["at"] = 2
+            (new,) = arena.retain_json(incoming, priors=(old,))
+            self.assertIs(new["stable"], old["stable"])
+            self.assertIsNot(new["updated"], old["updated"])
+            self.assertEqual(new["updated"]["at"], 2)
+            (same,) = arena.retain_json(sync.thaw(new), priors=(new,))
+            self.assertIs(same, new)
+            before = account.snapshot()["used"]
+            for priors in (
+                (),
+                [old],
+                (old, old),
+                ({"mutable": []},),
+                (sync.freeze({"unowned": 1}),),
+            ):
+                with self.assertRaisesRegex(ValueError, "arena_priors"):
+                    arena.retain_json(incoming, priors=priors)
+                self.assertEqual(account.snapshot()["used"], before)
+            incoming["stable"].append("external mutation")
+            self.assertEqual(len(new["stable"]), 2)
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_near_cap_analysis_rejects_before_frozen_construction_with_bounded_real_peak(self):
+        account = sync.AllocationAccount(limit=65536)
+        arena = account.json_arena()
+        arena.retain_json({"retained": 1})
+        incoming = {"native-field-" + str(index): index for index in range(1000)}
+        before = account.snapshot()
+        tracemalloc.start()
+        try:
+            with patch.object(
+                sync,
+                "_materialize_plan",
+                side_effect=AssertionError("unfunded frozen construction"),
+            ):
+                with self.assertRaises(sync.BudgetExceeded):
+                    arena.retain_json(incoming)
+            _, peak = tracemalloc.get_traced_memory()
+        finally:
+            tracemalloc.stop()
+        # Inputs predate tracing; this measures actual construction/analysis
+        # allocations, not just a post-claim ledger or a size prediction.
+        self.assertLessEqual(peak, account.limit - before["used"])
+        self.assertEqual(account.snapshot()["used"], before["used"])
+        self.assertEqual(account.snapshot()["objects"], before["objects"])
+        self.assertEqual(len(arena._claims), 1)
+        arena.close()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_arena_atomic_credit_equals_independently_measured_fresh_containers(self):
+        account = sync.AllocationAccount()
+        events = []
+        original = sync.AllocationAccount._acquire
+
+        def observe(current, size, kind, unique, **kwargs):
+            credit = kwargs.get("credit")
+            if credit is not None:
+                pending = [value for value, _, _ in unique.values()]
+                seen, actual = set(), 0
+                while pending:
+                    value = pending.pop()
+                    if id(value) in seen or id(value) in current._held:
+                        continue
+                    seen.add(id(value))
+                    if isinstance(value, sync._FrozenObject):
+                        actual += sys.getsizeof(value) + sys.getsizeof(value._items)
+                    elif isinstance(value, sync._FrozenArray):
+                        actual += sys.getsizeof(value)
+                    pending.extend(sync._owned_children(value))
+                self.assertEqual(credit._size - kwargs["credit_keep"], actual + size)
+                events.append(actual)
+            result = original(current, size, kind, unique, **kwargs)
+            if credit is not None:
+                self.assertEqual(credit._size, kwargs["credit_keep"])
+            return result
+
+        with patch.object(sync.AllocationAccount, "_acquire", new=observe):
+            with account.json_arena() as arena:
+                (old,) = arena.retain_json({"native": [1, 2], "changed": {"at": 1}})
+                arena.retain_json({"native": [1, 2], "changed": {"at": 2}}, priors=(old,))
+        self.assertEqual(len(events), 2)
+        self.assertGreater(events[0], events[1])
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_budgeted_arena_failed_adoption_reclaims_credit_and_keeps_prior_claims(self):
+        account = sync.AllocationAccount()
+        arena = account.json_arena()
+        (old,) = arena.retain_json({"stable": [1, 2], "changed": {"at": 1}})
+        before = account.snapshot()
+        original = sync._IdentityIndex.growth_bound
+        original_materialize = sync._materialize_plan
+        materialized, caught = set(), None
+
+        def reject_adoption(index, markers):
+            if sys._getframe(1).f_locals.get("credit") is not None:
+                return account.limit
+            return original(index, markers)
+
+        def observe_materialization(plan):
+            result = original_materialize(plan)
+            if (
+                type(result) in (sync._FrozenObject, sync._FrozenArray)
+                and id(result) not in account._held
+            ):
+                materialized.add(id(result))
+            return result
+
+        with (
+            patch.object(sync._IdentityIndex, "growth_bound", new=reject_adoption),
+            patch.object(sync, "_materialize_plan", new=observe_materialization),
+        ):
+            try:
+                arena.retain_json({"stable": [1, 2], "changed": {"at": 2}}, priors=(old,))
+            except sync.BudgetExceeded as error:
+                caught = error
+            else:
+                self.fail("over-budget adoption accepted")
+        self.assertTrue(materialized)
+        # Retain the exception itself: its traceback must not become an
+        # uncharged owner of the rejected frozen graph or scratch dictionaries.
+        self.assertIsNotNone(caught.__traceback__)
+        gc.collect()
+        retained_frozen = {
+            id(value)
+            for value in gc.get_objects()
+            if type(value) in (sync._FrozenObject, sync._FrozenArray)
+        }
+        self.assertFalse(materialized & retained_frozen)
+        self.assertEqual(account.snapshot()["used"], before["used"])
+        self.assertEqual(account.snapshot()["objects"], before["objects"])
+        self.assertEqual(account._held[id(old)].refs, 1)
+        self.assertEqual(len(arena._claims), 1)
+        arena.close()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_arena_acquire_dictionary_scratch_fits_prepaid_envelope(self):
+        account = sync.AllocationAccount()
+        measured = []
+        original = sync._IdentityIndex.growth_bound
+
+        def inspect_scratch(index, markers):
+            local = sys._getframe(1).f_locals
+            if local.get("credit") is not None:
+                json_ids, pending = set(), [value for value, _, _ in local["unique"].values()]
+                while pending:
+                    value = pending.pop()
+                    if id(value) not in json_ids:
+                        json_ids.add(id(value))
+                        pending.extend(sync._owned_children(value))
+                roots = [
+                    local[name]
+                    for name in ("unique", "planned", "pending", "increments", "new_encodings")
+                ]
+                seen, pending, actual = set(json_ids), roots, 0
+                while pending:
+                    value = pending.pop()
+                    if id(value) in seen or isinstance(
+                        value,
+                        (
+                            type,
+                            types.ModuleType,
+                            types.FunctionType,
+                            types.BuiltinFunctionType,
+                            types.CodeType,
+                        ),
+                    ):
+                        continue
+                    seen.add(id(value))
+                    actual += sys.getsizeof(value)
+                    pending.extend(gc.get_referents(value))
+                self.assertLessEqual(actual, local["credit_keep"])
+                measured.append(actual)
+            return original(index, markers)
+
+        with patch.object(sync._IdentityIndex, "growth_bound", new=inspect_scratch):
+            with account.json_arena() as arena:
+                arena.retain_json(
+                    {"native": [{"number": n, "flag": bool(n % 2)} for n in range(50)]}
+                )
+        self.assertEqual(len(measured), 1)
+        self.assertGreater(measured[0], 1000)
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_json_arena_owns_detached_roots_and_hands_off_shared_graphs_to_map(self):
+        account = sync.AllocationAccount()
+        base = account.snapshot()["used"]
+        original_key, original_value = ["identity", 1], {"fact": [1, None]}
+        arena = account.json_arena()
+        key, value = arena.retain_json(original_key, original_value)
+        self.assertEqual(account._held[id(value)].refs, 1)
+        original_key.append("changed")
+        original_value["fact"].append(2)
+        tree = sync.PersistentMap("records", ((key, value),), account=account)
+        self.assertEqual(account._held[id(value)].refs, 2)
+        arena.close()
+        arena.close()
+        self.assertEqual(account._held[id(value)].refs, 1)
+        self.assertEqual(sync.thaw(tree.get(["identity", 1])), {"fact": [1, None]})
+        with self.assertRaises(ValueError):
+            arena.retain_json("closed")
+        del tree
+        gc.collect()
+        self.assertEqual(account.snapshot()["used"], base)
+
+    def test_json_arena_rejections_preserve_prior_claims_and_eager_capacity(self):
+        account = sync.AllocationAccount(limit=60000)
+        with account.json_arena() as arena:
+            (first,) = arena.retain_json({"first": 1})
+            before = account.snapshot()
+            cycle = []
+            cycle.append(cycle)
+            for invalid in (cycle, object()):
+                with self.assertRaises(ValueError):
+                    arena.retain_json("valid", invalid)
+                self.assertEqual(account.snapshot()["used"], before["used"])
+            with self.assertRaises(sync.BudgetExceeded):
+                arena.retain_json("oversized" * 20000)
+            self.assertEqual(account.snapshot()["used"], before["used"])
+            self.assertEqual(account._held[id(first)].refs, 1)
+            self.assertEqual(len(arena._claims), 1)
+            with self.assertRaises(ValueError):
+                arena.retain_json()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_json_arena_graph_is_fully_charged_without_row_leases_or_wrappers(self):
+        account = sync.AllocationAccount()
+        arena = account.json_arena()
+        shared = sync.freeze({"shared": ["native", None]})
+        for index in range(300):
+            arena.retain_json(["identity", index], shared)
+        self.assertEqual(account._held[id(shared)].refs, 300)
+        report = account.snapshot()
+        self.assertEqual(report["leases"], 1)
+        self.assertEqual(report["allocations"], 301)
+        self.assertEqual(len(arena._claims), 300)
+        self.assertTrue(all(type(claim) is tuple for claim in arena._claims))
+        seen, pending, actual = set(), [arena], 0
+        while pending:
+            value = pending.pop()
+            if id(value) in seen or isinstance(
+                value,
+                (
+                    type,
+                    types.ModuleType,
+                    types.FunctionType,
+                    types.BuiltinFunctionType,
+                    types.CodeType,
+                ),
+            ):
+                continue
+            seen.add(id(value))
+            actual += sys.getsizeof(value)
+            pending.extend(gc.get_referents(value))
+        self.assertGreaterEqual(report["used"], actual)
+        del arena
+        gc.collect()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
     def test_patch_budget_rejection_reclaims_provisional_nodes_without_changing_root(self):
         account = sync.AllocationAccount(limit=100000)
         tree = sync.PersistentMap("records", (("a", "original"), ("b", 2)), account=account)

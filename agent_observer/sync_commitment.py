@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 U64_MAX = (1 << 64) - 1
 DEFAULT_ALLOCATION_LIMIT = 64 * 1024 * 1024
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
+_SURROGATE = re.compile(r"[\ud800-\udfff]")
 
 
 class CommitmentError(ValueError):
@@ -93,10 +94,10 @@ class _FrozenArray(tuple):
 def _string(value):
     if type(value) is not str:
         raise CommitmentError("sync_string_required")
-    try:
-        value.encode("utf-8")
-    except UnicodeEncodeError as error:
-        raise CommitmentError("sync_unicode_scalar_required") from error
+    # Validate scalars without allocating a second, potentially large UTF-8
+    # copy merely to inspect an already-owned string.
+    if _SURROGATE.search(value) is not None:
+        raise CommitmentError("sync_unicode_scalar_required")
     return value
 
 
@@ -136,6 +137,64 @@ def freeze(value):
             active.remove(marker)
 
     return visit(value, set())
+
+
+def freeze_reusing(value, prior):
+    """Own JSON while reusing exactly equal immutable prior subtrees.
+
+    Comparison follows canonical JSON types (bool differs from int; tuple/list
+    both represent arrays). No cross-row intern pool, provenance inference or
+    mutable references are introduced. Changed inputs are visited explicitly;
+    unchanged already-minted subtrees are reused immediately by identity.
+    This pure helper does not reserve construction memory; bounded callers
+    cover temporary/new containers before retaining the result in an account.
+    """
+    prior = ABSENT if prior is ABSENT else freeze(prior)
+
+    def visit(item, old, active):
+        if item is None or type(item) in (bool, int, str):
+            if type(item) is str:
+                _string(item)
+            return old if type(item) is type(old) and item == old else item
+        if type(item) in (_FrozenObject, _FrozenArray) and (item is old or old is ABSENT):
+            return item
+        if not isinstance(item, (Mapping, list, tuple)):
+            raise CommitmentError("sync_json_type")
+        marker = id(item)
+        if marker in active:
+            raise CommitmentError("sync_json_cycle")
+        active.add(marker)
+        try:
+            if isinstance(item, Mapping):
+                previous = dict(old.items()) if type(old) is _FrozenObject else {}
+                owned, same = {}, type(old) is _FrozenObject
+                for key, child in item.items():
+                    _string(key)
+                    if key in owned:
+                        raise CommitmentError("sync_duplicate_key")
+                    earlier = previous.get(key, ABSENT)
+                    owned[key] = visit(child, earlier, active)
+                    same = same and earlier is not ABSENT and owned[key] is earlier
+                if same and len(owned) == len(previous):
+                    return old
+                result = object.__new__(_FrozenObject)
+                object.__setattr__(
+                    result, "_items", tuple(child for pair in owned.items() for child in pair)
+                )
+                return result
+            previous = old if type(old) is _FrozenArray else ()
+            owned, same = [], type(old) is _FrozenArray
+            for index, child in enumerate(item):
+                earlier = previous[index] if index < len(previous) else ABSENT
+                owned.append(visit(child, earlier, active))
+                same = same and earlier is not ABSENT and owned[-1] is earlier
+            if same and len(owned) == len(previous):
+                return old
+            return tuple.__new__(_FrozenArray, owned)
+        finally:
+            active.remove(marker)
+
+    return visit(value, prior, set())
 
 
 def thaw(value):
@@ -558,6 +617,10 @@ class AllocationAccount:
         """
         return self._retain(size, kind, _owned_objects((freeze(value),)))
 
+    def json_arena(self, *, kind="stage"):
+        """Incrementally own JSON roots with one arena, without per-row leases."""
+        return _JSONArena(self, kind)
+
     def _retain(self, size, kind, objects):
         if type(size) is not int or size < 0 or kind not in self.KINDS:
             raise CommitmentError("sync_allocation_reservation")
@@ -587,13 +650,25 @@ class AllocationAccount:
                     return held.encoded
         return None
 
-    def _acquire(self, size, kind, unique, *, overhead=0, payload=0, encodings=()):
+    def _acquire(
+        self, size, kind, unique, *, overhead=0, payload=0, encodings=(), credit=None, credit_keep=0
+    ):
         """Own one allocation, without a sidecar lease for tree nodes.
 
         Fresh canonical/hash bytes belong to their immutable node and need no
         identity registry entry. Only reusable JSON graphs enter that registry.
         """
         with self._lock:
+            credit_size = 0
+            if credit is not None:
+                if (
+                    credit._account is not self
+                    or credit._released
+                    or type(credit_keep) is not int
+                    or not 0 <= credit_keep <= credit._size
+                ):
+                    raise CommitmentError("sync_allocation_credit")
+                credit_size = credit._size - credit_keep
             planned, pending = {}, list(unique.values())
             while pending:
                 value, value_size, value_kind = pending.pop()
@@ -630,9 +705,15 @@ class AllocationAccount:
             registry_before = self._held.storage_size
             registry_growth = self._held.growth_bound(planned)
             added += registry_growth
-            if self._used + added > self.limit:
+            if self._used + added - credit_size > self.limit:
                 raise BudgetExceeded("sync_allocation_limit")
-            self._used += added
+            # New containers/claim slots were already backed while they were
+            # constructed. Reclassify that reservation under the same lock;
+            # remaining caller scratch stays reserved through this method.
+            self._used += added - credit_size
+            if credit is not None:
+                credit._size -= credit_size
+                self._totals[credit._kind] -= credit_size
             self._peak = max(self._peak, self._used)
             self._totals[kind] += size
             self._totals["value_bytes"] += payload
@@ -728,6 +809,395 @@ class AllocationAccount:
                 "registryBytes": self._held.storage_size,
                 "byKind": dict(self._totals),
             }
+
+
+class _FreezePlan:
+    __slots__ = ("object", "children", "fresh_size")
+
+    def __init__(self, object_value, children, fresh_size):
+        self.object, self.children, self.fresh_size = object_value, children, fresh_size
+
+
+_POINTER_SIZE = sys.getsizeof((None,)) - sys.getsizeof(())
+_TUPLE_SIZE = sys.getsizeof(())
+_FROZEN_OBJECT_SIZE = sys.getsizeof(object.__new__(_FrozenObject))
+_FREEZE_PLAN_SIZE = sys.getsizeof(_FreezePlan(False, None, 0)) + 32
+
+
+def _materialize_plan(value):
+    if not isinstance(value, _FreezePlan):
+        return value
+    children = value.children
+    for index in range(1 if value.object else 0, len(children), 2 if value.object else 1):
+        children[index] = _materialize_plan(children[index])
+    if value.object:
+        result = object.__new__(_FrozenObject)
+        object.__setattr__(result, "_items", tuple(children))
+        return result
+    return tuple.__new__(_FrozenArray, children)
+
+
+class _JSONConstruction:
+    """Prepaid value-local plan, then one atomic graph ownership transfer.
+
+    Analysis creates no Frozen containers. Scratch is prepaid in 4 KiB blocks,
+    including recursion, list/dict/set resize overlap and retained plan nodes.
+    Acquire scratch is separately retained through adoption: 4096 control bytes
+    plus 512 per unowned node and 384 per distinct parent-child edge. This covers
+    planned/increments/pending/children dictionaries and tuples on CPython 3.11+;
+    immutable source payloads and existing indexed subtrees are not copied.
+    """
+
+    BASE = 4096
+    BLOCK = 4096
+    FRAME = 1024
+
+    __slots__ = (
+        "account",
+        "lease",
+        "live",
+        "fresh",
+        "array_scratch",
+        "max_depth",
+        "nodes",
+        "edges",
+        "active",
+        "active_credit",
+        "future",
+        "future_credit",
+    )
+
+    def __init__(self, account, priors):
+        self.account, self.live, self.fresh, self.array_scratch, self.max_depth = (
+            account,
+            0,
+            0,
+            0,
+            0,
+        )
+        self.nodes = self.edges = 0
+        # This same planning lease pins exact owned priors throughout analysis
+        # and construction, including callbacks from arbitrary Mapping inputs.
+        self.lease = account._retain(
+            self.BASE, "stage", _owned_objects(prior for prior in priors if prior is not ABSENT)
+        )
+        self.active, self.future = set(), set()
+        self.active_credit = sys.getsizeof(self.active)
+        self.future_credit = sys.getsizeof(self.future)
+
+    def grow(self, amount):
+        needed = self.BASE + self.live + amount
+        if needed > self.lease._size:
+            self.lease.resize(((needed + self.BLOCK - 1) // self.BLOCK) * self.BLOCK)
+        self.live += amount
+
+    def release(self, amount):
+        self.live -= amount
+
+    def _add_set(self, values, marker, credit):
+        needed = max(3 * sys.getsizeof(values), 256 + 128 * (len(values) + 1))
+        if needed > credit:
+            self.grow(needed - credit)
+            credit = needed
+        self.grow(sys.getsizeof(marker))
+        values.add(marker)
+        return credit
+
+    def note(self, value):
+        marker = id(value)
+        if marker in self.account._held or marker in self.future:
+            return False
+        self.future_credit = self._add_set(self.future, marker, self.future_credit)
+        self.nodes += 1
+        return True
+
+    def child_edges(self, children):
+        seen, credit, markers = set(), 0, 0
+        try:
+            self.grow(sys.getsizeof(seen))
+            credit = sys.getsizeof(seen)
+            for child in children:
+                marker = id(child)
+                if marker not in seen:
+                    credit = self._add_set(seen, marker, credit)
+                    markers += sys.getsizeof(marker)
+            self.edges += len(seen)
+        finally:
+            seen.clear()
+            self.release(credit + markers)
+
+    def existing(self, value, depth):
+        self.grow(self.FRAME)
+        try:
+            self.max_depth = max(self.max_depth, depth)
+            if self.note(value):
+                children = _owned_children(value)
+                self.child_edges(children)
+                for child in children:
+                    self.existing(child, depth + 1)
+        finally:
+            self.release(self.FRAME)
+
+    def append(self, children, values, credit):
+        needed = max(3 * sys.getsizeof(children), 128 + 16 * (len(children) + len(values)))
+        if needed > credit:
+            self.grow(needed - credit)
+            credit = needed
+        children.extend(values)
+        actual = sys.getsizeof(children)
+        self.release(credit - actual)
+        return actual
+
+    def visit(self, item, old, depth=1):
+        self.grow(self.FRAME)
+        self.max_depth = max(self.max_depth, depth)
+        marker, entered = None, False
+        previous_credit = children_credit = seen_credit = seen_markers = 0
+        children, seen = None, None
+        keep_children = False
+        try:
+            if item is None or type(item) in (bool, int, str):
+                if type(item) is str:
+                    _string(item)
+                result = old if type(item) is type(old) and item == old else item
+                self.note(result)
+                return result
+            if type(item) in (_FrozenObject, _FrozenArray) and (item is old or old is ABSENT):
+                self.existing(item, depth)
+                return item
+            if not isinstance(item, (Mapping, list, tuple)):
+                raise CommitmentError("sync_json_type")
+            marker = id(item)
+            if marker in self.active:
+                raise CommitmentError("sync_json_cycle")
+            self.active_credit = self._add_set(self.active, marker, self.active_credit)
+            entered = True
+            object_value = isinstance(item, Mapping)
+            if object_value:
+                if type(old) is _FrozenObject:
+                    previous_credit = 256 + 128 * len(old)
+                    self.grow(previous_credit)
+                    previous = dict(old.items())
+                else:
+                    previous = {}
+                same = type(old) is _FrozenObject
+                if type(item) not in (dict, _FrozenObject):
+                    seen = set()
+                    seen_credit = sys.getsizeof(seen)
+                    self.grow(seen_credit)
+            else:
+                previous = old if type(old) is _FrozenArray else ()
+                same = type(old) is _FrozenArray
+            children = []
+            children_credit = sys.getsizeof(children)
+            self.grow(children_credit)
+            if object_value:
+                for key, child in item.items():
+                    _string(key)
+                    if seen is not None:
+                        if key in seen:
+                            raise CommitmentError("sync_duplicate_key")
+                        # Seen mapping keys are borrowed strings; only the set
+                        # slots are new, unlike integer identity markers.
+                        needed = max(3 * sys.getsizeof(seen), 256 + 128 * (len(seen) + 1))
+                        if needed > seen_credit:
+                            self.grow(needed - seen_credit)
+                            seen_credit = needed
+                        seen.add(key)
+                    earlier = previous.get(key, ABSENT)
+                    result = self.visit(child, earlier, depth + 1)
+                    same = same and earlier is not ABSENT and result is earlier
+                    children_credit = self.append(children, (key, result), children_credit)
+                same = same and len(children) == 2 * len(previous)
+            else:
+                for index, child in enumerate(item):
+                    earlier = previous[index] if index < len(previous) else ABSENT
+                    result = self.visit(child, earlier, depth + 1)
+                    same = same and earlier is not ABSENT and result is earlier
+                    children_credit = self.append(children, (result,), children_credit)
+                same = same and len(children) == len(previous)
+            if same:
+                return old
+            self.grow(_FREEZE_PLAN_SIZE)
+            fresh_size = _TUPLE_SIZE + _POINTER_SIZE * len(children)
+            if object_value:
+                fresh_size += _FROZEN_OBJECT_SIZE
+                for index in range(0, len(children), 2):
+                    self.note(children[index])
+            else:
+                # CPython tuple subclass construction holds an intermediate
+                # plain tuple alongside the resulting FrozenArray.
+                self.array_scratch = max(self.array_scratch, fresh_size)
+            plan = _FreezePlan(object_value, children, fresh_size)
+            self.note(plan)
+            self.child_edges(children)
+            self.fresh += fresh_size
+            keep_children = True
+            return plan
+        finally:
+            if entered:
+                self.active.remove(marker)
+                self.release(sys.getsizeof(marker))
+            if children is not None and not keep_children:
+                children.clear()
+                self.release(children_credit)
+            if seen is not None:
+                seen.clear()
+            self.release(previous_credit + seen_credit + seen_markers + self.FRAME)
+
+    def acquire_scratch(self, root_count):
+        return self.BASE + 512 * (self.nodes + root_count) + 384 * self.edges
+
+    def before_build(self, claim_size, root_count):
+        # All final containers and the largest constructor copy are backed
+        # before the first Frozen object is allocated.
+        build = (
+            self.BASE
+            + self.live
+            + self.fresh
+            + self.array_scratch
+            + self.FRAME * self.max_depth
+            + claim_size
+        )
+        adopt = self.acquire_scratch(root_count) + self.fresh + claim_size
+        self.lease.resize(max(build, adopt))
+
+    def before_adopt(self, claim_size, root_count):
+        self.active.clear()
+        self.future.clear()
+        scratch = self.acquire_scratch(root_count)
+        self.lease.resize(scratch + self.fresh + claim_size)
+        return scratch
+
+    def close(self):
+        self.active.clear()
+        self.future.clear()
+        self.lease.release()
+
+
+class _JSONArena:
+    """Bounded staging ownership; additions touch only the supplied JSON.
+
+    Each claim stores one shallow tuple of frozen roots. JSON graphs share the
+    account's exact identity ledger with maps and other claims; no JSON wrapper
+    is created or registered merely to own multiple roots. Close releases all
+    claims explicitly in O(number of claims plus reclaimed JSON).
+    """
+
+    __slots__ = ("_account", "_kind", "_claims", "_lease", "_closed", "_lock")
+
+    def __init__(self, account, kind):
+        self._account, self._kind = account, kind
+        self._claims, self._lease, self._closed = [], None, True
+        self._lock = threading.RLock()
+        self._lease = account.reserve(self._storage_size(), kind=kind)
+        self._closed = False
+
+    def _storage_size(self):
+        return sys.getsizeof(self) + sys.getsizeof(self._lock) + sys.getsizeof(self._claims)
+
+    def retain_json(self, *values, priors=None):
+        """Return frozen roots, owned until close or another owner retains them.
+
+        Fresh frozen containers, analysis/construction/acquire scratch and root
+        slots are reserved before construction/adoption. Optional priors are
+        an exact-length tuple of ABSENT or immutable roots already owned by this
+        account. Exact unchanged subtrees are shared without freshness inference.
+        A rejected addition leaves earlier claims intact.
+        Returned roots are immutable; retaining them beyond this arena's life
+        requires their caller/map to keep its own ownership claim.
+        """
+        with self._lock, self._account._lock:
+            if self._closed or not values:
+                raise CommitmentError("sync_json_arena_closed_or_empty")
+            if priors is not None:
+                if type(priors) is not tuple or len(priors) != len(values):
+                    raise CommitmentError("sync_json_arena_priors")
+                for prior in priors:
+                    if prior is ABSENT:
+                        continue
+                    if (
+                        type(prior) not in (_FrozenObject, _FrozenArray, str, int, bool, type(None))
+                        or id(prior) not in self._account._held
+                    ):
+                        raise CommitmentError("sync_json_arena_priors")
+            before = self._storage_size()
+            header = sys.getsizeof(self) + sys.getsizeof(self._lock)
+            # Covers old/new list-buffer overlap, root tuple and one pointer
+            # slot before append. Replace scratch with actual capacity below.
+            capacity = max(3 * sys.getsizeof(self._claims), 128 + 16 * (len(self._claims) + 1))
+            self._lease.resize(header + capacity)
+            acquired, claim, construction, plans, objects = False, None, None, None, None
+            try:
+                construction = _JSONConstruction(self._account, () if priors is None else priors)
+                construction.grow(128 + 16 * len(values))
+                plans = [None] * len(values)
+                for index, value in enumerate(values):
+                    plans[index] = construction.visit(
+                        value, ABSENT if priors is None else priors[index]
+                    )
+                construction.before_build(sys.getsizeof(values), len(values))
+                claim = tuple(_materialize_plan(plan) for plan in plans)
+                plans.clear()
+                scratch = construction.before_adopt(sys.getsizeof(claim), len(claim))
+                objects = {
+                    id(value): (value, size, kind) for value, size, kind in _owned_objects(claim)
+                }
+                self._account._acquire(
+                    sys.getsizeof(claim),
+                    self._kind,
+                    objects,
+                    credit=construction.lease,
+                    credit_keep=scratch,
+                )
+                acquired = True
+                self._claims.append(claim)
+            except BaseException as error:
+                # Internal traceback frames otherwise keep rejected plans,
+                # new Frozen containers and acquire dictionaries alive after
+                # their construction reservation is released. The stable
+                # error type/code remains available to the caller.
+                error.__traceback__ = None
+                if acquired:
+                    self._account._drop(
+                        sys.getsizeof(claim), self._kind, {id(value) for value in claim}
+                    )
+                claim = plans = objects = None
+                if construction is not None:
+                    construction.close()
+                    construction = None
+                self._lease.resize(before)
+                raise error from None
+            finally:
+                if construction is not None:
+                    construction.close()
+            self._lease.resize(self._storage_size())
+            return claim
+
+    def close(self):
+        with self._lock:
+            if not self._closed:
+                self._closed = True
+                while self._claims:
+                    claim = self._claims.pop()
+                    self._account._drop(
+                        sys.getsizeof(claim), self._kind, {id(value) for value in claim}
+                    )
+                self._lease.release()
+
+    def __enter__(self):
+        if self._closed:
+            raise CommitmentError("sync_json_arena_closed_or_empty")
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+    def __del__(self):
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
 def _owned_objects(values):
