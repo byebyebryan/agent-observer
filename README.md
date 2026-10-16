@@ -70,8 +70,10 @@ The opt-in [active-feed interface](docs/active-feed-interface.md) implements the
 agreed [projection design](docs/active-feed-proposal.md): the local service caches
 one fixed Codex active projection per owner generation, and a separate Mesh
 profile delivers it without the dormant roster. Original field, membership and
-complete-census leases remain independent. Its new producer artifact is under
-qualification; normal services and full-feed defaults keep their selections.
+complete-census leases remain independent. The
+[a7/a23 producer checkpoint](docs/evidence/2026-10-16-active-feed/REPORT.md)
+accepts the bounded installed/native/transport and controlled scaling gates;
+normal services and full-feed defaults keep their selections.
 Using the endpoint requires adoption of the new service artifact as well as the
 optional source, profile and read facade.
 

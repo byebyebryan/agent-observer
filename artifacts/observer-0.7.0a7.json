@@ -1,0 +1,51 @@
+{
+  "manifestVersion": 5,
+  "package": "agent-observer",
+  "version": "0.7.0a7",
+  "wheel": "agent_observer-0.7.0a7-py3-none-any.whl",
+  "wheelSha256": "5eafd4c126fb31a0574c3c0500998084c6ccc8d4d813df1805e6d21ce4b85bb0",
+  "sourceRevision": "7807160384ba39b4d438c5c7f1b5f316c3608dcd",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "write": {
+    "schema": 2
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-write",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "activeFeed": {
+    "protocol": 1,
+    "schemas": {
+      "request": 1,
+      "frame": 1
+    },
+    "schemaSha256": {
+      "request": "ada83b6a33fced2d9c1c62bf541b609ce887425a379ad49003802ee4a71f497c",
+      "frame": "0db6cfe16880467ff4c62b180ca2ae94db9e580543f43f9dcf9258c8a64d0b05"
+    },
+    "selectorDigest": "sha256:73d08f0217e03cea283820e18abed0b06cd5e4c52428e431bab5da1d760ff9d6"
+  },
+  "notes": [
+    "Opt-in active-feed1 with exact native support/census, cached service projection and separate optional Mesh profile/facade.",
+    "API4/read6/Service4/write2 full contracts unchanged. Requires separately qualified Mesh a23 active profile.",
+    "Producer artifact only; service/collector and optional read/publisher adoption are separate operational gates."
+  ]
+}

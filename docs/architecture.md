@@ -64,7 +64,10 @@ native wire/profile carries selected API 4 bodies plus bounded scope coverage
 and recent-member exceptions; it does not reinterpret the full Service 4 wire.
 The optional facade checks each original support and translated host deadline
 after Mesh validates the current generation. Core and service stay Mesh-free.
-This producer checkpoint is under qualification and does not select normal roles.
+The [a7/a23 producer checkpoint](evidence/2026-10-16-active-feed/REPORT.md)
+accepts bounded installed/native/transport and controlled scaling evidence;
+normal role adoption remains a separate gate. Generation CPU increases while
+active cached reads shrink; the receipt reports both costs and their cadence.
 
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
 Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior

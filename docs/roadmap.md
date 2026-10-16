@@ -1,10 +1,12 @@
 # Agent Observer roadmap
 
 The agreed [active-feed design](active-feed-proposal.md) is now implemented for
-producer qualification through a [separate opt-in interface](active-feed-interface.md).
-The checkpoint covers actual-value/census provenance, the ServiceState cache,
-strict native wire and optional source/profile/read facade. Installed artifact,
-native, transport and controlled scaling gates remain prerequisites to handoff.
+the accepted [a7/a23 producer checkpoint](evidence/2026-10-16-active-feed/REPORT.md)
+through a [separate opt-in interface](active-feed-interface.md). The checkpoint
+covers actual-value/census provenance, the ServiceState cache, strict native
+wire and optional source/profile/read facade, with bounded installed/native,
+transport and controlled scaling evidence. Generation overhead and remaining
+native field/capacity limits are explicit.
 RLCD owns later consumer and coordinated service adoption; normal selections
 remain independent of source acceptance.
 

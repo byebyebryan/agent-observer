@@ -1,0 +1,423 @@
+{
+  "status": "passed",
+  "hostScope": "starship",
+  "reports": {
+    "baseline": {
+      "cli": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/agent-observer",
+      "nativeRuntime": {
+        "pid": 4056885,
+        "startTicks": "19234777",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "observerSourceRuntime": {
+        "binarySha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "bootId": "c145673c-6342-45c2-8d1c-3f2d82469e5f",
+        "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+        "pid": 4056885,
+        "startTicks": 19234777,
+        "topology": "native_managed_endpoint",
+        "version": "0.163.0"
+      },
+      "independentNativeBinding": true,
+      "nativeBeforeSampleAt": 1792130268549,
+      "nativeAfterSampleAt": 1792130269571,
+      "ownerCollectedAt": 1792130269130,
+      "cachedOwner": null,
+      "beforeRows": 399,
+      "afterRows": 399,
+      "fullRows": 399,
+      "selectedRows": 9,
+      "checks": {
+        "membership": 399,
+        "title_unproved": 280,
+        "cwd": 399,
+        "runtime": 399,
+        "phase": 399,
+        "activity_unproved": 248,
+        "kind": 353,
+        "sessionTreeRootId": 399,
+        "blockedReasons": 399,
+        "createdAt": 399,
+        "hasSavedHistory": 399,
+        "outcome_unproved": 249,
+        "outcomeAt_unproved": 253,
+        "lastUpdated": 394,
+        "latestTurn_unproved": 251,
+        "title": 119,
+        "activity": 151,
+        "kind_unproved": 46,
+        "outcome": 150,
+        "outcomeAt": 146,
+        "latestTurn": 148,
+        "lastUpdated_unproved": 3
+      },
+      "issues": [
+        {
+          "id": "01a13701-d738-7662-915a-3166d2ac69dc",
+          "field": "lastUpdated",
+          "result": "sampling_race"
+        },
+        {
+          "id": "01a1429f-1c1e-72a0-ad8e-510e59ea56f6",
+          "field": "lastUpdated",
+          "result": "sampling_race"
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 399,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "nativeGaps": [],
+      "selectedSignature": "66fb14dbe8a6977e1d8ace3c26a39c82921f3b37d9d04a342bdd69871d44d2b8",
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "daemon_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      }
+    },
+    "candidate": {
+      "cli": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/agent-observer",
+      "nativeRuntime": {
+        "pid": 4056885,
+        "startTicks": "19234777",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "observerSourceRuntime": {
+        "binarySha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "bootId": "c145673c-6342-45c2-8d1c-3f2d82469e5f",
+        "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+        "pid": 4056885,
+        "startTicks": 19234777,
+        "topology": "native_managed_endpoint",
+        "version": "0.163.0"
+      },
+      "independentNativeBinding": true,
+      "nativeBeforeSampleAt": 1792130269909,
+      "nativeAfterSampleAt": 1792130270934,
+      "ownerCollectedAt": 1792130270501,
+      "cachedOwner": null,
+      "beforeRows": 399,
+      "afterRows": 399,
+      "fullRows": 399,
+      "selectedRows": 9,
+      "checks": {
+        "membership": 399,
+        "title_unproved": 280,
+        "cwd": 399,
+        "runtime": 399,
+        "phase": 399,
+        "activity_unproved": 248,
+        "kind": 353,
+        "sessionTreeRootId": 399,
+        "blockedReasons": 399,
+        "createdAt": 399,
+        "hasSavedHistory": 399,
+        "outcome_unproved": 249,
+        "outcomeAt_unproved": 253,
+        "lastUpdated": 396,
+        "latestTurn_unproved": 251,
+        "title": 119,
+        "activity": 151,
+        "kind_unproved": 46,
+        "outcome": 150,
+        "outcomeAt": 146,
+        "latestTurn": 148,
+        "lastUpdated_unproved": 3
+      },
+      "issues": [],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 399,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "nativeGaps": [],
+      "selectedSignature": "35dd8300293c2089e360c29bb0226ac0edf4dbfe8a10f805511e963d8ae85ced",
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "daemon_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      }
+    },
+    "ownedService": {
+      "cli": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/agent-observer",
+      "nativeRuntime": {
+        "pid": 4056885,
+        "startTicks": "19234777",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "observerSourceRuntime": {
+        "binarySha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "bootId": "c145673c-6342-45c2-8d1c-3f2d82469e5f",
+        "endpoint": "/tmp/codex-daemon-1000/85ae4debcaebe343a44369336ac0a7ca5f115866a8bb635964a3a9b3e250bfd5",
+        "pid": 4056885,
+        "startTicks": 19234777,
+        "topology": "native_managed_endpoint",
+        "version": "0.163.0"
+      },
+      "independentNativeBinding": true,
+      "nativeBeforeSampleAt": 1792130271294,
+      "nativeAfterSampleAt": 1792130273264,
+      "ownerCollectedAt": 1792130272676,
+      "cachedOwner": {
+        "serviceId": "b5d9288d-6753-4e09-a0c3-4bcd6a6875b6",
+        "viewRevision": 2,
+        "emittedAt": 1792130272842,
+        "emittedBoottimeMs": 221027151,
+        "sources": [
+          {
+            "components": [
+              {
+                "accepted": 2,
+                "attempts": 2,
+                "expiresBoottimeMs": 221092039,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "runtime",
+                "sampledBoottimeMs": 221026039
+              },
+              {
+                "accepted": 1,
+                "attempts": 1,
+                "expiresBoottimeMs": 221206039,
+                "health": "current",
+                "inFlight": false,
+                "lastResult": "accepted",
+                "name": "history",
+                "sampledBoottimeMs": 221026039
+              }
+            ],
+            "configHome": "/home/bryan/.codex",
+            "configHomeKind": "explicit",
+            "contextGeneration": 1,
+            "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+            "provider": "codex"
+          }
+        ]
+      },
+      "beforeRows": 399,
+      "afterRows": 399,
+      "fullRows": 399,
+      "selectedRows": 9,
+      "checks": {
+        "membership": 399,
+        "title_unproved": 280,
+        "cwd": 399,
+        "runtime": 399,
+        "phase": 399,
+        "activity_unproved": 248,
+        "kind": 353,
+        "sessionTreeRootId": 399,
+        "blockedReasons": 399,
+        "createdAt": 399,
+        "hasSavedHistory": 399,
+        "outcome_unproved": 249,
+        "outcomeAt_unproved": 253,
+        "lastUpdated": 395,
+        "latestTurn_unproved": 251,
+        "title": 119,
+        "activity": 151,
+        "kind_unproved": 46,
+        "outcome": 150,
+        "outcomeAt": 146,
+        "latestTurn": 148,
+        "lastUpdated_unproved": 3
+      },
+      "issues": [
+        {
+          "id": "01a1429d-f9ce-7de0-80a0-aa5b230dc699",
+          "field": "lastUpdated",
+          "result": "sampling_race"
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 399,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "nativeGaps": [],
+      "selectedSignature": "cfa82bfc3dbb5a857daf30fb7ccceeeb5977727e2fb6e21ed2256e328d9087f7",
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "daemon_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      }
+    },
+    "activeIPC": {
+      "selectedRows": 9,
+      "fullRows": 399,
+      "viewRevision": 2,
+      "sameGenerationFullParity": true,
+      "originalReceiptParity": true,
+      "bodySignature": "cfa82bfc3dbb5a857daf30fb7ccceeeb5977727e2fb6e21ed2256e328d9087f7",
+      "coverage": [
+        {
+          "provider": "codex",
+          "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+          "contextGeneration": 1,
+          "continuity": 1,
+          "coverage": {
+            "reason": "complete_native_census",
+            "status": "complete",
+            "supports": [
+              {
+                "accepted": 2,
+                "component": "runtime",
+                "contextGeneration": 1,
+                "expiresBoottimeMs": 221092039,
+                "namespace": "sha256:0c3a263a98a9dd39b2a11756856ad7432b945475dee79a5503246e40f215acfa",
+                "provider": "codex",
+                "sampledBoottimeMs": 221026039,
+                "serviceId": "b5d9288d-6753-4e09-a0c3-4bcd6a6875b6"
+              }
+            ]
+          }
+        }
+      ],
+      "wireBytes": {
+        "full": 757363,
+        "active": 48113
+      },
+      "cleanup": {
+        "activeConnections": 0,
+        "cleanupFailures": 0,
+        "nativeChannels": 0
+      }
+    }
+  },
+  "versions": {
+    "agent-observer": "0.7.0a7",
+    "mesh-plus": "0.1.0a23"
+  },
+  "modules": {
+    "observer": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer/__init__.py",
+    "mesh": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/mesh_plus/__init__.py"
+  },
+  "protected": {
+    "before": {
+      "units": {
+        "agent-observer.service": [
+          "ActiveState=active",
+          "MainPID=2273193",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=57509851267"
+        ],
+        "mesh-plus-agent.service": [
+          "ActiveState=active",
+          "MainPID=3899267",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=189941447410"
+        ],
+        "rlcd-agent-dashboard.service": [
+          "ActiveState=active",
+          "MainPID=1188169",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=213731868022"
+        ],
+        "mesh-plus-tmux.service": [
+          "ActiveState=inactive",
+          "MainPID=0",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=0"
+        ]
+      },
+      "links": {
+        "agent-observer": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/bin/agent-observer",
+        "mesh-plus": "/home/bryan/.local/bin/mesh-plus"
+      }
+    },
+    "after": {
+      "units": {
+        "agent-observer.service": [
+          "ActiveState=active",
+          "MainPID=2273193",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=57509851267"
+        ],
+        "mesh-plus-agent.service": [
+          "ActiveState=active",
+          "MainPID=3899267",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=189941447410"
+        ],
+        "rlcd-agent-dashboard.service": [
+          "ActiveState=active",
+          "MainPID=1188169",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=213731868022"
+        ],
+        "mesh-plus-tmux.service": [
+          "ActiveState=inactive",
+          "MainPID=0",
+          "NRestarts=0",
+          "ExecMainStartTimestampMonotonic=0"
+        ]
+      },
+      "links": {
+        "agent-observer": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/bin/agent-observer",
+        "mesh-plus": "/home/bryan/.local/bin/mesh-plus"
+      }
+    },
+    "equal": true
+  },
+  "providerActions": 0,
+  "normalServiceChanges": 0,
+  "ownedServiceCleanup": true,
+  "limits": [
+    "Fresh ordinary native read-only census; session changes may produce labeled sampling races",
+    "Existing daemon endpoint/incarnation held across baseline, candidate and owned service",
+    "Each Observer source context independently matches oracle PID/birth/hash/boot/endpoint/version",
+    "Native field equality is checked only where independent reference establishes a value; unproved counters retained",
+    "No controlled provider transitions or manufactured populated census",
+    "Owned IPC active path; SSH and synthetic lifecycle/capacity gates reported separately"
+  ]
+}

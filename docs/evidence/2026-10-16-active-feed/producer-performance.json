@@ -1,0 +1,4987 @@
+{
+  "active": 10,
+  "aggregates": {
+    "100": {
+      "active-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 17622515.604166668,
+          "cpuNsMedian": {
+            "cachedFrame": 171932075.0,
+            "cachedReadTotal": 422940374.5,
+            "encoding": 19280350.0,
+            "generation": 179184635.0,
+            "measuredTotal": 602125009.5,
+            "parseSelection": 231727949.5
+          },
+          "generationCpuNsPerGenerationMedian": 29864105.833333332,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 4057991.0,
+          "wireBytesPerReadMax": 169106,
+          "wireBytesPerReadMeanMedian": 169082.95833333334,
+          "wireBytesPerReadMin": 169066
+        },
+        "cachedReadChangeCpuNsMedian": -288831540.0,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 5587868.104166667,
+          "cpuNsMedian": {
+            "cachedFrame": 65250335.0,
+            "cachedReadTotal": 134108834.5,
+            "encoding": 4061415.0,
+            "generation": 247609145.0,
+            "measuredTotal": 381717979.5,
+            "parseSelection": 64797084.5
+          },
+          "generationCpuNsPerGenerationMedian": 41268190.833333336,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 1056911.0,
+          "wireBytesPerReadMax": 44061,
+          "wireBytesPerReadMeanMedian": 44037.958333333336,
+          "wireBytesPerReadMin": 44021
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -68.29131419327288,
+          "generation": 38.18659451464686,
+          "measuredTotal": -36.60486220013088
+        },
+        "generationAddedCpuNsMedian": 68424510.0,
+        "measuredProducerPathChangeCpuNsMedian": -220407030.0
+      },
+      "allThreeSignaturesEqual": true,
+      "full-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 17654775.395833332,
+          "cpuNsMedian": {
+            "cachedFrame": 172253464.5,
+            "cachedReadTotal": 423714609.5,
+            "encoding": 19255425.0,
+            "generation": 180975265.0,
+            "measuredTotal": 604689874.5,
+            "parseSelection": 232205720.0
+          },
+          "generationCpuNsPerGenerationMedian": 30162544.166666668,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 4057991.0,
+          "wireBytesPerReadMax": 169106,
+          "wireBytesPerReadMeanMedian": 169082.95833333334,
+          "wireBytesPerReadMin": 169066
+        },
+        "cachedReadChangeCpuNsMedian": -3093679.5,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 17525872.083333332,
+          "cpuNsMedian": {
+            "cachedFrame": 171089655.0,
+            "cachedReadTotal": 420620930.0,
+            "encoding": 19975735.0,
+            "generation": 244928125.0,
+            "measuredTotal": 665549055.0,
+            "parseSelection": 229555540.0
+          },
+          "generationCpuNsPerGenerationMedian": 40821354.166666664,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 4057991.0,
+          "wireBytesPerReadMax": 169106,
+          "wireBytesPerReadMeanMedian": 169082.95833333334,
+          "wireBytesPerReadMin": 169066
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -0.7301328372063131,
+          "generation": 35.33790101094755,
+          "measuredTotal": 10.064527796223253
+        },
+        "generationAddedCpuNsMedian": 63952860.0,
+        "measuredProducerPathChangeCpuNsMedian": 60859180.5
+      },
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      }
+    },
+    "2000": {
+      "active-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 374571280.4583333,
+          "cpuNsMedian": {
+            "cachedFrame": 3615168886.0,
+            "cachedReadTotal": 8989710731.0,
+            "encoding": 424597659.5,
+            "generation": 3775426861.0,
+            "measuredTotal": 12765137592.0,
+            "parseSelection": 4949944185.5
+          },
+          "generationCpuNsPerGenerationMedian": 629237810.1666666,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 79824791.0,
+          "wireBytesPerReadMax": 3326056,
+          "wireBytesPerReadMeanMedian": 3326032.9583333335,
+          "wireBytesPerReadMin": 3326016
+        },
+        "cachedReadChangeCpuNsMedian": -8853287536.0,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 5684299.791666667,
+          "cpuNsMedian": {
+            "cachedFrame": 66712475.0,
+            "cachedReadTotal": 136423195.0,
+            "encoding": 4059645.0,
+            "generation": 4993798464.5,
+            "measuredTotal": 5130221659.5,
+            "parseSelection": 65651075.0
+          },
+          "generationCpuNsPerGenerationMedian": 832299744.0833334,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 1056911.0,
+          "wireBytesPerReadMax": 44061,
+          "wireBytesPerReadMeanMedian": 44037.958333333336,
+          "wireBytesPerReadMin": 44021
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -98.4824517820183,
+          "generation": 32.27109538488819,
+          "measuredTotal": -59.81068263051747
+        },
+        "generationAddedCpuNsMedian": 1218371603.5,
+        "measuredProducerPathChangeCpuNsMedian": -7634915932.5
+      },
+      "allThreeSignaturesEqual": true,
+      "full-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 377898618.75,
+          "cpuNsMedian": {
+            "cachedFrame": 3650130354.5,
+            "cachedReadTotal": 9069566850.0,
+            "encoding": 432478170.0,
+            "generation": 3833635842.0,
+            "measuredTotal": 12903202692.0,
+            "parseSelection": 4986958325.5
+          },
+          "generationCpuNsPerGenerationMedian": 638939307.0,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 79824791.0,
+          "wireBytesPerReadMax": 3326056,
+          "wireBytesPerReadMeanMedian": 3326032.9583333335,
+          "wireBytesPerReadMin": 3326016
+        },
+        "cachedReadChangeCpuNsMedian": -21911394.5,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 376985643.9791667,
+          "cpuNsMedian": {
+            "cachedFrame": 3655477786.5,
+            "cachedReadTotal": 9047655455.5,
+            "encoding": 432484029.5,
+            "generation": 4986194031.0,
+            "measuredTotal": 14033849486.5,
+            "parseSelection": 4959693639.5
+          },
+          "generationCpuNsPerGenerationMedian": 831032338.5,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 79824791.0,
+          "wireBytesPerReadMax": 3326056,
+          "wireBytesPerReadMeanMedian": 3326032.9583333335,
+          "wireBytesPerReadMin": 3326016
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -0.24159251331831796,
+          "generation": 30.064362826874884,
+          "measuredTotal": 8.762528354305418
+        },
+        "generationAddedCpuNsMedian": 1152558189.0,
+        "measuredProducerPathChangeCpuNsMedian": 1130646794.5
+      },
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      }
+    },
+    "500": {
+      "active-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 89444289.5,
+          "cpuNsMedian": {
+            "cachedFrame": 875509134.5,
+            "cachedReadTotal": 2146662948.0,
+            "encoding": 97414595.0,
+            "generation": 898413054.0,
+            "measuredTotal": 3045076002.0,
+            "parseSelection": 1173739218.5
+          },
+          "generationCpuNsPerGenerationMedian": 149735509.0,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 19998791.0,
+          "wireBytesPerReadMax": 833306,
+          "wireBytesPerReadMeanMedian": 833282.9583333334,
+          "wireBytesPerReadMin": 833266
+        },
+        "cachedReadChangeCpuNsMedian": -2011321603.0,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 5639222.708333333,
+          "cpuNsMedian": {
+            "cachedFrame": 66116370.0,
+            "cachedReadTotal": 135341345.0,
+            "encoding": 4097555.0,
+            "generation": 1200826179.0,
+            "measuredTotal": 1336167524.0,
+            "parseSelection": 65127420.0
+          },
+          "generationCpuNsPerGenerationMedian": 200137696.5,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 1056911.0,
+          "wireBytesPerReadMax": 44061,
+          "wireBytesPerReadMeanMedian": 44037.958333333336,
+          "wireBytesPerReadMin": 44021
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -93.6952680379519,
+          "generation": 33.66081154470848,
+          "measuredTotal": -56.12038835410322
+        },
+        "generationAddedCpuNsMedian": 302413125.0,
+        "measuredProducerPathChangeCpuNsMedian": -1708908478.0
+      },
+      "allThreeSignaturesEqual": true,
+      "full-pair": {
+        "baseline": {
+          "cachedReadCpuNsPerReadMedian": 89485816.58333333,
+          "cpuNsMedian": {
+            "cachedFrame": 871763089.0,
+            "cachedReadTotal": 2147659598.0,
+            "encoding": 96341850.0,
+            "generation": 896785413.5,
+            "measuredTotal": 3044445011.5,
+            "parseSelection": 1179554659.0
+          },
+          "generationCpuNsPerGenerationMedian": 149464235.58333334,
+          "projectorGenerations": [
+            null,
+            null
+          ],
+          "runs": 2,
+          "wireBytesMedian": 19998791.0,
+          "wireBytesPerReadMax": 833306,
+          "wireBytesPerReadMeanMedian": 833282.9583333334,
+          "wireBytesPerReadMin": 833266
+        },
+        "cachedReadChangeCpuNsMedian": -15991260.0,
+        "candidate": {
+          "cachedReadCpuNsPerReadMedian": 88819514.08333333,
+          "cpuNsMedian": {
+            "cachedFrame": 865588253.5,
+            "cachedReadTotal": 2131668338.0,
+            "encoding": 98890740.0,
+            "generation": 1184568294.0,
+            "measuredTotal": 3316236632.0,
+            "parseSelection": 1167189344.5
+          },
+          "generationCpuNsPerGenerationMedian": 197428049.0,
+          "projectorGenerations": [
+            6,
+            6
+          ],
+          "runs": 2,
+          "wireBytesMedian": 19998791.0,
+          "wireBytesPerReadMax": 833306,
+          "wireBytesPerReadMeanMedian": 833282.9583333334,
+          "wireBytesPerReadMin": 833266
+        },
+        "cpuChangePercent": {
+          "cachedReadTotal": -0.7445900651524013,
+          "generation": 32.09049524755679,
+          "measuredTotal": 8.927460324405336
+        },
+        "generationAddedCpuNsMedian": 287782880.5,
+        "measuredProducerPathChangeCpuNsMedian": 271791620.5
+      },
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      }
+    }
+  },
+  "allThreeSignaturesEqual": true,
+  "baselinePython": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+  "benchmark": "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+  "candidatePython": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+  "children": 24,
+  "end": {
+    "loadAverage": [
+      2.0009765625,
+      2.20458984375,
+      2.16796875
+    ],
+    "monotonicNs": 221196736515089,
+    "utc": "2026-10-16T06:00:42.427008+00:00"
+  },
+  "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+  "generations": 6,
+  "kind": "serial controlled installed producer cost; no whole-app/live claim",
+  "lock": "/home/bryan/.cache/agent-active-feed-cpu.lock",
+  "lockAcquired": {
+    "loadAverage": [
+      2.33056640625,
+      2.27587890625,
+      2.1787109375
+    ],
+    "monotonicNs": 221051698063469,
+    "utc": "2026-10-16T05:58:17.388558+00:00"
+  },
+  "lockRequested": {
+    "loadAverage": [
+      2.33056640625,
+      2.27587890625,
+      2.1787109375
+    ],
+    "monotonicNs": 221051698012989,
+    "utc": "2026-10-16T05:58:17.388496+00:00"
+  },
+  "lockWaitWallNs": 50480,
+  "measurementBounds": {
+    "changeSign": "positive means candidate cost increased; negative means decreased",
+    "cpuWindows": [
+      "ServiceState acceptance/generation",
+      "cached status creation",
+      "frame encoding",
+      "strict parse and selection"
+    ],
+    "memory": "not measured; no profiler or tracemalloc",
+    "notIncluded": [
+      "Mesh",
+      "transport",
+      "RLCD",
+      "native collection",
+      "normal services"
+    ],
+    "unmeasuredCpu": [
+      "fixture construction",
+      "warmup",
+      "semantic hashing",
+      "series orchestration"
+    ],
+    "wallTime": "includes unmeasured work; not a CPU or end-to-end application metric"
+  },
+  "order": [
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221052513763041,
+        "utc": "2026-10-16T05:58:18.204248+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 1,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1564941,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "01-rows100-full-pair-A1.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221051698263981,
+        "utc": "2026-10-16T05:58:17.388758+00:00"
+      },
+      "status": "complete",
+      "stderr": "01-rows100-full-pair-A1.stderr.txt",
+      "stdout": "01-rows100-full-pair-A1.stdout.txt",
+      "wallNs": 815499060
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221053430013701,
+        "utc": "2026-10-16T05:58:19.120487+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 2,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1564990,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "02-rows100-full-pair-B1.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221052514289744,
+        "utc": "2026-10-16T05:58:18.204782+00:00"
+      },
+      "status": "complete",
+      "stderr": "02-rows100-full-pair-B1.stderr.txt",
+      "stdout": "02-rows100-full-pair-B1.stdout.txt",
+      "wallNs": 915723957
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221054346324839,
+        "utc": "2026-10-16T05:58:20.036812+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 3,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1565017,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "03-rows100-full-pair-B2.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221053430479513,
+        "utc": "2026-10-16T05:58:19.120973+00:00"
+      },
+      "status": "complete",
+      "stderr": "03-rows100-full-pair-B2.stderr.txt",
+      "stdout": "03-rows100-full-pair-B2.stdout.txt",
+      "wallNs": 915845326
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221055162299410,
+        "utc": "2026-10-16T05:58:20.852787+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 4,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565043,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "04-rows100-full-pair-A2.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.33056640625,
+          2.27587890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221054346827592,
+        "utc": "2026-10-16T05:58:20.037321+00:00"
+      },
+      "status": "complete",
+      "stderr": "04-rows100-full-pair-A2.stderr.txt",
+      "stdout": "04-rows100-full-pair-A2.stdout.txt",
+      "wallNs": 815471818
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221055978362211,
+        "utc": "2026-10-16T05:58:21.668849+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 5,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565066,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "05-rows100-active-pair-A1.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221055163101185,
+        "utc": "2026-10-16T05:58:20.853594+00:00"
+      },
+      "status": "complete",
+      "stderr": "05-rows100-active-pair-A1.stderr.txt",
+      "stdout": "05-rows100-active-pair-A1.stdout.txt",
+      "wallNs": 815261026
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221056594161320,
+        "utc": "2026-10-16T05:58:22.284647+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 1,
+      "order": 6,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1565124,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "06-rows100-active-pair-B1.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221055978901744,
+        "utc": "2026-10-16T05:58:21.669395+00:00"
+      },
+      "status": "complete",
+      "stderr": "06-rows100-active-pair-B1.stderr.txt",
+      "stdout": "06-rows100-active-pair-B1.stdout.txt",
+      "wallNs": 615259576
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221057210072360,
+        "utc": "2026-10-16T05:58:22.900558+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 2,
+      "order": 7,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1565135,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "07-rows100-active-pair-B2.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221056594933365,
+        "utc": "2026-10-16T05:58:22.285424+00:00"
+      },
+      "status": "complete",
+      "stderr": "07-rows100-active-pair-B2.stderr.txt",
+      "stdout": "07-rows100-active-pair-B2.stdout.txt",
+      "wallNs": 615138995
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "100",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221058026075488,
+        "utc": "2026-10-16T05:58:23.716562+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 8,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565193,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "08-rows100-active-pair-A2.json",
+      "returncode": 0,
+      "rows": 100,
+      "signatures": {
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221057210610653,
+        "utc": "2026-10-16T05:58:22.901104+00:00"
+      },
+      "status": "complete",
+      "stderr": "08-rows100-active-pair-A2.stderr.txt",
+      "stdout": "08-rows100-active-pair-A2.stdout.txt",
+      "wallNs": 815464835
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.43994140625,
+          2.2998046875,
+          2.18798828125
+        ],
+        "monotonicNs": 221061847654157,
+        "utc": "2026-10-16T05:58:27.538140+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 9,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565213,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "09-rows500-full-pair-A1.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3037109375,
+          2.27099609375,
+          2.177734375
+        ],
+        "monotonicNs": 221058027021864,
+        "utc": "2026-10-16T05:58:23.717515+00:00"
+      },
+      "status": "complete",
+      "stderr": "09-rows500-full-pair-A1.stderr.txt",
+      "stdout": "09-rows500-full-pair-A1.stdout.txt",
+      "wallNs": 3820632293
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.404296875,
+          2.29443359375,
+          2.1865234375
+        ],
+        "monotonicNs": 221065918770241,
+        "utc": "2026-10-16T05:58:31.609258+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 10,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1565395,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "10-rows500-full-pair-B1.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.43994140625,
+          2.2998046875,
+          2.18798828125
+        ],
+        "monotonicNs": 221061848409601,
+        "utc": "2026-10-16T05:58:27.538903+00:00"
+      },
+      "status": "complete",
+      "stderr": "10-rows500-full-pair-B1.stderr.txt",
+      "stdout": "10-rows500-full-pair-B1.stdout.txt",
+      "wallNs": 4070360640
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.5322265625,
+          2.32275390625,
+          2.1962890625
+        ],
+        "monotonicNs": 221070089663899,
+        "utc": "2026-10-16T05:58:35.780149+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 11,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1565572,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "11-rows500-full-pair-B2.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.404296875,
+          2.29443359375,
+          2.1865234375
+        ],
+        "monotonicNs": 221065919411445,
+        "utc": "2026-10-16T05:58:31.609902+00:00"
+      },
+      "status": "complete",
+      "stderr": "11-rows500-full-pair-B2.stderr.txt",
+      "stdout": "11-rows500-full-pair-B2.stdout.txt",
+      "wallNs": 4170252454
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.5322265625,
+          2.32275390625,
+          2.1962890625
+        ],
+        "monotonicNs": 221073860992090,
+        "utc": "2026-10-16T05:58:39.551479+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 12,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565717,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "12-rows500-full-pair-A2.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.5322265625,
+          2.32275390625,
+          2.1962890625
+        ],
+        "monotonicNs": 221070090238562,
+        "utc": "2026-10-16T05:58:35.780732+00:00"
+      },
+      "status": "complete",
+      "stderr": "12-rows500-full-pair-A2.stderr.txt",
+      "stdout": "12-rows500-full-pair-A2.stdout.txt",
+      "wallNs": 3770753528
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.4892578125,
+          2.3173828125,
+          2.19482421875
+        ],
+        "monotonicNs": 221077632250695,
+        "utc": "2026-10-16T05:58:43.322738+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 13,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1565864,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "13-rows500-active-pair-A1.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.5322265625,
+          2.32275390625,
+          2.1962890625
+        ],
+        "monotonicNs": 221073862312557,
+        "utc": "2026-10-16T05:58:39.552806+00:00"
+      },
+      "status": "complete",
+      "stderr": "13-rows500-active-pair-A1.stderr.txt",
+      "stdout": "13-rows500-active-pair-A1.stdout.txt",
+      "wallNs": 3769938138
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.5302734375,
+          2.3291015625,
+          2.19921875
+        ],
+        "monotonicNs": 221079600514590,
+        "utc": "2026-10-16T05:58:45.291000+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 1,
+      "order": 14,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1566024,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "14-rows500-active-pair-B1.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.4892578125,
+          2.3173828125,
+          2.19482421875
+        ],
+        "monotonicNs": 221077632822058,
+        "utc": "2026-10-16T05:58:43.323316+00:00"
+      },
+      "status": "complete",
+      "stderr": "14-rows500-active-pair-B1.stderr.txt",
+      "stdout": "14-rows500-active-pair-B1.stdout.txt",
+      "wallNs": 1967692532
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.5302734375,
+          2.3291015625,
+          2.19921875
+        ],
+        "monotonicNs": 221081619115898,
+        "utc": "2026-10-16T05:58:47.309602+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 2,
+      "order": 15,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1566061,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "15-rows500-active-pair-B2.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.5302734375,
+          2.3291015625,
+          2.19921875
+        ],
+        "monotonicNs": 221079601392555,
+        "utc": "2026-10-16T05:58:45.291885+00:00"
+      },
+      "status": "complete",
+      "stderr": "15-rows500-active-pair-B2.stderr.txt",
+      "stdout": "15-rows500-active-pair-B2.stdout.txt",
+      "wallNs": 2017723343
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "500",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.48779296875,
+          2.3232421875,
+          2.19775390625
+        ],
+        "monotonicNs": 221085439827346,
+        "utc": "2026-10-16T05:58:51.130315+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 16,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1566147,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "16-rows500-active-pair-A2.json",
+      "returncode": 0,
+      "rows": 500,
+      "signatures": {
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.5302734375,
+          2.3291015625,
+          2.19921875
+        ],
+        "monotonicNs": 221081619908293,
+        "utc": "2026-10-16T05:58:47.310402+00:00"
+      },
+      "status": "complete",
+      "stderr": "16-rows500-active-pair-A2.stderr.txt",
+      "stdout": "16-rows500-active-pair-A2.stdout.txt",
+      "wallNs": 3819919053
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.45458984375,
+          2.32421875,
+          2.19970703125
+        ],
+        "monotonicNs": 221101180119781,
+        "utc": "2026-10-16T05:59:06.870607+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 17,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1566276,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "17-rows2000-full-pair-A1.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.48779296875,
+          2.3232421875,
+          2.19775390625
+        ],
+        "monotonicNs": 221085440978632,
+        "utc": "2026-10-16T05:58:51.131471+00:00"
+      },
+      "status": "complete",
+      "stderr": "17-rows2000-full-pair-A1.stderr.txt",
+      "stdout": "17-rows2000-full-pair-A1.stdout.txt",
+      "wallNs": 15739141149
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.3662109375,
+          2.30810546875,
+          2.19580078125
+        ],
+        "monotonicNs": 221118275106796,
+        "utc": "2026-10-16T05:59:23.965594+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 18,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1566939,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "18-rows2000-full-pair-B1.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.45458984375,
+          2.32421875,
+          2.19970703125
+        ],
+        "monotonicNs": 221101180830755,
+        "utc": "2026-10-16T05:59:06.871324+00:00"
+      },
+      "status": "complete",
+      "stderr": "18-rows2000-full-pair-B1.stderr.txt",
+      "stdout": "18-rows2000-full-pair-B1.stdout.txt",
+      "wallNs": 17094276041
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.26123046875,
+          2.2880859375,
+          2.19091796875
+        ],
+        "monotonicNs": 221135165514917,
+        "utc": "2026-10-16T05:59:40.856000+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 19,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1567572,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "19-rows2000-full-pair-B2.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.3662109375,
+          2.30810546875,
+          2.19580078125
+        ],
+        "monotonicNs": 221118275860041,
+        "utc": "2026-10-16T05:59:23.966352+00:00"
+      },
+      "status": "complete",
+      "stderr": "19-rows2000-full-pair-B2.stderr.txt",
+      "stdout": "19-rows2000-full-pair-B2.stdout.txt",
+      "wallNs": 16889654876
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "full-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.134765625,
+          2.25732421875,
+          2.18115234375
+        ],
+        "monotonicNs": 221150753082015,
+        "utc": "2026-10-16T05:59:56.443568+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 20,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1568190,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "20-rows2000-full-pair-A2.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.26123046875,
+          2.2880859375,
+          2.19091796875
+        ],
+        "monotonicNs": 221135166311672,
+        "utc": "2026-10-16T05:59:40.856805+00:00"
+      },
+      "status": "complete",
+      "stderr": "20-rows2000-full-pair-A2.stderr.txt",
+      "stdout": "20-rows2000-full-pair-A2.stdout.txt",
+      "wallNs": 15586770343
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.1103515625,
+          2.24462890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221166242350437,
+        "utc": "2026-10-16T06:00:11.932838+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 1,
+      "order": 21,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1568779,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "21-rows2000-active-pair-A1.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.134765625,
+          2.25732421875,
+          2.18115234375
+        ],
+        "monotonicNs": 221150754454903,
+        "utc": "2026-10-16T05:59:56.444948+00:00"
+      },
+      "status": "complete",
+      "stderr": "21-rows2000-active-pair-A1.stderr.txt",
+      "stdout": "21-rows2000-active-pair-A1.stdout.txt",
+      "wallNs": 15487895534
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.02099609375,
+          2.2236328125,
+          2.17236328125
+        ],
+        "monotonicNs": 221173718812357,
+        "utc": "2026-10-16T06:00:19.409300+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 1,
+      "order": 22,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1569410,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "22-rows2000-active-pair-B1.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.1103515625,
+          2.24462890625,
+          2.1787109375
+        ],
+        "monotonicNs": 221166243136081,
+        "utc": "2026-10-16T06:00:11.933629+00:00"
+      },
+      "status": "complete",
+      "stderr": "22-rows2000-active-pair-B1.stderr.txt",
+      "stdout": "22-rows2000-active-pair-B1.stdout.txt",
+      "wallNs": 7475676276
+    },
+    {
+      "arm": "B",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "active",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.01708984375,
+          2.2158203125,
+          2.17041015625
+        ],
+        "monotonicNs": 221181146025751,
+        "utc": "2026-10-16T06:00:26.836511+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "active",
+      "occurrence": 2,
+      "order": 23,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a7",
+      "pid": 1569695,
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+      "result": "23-rows2000-active-pair-B2.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.02099609375,
+          2.2236328125,
+          2.17236328125
+        ],
+        "monotonicNs": 221173719532861,
+        "utc": "2026-10-16T06:00:19.410026+00:00"
+      },
+      "status": "complete",
+      "stderr": "23-rows2000-active-pair-B2.stderr.txt",
+      "stdout": "23-rows2000-active-pair-B2.stdout.txt",
+      "wallNs": 7426492890
+    },
+    {
+      "arm": "A",
+      "command": [
+        "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+        "--fixture",
+        "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "--mode",
+        "full",
+        "--rows",
+        "2000",
+        "--active",
+        "10",
+        "--generations",
+        "6",
+        "--reads",
+        "4"
+      ],
+      "comparison": "active-pair",
+      "cwd": "/tmp",
+      "end": {
+        "loadAverage": [
+          2.0009765625,
+          2.20458984375,
+          2.16796875
+        ],
+        "monotonicNs": 221196734951820,
+        "utc": "2026-10-16T06:00:42.425440+00:00"
+      },
+      "environment": {
+        "PYTHONHOME": null,
+        "PYTHONPATH": null,
+        "isolated": true
+      },
+      "mode": "full",
+      "occurrence": 2,
+      "order": 24,
+      "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+      "ownerVersion": "0.7.0a6",
+      "pid": 1569979,
+      "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+      "result": "24-rows2000-active-pair-A2.json",
+      "returncode": 0,
+      "rows": 2000,
+      "signatures": {
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+      },
+      "start": {
+        "loadAverage": [
+          2.01708984375,
+          2.2158203125,
+          2.17041015625
+        ],
+        "monotonicNs": 221181146823786,
+        "utc": "2026-10-16T06:00:26.837310+00:00"
+      },
+      "status": "complete",
+      "stderr": "24-rows2000-active-pair-A2.stderr.txt",
+      "stdout": "24-rows2000-active-pair-A2.stdout.txt",
+      "wallNs": 15588128034
+    }
+  ],
+  "readsPerGeneration": 4,
+  "rows": [
+    100,
+    500,
+    2000
+  ],
+  "start": {
+    "loadAverage": [
+      2.33056640625,
+      2.27587890625,
+      2.1787109375
+    ],
+    "monotonicNs": 221051698063469,
+    "utc": "2026-10-16T05:58:17.388558+00:00"
+  },
+  "status": "complete",
+  "wallNs": 145038451620,
+  "rawTrials": [
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221052513763041,
+          "utc": "2026-10-16T05:58:18.204248+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 1,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1564941,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "01-rows100-full-pair-A1.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221051698263981,
+          "utc": "2026-10-16T05:58:17.388758+00:00"
+        },
+        "status": "complete",
+        "stderr": "01-rows100-full-pair-A1.stderr.txt",
+        "stdout": "01-rows100-full-pair-A1.stdout.txt",
+        "wallNs": 815499060
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 172751010,
+          "cachedReadTotal": 423565750,
+          "encoding": 19216140,
+          "generation": 180260110,
+          "measuredTotal": 603825860,
+          "parseSelection": 231598600
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221053430013701,
+          "utc": "2026-10-16T05:58:19.120487+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 2,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1564990,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "02-rows100-full-pair-B1.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221052514289744,
+          "utc": "2026-10-16T05:58:18.204782+00:00"
+        },
+        "status": "complete",
+        "stderr": "02-rows100-full-pair-B1.stderr.txt",
+        "stdout": "02-rows100-full-pair-B1.stdout.txt",
+        "wallNs": 915723957
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 169726760,
+          "cachedReadTotal": 417476570,
+          "encoding": 19678750,
+          "generation": 243468980,
+          "measuredTotal": 660945550,
+          "parseSelection": 228071060
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221054346324839,
+          "utc": "2026-10-16T05:58:20.036812+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 3,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1565017,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "03-rows100-full-pair-B2.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221053430479513,
+          "utc": "2026-10-16T05:58:19.120973+00:00"
+        },
+        "status": "complete",
+        "stderr": "03-rows100-full-pair-B2.stderr.txt",
+        "stdout": "03-rows100-full-pair-B2.stdout.txt",
+        "wallNs": 915845326
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 172452550,
+          "cachedReadTotal": 423765290,
+          "encoding": 20272720,
+          "generation": 246387270,
+          "measuredTotal": 670152560,
+          "parseSelection": 231040020
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221055162299410,
+          "utc": "2026-10-16T05:58:20.852787+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 4,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565043,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "04-rows100-full-pair-A2.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.33056640625,
+            2.27587890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221054346827592,
+          "utc": "2026-10-16T05:58:20.037321+00:00"
+        },
+        "status": "complete",
+        "stderr": "04-rows100-full-pair-A2.stderr.txt",
+        "stdout": "04-rows100-full-pair-A2.stdout.txt",
+        "wallNs": 815471818
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 171755919,
+          "cachedReadTotal": 423863469,
+          "encoding": 19294710,
+          "generation": 181690420,
+          "measuredTotal": 605553889,
+          "parseSelection": 232812840
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221055978362211,
+          "utc": "2026-10-16T05:58:21.668849+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 5,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565066,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "05-rows100-active-pair-A1.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221055163101185,
+          "utc": "2026-10-16T05:58:20.853594+00:00"
+        },
+        "status": "complete",
+        "stderr": "05-rows100-active-pair-A1.stderr.txt",
+        "stdout": "05-rows100-active-pair-A1.stdout.txt",
+        "wallNs": 815261026
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 171512320,
+          "cachedReadTotal": 423816719,
+          "encoding": 19443250,
+          "generation": 179228070,
+          "measuredTotal": 603044789,
+          "parseSelection": 232861149
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221056594161320,
+          "utc": "2026-10-16T05:58:22.284647+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 1,
+        "order": 6,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1565124,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "06-rows100-active-pair-B1.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221055978901744,
+          "utc": "2026-10-16T05:58:21.669395+00:00"
+        },
+        "status": "complete",
+        "stderr": "06-rows100-active-pair-B1.stderr.txt",
+        "stdout": "06-rows100-active-pair-B1.stdout.txt",
+        "wallNs": 615259576
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 65450450,
+          "cachedReadTotal": 134824319,
+          "encoding": 4030760,
+          "generation": 248733960,
+          "measuredTotal": 383558279,
+          "parseSelection": 65343109
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221057210072360,
+          "utc": "2026-10-16T05:58:22.900558+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 2,
+        "order": 7,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1565135,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "07-rows100-active-pair-B2.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221056594933365,
+          "utc": "2026-10-16T05:58:22.285424+00:00"
+        },
+        "status": "complete",
+        "stderr": "07-rows100-active-pair-B2.stderr.txt",
+        "stdout": "07-rows100-active-pair-B2.stdout.txt",
+        "wallNs": 615138995
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 65050220,
+          "cachedReadTotal": 133393350,
+          "encoding": 4092070,
+          "generation": 246484330,
+          "measuredTotal": 379877680,
+          "parseSelection": 64251060
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "100",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221058026075488,
+          "utc": "2026-10-16T05:58:23.716562+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 8,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565193,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "08-rows100-active-pair-A2.json",
+        "returncode": 0,
+        "rows": 100,
+        "signatures": {
+          "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221057210610653,
+          "utc": "2026-10-16T05:58:22.901104+00:00"
+        },
+        "status": "complete",
+        "stderr": "08-rows100-active-pair-A2.stderr.txt",
+        "stdout": "08-rows100-active-pair-A2.stdout.txt",
+        "wallNs": 815464835
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 4057991,
+          "nativeGenerationMax": 168171,
+          "nativeGenerationTotal": 1008890,
+          "perReadMax": 169106,
+          "perReadMin": 169066
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 172351830,
+          "cachedReadTotal": 422064030,
+          "encoding": 19117450,
+          "generation": 179141200,
+          "measuredTotal": 601205230,
+          "parseSelection": 230594750
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "a1e69c5e563fc3dc949aacf06cf460b91598142c10ebcc0d2868058fe1912a25",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 100,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.43994140625,
+            2.2998046875,
+            2.18798828125
+          ],
+          "monotonicNs": 221061847654157,
+          "utc": "2026-10-16T05:58:27.538140+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 9,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565213,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "09-rows500-full-pair-A1.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3037109375,
+            2.27099609375,
+            2.177734375
+          ],
+          "monotonicNs": 221058027021864,
+          "utc": "2026-10-16T05:58:23.717515+00:00"
+        },
+        "status": "complete",
+        "stderr": "09-rows500-full-pair-A1.stderr.txt",
+        "stdout": "09-rows500-full-pair-A1.stdout.txt",
+        "wallNs": 3820632293
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 885390728,
+          "cachedReadTotal": 2181132078,
+          "encoding": 98174860,
+          "generation": 897854118,
+          "measuredTotal": 3078986196,
+          "parseSelection": 1197566490
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.404296875,
+            2.29443359375,
+            2.1865234375
+          ],
+          "monotonicNs": 221065918770241,
+          "utc": "2026-10-16T05:58:31.609258+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 10,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1565395,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "10-rows500-full-pair-B1.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.43994140625,
+            2.2998046875,
+            2.18798828125
+          ],
+          "monotonicNs": 221061848409601,
+          "utc": "2026-10-16T05:58:27.538903+00:00"
+        },
+        "status": "complete",
+        "stderr": "10-rows500-full-pair-B1.stderr.txt",
+        "stdout": "10-rows500-full-pair-B1.stdout.txt",
+        "wallNs": 4070360640
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 852010139,
+          "cachedReadTotal": 2102873368,
+          "encoding": 96953570,
+          "generation": 1170208168,
+          "measuredTotal": 3273081536,
+          "parseSelection": 1153909659
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.5322265625,
+            2.32275390625,
+            2.1962890625
+          ],
+          "monotonicNs": 221070089663899,
+          "utc": "2026-10-16T05:58:35.780149+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 11,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1565572,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "11-rows500-full-pair-B2.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.404296875,
+            2.29443359375,
+            2.1865234375
+          ],
+          "monotonicNs": 221065919411445,
+          "utc": "2026-10-16T05:58:31.609902+00:00"
+        },
+        "status": "complete",
+        "stderr": "11-rows500-full-pair-B2.stderr.txt",
+        "stdout": "11-rows500-full-pair-B2.stdout.txt",
+        "wallNs": 4170252454
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 879166368,
+          "cachedReadTotal": 2160463308,
+          "encoding": 100827910,
+          "generation": 1198928420,
+          "measuredTotal": 3359391728,
+          "parseSelection": 1180469030
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.5322265625,
+            2.32275390625,
+            2.1962890625
+          ],
+          "monotonicNs": 221073860992090,
+          "utc": "2026-10-16T05:58:39.551479+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 12,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565717,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "12-rows500-full-pair-A2.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.5322265625,
+            2.32275390625,
+            2.1962890625
+          ],
+          "monotonicNs": 221070090238562,
+          "utc": "2026-10-16T05:58:35.780732+00:00"
+        },
+        "status": "complete",
+        "stderr": "12-rows500-full-pair-A2.stderr.txt",
+        "stdout": "12-rows500-full-pair-A2.stdout.txt",
+        "wallNs": 3770753528
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 858135450,
+          "cachedReadTotal": 2114187118,
+          "encoding": 94508840,
+          "generation": 895716709,
+          "measuredTotal": 3009903827,
+          "parseSelection": 1161542828
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.4892578125,
+            2.3173828125,
+            2.19482421875
+          ],
+          "monotonicNs": 221077632250695,
+          "utc": "2026-10-16T05:58:43.322738+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 13,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1565864,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "13-rows500-active-pair-A1.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.5322265625,
+            2.32275390625,
+            2.1962890625
+          ],
+          "monotonicNs": 221073862312557,
+          "utc": "2026-10-16T05:58:39.552806+00:00"
+        },
+        "status": "complete",
+        "stderr": "13-rows500-active-pair-A1.stderr.txt",
+        "stdout": "13-rows500-active-pair-A1.stdout.txt",
+        "wallNs": 3769938138
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 866135600,
+          "cachedReadTotal": 2125427028,
+          "encoding": 98274160,
+          "generation": 886833379,
+          "measuredTotal": 3012260407,
+          "parseSelection": 1161017268
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.5302734375,
+            2.3291015625,
+            2.19921875
+          ],
+          "monotonicNs": 221079600514590,
+          "utc": "2026-10-16T05:58:45.291000+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 1,
+        "order": 14,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1566024,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "14-rows500-active-pair-B1.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.4892578125,
+            2.3173828125,
+            2.19482421875
+          ],
+          "monotonicNs": 221077632822058,
+          "utc": "2026-10-16T05:58:43.323316+00:00"
+        },
+        "status": "complete",
+        "stderr": "14-rows500-active-pair-B1.stderr.txt",
+        "stdout": "14-rows500-active-pair-B1.stdout.txt",
+        "wallNs": 1967692532
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 65509280,
+          "cachedReadTotal": 134037930,
+          "encoding": 4055790,
+          "generation": 1180456319,
+          "measuredTotal": 1314494249,
+          "parseSelection": 64472860
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.5302734375,
+            2.3291015625,
+            2.19921875
+          ],
+          "monotonicNs": 221081619115898,
+          "utc": "2026-10-16T05:58:47.309602+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 2,
+        "order": 15,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1566061,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "15-rows500-active-pair-B2.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.5302734375,
+            2.3291015625,
+            2.19921875
+          ],
+          "monotonicNs": 221079601392555,
+          "utc": "2026-10-16T05:58:45.291885+00:00"
+        },
+        "status": "complete",
+        "stderr": "15-rows500-active-pair-B2.stderr.txt",
+        "stdout": "15-rows500-active-pair-B2.stdout.txt",
+        "wallNs": 2017723343
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 66723460,
+          "cachedReadTotal": 136644760,
+          "encoding": 4139320,
+          "generation": 1221196039,
+          "measuredTotal": 1357840799,
+          "parseSelection": 65781980
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "500",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.48779296875,
+            2.3232421875,
+            2.19775390625
+          ],
+          "monotonicNs": 221085439827346,
+          "utc": "2026-10-16T05:58:51.130315+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 16,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1566147,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "16-rows500-active-pair-A2.json",
+        "returncode": 0,
+        "rows": 500,
+        "signatures": {
+          "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.5302734375,
+            2.3291015625,
+            2.19921875
+          ],
+          "monotonicNs": 221081619908293,
+          "utc": "2026-10-16T05:58:47.310402+00:00"
+        },
+        "status": "complete",
+        "stderr": "16-rows500-active-pair-A2.stderr.txt",
+        "stdout": "16-rows500-active-pair-A2.stdout.txt",
+        "wallNs": 3819919053
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 19998791,
+          "nativeGenerationMax": 832371,
+          "nativeGenerationTotal": 4994090,
+          "perReadMax": 833306,
+          "perReadMin": 833266
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 884882669,
+          "cachedReadTotal": 2167898868,
+          "encoding": 96555030,
+          "generation": 909992729,
+          "measuredTotal": 3077891597,
+          "parseSelection": 1186461169
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "2f413b606c6dde965852b491352d271dbc3b37cf991eaf345e1ea4e38fef962a",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 500,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.45458984375,
+            2.32421875,
+            2.19970703125
+          ],
+          "monotonicNs": 221101180119781,
+          "utc": "2026-10-16T05:59:06.870607+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 17,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1566276,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "17-rows2000-full-pair-A1.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.48779296875,
+            2.3232421875,
+            2.19775390625
+          ],
+          "monotonicNs": 221085440978632,
+          "utc": "2026-10-16T05:58:51.131471+00:00"
+        },
+        "status": "complete",
+        "stderr": "17-rows2000-full-pair-A1.stderr.txt",
+        "stdout": "17-rows2000-full-pair-A1.stdout.txt",
+        "wallNs": 15739141149
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3667210285,
+          "cachedReadTotal": 9112055681,
+          "encoding": 433291870,
+          "generation": 3845831096,
+          "measuredTotal": 12957886777,
+          "parseSelection": 5011553526
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.3662109375,
+            2.30810546875,
+            2.19580078125
+          ],
+          "monotonicNs": 221118275106796,
+          "utc": "2026-10-16T05:59:23.965594+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 18,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1566939,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "18-rows2000-full-pair-B1.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.45458984375,
+            2.32421875,
+            2.19970703125
+          ],
+          "monotonicNs": 221101180830755,
+          "utc": "2026-10-16T05:59:06.871324+00:00"
+        },
+        "status": "complete",
+        "stderr": "18-rows2000-full-pair-B1.stderr.txt",
+        "stdout": "18-rows2000-full-pair-B1.stdout.txt",
+        "wallNs": 17094276041
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3690210536,
+          "cachedReadTotal": 9106312211,
+          "encoding": 433251330,
+          "generation": 5017251696,
+          "measuredTotal": 14123563907,
+          "parseSelection": 4982850345
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.26123046875,
+            2.2880859375,
+            2.19091796875
+          ],
+          "monotonicNs": 221135165514917,
+          "utc": "2026-10-16T05:59:40.856000+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 19,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1567572,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "19-rows2000-full-pair-B2.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.3662109375,
+            2.30810546875,
+            2.19580078125
+          ],
+          "monotonicNs": 221118275860041,
+          "utc": "2026-10-16T05:59:23.966352+00:00"
+        },
+        "status": "complete",
+        "stderr": "19-rows2000-full-pair-B2.stderr.txt",
+        "stdout": "19-rows2000-full-pair-B2.stdout.txt",
+        "wallNs": 16889654876
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3620745037,
+          "cachedReadTotal": 8988998700,
+          "encoding": 431716729,
+          "generation": 4955136366,
+          "measuredTotal": 13944135066,
+          "parseSelection": 4936536934
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "full-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.134765625,
+            2.25732421875,
+            2.18115234375
+          ],
+          "monotonicNs": 221150753082015,
+          "utc": "2026-10-16T05:59:56.443568+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 20,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1568190,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "20-rows2000-full-pair-A2.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.26123046875,
+            2.2880859375,
+            2.19091796875
+          ],
+          "monotonicNs": 221135166311672,
+          "utc": "2026-10-16T05:59:40.856805+00:00"
+        },
+        "status": "complete",
+        "stderr": "20-rows2000-full-pair-A2.stderr.txt",
+        "stdout": "20-rows2000-full-pair-A2.stdout.txt",
+        "wallNs": 15586770343
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3633050424,
+          "cachedReadTotal": 9027078019,
+          "encoding": 431664470,
+          "generation": 3821440588,
+          "measuredTotal": 12848518607,
+          "parseSelection": 4962363125
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.1103515625,
+            2.24462890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221166242350437,
+          "utc": "2026-10-16T06:00:11.932838+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 1,
+        "order": 21,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1568779,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "21-rows2000-active-pair-A1.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.134765625,
+            2.25732421875,
+            2.18115234375
+          ],
+          "monotonicNs": 221150754454903,
+          "utc": "2026-10-16T05:59:56.444948+00:00"
+        },
+        "status": "complete",
+        "stderr": "21-rows2000-active-pair-A1.stderr.txt",
+        "stdout": "21-rows2000-active-pair-A1.stdout.txt",
+        "wallNs": 15487895534
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3597614316,
+          "cachedReadTotal": 8952951960,
+          "encoding": 421519639,
+          "generation": 3765782557,
+          "measuredTotal": 12718734517,
+          "parseSelection": 4933818005
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.02099609375,
+            2.2236328125,
+            2.17236328125
+          ],
+          "monotonicNs": 221173718812357,
+          "utc": "2026-10-16T06:00:19.409300+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 1,
+        "order": 22,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1569410,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "22-rows2000-active-pair-B1.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.1103515625,
+            2.24462890625,
+            2.1787109375
+          ],
+          "monotonicNs": 221166243136081,
+          "utc": "2026-10-16T06:00:11.933629+00:00"
+        },
+        "status": "complete",
+        "stderr": "22-rows2000-active-pair-B1.stderr.txt",
+        "stdout": "22-rows2000-active-pair-B1.stdout.txt",
+        "wallNs": 7475676276
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 66998070,
+          "cachedReadTotal": 136896750,
+          "encoding": 4068680,
+          "generation": 5024150815,
+          "measuredTotal": 5161047565,
+          "parseSelection": 65830000
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "B",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "active",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.01708984375,
+            2.2158203125,
+            2.17041015625
+          ],
+          "monotonicNs": 221181146025751,
+          "utc": "2026-10-16T06:00:26.836511+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "active",
+        "occurrence": 2,
+        "order": 23,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "pid": 1569695,
+        "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/bin/python",
+        "result": "23-rows2000-active-pair-B2.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.02099609375,
+            2.2236328125,
+            2.17236328125
+          ],
+          "monotonicNs": 221173719532861,
+          "utc": "2026-10-16T06:00:19.410026+00:00"
+        },
+        "status": "complete",
+        "stderr": "23-rows2000-active-pair-B2.stderr.txt",
+        "stdout": "23-rows2000-active-pair-B2.stdout.txt",
+        "wallNs": 7426492890
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 1056911,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 44061,
+          "perReadMin": 44021
+        },
+        "cachedProjectorGenerations": 6,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 66426880,
+          "cachedReadTotal": 135949640,
+          "encoding": 4050610,
+          "generation": 4963446114,
+          "measuredTotal": 5099395754,
+          "parseSelection": 65472150
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "active",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a7",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    },
+    {
+      "record": {
+        "arm": "A",
+        "command": [
+          "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+          "-I",
+          "-B",
+          "/home/bryan/code/agent-observer-active-feed/studies/active_feed_cost.py",
+          "--fixture",
+          "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+          "--mode",
+          "full",
+          "--rows",
+          "2000",
+          "--active",
+          "10",
+          "--generations",
+          "6",
+          "--reads",
+          "4"
+        ],
+        "comparison": "active-pair",
+        "cwd": "/tmp",
+        "end": {
+          "loadAverage": [
+            2.0009765625,
+            2.20458984375,
+            2.16796875
+          ],
+          "monotonicNs": 221196734951820,
+          "utc": "2026-10-16T06:00:42.425440+00:00"
+        },
+        "environment": {
+          "PYTHONHOME": null,
+          "PYTHONPATH": null,
+          "isolated": true
+        },
+        "mode": "full",
+        "occurrence": 2,
+        "order": 24,
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "pid": 1569979,
+        "python": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/bin/python",
+        "result": "24-rows2000-active-pair-A2.json",
+        "returncode": 0,
+        "rows": 2000,
+        "signatures": {
+          "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+          "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+          "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2"
+        },
+        "start": {
+          "loadAverage": [
+            2.01708984375,
+            2.2158203125,
+            2.17041015625
+          ],
+          "monotonicNs": 221181146823786,
+          "utc": "2026-10-16T06:00:26.837310+00:00"
+        },
+        "status": "complete",
+        "stderr": "24-rows2000-active-pair-A2.stderr.txt",
+        "stdout": "24-rows2000-active-pair-A2.stdout.txt",
+        "wallNs": 15588128034
+      },
+      "result": {
+        "active": 10,
+        "bytes": {
+          "cachedReadsTotal": 79824791,
+          "nativeGenerationMax": 3325121,
+          "nativeGenerationTotal": 19950590,
+          "perReadMax": 3326056,
+          "perReadMin": 3326016
+        },
+        "cachedProjectorGenerations": null,
+        "cadenceMs": 1000,
+        "cleanup": {
+          "connections": 0,
+          "filesWritten": 0,
+          "nativeActions": 0,
+          "servers": 0
+        },
+        "completeReads": 24,
+        "cpuNs": {
+          "cachedFrame": 3632723456,
+          "cachedReadTotal": 9026469502,
+          "encoding": 427675680,
+          "generation": 3785071165,
+          "measuredTotal": 12811540667,
+          "parseSelection": 4966070366
+        },
+        "fixture": "/home/bryan/code/agent-observer-active-feed/tests/fixtures/service-v4/view.json",
+        "fullMembershipDecisionParity": true,
+        "fullMembershipSignature": "1fb85a7ce06393c755070bb88e2b122c1cd1df9f7b664e3e82ec0e583c17c579",
+        "generations": 6,
+        "kind": "controlled synthetic cached producer; no Mesh/native/rollout acceptance",
+        "limits": {
+          "capacityPassed": true,
+          "frameBytes": 8404992,
+          "measurementsExclude": [
+            "fixture construction",
+            "warmup",
+            "semantic hashing",
+            "transport",
+            "Mesh",
+            "RLCD"
+          ],
+          "memory": "not measured; no profiler/tracemalloc in CPU windows",
+          "nativeBytes": 8387584,
+          "nativeRows": 4096
+        },
+        "mode": "full",
+        "originalLeasesPreserved": true,
+        "originalLeasesSignature": "38f0346aa1bc9c90c8bd644c5c2e4818326b11424fbeaee5b73d3f07d3b700de",
+        "ownerRoot": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/installed/lib/python3.14/site-packages/agent_observer",
+        "ownerVersion": "0.7.0a6",
+        "python": "3.14.8",
+        "readsPerGeneration": 4,
+        "rows": 2000,
+        "selectedBodyParity": true,
+        "selectedSignature": "244c1b773f4e9786f298cfe85bed2c0124f5bbe285644e5e5e98a0b878f457a2",
+        "warmupGenerationsExcluded": 1
+      }
+    }
+  ],
+  "harnessSha256": {
+    "studies/active_feed_cost.py": "782e15365c084bec2438bba199c072039378f9e12fb1d9ba4717b873f35cc989",
+    "studies/active_feed_series.py": "5f4ed37944e4d4496f6fb19d14ced12d1d3ab313053de0d74bab3bbc2c898c8d"
+  }
+}

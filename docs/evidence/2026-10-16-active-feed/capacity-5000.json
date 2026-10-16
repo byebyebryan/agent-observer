@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "inputRows": 5000,
+  "rejected": [
+    {
+      "boundary": "native_snapshot",
+      "reason": "contract_row_limit"
+    },
+    {
+      "boundary": "service_accept",
+      "reason": "contract_row_limit"
+    }
+  ],
+  "fullSnapshotIdentityCeiling": 4096,
+  "projectedLedgerIdentityCeiling": 4096,
+  "projectedLedgerCanonicalBytesCeiling": 1048576,
+  "newAuthority": false,
+  "module": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed/lib/python3.14/site-packages/agent_observer/__init__.py",
+  "limits": [
+    "5000 exceeds the frozen native 4096-row input ceiling; bounded rejection is expected",
+    "No claim of 5000-row native collection, throughput or full census completeness",
+    "Independent ledger count/byte overflow and recovery are covered by installed tests",
+    "Codex native catalog/loaded classification limits remain unchanged"
+  ]
+}
