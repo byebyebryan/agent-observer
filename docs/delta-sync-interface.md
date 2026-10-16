@@ -306,3 +306,9 @@ facet fixtures compare that rule with the full row validator. These source
 checks do not establish installed/native acceptance or satisfy the remaining
 controlled CPU, cold/recovery, IPC/SSH and capacity gates. Candidate packaging
 and independent installed/native qualification remain pending.
+
+The [source checkpoint report](evidence/2026-10-16-delta-sync-source/REPORT.md)
+pins the current implementation and matched ABBA samples. At `100637b`, real
+N-row timestamps meet the source producer target (+7.37%), while changing a
+stable field in every row fails it (+126.82%). This failed gate and the unfinished
+packed recovery path prevent producer readiness.
