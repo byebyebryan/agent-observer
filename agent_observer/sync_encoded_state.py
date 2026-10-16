@@ -183,8 +183,12 @@ class EncodedTableStage:
         else:
             return self.base.lookup_encoded_entry(encoded, trusted=True,
                                                   scratch=self.stage.working)
-        value_digest = (hashlib.sha256(b"mesh-sync-value\0" + frame(self.space.encode())
-                                      + frame(value_bytes)).hexdigest() if digest else None)
+        value_digest = None
+        if digest:
+            hasher = hashlib.sha256(b"mesh-sync-value\0" + frame(self.space.encode())
+                                    + len(value_bytes).to_bytes(8, "big"))
+            hasher.update(value_bytes)
+            value_digest = hasher.hexdigest()
         return key_bytes, value_bytes, value_digest
 
     def lookup_entry(self, key, *, digest=True):
@@ -201,6 +205,11 @@ class EncodedTableStage:
 
     def lookup_encoded_entry(self, key):
         return self._found(key)
+
+    def removal_entry(self, key):
+        found = self._found(key)
+        # Removal needs the exact old V, never a decoded old body or row.
+        return ABSENT if found is ABSENT else (key, found[2])
 
     def get(self, key, default=ABSENT):
         found = self._found(key, digest=False)

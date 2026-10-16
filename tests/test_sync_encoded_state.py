@@ -80,6 +80,27 @@ class SyncEncodedStateTest(reference.SyncStateTest):
         with self.assertRaises(ContractError):
             OwnerSyncCache(self.state, backend="unknown")
 
+    def test_body_removal_checks_original_value_without_decoding_it(self):
+        from agent_observer.sync_state import _Operations, _remove
+
+        self.accept()
+        cache = self.state._sync_cache
+        current = cache.ensure("full").current
+        body = next(current.tables["records"].items())[1]["body"]
+        before = current.tables["bodies"].root
+        stage = _Stage(cache)
+        try:
+            table = EncodedTableStage("bodies", stage, current.tables["bodies"])
+            changes = _Operations(stage, True)
+            with patch.object(table, "_parse", side_effect=AssertionError("decoded removed body")):
+                self.assertTrue(_remove({"bodies": table}, changes, "bodies", body))
+            updated = table.finish()
+            self.assertEqual(updated.count, current.tables["bodies"].count - 1)
+            self.assertEqual(current.tables["bodies"].root, before)
+            self.assertEqual(len(changes.spaces["bodies"]), 1)
+        finally:
+            stage.close()
+
     def test_warm_observation_update_shares_existing_canonical_key_buffers(self):
         self.accept()
         self.baseline("full")

@@ -689,19 +689,26 @@ class AllocationAccount:
                 ):
                     raise CommitmentError("sync_allocation_credit")
                 credit_size = credit._size - credit_keep
-            planned, pending = {}, list(unique.values())
-            while pending:
-                value, value_size, value_kind = pending.pop()
-                marker = id(value)
-                if marker in self._held or marker in planned:
-                    continue
-                children = {id(child): child for child in _owned_children(value)}
-                planned[marker] = (value, value_size, value_kind)
-                pending.extend(_owned_objects(children.values()))
             increments = dict.fromkeys(unique, 1)
-            for value, _, _ in planned.values():
-                for marker in {id(child) for child in _owned_children(value)}:
-                    increments[marker] = increments.get(marker, 0) + 1
+            if all(type(value) is bytes for value, _, _ in unique.values()):
+                # Immutable byte buffers have no owned children. Their common
+                # admission path needs no graph worklist or child/ref maps;
+                # capacity, registry growth and atomic credit transfer below
+                # remain exactly the same as for general owned JSON graphs.
+                planned = {marker: item for marker, item in unique.items() if marker not in self._held}
+            else:
+                planned, pending = {}, list(unique.values())
+                while pending:
+                    value, value_size, value_kind = pending.pop()
+                    marker = id(value)
+                    if marker in self._held or marker in planned:
+                        continue
+                    children = {id(child): child for child in _owned_children(value)}
+                    planned[marker] = (value, value_size, value_kind)
+                    pending.extend(_owned_objects(children.values()))
+                for value, _, _ in planned.values():
+                    for marker in {id(child) for child in _owned_children(value)}:
+                        increments[marker] = increments.get(marker, 0) + 1
             ref_growth = sum(
                 _ref_bytes((self._held[marker].refs if marker in self._held else 0) + count)
                 - _ref_bytes(self._held[marker].refs if marker in self._held else 0)

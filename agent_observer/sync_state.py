@@ -283,6 +283,10 @@ class _TableStage:
         key_bytes, value_bytes = self.lookup_encoded(key)
         return pending.key, pending.value, pending.digest, key_bytes, value_bytes
 
+    def removal_entry(self, key):
+        found = self.lookup_entry(key)
+        return ABSENT if found is ABSENT else (found[0], found[2])
+
     def lookup_encoded(self, key):
         pending = self._pending(key)
         if pending is None:
@@ -400,7 +404,8 @@ def _split_owned(row):
 
 def _put(tables, changes, space, key, value, *, prior=ABSENT):
     table = tables[space]
-    key = freeze(key)
+    if table.stage.cache.backend != "encoded":
+        key = freeze(key)
     found = table.lookup_entry(key)
     old = ABSENT if found is ABSENT else found[1]
     if old is not ABSENT and _same(old, value):
@@ -417,10 +422,10 @@ def _put(tables, changes, space, key, value, *, prior=ABSENT):
 
 def _remove(tables, changes, space, key):
     table = tables[space]
-    found = table.lookup_entry(key)
+    found = table.removal_entry(key)
     if found is ABSENT:
         return False
-    key, _, expected, _, _ = found
+    key, expected = found
     tables[space] = table.remove(key, expected=expected)
     if changes.enabled:
         changes.add(space, "remove", key, expected, getattr(tables[space], "last_encoded", None))
@@ -716,7 +721,12 @@ class OwnerSyncCache:
 
     def _membership(self, tables, changes, groups, cohort, identity, birth, field, token):
         cohort = freeze(cohort)
-        key, grouped = freeze([cohort, identity, birth, field]), freeze([identity, birth, field])
+        if self.backend == "encoded":
+            # Typed owner inputs are serialized before retention. Avoid an
+            # additional frozen identity graph for these temporary keys.
+            key, grouped = (cohort, identity, birth, field), (identity, birth, field)
+        else:
+            key, grouped = freeze([cohort, identity, birth, field]), freeze([identity, birth, field])
         if token is None:
             changed = _remove(tables, changes, "memberships", key)
             if changed:
@@ -886,8 +896,10 @@ class OwnerSyncCache:
                 if body_unchanged:
                     content_id = old["body"]
                 elif self.backend == "encoded":
-                    content_id = hashlib.sha256(b"mesh-sync-body\0" + frame(bytes.fromhex(desc_hash))
-                                                + frame(content_bytes)).hexdigest()
+                    body_hasher = hashlib.sha256(b"mesh-sync-body\0" + frame(bytes.fromhex(desc_hash))
+                                                 + len(content_bytes).to_bytes(8, "big"))
+                    body_hasher.update(content_bytes)
+                    content_id = body_hasher.hexdigest()
                 else:
                     content_id = _owned_hash(stage, b"mesh-sync-body\0", frame(bytes.fromhex(desc_hash)), content)
                 if not body_unchanged:
