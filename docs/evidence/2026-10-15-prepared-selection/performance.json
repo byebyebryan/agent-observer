@@ -1,0 +1,123 @@
+{
+  "order": "serial ABBA per group; two fresh processes per variant",
+  "groups": [
+    {
+      "group": "pair",
+      "rows": 100,
+      "baseline": "baseline",
+      "candidate": "selected",
+      "cpuMs": {
+        "baseline": [
+          888.169509,
+          882.798249
+        ],
+        "selected": [
+          711.717479,
+          745.015139
+        ]
+      },
+      "meanCpuMs": {
+        "baseline": 885.483879,
+        "selected": 728.366309
+      },
+      "reductionPercent": 17.74369626891875,
+      "sameSemanticSignature": true
+    },
+    {
+      "group": "pair",
+      "rows": 500,
+      "baseline": "baseline",
+      "candidate": "selected",
+      "cpuMs": {
+        "baseline": [
+          4251.858056,
+          4254.310605
+        ],
+        "selected": [
+          3300.269487,
+          3368.352056
+        ]
+      },
+      "meanCpuMs": {
+        "baseline": 4253.0843305,
+        "selected": 3334.3107715
+      },
+      "reductionPercent": 21.60252390038989,
+      "sameSemanticSignature": true
+    },
+    {
+      "group": "selection",
+      "rows": 500,
+      "baseline": "full-owned",
+      "candidate": "selected",
+      "cpuMs": {
+        "full-owned": [
+          3539.818616,
+          3557.191737
+        ],
+        "selected": [
+          3346.394577,
+          3359.372807
+        ]
+      },
+      "meanCpuMs": {
+        "full-owned": 3548.5051765,
+        "selected": 3352.8836920000003
+      },
+      "reductionPercent": 5.512785659592778,
+      "sameSemanticSignature": true
+    },
+    {
+      "group": "admission",
+      "rows": 500,
+      "baseline": "full-raw",
+      "candidate": "full-owned",
+      "cpuMs": {
+        "full-raw": [
+          4141.041976,
+          4087.946245
+        ],
+        "full-owned": [
+          3538.062076,
+          3571.498686
+        ]
+      },
+      "meanCpuMs": {
+        "full-raw": 4114.4941105,
+        "full-owned": 3554.780381
+      },
+      "reductionPercent": 13.6034641068421,
+      "sameSemanticSignature": true
+    },
+    {
+      "group": "native",
+      "rows": 250,
+      "baseline": "baseline",
+      "candidate": "candidate",
+      "cpuMs": {
+        "baseline": [
+          666.408039,
+          650.91705
+        ],
+        "candidate": [
+          375.32537,
+          386.63925
+        ]
+      },
+      "meanCpuMs": {
+        "baseline": 658.6625445,
+        "candidate": 380.98231
+      },
+      "reductionPercent": 42.1581941798119,
+      "sameSemanticSignature": true
+    }
+  ],
+  "allCleanup": true,
+  "sourceOverrides": false,
+  "trialFiles": 20,
+  "limits": [
+    "synthetic fixed work only; no managed-service or RLCD/device A/B",
+    "ordinary host activity/frequency uncontrolled; two samples are not a confidence interval",
+    "native case measures Reader-side generic admission; ordinary Client validation is separate"
+  ]
+}

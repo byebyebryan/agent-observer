@@ -1,0 +1,191 @@
+{
+  "evaluationVersion": 1,
+  "hostScope": "snap",
+  "cliVersion": "agent-observer 0.7.0a6",
+  "selectedCli": "/home/bryan/.cache/agent-observer-cpu-fefa52d-e01a7129/installed/bin/agent-observer",
+  "referenceImportsObserver": false,
+  "ordinaryProviderActions": false,
+  "controlledNativeCasesRun": false,
+  "samples": [
+    {
+      "nativeBeforeAt": {
+        "codex": 1792121029336
+      },
+      "cliCollectedAt": 1792121029660,
+      "nativeAfterAt": {
+        "codex": 1792121029681
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 0,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 0,
+          "nativeAfterRows": 0,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 0,
+            "activityKnown": 0,
+            "classification": {}
+          },
+          "checks": {},
+          "nativeActive": [],
+          "active": [],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3211422,
+        "startTicks": "20608543",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    },
+    {
+      "nativeBeforeAt": {
+        "codex": 1792121029997
+      },
+      "cliCollectedAt": 1792121030286,
+      "nativeAfterAt": {
+        "codex": 1792121030306
+      },
+      "sourceHealth": "current",
+      "errors": [],
+      "sources": [
+        {
+          "provider": "codex",
+          "sourceHealth": "current",
+          "coverage": {
+            "runtime": {
+              "reason": "native_snapshot",
+              "scope": "daemon_threads",
+              "status": "complete"
+            },
+            "saved": {
+              "reason": "native_snapshot",
+              "status": "complete"
+            }
+          },
+          "limitations": [
+            "one_configured_namespace",
+            "offline_runtime_state_unavailable",
+            "native_status_required",
+            "database_only_catalog",
+            "catalog_limit_1000",
+            "history_limit_1000",
+            "runtime_limit_512"
+          ],
+          "errors": []
+        }
+      ],
+      "identityScope": {
+        "hostProvenance": true,
+        "storeScopes": true,
+        "fullRowReferences": true,
+        "rowsChecked": 0,
+        "providersChecked": [
+          "codex"
+        ],
+        "nativeReferenceProviders": [
+          "codex"
+        ]
+      },
+      "providers": {
+        "codex": {
+          "nativeBeforeRows": 0,
+          "nativeAfterRows": 0,
+          "cliRows": 0,
+          "nativeCounts": {
+            "running": 0,
+            "activityKnown": 0,
+            "classification": {}
+          },
+          "checks": {},
+          "nativeActive": [],
+          "active": [],
+          "contextDifferences": [],
+          "issues": []
+        }
+      },
+      "readClient": {
+        "defaultChildFiltering": true,
+        "includeChildrenInventory": true,
+        "attentionActivityOrdering": true,
+        "humanAgeRendering": true,
+        "exactReferenceShowRows": 0,
+        "doctorSessionCount": true,
+        "cliRows": 0,
+        "filteredChildren": 0
+      },
+      "nativeRuntime": {
+        "pid": 3211422,
+        "startTicks": "20608543",
+        "sha256": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215",
+        "provider": "codex",
+        "version": "0.163.0",
+        "versionEvidence": "owned_release_path_and_inspected_sha256"
+      },
+      "nativeReferenceLimits": {
+        "codex": {
+          "runtimeGaps": []
+        }
+      }
+    }
+  ]
+}

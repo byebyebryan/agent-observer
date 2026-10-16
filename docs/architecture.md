@@ -49,6 +49,14 @@ consumer savings, remaining whole-pipeline cost and independent RLCD adoption.
 The later [C0–C5 delivery](evidence/2026-10-15-cpu-delivery/REPORT.md) accepts
 prepared RLCD adoption and Starship hardware independently, with unchanged
 observation contracts and separately measured client/endpoint costs.
+The independent [a6/a22 producer checkpoint](evidence/2026-10-15-prepared-selection/REPORT.md)
+adds optional read interface 2. Mesh owns process-local immutable admission,
+header exports, static selection and dynamic expiry; Observer supplies explicit
+Agent filters and complete-current identity/kind/runtime summaries. Consumers
+retain positive retirement, presentation and display limits. Normal roles remain
+on a5/a20 until separate adoption; populated native acceptance is Starship-bound
+while the current Snap source is empty.
+
 The shared launcher supplies lazy Agent and independently selected Tmux factories;
 Agent uses explicit profile v3 and Tmux keeps profile v1/native a7. The prior
 0.6.0a2/Mesh a16 tuple is retained for coordinated rollback. The historical

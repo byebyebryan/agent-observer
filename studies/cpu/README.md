@@ -86,3 +86,11 @@ signatures and cleanup; do not interpret CPU milliseconds as live service CPU
 or dashboard/device acceptance. Provider/collector/publisher/acquisition/SSH and
 device costs are outside this workload. First selected read compiles the entire
 generation, while later reads avoid decoding rejected full bodies.
+
+`native_admission.py --output /private/native.json` measures twenty complete
+Reader-side generic bridge admissions over 250 synthetic records. It compares
+the legacy two-owner-validation operation with the optional combined codec
+operation; strict ordinary Client admission remains separate. Setup/warm-up is
+excluded and full returned records share a signature. The
+[a6/a22 receipt](../../docs/evidence/2026-10-15-prepared-selection/REPORT.md) retains
+serial installed-wheel trials and a separate diagnostic profile.

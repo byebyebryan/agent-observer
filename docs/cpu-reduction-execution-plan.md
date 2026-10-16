@@ -35,7 +35,10 @@ Delivery status, 2026-10-15: **C0–C5 accepted**. The
 selections, independent gates, Starship flash/rollback and measured cost; its
 [completion audit](evidence/2026-10-15-cpu-delivery/completion-audit.json) maps the
 requirements to evidence. The inputs and execution requirements below preserve
-the original plan. C6 remains independently schedulable.
+the original plan. C6 remains independently schedulable. The following
+[a6/a22 owned-admission/selected-read checkpoint](evidence/2026-10-15-prepared-selection/REPORT.md)
+accepts its independent producer source/package/native subset. It does not
+select production roles or establish RLCD live CPU/device acceptance.
 
 ## Current inputs and authority
 
