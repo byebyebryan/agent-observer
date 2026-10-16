@@ -65,6 +65,24 @@ For the baseline, use installed a7's Python with `-I -B`, no source overlay and
 `--mode legacy`. Repeat A/B/B/A serially under the shared advisory lock. The
 source-overlay version metadata string does not identify an installed candidate.
 
+## Subsequent token-buffer sharing
+
+At `068f4b0`, the native owner shares each canonical membership-token buffer
+between its global map and the corresponding cohort map. Keys, old-value
+checks, nodes and commitment roots remain independent. The frozen-tree oracle,
+exact replay and physical-sharing checks pass. The full source check passes
+792 tests without skips; the focused Python 3.11 buffer/owner check passes 82.
+
+A new serial dense ABBA run measures 837.06 ms installed a7 versus 1,830.43 ms
+source, **+118.67%**, so the producer gate still fails. All six signatures match
+in every run, and both source runs use identical transitive source bytes.
+Accounted aggregate heap peaks at 62,171,223 bytes, with zero live accounted
+allocations/objects after close. This is an account measurement, not an RSS gate.
+The six explicit baseline-required fallbacks persist in each source run; packed
+recovery and end-to-end work are still unqualified. Exact results are preserved
+in [dense-sharing-abba.json](dense-sharing-abba.json); the earlier table and data
+remain the historical `100637b` checkpoint.
+
 ## Compact-layout feasibility
 
 The runtime's expanded baseline still needs 11,823,094 bytes at 2,000 rows,
