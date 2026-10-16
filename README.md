@@ -2,6 +2,8 @@
 
 Latest hosted prerelease: [**0.7.0a7**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7),
 published from the exact [qualified artifact](artifacts/observer-0.7.0a7.json).
+The [publication receipt](docs/evidence/2026-10-16-active-feed-publication/acceptance.json)
+verifies public downloads, signed assets/tags and fresh installed owner gates.
 Python 3.11+ is required; optional active-feed networking pairs it with Mesh
 0.1.0a23. Core and local service remain independent of Mesh imports.
 

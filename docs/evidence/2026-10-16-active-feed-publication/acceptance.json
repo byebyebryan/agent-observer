@@ -1,0 +1,83 @@
+{
+  "status": "accepted_published_prerelease",
+  "package": "agent-observer",
+  "version": "0.7.0a7",
+  "runtimeSource": "7807160384ba39b4d438c5c7f1b5f316c3608dcd",
+  "releaseCommit": "7adedc067681abecc69757e6a5a15a74c8082148",
+  "producerEvidenceSource": "b0cea48759d1771c81e0850bf4e041bd51400b25",
+  "publication": {
+    "status": "passed",
+    "releaseId": 415243812,
+    "releaseUrl": "https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7",
+    "publishedAt": "2026-10-16T18:10:09Z",
+    "immutable": true,
+    "prerelease": true,
+    "files": {
+      "SHA256SUMS": "52daf17d3d73b8f050ca87692beeb3f716f25450c498b5ee1a26d28af80152e7",
+      "provenance.json": "47689789a272ccc75c98b5e6554f5b744a1ecf426ddaef4121b4797f5a715c5d",
+      "agent_observer-0.7.0a7-py3-none-any.whl": "5eafd4c126fb31a0574c3c0500998084c6ccc8d4d813df1805e6d21ce4b85bb0",
+      "observer-0.7.0a7.json": "9330275a1ee3ebefc226479d59474403ce08791a2848eb1adb56bff710719d5c"
+    },
+    "allAcceptedBytesEqual": true,
+    "remoteTagObject": "bed3b02eb73c04a203f9bc969b7844e35414e56b",
+    "remoteTagCommit": "7adedc067681abecc69757e6a5a15a74c8082148",
+    "signedReleaseAttestationVerified": true,
+    "attestedAssetsAndTagMatch": true
+  },
+  "freshSourceGate": {
+    "status": "passed",
+    "runtimeTests": 523,
+    "skips": 0
+  },
+  "hostedReleaseCommitCi": {
+    "status": "success",
+    "url": "https://github.com/byebyebryan/agent-observer/actions/runs/38945059838"
+  },
+  "checkedAtUtc": "2026-10-16T18:13:12.619722+00:00",
+  "review": {
+    "runtimeChangesInPublicationPass": false,
+    "acceptedWheelBytesUnchanged": true,
+    "resolved": [
+      "Current release, role-selection and deferred physical acceptance documentation synchronized",
+      "Observer reader/publisher CI now installs the exact released Mesh a23 wheel with its SHA256 fragment"
+    ],
+    "blockingFindings": []
+  },
+  "downloadedWheelGates": {
+    "python": "3.11.17",
+    "meshCoreTests": 172,
+    "meshStandaloneWssTests": 34,
+    "activeOwnerIpcAndFixedSshCases": 6,
+    "fullProfilePortableOwnerCases": 17,
+    "skips": 0,
+    "providerWorkerStarts": 0,
+    "projectionCacheReused": true,
+    "fullDefaultPreserved": true,
+    "readerAndFixtureCleanup": true,
+    "installedPackageFiles": {
+      "mesh_plus": {
+        "version": "0.1.0a23",
+        "files": 67,
+        "publicWheelParity": true
+      },
+      "agent_observer": {
+        "version": "0.7.0a7",
+        "files": 63,
+        "publicWheelParity": true
+      }
+    }
+  },
+  "pairedVersions": {
+    "mesh-plus": "0.1.0a23",
+    "agent-observer": "0.7.0a7"
+  },
+  "deploymentReceipt": "https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md",
+  "limits": [
+    "GitHub prereleases only; no PyPI publication",
+    "Downloaded-package IPC/SSH cases use synthetic accepted input, collect=False and disposable localhost SSH; they are not new native provider or real fleet evidence",
+    "Original installed/native/performance evidence retains its exact checkpoint and exclusions",
+    "Legacy sibling source-parity checks are not repeated against evolved sibling checkouts; frozen contract lock and package bytes remain checked",
+    "Publication changes no installed role, provider/session state, Tmux, 349 or firmware",
+    "RLCD physical ACK/panel/reboot checks remain deferred because USB was absent"
+  ]
+}
