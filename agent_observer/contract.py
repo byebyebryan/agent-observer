@@ -315,6 +315,132 @@ def identity_key(identity):
     return tuple(identity[name] for name in IDENTITY["required"])
 
 
+def _validate_record_semantics(row, host_scope, sources):
+    """Already-shaped API 4 row against an admitted provider/namespace index."""
+    identity = row["identity"]
+    if (
+        identity["hostScope"] != host_scope
+        or (identity["provider"], identity["namespace"]) not in sources
+    ):
+        raise ContractError("provenance_mismatch")
+    ids = row["nativeIds"]
+    if row["cwd"] is not None and (
+        not PurePosixPath(row["cwd"]).is_absolute() or ".." in PurePosixPath(row["cwd"]).parts
+    ):
+        raise ContractError("invalid_cwd_path")
+    if (
+        identity["provider"] == "codex"
+        and (
+            identity["nativeIdKind"] != "thread"
+            or set(ids) != {"threadId", "sessionTreeRootId"}
+            or identity["nativeId"] != ids.get("threadId")
+        )
+    ) or (
+        identity["provider"] == "claude"
+        and (
+            identity["nativeIdKind"] != "session"
+            or set(ids) != {"sessionId"}
+            or identity["nativeId"] != ids.get("sessionId")
+        )
+    ):
+        raise ContractError("native_identity_conflict")
+    for dimension in ("phase", "runtime", "outcome"):
+        fact = row[dimension]
+        if fact is None:
+            continue
+        if fact["value"] != "unknown" and (
+            fact["health"] != "current"
+            or fact["observedAt"] is None
+            or fact["source"] is None
+            or fact["clock"] is None
+        ):
+            raise ContractError("missing_evidence_provenance")
+    if row["activity"]["at"] is not None and (
+        row["activity"]["source"] is None or row["activity"]["health"] != "current"
+    ):
+        raise ContractError("missing_activity_provenance")
+    if row["activity"].get("lastKnownAt") is not None and (
+        row["activity"]["at"] is not None
+        or row["activity"]["health"] != "stale"
+        or row["activity"]["source"] is None
+    ):
+        raise ContractError("invalid_last_known_activity")
+    for name in ("lastUpdated", "latestTurn"):
+        record = row[name]
+        key = "at" if name == "lastUpdated" else "value"
+        known = "lastKnownAt" if name == "lastUpdated" else "lastKnownValue"
+        if record["health"] == "current" and (record["source"] is None or record["observedAt"] is None):
+            raise ContractError("missing_timing_provenance")
+        if record["health"] == "current" and not sources[identity["provider"], identity["namespace"]]["capabilities"]["timing"][name]:
+            raise ContractError("timing_capability_missing")
+        if record["health"] != "current" and record[key] is not None:
+            raise ContractError("invalid_current_timing")
+        if known in record and (record["health"] != "stale" or record[key] is not None
+                                or record[known] is None or record["source"] is None or record["observedAt"] is None):
+            raise ContractError("invalid_last_known_timing")
+        if name == "lastUpdated":
+            if (record["at"] is None) != (record["timestampPrecisionMs"] is None):
+                raise ContractError("timing_precision_conflict")
+            if ("lastKnownAt" in record) != ("lastKnownTimestampPrecisionMs" in record) or (
+                "lastKnownAt" in record and record["lastKnownTimestampPrecisionMs"] is None
+            ):
+                raise ContractError("timing_precision_conflict")
+        else:
+            for turn in (record["value"], record.get("lastKnownValue")):
+                if turn is None:
+                    continue
+                start, end = turn["startedAt"], turn["completedAt"]
+                if (start is not None and end is not None and end < start
+                        or (start is None and end is None) != (turn["timestampPrecisionMs"] is None)
+                        or turn["id"] == ""
+                        or turn["status"] == "in_progress" and (end is not None or turn["durationMs"] is not None)):
+                    raise ContractError("invalid_turn_timing")
+        receipt = record["receipt"]
+        if receipt is not None and (record["observedAt"] is None
+                                   or receipt["observedBoottimeMs"] < receipt["sampledBoottimeMs"]):
+            raise ContractError("invalid_timing_receipt")
+    phase = row["phase"]
+    if (row["runtime"]["value"] == "parked") != (phase is None):
+        raise ContractError("parked_phase_conflict")
+    if row["runtime"]["value"] == "parked" and not row["hasSavedHistory"]:
+        raise ContractError("parked_without_saved_identity")
+    if phase and phase["value"] != "unknown" and (
+        row["runtime"]["value"] != "running"
+        or phase["source"] != row["runtime"]["source"]
+        or phase["observedAt"] != row["runtime"]["observedAt"]
+        or phase["clock"] != row["runtime"]["clock"]
+    ):
+        raise ContractError("phase_runtime_conflict")
+    reasons = row["blockedReasons"]
+    if len(reasons) != len(set(reasons)):
+        raise ContractError("duplicate_blocked_reason")
+    if phase and phase["value"] == "blocked" and not reasons:
+        raise ContractError("missing_blocked_reason")
+    if (phase is None or phase["value"] != "blocked") and reasons:
+        raise ContractError("unexpected_blocked_reason")
+    return row
+
+
+def validate_record(row, host_scope, sources):
+    """Strict changed-row admission without validating or constructing a view.
+
+    ``sources`` is an admitted source index keyed by (provider, namespace), or
+    the equivalent source sequence. Source-wide namespace/capability validation
+    remains the caller's responsibility; this checks every row cross-reference.
+    """
+    validate_shape(row, SESSION)
+    if isinstance(sources, dict):
+        indexed = sources
+    else:
+        indexed = {}
+        for source in sources:
+            key = source["provider"], source["namespace"]
+            if key in indexed:
+                raise ContractError("duplicate_source")
+            indexed[key] = source
+    return _validate_record_semantics(row, host_scope, indexed)
+
+
 def validate_snapshot(value):
     validate_shape(value, SNAPSHOT)
     sources = {}
@@ -350,106 +476,7 @@ def validate_snapshot(value):
         if key in seen:
             raise ContractError("duplicate_native_identity")
         seen.add(key)
-        if (
-            identity["hostScope"] != value["host"]["authority"]
-            or (identity["provider"], identity["namespace"]) not in sources
-        ):
-            raise ContractError("provenance_mismatch")
-        ids = row["nativeIds"]
-        if row["cwd"] is not None and (
-            not PurePosixPath(row["cwd"]).is_absolute() or ".." in PurePosixPath(row["cwd"]).parts
-        ):
-            raise ContractError("invalid_cwd_path")
-        if (
-            identity["provider"] == "codex"
-            and (
-                identity["nativeIdKind"] != "thread"
-                or set(ids) != {"threadId", "sessionTreeRootId"}
-                or identity["nativeId"] != ids.get("threadId")
-            )
-        ) or (
-            identity["provider"] == "claude"
-            and (
-                identity["nativeIdKind"] != "session"
-                or set(ids) != {"sessionId"}
-                or identity["nativeId"] != ids.get("sessionId")
-            )
-        ):
-            raise ContractError("native_identity_conflict")
-        for dimension in ("phase", "runtime", "outcome"):
-            fact = row[dimension]
-            if fact is None:
-                continue
-            if fact["value"] != "unknown" and (
-                fact["health"] != "current"
-                or fact["observedAt"] is None
-                or fact["source"] is None
-                or fact["clock"] is None
-            ):
-                raise ContractError("missing_evidence_provenance")
-        if row["activity"]["at"] is not None and (
-            row["activity"]["source"] is None or row["activity"]["health"] != "current"
-        ):
-            raise ContractError("missing_activity_provenance")
-        if row["activity"].get("lastKnownAt") is not None and (
-            row["activity"]["at"] is not None
-            or row["activity"]["health"] != "stale"
-            or row["activity"]["source"] is None
-        ):
-            raise ContractError("invalid_last_known_activity")
-        for name in ("lastUpdated", "latestTurn"):
-            record = row[name]
-            key = "at" if name == "lastUpdated" else "value"
-            known = "lastKnownAt" if name == "lastUpdated" else "lastKnownValue"
-            if record["health"] == "current" and (record["source"] is None or record["observedAt"] is None):
-                raise ContractError("missing_timing_provenance")
-            if record["health"] == "current" and not sources[identity["provider"], identity["namespace"]]["capabilities"]["timing"][name]:
-                raise ContractError("timing_capability_missing")
-            if record["health"] != "current" and record[key] is not None:
-                raise ContractError("invalid_current_timing")
-            if known in record and (record["health"] != "stale" or record[key] is not None
-                                    or record[known] is None or record["source"] is None or record["observedAt"] is None):
-                raise ContractError("invalid_last_known_timing")
-            if name == "lastUpdated":
-                if (record["at"] is None) != (record["timestampPrecisionMs"] is None):
-                    raise ContractError("timing_precision_conflict")
-                if ("lastKnownAt" in record) != ("lastKnownTimestampPrecisionMs" in record) or (
-                    "lastKnownAt" in record and record["lastKnownTimestampPrecisionMs"] is None
-                ):
-                    raise ContractError("timing_precision_conflict")
-            else:
-                for turn in (record["value"], record.get("lastKnownValue")):
-                    if turn is None:
-                        continue
-                    start, end = turn["startedAt"], turn["completedAt"]
-                    if (start is not None and end is not None and end < start
-                            or (start is None and end is None) != (turn["timestampPrecisionMs"] is None)
-                            or turn["id"] == ""
-                            or turn["status"] == "in_progress" and (end is not None or turn["durationMs"] is not None)):
-                        raise ContractError("invalid_turn_timing")
-            receipt = record["receipt"]
-            if receipt is not None and (record["observedAt"] is None
-                                       or receipt["observedBoottimeMs"] < receipt["sampledBoottimeMs"]):
-                raise ContractError("invalid_timing_receipt")
-        phase = row["phase"]
-        if (row["runtime"]["value"] == "parked") != (phase is None):
-            raise ContractError("parked_phase_conflict")
-        if row["runtime"]["value"] == "parked" and not row["hasSavedHistory"]:
-            raise ContractError("parked_without_saved_identity")
-        if phase and phase["value"] != "unknown" and (
-            row["runtime"]["value"] != "running"
-            or phase["source"] != row["runtime"]["source"]
-            or phase["observedAt"] != row["runtime"]["observedAt"]
-            or phase["clock"] != row["runtime"]["clock"]
-        ):
-            raise ContractError("phase_runtime_conflict")
-        reasons = row["blockedReasons"]
-        if len(reasons) != len(set(reasons)):
-            raise ContractError("duplicate_blocked_reason")
-        if phase and phase["value"] == "blocked" and not reasons:
-            raise ContractError("missing_blocked_reason")
-        if (phase is None or phase["value"] != "blocked") and reasons:
-            raise ContractError("unexpected_blocked_reason")
+        _validate_record_semantics(row, value["host"]["authority"], sources)
     if value["collectedAt"] is None:
         raise ContractError("missing_collection_time")
     if len(canonical(value).encode()) > MAX_SNAPSHOT_BYTES:
