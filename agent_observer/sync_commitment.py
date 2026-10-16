@@ -12,6 +12,7 @@ import json
 import re
 import sys
 import threading
+import traceback
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
@@ -617,11 +618,30 @@ class AllocationAccount:
         """
         return self._retain(size, kind, _owned_objects((freeze(value),)))
 
+    def retain_bytes(self, *buffers, size=0, kind="encoded", credit=None):
+        """Share exact immutable buffers across cache and delivery lifetimes.
+
+        Equal copied buffers remain separate allocations. Optional constructor
+        credit transfers atomically after construction; caller metadata and
+        the returned lease are separately paid. This does not grant authority
+        or reserve an independent encoded-byte budget.
+        """
+        try:
+            if any(type(value) is not bytes for value in buffers):
+                raise CommitmentError("sync_allocation_bytes")
+            return self._retain(size, kind,
+                                ((value, sys.getsizeof(value), "value_bytes") for value in buffers),
+                                credit=credit)
+        except (ValueError, RecursionError):
+            traceback.clear_frames(sys.exception().__traceback__)
+            buffers = credit = None
+            raise
+
     def json_arena(self, *, kind="stage"):
         """Incrementally own JSON roots with one arena, without per-row leases."""
         return _JSONArena(self, kind)
 
-    def _retain(self, size, kind, objects):
+    def _retain(self, size, kind, objects, *, credit=None):
         if type(size) is not int or size < 0 or kind not in self.KINDS:
             raise CommitmentError("sync_allocation_reservation")
         unique = {
@@ -635,7 +655,7 @@ class AllocationAccount:
             + sys.getsizeof(markers)
             + sum(sys.getsizeof(marker) for marker in markers)
         )
-        self._acquire(size, kind, unique, overhead=overhead)
+        self._acquire(size, kind, unique, overhead=overhead, credit=credit)
         lease._account, lease._size, lease._kind = self, size, kind
         lease._objects = (markers, overhead)
         with self._lock:

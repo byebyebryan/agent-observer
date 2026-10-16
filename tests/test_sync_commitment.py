@@ -769,6 +769,47 @@ class PersistentMapTest(unittest.TestCase):
 
 
 class AllocationTest(unittest.TestCase):
+    def test_immutable_buffer_aliases_share_heap_until_the_last_delivery_pin(self):
+        account = sync.AllocationAccount()
+        body = bytes(bytearray(b"native-buffer" * 1000))
+        copied = bytes(bytearray(body))
+        self.assertIsNot(body, copied)
+        owner = account.retain_bytes(body, size=128)
+        first = account.snapshot()
+        peer = account.retain_bytes(body, body, size=128, kind="queue")
+        self.assertEqual(account.snapshot()["objects"], first["objects"])
+        self.assertLess(account.snapshot()["used"] - first["used"], len(body))
+        distinct = account.retain_bytes(copied)
+        self.assertEqual(account.snapshot()["objects"], first["objects"] + 1)
+        owner.release()
+        distinct.release()
+        self.assertEqual(account.snapshot()["objects"], 1)
+        self.assertGreaterEqual(account.snapshot()["used"], sys.getsizeof(body))
+        peer.release()
+        peer.release()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
+    def test_constructor_buffer_credit_transfers_atomically_and_rejection_keeps_credit(self):
+        account = sync.AllocationAccount(limit=65536)
+        credit = account.reserve(20000, kind="encoded")
+        body = bytes(bytearray(b"b" * 8192))
+        lease = account.retain_bytes(body, size=128, credit=credit)
+        self.assertEqual(credit._size, 0)
+        credit.release()
+        self.assertLess(account.snapshot()["used"], 20000 + account.snapshot()["base"])
+        foreign = sync.AllocationAccount()
+        other_credit = foreign.reserve(2000)
+        before = account.snapshot()
+        with self.assertRaisesRegex(ValueError, "allocation_credit"):
+            account.retain_bytes(body, credit=other_credit)
+        self.assertEqual(account.snapshot()["used"], before["used"])
+        self.assertEqual(other_credit._size, 2000)
+        with self.assertRaisesRegex(ValueError, "allocation_bytes"):
+            account.retain_bytes(bytearray(body))
+        other_credit.release()
+        lease.release()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+
     def test_budgeted_arena_priors_share_paths_and_reject_unowned_or_mutable_priors(self):
         account = sync.AllocationAccount()
         with account.json_arena() as arena:
