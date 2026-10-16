@@ -11,8 +11,8 @@ from .contract import (
     MAX_SNAPSHOT_BYTES,
     SCHEMA_VERSION,
     ContractError,
+    _admitted_identity_key,
     canonical,
-    identity_key,
     store_namespace,
     validate_snapshot,
 )
@@ -178,7 +178,7 @@ class ObservationEngine:
         captured = {}
         observed = []
         for row in receipt.data["sessions"]:
-            key = identity_key(row["identity"])
+            key = _admitted_identity_key(row["identity"])
             if "retained_after_gap" in row["metadataIssues"]:
                 # An upstream retained row is context, not an actual new sample.
                 captured[key] = copy.deepcopy(previous.get(key, empty_support()))
@@ -227,7 +227,7 @@ class ObservationEngine:
         if self.support_incarnation is None:
             return
         data = self.receipts[provider][component].data
-        present = {identity_key(row["identity"]) for row in data["sessions"]} if data else set()
+        present = {_admitted_identity_key(row["identity"]) for row in data["sessions"]} if data else set()
         support = self._component_support[provider][component]
         self._component_support[provider][component] = {key: value for key, value in support.items()
                                                         if key in present}
@@ -254,7 +254,7 @@ class ObservationEngine:
             if provider not in self._retirement_dirty and (due is None or now < due):
                 continue
             runtime = receipts["runtime"]
-            keyed = {name: [(identity_key(row["identity"]), row)
+            keyed = {name: [(_admitted_identity_key(row["identity"]), row)
                             for row in (receipt.data or {}).get("sessions", [])]
                      for name, receipt in receipts.items()}
             saved = {key for rows in keyed.values() for key, row in rows
@@ -320,8 +320,8 @@ class ObservationEngine:
                 source["coverage"]["saved"].update(status="unavailable", reason="service_history_expired")
             source["errors"] = list(dict.fromkeys(code for receipt in receipts.values() if receipt.data for code in receipt.data["sources"][0]["errors"]))[:128]
             source["sourceHealth"] = "current" if runtime.health == history.health == "current" and not source["errors"] else "partial" if runtime.current() or history.current() else "stale" if base else "unavailable"
-            rt_rows = {identity_key(r["identity"]): r for r in runtime.data["sessions"]} if runtime.data else {}
-            hi_rows = {identity_key(r["identity"]): r for r in history.data["sessions"]} if history.data else {}
+            rt_rows = {_admitted_identity_key(r["identity"]): r for r in runtime.data["sessions"]} if runtime.data else {}
+            hi_rows = {_admitted_identity_key(r["identity"]): r for r in history.data["sessions"]} if history.data else {}
             rt_support, hi_support = (self._component_support[provider][name]
                                       for name in ("runtime", "history"))
             for key in rt_rows.keys() | hi_rows.keys():
@@ -435,7 +435,7 @@ class ObservationEngine:
             "sources": sources, "sessions": [], "errors": [], "limitations": ["shared_sampled_service", "no_native_event_replay", "runtime_only_retention_runtime_lease"],
         }
         used = len(canonical(value).encode()) + 256
-        rows.sort(key=lambda r: (r["runtime"]["value"] != "running", identity_key(r["identity"])))
+        rows.sort(key=lambda r: (r["runtime"]["value"] != "running", _admitted_identity_key(r["identity"])))
         dropped = False
         for row in rows:
             size = len(canonical(row).encode()) + 1
@@ -454,7 +454,7 @@ class ObservationEngine:
                         coverage.update(status="partial", reason="service_view_limit")
         self.snapshot = validate_snapshot(value)
         if self.support_incarnation is not None:
-            self.projection_support = {identity_key(row["identity"]): projected_support[identity_key(row["identity"])]
+            self.projection_support = {_admitted_identity_key(row["identity"]): projected_support[_admitted_identity_key(row["identity"])]
                                        for row in value["sessions"]}
             self.projection_census = {}
             for source in sources:

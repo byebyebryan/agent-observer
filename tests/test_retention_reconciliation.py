@@ -6,11 +6,12 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from agent_observer.contract import ContractError, identity_key, validate_snapshot
-from agent_observer.service_state import ServiceState
 from test_runtime_only_retention import missing, unsaved
 from test_service_contract import fixture
 from test_service_state import provider_snapshot
+
+from agent_observer.contract import ContractError, identity_key, validate_snapshot
+from agent_observer.service_state import ServiceState
 
 
 class FullScanReference(ServiceState):
@@ -90,7 +91,7 @@ class RetentionReconciliationTest(unittest.TestCase):
             self.accept(provider_snapshot(provider), component="history", ttl=10000, runtime_ttl=10000)
         before = copy.deepcopy(self.state.snapshot)
         # Guard the measured expensive operation, not a particular cache design.
-        with patch("agent_observer.observation_engine.identity_key",
+        with patch("agent_observer.observation_engine._admitted_identity_key",
                    side_effect=AssertionError("quiet tick revalidates the roster")):
             for _ in range(2000):
                 self.now += 1
@@ -104,7 +105,7 @@ class RetentionReconciliationTest(unittest.TestCase):
         self.accept(original, ttl=100)
         self.now += 20
         self.accept(missing(original), ttl=10000)
-        with patch("agent_observer.observation_engine.identity_key",
+        with patch("agent_observer.observation_engine._admitted_identity_key",
                    side_effect=AssertionError("future deadline scans the roster")):
             for _ in range(79):
                 self.now += 1
@@ -125,7 +126,7 @@ class RetentionReconciliationTest(unittest.TestCase):
             with self.assertRaises(ContractError):
                 state.accept("codex", "runtime", invalid, sampled_ms=self.now, ttl_ms=1000)
         self.compare()
-        with patch("agent_observer.observation_engine.identity_key",
+        with patch("agent_observer.observation_engine._admitted_identity_key",
                    side_effect=AssertionError("rejected input dirtied unchanged data")):
             self.assertFalse(self.state.expire())
 

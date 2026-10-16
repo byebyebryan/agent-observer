@@ -312,7 +312,13 @@ def validate_shape(value, spec):
 
 def identity_key(identity):
     validate_shape(identity, IDENTITY)
-    return tuple(identity[name] for name in IDENTITY["required"])
+    return _admitted_identity_key(identity)
+
+
+def _admitted_identity_key(identity):
+    """Internal tuple extraction after the containing row passed admission."""
+    return (identity["hostScope"], identity["provider"], identity["namespace"],
+            identity["nativeIdKind"], identity["nativeId"])
 
 
 def _validate_record_semantics(row, host_scope, sources):
@@ -472,7 +478,7 @@ def validate_snapshot(value):
     seen = set()
     for row in value["sessions"]:
         identity = row["identity"]
-        key = identity_key(identity)
+        key = _admitted_identity_key(identity)
         if key in seen:
             raise ContractError("duplicate_native_identity")
         seen.add(key)

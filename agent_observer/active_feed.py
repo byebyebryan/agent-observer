@@ -12,7 +12,7 @@ from functools import partial
 
 from . import timing
 from .active_contract import MAX_IDENTITIES, MAX_LEDGER_BYTES
-from .contract import MAX_BYTES, ContractError, canonical, identity_key, validate_snapshot
+from .contract import MAX_BYTES, ContractError, _admitted_identity_key, canonical, validate_snapshot
 from .observation_support import SUPPORT_FIELDS, empty_support, support_matches
 
 
@@ -162,7 +162,7 @@ class ActiveFeedProjector:
             raise ContractError("active_projection_regression")
         if type(now_ms) is not int or now_ms < 0:
             raise ContractError("active_projection_clock")
-        rows = {identity_key(row["identity"]): row for row in snapshot["sessions"]
+        rows = {_admitted_identity_key(row["identity"]): row for row in snapshot["sessions"]
                 if row["identity"]["provider"] == "codex"}
         source_snapshots = {(s["provider"], s["namespace"]): s for s in snapshot["sources"]}
         projection = {"scopes": [], "sessions": []}
