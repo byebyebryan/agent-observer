@@ -1,10 +1,9 @@
 # Agent Observer
 
-The [native title-helper correction](docs/evidence/2026-10-14-title-helper/REPORT.md)
-selects core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and Agent
-publishers separately select a5/Mesh a20.
-Tmux and the historical writer keep their independent selections. The dated
-a1 collector acceptance below remains historical.
+Latest hosted prerelease: [**0.7.0a7**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7),
+published from the exact [qualified artifact](artifacts/observer-0.7.0a7.json).
+Python 3.11+ is required; optional active-feed networking pairs it with Mesh
+0.1.0a23. Core and local service remain independent of Mesh imports.
 
 Shared host-side discovery and monitoring for coding agents. Codex is the only
 implemented native provider; [Claude support is retired](docs/claude-retirement-plan.md).
@@ -19,17 +18,16 @@ Starship device gates.
 
 ## Current status
 
-[Observer `0.7.0a3`](artifacts/observer-0.7.0a3.json) supplies
-[API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) locally. Snap and Starship
-select core-only a3 collectors. Optional Agent publishers use explicit profile v3
-with [Mesh `0.1.0a20`](artifacts/mesh-0.1.0a20.json) and the independently accepted
-a5 owner package. The collection correction preserves
-known internal helpers and hides them from ordinary rosters, with
-`--include-system` diagnostics. The [acceptance receipt](docs/evidence/2026-10-13-system-classification/REPORT.md)
-separates native, artifact, transport, resource and managed adoption evidence.
-Tmux keeps its independently selected native owner/profile/factory; the historical
-`0.4.0a16` writer remains unchanged. These local commits and installed packages
-are not a new GitHub release. The previous 0.6.0a2/Mesh a16 tuple is retained for rollback.
+[Observer `0.7.0a7`](artifacts/observer-0.7.0a7.json) preserves
+[API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) and adds the separate
+active-feed 1 interface. The
+[RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
+records a7 collectors and separate a7/Mesh a23 active publishers selected on Snap
+and Starship, plus the Starship RLCD client. Full diagnostics and the read CLI
+retain their independent a5/Mesh a20 tuple; Tmux and the historical `0.4.0a16`
+writer retain their selections. Paired rollback/reselection and software feed
+checks passed. Physical RLCD ACK/panel/reboot checks remain deferred because
+the device was absent. Package publication does not perform deployment.
 
 Both hosts separately select the read CLI from
 [Observer `0.7.0a5`](artifacts/observer-0.7.0a5.json) /
@@ -41,8 +39,8 @@ saves about 36% total consumer CPU and
 86% repeated-read CPU at its sampled cadence. The [a20 adoption ledger](docs/evidence/2026-10-14-mesh-a20/REPORT.md)
 separately records acquisition-ordering correction, installed/native and paired
 Tmux checks, staged role rollback, and mixed cost results. It establishes no
-universal a20 CPU saving. RLCD independently selects its prepared a5/a20 bundle;
-hosted wheel releases remain pending.
+universal a20 CPU saving. That checkpoint's prepared a5/a20 RLCD bundle is
+retained as historical acceptance; the current active-feed selection is above.
 
 The [remaining CPU study](docs/evidence/2026-10-15-cpu/REPORT.md) traces most read
 cost to repeated full-roster validation. Source corrections remove duplicate
@@ -62,9 +60,10 @@ The independent [owned/selected-read checkpoint](docs/evidence/2026-10-15-prepar
 accepts Observer a6 / Mesh a22 for pinned integration, with read interface 2,
 single native admission, header-only context and complete-current identity
 summaries alongside explicitly selected records. Fixed 500-row CPU improves
-21.60% against the old pair with equal semantics. Normal role selections remain
-a5/a20; RLCD adoption and live/device acceptance are separate. Populated native
-coverage comes from Starship; the current Snap daemon and both readers are empty.
+21.60% against the old pair with equal semantics. At that checkpoint normal roles
+remained a5/a20 and Snap's daemon/readers were empty, so populated native coverage
+was Starship-bound. The later active-feed checkpoint includes populated Snap
+evidence and retains its separate native bounds.
 
 The opt-in [active-feed interface](docs/active-feed-interface.md) implements the
 agreed [projection design](docs/active-feed-proposal.md): the local service caches
@@ -72,8 +71,9 @@ one fixed Codex active projection per owner generation, and a separate Mesh
 profile delivers it without the dormant roster. Original field, membership and
 complete-census leases remain independent. The
 [a7/a23 producer checkpoint](docs/evidence/2026-10-16-active-feed/REPORT.md)
-accepts the bounded installed/native/transport and controlled scaling gates;
-normal services and full-feed defaults keep their selections.
+accepts the bounded installed/native/transport and controlled scaling gates.
+The later RLCD receipt above owns coordinated collector/active publisher/client
+adoption; full-feed defaults and diagnostic routes remain available.
 Using the endpoint requires adoption of the new service artifact as well as the
 optional source, profile and read facade.
 
