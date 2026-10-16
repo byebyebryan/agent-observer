@@ -1,13 +1,24 @@
 """Trusted lazy Agent factory for Mesh's cached publisher SDK interface 1."""
 
+FULL_PROFILE_ID = "agent-observer.mesh-candidate.v3"
 
-def make_publisher(host, source, socket):
+
+def make_publisher(host, source, socket, *, profile_id=FULL_PROFILE_ID):
     from mesh_plus.api import CachedPublisher
+    from mesh_plus.protocol import check
 
-    from .mesh_profile import AgentProfile
-    from .mesh_source import CachedAgentSource
+    if profile_id == FULL_PROFILE_ID:
+        from .mesh_profile import AgentProfile
+        from .mesh_source import CachedAgentSource
 
-    return CachedPublisher("agent", host, source, CachedAgentSource(host, socket), profile=AgentProfile())
+        profile, native = AgentProfile(), CachedAgentSource(host, socket)
+    else:
+        from .mesh_active_profile import ACTIVE_PROFILE_ID, ActiveAgentProfile
+        from .mesh_active_source import CachedActiveAgentSource
+
+        check(profile_id == ACTIVE_PROFILE_ID, "profile_descriptor")
+        profile, native = ActiveAgentProfile(), CachedActiveAgentSource(host, socket)
+    return CachedPublisher("agent", host, source, native, profile=profile)
 
 
 def main():

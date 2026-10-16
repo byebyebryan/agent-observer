@@ -5,6 +5,7 @@ import json
 import runpy
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -13,6 +14,202 @@ HELPER = runpy.run_path(str(ROOT / "scripts/candidate-artifact"))
 
 
 class CandidateArtifactTest(unittest.TestCase):
+    def active_manifest(self):
+        manifest = HELPER["document"](ROOT / "artifacts/observer-0.7.0a6.json")
+        schemas = {name: ROOT / f"agent_observer/contracts/active-{name}.schema.json"
+                   for name in ("request", "frame")}
+        request = json.loads(schemas["request"].read_bytes())
+        manifest["activeFeed"] = {
+            "protocol": 1, "schemas": {"request": 1, "frame": 1},
+            "schemaSha256": {name: hashlib.sha256(path.read_bytes()).hexdigest()
+                             for name, path in schemas.items()},
+            "selectorDigest": request["properties"]["selectorDigest"]["const"],
+        }
+        return manifest
+
+    def fake_installation(self, directory, *, active=True):
+        """Exact-byte in-process verification fixture; never installs or spawns."""
+        prefix = Path(directory).resolve() / "candidate"
+        site = prefix / "lib/site-packages"
+        schemas = site / "agent_observer/contracts"
+        schemas.mkdir(parents=True)
+        manifest = self.active_manifest() if active else HELPER["document"](ROOT / "artifacts/observer-0.7.0a6.json")
+        for name in ("request", "frame"):
+            (schemas / f"active-{name}.schema.json").write_bytes(
+                (ROOT / f"agent_observer/contracts/active-{name}.schema.json").read_bytes())
+        (prefix / "bin").mkdir()
+        python = prefix / "bin/python"
+        python.write_text("fixture interpreter; never executed\n")
+        python.chmod(0o700)
+        for name in manifest["entrypoints"]:
+            executable = prefix / "bin" / name
+            executable.write_text("#!" + str(python) + "\n")
+            executable.chmod(0o700)
+        wheel = Path(directory) / manifest["wheel"]
+        with zipfile.ZipFile(wheel, "w") as archive:
+            for path in schemas.iterdir():
+                archive.write(path, str(path.relative_to(site)))
+        manifest["wheelSha256"] = hashlib.sha256(wheel.read_bytes()).hexdigest()
+        calls = []
+
+        def run(argv, **kwargs):
+            calls.append(argv)
+            if "-c" in argv:
+                return json.dumps({"version": manifest["version"], "site": str(site),
+                                   "module": str(site / "agent_observer/contract.py"), "sdk": None,
+                                   "bundledExecutable": False, "retiredNativeModules": False}).encode()
+            if argv[1:] == ["--version"]:
+                return (Path(argv[0]).name + " " + manifest["version"]).encode()
+            command = argv[1:]
+            if command == ["api"]:
+                value = {"apiVersion": 4, "schemas": manifest["schemas"]}
+            elif command[:1] == ["schema"]:
+                version = 2 if Path(argv[0]).name == "agent-observer-write" else 6
+                value = {"properties": {"schemaVersion": {"const": version}}}
+            elif command == ["service", "api"]:
+                value = {"serviceProtocol": 4, "observationApiVersion": 4, "embeddedSnapshotVersion": 6}
+            elif command[:2] == ["service", "schema"]:
+                value = {"properties": {"serviceProtocol": {"const": 4}}}
+            elif command == ["service", "active-api"]:
+                if not active:
+                    self.fail("old manifest invoked active declarations")
+                request = json.loads((schemas / "active-request.schema.json").read_bytes())
+                value = {"activeFeedProtocol": 1, "observationApiVersion": 4,
+                         "selector": request["properties"]["selector"]["const"],
+                         "selectorDigest": manifest["activeFeed"]["selectorDigest"]}
+            elif command[:2] == ["service", "active-schema"]:
+                if not active:
+                    self.fail("old manifest invoked active schema")
+                value = json.loads((schemas / f"active-{command[-1]}.schema.json").read_bytes())
+            else:
+                self.fail("unexpected verification command: " + repr(argv))
+            return json.dumps(value).encode()
+
+        return prefix, site, wheel, manifest, calls, run
+
+    def test_active_extension_is_optional_and_every_retained_manifest_still_parses(self):
+        for path in (ROOT / "artifacts").glob("observer-*.json"):
+            with self.subTest(path=path.name):
+                manifest = HELPER["document"](path)
+                self.assertEqual(manifest, json.loads(path.read_bytes()))
+                if "activeFeed" not in manifest:
+                    self.assertIsNone(HELPER["active_feed_manifest"](manifest))
+        manifest = self.active_manifest()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            path.write_text(json.dumps(manifest))
+            self.assertEqual(HELPER["document"](path), manifest)
+
+    def test_active_extension_rejects_unknown_missing_malformed_and_boolean_fields(self):
+        good = self.active_manifest()
+        bad_values = [None, {}, [], {**good["activeFeed"], "unknown": 1}]
+        for key, value in (
+            ("protocol", True), ("protocol", 2),
+            ("schemas", {"request": 1}), ("schemas", {"request": True, "frame": 1}),
+            ("schemas", {"request": 1, "frame": 1, "snapshot": 1}),
+            ("schemaSha256", {"request": "a" * 64, "frame": "sha256:" + "b" * 64}),
+            ("schemaSha256", {"request": "A" * 64, "frame": "b" * 64}),
+            ("schemaSha256", {"request": None, "frame": "b" * 64}),
+            ("selectorDigest", "a" * 64), ("selectorDigest", "sha256:" + "A" * 64),
+        ):
+            bad_values.append({**good["activeFeed"], key: value})
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            for active in bad_values:
+                with self.subTest(active=active):
+                    path.write_text(json.dumps({**good, "activeFeed": active}))
+                    with self.assertRaisesRegex(ValueError, "active_feed_manifest_invalid"):
+                        HELPER["document"](path)
+            old = HELPER["document"](ROOT / "artifacts/observer-0.6.0a2.json")
+            path.write_text(json.dumps({**old, "activeFeed": good["activeFeed"]}))
+            with self.assertRaisesRegex(ValueError, "active_feed_manifest_invalid"):
+                HELPER["document"](path)
+
+    def test_active_installed_verification_checks_exact_schema_bytes_cli_and_selector(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix, site, wheel, manifest, calls, run = self.fake_installation(directory)
+            with patch.dict(HELPER["verify"].__globals__, run=run):
+                receipt = HELPER["verify"](prefix, wheel, manifest, "core")
+            self.assertIs(receipt["activeFeedVerified"], True)
+            self.assertEqual([argv[1:] for argv in calls if argv[1:3] in
+                              (["service", "active-api"], ["service", "active-schema"])],
+                             [["service", "active-api"], ["service", "active-schema", "--kind", "request"],
+                              ["service", "active-schema", "--kind", "frame"]])
+            self.assertEqual(receipt["providerInvocations"], 0)
+
+    def test_active_manifest_hash_mismatch_rejects_even_exact_installed_wheel_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix, site, wheel, manifest, calls, run = self.fake_installation(directory)
+            manifest["activeFeed"]["schemaSha256"]["request"] = "f" * 64
+            with patch.dict(HELPER["verify"].__globals__, run=run):
+                with self.assertRaisesRegex(ValueError, "active_feed_schema_bytes_mismatch"):
+                    HELPER["verify"](prefix, wheel, manifest, "core")
+
+    def test_malformed_active_extension_rejects_before_installation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix = Path(directory) / "never-created"
+            manifest = self.active_manifest()
+            manifest["activeFeed"]["protocol"] = True
+            with patch.dict(HELPER["install"].__globals__,
+                            run=lambda *a, **k: self.fail("spawned"),
+                            wheel_check=lambda *a, **k: self.fail("read wheel before rejecting manifest")):
+                with self.assertRaisesRegex(ValueError, "active_feed_manifest_invalid"):
+                    HELPER["install"](prefix, Path(directory) / "missing.whl", manifest, "core")
+            self.assertFalse(prefix.exists())
+
+    def test_old_installed_verification_keeps_receipt_shape_and_skips_active_commands(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix, site, wheel, manifest, calls, run = self.fake_installation(directory, active=False)
+            with patch.dict(HELPER["verify"].__globals__, run=run):
+                receipt = HELPER["verify"](prefix, wheel, manifest, "core")
+            self.assertNotIn("activeFeedVerified", receipt)
+
+    def test_active_installed_cli_mismatches_reject_before_acceptance(self):
+        mutations = (
+            lambda command, value: value.update(activeFeedProtocol=True) if command == "active-api" else None,
+            lambda command, value: value.update(observationApiVersion=3) if command == "active-api" else None,
+            lambda command, value: value.update(selectorDigest="sha256:" + "0" * 64) if command == "active-api" else None,
+            lambda command, value: value["selector"].update(version=2) if command == "active-api" else None,
+            lambda command, value: value.update(description="different CLI bytes") if command == "active-schema" else None,
+        )
+        for number, mutate in enumerate(mutations):
+            with self.subTest(case=number), tempfile.TemporaryDirectory() as directory:
+                prefix, site, wheel, manifest, calls, original = self.fake_installation(directory)
+
+                def run(argv, *, original=original, mutate=mutate, **kwargs):
+                    value = json.loads(original(argv, **kwargs))
+                    mutate(argv[2], value)
+                    return json.dumps(value).encode()
+
+                with patch.dict(HELPER["verify_active_feed"].__globals__, run=run):
+                    with self.assertRaisesRegex(ValueError, "active_feed_(api|selector|schema)_mismatch"):
+                        HELPER["verify_active_feed"](prefix, site, manifest["activeFeed"], 4)
+
+    def test_active_raw_schema_digest_and_selector_bindings_are_mandatory(self):
+        for mutation in ("bytes", "selector", "schema_version", "boolean_protocol", "symlink"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as directory:
+                prefix, site, wheel, manifest, calls, run = self.fake_installation(directory)
+                path = site / "agent_observer/contracts/active-frame.schema.json"
+                if mutation == "bytes":
+                    path.write_bytes(path.read_bytes() + b" ")
+                elif mutation == "symlink":
+                    target = path.with_suffix(".target")
+                    path.rename(target)
+                    path.symlink_to(target)
+                else:
+                    value = json.loads(path.read_bytes())
+                    if mutation == "selector":
+                        value["properties"]["selector"]["const"]["version"] = 2
+                    elif mutation == "schema_version":
+                        value["$id"] = "urn:agent-observer:active-frame:2"
+                    else:
+                        value["properties"]["activeFeedProtocol"]["const"] = True
+                    path.write_text(json.dumps(value))
+                    manifest["activeFeed"]["schemaSha256"]["frame"] = hashlib.sha256(path.read_bytes()).hexdigest()
+                with patch.dict(HELPER["verify_active_feed"].__globals__, run=run):
+                    with self.assertRaisesRegex(ValueError, "active_feed_schema(_bytes)?_mismatch"):
+                        HELPER["verify_active_feed"](prefix, site, manifest["activeFeed"], 4)
+
     def test_timing_manifest_keeps_independent_writer_and_requires_new_tuple(self):
         manifest = HELPER["document"](ROOT / "artifacts/observer-0.5.0a20.json")
         manifest.update(manifestVersion=4, apiVersion=3, schemas={"snapshot": 5, "watch": 5},
