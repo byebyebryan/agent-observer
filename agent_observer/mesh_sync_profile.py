@@ -114,8 +114,14 @@ def _graph_bytes(*roots):
     return size
 
 
-def _key(value):
-    return canonical(value)
+def _marker(value):
+    # Domain index keys contain only arrays, exact integers and strings. Keep
+    # their lossless immutable structure, never a retained canonical byte copy
+    # that the public heap-only callback budget could not encoded-charge.
+    if type(value) is list:
+        return tuple(_marker(child) for child in value)
+    check(type(value) in (str, int), "agent_sync_index_key")
+    return value
 
 
 def _closed(value, keys, code):
@@ -263,9 +269,10 @@ def _observation_rule(fields, rule, source):
 class _Patch:
     def __init__(self, ctx):
         self.ctx, self.values, self.tokens = ctx, {}, {}
+        self.token_count = 0
 
     def get(self, name, key):
-        marker = name, _key(key)
+        marker = name, _marker(key)
         if marker in self.values:
             return self.values[marker][1]
         return _plain(self.ctx.index(name).get(key))
@@ -273,15 +280,33 @@ class _Patch:
     def put(self, name, key, value):
         old = self.get(name, key)
         if old is ABSENT or old != value:
-            encoded = _key(key)
-            self.ctx.budget.charge(1024 + _graph_bytes(key, value) + 2 * len(encoded))
-            self.values[name, encoded] = key, value
+            self._write(name, key, value)
 
     def remove(self, name, key):
         if self.get(name, key) is not ABSENT:
-            encoded = _key(key)
-            self.ctx.budget.charge(1024 + _graph_bytes(key) + 2 * len(encoded))
-            self.values[name, encoded] = key, ABSENT
+            self._write(name, key, ABSENT)
+
+    def _write(self, name, key, value):
+        logical = _marker(key)
+        marker = name, logical
+        previous = self.values.get(marker)
+        if previous is not None:
+            # Keep the first key and one final value, rather than retaining
+            # replacement history. The unique old/new graph high-water covers
+            # both values while this call/caller still holds them. Credit
+            # never shrinks before generic staging/rollback has unwound.
+            key = previous[0]
+        # One marker tuple, three-slot entry, size counter and
+        # amortized old/new dictionary storage; result DTOs are prepaid below.
+        needed = 512 + _graph_bytes(key, value, logical, ABSENT if previous is None else previous[1])
+        charged = 0 if previous is None else previous[2]
+        if needed > charged:
+            self.ctx.budget.charge(needed - charged)
+        if previous is None:
+            self.values[marker] = [key, value, needed]
+        else:
+            previous[1] = value
+            previous[2] = max(charged, needed)
 
     def add(self, name, key, amount):
         old = self.get(name, key)
@@ -289,22 +314,42 @@ class _Patch:
         check(_integer(value), "agent_sync_index_count")
         self.put(name, key, value)
 
-    def token(self, ref, field, token, encoded):
-        marker = encoded, field
-        if marker not in self.tokens:
-            self.ctx.budget.charge(640 + _graph_bytes(ref) + sys.getsizeof(token) + len(encoded))
-        self.tokens[marker] = FieldTokenWrite(ref, field, token)
+    def token(self, ref, field, token, marker):
+        check(field in SUPPORT_FIELDS and
+              (token is None or type(token) is str and len(token) == 64), "agent_sync_field_token")
+        group = self.tokens.get(marker)
+        if group is None:
+            # One logical marker/ref graph per record, shared by all its field
+            # DTOs. Plain JSON remains private to this callback/returned patch.
+            self.ctx.budget.charge(1024 + _graph_bytes(ref, marker))
+            group = self.tokens[marker] = ref, {}
+        writes = group[1]
+        if field not in writes:
+            # Per-field map growth and old/new slotted DTOs; two maximum SHA256
+            # strings cover replacement overlap, including None -> digest.
+            self.ctx.budget.charge(256 + 2 * sys.getsizeof("0" * 64))
+            self.token_count += 1
+        writes[field] = FieldTokenWrite(group[0], field, token)
 
     def result(self, scopes):
-        self.ctx.budget.charge(1024 + 512 * len(self.values) + 16 * len(self.tokens))
+        # Slotted write/remove DTOs plus list/tuple resize overlap; token DTOs
+        # already exist. A fixed-size pointer list avoids an unbounded-length
+        # tuple generator's constructor growth while flattening record groups.
+        self.ctx.budget.charge(1024 + 128 * len(self.values) + 16 * self.token_count)
         writes, removes = [], []
-        for (name, _), (key, value) in self.values.items():
+        for (name, _), (key, value, _charged) in self.values.items():
             if value is ABSENT:
                 removes.append(IndexRemove(name, key))
             else:
                 writes.append(IndexWrite(name, key, value))
+        fields = [None] * self.token_count
+        position = 0
+        for _ref, group in self.tokens.values():
+            for write in group.values():
+                fields[position] = write
+                position += 1
         return DomainIndexPatch(writes=tuple(writes), removes=tuple(removes),
-                                field_tokens=tuple(self.tokens.values()),
+                                field_tokens=tuple(fields),
                                 affected_scopes=tuple(scopes))
 
 
@@ -534,10 +579,10 @@ class AgentSyncProfile:
     def _affect(self, ctx, binding, sources, affected, identity):
         _identity(identity, binding)
         check(tuple(identity[1:3]) in sources, "agent_sync_record_source")
-        encoded = _key(identity)
-        if encoded not in affected:
-            ctx.budget.charge(512 + _graph_bytes(identity) + 2 * len(encoded))
-            affected[encoded] = identity
+        marker = _marker(identity)
+        if marker not in affected:
+            ctx.budget.charge(512 + _graph_bytes(identity, marker))
+            affected[marker] = identity
 
     def _compact_group(self, ctx, cohort, ref, mask):
         _receipt_key(cohort)
@@ -599,7 +644,7 @@ class AgentSyncProfile:
     def _admit_fields(self, ctx, patch, binding, sources, validation, receipts,
                       identity, slot, old, observed, previous_observed, body):
         ref = [identity, slot["birth"]]
-        ref_key = _key(ref)
+        ref_key = _marker(ref)
         check(observed is not ABSENT, "agent_sync_dangling_record")
         _closed(observed, ("fields", "supports"), "agent_sync_observation")
         check(type(observed["supports"]) is dict and
@@ -734,7 +779,7 @@ class AgentSyncProfile:
                   "agent_sync_projection_metadata")
             order = metadata["scopeOrder"]
             check(type(order) is list and len(order) <= 1 and
-                  len({_key(k) for k in order}) == len(order) and
+                  len({_marker(k) for k in order}) == len(order) and
                   (not order if metadata["projection"] is None else
                    set(map(tuple, order)) == set(sources)), "agent_sync_scope_order")
             check(type(metadata["validationSources"]) is list, "agent_sync_validation_sources")
@@ -857,7 +902,7 @@ class AgentSyncProfile:
 
     def _removed(self, ctx, patch, identity, old, observed):
         ref = [identity, old["birth"]]
-        ref_key = _key(ref)
+        ref_key = _marker(ref)
         check(ctx.after.lookup("bodies", old["body"]) is ABSENT and
               ctx.after.lookup("observations", ref) is ABSENT, "agent_sync_removed_references")
         for field in SUPPORT_FIELDS:
