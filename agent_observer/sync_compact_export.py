@@ -31,10 +31,13 @@ def _json_default(value):
 class _Export:
     def __init__(self, cache, current, before=None):
         self.cache, self.current, self.before = cache, current, before
-        self.work = cache.account.reserve(16384, kind="stage")
+        # The one-row record memo has independent container credit. It never
+        # outlives a row or replaces a committed-key/side lookup across rows.
+        self.work = cache.account.reserve(16640, kind="stage")
         self.decoded = self.encoded = 0
         self.row_bytes = 0
         self.refs = None
+        self.record = None
 
     def initialize(self):
         self.row()
@@ -54,7 +57,7 @@ class _Export:
         )
         self.dictionaries = dictionaries
         # References/dictionary containers coexist with each row's scratch.
-        self.fixed = 16384 + self.row_bytes * 2
+        self.fixed = 16640 + self.row_bytes * 2
         self.work.resize(self.fixed + self.decoded * 2 + self.encoded * 2)
 
     @staticmethod
@@ -65,13 +68,14 @@ class _Export:
         return self.before if side == "before" else self.current
 
     def row(self):
+        self.record = None
         self.row_bytes = 0
 
     def decode(self, raw):
         self.row_bytes += 1024 + len(raw) * 64
         self.decoded = max(self.decoded, self.row_bytes)
         # A suspended yield's previous value can coexist with the next decode.
-        self.work.resize(getattr(self, "fixed", 16384) + self.decoded * 2 + self.encoded * 2)
+        self.work.resize(getattr(self, "fixed", 16640) + self.decoded * 2 + self.encoded * 2)
         return json.loads(raw)
 
     def entry(self, side, space, key):
@@ -84,8 +88,14 @@ class _Export:
         return commit.tables[space].lookup_encoded_bytes(encoded, trusted=True, scratch=self.work)
 
     def lookup(self, side, space, key):
+        if (space == "records" and self.record is not None
+                and side == self.record[0] and key == self.record[1]):
+            return self.record[2]
         entry = self.entry(side, space, key)
-        return None if entry is ABSENT else self.decode(entry[1])
+        value = None if entry is ABSENT else self.decode(entry[1])
+        if space == "records":
+            self.record = side, key, value
+        return value
 
     def encode(self, value):
         from .sync_state import _json_bound
@@ -101,7 +111,7 @@ class _Export:
             self.encoded = needed
         # Python encoder string/chunks plus final UTF-8 copy are heap charged
         # as well as encoded charged. Previous yielded bytes stay covered.
-        self.work.resize(getattr(self, "fixed", 16384) + self.decoded * 2 + self.encoded * 2)
+        self.work.resize(getattr(self, "fixed", 16640) + self.decoded * 2 + self.encoded * 2)
         return json.dumps(value, default=_json_default, ensure_ascii=False, allow_nan=False,
                           sort_keys=True, separators=(",", ":")).encode("utf-8")
 
@@ -133,7 +143,7 @@ class _Export:
         # A token-only body change has no mask edit; generic expansion derives
         # the new tokens after admission. Changed observations are the sparse
         # set of possible support/group changes, including row removal/birth.
-        for _kind, key, _expected, encoded in changes.spaces["observations"]:
+        for kind, key, _expected, encoded in changes.spaces["observations"]:
             self.row()
             if encoded is not None:
                 key = self.decode(encoded[0])
@@ -141,7 +151,12 @@ class _Export:
                 key = thaw(key)
             identity, birth = key
             old = self.masks("before", identity, birth)
-            new = self.masks("after", identity, birth)
+            # The staged edit retained these exact committed bytes through
+            # serialization. Reuse that one changed value rather than encode
+            # its key, traverse the after map and decode the same value again.
+            new = {} if kind == "remove" else self.masks(
+                "after", identity, birth,
+                None if encoded is None else self.decode(encoded[1]))
             for cohort in sorted(old.keys() | new.keys()):
                 old_mask, new_mask = old.get(cohort, 0), new.get(cohort, 0)
                 if old_mask == new_mask:
@@ -206,6 +221,7 @@ class _Export:
         # Break the temporary reference callbacks before releasing scratch,
         # including with cyclic GC disabled and a saved rejection traceback.
         self.refs = None
+        self.record = None
         self.dictionaries = None
         self.current = self.before = None
         self.work.release()

@@ -243,6 +243,63 @@ class SyncCompactExportTest(unittest.TestCase):
         self.assertIn("receiptRefs", baseline)
         self.assertEqual(baseline["tag"], list(target))
 
+    def test_record_lookup_reuses_only_one_rows_exact_side_and_identity(self):
+        from agent_observer.sync_compact_export import _Export
+
+        owner = self.owner()
+        current = owner._sync_owner().ensure("full").current
+        key = list(current.order[0][1])
+        reads = []
+        original = _Export.entry
+
+        def observed(export, side, space, identity):
+            if space == "records":
+                reads.append((side, tuple(identity)))
+            return original(export, side, space, identity)
+
+        with patch.object(_Export, "entry", new=observed):
+            export = _Export(owner._sync_cache, current, current)
+            try:
+                export.initialize()
+                export.row()
+                first = export.lookup("after", "records", key)
+                self.assertIs(export.lookup("after", "records", list(key)), first)
+                self.assertEqual(len(reads), 1)
+                export.lookup("before", "records", key)
+                self.assertEqual(len(reads), 2)
+                export.row()
+                export.lookup("before", "records", key)
+                self.assertEqual(len(reads), 3)
+            finally:
+                export.close()
+            self.assertIsNone(export.record)
+
+    def test_membership_changes_use_retained_after_value_without_map_reread(self):
+        from agent_observer.sync_compact_export import _Export, transaction
+
+        owner = self.owner()
+        base = json.loads(owner.sync_baseline("full"))["tag"]
+        original = _Export.lookup
+
+        def before_only(export, side, space, key):
+            self.assertFalse(side == "after" and space == "observations")
+            return original(export, side, space, key)
+
+        def serialize(*args):
+            with patch.object(_Export, "lookup", new=before_only):
+                return transaction(*args)
+
+        for count in (2, 4):
+            self.now += 10
+            with patch("agent_observer.sync_compact_export.transaction", new=serialize):
+                owner.accept("codex", "runtime", self.fixture(count),
+                             sampled_ms=self.now, ttl_ms=10000)
+            target = owner.sync_current_tag("full")
+            raw = json.loads(owner.sync_changes("full", base, target)[0])
+            self.assertEqual(raw["transactionId"], raw_transaction_id(raw))
+            self.assertTrue(raw["operations"]["memberships"])
+            base = target
+
 
 @unittest.skipUnless(codec_fixture.HAS_COMPACT, "optional Mesh compact interface is unavailable")
 class CompactExportReaderTest(unittest.TestCase):
