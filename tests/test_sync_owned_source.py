@@ -179,6 +179,8 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
         for value in result:
             with self.assertRaisesRegex(ProtocolError, "sync_input_retired"):
                 _ = value.nbytes
+        self.assertEqual(self.session.inspect()["ownedRefs"], 0)
+        self.assertEqual(self.cache.ledger.encoded_reserved, 0)
 
     async def test_change_completion_correlation_rejects_for_plain_and_owned_without_revoking_siblings(self):
         baseline = await self.session.baseline()
@@ -248,8 +250,6 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(self.cache.ledger.encoded_reserved, 0)
             self.assertEqual(self.session.inspect()["ownedRefs"], 0)
             self.assertEqual(self.session.inspect()["ownedTickets"], 0)
-        self.assertEqual(self.session.inspect()["ownedRefs"], 0)
-        self.assertEqual(self.cache.ledger.encoded_reserved, 0)
 
     async def test_partial_batch_keeps_first_ref_and_pending_input_charged(self):
         first = message_fixture("transaction", generation=2)
