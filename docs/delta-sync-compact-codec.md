@@ -124,3 +124,20 @@ CPU and total cold/recovery bytes, deliverable 2,000-row recovery, populated IPC
 fixed SSH and immutable paired artifact acceptance remain open. Earlier failed
 performance results stay failed. The separate completion-transfer/controller
 seam and normal a7/a23/full/Tmux/349/writer/provider selections remain unchanged.
+
+## Follow-up against Mesh 05ad6fc
+
+The initial source evidence above remains bound to Mesh `030da1f`. A separate
+[source-pair receipt](evidence/2026-10-16-delta-sync-source/compact-codec-mesh05.json)
+checks unchanged Observer `c1ae31f` against immutable Mesh
+`05ad6fc8db1725afd6aac19435af83e4c0eb46eb`. Its public codec/profile signatures
+are unchanged. Mesh sanitizes individual pending index/cohort iterator steps so
+retained errors no longer retain their staged graph after close.
+
+On Python 3.14.8 and 3.11.17, all 171 Observer integration cases and all 25 Mesh
+compact cases pass with cyclic GC disabled and no skips. Independently carrying
+the new Mesh iterator test back to `030da1f` reproduces its retirement assertion
+failure on each version. This supports that bounded cleanup fix and compatibility
+of the unchanged Agent integration; it supplies no whole-pipeline resource,
+performance, native, transport or installed-package acceptance. The receipt pins
+167 unchanged Observer inputs, 93 Mesh runtime inputs and the exact test/log bytes.
