@@ -1,7 +1,8 @@
 """Pure logical Agent sync admission against Mesh's public staging interface.
 
-This draft admits material state only.  It does not confer current authority,
-implement compact wire normalization, or export through private cache objects.
+This admits expanded or explicitly negotiated compact material state only.
+Wire normalization is a separate optional codec. It grants no current authority
+and never exports through private cache objects.
 """
 
 from __future__ import annotations
@@ -317,6 +318,7 @@ class AgentSyncProfile:
 
     descriptor: SyncDescriptor
     view: str
+    normalization_features = ("provisional-memberships/1",)
 
     def __init__(self, *, profile_schema_digest, view="full", native=None):
         check(view in {"full", "active"}, "agent_sync_view")
@@ -473,7 +475,10 @@ class AgentSyncProfile:
         receipts = self._receipts(ctx, binding, sources, _Changes(ctx, "receipts"))
         self._cohorts(ctx, receipts, _Changes(ctx, "cohorts"))
         patch, affected = _Patch(ctx), {}
-        for space, _op, key, _ in _Changes(ctx, "records", "observations", "memberships", "scopes"):
+        compact = getattr(ctx, "compact_memberships", False)
+        spaces = ("records", "observations", "scopes") if compact else (
+            "records", "observations", "memberships", "scopes")
+        for space, _op, key, _ in _Changes(ctx, *spaces):
             if space == "records":
                 identity = key
             elif space == "observations":
@@ -489,12 +494,18 @@ class AgentSyncProfile:
                 if len(key) == 3:
                     continue
                 identity = key[3]
-            _identity(identity, binding)
-            check(tuple(identity[1:3]) in sources, "agent_sync_record_source")
-            encoded = _key(identity)
-            if encoded not in affected:
-                ctx.budget.charge(512 + _graph_bytes(identity) + 2 * len(encoded))
-                affected[encoded] = identity
+            self._affect(ctx, binding, sources, affected, identity)
+        if compact:
+            intents = ctx.membership_changes()
+            try:
+                for intent in intents:
+                    _copy_call(ctx, lambda ref: self._affect(ctx, binding, sources, affected, ref[0]),
+                               intent.record_ref)
+                    if intent.new_mask:
+                        _copy_call(ctx, lambda cohort, ref, mask=intent.new_mask:
+                                   self._compact_group(ctx, cohort, ref, mask), intent.cohort, intent.record_ref)
+            finally:
+                intents.close()
         # Remove aliases first so a valid same-transaction deletion/insertion
         # can reuse an alias. No previous row DTO survives this first pass.
         for _space, op, identity, _ in _Changes(ctx, "records"):
@@ -505,7 +516,8 @@ class AgentSyncProfile:
             _copy_call(ctx, lambda slot, old, identity=identity: self._admit_row(
                 ctx, patch, binding, sources, validation, receipts, identity, slot, old),
                 ctx.after.lookup("records", identity), ctx.before.lookup("records", identity))
-        for space, op, key, _ in _Changes(ctx, "memberships", "observations"):
+        links = ("observations",) if compact else ("memberships", "observations")
+        for space, op, key, _ in _Changes(ctx, *links):
             if op != "put":
                 continue
             _copy_call(ctx, lambda slot, space=space, key=key: self._check_link(ctx, space, key, slot),
@@ -518,6 +530,31 @@ class AgentSyncProfile:
                 check(source["capabilities"]["timing"][field] or count is ABSENT or count == 0,
                       "timing_capability_missing")
         return patch.result(scopes)
+
+    def _affect(self, ctx, binding, sources, affected, identity):
+        _identity(identity, binding)
+        check(tuple(identity[1:3]) in sources, "agent_sync_record_source")
+        encoded = _key(identity)
+        if encoded not in affected:
+            ctx.budget.charge(512 + _graph_bytes(identity) + 2 * len(encoded))
+            affected[encoded] = identity
+
+    def _compact_group(self, ctx, cohort, ref, mask):
+        _receipt_key(cohort)
+        _copy_call(ctx, lambda slot: self._check_link(ctx, "observations", ref, slot),
+                   ctx.after.lookup("records", ref[0]))
+
+        def check_support(observed):
+            check(observed is not ABSENT, "agent_sync_orphan_membership")
+            check(all(not mask & (1 << bit) or observed["supports"][field] == ["cohort", cohort]
+                      for bit, field in enumerate(SUPPORT_FIELDS)), "agent_sync_unreferenced_membership")
+
+        _copy_call(ctx, check_support, ctx.after.lookup("observations", ref))
+
+    def _member(self, ctx, cohort, ref, field):
+        if getattr(ctx, "compact_memberships", False):
+            return bool(ctx.membership_mask(cohort, ref, side="after") & (1 << SUPPORT_FIELDS.index(field)))
+        return ctx.after.lookup("memberships", [cohort, *ref, field]) is not ABSENT
 
     def _retire_alias(self, patch, identity, old):
         check(old is not ABSENT, "agent_sync_removed_record")
@@ -587,17 +624,18 @@ class AgentSyncProfile:
             if old is not ABSENT:
                 patch.remove("order", old["order"] if self.view == "full" else [0, identity])
             patch.put("order", slot["order"] if self.view == "full" else [0, identity], ref)
+        compact = getattr(ctx, "compact_memberships", False)
         for field in SUPPORT_FIELDS:
             support_ref = observed["supports"][field]
             current = type(support_ref) is list and len(support_ref) == 2 and support_ref[0] == "cohort"
-            old_token = ctx.field_token(ref, field) if body_changed or current else None
+            old_token = ctx.field_token(ref, field) if not compact and (body_changed or current) else None
             if body_changed:
                 token = field_token(self.descriptor.native_descriptor_digest, identity, slot["birth"],
                                     field, values[field])
-                if old_token is ABSENT or old_token != token:
+                if compact or old_token is ABSENT or old_token != token:
                     patch.token(ref, field, token, ref_key)
             else:
-                check(not current or old_token is not ABSENT, "agent_sync_field_token_missing")
+                check(compact or not current or old_token is not ABSENT, "agent_sync_field_token_missing")
                 token = old_token
             previous_ref = None if previous_observed is None else previous_observed["supports"][field]
             self._field(ctx, binding, sources, receipts, identity, slot["birth"],
@@ -793,7 +831,7 @@ class AgentSyncProfile:
 
     def _field(self, ctx, binding, sources, receipts, identity, birth, field, ref, token, old):
         if old is not None and old[0] == "cohort" and old != ref:
-            check(ctx.after.lookup("memberships", [old[1], identity, birth, field]) is ABSENT,
+            check(not self._member(ctx, old[1], [identity, birth], field),
                   "agent_sync_unreferenced_membership")
         if ref is not None:
             check(type(ref) is list and len(ref) == 2, "agent_sync_support_ref")
@@ -807,8 +845,11 @@ class AgentSyncProfile:
                 receipt = receipts[tuple(ref[1])]
                 check(receipt["health"] in {"current", "partial"} and receipt["accepted"] > 0,
                       "agent_sync_current_receipt")
-                actual = ctx.after.lookup("memberships", [ref[1], identity, birth, field])
-                check(actual is not ABSENT and actual == token, "agent_sync_member_token")
+                if getattr(ctx, "compact_memberships", False):
+                    check(self._member(ctx, ref[1], [identity, birth], field), "agent_sync_member_token")
+                else:
+                    actual = ctx.after.lookup("memberships", [ref[1], identity, birth, field])
+                    check(actual is not ABSENT and actual == token, "agent_sync_member_token")
                 if field == "workspace":
                     check(ref[1][2] == "history", "agent_sync_workspace_support")
                 if field == "runtime":
@@ -822,9 +863,8 @@ class AgentSyncProfile:
         for field in SUPPORT_FIELDS:
             previous = observed["supports"][field]
             if previous is not None and previous[0] == "cohort":
-                key = [previous[1], identity, old["birth"], field]
-                check(ctx.after.lookup("memberships", key) is ABSENT, "agent_sync_removed_membership")
-            if ctx.field_token(ref, field) is not ABSENT:
+                check(not self._member(ctx, previous[1], ref, field), "agent_sync_removed_membership")
+            if getattr(ctx, "compact_memberships", False) or ctx.field_token(ref, field) is not ABSENT:
                 patch.token(ref, field, None, ref_key)
         patch.remove("row_rules", ref)
         if self.view == "active":

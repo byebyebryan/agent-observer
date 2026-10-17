@@ -221,11 +221,12 @@ class _ValueIterator:
 
 
 class _CompactMaterialPlan(NativeTransportTicket):
-    def __init__(self, raw, projection, refs, arrays, control, validate):
+    def __init__(self, raw, projection, refs, arrays, control, validate, validator_owner=None):
         super().__init__(projection, control, _copy_bound(projection.document), _mint=_MINT)
         self._raw, self._refs, self._arrays = raw, refs, arrays
         self._kind = projection.document["kind"]
         self._validate, self._iterator = validate, None
+        self._validator_owner = validator_owner
 
     def _values(self, space, budget):
         with self._lock:
@@ -245,8 +246,11 @@ class _CompactMaterialPlan(NativeTransportTicket):
                 raise
 
     def _discard(self):
+        validator, self._validator_owner = self._validator_owner, None
         self._raw = self._refs = self._arrays = self._validate = None
         super()._discard()
+        if validator is not None:
+            validator.close()
 
     def close(self):
         with self._lock:
@@ -259,7 +263,7 @@ class _CompactMaterialPlan(NativeTransportTicket):
                 self._discard()
 
 
-def _open_compact_plan(raw, view, budget, *, validate_value, expected_host=None):
+def _open_compact_plan(raw, view, budget, *, validate_value, expected_host=None, _validator_owner=None):
     """Internal parser construction; generic NativeCodec integration is separate.
 
     validate_value(space, decoded_value, is_operation) must fully validate the
@@ -275,14 +279,14 @@ def _open_compact_plan(raw, view, budget, *, validate_value, expected_host=None)
         control = call.adopt(control)
         projection, refs, arrays = _parse_compact_header(
             raw, view, expected_host, call, _scanner=_MaterialScanner, _plan=True)
-        result = _CompactMaterialPlan(raw, projection, refs, arrays, control, validate_value)
+        result = _CompactMaterialPlan(raw, projection, refs, arrays, control, validate_value, _validator_owner)
         projection = control = refs = arrays = None
         call.finish()
         call = None
         return result
     except BaseException as error:
         _retire_failure(error)
-        raw = budget = validate_value = refs = arrays = None
+        raw = budget = validate_value = refs = arrays = _validator_owner = None
         if projection is not None:
             projection.close()
             projection = None

@@ -1,6 +1,9 @@
 # Compact material-plan parser primitive
 
-Status: **unselected Observer-owned G1 parser component**. Mesh compatibility
+Status: **unselected Observer-owned G1 parser component**. The optional
+[Agent codec/profile integration](delta-sync-compact-codec.md) now connects this
+primitive to committed public Mesh R2 APIs; the parser surface below stays
+private to Observer. Mesh compatibility
 confirmation `e-7a500abe` accepts the exact `c161090` raw/native convention for
 dependent integration. The accepted schema, proposal, vectors and independent
 verifier remain byte-identical to that commit. No encoding/schema identifier is
@@ -10,11 +13,12 @@ allocated or frozen; no runtime route or installed selection changes.
 
 The private `sync_compact_plan._open_compact_plan` helper prepares the parser
 portion of the agreed NativeInputPlan. Its returned object exposes the existing
-revocable `header`/`close` pattern. It is **not yet a configured NativeCodec or a
-complete generic admission path**. The generic CodecSpec/AliasSpec DTO adapter,
-record-first normalization, positional reference resolution, canonical packing,
-profile compact-mask branch and native serializer/journal remain separate G1
-work against Mesh's committed public API checkpoint.
+revocable `header`/`close` pattern. It is **not itself a NativeCodec or an admission path**. The separate optional
+[Agent adapter/profile](delta-sync-compact-codec.md) now supplies CodecSpec/
+AliasSpec DTOs, record-first normalization, positional reference resolution,
+canonical packing and compact-mask admission through committed public APIs.
+That unselected source integration has its own evidence; native serialization/
+journal/source configuration and full qualification remain separate G1 work.
 
 Open scans the complete strict frame once for grammar, UTF-8, integers, bounded
 root/header/dictionary fields and all eight closed table/operation arrays. The
