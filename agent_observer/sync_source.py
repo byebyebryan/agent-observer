@@ -312,9 +312,11 @@ class CachedAgentSyncSource:
         if kind == "transaction" and operation == "changes":
             target, result = tuple(request["targetTag"]), tuple(value["resultTag"])
             if (tuple(value["baseTag"]) != stream.change_tag or result[0] != target[0]
-                    or result[1] > target[1] or result[1] == target[1] and result != target):
+                    or result[1] > target[1] or result[1] == target[1] and result != target
+                    or stream.cursor is not None and tuple(value["baseCursor"]) != stream.cursor):
                 raise ContractError("sync_change_order")
             stream.change_tag = result
+            stream.cursor = tuple(value["resultCursor"])
         if kind == "transaction" and operation == "watch":
             if tuple(value["baseCursor"]) != stream.cursor:
                 raise ContractError("sync_watch_order")
@@ -322,10 +324,12 @@ class CachedAgentSyncSource:
         if kind == "control" and operation == "watch" and value["status"] in {"complete", "heartbeat"}:
             if value.get("cursor") is not None and tuple(value["cursor"]) != stream.cursor:
                 raise ContractError("sync_watch_order")
-        if kind == "control" and operation == "changes" and value["status"] == "complete":
-            if (value.get("baseTag") != request["baseTag"]
+        if kind == "control" and operation == "changes" and value["status"] in {"complete", "heartbeat"}:
+            if (value["status"] != "complete" or value.get("baseTag") != request["baseTag"]
                     or value.get("targetTag") != request["targetTag"]
-                    or stream.change_tag != tuple(request["targetTag"])):
+                    or value.get("tag") != request["targetTag"]
+                    or stream.change_tag != tuple(request["targetTag"])
+                    or stream.cursor is not None and tuple(value["cursor"]) != stream.cursor):
                 raise ContractError("sync_change_target")
         self._admit(value, history=history)
         self._counts["frames"] += 1

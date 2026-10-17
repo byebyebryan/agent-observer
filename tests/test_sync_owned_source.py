@@ -179,6 +179,75 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
         for value in result:
             with self.assertRaisesRegex(ProtocolError, "sync_input_retired"):
                 _ = value.nbytes
+
+    async def test_change_completion_correlation_rejects_for_plain_and_owned_without_revoking_siblings(self):
+        baseline = await self.session.baseline()
+        sibling = self.source.open_session(self.inputs)
+        other = await sibling.baseline()
+        held = self.cache.ledger.reserved, self.cache.ledger.encoded_reserved
+        errors, enabled = [], gc.isenabled()
+        gc.disable()
+        try:
+            for owned in (False, True):
+                for case in ("wrong-target", "heartbeat", "foreign-control", "foreign-transaction"):
+                    with self.subTest(owned=owned, case=case):
+                        transactions = [copy.deepcopy(self.transaction)]
+                        terminal = message_fixture("control", generation=3 if case == "wrong-target" else 2)
+                        target = transactions[-1]["resultTag"]
+                        if case == "heartbeat":
+                            terminal["status"] = "heartbeat"
+                        if case == "foreign-control":
+                            terminal["ownerClock"]["ownerEpoch"] = terminal["cursor"][0] = "00000000-0000-0000-0000-000000000008"
+                        if case == "foreign-transaction":
+                            following = message_fixture("transaction", generation=3)
+                            following["baseCursor"][0] = following["resultCursor"][0] = "00000000-0000-0000-0000-000000000008"
+                            transactions.append(following)
+                            target = following["resultTag"]
+                            terminal = message_fixture("control", generation=3)
+                            terminal["ownerClock"]["ownerEpoch"] = terminal["cursor"][0] = following["resultCursor"][0]
+                        terminal.update(baseTag=self.baseline["tag"], targetTag=target)
+                        await self.responses([*transactions, terminal])
+                        source = CachedAgentSyncSource("fixture", self.path, timeout=1)
+                        session = source.open_session(self.inputs) if owned else None
+                        method = session.changes if owned else source.changes
+                        try:
+                            try:
+                                returned = await method(self.baseline["tag"], target=target)
+                            except ContractError as error:
+                                self.assertIn(error.args[0], ("sync_change_target", "sync_change_order"))
+                                errors.append(error)
+                            else:
+                                if owned:
+                                    for ref in returned:
+                                        ref.close()
+                                returned = None
+                                self.fail("uncorrelated change completion accepted")
+                        finally:
+                            await source.aclose()
+                        self.assertEqual((self.cache.ledger.reserved, self.cache.ledger.encoded_reserved), held)
+                        self.assertEqual(self.session.inspect()["ownedRefs"], 1)
+                        self.assertEqual(self.session.inspect()["ownedTickets"], 1)
+                        self.assertGreater(baseline.data.nbytes, 0)
+                        self.assertGreater(other.data.nbytes, 0)
+                        self.assertEqual(sibling.inspect()["ownedRefs"], 1)
+            self.assertEqual(len(errors), 8)
+        finally:
+            if enabled:
+                gc.enable()
+            baseline.close()
+            other.close()
+            await sibling.aclose()
+
+    async def test_zero_transaction_exact_completion_preserves_legacy_success_shape(self):
+        terminal = message_fixture("control")
+        terminal.update(baseTag=self.baseline["tag"], targetTag=self.baseline["tag"])
+        for owned in (False, True):
+            await self.responses([terminal])
+            method = self.session.changes if owned else self.source.changes
+            self.assertEqual(await method(self.baseline["tag"], target=self.baseline["tag"]), ())
+            self.assertEqual(self.cache.ledger.encoded_reserved, 0)
+            self.assertEqual(self.session.inspect()["ownedRefs"], 0)
+            self.assertEqual(self.session.inspect()["ownedTickets"], 0)
         self.assertEqual(self.session.inspect()["ownedRefs"], 0)
         self.assertEqual(self.cache.ledger.encoded_reserved, 0)
 
