@@ -1,0 +1,125 @@
+{
+  "arithmetic": {
+    "boundary": "Unadmitted toy JSON-fragment preservation/formulas only; structural LF with no terminal LF",
+    "bytesUnchangedFromPriorReview": true,
+    "fixture": {
+      "bytes": 12690,
+      "commit": "7d7b09c97f7487662911968abb8a88ca7b7f9469",
+      "path": "docs/evidence/2026-10-16-delta-sync/relay-api-r2-vectors.json",
+      "repository": "/home/bryan/code/mesh-plus",
+      "sha256": "968ea89860e86fc8493681f6a8edc472c99794fbf580275d9bde5a2efa29c39d"
+    },
+    "nativeFramingAcceptance": false,
+    "newReplayClaimed": false,
+    "oracle": {
+      "bytes": 9594,
+      "commit": "7d7b09c97f7487662911968abb8a88ca7b7f9469",
+      "path": "scripts/reproduce-sync-relay-vectors.py",
+      "repository": "/home/bryan/code/mesh-plus",
+      "sha256": "defeb1d4c67b811a3fefc3f3586759d8005fd758cbe19bf110bbdca2469defcf"
+    },
+    "priorIndependentOutputSha256": "bedda7ac9ff57897d7d26d57dee6bb03fbfa6eef82c4ae0af02564ba0252c273",
+    "priorIndependentPythonVersions": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "priorPositiveCount": 12,
+    "priorRejectionCount": 4
+  },
+  "effects": {
+    "artifactOrInstall": false,
+    "dependentRelayImplemented": false,
+    "packageAllocation": false,
+    "rollout": false,
+    "runtimeEdits": false,
+    "schemaOrIdAllocation": false,
+    "serviceOrProviderAction": false,
+    "siblingEdits": false
+  },
+  "event": "e-2e58e119",
+  "host": "starship",
+  "meshR4": {
+    "bytes": 47213,
+    "commit": "7d7b09c97f7487662911968abb8a88ca7b7f9469",
+    "path": "docs/delta-sync-relay-api-r4.md",
+    "repository": "/home/bryan/code/mesh-plus",
+    "sha256": "5377d3a52c9e20bc839a1ecc135199b3103786f71b3e6e73a3e61a283dad7e5e"
+  },
+  "meshR4ReviewManifest": {
+    "bytes": 4953,
+    "commit": "7d7b09c97f7487662911968abb8a88ca7b7f9469",
+    "path": "docs/evidence/2026-10-16-delta-sync/relay-api-r4-review.json",
+    "repository": "/home/bryan/code/mesh-plus",
+    "sha256": "214d4e5a906c68e0060d5077f86d04eda1a10f92f8734edac46aef55987cb5fe"
+  },
+  "observerRuntimeCommit": "4254a97e1b07b8428a62771e291cdc3d4b722f66",
+  "priorEvidence": {
+    "bytes": 6287,
+    "commit": "b6c40f9289f24bde98c696ea792428e77c38436b",
+    "path": "docs/evidence/2026-10-16-delta-sync-source/relay-r2-review.json",
+    "repository": "/home/bryan/code/agent-observer-active-feed",
+    "sha256": "5601f36745934d312e35499e8ebc4b1fd254b490efd4c7215ae2b21834520847"
+  },
+  "priorReview": {
+    "bytes": 9625,
+    "commit": "b6c40f9289f24bde98c696ea792428e77c38436b",
+    "path": "docs/delta-sync-relay-r2-review.md",
+    "repository": "/home/bryan/code/agent-observer-active-feed",
+    "sha256": "623c73557338aa3d7dbd90038354c44c39b787f1ee07709721299e7df3019715"
+  },
+  "remainingGates": [
+    "coordinator exact A1 closure",
+    "agreed source/scanner/HeaderRef/relay implementation",
+    "independent Reader domain/root/proof and native framing qualification",
+    "aggregate resources and physical GC-disabled lifetime",
+    "matched dense CPU/cold/recovery",
+    "actual populated IPC/fixed SSH and immutable installed pair"
+  ],
+  "remainingObserverContractConflicts": [],
+  "resolvedCompletion": [
+    "NativeTransportTicket.header: HeaderRef",
+    "HeaderRef.materialization_bytes: int",
+    "HeaderRef.materialize() -> bounded detached dict",
+    "both reject after ticket close; independent prepaid copy remains charged until physical retirement"
+  ],
+  "sameReviewScope": [
+    "source/ref/scanner/header",
+    "native identity and complete context",
+    "fresh nonce/head/moved binding",
+    "clock and nonrenewing attenuation",
+    "capsule/watch/deadline/bootstrap/reconnect",
+    "scoped ownership and physical charging"
+  ],
+  "sourceValidation": {
+    "meshCommit": "32090d69c0603955613421d100386b3809e0ab90",
+    "meshExportHashMatches": 88,
+    "observerCommit": "4254a97e1b07b8428a62771e291cdc3d4b722f66",
+    "observerInputsUnchangedAfterChecks": true,
+    "observerRuntimeAndTestHashMatches": 153,
+    "resourceOrPerformanceAcceptance": false
+  },
+  "status": "Observer exact R4 contract accepted; coordinator A1 closure still required before dependent implementation",
+  "validation": [
+    {
+      "markdownFiles": 175,
+      "optionalEnvironment": "system Python without Mesh/schema dependencies",
+      "path": ".cache/relay-r4-review/check.log",
+      "result": "PASS",
+      "scope": "required source/documentation check; no relay runtime implementation",
+      "sha256": "d539063bfbc3e6e7d357ddd65601455017af8cf9816f85f48eedc1bc8894bdc2",
+      "skips": 124,
+      "tests": 829
+    },
+    {
+      "markdownFiles": 175,
+      "optionalEnvironment": "Python3.14.8, existing isolated dependencies, immutable Mesh32090d6 source export",
+      "path": ".cache/relay-r4-review/check-final.log",
+      "result": "PASS",
+      "scope": "required source/documentation check; no relay runtime implementation",
+      "sha256": "d72e7b8e614a764a72bb580736d681fd205ffc46087ca4d18a93996f2db96ce0",
+      "skips": 0,
+      "tests": 829
+    }
+  ],
+  "workingR4EqualsCommitted": true
+}

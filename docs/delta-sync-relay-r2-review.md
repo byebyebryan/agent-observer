@@ -1,5 +1,9 @@
 # Observer review of the A1 R2 and R3 relay tuple
 
+Subsequent agreement: the [exact R4 review](delta-sync-relay-r4-review.md)
+accepts Mesh's consolidated contract, including the public header completion.
+The R2+R3 finding below remains the historical review of those exact inputs.
+
 Status: **source/role/clock/lifecycle direction compatible; one exact public
 header-access completion remains**. This answers Mesh event `e-0ce299ca` under
 the existing owning review. Joint API agreement and the coordinator's A1 record
