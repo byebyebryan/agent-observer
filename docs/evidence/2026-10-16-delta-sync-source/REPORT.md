@@ -1,6 +1,7 @@
 # Snapshot/delta sync source checkpoint
 
-This is unfinished G1 source evidence on Starship, at Observer `100637b`.
+This is unfinished G1 source evidence on Starship, beginning at Observer
+`100637b`; later source checkpoints are recorded below.
 Producer acceptance is **not granted**. There is no candidate wheel, package
 selection, installed candidate, live service change or consumer acceptance.
 G0's `ed771e5` / `a376bc84` appendix remains unchanged.
@@ -120,6 +121,29 @@ The layout is not emitted or accepted by the runtime, is not a frozen schema,
 and has no budgeted admission/transport evidence. A changed final descriptor
 will change dependent body IDs and field tokens. The detached oracle materializes
 tables and is not a proposed sparse receiver implementation.
+
+## Subsequent allocation-bookkeeping path
+
+A bounded current profile attributes substantial cost to allocation bookkeeping
+and staged persistent-map updates. The next source change uses direct lookups
+in the same identity shards and avoids constructing JSON graph/ref/encoding
+worklists when an allocation owns no JSON roots or canonical encodings. It
+preserves the same eager capacity check, constructor credit transfer, payload,
+metadata and allocation counters. Public reservation tests cover bufferless
+credit transfer, metadata ownership and atomic rejection; existing map, dual-cap,
+replay and delivery tests exercise branch allocations and reclamation.
+
+One serial before/after source pair at 2,000 dense rows measures 1,846.74 ms
+versus 1,764.64 ms per generation, a 4.45% reduction. The parent is `abd50bd`;
+[accounting-pair.json](accounting-pair.json) records exact transitive input hashes,
+all six samples and component timings on both sides. The signatures match;
+both sides peak at 62,171,223 accounted bytes, retain valid roots, report six
+baseline-required fallbacks and close with zero live allocations/objects.
+
+This pair is exploratory optimization evidence, not repeated installed ABBA
+or a passed producer gate. The matched dense ABBA above remains **FAIL**;
+compact recovery and the other required workloads remain open. No omission of
+delivery/recovery work is credited as a saving.
 
 ## Remaining work
 

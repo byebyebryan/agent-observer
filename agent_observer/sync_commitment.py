@@ -453,6 +453,12 @@ class _IdentityIndex(Mapping):
     def __getitem__(self, marker):
         return self._shards[self._bucket(marker)][marker]
 
+    def get(self, marker, default=None):
+        return self._shards[self._bucket(marker)].get(marker, default)
+
+    def __contains__(self, marker):
+        return marker in self._shards[self._bucket(marker)]
+
     def __setitem__(self, marker, value):
         shard = self._shards[self._bucket(marker)]
         before = sys.getsizeof(shard)
@@ -689,6 +695,24 @@ class AllocationAccount:
                 ):
                     raise CommitmentError("sync_allocation_credit")
                 credit_size = credit._size - credit_keep
+            if not unique and not encodings:
+                # Branch nodes own fixed payload/metadata but no JSON roots.
+                # Keep their exact capacity/credit/statistics behavior without
+                # constructing the graph/ref/encoding worklists used below.
+                added = size + payload + overhead
+                if self._used + added - credit_size > self.limit:
+                    raise BudgetExceeded("sync_allocation_limit")
+                self._used += added - credit_size
+                if credit is not None:
+                    credit._size -= credit_size
+                    self._totals[credit._kind] -= credit_size
+                self._peak = max(self._peak, self._used)
+                self._totals[kind] += size
+                self._totals["value_bytes"] += payload
+                self._totals["accounting"] += overhead
+                self._created += 1
+                self._leases += 1
+                return
             increments = dict.fromkeys(unique, 1)
             if all(type(value) is bytes for value, _, _ in unique.values()):
                 # Immutable byte buffers have no owned children. Their common

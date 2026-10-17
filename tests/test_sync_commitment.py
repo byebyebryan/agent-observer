@@ -810,6 +810,29 @@ class AllocationTest(unittest.TestCase):
         lease.release()
         self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
 
+    def test_bufferless_credit_still_charges_metadata_and_rejects_atomically(self):
+        account = sync.AllocationAccount(limit=65536)
+        credit = account.reserve(16000, kind="encoded")
+        before = account.snapshot()
+        with self.assertRaises(sync.BudgetExceeded):
+            account.retain_bytes(size=account.limit, kind="queue", credit=credit)
+        self.assertEqual(credit._size, 16000)
+        self.assertEqual(account.snapshot(), before)
+        lease = account.retain_bytes(size=4000, kind="queue", credit=credit)
+        self.assertEqual(credit._size, 0)
+        report = account.snapshot()
+        self.assertEqual(report["objects"], 0)
+        self.assertEqual(report["byKind"]["queue"], 4000)
+        self.assertEqual(report["byKind"]["encoded"], 0)
+        # Empty immutable payloads still retain both lease bookkeeping roots.
+        self.assertEqual((report["leases"], report["allocations"]), (2, 2))
+        self.assertGreater(report["used"], report["base"] + 4000)
+        lease.release()
+        credit.release()
+        self.assertEqual(account.snapshot()["used"], account.snapshot()["base"])
+        with self.assertRaisesRegex(ValueError, "allocation_credit"):
+            account.retain_bytes(size=1, credit=credit)
+
     def test_budgeted_arena_priors_share_paths_and_reject_unowned_or_mutable_priors(self):
         account = sync.AllocationAccount()
         with account.json_arena() as arena:
