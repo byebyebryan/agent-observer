@@ -9,6 +9,7 @@ import sys
 import time
 import tracemalloc
 import unittest
+import weakref
 from unittest.mock import patch
 
 from test_sync_commitment import reference_root
@@ -23,6 +24,47 @@ def _wire(value):
 
 
 class EncodedMapTest(unittest.TestCase):
+    def test_gc_disabled_replay_and_rejection_reclaim_roots_and_account(self):
+        enabled = gc.isenabled()
+        gc.collect()
+        gc.disable()
+        try:
+            for tracked in (False, True):
+                account = sync.AllocationAccount()
+                reference = weakref.ref(account)
+                ledger = EncodedOwnership(account) if tracked else None
+                if ledger is not None:
+                    account.encoded_ownership = ledger
+                values = {str(i): {"v": [i, None]} for i in range(32)}
+                current = encoded.EncodedMap("records", values.items(), account=account)
+                previous = None
+                for generation in range(16):
+                    key = str(generation % 32)
+                    value = {"v": [generation + 100, "é"]}
+                    prior = current.root
+                    newer = current.patch([("put", key, current.get_hash(key), value)])
+                    self.assertEqual(current.root, prior)
+                    previous, current = current, newer
+                    values[key] = value
+                    self.assertEqual(current.root, reference_root("records", values.items()))
+                    before = account.snapshot()
+                    with self.assertRaises(ValueError):
+                        current.patch([("put", key, None, {"wrong": True})])
+                    self.assertEqual(account.snapshot()["objects"], before["objects"])
+                    self.assertEqual(account.snapshot()["allocations"], before["allocations"])
+                del previous, current, newer
+                if ledger is not None:
+                    self.assertEqual((ledger.used, ledger.count), (0, 0))
+                    ledger.close()
+                snapshot = account.snapshot()
+                self.assertEqual((snapshot["allocations"], snapshot["objects"]), (0, 0))
+                self.assertEqual(snapshot["used"], snapshot["base"])
+                del ledger, account
+                self.assertIsNone(reference())
+        finally:
+            if enabled:
+                gc.enable()
+
     def test_baseline_exact_oracle_and_detached_exports(self):
         rows = [(["host", "codex", "ns", "thread", str(index)], value)
                 for index, value in enumerate((None, True, 1, {"é": [False, None, "漢🙂"]}, {}))]

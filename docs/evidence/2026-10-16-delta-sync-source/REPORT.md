@@ -185,6 +185,39 @@ and reservation APIs. Compact normalization/input ownership, aggregate capacity
 and the failed producer CPU gate remain open. No shared codec ABI, schema, cap,
 artifact, provider or normal service changes accompany it.
 
+## GC-independent scratch and owner retirement
+
+A GC-disabled investigation at `58c20b3` found that an encoded map could report
+zero accounted allocations after its final root was dropped while its account
+still remained physically reachable. Tree build/patch recursion is method-based;
+the retained path was a per-call raw-bound visitor closure capturing a scratch
+lease/account. Freeze, reuse, thaw and the fixed-schema compiler also created
+self-referential local function cells that survived until cyclic collection.
+
+The next source checkpoint breaks those cells in `finally` on success or
+failure. A released lease drops its account and marker-tuple references. A
+closed encoded ledger drops its callback and only its own configured account
+link. Explicit owner-cache close also drops state/reserver backlinks, is
+idempotent and rejects later sync queries rather than reopening outside the
+closed ledger. Subsequent ordinary legacy acceptance remains independent.
+This is internal owner-cache teardown; a client/source close still does not
+stop the shared native service or invoke provider actions.
+
+New tests disable cyclic GC and verify repeated JSON scratch stays bounded,
+dropped compiled validators retire immediately, and encoded replay/rejection
+releases old roots and the allocation account. They also verify immediate
+physical retirement of an explicitly closed synthetic state/owner/account,
+terminal sync reads and continued legacy acceptance. Existing delivery-pin tests
+retain their independent charge until the final peer drop. The focused checks
+pass 140 tests on Python 3.14 and 3.11 without skips.
+
+The before/after weak-reference reproduction distinguishes physical retirement
+from zero ledger counts: the old encoded account and closed owner graph survived
+without collection; the corrected cases retire without calling `gc.collect()`
+after the measured operations. This is bounded synthetic lifetime evidence,
+not installed RSS/plateau, native, transport or producer acceptance. The
+packing, aggregate resource and failed CPU gates remain open.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,

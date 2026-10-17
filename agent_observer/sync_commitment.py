@@ -137,7 +137,10 @@ def freeze(value):
         finally:
             active.remove(marker)
 
-    return visit(value, set())
+    try:
+        return visit(value, set())
+    finally:
+        visit = None
 
 
 def freeze_reusing(value, prior):
@@ -195,7 +198,10 @@ def freeze_reusing(value, prior):
         finally:
             active.remove(marker)
 
-    return visit(value, prior, set())
+    try:
+        return visit(value, prior, set())
+    finally:
+        visit = None
 
 
 def thaw(value):
@@ -208,7 +214,10 @@ def thaw(value):
             return [visit(child) for child in item]
         return item
 
-    return visit(freeze(value))
+    try:
+        return visit(freeze(value))
+    finally:
+        visit = None
 
 
 def canonical(value):
@@ -523,7 +532,11 @@ class _Lease:
     def release(self):
         if self._account is not None and not self._released:
             self._released = True
-            self._account._release(self._size, self._kind, self._objects)
+            try:
+                self._account._release(self._size, self._kind, self._objects)
+            finally:
+                self._account = None
+                self._objects = None
 
     def resize(self, size):
         """Adjust one caller reservation without allocating another lease."""

@@ -229,6 +229,12 @@ class EncodedOwnership:
             self._closed = True
             self._storage.release()
             self._working.release()
+            self._detach()
+
+    def _detach(self):
+        self.preflight = None
+        if getattr(self.account, "encoded_ownership", None) is self:
+            self.account.encoded_ownership = None
 
     def _release_leaf(self, *buffers):
         if self._closed:
@@ -262,6 +268,7 @@ class EncodedOwnership:
                 self._storage.release()
             if self._working is not None:
                 self._working.release()
+            self._detach()
 
     def __del__(self):
         self._force_close()

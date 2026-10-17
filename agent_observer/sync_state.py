@@ -563,6 +563,7 @@ class OwnerSyncCache:
         if backend not in {"frozen", "encoded"}:
             raise ContractError("sync_owner_backend")
         self.state = state
+        self._closed = False
         self.backend = backend
         self.account = AllocationAccount(decoded_limit)
         self.views = {}
@@ -640,6 +641,8 @@ class OwnerSyncCache:
         return result
 
     def ensure(self, view):
+        if self._closed:
+            raise ContractError("sync_owner_closed")
         if view not in {"full", "active"}:
             raise ContractError("sync_view")
         if view == "active" and "codex" not in self.state.configs:
@@ -661,6 +664,8 @@ class OwnerSyncCache:
 
     def publish(self, *, diagnostics_only=False):
         # Called once after the existing engine/projector accepted generation.
+        if self._closed:
+            return
         for slot in tuple(self.views.values()):
             if diagnostics_only and slot.current is None:
                 continue
@@ -1293,6 +1298,8 @@ class OwnerSyncCache:
         }, MAX_CONTROL_BYTES)
 
     def _query_output(self, make, limit):
+        if self._closed:
+            raise ContractError("sync_owner_closed")
         try:
             return self._query_output_staged(make, limit)
         except (ValueError, RecursionError):
@@ -1488,6 +1495,8 @@ class OwnerSyncCache:
         return {**thaw(header), "scopes": result, "sessions": records}
 
     def close(self):
+        if self._closed:
+            return
         for item in self.query_buffers.values():
             item.close()
         self.query_buffers.clear()
@@ -1500,3 +1509,5 @@ class OwnerSyncCache:
         self.views.clear()
         if self.encoded_ownership is not None:
             self.encoded_ownership.close()
+        self._closed = True
+        self.state = self.reserver = None

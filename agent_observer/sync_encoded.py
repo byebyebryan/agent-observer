@@ -173,8 +173,11 @@ def _raw_bound(value, scratch):
         finally:
             active.remove(marker)
 
-    bound = visit(value, 0)
-    return _CONTROL + 12 * bound + 512 * nodes
+    try:
+        bound = visit(value, 0)
+        return _CONTROL + 12 * bound + 512 * nodes
+    finally:
+        visit = None
 
 
 class _EncodedLeaf(_sync._Leaf):

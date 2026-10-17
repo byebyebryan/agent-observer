@@ -9,6 +9,7 @@ import sys
 import tracemalloc
 import types
 import unittest
+import weakref
 from collections.abc import Mapping
 from types import MappingProxyType
 from unittest.mock import patch
@@ -81,6 +82,25 @@ def reference_root(space, entries):
 
 
 class CanonicalTest(unittest.TestCase):
+    def test_repeated_json_helpers_retire_scratch_with_cyclic_gc_disabled(self):
+        enabled = gc.isenabled()
+        gc.collect()
+        gc.disable()
+        tracemalloc.start()
+        try:
+            for index in range(200):
+                value = {"nested": [index, None, {"text": "é" * 32}]}
+                frozen = sync.freeze(value)
+                self.assertEqual(sync.thaw(sync.freeze_reusing(value, frozen)), value)
+                sync.canonical(frozen)
+            del value, frozen
+            retained, _peak = tracemalloc.get_traced_memory()
+            self.assertLess(retained, 64 * 1024)
+        finally:
+            tracemalloc.stop()
+            if enabled:
+                gc.enable()
+
     def test_freeze_reusing_shares_only_unchanged_prior_paths(self):
         prior = sync.freeze(
             {
@@ -769,6 +789,15 @@ class PersistentMapTest(unittest.TestCase):
 
 
 class AllocationTest(unittest.TestCase):
+    def test_released_reservation_does_not_keep_account_alive(self):
+        account = sync.AllocationAccount()
+        reference = weakref.ref(account)
+        lease = account.reserve(4096)
+        lease.release()
+        del account
+        self.assertIsNone(reference())
+        lease.release()
+
     def test_immutable_buffer_aliases_share_heap_until_the_last_delivery_pin(self):
         account = sync.AllocationAccount()
         body = bytes(bytearray(b"native-buffer" * 1000))

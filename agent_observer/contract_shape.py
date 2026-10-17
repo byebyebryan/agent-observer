@@ -174,4 +174,7 @@ def compile_shape(spec, error_type, ascii_controls):
         finally:
             active.remove(marker)
 
-    return compile_node(captured)
+    try:
+        return compile_node(captured)
+    finally:
+        compile_node = None

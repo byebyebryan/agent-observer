@@ -5,6 +5,7 @@ import gc
 import hashlib
 import json
 import unittest
+import weakref
 from unittest.mock import patch
 
 from test_service_state import provider_snapshot
@@ -83,6 +84,35 @@ class Replay:
 
 
 class SyncStateTest(unittest.TestCase):
+    def test_explicit_close_retires_owner_without_gc_and_keeps_legacy_independent(self):
+        enabled = gc.isenabled()
+        gc.collect()
+        gc.disable()
+        try:
+            state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")},
+                                 uid=1000, clock=lambda: 15000,
+                                 boot_id="00000000-0000-4000-8000-000000000001", clock_domain="time:[123]")
+            owner = state._sync_owner()
+            owner.ensure("full")
+            owner.ensure("active")
+            references = [weakref.ref(value) for value in (state, owner, owner.account)]
+            owner.close()
+            owner.close()
+            state.attempt("codex", "runtime")
+            state.accept("codex", "runtime", provider_snapshot("codex"), sampled_ms=15000, ttl_ms=5000)
+            self.assertIsNotNone(state.frame("view", 2)["snapshot"])
+            for view in ("full", "active"):
+                with self.assertRaisesRegex(ContractError, "sync_owner_closed"):
+                    state.sync_baseline(view)
+                with self.assertRaisesRegex(ContractError, "sync_owner_closed"):
+                    state.sync_head(view, {})
+            self.assertEqual(owner.account.snapshot()["used"], owner.account.snapshot()["base"])
+            del owner, state
+            self.assertTrue(all(reference() is None for reference in references))
+        finally:
+            if enabled:
+                gc.enable()
+
     def setUp(self):
         self.now = 15000
         self.state = ServiceState(

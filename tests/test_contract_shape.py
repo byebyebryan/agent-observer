@@ -1,8 +1,10 @@
 """Differential fixed-schema compilation against public shape admission."""
 
 import copy
+import gc
 import json
 import unittest
+import weakref
 from pathlib import Path
 
 from agent_observer.contract import (
@@ -101,6 +103,22 @@ def _enriched_row():
 
 
 class ContractShapeTests(unittest.TestCase):
+    def test_dropped_compiled_shape_retires_without_cyclic_collection(self):
+        enabled = gc.isenabled()
+        gc.collect()
+        gc.disable()
+        try:
+            compiled = compile_shape({"type": "object", "properties": {
+                "items": {"type": "array", "items": {"type": "integer"}}}},
+                ContractError, ASCII_CONTROLS)
+            compiled({"items": [1, 2, 3]})
+            reference = weakref.ref(compiled)
+            del compiled
+            self.assertIsNone(reference())
+        finally:
+            if enabled:
+                gc.enable()
+
     def compare(self, spec, values):
         compiled = compile_shape(spec, ContractError, ASCII_CONTROLS)
         for value in values:
