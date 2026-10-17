@@ -533,3 +533,30 @@ record the two changed source/test files. This is synthetic local source
 correctness evidence, not relay runtime, native-provider, installed, resource
 or producer acceptance. The separate Mesh input-owner publication issue and
 all failed/open G1 gates remain unchanged.
+
+## Owned-watch revocation at close start
+
+Root event `e-3a34f192` found that owned-watch refs remained usable while close
+cleanup had not yet run. The source now retires the watch's private scope and
+its returned data/control tickets before scheduling or awaiting cleanup.
+Receive, pre-seal and return checks reject a retired watch, including a frame
+finishing after close and a completed packet waiting for its watch awaiter.
+Late received chunks still count in transport byte diagnostics before discard.
+No new public scope API or shared InputOwner close is needed.
+
+Held-cleanup regressions preserve prior baseline/sibling tickets and retain
+unread partial-frame, request and active receive credit until physical cleanup.
+After cleanup, shared credit returns to pre-watch values and siblings/input
+owner remain usable. The two tests fail three checks against an isolated
+`f14fb67` runtime with the exact new test overlay, then pass against the fix.
+Root's unchanged probe reproduces its 1,185-byte usable ref before the fix and
+reports revocation before cleanup afterward, with its prior baseline intact.
+
+All 22 owned-source tests pass without skips against exact Mesh `1d50db0` on
+Python 3.14.8 and 3.11.17. The broader 101-test source/header/profile/facade suite
+passes without skips on both versions against immutable Mesh `32090d6`.
+[Evidence and manifests](source-watch-close.json) bind 153 Observer inputs and
+88 inputs for each Mesh revision. This is a source correctness prerequisite;
+API/caps/roles, normal services/providers and sibling files are unchanged.
+Relay/codec agreement, inclusive resources, CPU/capacity/recovery and
+native/installed paired acceptance remain open.

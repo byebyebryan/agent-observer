@@ -68,6 +68,7 @@ class _History:
     generation: int = 0
     emitted: int = 0
     receipts: dict = field(default_factory=dict)
+    retired: bool = False
 
 
 async def _finish_owned(task):

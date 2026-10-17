@@ -155,6 +155,20 @@ class OwnedSourceWatch(SourceWatch):
         super().__init__(session._client, request)
         self._session, self._request_lease = weakref.ref(session), lease
 
+    def _retire(self):
+        self._closed = True
+        if not self._history.retired:
+            self._history.retired = True
+            session = self._session()
+            if session is not None:
+                session._revoke_scope(self._history)
+
+    async def aclose(self):
+        # Revoke before scheduling or awaiting any cleanup, including when a
+        # pending frame has finished but has not reached its watch awaiter.
+        self._retire()
+        await super().aclose()
+
     async def __anext__(self):
         try:
             return await super().__anext__()
@@ -165,9 +179,7 @@ class OwnedSourceWatch(SourceWatch):
             raise error from None
 
     async def _close(self):
-        session = self._session()
-        if session is not None:
-            session._revoke_scope(self._history)
+        self._retire()
         try:
             await super()._close()
         finally:
@@ -183,11 +195,14 @@ class _OwnedClient(CachedAgentSyncSource):
         self._parent_source, self._session = weakref.ref(parent), weakref.ref(session)
 
     def _watch_value(self, received):
+        if received._scope is None or received._scope.retired:
+            received.close()
+            raise ContractError("sync_source_closed")
         return received if isinstance(received, OwnedSyncControl) else received._detach()
 
     async def _read_frame(self, peer, request, node, stream, history):
         session = self._session()
-        session._check()
+        session._check(history)
         if stream.intake is None:
             stream.intake = session._reserve(_IO_HEAP, encoded_bytes=_CHUNK)
         credit = stream.intake
@@ -212,6 +227,7 @@ class _OwnedClient(CachedAgentSyncSource):
                 if not part:
                     raise ContractError("sync_disconnected")
                 self._counts["receivedBytes"] += len(part)
+                session._check(history)
                 stream.pending.extend(part)
                 part = None
                 credit.resize(_IO_HEAP + _capacity(stream.pending), encoded_bytes=_capacity(stream.pending) + _CHUNK)
@@ -238,7 +254,7 @@ class _OwnedClient(CachedAgentSyncSource):
             if boottime_ms() >= deadline:
                 raise ContractError("service_transport_timeout")
             self._check_frame(request, node, stream, history, header.document)
-            session._check()
+            session._check(history)
             session._prune_refs()
             if len(session._refs) >= _MAX_ITEMS or len(session._packets) >= _MAX_ITEMS:
                 raise ContractError("sync_source_ownership_capacity")
@@ -333,9 +349,9 @@ class OwnedSourceSession:
         self._client = _OwnedClient(parent, self)
         parent._sessions.add(self)
 
-    def _check(self):
+    def _check(self, history=None):
         parent = self._parent()
-        if self._closed or parent is None or parent._closed:
+        if self._closed or parent is None or parent._closed or history is not None and history.retired:
             raise ContractError("sync_source_closed")
 
     def _reserve(self, heap_bytes, *, encoded_bytes=0):

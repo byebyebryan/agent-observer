@@ -208,17 +208,49 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
         baseline = await self.session.baseline()
         sibling = self.source.open_session(self.inputs)
         other = await sibling.baseline()
+        before_watch = self.cache.ledger.reserved, self.cache.ledger.encoded_reserved
+        tail = wire(message_fixture("transaction", generation=3))[:73]
+        await self.responses([wire(message_fixture("control")) + wire(self.transaction) + tail], pause_after=0)
         watch = self.session.watch(baseline.cursor)
         control = await anext(watch)
         self.assertIsInstance(control, OwnedSyncControl)
-        self.updates.put_nowait(self.transaction)
         update = await anext(watch)
         self.assertEqual(update.nbytes, len(wire(self.transaction)))
-        await watch.aclose()
-        with self.assertRaisesRegex(ProtocolError, "sync_input_retired"):
-            _ = update.nbytes
-        with self.assertRaisesRegex(ContractError, "sync_ticket_closed"):
-            _ = control.status
+        control_data = control.data
+        encoded_before_close = self.cache.ledger.encoded_reserved
+        retired_bytes = update.nbytes + control_data.nbytes
+        entered, release = asyncio.Event(), asyncio.Event()
+        cleanup = watch._close
+
+        async def gated_cleanup():
+            entered.set()
+            await release.wait()
+            await cleanup()
+
+        try:
+            with patch.object(watch, "_close", side_effect=gated_cleanup):
+                closing = asyncio.create_task(watch.aclose())
+                try:
+                    await asyncio.wait_for(entered.wait(), 2)
+                    with self.assertRaisesRegex(ProtocolError, "sync_input_retired"):
+                        _ = update.nbytes
+                    with self.assertRaisesRegex(ProtocolError, "sync_input_retired"):
+                        _ = control_data.nbytes
+                    with self.assertRaisesRegex(ContractError, "sync_ticket_closed"):
+                        _ = control.status
+                    # The unread partial frame, stream and request remain live.
+                    self.assertEqual(self.cache.ledger.encoded_reserved, encoded_before_close - retired_bytes)
+                    self.assertGreater(self.cache.ledger.encoded_reserved, before_watch[1] + len(tail))
+                    self.assertGreater(self.cache.ledger.reserved, before_watch[0])
+                    self.assertGreater(baseline.data.nbytes, 0)
+                    self.assertGreater(other.data.nbytes, 0)
+                finally:
+                    release.set()
+                    await closing
+        finally:
+            self.release.set()
+            await watch.aclose()
+        self.assertEqual((self.cache.ledger.reserved, self.cache.ledger.encoded_reserved), before_watch)
         self.assertEqual(baseline.data.nbytes, len(wire(self.baseline)))
         await self.session.aclose()
         self.assertEqual(other.data.nbytes, len(wire(self.baseline)))
@@ -226,6 +258,93 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.source.inspect()["activeSessions"], 1)
         other.close()
         await sibling.aclose()
+
+    async def test_watch_close_rejects_inflight_and_completed_frames_without_late_refs(self):
+        baseline = await self.session.baseline()
+        sibling = self.source.open_session(self.inputs)
+        other = await sibling.baseline()
+        try:
+            for phase in ("receiving", "completed"):
+                with self.subTest(phase=phase):
+                    await self.check_watch_close_frame(phase, baseline, other)
+            usable = await sibling.baseline()
+            usable.close()
+        finally:
+            baseline.close()
+            other.close()
+            await sibling.aclose()
+
+    async def check_watch_close_frame(self, phase, baseline, other):
+        before_watch = self.cache.ledger.reserved, self.cache.ledger.encoded_reserved
+        watch = self.session.watch(baseline.cursor)
+        (await anext(watch)).close()
+        entered, returned, release_frame = asyncio.Event(), asyncio.Event(), asyncio.Event()
+        cleanup_entered, release_cleanup = asyncio.Event(), asyncio.Event()
+        original_io, original_frame = self.session._client._io, self.session._client._read_frame
+        cleanup = watch._close
+        received_bytes = 0
+
+        async def receive(operation, timeout):
+            nonlocal received_bytes
+            if phase == "receiving":
+                entered.set()
+            part = await original_io(operation, timeout)
+            received_bytes += len(part)
+            return part
+
+        async def frame(*args, **kwargs):
+            try:
+                result = await original_frame(*args, **kwargs)
+                if phase == "completed":
+                    entered.set()
+                    await release_frame.wait()
+                return result
+            finally:
+                returned.set()
+
+        async def gated_cleanup():
+            cleanup_entered.set()
+            await release_cleanup.wait()
+            await cleanup()
+
+        with (patch.object(self.session._client, "_io", side_effect=receive),
+              patch.object(self.session._client, "_read_frame", side_effect=frame),
+              patch.object(watch, "_close", side_effect=gated_cleanup)):
+            pending = asyncio.create_task(anext(watch))
+            closing = None
+            try:
+                if phase == "completed":
+                    self.updates.put_nowait(self.transaction)
+                await asyncio.wait_for(entered.wait(), 2)
+                held_credit = self.cache.ledger.reserved, self.cache.ledger.encoded_reserved
+                bytes_before_close = self.session.inspect()["receivedBytes"]
+                closing = asyncio.create_task(watch.aclose())
+                await asyncio.wait_for(cleanup_entered.wait(), 2)
+                if phase == "receiving":
+                    self.assertEqual((self.cache.ledger.reserved, self.cache.ledger.encoded_reserved), held_credit)
+                    self.updates.put_nowait(self.transaction)
+                else:
+                    release_frame.set()
+                await asyncio.wait_for(returned.wait(), 2)
+                counts = self.session.inspect()
+                self.assertEqual((counts["ownedRefs"], counts["ownedTickets"]), (1, 1))
+                self.assertEqual(counts["receivedBytes"], bytes_before_close + (
+                    received_bytes if phase == "receiving" else 0))
+                self.assertFalse(pending.done())  # late failure still awaits cleanup
+                self.assertGreater(self.cache.ledger.reserved, before_watch[0])
+                self.assertGreater(baseline.data.nbytes, 0)
+                self.assertGreater(other.data.nbytes, 0)
+            finally:
+                release_frame.set()
+                release_cleanup.set()
+                await watch.aclose()
+                outcomes = await asyncio.gather(pending, *(() if closing is None else (closing,)),
+                                                return_exceptions=True)
+            self.assertIsInstance(outcomes[0], ContractError)
+            self.assertEqual(str(outcomes[0]), "sync_source_closed")
+        self.assertEqual((self.cache.ledger.reserved, self.cache.ledger.encoded_reserved), before_watch)
+        with self.inputs.reserve(0):
+            pass
 
     async def test_head_and_explicit_resync_control_are_owned_without_authority(self):
         data = await self.session.head_after_nonce({"nonce": "b" * 32})
