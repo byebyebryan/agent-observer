@@ -371,3 +371,18 @@ aggregate intake+material peaks, RSS, installed/native/SSH proof delivery,
 immutable artifacts or the failed dense combined CPU gate. Expanded full 2,000
 baseline/recovery remains undeliverable under the fixed frame limit; the
 historical ownership probes and their limited head-only case remain separate.
+
+## Historical counterpart fixture failure reconciliation
+
+Mesh's earlier `protocol-metadata-source.gate2.log` records a real `ABSENT`
+NameError during a mixed-source run. The owning `58c20b3` commit already added
+that import; no new runtime or fixture edit was necessary. The historical Mesh
+report remains failed, rather than acquiring retrospective acceptance.
+
+Against stable Observer `4030d50`, all 31 profile tests now pass with zero skips
+on each immutable Mesh export `8b06de35e49dd4da5f61f80e350c338b11aa8e3f`
+and `0ca3b99c7413d2542ab48ff11e8e58fb82f73d93`. Before/after source hashes
+match. [fixture-reconciliation.json](fixture-reconciliation.json) records the
+exact fixture, failure-log hash, source inputs and fresh results. These checks
+reconcile that fixture issue only; all producer readiness limitations above
+remain in force.
