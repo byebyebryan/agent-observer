@@ -1,0 +1,56 @@
+{
+  "coverage": [
+    "8-row EncodedMap with4 patches",
+    "empty full/active OwnerSyncCache",
+    "cyclic GC disabled after initial pre-measurement collection",
+    "no gc.collect after measured teardown"
+  ],
+  "event": "e-aa6ae49e",
+  "excluded": [
+    "live source/client/slow-output pins",
+    "RSS/plateau/total process resource acceptance",
+    "native/provider/service actions",
+    "installed candidate/G2/producer acceptance"
+  ],
+  "observerRerun": false,
+  "originalDirectory": "/home/bryan/code/esp32-rlcd/.cache/delta-sync-integration/20261016T192225Z/gc-lifetime-review",
+  "resultSha256": "80411618f2a71bb334cf104d08637cf0345b0f1e123d2b47df664a3055a9d6cb",
+  "results": {
+    "after": {
+      "commit": "be0559e3d20147917f6db31099be915525e584cb",
+      "result": {
+        "closedOwnerLedgerLiveAllocations": 0,
+        "closedOwnerLedgerLiveObjects": 0,
+        "closedStateOwnerAccountStillReachable": [
+          false,
+          false,
+          false
+        ],
+        "cyclicGcEnabled": false,
+        "encodedMapAccountStillReachable": false,
+        "encodedMapLedgerLiveAllocations": 0,
+        "encodedMapLedgerLiveObjects": 0
+      }
+    },
+    "before": {
+      "commit": "58c20b3c1bbf45fc3cc8e364362f661930c71206",
+      "result": {
+        "closedOwnerLedgerLiveAllocations": 0,
+        "closedOwnerLedgerLiveObjects": 0,
+        "closedStateOwnerAccountStillReachable": [
+          true,
+          true,
+          true
+        ],
+        "cyclicGcEnabled": false,
+        "encodedMapAccountStillReachable": true,
+        "encodedMapLedgerLiveAllocations": 0,
+        "encodedMapLedgerLiveObjects": 0
+      }
+    }
+  },
+  "reviewer": "agent-dashboard-rlcd",
+  "scope": "Attributed independent RLCD synthetic physical-retirement reproduction; static Observer review only, no rerun or broader acceptance.",
+  "scriptInspected": true,
+  "scriptSha256": "25848f350bbb82ec13f67989482e79d5984f7e727179bfd310ced7317a17a3fe"
+}

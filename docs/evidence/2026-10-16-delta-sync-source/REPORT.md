@@ -227,6 +227,17 @@ after the measured operations. This is bounded synthetic lifetime evidence,
 not installed RSS/plateau, native, transport or producer acceptance. The
 packing, aggregate resource and failed CPU gates remain open.
 
+RLCD later independently reproduced this narrow boundary in two isolated source
+snapshot processes, `58c20b3` versus `be0559e`. With cyclic GC disabled after an
+initial collection, an eight-row encoded map's account and an explicitly closed
+empty full/active state/owner/account remain weak-reachable before the fix and
+retire immediately after it; both sides report zero ledger objects/allocations.
+There is no collection after measured teardown. Observer inspected and hashed
+the retained script/result without rerunning it;
+[independent-gc-retirement.json](independent-gc-retirement.json) preserves the
+attributed inputs and results. This is independent synthetic support for the
+minimal regression fix, with no live-pin, RSS/plateau, native or G2 acceptance.
+
 ## Paused acquisition lifetime
 
 The next owning source change moves complete strict frame parsing and socket,
