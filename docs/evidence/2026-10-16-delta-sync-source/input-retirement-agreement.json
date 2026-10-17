@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 4689,
+      "path": "docs/delta-sync-input-retirement-agreement.md",
+      "sha256": "4e10173eb5cdf8b231e21f80ccf46cbfa9fce2f44d6a73f406020dcfcca008cf"
+    },
+    {
+      "bytes": 5692,
+      "path": "docs/delta-sync-source-pin-revocation.md",
+      "sha256": "fb862c82a2e79b89e6483096173b0ac59d9805355641cdd904b3c5dbfde82304"
+    },
+    {
+      "bytes": 26512,
+      "path": "docs/delta-sync-interface.md",
+      "sha256": "d3f780385d4774fbdc9b13d155e5fbe7f31d2b8cb60c9af85e9cb74db9acb3a3"
+    },
+    {
+      "bytes": 27748,
+      "path": "agent_observer/sync_owned_source.py",
+      "sha256": "c92cbd5ed503525d8fe85c6da558fd733709776e38271dd111f4410400f7f0fd"
+    },
+    {
+      "bytes": 3947,
+      "path": "docs/evidence/2026-10-16-delta-sync-source/test_source_ref_revocation.py",
+      "sha256": "95b02d0cdec4946ae4ac07a40f4257601ba59477fc9d02ad39e116fb20c347b9"
+    }
+  ],
+  "checks": [
+    {
+      "argv": [
+        "/home/bryan/code/mesh-plus/.venv/bin/python",
+        "-B",
+        "scripts/check"
+      ],
+      "canonicalTests": 924,
+      "exitCode": 0,
+      "markdown": 188,
+      "meshRuntime": "be6470edab0ae7d67063fd08b61a8019c2093e35",
+      "path": "/home/bryan/code/agent-observer-active-feed/.cache/input-retirement-agreement/full314.log",
+      "sha256": "990911151b72b1f337926926dd8e3e1d4455c4e62405f9f91ed3b3a3ac5758df",
+      "skips": 0
+    }
+  ],
+  "futureGates": [
+    "Mesh committed public-method implementation first",
+    "unchanged five-case source overlay before/after, currently3FAIL controls2PASS onbothPython",
+    "supported source adoption + setup refusal/nonbool/foreign handling",
+    "cache/relay lifecycle matrix and consuming physical credit/GCoff retention",
+    "watch/batch/receive/session close, held cleanup/repeated cancel and sibling/alias/shared-ledger cases",
+    "actual final committed pair joins and original resource/CPU/capacity/native/installed gates"
+  ],
+  "meshProposal": {
+    "bytes": 6067,
+    "path": "docs/delta-sync-ref-retirement-proposal.md",
+    "sha256": "298efa4af40a23651702ac85862d817a045e9b7e781daf363bc43e1300aaf018"
+  },
+  "meshProposalCommit": "d8d7a6233f625ba352c3451396770a61b28635c7",
+  "observerBase": "8f05305c699ac22960847c2bc757c2ef7c812d1c",
+  "publicChoice": [
+    "InputOwner.ref_is_retired(ref: OwnedInputRef) -> bool",
+    "RelayInputOwner.ref_is_retired(ref: RelayInputRef) -> bool"
+  ],
+  "requiredSemantics": [
+    "exact bound owner and role/type; false for available/active-unrevoked consume",
+    "true for logical close/revocation/completed consumption or own epoch retirement; closed same owner query allowed",
+    "foreign/raw/role/replacement/malformed rejects sync_input_owner and closes/refunds nothing",
+    "no callback/parsing/admission/proof/lease/publication or graph reclamation; bounded O1/no history/reservation",
+    "source requires callable before state reservation/I/O; exact bool, no nbytes fallback; retain false refs for scoped close",
+    "unsupported owner is explicit prerelease pairing rejection; legacy plain bytes unchanged; siblings/shared owner untouched"
+  ],
+  "scope": "docs/contract only; no runtime/sibling/service/provider/normal role/schema/encoding/artifact/version/install/rollout change",
+  "status": "Observer exact owning contract agreement; no public query runtime or source fix/acceptance claimed",
+  "supersedes": "Earlier per-ref .revoked property preference in90b4292; owner-bound alternative was explicitly allowed by m165. No two competing status APIs.",
+  "unchangedRuntimeSource": {
+    "commit": "fc7579bd2e3e6b020b4e66958e8e425e60889b93",
+    "path": "agent_observer/sync_owned_source.py",
+    "status": "still contains reproduced nbytes-prune defect"
+  }
+}

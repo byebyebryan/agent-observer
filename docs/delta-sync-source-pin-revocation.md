@@ -1,7 +1,7 @@
 # Source registry and consuming-pin revocation
 
-Status: **current-source gap reproduced; narrow public status seam proposed;
-no fix or joined acceptance claimed**.
+Status: **current-source gap reproduced; exact owner-bound public query agreed;
+no consuming-pin fix or acceptance claimed**.
 
 Mesh's `be6470edab0ae7d67063fd08b61a8019c2093e35` diagnostic also reproduces
 against the current Observer runtime `2f697d468eb3b0cb895276fd07cb746acbd23d37`,
@@ -47,16 +47,18 @@ The already accepted R4 lifetime rule says that `nbytes` rejection alone does
 not prove a consuming pin's physical retirement. Source tracking needs explicit
 public evidence of logical revocation, independent of physical pin credit.
 
-## Proposed minimal public shape, pending Mesh agreement
+## Agreed minimal public shape
 
-The preferred additive seam sent to Mesh is:
+Observer accepts Mesh `d8d7a6233f625ba352c3451396770a61b28635c7`,
+proposal SHA256 `298efa4af40a23651702ac85862d817a045e9b7e781daf363bc43e1300aaf018`,
+through this [exact owning agreement](delta-sync-input-retirement-agreement.md):
 
 ```text
-OwnedInputRef.revoked: bool
-RelayInputRef.revoked: bool  # same inherited meaning
+InputOwner.ref_is_retired(ref: OwnedInputRef) -> bool
+RelayInputOwner.ref_is_retired(ref: RelayInputRef) -> bool
 ```
 
-After mint, the status is monotonic. It is false for an available unconsumed ref
+For an exact same-owner ref the status is monotonic. It is false for an available unconsumed ref
 and for an actively consuming, unrevoked ref. It becomes true after logical
 `close`, completed consumption, or owner-epoch retirement. A logically revoked
 pin can still hold fully charged physical storage; true never means that its
@@ -64,13 +66,15 @@ bytes may be refunded. This read-only query grants no bytes, material, scope,
 ledger or proof capability. Existing `nbytes`, close, consume, exact ref types,
 caps and sibling semantics remain unchanged. No child-scope API is proposed.
 
-The source would prune only an exact true result and retain false pins for
-scoped close. The new unselected adapter must explicitly reject absent/non-bool
-status rather than fall back to the unsafe `nbytes` inference. An owner-bound
-query can meet the same invariants if Mesh prefers a setup-time capability;
-one exact public shape must be settled before dependent implementation. This
-is owning G1 coordination, not a request for general rollout permission or an
-amendment to native wire/encoding/root/receipt semantics.
+The source will prune only an exact true result and retain false pins for
+scoped close. The new unselected adapter must reject an absent/noncallable query
+before source allocation and reject non-bool results during intake, preserving
+shared owners and siblings. It never falls back to `nbytes`. Same-owner closed
+refs remain queryable; foreign/role/replacement/raw handles reject without
+closing anything. This owner-bound choice supersedes the earlier per-ref
+property preference retained in `90b4292`; it is not another wire/root/lease,
+A1 or general rollout permission change. Dependent runtime edits follow Mesh's
+committed supported method, which is not claimed by this agreement.
 
 ## Regression and next qualification
 
@@ -87,7 +91,7 @@ The [receipt](evidence/2026-10-16-delta-sync-source/source-pin-revocation.json)
 pins exact before inputs, harnesses and outputs. These expected failures are
 not an implementation pass.
 
-After the public query is agreed and available, implement the source fix through
+After the agreed public query is available, implement the source fix through
 that supported seam, rerun these identical regressions, and qualify cache/relay
 refs, receive, watch, batch and session cancellation with consuming pins held.
 The current source revocation prerequisite remains open. No native provider,

@@ -327,7 +327,8 @@ InputOwner or parent source/service. Its ref registry can remain bounded by the 
 ownership limit, preserving revokers for consuming refs and pruning only refs
 known logically revoked rather than inspecting private state. The current
 [`nbytes`-based implementation has a reproduced consuming-pin gap](delta-sync-source-pin-revocation.md);
-an explicit public status query is proposed for owning agreement before its fix.
+the [exact public owner-bound query](delta-sync-input-retirement-agreement.md)
+is agreed before dependent implementation of its fix.
 `nbytes` rejection alone is insufficient evidence of terminal retirement. Independent
 header/ticket leases keep metadata charged after its data ref is consumed.
 Reserve/resize/seal reject after intake retirement; unsealed buffers and
