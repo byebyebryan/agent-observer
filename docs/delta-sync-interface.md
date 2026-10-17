@@ -331,11 +331,16 @@ Reserve/resize/seal reject after intake retirement; unsealed buffers and
 consuming pins stay charged until their actual cleanup. Repeated close is safe.
 
 The implemented opt-in source methods are `open_session(inputs)`, then session
-`baseline`, `changes`, `watch`, `head_after_nonce` and `aclose`. They return
+`baseline`, `changes`, `changes_with_completion`, `watch`, `head_after_nonce` and `aclose`. They return
 closeable owned tickets/controls or opaque input refs; their structural claims
 are unadmitted. The plain-byte methods retain full strict parsing and their
 existing types. Observer uses structural protocols without importing Mesh.
 No relay byte-export capability or admission memo is supplied by this cache API.
+The additive [completion-transfer result](delta-sync-completed-changes.md) owns
+the exact original terminal control alongside its bounded transaction tuple;
+legacy `changes()` retains its transaction-only success result. Its independently
+prepaid container/header credit survives data consumption and retires with the
+result. This source prerequisite does not accept relay/controller integration.
 
 `agent_observer.sync_owned_source` prepays a 512 KiB session/control allowance,
 768 KiB per active operation or watch for bounded requests/batches/callback

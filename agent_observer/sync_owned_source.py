@@ -35,6 +35,8 @@ _REQUEST_ENCODED = MAX_REQUEST_BYTES + _CHUNK
 _PARSE_ENCODED = 4 * (MAX_CAPTURED_BYTES + MAX_RECEIPT_BYTES)
 _MAX_ITEMS = 64
 _BYTEARRAY_BASE = sys.getsizeof(bytearray())
+_BATCH_HEAP = 4096  # wrapper, up to four refs, tuple and bounded live tracking
+_BATCH_MINT = object()
 
 
 class _SourceLease:
@@ -148,6 +150,63 @@ class OwnedSyncControl(_OwnedPacket):
 
 class OwnedResyncRequired(OwnedSyncControl):
     """Bounded explicit recovery, never an alternate profile/family."""
+
+
+class CompletedChanges:
+    """Source-minted, unadmitted transaction refs and exact native completion.
+
+    Children are borrowed from this live result, not copied or re-sealed. The
+    consumer closes the batch after its output/pins retire. Data consumption
+    does not release the independent batch or completion-header metadata.
+    """
+
+    __slots__ = ("_session", "_scope", "_transactions", "_completion", "_lease", "__weakref__")
+
+    def __init__(self, session, transactions, completion, scope, lease, *, _mint=None):
+        if _mint is not _BATCH_MINT:
+            raise ContractError("sync_change_batch_mint")
+        self._session, self._scope = weakref.ref(session), scope
+        self._transactions, self._completion, self._lease = transactions, completion, lease
+        session._batches.add(self)
+
+    def _check(self):
+        if self._lease is None:
+            raise ContractError("sync_change_batch_closed")
+        session = self._session()
+        parent = None if session is None else session._parent()
+        if session is None or session._closed or parent is None or parent._closed:
+            session = parent = None
+            raise ContractError("sync_change_batch_closed")
+
+    @property
+    def transactions(self):
+        self._check()
+        return self._transactions
+
+    @property
+    def completion(self):
+        self._check()
+        return self._completion
+
+    def close(self):
+        transactions, self._transactions = self._transactions, None
+        completion, self._completion = self._completion, None
+        lease, self._lease = self._lease, None
+        self._scope = None
+        if transactions is not None:
+            for data in transactions:
+                data.close()
+            data = None
+        if completion is not None:
+            completion.close()
+        # Retire our aliases before releasing their independent container credit.
+        transactions = completion = None
+        session = self._session()
+        if session is not None:
+            session._batches.discard(self)
+            session._prune_refs()
+        if lease is not None:
+            lease.close()
 
 
 class OwnedSourceWatch(SourceWatch):
@@ -345,6 +404,7 @@ class OwnedSourceSession:
         self._parent, self._inputs = weakref.ref(parent), inputs
         self._state_credit = state_credit
         self._refs, self._packets, self._leases, self._calls = {}, set(), set(), set()
+        self._batches = set()
         self._closed, self._close_task = False, None
         self._client = _OwnedClient(parent, self)
         parent._sessions.add(self)
@@ -377,6 +437,9 @@ class OwnedSourceSession:
                 del self._refs[marker]
 
     def _revoke_scope(self, scope):
+        for batch in tuple(self._batches):
+            if batch._scope is scope:
+                batch.close()
         for marker, (data, owner) in tuple(self._refs.items()):
             if owner is scope:
                 data.close()
@@ -455,7 +518,24 @@ class OwnedSourceSession:
     async def changes(self, base, *, target, max_transactions=MAX_TRANSACTIONS, max_bytes=MAX_CHANGE_BYTES):
         return await self._run(self._changes(base, target, max_transactions, max_bytes))
 
-    async def _changes(self, base, target, max_transactions, max_bytes):
+    async def changes_with_completion(self, base, *, target, max_transactions=MAX_TRANSACTIONS,
+                                      max_bytes=MAX_CHANGE_BYTES):
+        return await self._run(self._changes(base, target, max_transactions, max_bytes, completion=True))
+
+    def _completed_changes(self, transactions, control, scope):
+        self._check()
+        if len(self._batches) >= _MAX_ITEMS:
+            raise ContractError("sync_source_ownership_capacity")
+        # The request lease owns collection scratch, but cannot outlive this
+        # operation. Reserve the returned tuple/wrapper BEFORE constructing it.
+        lease = self._reserve(_BATCH_HEAP)
+        try:
+            return CompletedChanges(self, tuple(transactions), control, scope, lease, _mint=_BATCH_MINT)
+        except BaseException:
+            lease.close()
+            raise
+
+    async def _changes(self, base, target, max_transactions, max_bytes, *, completion=False):
         self._check()
         lease = self._reserve(_REQUEST_HEAP, encoded_bytes=_REQUEST_ENCODED)
         request = iterator = received = None
@@ -472,6 +552,10 @@ class OwnedSourceSession:
                     if isinstance(received, OwnedSyncControl):
                         if isinstance(received, OwnedResyncRequired):
                             return received
+                        if completion:
+                            batch = self._completed_changes(result, received, scope)
+                            received = None
+                            return batch
                         received.close()
                         received = None
                         return tuple(result)
@@ -481,17 +565,28 @@ class OwnedSourceSession:
                     if len(result) > max_transactions or size > max_bytes:
                         raise ContractError("sync_change_limit")
                 raise ContractError("sync_change_incomplete")
-            value = await self._client._owned(self._client._io(collect(), self._client.timeout))
+            try:
+                value = await self._client._owned(self._client._io(collect(), self._client.timeout))
+            finally:
+                if iterator is not None:
+                    cleanup = asyncio.create_task(iterator.aclose())
+                    try:
+                        await asyncio.shield(cleanup)
+                    except BaseException:
+                        # Cancellation during completed-result cleanup must
+                        # revoke before waiting, while live I/O storage stays
+                        # charged through its repeated-cancel-safe retirement.
+                        self._revoke_scope(scope)
+                        await _finish_owned(cleanup)
+                        raise
             self._check()
-            transferred = type(value) is tuple
+            transferred = type(value) is tuple or isinstance(value, CompletedChanges)
             return value
         except BaseException as error:
             self._revoke_scope(scope)
             _retire_failure(error)
             raise error from None
         finally:
-            if iterator is not None:
-                await iterator.aclose()
             if received is not None and not isinstance(received, OwnedResyncRequired):
                 received.close()
             if not transferred:
@@ -524,12 +619,15 @@ class OwnedSourceSession:
                 "activeSockets": len(self._client._sockets), "activeWatches": len(self._client._watches),
                 "ownedOperations": len(self._calls),
                 "ownedRefs": len(self._refs), "ownedTickets": len(self._packets),
+                "ownedBatches": len(self._batches),
                 "ownedLeases": len(self._leases), "stateHeapCredit": self._state_credit.heap_bytes,
                 **self._client._counts}
 
     def _begin_close(self):
         if self._close_task is None:
             self._closed = True
+            for batch in tuple(self._batches):
+                batch.close()
             for data, _scope in tuple(self._refs.values()):
                 data.close()
             self._refs.clear()
