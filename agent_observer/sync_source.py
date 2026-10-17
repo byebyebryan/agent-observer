@@ -196,6 +196,12 @@ class CachedAgentSyncSource:
 
         return open_session(self, inputs)
 
+    @staticmethod
+    def _owned_header(raw, view, expected_host, *, budget, head=False):
+        from .sync_acquisition import parse_header
+
+        return parse_header(raw, view, expected_host, budget=budget)
+
     @property
     def protocol(self):
         return ACTIVE_SYNC_PROTOCOL if self.view == "active" else SYNC_PROTOCOL

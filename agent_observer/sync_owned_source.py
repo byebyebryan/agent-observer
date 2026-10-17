@@ -12,7 +12,7 @@ import weakref
 
 from .contract import ContractError
 from .mesh_source import boottime_ms
-from .sync_acquisition import MAX_CAPTURED_BYTES, MAX_RECEIPT_BYTES, _retire_failure, parse_header
+from .sync_acquisition import MAX_CAPTURED_BYTES, MAX_RECEIPT_BYTES, _retire_failure
 from .sync_contract import (
     MAX_CHALLENGE_BYTES,
     MAX_CHALLENGE_DEPTH,
@@ -252,6 +252,8 @@ class _OwnedClient(CachedAgentSyncSource):
     def __init__(self, parent, session):
         super().__init__(parent.host, parent.path, view=parent.view, timeout=parent.timeout)
         self._parent_source, self._session = weakref.ref(parent), weakref.ref(session)
+        # Static parser selection retains no parent/session callback cycle.
+        self._owned_header = parent._owned_header
 
     def _watch_value(self, received):
         if received._scope is None or received._scope.retired:
@@ -307,7 +309,8 @@ class _OwnedClient(CachedAgentSyncSource):
             # Heap preflight belongs to the parser's own structural budget;
             # canonical header/digest temporaries also need encoded credit.
             parse_credit = session._reserve(8192, encoded_bytes=_PARSE_ENCODED)
-            header = parse_header(raw, self.view, self.host, budget=_ParserBudget(session))
+            header = self._owned_header(raw, self.view, self.host, budget=_ParserBudget(session),
+                                        head=operation == "head")
             parse_credit.close()
             parse_credit = None
             if boottime_ms() >= deadline:
