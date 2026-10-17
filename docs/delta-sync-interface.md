@@ -311,7 +311,9 @@ capability. Every receiving admission and proof grants independent authority.
 
 Mesh's earlier A1 session/relay packet at `a7be9ae`, SHA256
 `05e5a9bef61d0235d6d82c326e630209dac610a122f581117bdb65beaa36183d`,
-remains a separate role review. Its lifecycle question is addressed for the
+has a separate [original-packet review](delta-sync-relay-review.md): native
+compatibility holds, while its standalone relay API needs corrections. Its
+lifecycle question is addressed for the
 cache-backed intake by Mesh `0ca3b99`, `docs/delta-sync-owned-input-api.md`,
 SHA256 `7f7751ecd9df93277a3e7110ca72ebfda343d38fa629cd0212ec40b3a8f1d124`.
 Observer accepts that exact common public signature/state contract for its

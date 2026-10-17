@@ -1,0 +1,148 @@
+{
+  "arithmetic": {
+    "byteIdentical": true,
+    "pythonVersions": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "result": {
+      "attenuationCases": [
+        [
+          10000,
+          10015,
+          500,
+          485
+        ],
+        [
+          10000,
+          10015,
+          0,
+          0
+        ],
+        [
+          10000,
+          10015,
+          15,
+          0
+        ],
+        [
+          10000,
+          10015,
+          10,
+          0
+        ],
+        [
+          10000,
+          10000,
+          500,
+          500
+        ]
+      ],
+      "rejected": [
+        "bridge-before-native",
+        "negative-native",
+        "boolean-native",
+        "boolean-bridge",
+        "negative-attenuation",
+        "boolean-attenuation",
+        "duplicate-key",
+        "missing-key",
+        "extra-key",
+        "reader-clock-reversed",
+        "reader-proof-late",
+        "reader-margin-short",
+        "reader-margin-long",
+        "reader-boolean"
+      ],
+      "remoteExpiry": 20385,
+      "scope": "Independent arithmetic only; no schema/native/relay admission.",
+      "status": "PASS",
+      "zeroRemainingExpiry": 20060
+    },
+    "script": "docs/evidence/2026-10-16-delta-sync-source/verify_relay_attenuation.py",
+    "scriptSha256": "3ec57e262ac6cd9c695cee0b2d66112db453b353d91a0f43e11d5e971281d289"
+  },
+  "artifactsOrInstallations": false,
+  "corrections": [
+    "Specify independent relay input-owner minting and consuming channel/forward/proof operations, binding and close/pin lifetimes without constructing a cache or Profile.",
+    "Include common buffer_heap/reservation credit attributes and exact ownership/close/metadata transfer protocol; relay ownership remains separately bound.",
+    "Validate batch container/types/count before transfer; only valid bounded batch transfers every member even on later content failure.",
+    "Correct first-eight RequestBinding claim: seven fields precede role and encodingDigest; specify exact closed new-sync shape without legacy reinterpretation."
+  ],
+  "decision": "Native/session/fresh-head/attenuation direction compatible; original standalone relay API needs four corrections; no exact relay API acceptance.",
+  "event": "e-81f89ac7",
+  "host": "starship",
+  "inputContracts": [
+    {
+      "bytes": 13744,
+      "commit": "a7be9ae64ded5b88b1b1ecd2c61233ae58e7fbc6",
+      "path": "docs/delta-sync-relay-api-proposal.md",
+      "repository": "/home/bryan/code/mesh-plus",
+      "retrieval": "immutable git show",
+      "sha256": "05e5a9bef61d0235d6d82c326e630209dac610a122f581117bdb65beaa36183d"
+    },
+    {
+      "bytes": 6186,
+      "commit": "665f6caaed99740a755de9467c7ae53322f7e720",
+      "path": "projects/agent-dashboard/docs/delta-sync-relay-addendum.md",
+      "repository": "/home/bryan/code/esp32-rlcd",
+      "retrieval": "immutable git show",
+      "sha256": "6eaa408376f91bb7c5e4276812927fd2bfce2445412fb02a211bea22a5e52aef"
+    },
+    {
+      "bytes": 12680,
+      "commit": "0ca3b99c7413d2542ab48ff11e8e58fb82f73d93",
+      "path": "docs/delta-sync-owned-input-api.md",
+      "repository": "/home/bryan/code/mesh-plus",
+      "retrieval": "immutable git show",
+      "sha256": "7f7751ecd9df93277a3e7110ca72ebfda343d38fa629cd0212ec40b3a8f1d124"
+    },
+    {
+      "bytes": 28802,
+      "commit": "ed771e5c8843dca718700c8b8b1d6804ae9134f0",
+      "path": "docs/delta-sync-contract-appendix.md",
+      "repository": "/home/bryan/code/mesh-plus",
+      "retrieval": "immutable git show",
+      "sha256": "a376bc848a78027d4fd723e8a2959dbbc4e00114da132d3a5d2733a6ebce2eb6"
+    }
+  ],
+  "inspectedRuntimeInputs": {
+    "agent_observer/sync_acquisition.py": {
+      "bytes": 19829,
+      "sha256": "d685b756ef0de0322970d11d409843f08ba2ae352c77ef3e2fe0c5f63bec3bcd"
+    },
+    "agent_observer/sync_contract.py": {
+      "bytes": 11275,
+      "sha256": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236"
+    },
+    "agent_observer/sync_native.py": {
+      "bytes": 18481,
+      "sha256": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d"
+    },
+    "agent_observer/sync_owned_source.py": {
+      "bytes": 22116,
+      "sha256": "67f739c9fe5bef5b5a8d2fd9c86d847fd8a2640ea6c076ac63ab24229bdf0d73"
+    },
+    "agent_observer/sync_source.py": {
+      "bytes": 23181,
+      "sha256": "97f6a1867ff3e7b1d80bcef4f4250710a57b4a7e2ef73a9e1e84b19895ef17a7"
+    }
+  },
+  "laterRelaySupplement": "Separate same-byte review; not accepted by substitution or resubmitted by this response.",
+  "nativeOrProviderActions": false,
+  "productionRuntimeChanged": false,
+  "relayExecuted": false,
+  "remainingGates": [
+    "exact relay API and RLCD A1 record",
+    "compact codec",
+    "dense Reader storage",
+    "producer CPU",
+    "aggregate resources/RSS",
+    "installed/native transport",
+    "paired immutable artifacts"
+  ],
+  "reviewBaseCommit": "e3d82096152e5c3ccbd4781a6550f66fc130030d",
+  "siblingEdits": false,
+  "sourceCheckpoint": "4030d50c0d21c1e34daad45c29e2373502a3413a",
+  "worktree": "/home/bryan/code/agent-observer-active-feed"
+}
