@@ -432,7 +432,7 @@ def _reserve(budget, amount):
     return reservation
 
 
-def _parse_header(raw, view, expected_host=None, *, budget=None):
+def _parse_header(raw, view, expected_host=None, *, budget=None, head_only=False):
     """Scan one expanded newline frame and return its bounded header ticket.
 
     Header byte caps are acquisition capacity limits, not new native schemas.
@@ -442,6 +442,8 @@ def _parse_header(raw, view, expected_host=None, *, budget=None):
     """
     if type(raw) is not bytes or not raw or len(raw) > MAX_MESSAGE_BYTES:
         raise ContractError("sync_ticket_bytes")
+    if head_only and len(raw) > MAX_HEAD_BYTES:
+        raise ContractError("sync_ticket_header_limit")
     if not raw.endswith(b"\n") or raw.find(b"\n", 0, len(raw) - 1) >= 0 or raw.endswith(b"\r\n"):
         raise ContractError("sync_ticket_framing")
     if raw.startswith(b"\xef\xbb\xbf") or b"\0" in raw:
@@ -457,6 +459,8 @@ def _parse_header(raw, view, expected_host=None, *, budget=None):
         if "kind" not in scanner.root:
             raise ContractError("sync_ticket_fields")
         kind = _decode(raw, scanner.root["kind"])
+        if head_only and (type(kind) is not str or kind not in {"head", "control"}):
+            raise ContractError("sync_transport_head_kind")
         expected = _FIELDS.get(kind) if type(kind) is str else None
         actual = scanner.groups["root"]
         if (

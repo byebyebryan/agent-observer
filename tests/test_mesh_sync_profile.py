@@ -8,6 +8,7 @@ from contextlib import contextmanager
 from unittest.mock import patch
 
 from test_service_state import provider_snapshot
+from test_sync_acquisition import Budget
 
 from agent_observer import timing
 from agent_observer.contract import ContractError, identity_key, validate_record
@@ -17,6 +18,7 @@ from agent_observer.sync_commitment import field_token as native_field_token
 from agent_observer.sync_contract import admit_record as native_admit_record
 from agent_observer.sync_contract import join_record, split_record
 from agent_observer.sync_native import parse_message
+from agent_observer.sync_transport import AgentSyncTransportCodec
 
 try:
     from mesh_plus.protocol import ProtocolError
@@ -714,6 +716,30 @@ class MeshSyncProfileTest(unittest.TestCase):
         message["tables"]["bodies"].append([digest, orphan])
         with self.assertRaisesRegex(ProtocolError, "(agent_)?sync_(dangling_record|orphan_body)"):
             stage(self.store(), restamp(message))
+
+    def test_structural_relay_ticket_cannot_bypass_independent_domain_or_root_admission(self):
+        for view in ("full", "active"):
+            original = self.baseline(self.owner(), view)
+            malformed_domain = copy.deepcopy(original)
+            malformed_domain["tables"]["records"][0][1]["alias"] = 0
+            restamp(malformed_domain)  # Exact eight-table/native commitment, invalid Agent slot.
+            malformed_root = copy.deepcopy(original)
+            malformed_root["tag"][2] = malformed_root["cursor"][2] = "f" * 64
+            for message in (malformed_domain, malformed_root):
+                with self.subTest(view=view, valid_root=message is malformed_domain):
+                    raw = canonical(message) + b"\n"
+                    facade = AgentSyncTransportCodec(view, encoding_id="fixture-expanded/1",
+                                                     expected_host="fixture")
+                    budget = Budget()
+                    ticket = facade.header(raw, budget)
+                    self.assertGreater(ticket.header.materialization_bytes, 0)
+                    ticket.close()
+                    self.assertEqual(budget.used, 0)
+                    cache, *_ = self.owned_cache(view)
+                    with self.assertRaises((ProtocolError, ContractError)):
+                        cache.admit_baseline(raw)
+                    with self.assertRaises(ProtocolError):
+                        cache.acquire()
 
     def test_wrong_field_token_missing_cell_and_unreferenced_cell_rejected(self):
         original = self.baseline(self.owner())
