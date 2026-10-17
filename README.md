@@ -20,6 +20,11 @@ Starship device gates.
 
 ## Current status
 
+Snapshot/delta-sync is an unreleased, [deferred dark feature](docs/delta-sync-dark-feature.md).
+The local runtime denies sync requests by default; controlled library experiments
+must opt in explicitly. CPU and 2,000-row capacity gates still fail, and ordinary
+services, artifacts and role selections remain on the accepted paths below.
+
 [Observer `0.7.0a7`](artifacts/observer-0.7.0a7.json) preserves
 [API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) and adds the separate
 active-feed 1 interface. The

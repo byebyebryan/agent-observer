@@ -1,5 +1,10 @@
 # Native synchronization G1 interface draft
 
+Current disposition, 2026-10-17: [deferred dark feature](delta-sync-dark-feature.md).
+Native IPC requires explicit `Runtime(..., experimental_sync=True)`; the default
+service rejects sync before owner creation. This draft and its source evidence
+remain available for a future explicit resume request, without release acceptance.
+
 G0 is closed under the exact `ed771e5` / `a376bc84` appendix. This G1 draft
 allocates native request families and records the current implementation shape.
 It is not schema/runtime/artifact acceptance. Schema hashes remain unfrozen until

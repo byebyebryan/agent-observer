@@ -170,13 +170,16 @@ class Runtime:
     def __init__(self, state, path, *, scheduler=None, worker_factory=None, collect=True,
                  max_clients=16, encoded_limit=64 * 1024 * 1024, io_timeout_ms=5000,
                  heartbeat_ms=10000, workspace_config=None, native_hints=False,
-                 hint_factory=None, hint_diagnostics=None):
+                 hint_factory=None, hint_diagnostics=None, experimental_sync=False):
+        if type(experimental_sync) is not bool:
+            raise ValueError("service_experimental_sync")
         if (collect and worker_factory is None) or (native_hints and hint_factory is None):
             from .adapters import select_adapters
             select_adapters(list(state.configs))
         if not 1 <= max_clients <= 16 or encoded_limit < MAX_SNAPSHOT_BYTES + MAX_OVERHEAD_BYTES or not 100 <= io_timeout_ms <= 30000:
             raise ValueError("service_runtime_limits")
         self.state, self.path = state, Path(path)
+        self.experimental_sync = experimental_sync
         # Own an immutable startup value, independent of the caller/file. Only
         # history jobs receive it; runtime samples cannot enrich/freshen it.
         configured = workspace_config if workspace_config is not None else {"roots": [], "projects": []}
@@ -487,6 +490,10 @@ class Runtime:
         self._queue_sync(peer, result, cursor=cursor, close=isinstance(result, bytes))
 
     def _sync_request(self, peer, request):
+        # This unqualified feature has no CLI/default-service enablement.
+        # Reject before minting an owner or producing any sync material.
+        if not self.experimental_sync:
+            raise ValueError("sync_disabled")
         peer.sync_view = "active" if request["syncProtocol"] == "agent-observer.active-sync" else "full"
         peer.family = "sync-" + peer.sync_view
         peer.operation = request["operation"]

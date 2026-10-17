@@ -104,8 +104,41 @@ def assert_attempt_accepted_chain(test, baseline, transactions, control, title):
 
 
 class SyncServiceDeliveryTest(unittest.TestCase):
+    def test_default_runtime_denies_both_sync_views_without_creating_owner(self):
+        state = seeded()
+        with Running(state=state) as server:
+            self.assertFalse(server.runtime.experimental_sync)
+            for view in ("full", "active"):
+                for operation, fields in (("baseline", {}), ("head", {"challenge": {}})):
+                    with self.subTest(view=view, operation=operation):
+                        raw = sync_canonical(request(operation, view, **fields)) + b"\n"
+                        with server.connect(raw) as peer:
+                            self.assertEqual(peer.recv(1), b"")
+                        self.assertIsNone(state._sync_cache)
+            # The disabled experimental family leaves the existing routes usable.
+            queries = (
+                {"serviceProtocol": 4, "operation": "snapshot", "hostScope": "fixture"},
+                {"activeFeedProtocol": 1, "operation": "snapshot", "hostScope": "fixture",
+                 "selector": SELECTOR, "selectorDigest": SELECTOR_DIGEST},
+            )
+            for query in queries:
+                with server.connect((canonical(query) + "\n").encode()) as peer:
+                    with peer.makefile("rb") as reader:
+                        reply = json.loads(reader.readline())
+                key = "projection" if "activeFeedProtocol" in query else "snapshot"
+                self.assertIsNotNone(reply[key])
+            self.assertIsNone(state._sync_cache)
+            self.assertEqual(server.runtime.counts["workerStarts"], 0)
+
+    def test_sync_gate_requires_exact_boolean_before_runtime_setup(self):
+        state = seeded()
+        for value in (None, 0, 1, "true"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "service_experimental_sync"):
+                Runtime(state, "/unused/read.sock", collect=False, experimental_sync=value)
+        self.assertIsNone(state._sync_cache)
+
     def runtime(self, state=None):
-        result = Runtime(state or seeded(), "/unused/read.sock", collect=False)
+        result = Runtime(state or seeded(), "/unused/read.sock", collect=False, experimental_sync=True)
         self.addCleanup(result.selector.close)
         self.addCleanup(lambda: [result._drop(peer) for peer in list(result.peers)])
         self.addCleanup(lambda: [memo.close() for memo in result.image_memos.values()])
@@ -441,7 +474,7 @@ class SyncServiceDeliveryTest(unittest.TestCase):
             {**valid, "hostScope": "foreign"}, {**valid, "challenge": {"x": 1.5}},
             {**valid, "challenge": {"x": "x" * 4097}},
         ]
-        with Running(state=seeded()) as server:
+        with Running(state=seeded(), experimental_sync=True) as server:
             for value in cases:
                 with self.subTest(value=value), server.connect((canonical(value) + "\n").encode()) as peer:
                     self.assertEqual(peer.recv(1), b"")
@@ -451,7 +484,7 @@ class SyncServiceDeliveryTest(unittest.TestCase):
 
     def test_real_socket_baseline_watch_barrier_and_head_do_not_collect(self):
         state = seeded()
-        with Running(state=state) as server:
+        with Running(state=state, experimental_sync=True) as server:
             with server.connect(sync_canonical(request("baseline")) + b"\n") as peer:
                 with peer.makefile("rb") as reader:
                     baseline = parse_message(reader.readline(), "full", "fixture")
@@ -484,7 +517,7 @@ class SyncServiceDeliveryTest(unittest.TestCase):
             request("watch", cursor=list(state.sync_cursor("full"))),
             request("watch", "active", cursor=list(state.sync_cursor("active"))),
         ]
-        with Running(state=state) as server:
+        with Running(state=state, experimental_sync=True) as server:
             clients = []
             try:
                 for index in range(16):

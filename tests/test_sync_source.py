@@ -514,7 +514,7 @@ class RealServiceSyncSourceTest(unittest.IsolatedAsyncioTestCase):
         from test_sync_service_delivery import assert_attempt_accepted_chain, seeded
 
         state = seeded()
-        with Running(state=state) as server:
+        with Running(state=state, experimental_sync=True) as server:
             full = CachedAgentSyncSource("fixture", server.path)
             active = CachedAgentSyncSource("fixture", server.path, view="active")
             try:

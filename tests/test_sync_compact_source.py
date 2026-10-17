@@ -122,7 +122,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
     async def test_runtime_full_active_zero_one_four_batches_and_fresh_reader_proof(self):
         for view in ("full", "active"):
             for count in (0, 1, 4):
-                with self.subTest(view=view, count=count), Running(state=self.owner()) as server:
+                with self.subTest(view=view, count=count), Running(state=self.owner(), experimental_sync=True) as server:
                     owner = server.state
                     source = self.source(server.path, view)
                     parts = self.cache(view)
@@ -182,7 +182,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_expanded_and_compact_sources_reject_opposite_material_without_fallback(self):
         for serialization, compact in (("expanded", True), ("compact", False)):
-            with self.subTest(serialization=serialization), Running(state=self.owner(serialization)) as server:
+            with self.subTest(serialization=serialization), Running(state=self.owner(serialization), experimental_sync=True) as server:
                 source = self.source(server.path, "full", compact=compact)
                 reader = self.cache()[0]
                 session = source.open_session(reader.input_owner())
@@ -201,7 +201,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
     async def test_head_keeps_original_path_without_compact_scanner_or_body_schema(self):
         from agent_observer.sync_compact_acquisition import _CompactScanner
 
-        with Running(state=self.owner()) as server:
+        with Running(state=self.owner(), experimental_sync=True) as server:
             source = self.source(server.path, "full")
             parts = self.cache()
             session = source.open_session(parts[0].input_owner())
@@ -215,7 +215,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
             await source.aclose()
 
     async def test_opaque_body_is_not_source_admission_and_reader_rejects_original_bytes(self):
-        with Running(state=self.owner()) as server:
+        with Running(state=self.owner(), experimental_sync=True) as server:
             raw = json.loads(server.state.sync_baseline("full"))
             raw["tables"]["bodies"][0][1][2] = {"opaque": "x" * 200000}
             corrupted = canonical(raw) + b"\n"
@@ -243,7 +243,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
             await source.aclose()
 
     async def test_watch_close_revokes_delivered_compact_update_preserving_prior_ticket(self):
-        with Running(state=self.owner()) as server:
+        with Running(state=self.owner(), experimental_sync=True) as server:
             source = self.source(server.path, "full")
             reader = self.cache()[0]
             session = source.open_session(reader.input_owner())

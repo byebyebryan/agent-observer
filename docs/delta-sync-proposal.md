@@ -1,5 +1,10 @@
 # Observer snapshot and delta synchronization proposal
 
+Current disposition, 2026-10-17: [deferred dark feature](delta-sync-dark-feature.md).
+The implementation is default-off, performance/capacity gates remain failed,
+and automatic G1 continuation has ended. The following acceptance and execution
+statements retain their historical contract/planning scope.
+
 Status: G0 closed and G1 implementation authorized, 2026-10-16. RLCD's shared
 plan records acceptance of Mesh docs `ed771e5c8843dca718700c8b8b1d6804ae9134f0`
 and the exact appendix/arithmetic review below. This document retains the proposal
