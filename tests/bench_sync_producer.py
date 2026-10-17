@@ -8,6 +8,7 @@ acceptance. Keep runs serial under the shared CPU advisory lock.
 
 import argparse
 import copy
+import gc
 import hashlib
 import importlib.metadata
 import json
@@ -77,6 +78,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rows", type=int, choices=(100, 500, 2000), required=True)
     parser.add_argument("--mode", choices=("legacy", "sync"), required=True)
+    parser.add_argument("--sync-serialization", choices=("expanded", "compact"), default="expanded")
     parser.add_argument("--workload", choices=("timestamp", "all-bodies"), default="timestamp")
     parser.add_argument("--generations", type=int, default=6)
     args = parser.parse_args()
@@ -87,8 +89,10 @@ def main():
     # This disposable process owns its synthetic clock/incarnation only.
     uuid.uuid4 = lambda: uuid.UUID(int=0xF000 + now[0])
     cold = time.process_time_ns()
+    sync_options = {"sync_serialization": args.sync_serialization} if args.mode == "sync" else {}
     state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")},
-                         uid=1000, clock=lambda: now[0], boot_id=boot, clock_domain="time:[123]")
+                         uid=1000, clock=lambda: now[0], boot_id=boot, clock_domain="time:[123]",
+                         **sync_options)
     state.wall_clock = lambda: wall + now[0]
     state.attempt("codex", "history")
     state.accept("codex", "history", value, sampled_ms=now[0], ttl_ms=60000, runtime_ttl_ms=60000)
@@ -141,6 +145,8 @@ def main():
     result = {
         "scope": "synthetic producer only; no delivered baseline, transport or installed candidate acceptance",
         "mode": args.mode, "workload": args.workload, "rows": args.rows,
+        "serialization": args.sync_serialization if owner is not None else None,
+        "cyclicGcEnabled": gc.isenabled(),
         "version": importlib.metadata.version("agent-observer"), "generations": args.generations,
         "cpuNs": totals, "medianCpuNs": statistics.median(totals), "commonCpuNs": common,
         "syncCpuNs": sync, "oracleCpuNs": oracle, "signatures": signatures,
@@ -149,6 +155,10 @@ def main():
         "account": None if owner is None else owner.account.snapshot(),
         "syncCounts": None if owner is None else dict(owner.counts),
         "failures": None if owner is None else {name: slot.failed for name, slot in owner.views.items()},
+        "membershipCells": None if owner is None else {
+            name: slot.current.tables["memberships"].count
+            for name, slot in owner.views.items() if slot.current is not None
+        },
     }
     if owner is not None:
         owner.close()

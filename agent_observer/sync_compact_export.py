@@ -12,9 +12,20 @@ import json
 from contextlib import closing
 
 from .contract import ContractError
-from .sync_commitment import ABSENT, thaw
+from .sync_commitment import ABSENT, _FrozenObject, thaw
 from .sync_compact_schema import SUPPORT_FIELDS
 from .sync_compact_values import References, pack_value, transform_operation
+
+
+def _json_default(value):
+    # The JSON encoder handles native lists/dicts and immutable array tuples.
+    # Only committed immutable objects need a shallow adapter. Re-freezing
+    # already admitted packed rows would construct another complete row graph
+    # before immediately thawing it again; the existing row scratch remains
+    # reserved for the encoder and these bounded temporary object dictionaries.
+    if type(value) is _FrozenObject:
+        return dict(value.items())
+    raise TypeError("unsupported compact export value")
 
 
 class _Export:
@@ -91,7 +102,7 @@ class _Export:
         # Python encoder string/chunks plus final UTF-8 copy are heap charged
         # as well as encoded charged. Previous yielded bytes stay covered.
         self.work.resize(getattr(self, "fixed", 16384) + self.decoded * 2 + self.encoded * 2)
-        return json.dumps(thaw(value), ensure_ascii=False, allow_nan=False,
+        return json.dumps(value, default=_json_default, ensure_ascii=False, allow_nan=False,
                           sort_keys=True, separators=(",", ":")).encode("utf-8")
 
     def masks(self, side, identity, birth, observations=None):
