@@ -240,6 +240,55 @@ class SyncStateTest(unittest.TestCase):
         self.assertTrue(all(ms == 0 for _, ms in head["attenuation"]))
         self.assertEqual(self.state._sync_cache.counts["normalizations"], counts["normalizations"])
 
+    def test_nonce_reads_never_retire_material_roots_or_their_leases(self):
+        self.accept()
+        for view in ("full", "active"):
+            self.baseline(view)
+        self.accept()
+        cache = self.state._sync_cache
+        self.assertTrue(all(slot.previous is not None for slot in cache.views.values()))
+        for index in range(16):
+            self.state.sync_head("full" if index % 2 else "active", {"nonce": str(index)})
+        roots = {(name, role): id(getattr(slot, role)) for name, slot in cache.views.items()
+                 for role in ("current", "previous")}
+        material_leases = {id(getattr(slot, role).lease) for slot in cache.views.values()
+                           for role in ("current", "previous")}
+        lease_type = type(cache.views["full"].current.lease)
+        release = lease_type.release
+        retired = []
+
+        def observe(lease):
+            if id(lease) in material_leases:
+                retired.append(id(lease))
+            return release(lease)
+
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            with patch.object(lease_type, "release", observe):
+                for index in range(4):
+                    for view in ("full", "active"):
+                        head = parse_message(self.state.sync_head(view, {"nonce": str(index)}), view, "fixture")
+                        self.assertEqual(head["kind"], "head")
+                        self.assertEqual(head["tag"], thaw(cache.views[view].current.tag))
+                # A failed output reservation must not reclaim old material to
+                # make a compact nonce response fit its independent budget.
+                self.state.sync_reserver = lambda _size: False
+                try:
+                    with self.assertRaisesRegex(ContractError, "sync_encoding_limit"):
+                        self.state.sync_head("full", {"nonce": "pressure"})
+                finally:
+                    self.state.sync_reserver = None
+            self.assertFalse(retired)
+            self.assertEqual(roots, {(name, role): id(getattr(slot, role))
+                                     for name, slot in cache.views.items()
+                                     for role in ("current", "previous")})
+            self.assertLessEqual(len(cache.query_buffers), 16)
+            self.assertEqual(cache.encoded_staged, 0)
+        finally:
+            if enabled:
+                gc.enable()
+
     def test_head_outputs_have_bounded_ownership_and_preflight_before_receipt_reads(self):
         self.accept()
         self.baseline("full")

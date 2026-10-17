@@ -281,6 +281,35 @@ resource/CPU or native acceptance. It neither accepts concurrent public intake
 work nor resolves the compact codec/alias/mask or A1 relay review. The reported
 expanded-wire byte and 2,000-row frame-limit failures remain open.
 
+## Native nonce material-retirement audit
+
+Mesh's later `70fb22d787908aa672bfd1557e885bb9006df774` checkpoint moves
+predecessor retirement out of generic confirmation. Its committed
+`proof-retirement-source.json` matches the announced SHA256
+`0a75c5b70be3848881bfe351ff2e721d2d428813ea95d46607627e256d612909`;
+all 58 exported package/pyproject files match that report's manifest. Newer live
+Mesh drafts are excluded from this review.
+
+The analogous Observer native audit found no material-root retirement in the
+nonce path. `OwnerSyncCache._head` reads only current receipt/cohort tables and
+the original clock/tag; it never calls `ensure`, normalization, publication or
+expiry. Cold requests return bounded baseline-required. Query-output FIFO
+eviction releases byte-output leases. Runtime reservation/drop paths inspect
+bounded output/peer collections and release byte pins, leaving owner material
+roots alone. Predecessor/material retirement remains in publication, recovery
+and explicit owner teardown, outside the nonce operation.
+
+A new regression check observes material-lease releases without retaining those
+leases or roots itself. With cyclic GC disabled, both native backends retain
+full/active current and predecessor roots across repeated head reads, FIFO
+output replacement and output-capacity rejection. No material lease retires;
+root identities remain unchanged. This guards the cleanup boundary and leaves
+all ordinary receipt/clock/token/root checks intact. No runtime fix was needed.
+
+This is static and controlled source-test evidence, not actual native two-ms
+head CPU, installed IPC/SSH, whole-proof latency, RSS or producer acceptance.
+All existing failed/open performance, packing, resource and ABI gates remain.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,
