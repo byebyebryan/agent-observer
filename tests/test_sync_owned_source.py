@@ -489,6 +489,67 @@ class OwnedSourceTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.cache.ledger.reserved, reserved)
         self.assertEqual(self.cache.ledger.encoded_reserved, 0)
 
+    async def test_cancel_after_completed_operation_retires_only_its_unreturned_result(self):
+        baseline = await self.session.baseline()
+        sibling = self.source.open_session(self.inputs)
+        other = await sibling.baseline()
+        watch = sibling.watch(other.cursor)
+        control = await anext(watch)
+        before = self.session.inspect()
+        credit = self.cache.ledger.reserved, self.cache.ledger.encoded_reserved
+        saved = []
+        create = asyncio.create_task
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            for name in ("baseline", "head", "changes", "required"):
+                with self.subTest(operation=name):
+                    self.mode = "required" if name == "required" else "normal"
+                    operation = (self.session.baseline() if name == "baseline" else
+                                 self.session.head_after_nonce({"nonce": "b" * 32}) if name == "head" else
+                                 self.session.changes(self.baseline["tag"], target=self.transaction["resultTag"]))
+                    caller = create(operation)
+                    attached = False
+
+                    def schedule(coroutine, *args, _caller=caller, **kwargs):
+                        nonlocal attached
+                        task = create(coroutine, *args, **kwargs)
+                        if not attached:
+                            attached = True
+                            # Run before the completed operation's awaiter:
+                            # its successful result never reaches the caller.
+                            task.add_done_callback(lambda done: _caller.cancel() if not done.cancelled()
+                                                   and done.exception() is None else None)
+                        return task
+
+                    with patch.object(asyncio, "create_task", side_effect=schedule):
+                        try:
+                            await caller
+                        except asyncio.CancelledError as error:
+                            saved.append(error)
+                        else:
+                            self.fail("completed result reached the cancelled caller")
+                    self.assertTrue(attached)
+                    counts = self.session.inspect()
+                    for key in ("ownedRefs", "ownedTickets", "ownedLeases", "ownedOperations"):
+                        self.assertEqual(counts[key], before[key], key)
+                    self.assertEqual((self.cache.ledger.reserved, self.cache.ledger.encoded_reserved), credit)
+                    self.assertGreater(baseline.data.nbytes, 0)
+                    self.assertGreater(other.data.nbytes, 0)
+                    self.assertGreater(control.data.nbytes, 0)
+                    self.assertEqual(sibling.inspect()["activeWatches"], 1)
+            self.assertEqual(len(saved), 4)
+            self.mode = "normal"
+            usable = await sibling.baseline()
+            usable.close()
+        finally:
+            if enabled:
+                gc.enable()
+            await watch.aclose()
+            baseline.close()
+            other.close()
+            await sibling.aclose()
+
     async def test_session_close_does_not_renew_or_share_ref_across_cache_alias(self):
         ticket = await self.session.baseline()
         other = self.new_cache()

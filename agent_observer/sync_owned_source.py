@@ -380,9 +380,11 @@ class OwnedSourceSession:
                                 else "sync_acquisition_capacity")
         task = asyncio.create_task(operation)
         self._calls.add(task)
+        delivered = False
         try:
             result = await task
             self._check()
+            delivered = True
             return result
         finally:
             try:
@@ -390,7 +392,19 @@ class OwnedSourceSession:
                     task.cancel()
                     await _finish_owned(asyncio.create_task(_reap(task)))
             finally:
-                self._calls.discard(task)
+                try:
+                    # Cancellation may win after the operation completes but
+                    # before its result reaches this awaiter. Retire that
+                    # operation's ticket/ref tuple without closing the session
+                    # or an unrelated watch on the same input owner.
+                    if (not delivered and task.done() and not task.cancelled()
+                            and task.exception() is None):
+                        returned = task.result()
+                        for item in returned if type(returned) is tuple else (returned,):
+                            item.close()
+                        self._prune_refs()
+                finally:
+                    self._calls.discard(task)
 
     async def _call(self, operation, fields):
         self._check()

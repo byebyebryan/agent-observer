@@ -508,3 +508,28 @@ than delivered recovery. Close leaves zero live allocations/objects/leases,
 with only the account's fixed base charge. The earlier matched producer CPU
 gate stays failed, and Reader density, 2,000-row packed recovery, aggregate
 resources/RSS, A1, native/installed and immutable paired artifacts stay open.
+
+## Completed source result versus caller cancellation
+
+The R2/R3 lifecycle review exposed a separate defect in the existing opt-in
+source: its operation could finish successfully just before the awaiting
+caller was cancelled. The lost baseline ticket, head ref, change tuple or
+resync control then remained in the source registry until whole-session close.
+An isolated protected-socket regression fails all four return-shape cases
+before the fix, with accumulating owned refs and header credit.
+
+The source now tracks successful delivery to its awaiter. If cancellation wins,
+it closes only that operation's unreturned successful result and prunes retired
+refs before discarding task tracking. It leaves prior caller tickets, a sibling
+ticket/watch, the shared input owner and parent source usable. No signature,
+reservation allowance or plain-byte ABI changes.
+
+The regression passes with cyclic GC disabled and saved cancellation exceptions;
+per-session ref/ticket/lease/operation counts and shared heap/encoded credit
+return to their pre-call values. The broader source/header/profile/facade suite
+passes 100 tests without skips on each of Python 3.14.8 and 3.11.17 against
+immutable Mesh `32090d6`. [Source hashes and before/after results](source-return-cancellation.json)
+record the two changed source/test files. This is synthetic local source
+correctness evidence, not relay runtime, native-provider, installed, resource
+or producer acceptance. The separate Mesh input-owner publication issue and
+all failed/open G1 gates remain unchanged.
