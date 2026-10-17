@@ -1,0 +1,74 @@
+{
+  "decision": "No Observer domain objection to a constrained private arena prototype or grouped provisional mask callbacks; no exact storage/compact ABI or candidate acceptance. See owning review requirements.",
+  "encodedLimitBytes": 33554432,
+  "heapLimitBytes": 67108864,
+  "inputHashes": {
+    "docs/evidence/2026-10-16-delta-sync/DENSITY-REVIEW.md": "a1687e05db50e4a371d400318a10885887377f6436b1d37b23c8909e2ae674e3",
+    "docs/evidence/2026-10-16-delta-sync/normalized-density-diagnostic-r1.json": "94eb0e389080a5eb5d37d4864714200085d47d0113d370670a3ac4c1ea221372",
+    "scripts/profile-sync-density.py": "727a3d8d2ca9d08b88468a0b2470ae56d9c8ad4af631bc3e783e7141a7074b53"
+  },
+  "meshDiagnosticCommit": "4121cbb87547ed54853f909a06971033fe034008",
+  "meshRuntimeCommit": "95c406f22f6857076da0253f98a3542488239e08",
+  "observerInputs": {
+    "agent_observer/mesh_sync_profile.py": "cc6784d6f09eabc99d831c31e826c21c5d9a6fa8bd458b920a98a402c11a5f72",
+    "agent_observer/mesh_sync_read.py": "88e0a9a456b895ba887dbc72070759181e8ae60d1bf32becbed30a38e28dc815",
+    "agent_observer/sync_commitment.py": "544fba79d3a05ac898a925432d0923de9eca31658481ae15e1118cc8c0be1ff5",
+    "agent_observer/sync_encoded.py": "437b5b8cb3b1558543c905bff8f18723019899abe40b5d601a42722e1f2f7e97",
+    "tests/test_mesh_sync_profile.py": "1efd39928a106a74effe3a8beeec1ca04326bab7ad86962d7be36e7112bec6fd"
+  },
+  "owningReviewSha256": "52bbb29642b0294774b3aa9f6c9d85d6aeba1f79439b5e775dbb9dcbbd8a0339",
+  "results": [
+    {
+      "cleanupCountersAllZero": true,
+      "peakHeapBytes": 6558965,
+      "recordsPerView": 100,
+      "retainedHeapAfterEachView": [
+        2548579,
+        5087774
+      ],
+      "statuses": [
+        "material-only",
+        "material-only"
+      ]
+    },
+    {
+      "cleanupCountersAllZero": true,
+      "peakHeapBytes": 31940541,
+      "recordsPerView": 500,
+      "retainedHeapAfterEachView": [
+        12596396,
+        25183396
+      ],
+      "statuses": [
+        "material-only",
+        "material-only"
+      ]
+    },
+    {
+      "cleanupCountersAllZero": true,
+      "peakHeadroomBytes": 3211471,
+      "peakHeapBytes": 63897393,
+      "recordsPerView": 2000,
+      "refusalArithmeticLimit": "Peak headroom is not rejection-time free credit; report does not capture rejected request size. No before-allocation runtime rerun performed.",
+      "retainedHeapAfterEachView": [
+        34827
+      ],
+      "secondViewAttempted": false,
+      "statuses": [
+        "rejected"
+      ]
+    }
+  ],
+  "scope": "Independent source/hash/recorded-counter review only. No density benchmark, native/domain/RSS/producer acceptance or representation implementation.",
+  "sourceGateJson": {
+    "independentlyExecuted": false,
+    "path": "docs/evidence/2026-10-16-delta-sync/protocol-metadata-keybound-source.json",
+    "reportedLogHashesVerified": true,
+    "reportedTests": [
+      259,
+      31
+    ],
+    "sha256": "a840d59edd524e8779df9da6f6e4f7b857bf24ea0c667b381eb68e5ca2e2f278"
+  },
+  "sourceInputsVerifiedAgainstPinnedCommits": 58
+}

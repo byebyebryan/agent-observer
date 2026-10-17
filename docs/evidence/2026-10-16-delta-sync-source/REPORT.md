@@ -395,3 +395,27 @@ match. [fixture-reconciliation.json](fixture-reconciliation.json) records the
 exact fixture, failure-log hash, source inputs and fresh results. These checks
 reconcile that fixture issue only; all producer readiness limitations above
 remain in force.
+
+## Normalized dense storage counterpart review
+
+The [Observer storage review](../../delta-sync-storage-review.md) checks Mesh
+runtime `95c406f` plus diagnostic `4121cbb` and the normalized-density JSON
+SHA256 `94eb0e389080a5eb5d37d4864714200085d47d0113d370670a3ac4c1ea221372`.
+All 58 source/script hashes match the pinned commits; this is a static evidence
+review, with no benchmark or source-gate rerun. The nine-field minimal-body
+fixture rejects its first 2,000-row normalized stage at a 63,897,393-byte
+accounted heap peak, before input frames/proofs. It exposes a decoded-storage
+blocker independent of expanded native wire size. These generic independent
+views omit Agent indexes, caller DTO/oracle memory, source and transport; they
+do not establish domain capacity, total RSS or a savings comparison.
+
+Observer has no domain objection to a private arena prototype preserving
+per-node live-edge ownership, exact roots and public logical lookup, with all
+pages/slack/controls/payloads/pins prepaid under the existing caps. The review
+requires dead slots to release child graphs on partly live pages, stale-handle
+rejection, immutable old token values, GC-disabled cleanup and combined
+current/predecessor/stage/slow-pin qualification. It agrees with grouped compact
+callback intents while proposing an explicit single-writer rule for compact
+membership expansion. Exact compact ABI/domain vectors, A1 role and storage
+implementation/acceptance remain open. [density-source-review.json](density-source-review.json)
+records checked hashes, reported counters and evidence limits.
