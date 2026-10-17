@@ -78,6 +78,11 @@ The original failure evidence retains its exact old tuple and is not reattribute
 
 ## Remaining gates
 
+A later [immutable deadline/intake recheck](delta-sync-relay-deadline-recheck.md)
+records the exact `f32218b` correction, independent old/new relay regressions and
+the same actual-source/Reader probes on that newer pair. It leaves the following
+broader gaps separate and preserves this original `be6470e` evidence.
+
 The [consuming-pin registry defect](delta-sync-source-pin-revocation.md) remains
 open. These sequential success cases do not call inspect during a consuming pin,
 hold cleanup across session close or prove the proposed public status-query fix.
