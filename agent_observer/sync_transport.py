@@ -216,6 +216,12 @@ class AgentSyncTransportCodec:
     def encoding(self):
         return self._encoding
 
+    def _projection(self, raw, budget, *, head):
+        if head:
+            return _parse_header(raw, self._view, self._expected_host,
+                                 budget=budget, head_only=True)
+        return parse_header(raw, self._view, self._expected_host, budget=budget)
+
     def _scan(self, raw, budget, *, head):
         call = projection = control = result = None
         try:
@@ -224,11 +230,7 @@ class AgentSyncTransportCodec:
             control = _reserve(budget, _CONTROL_HEAP)
             call = _CallBudget(budget)
             control = call.adopt(control)
-            if head:
-                projection = _parse_header(raw, self._view, self._expected_host,
-                                           budget=call, head_only=True)
-            else:
-                projection = parse_header(raw, self._view, self._expected_host, budget=call)
+            projection = self._projection(raw, call, head=head)
             result = NativeTransportTicket(projection, control, _copy_bound(projection.document),
                                            _mint=_MINT)
             projection = control = None

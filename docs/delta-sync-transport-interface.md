@@ -110,6 +110,51 @@ watch or ticket closes a shared input owner, sibling, parent service or provider
 All caller and facade allocations remain inside the unchanged shared 64 MiB
 heap and 32 MiB encoded caps; the budget argument is not another allowance.
 
+## Explicit compact structural facade
+
+`agent_observer.sync_compact_acquisition.CompactAgentSyncTransportCodec` provides
+the same constructor, immutable encoding, header/head and ticket surface for the
+[candidate compact wire grammar](delta-sync-compact-wire-proposal.md). It is
+unselected and does not allocate or freeze the proposed encoding ID/schema.
+The trusted caller still supplies `encoding_id` and view explicitly. Its encoding
+schema digest is the exact bundled compact raw-schema digest; its logical native
+descriptor digest is unchanged. The expanded facade/defaults remain strict.
+
+This scanner admits only bounded structural headers. Material messages require
+their exact extra `receiptRefs` root field. Each before/after dictionary is at
+most 32 distinct full receipt keys; a baseline before dictionary is empty.
+Dictionary syntax and full key types are checked, then the dictionaries retire
+without entering the exported logical header. The Reader's normalization plan
+must independently retain/check its own dictionaries against admitted before and
+provisional after state. A structurally valid missing receipt, stale alias/birth,
+wrong mask or corrupt opaque body supplies no authority and remains a required
+Reader rejection. No plan, profile or semantic cache is available to this facade.
+
+The dictionary has a 40 KiB raw header capacity bound, including two maximal
+32-key lists with fully escaped component strings. It remains inside the existing
+384 KiB captured-header, 64 MiB heap and message limits. Complete byte-framing,
+strict lexical JSON and closed root/table checks use the same scanner as the
+expanded facade. Material bodies remain opaque. Wrong explicit encoding shape
+fails; no name/byte sniffing or fallback is added. Head/control use the original
+separate head-only scanner and unchanged bytes, with no compact dictionary or
+material-plan construction on the nonce path.
+
+The compact path reuses the existing prepaid ticket/control, detached-copy,
+immediate revocation and deferred physical header-credit retirement rules above.
+Source tests compare all eight candidate baseline/ten transaction headers with
+their logical projection, isolate head-only decoding, reject malformed/bounded
+dictionaries before expensive decode, refuse unpaid construction, keep siblings
+usable, and retire failed scanner frames with cyclic GC disabled. These are
+structural source tests, not complete raw-schema/domain admission or proof of
+aggregate physical allocation. The
+[compact scanner evidence](evidence/2026-10-16-delta-sync-source/compact-transport.json)
+pins this separate component checkpoint and its exact source dependencies.
+
+The native serializer, cached-source encoding configuration, streaming semantic
+NativeCodec/profile branch and actual generic relay/controller wiring remain
+separate G1 work. Existing A1/R2 contract closure authorizes that work; this
+component does not reopen their approval or establish runtime/installed acceptance.
+
 ## Qualification boundary
 
 The source [evidence record](evidence/2026-10-16-delta-sync-source/transport-facade.json)

@@ -157,6 +157,9 @@ class AcquisitionHeader:
 class _Scanner:
     """One recursive grammar frame per bounded depth, no opaque key/value tree."""
 
+    _root_keys = _ROOT_KEYS
+    _limits = _LIMITS
+
     def __init__(self, raw):
         self.raw, self.end, self.position = raw, len(raw) - 1, 0
         self.nodes = 0
@@ -359,7 +362,7 @@ class _Scanner:
                 key = None
                 if group is not None:
                     key = _decode(self.raw, (start, self.position, 1))
-                    allowed = _ROOT_KEYS if group == "root" else TABLES
+                    allowed = self._root_keys if group == "root" else TABLES
                     if key not in allowed or key in fields:
                         self._error("sync_ticket_fields")
                     fields[key] = None
@@ -373,7 +376,7 @@ class _Scanner:
                     if key in {"tables", "operations"}:
                         self._value(depth + 1, boundary, group=key)
                     else:
-                        self._value(depth + 1, start + _LIMITS[key])
+                        self._value(depth + 1, start + self._limits[key])
                         self._capture(self.root, key, start, before)
                 elif group in {"tables", "operations"}:
                     if self.position >= self.end or self.raw[self.position] != 91:
