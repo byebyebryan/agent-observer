@@ -37,6 +37,7 @@ class SourceRefRevocationTest(unittest.IsolatedAsyncioTestCase):
         size = ref.nbytes
         registered = 1
         error_code = None
+        reached_end_of_pin_body = False
         try:
             with input_bytes(self.cache, ref) as (raw, _):
                 self.assertEqual(len(raw), size)
@@ -54,11 +55,13 @@ class SourceRefRevocationTest(unittest.IsolatedAsyncioTestCase):
                     pass
                 self.assertGreater(other.data.nbytes, 0)
                 raw = None
+                reached_end_of_pin_body = True
         except fixture.ProtocolError as error:
             self.errors.append(error)
             error_code = str(error)
         finally:
             await sibling.aclose()
+        self.assertTrue(reached_end_of_pin_body, "pin body did not finish before pin-exit rejection")
         self.assertEqual(registered, 1)
         self.assertEqual(error_code, "sync_input_retired")
 

@@ -91,8 +91,19 @@ The [receipt](evidence/2026-10-16-delta-sync-source/source-pin-revocation.json)
 pins exact before inputs, harnesses and outputs. These expected failures are
 not an implementation pass.
 
+The overlay now also requires an explicit end-of-pin-body flag before accepting
+the retirement exception, so a shared-owner reservation or sibling check cannot
+be swallowed as an expected pin-exit failure. The
+[hardening replay](evidence/2026-10-16-delta-sync-source/verify_source_pin_helper_hardening.py)
+compares the original `90b4292` overlay with this stricter helper. On both Python
+versions an injected interior `sync_input_retired` falsely passes the original
+helper and fails the hardened helper; both retain the same three source-gap
+failures and two passing controls, with cyclic GC disabled and final counters
+zero. The [hardening receipt](evidence/2026-10-16-delta-sync-source/source-pin-helper-hardening.json)
+keeps this test-only change separate from the original unchanged before logs.
+
 After the agreed public query is available, implement the source fix through
-that supported seam, rerun these identical regressions, and qualify cache/relay
+that supported seam, rerun the hardened regressions, and qualify cache/relay
 refs, receive, watch, batch and session cancellation with consuming pins held.
 The current source revocation prerequisite remains open. No native provider,
 normal service, sibling source, artifact, installed role, cap/deadline, source
