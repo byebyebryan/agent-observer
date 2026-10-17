@@ -381,13 +381,7 @@ class _Scanner:
                 elif group in {"tables", "operations"}:
                     if self.position >= self.end or self.raw[self.position] != 91:
                         self._error("sync_ticket_table_shape")
-                    if group == "tables" and key == "receipts":
-                        self._value(depth + 1, start + MAX_RECEIPT_BYTES)
-                        holder = {}
-                        self._capture(holder, "receipts", start, before)
-                        self.receipts = holder["receipts"]
-                    else:
-                        self._value(depth + 1, boundary)
+                    self._table(group, key, depth + 1, boundary)
                 else:
                     self._value(depth + 1, boundary)
                 self._skip(boundary)
@@ -403,6 +397,16 @@ class _Scanner:
         self._check(boundary)
         if group is not None:
             self.groups[group] = frozenset(fields)
+
+    def _table(self, group, key, depth, boundary):
+        start, before = self.position, self.nodes
+        if group == "tables" and key == "receipts":
+            self._value(depth, start + MAX_RECEIPT_BYTES)
+            holder = {}
+            self._capture(holder, "receipts", start, before)
+            self.receipts = holder["receipts"]
+        else:
+            self._value(depth, boundary)
 
     def scan(self):
         self._value(0, group="root")

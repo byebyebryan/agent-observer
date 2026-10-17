@@ -74,7 +74,7 @@ def _dictionary(value, *, baseline):
             seen.add(marker)
 
 
-def _parse_compact_header(raw, view, expected_host, budget):
+def _parse_compact_header(raw, view, expected_host, budget, *, _scanner=None, _plan=False):
     if type(raw) is not bytes or not raw or len(raw) > MAX_MESSAGE_BYTES:
         raise ContractError("sync_ticket_bytes")
     if (not raw.endswith(b"\n") or raw.find(b"\n", 0, len(raw) - 1) >= 0
@@ -85,7 +85,7 @@ def _parse_compact_header(raw, view, expected_host, budget):
     scratch = _reserve(budget, SCAN_SCRATCH_BYTES)
     reservation = None
     try:
-        scanner = _CompactScanner(raw)
+        scanner = (_CompactScanner if _scanner is None else _scanner)(raw)
         scanner.scan()
         if "kind" not in scanner.root:
             raise ContractError("sync_ticket_fields")
@@ -97,6 +97,8 @@ def _parse_compact_header(raw, view, expected_host, budget):
         if (expected is None or kind != "control" and actual != expected
                 or kind == "control" and not expected <= actual <= expected | {"baseTag", "targetTag"}):
             raise ContractError("sync_ticket_fields")
+        if _plan and kind not in {"baseline", "transaction"}:
+            raise ContractError("sync_compact_material_kind")
         if kind in {"head", "control"}:
             limit = MAX_HEAD_BYTES if kind == "head" else MAX_CONTROL_BYTES
             if len(raw) > limit:
@@ -116,13 +118,16 @@ def _parse_compact_header(raw, view, expected_host, budget):
             _dictionary(refs, baseline=kind == "baseline")
             # A public logical header exposes no positional dictionary. The
             # Reader's future input plan owns its own independently checked refs.
-            refs = None
+            if not _plan:
+                refs = None
             document[group] = {name: [] for name in TABLES}
             if kind == "baseline":
                 document[group]["receipts"] = _decode(raw, scanner.receipts)
             validate_message(document, view, expected_host)
         result = AcquisitionHeader(document, len(raw), scanner.nodes, reservation)
         reservation = None
+        if _plan:
+            return result, refs, scanner.arrays
         return result
     finally:
         if reservation is not None:

@@ -169,6 +169,10 @@ aggregate physical allocation. The
 [compact scanner evidence](evidence/2026-10-16-delta-sync-source/compact-transport.json)
 pins this separate component checkpoint and its exact source dependencies.
 
+The private [material-plan parser primitive](delta-sync-compact-plan.md) separately
+prepares one-value decoding under the same ownership rules. It adds no configured
+semantic codec or authority to this structural facade.
+
 The native serializer, cached-source encoding configuration, streaming semantic
 NativeCodec/profile branch and actual generic relay/controller wiring remain
 separate G1 work. Existing A1/R2 contract closure authorizes that work; this
