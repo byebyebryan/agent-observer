@@ -1,0 +1,6211 @@
+{
+  "$defs": {
+    "activeCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "contextGeneration": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "continuity": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "complete",
+                "partial",
+                "warming",
+                "stale",
+                "unavailable",
+                "unsupported"
+              ]
+            },
+            "supports": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "accepted": {
+                    "maximum": 9007199254740991,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "component": {
+                    "enum": [
+                      "runtime",
+                      "history"
+                    ]
+                  },
+                  "contextGeneration": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "expiresBoottimeMs": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "namespace": {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "codex"
+                    ]
+                  },
+                  "sampledBoottimeMs": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "serviceId": {
+                    "maxLength": 36,
+                    "minLength": 1,
+                    "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "serviceId",
+                  "provider",
+                  "namespace",
+                  "contextGeneration",
+                  "component",
+                  "accepted",
+                  "sampledBoottimeMs",
+                  "expiresBoottimeMs"
+                ],
+                "type": "object"
+              },
+              "maxItems": 2,
+              "type": "array"
+            }
+          },
+          "required": [
+            "status",
+            "reason",
+            "supports"
+          ],
+          "type": "object"
+        },
+        "namespace": {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "codex"
+          ]
+        }
+      },
+      "required": [
+        "provider",
+        "namespace",
+        "contextGeneration",
+        "continuity",
+        "coverage"
+      ],
+      "type": "object"
+    },
+    "bodiesEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/body"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "bodiesOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/body"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "body": {
+      "items": false,
+      "maxItems": 18,
+      "minItems": 18,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/recordRef"
+        },
+        {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "sessionTreeRootId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                "threadId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "threadId",
+                "sessionTreeRootId"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "sessionId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "sessionId"
+              ],
+              "type": "object"
+            }
+          ]
+        },
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "enum": [
+            "user",
+            "child",
+            "system",
+            "unknown"
+          ]
+        },
+        {
+          "maxLength": 4096,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9_]{0,127}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        {
+          "enum": [
+            "live",
+            "saved"
+          ]
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "clock": {
+                  "enum": [
+                    "native",
+                    "sample",
+                    null
+                  ]
+                },
+                "lastKnownValue": {
+                  "enum": [
+                    "working",
+                    "blocked",
+                    "waiting"
+                  ]
+                },
+                "reason": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 128,
+                  "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "value": {
+                  "enum": [
+                    "working",
+                    "blocked",
+                    "waiting",
+                    "unknown"
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "source",
+                "reason",
+                "clock"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "clock": {
+              "enum": [
+                "native",
+                "sample",
+                null
+              ]
+            },
+            "lastKnownValue": {
+              "enum": [
+                "running",
+                "parked"
+              ]
+            },
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "source": {
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "value": {
+              "enum": [
+                "running",
+                "parked",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "source",
+            "reason",
+            "clock"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "clock": {
+              "enum": [
+                "native",
+                "sample",
+                null
+              ]
+            },
+            "lastKnownValue": {
+              "enum": [
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            },
+            "observedAt": {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "source": {
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "value": {
+              "enum": [
+                "completed",
+                "failed",
+                "cancelled",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "observedAt",
+            "source",
+            "reason",
+            "clock"
+          ],
+          "type": "object"
+        },
+        {
+          "items": {
+            "enum": [
+              "approval",
+              "question"
+            ]
+          },
+          "maxItems": 2,
+          "type": "array"
+        },
+        {
+          "maximum": 4000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "at": {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "lastKnownAt": {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "source": {
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "at",
+            "source",
+            "reason"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "at": {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "lastKnownAt": {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "lastKnownTimestampPrecisionMs": {
+              "maximum": 4000000000000,
+              "minimum": 1,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "source": {
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "timestampPrecisionMs": {
+              "maximum": 4000000000000,
+              "minimum": 1,
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "at",
+            "timestampPrecisionMs",
+            "source",
+            "reason"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "lastKnownValue": {
+              "additionalProperties": false,
+              "properties": {
+                "completedAt": {
+                  "maximum": 4000000000000,
+                  "minimum": 0,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "durationMs": {
+                  "maximum": 4000000000000,
+                  "minimum": 0,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "id": {
+                  "maxLength": 512,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "startedAt": {
+                  "maximum": 4000000000000,
+                  "minimum": 0,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "in_progress",
+                    "completed",
+                    "failed",
+                    "cancelled",
+                    "unknown"
+                  ]
+                },
+                "timestampPrecisionMs": {
+                  "maximum": 4000000000000,
+                  "minimum": 1,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "status",
+                "startedAt",
+                "completedAt",
+                "durationMs",
+                "timestampPrecisionMs"
+              ],
+              "type": "object"
+            },
+            "reason": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": "string"
+            },
+            "source": {
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "completedAt": {
+                      "maximum": 4000000000000,
+                      "minimum": 0,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "durationMs": {
+                      "maximum": 4000000000000,
+                      "minimum": 0,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "id": {
+                      "maxLength": 512,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "startedAt": {
+                      "maximum": 4000000000000,
+                      "minimum": 0,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "status": {
+                      "enum": [
+                        "in_progress",
+                        "completed",
+                        "failed",
+                        "cancelled",
+                        "unknown"
+                      ]
+                    },
+                    "timestampPrecisionMs": {
+                      "maximum": 4000000000000,
+                      "minimum": 1,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "startedAt",
+                    "completedAt",
+                    "durationMs",
+                    "timestampPrecisionMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "source",
+            "reason"
+          ],
+          "type": "object"
+        },
+        {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "health": {
+                  "enum": [
+                    "current",
+                    "unavailable",
+                    "unsupported"
+                  ]
+                },
+                "projectKey": {
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reason": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                  "type": "string"
+                },
+                "relativePath": {
+                  "maxLength": 4096,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "repo": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "commonDir": {
+                          "maxLength": 4096,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "relativePath": {
+                          "maxLength": 4096,
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "root": {
+                          "maxLength": 4096,
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "root",
+                        "commonDir",
+                        "relativePath"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "root": {
+                  "maxLength": 4096,
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "rootKey": {
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "health",
+                "reason",
+                "root",
+                "rootKey",
+                "relativePath",
+                "projectKey",
+                "repo"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{0,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "type": "array"
+        }
+      ],
+      "type": "array"
+    },
+    "cohort": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "items": {
+            "$ref": "#/$defs/value"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 36864,
+              "minimum": 0,
+              "type": "integer"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "cohortsEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "$ref": "#/$defs/cohort"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "cohortsOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/cohort"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "fullCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "censusStatus": {
+          "enum": [
+            "complete",
+            "partial",
+            "warming",
+            "stale",
+            "unavailable",
+            "unsupported"
+          ]
+        },
+        "contextGeneration": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "runtime": {
+              "additionalProperties": false,
+              "properties": {
+                "reason": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                  "type": "string"
+                },
+                "scope": {
+                  "enum": [
+                    "daemon_threads",
+                    "provider_sessions"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "unavailable",
+                    "unsupported"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "reason",
+                "scope"
+              ],
+              "type": "object"
+            },
+            "saved": {
+              "additionalProperties": false,
+              "properties": {
+                "reason": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "complete",
+                    "partial",
+                    "unavailable",
+                    "unsupported"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "reason"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "saved",
+            "runtime"
+          ],
+          "type": "object"
+        },
+        "sourceHealth": {
+          "enum": [
+            "current",
+            "partial",
+            "stale",
+            "unavailable"
+          ]
+        },
+        "supports": {
+          "additionalProperties": false,
+          "properties": {
+            "runtime": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "accepted": {
+                      "maximum": 9007199254740991,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "component": {
+                      "enum": [
+                        "runtime",
+                        "history"
+                      ]
+                    },
+                    "contextGeneration": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "expiresBoottimeMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "namespace": {
+                      "maxLength": 71,
+                      "minLength": 1,
+                      "pattern": "^sha256:[0-9a-f]{64}$",
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "codex"
+                      ]
+                    },
+                    "sampledBoottimeMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "serviceId": {
+                      "maxLength": 36,
+                      "minLength": 1,
+                      "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "serviceId",
+                    "provider",
+                    "namespace",
+                    "contextGeneration",
+                    "component",
+                    "accepted",
+                    "sampledBoottimeMs",
+                    "expiresBoottimeMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "saved": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "accepted": {
+                      "maximum": 9007199254740991,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "component": {
+                      "enum": [
+                        "runtime",
+                        "history"
+                      ]
+                    },
+                    "contextGeneration": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "expiresBoottimeMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "namespace": {
+                      "maxLength": 71,
+                      "minLength": 1,
+                      "pattern": "^sha256:[0-9a-f]{64}$",
+                      "type": "string"
+                    },
+                    "provider": {
+                      "enum": [
+                        "codex"
+                      ]
+                    },
+                    "sampledBoottimeMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "serviceId": {
+                      "maxLength": 36,
+                      "minLength": 1,
+                      "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "serviceId",
+                    "provider",
+                    "namespace",
+                    "contextGeneration",
+                    "component",
+                    "accepted",
+                    "sampledBoottimeMs",
+                    "expiresBoottimeMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "runtime",
+            "saved"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "coverage",
+        "sourceHealth",
+        "contextGeneration",
+        "supports",
+        "censusStatus"
+      ],
+      "type": "object"
+    },
+    "group": {
+      "items": false,
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/groupSide"
+        },
+        {
+          "maximum": 511,
+          "minimum": 1,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "groupChange": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/groupSide"
+            },
+            {
+              "maximum": 511,
+              "minimum": 1,
+              "type": "integer"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/groupSide"
+            },
+            {
+              "maximum": 511,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "const": 0
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/groupSide"
+            },
+            {
+              "maximum": 511,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "$ref": "#/$defs/groupSide"
+            },
+            {
+              "maximum": 511,
+              "minimum": 1,
+              "type": "integer"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "groupSide": {
+      "items": false,
+      "maxItems": 3,
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "maximum": 31,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "identity": {
+      "items": false,
+      "maxItems": 5,
+      "minItems": 5,
+      "prefixItems": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+          "type": "string"
+        },
+        {
+          "enum": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "enum": [
+            "thread",
+            "session"
+          ]
+        },
+        {
+          "maxLength": 36,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+          "type": "string"
+        }
+      ],
+      "type": "array"
+    },
+    "member": {
+      "items": false,
+      "maxItems": 9,
+      "minItems": 9,
+      "prefixItems": [
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "maximum": 31,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      ],
+      "type": "array"
+    },
+    "membershipsEntry": {
+      "$ref": "#/$defs/group"
+    },
+    "membershipsOperation": {
+      "$ref": "#/$defs/groupChange"
+    },
+    "metadataEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "service"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "bootId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                "clockDomain": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^time:\\[[0-9]+\\]$",
+                  "type": "string"
+                },
+                "hostScope": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                  "type": "string"
+                },
+                "serviceId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                "sources": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "components": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "accepted": {
+                              "maximum": 9007199254740991,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "attempts": {
+                              "maximum": 9007199254740991,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "expiresBoottimeMs": {
+                              "maximum": 4000000000000,
+                              "minimum": 0,
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            },
+                            "health": {
+                              "enum": [
+                                "warming",
+                                "current",
+                                "partial",
+                                "stale",
+                                "unavailable"
+                              ]
+                            },
+                            "inFlight": {
+                              "type": "boolean"
+                            },
+                            "lastResult": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "name": {
+                              "enum": [
+                                "runtime",
+                                "history"
+                              ]
+                            },
+                            "sampledBoottimeMs": {
+                              "maximum": 4000000000000,
+                              "minimum": 0,
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "attempts",
+                            "accepted",
+                            "sampledBoottimeMs",
+                            "expiresBoottimeMs",
+                            "health",
+                            "lastResult",
+                            "inFlight"
+                          ],
+                          "type": "object"
+                        },
+                        "maxItems": 2,
+                        "type": "array"
+                      },
+                      "configHome": {
+                        "maxLength": 4096,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "configHomeKind": {
+                        "enum": [
+                          "default",
+                          "explicit"
+                        ]
+                      },
+                      "contextGeneration": {
+                        "maximum": 9007199254740991,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "namespace": {
+                        "maxLength": 71,
+                        "minLength": 1,
+                        "pattern": "^sha256:[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      "provider": {
+                        "enum": [
+                          "codex",
+                          "claude"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "provider",
+                      "namespace",
+                      "configHome",
+                      "configHomeKind",
+                      "contextGeneration",
+                      "components"
+                    ],
+                    "type": "object"
+                  },
+                  "maxItems": 2,
+                  "type": "array"
+                },
+                "state": {
+                  "enum": [
+                    "warming",
+                    "ready"
+                  ]
+                },
+                "uid": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "viewRevision": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serviceId",
+                "bootId",
+                "uid",
+                "hostScope",
+                "viewRevision",
+                "state",
+                "clockDomain",
+                "sources"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "snapshot"
+            },
+            {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "collectedAt": {
+                      "maximum": 4000000000000,
+                      "minimum": 0,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "collectionId": {
+                      "maxLength": 36,
+                      "minLength": 1,
+                      "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                        "type": "string"
+                      },
+                      "maxItems": 128,
+                      "type": "array"
+                    },
+                    "host": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "authority": {
+                          "maxLength": 256,
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                          "type": "string"
+                        },
+                        "authoritySource": {
+                          "enum": [
+                            "caller"
+                          ]
+                        },
+                        "nativeHostname": {
+                          "maxLength": 256,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "uid": {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "authority",
+                        "authoritySource",
+                        "nativeHostname",
+                        "uid"
+                      ],
+                      "type": "object"
+                    },
+                    "limitations": {
+                      "items": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                        "type": "string"
+                      },
+                      "maxItems": 128,
+                      "type": "array"
+                    },
+                    "schemaVersion": {
+                      "const": 6
+                    },
+                    "sourceHealth": {
+                      "enum": [
+                        "current",
+                        "partial",
+                        "unavailable"
+                      ]
+                    },
+                    "sources": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "capabilities": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "activity": {
+                                "type": "boolean"
+                              },
+                              "blockedReasons": {
+                                "items": {
+                                  "enum": [
+                                    "approval",
+                                    "question"
+                                  ]
+                                },
+                                "maxItems": 2,
+                                "type": "array"
+                              },
+                              "phase": {
+                                "items": {
+                                  "enum": [
+                                    "working",
+                                    "blocked",
+                                    "waiting"
+                                  ]
+                                },
+                                "maxItems": 3,
+                                "type": "array"
+                              },
+                              "runtime": {
+                                "items": {
+                                  "enum": [
+                                    "running",
+                                    "parked"
+                                  ]
+                                },
+                                "maxItems": 2,
+                                "type": "array"
+                              },
+                              "timing": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "lastUpdated": {
+                                    "type": "boolean"
+                                  },
+                                  "latestTurn": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "lastUpdated",
+                                  "latestTurn"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "phase",
+                              "blockedReasons",
+                              "runtime",
+                              "activity",
+                              "timing"
+                            ],
+                            "type": "object"
+                          },
+                          "configHome": {
+                            "maxLength": 4096,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "configHomeKind": {
+                            "enum": [
+                              "default",
+                              "explicit"
+                            ]
+                          },
+                          "coverage": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "runtime": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "reason": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "scope": {
+                                    "enum": [
+                                      "daemon_threads",
+                                      "provider_sessions"
+                                    ]
+                                  },
+                                  "status": {
+                                    "enum": [
+                                      "complete",
+                                      "partial",
+                                      "unavailable",
+                                      "unsupported"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "reason",
+                                  "scope"
+                                ],
+                                "type": "object"
+                              },
+                              "saved": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "reason": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "enum": [
+                                      "complete",
+                                      "partial",
+                                      "unavailable",
+                                      "unsupported"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "reason"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "saved",
+                              "runtime"
+                            ],
+                            "type": "object"
+                          },
+                          "discovery": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "catalogMode": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "catalogRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "historyClocks": {
+                                    "type": "boolean"
+                                  },
+                                  "nativeMessageBytes": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "pages": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "parkedRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "runtimeRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "sourceKinds": {
+                                    "items": {
+                                      "maxLength": 128,
+                                      "minLength": 1,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 32,
+                                    "type": "array"
+                                  }
+                                },
+                                "required": [
+                                  "catalogMode",
+                                  "sourceKinds",
+                                  "catalogRows",
+                                  "runtimeRows",
+                                  "parkedRows",
+                                  "pages",
+                                  "nativeMessageBytes",
+                                  "historyClocks"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "errors": {
+                            "items": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "maxItems": 128,
+                            "type": "array"
+                          },
+                          "limitations": {
+                            "items": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "maxItems": 128,
+                            "type": "array"
+                          },
+                          "namespace": {
+                            "maxLength": 71,
+                            "minLength": 1,
+                            "pattern": "^sha256:[0-9a-f]{64}$",
+                            "type": "string"
+                          },
+                          "provider": {
+                            "enum": [
+                              "codex",
+                              "claude"
+                            ]
+                          },
+                          "runtime": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "binarySha256": {
+                                    "maxLength": 64,
+                                    "minLength": 1,
+                                    "pattern": "^[0-9a-f]{64}$",
+                                    "type": "string"
+                                  },
+                                  "bootId": {
+                                    "maxLength": 36,
+                                    "minLength": 1,
+                                    "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                                    "type": "string"
+                                  },
+                                  "endpoint": {
+                                    "maxLength": 4096,
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "pid": {
+                                    "minimum": 1,
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ]
+                                  },
+                                  "startTicks": {
+                                    "maximum": 4000000000000,
+                                    "minimum": 0,
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ]
+                                  },
+                                  "topology": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "version": {
+                                    "maxLength": 64,
+                                    "minLength": 1,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "binarySha256",
+                                  "topology",
+                                  "bootId",
+                                  "pid",
+                                  "startTicks",
+                                  "endpoint"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "runtimeNamespace": {
+                            "maxLength": 71,
+                            "pattern": "^sha256:[0-9a-f]{64}$",
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "sourceHealth": {
+                            "enum": [
+                              "current",
+                              "partial",
+                              "stale",
+                              "unavailable"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "provider",
+                          "namespace",
+                          "runtimeNamespace",
+                          "configHome",
+                          "configHomeKind",
+                          "runtime",
+                          "discovery",
+                          "sourceHealth",
+                          "coverage",
+                          "capabilities",
+                          "errors",
+                          "limitations"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 2,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "schemaVersion",
+                    "collectionId",
+                    "collectedAt",
+                    "host",
+                    "sourceHealth",
+                    "sources",
+                    "errors",
+                    "limitations"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "projection"
+            },
+            {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {},
+                  "required": [],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "scopeOrder"
+            },
+            {
+              "items": {
+                "items": false,
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "maxItems": 2,
+              "type": "array"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "validationSources"
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "capabilities": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "timing": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "lastUpdated": {
+                            "type": "boolean"
+                          },
+                          "latestTurn": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lastUpdated",
+                          "latestTurn"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "timing"
+                    ],
+                    "type": "object"
+                  },
+                  "namespace": {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  }
+                },
+                "required": [
+                  "provider",
+                  "namespace",
+                  "capabilities"
+                ],
+                "type": "object"
+              },
+              "maxItems": 2,
+              "type": "array"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "metadataOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "const": "service"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "bootId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                "clockDomain": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^time:\\[[0-9]+\\]$",
+                  "type": "string"
+                },
+                "hostScope": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                  "type": "string"
+                },
+                "serviceId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                "sources": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "components": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "accepted": {
+                              "maximum": 9007199254740991,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "attempts": {
+                              "maximum": 9007199254740991,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "expiresBoottimeMs": {
+                              "maximum": 4000000000000,
+                              "minimum": 0,
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            },
+                            "health": {
+                              "enum": [
+                                "warming",
+                                "current",
+                                "partial",
+                                "stale",
+                                "unavailable"
+                              ]
+                            },
+                            "inFlight": {
+                              "type": "boolean"
+                            },
+                            "lastResult": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "name": {
+                              "enum": [
+                                "runtime",
+                                "history"
+                              ]
+                            },
+                            "sampledBoottimeMs": {
+                              "maximum": 4000000000000,
+                              "minimum": 0,
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "attempts",
+                            "accepted",
+                            "sampledBoottimeMs",
+                            "expiresBoottimeMs",
+                            "health",
+                            "lastResult",
+                            "inFlight"
+                          ],
+                          "type": "object"
+                        },
+                        "maxItems": 2,
+                        "type": "array"
+                      },
+                      "configHome": {
+                        "maxLength": 4096,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "configHomeKind": {
+                        "enum": [
+                          "default",
+                          "explicit"
+                        ]
+                      },
+                      "contextGeneration": {
+                        "maximum": 9007199254740991,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "namespace": {
+                        "maxLength": 71,
+                        "minLength": 1,
+                        "pattern": "^sha256:[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      "provider": {
+                        "enum": [
+                          "codex",
+                          "claude"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "provider",
+                      "namespace",
+                      "configHome",
+                      "configHomeKind",
+                      "contextGeneration",
+                      "components"
+                    ],
+                    "type": "object"
+                  },
+                  "maxItems": 2,
+                  "type": "array"
+                },
+                "state": {
+                  "enum": [
+                    "warming",
+                    "ready"
+                  ]
+                },
+                "uid": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "viewRevision": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "serviceId",
+                "bootId",
+                "uid",
+                "hostScope",
+                "viewRevision",
+                "state",
+                "clockDomain",
+                "sources"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "const": "service"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "const": "snapshot"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "collectedAt": {
+                      "maximum": 4000000000000,
+                      "minimum": 0,
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "collectionId": {
+                      "maxLength": 36,
+                      "minLength": 1,
+                      "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                      "type": "string"
+                    },
+                    "errors": {
+                      "items": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                        "type": "string"
+                      },
+                      "maxItems": 128,
+                      "type": "array"
+                    },
+                    "host": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "authority": {
+                          "maxLength": 256,
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+                          "type": "string"
+                        },
+                        "authoritySource": {
+                          "enum": [
+                            "caller"
+                          ]
+                        },
+                        "nativeHostname": {
+                          "maxLength": 256,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "uid": {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "authority",
+                        "authoritySource",
+                        "nativeHostname",
+                        "uid"
+                      ],
+                      "type": "object"
+                    },
+                    "limitations": {
+                      "items": {
+                        "maxLength": 128,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                        "type": "string"
+                      },
+                      "maxItems": 128,
+                      "type": "array"
+                    },
+                    "schemaVersion": {
+                      "const": 6
+                    },
+                    "sourceHealth": {
+                      "enum": [
+                        "current",
+                        "partial",
+                        "unavailable"
+                      ]
+                    },
+                    "sources": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "capabilities": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "activity": {
+                                "type": "boolean"
+                              },
+                              "blockedReasons": {
+                                "items": {
+                                  "enum": [
+                                    "approval",
+                                    "question"
+                                  ]
+                                },
+                                "maxItems": 2,
+                                "type": "array"
+                              },
+                              "phase": {
+                                "items": {
+                                  "enum": [
+                                    "working",
+                                    "blocked",
+                                    "waiting"
+                                  ]
+                                },
+                                "maxItems": 3,
+                                "type": "array"
+                              },
+                              "runtime": {
+                                "items": {
+                                  "enum": [
+                                    "running",
+                                    "parked"
+                                  ]
+                                },
+                                "maxItems": 2,
+                                "type": "array"
+                              },
+                              "timing": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "lastUpdated": {
+                                    "type": "boolean"
+                                  },
+                                  "latestTurn": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "lastUpdated",
+                                  "latestTurn"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "phase",
+                              "blockedReasons",
+                              "runtime",
+                              "activity",
+                              "timing"
+                            ],
+                            "type": "object"
+                          },
+                          "configHome": {
+                            "maxLength": 4096,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "configHomeKind": {
+                            "enum": [
+                              "default",
+                              "explicit"
+                            ]
+                          },
+                          "coverage": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "runtime": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "reason": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "scope": {
+                                    "enum": [
+                                      "daemon_threads",
+                                      "provider_sessions"
+                                    ]
+                                  },
+                                  "status": {
+                                    "enum": [
+                                      "complete",
+                                      "partial",
+                                      "unavailable",
+                                      "unsupported"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "reason",
+                                  "scope"
+                                ],
+                                "type": "object"
+                              },
+                              "saved": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "reason": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "status": {
+                                    "enum": [
+                                      "complete",
+                                      "partial",
+                                      "unavailable",
+                                      "unsupported"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "reason"
+                                ],
+                                "type": "object"
+                              }
+                            },
+                            "required": [
+                              "saved",
+                              "runtime"
+                            ],
+                            "type": "object"
+                          },
+                          "discovery": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "catalogMode": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "catalogRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "historyClocks": {
+                                    "type": "boolean"
+                                  },
+                                  "nativeMessageBytes": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "pages": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "parkedRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "runtimeRows": {
+                                    "maximum": 9007199254740991,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "sourceKinds": {
+                                    "items": {
+                                      "maxLength": 128,
+                                      "minLength": 1,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 32,
+                                    "type": "array"
+                                  }
+                                },
+                                "required": [
+                                  "catalogMode",
+                                  "sourceKinds",
+                                  "catalogRows",
+                                  "runtimeRows",
+                                  "parkedRows",
+                                  "pages",
+                                  "nativeMessageBytes",
+                                  "historyClocks"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "errors": {
+                            "items": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "maxItems": 128,
+                            "type": "array"
+                          },
+                          "limitations": {
+                            "items": {
+                              "maxLength": 128,
+                              "minLength": 1,
+                              "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                              "type": "string"
+                            },
+                            "maxItems": 128,
+                            "type": "array"
+                          },
+                          "namespace": {
+                            "maxLength": 71,
+                            "minLength": 1,
+                            "pattern": "^sha256:[0-9a-f]{64}$",
+                            "type": "string"
+                          },
+                          "provider": {
+                            "enum": [
+                              "codex",
+                              "claude"
+                            ]
+                          },
+                          "runtime": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "binarySha256": {
+                                    "maxLength": 64,
+                                    "minLength": 1,
+                                    "pattern": "^[0-9a-f]{64}$",
+                                    "type": "string"
+                                  },
+                                  "bootId": {
+                                    "maxLength": 36,
+                                    "minLength": 1,
+                                    "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                                    "type": "string"
+                                  },
+                                  "endpoint": {
+                                    "maxLength": 4096,
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "pid": {
+                                    "minimum": 1,
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ]
+                                  },
+                                  "startTicks": {
+                                    "maximum": 4000000000000,
+                                    "minimum": 0,
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ]
+                                  },
+                                  "topology": {
+                                    "maxLength": 128,
+                                    "minLength": 1,
+                                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                                    "type": "string"
+                                  },
+                                  "version": {
+                                    "maxLength": 64,
+                                    "minLength": 1,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "binarySha256",
+                                  "topology",
+                                  "bootId",
+                                  "pid",
+                                  "startTicks",
+                                  "endpoint"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "runtimeNamespace": {
+                            "maxLength": 71,
+                            "pattern": "^sha256:[0-9a-f]{64}$",
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "sourceHealth": {
+                            "enum": [
+                              "current",
+                              "partial",
+                              "stale",
+                              "unavailable"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "provider",
+                          "namespace",
+                          "runtimeNamespace",
+                          "configHome",
+                          "configHomeKind",
+                          "runtime",
+                          "discovery",
+                          "sourceHealth",
+                          "coverage",
+                          "capabilities",
+                          "errors",
+                          "limitations"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 2,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "schemaVersion",
+                    "collectionId",
+                    "collectedAt",
+                    "host",
+                    "sourceHealth",
+                    "sources",
+                    "errors",
+                    "limitations"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "const": "snapshot"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "const": "projection"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {},
+                  "required": [],
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "const": "projection"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "const": "scopeOrder"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "items": {
+                "items": false,
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "maxItems": 2,
+              "type": "array"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "const": "scopeOrder"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "const": "validationSources"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "capabilities": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "timing": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "lastUpdated": {
+                            "type": "boolean"
+                          },
+                          "latestTurn": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lastUpdated",
+                          "latestTurn"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "timing"
+                    ],
+                    "type": "object"
+                  },
+                  "namespace": {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  }
+                },
+                "required": [
+                  "provider",
+                  "namespace",
+                  "capabilities"
+                ],
+                "type": "object"
+              },
+              "maxItems": 2,
+              "type": "array"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "const": "validationSources"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "moved": {
+      "items": false,
+      "maxItems": 6,
+      "minItems": 6,
+      "prefixItems": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "enum": [
+                "current",
+                "stale",
+                "unavailable",
+                "unsupported",
+                "ambiguous"
+              ]
+            },
+            {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "anyOf": [
+            {
+              "items": false,
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "enum": [
+                    "current",
+                    "stale",
+                    "unavailable",
+                    "unsupported",
+                    "ambiguous"
+                  ]
+                },
+                {
+                  "maximum": 4000000000000,
+                  "minimum": 0,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "enum": [
+            "current",
+            "stale",
+            "unavailable",
+            "unsupported",
+            "ambiguous"
+          ]
+        },
+        {
+          "enum": [
+            "current",
+            "stale",
+            "unavailable",
+            "unsupported",
+            "ambiguous"
+          ]
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "enum": [
+                "current",
+                "stale",
+                "unavailable",
+                "unsupported",
+                "ambiguous"
+              ]
+            },
+            {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            {
+              "$ref": "#/$defs/timing"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "enum": [
+                "current",
+                "stale",
+                "unavailable",
+                "unsupported",
+                "ambiguous"
+              ]
+            },
+            {
+              "maximum": 4000000000000,
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            {
+              "$ref": "#/$defs/timing"
+            }
+          ],
+          "type": "array"
+        }
+      ],
+      "type": "array"
+    },
+    "nonmember": {
+      "additionalProperties": false,
+      "properties": {
+        "horizonBoottimeMs": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "identity": {
+          "additionalProperties": false,
+          "properties": {
+            "hostScope": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+              "type": "string"
+            },
+            "namespace": {
+              "maxLength": 71,
+              "minLength": 1,
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "nativeId": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "nativeIdKind": {
+              "enum": [
+                "thread",
+                "session"
+              ]
+            },
+            "provider": {
+              "enum": [
+                "codex",
+                "claude"
+              ]
+            }
+          },
+          "required": [
+            "hostScope",
+            "provider",
+            "namespace",
+            "nativeIdKind",
+            "nativeId"
+          ],
+          "type": "object"
+        },
+        "reason": {
+          "enum": [
+            "parked",
+            "excluded_kind"
+          ]
+        },
+        "supports": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "accepted": {
+                "maximum": 9007199254740991,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "component": {
+                "enum": [
+                  "runtime",
+                  "history"
+                ]
+              },
+              "contextGeneration": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "expiresBoottimeMs": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "namespace": {
+                "maxLength": 71,
+                "minLength": 1,
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "provider": {
+                "enum": [
+                  "codex"
+                ]
+              },
+              "sampledBoottimeMs": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "serviceId": {
+                "maxLength": 36,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "serviceId",
+              "provider",
+              "namespace",
+              "contextGeneration",
+              "component",
+              "accepted",
+              "sampledBoottimeMs",
+              "expiresBoottimeMs"
+            ],
+            "type": "object"
+          },
+          "maxItems": 2,
+          "type": "array"
+        },
+        "value": {
+          "enum": [
+            "parked",
+            "child",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "identity",
+        "reason",
+        "value",
+        "supports",
+        "horizonBoottimeMs"
+      ],
+      "type": "object"
+    },
+    "observation": {
+      "items": false,
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/moved"
+        },
+        {
+          "items": false,
+          "maxItems": 9,
+          "minItems": 9,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            },
+            {
+              "$ref": "#/$defs/support"
+            }
+          ],
+          "type": "array"
+        }
+      ],
+      "type": "array"
+    },
+    "observationsEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/recordRef"
+            },
+            {
+              "$ref": "#/$defs/observation"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "observationsOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/recordRef"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/observation"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/recordRef"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "attempts": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "contextGeneration": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "expiresBoottimeMs": {
+          "maximum": 4000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "health": {
+          "enum": [
+            "warming",
+            "current",
+            "partial",
+            "stale",
+            "unavailable"
+          ]
+        },
+        "inFlight": {
+          "type": "boolean"
+        },
+        "lastResult": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]{0,127}$",
+          "type": "string"
+        },
+        "name": {
+          "enum": [
+            "runtime",
+            "history"
+          ]
+        },
+        "sampledBoottimeMs": {
+          "maximum": 4000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "serviceId": {
+          "maxLength": 36,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "attempts",
+        "accepted",
+        "sampledBoottimeMs",
+        "expiresBoottimeMs",
+        "health",
+        "lastResult",
+        "inFlight",
+        "serviceId",
+        "contextGeneration"
+      ],
+      "type": "object"
+    },
+    "receiptKey": {
+      "items": {
+        "$ref": "#/$defs/value"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "enum": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "enum": [
+            "runtime",
+            "history"
+          ]
+        }
+      ],
+      "type": "array"
+    },
+    "receiptsEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/receiptKey"
+            },
+            {
+              "$ref": "#/$defs/receipt"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "receiptsOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/receiptKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/receipt"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/receiptKey"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "recordRef": {
+      "items": false,
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "recordsEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/identity"
+            },
+            {
+              "$ref": "#/$defs/slot"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "recordsOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/identity"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/slot"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/identity"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "scopeCoverageKey": {
+      "items": false,
+      "maxItems": 3,
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "enum": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "const": "coverage"
+        }
+      ],
+      "type": "array"
+    },
+    "scopeKey": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/scopeCoverageKey"
+        },
+        {
+          "$ref": "#/$defs/scopeMemberKey"
+        },
+        {
+          "$ref": "#/$defs/scopeNonmemberKey"
+        },
+        {
+          "$ref": "#/$defs/scopeUncertainKey"
+        }
+      ]
+    },
+    "scopeMemberKey": {
+      "items": false,
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "const": "members"
+        },
+        {
+          "$ref": "#/$defs/recordRef"
+        }
+      ],
+      "type": "array"
+    },
+    "scopeNonmemberKey": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "enum": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "const": "nonmembers"
+        },
+        {
+          "$ref": "#/$defs/identity"
+        }
+      ],
+      "type": "array"
+    },
+    "scopeUncertainKey": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "enum": [
+            "codex",
+            "claude"
+          ]
+        },
+        {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "const": "uncertain"
+        },
+        {
+          "$ref": "#/$defs/identity"
+        }
+      ],
+      "type": "array"
+    },
+    "scopesEntry": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/scopeCoverageKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/fullCoverage"
+                },
+                {
+                  "$ref": "#/$defs/activeCoverage"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/scopeMemberKey"
+            },
+            {
+              "$ref": "#/$defs/member"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/scopeNonmemberKey"
+            },
+            {
+              "$ref": "#/$defs/nonmember"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/scopeUncertainKey"
+            },
+            {
+              "$ref": "#/$defs/uncertain"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "scopesOperation": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/scopeCoverageKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/fullCoverage"
+                },
+                {
+                  "$ref": "#/$defs/activeCoverage"
+                }
+              ]
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/scopeCoverageKey"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/scopeMemberKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/member"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/scopeMemberKey"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/scopeNonmemberKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/nonmember"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/scopeNonmemberKey"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "put"
+            },
+            {
+              "$ref": "#/$defs/scopeUncertainKey"
+            },
+            {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/uncertain"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "items": false,
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "const": "remove"
+            },
+            {
+              "$ref": "#/$defs/scopeUncertainKey"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "slot": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maximum": 18446744073709551615,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "support": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maximum": 31,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "items": false,
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "const": "context"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "accepted": {
+                  "maximum": 9007199254740991,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "component": {
+                  "enum": [
+                    "runtime",
+                    "history"
+                  ]
+                },
+                "contextGeneration": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "expiresBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "namespace": {
+                  "maxLength": 71,
+                  "minLength": 1,
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "provider": {
+                  "enum": [
+                    "codex"
+                  ]
+                },
+                "sampledBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "serviceId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "serviceId",
+                "provider",
+                "namespace",
+                "contextGeneration",
+                "component",
+                "accepted",
+                "sampledBoottimeMs",
+                "expiresBoottimeMs"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    "timing": {
+      "anyOf": [
+        {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "enum": [
+                "runtime",
+                "history"
+              ]
+            },
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "uncertain": {
+      "additionalProperties": false,
+      "properties": {
+        "horizonBoottimeMs": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "identity": {
+          "additionalProperties": false,
+          "properties": {
+            "hostScope": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+              "type": "string"
+            },
+            "namespace": {
+              "maxLength": 71,
+              "minLength": 1,
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "nativeId": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "nativeIdKind": {
+              "enum": [
+                "thread",
+                "session"
+              ]
+            },
+            "provider": {
+              "enum": [
+                "codex",
+                "claude"
+              ]
+            }
+          },
+          "required": [
+            "hostScope",
+            "provider",
+            "namespace",
+            "nativeIdKind",
+            "nativeId"
+          ],
+          "type": "object"
+        },
+        "priorSupport": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "accepted": {
+                  "maximum": 9007199254740991,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "component": {
+                  "enum": [
+                    "runtime",
+                    "history"
+                  ]
+                },
+                "contextGeneration": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "expiresBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "namespace": {
+                  "maxLength": 71,
+                  "minLength": 1,
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "provider": {
+                  "enum": [
+                    "codex"
+                  ]
+                },
+                "sampledBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "serviceId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "serviceId",
+                "provider",
+                "namespace",
+                "contextGeneration",
+                "component",
+                "accepted",
+                "sampledBoottimeMs",
+                "expiresBoottimeMs"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]{0,127}$",
+          "type": "string"
+        },
+        "support": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "accepted": {
+                  "maximum": 9007199254740991,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "component": {
+                  "enum": [
+                    "runtime",
+                    "history"
+                  ]
+                },
+                "contextGeneration": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "expiresBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "namespace": {
+                  "maxLength": 71,
+                  "minLength": 1,
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "provider": {
+                  "enum": [
+                    "codex"
+                  ]
+                },
+                "sampledBoottimeMs": {
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "serviceId": {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "serviceId",
+                "provider",
+                "namespace",
+                "contextGeneration",
+                "component",
+                "accepted",
+                "sampledBoottimeMs",
+                "expiresBoottimeMs"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "identity",
+        "reason",
+        "priorSupport",
+        "support",
+        "horizonBoottimeMs"
+      ],
+      "type": "object"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "maximum": 18446744073709551615,
+          "minimum": -9223372036854775808,
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/value"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/value"
+          },
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "urn:agent-observer:sync-compact-frame:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "descriptor": {
+          "anyOf": [
+            {
+              "const": {
+                "commitment": "mesh.patricia-sha256/1",
+                "protocol": "agent-observer.sync",
+                "schemaDigest": "b7a8602909d04de0074580cd3141cdc2e9823fa84c6994721a65e2da6f300937",
+                "selectorDigest": null,
+                "tables": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ],
+                "version": 1,
+                "view": "full"
+              }
+            },
+            {
+              "const": {
+                "commitment": "mesh.patricia-sha256/1",
+                "protocol": "agent-observer.active-sync",
+                "schemaDigest": "b7a8602909d04de0074580cd3141cdc2e9823fa84c6994721a65e2da6f300937",
+                "selectorDigest": "sha256:73d08f0217e03cea283820e18abed0b06cd5e4c52428e431bab5da1d760ff9d6",
+                "tables": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ],
+                "version": 1,
+                "view": "active"
+              }
+            }
+          ]
+        },
+        "kind": {
+          "const": "baseline"
+        },
+        "nativeBinding": {
+          "additionalProperties": false,
+          "properties": {
+            "bootId": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "clockDomain": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^time:\\[[0-9]+\\]$",
+              "type": "string"
+            },
+            "hostScope": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+              "type": "string"
+            },
+            "ownerEpoch": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "protocol": {
+              "enum": [
+                "agent-observer.sync",
+                "agent-observer.active-sync"
+              ]
+            },
+            "schemaDigest": {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "scopeContinuity": {
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/value"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "maximum": 18446744073709551615,
+                    "minimum": 1,
+                    "type": "integer"
+                  }
+                ],
+                "type": "array"
+              },
+              "maxItems": 2,
+              "type": "array"
+            },
+            "selector": {
+              "anyOf": [
+                {
+                  "const": {
+                    "kinds": [
+                      "unknown",
+                      "user"
+                    ],
+                    "providers": [
+                      "codex"
+                    ],
+                    "runtimeHealths": [
+                      "current"
+                    ],
+                    "runtimeValues": [
+                      "running"
+                    ],
+                    "version": 1
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceContexts": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "configHome": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "configHomeKind": {
+                    "enum": [
+                      "default",
+                      "explicit"
+                    ]
+                  },
+                  "contextGeneration": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "namespace": {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  "runtimeContext": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": false,
+                        "properties": {
+                          "binarySha256": {
+                            "maxLength": 64,
+                            "minLength": 1,
+                            "pattern": "^[0-9a-f]{64}$",
+                            "type": "string"
+                          },
+                          "bootId": {
+                            "maxLength": 36,
+                            "minLength": 1,
+                            "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                            "type": "string"
+                          },
+                          "endpoint": {
+                            "maxLength": 4096,
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "pid": {
+                            "minimum": 1,
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "startTicks": {
+                            "maximum": 4000000000000,
+                            "minimum": 0,
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "topology": {
+                            "maxLength": 128,
+                            "minLength": 1,
+                            "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                            "type": "string"
+                          },
+                          "version": {
+                            "maxLength": 64,
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "binarySha256",
+                          "topology",
+                          "bootId",
+                          "pid",
+                          "startTicks",
+                          "endpoint"
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "provider",
+                  "namespace",
+                  "configHome",
+                  "configHomeKind",
+                  "contextGeneration",
+                  "runtimeContext"
+                ],
+                "type": "object"
+              },
+              "maxItems": 2,
+              "type": "array"
+            },
+            "uid": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "version": {
+              "const": 1
+            },
+            "view": {
+              "enum": [
+                "full",
+                "active"
+              ]
+            }
+          },
+          "required": [
+            "ownerEpoch",
+            "bootId",
+            "clockDomain",
+            "uid",
+            "hostScope",
+            "protocol",
+            "version",
+            "schemaDigest",
+            "view",
+            "selector",
+            "sourceContexts",
+            "scopeContinuity"
+          ],
+          "type": "object"
+        },
+        "receiptRefs": {
+          "additionalProperties": false,
+          "properties": {
+            "after": {
+              "items": {
+                "$ref": "#/$defs/receiptKey"
+              },
+              "maxItems": 32,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "before": {
+              "const": []
+            }
+          },
+          "required": [
+            "before",
+            "after"
+          ],
+          "type": "object"
+        },
+        "tables": {
+          "additionalProperties": false,
+          "properties": {
+            "bodies": {
+              "items": {
+                "$ref": "#/$defs/bodiesEntry"
+              },
+              "maxItems": 4096,
+              "type": "array"
+            },
+            "cohorts": {
+              "items": {
+                "$ref": "#/$defs/cohortsEntry"
+              },
+              "maxItems": 32,
+              "type": "array"
+            },
+            "memberships": {
+              "items": {
+                "$ref": "#/$defs/membershipsEntry"
+              },
+              "maxItems": 36864,
+              "type": "array"
+            },
+            "metadata": {
+              "items": {
+                "$ref": "#/$defs/metadataEntry"
+              },
+              "maxItems": 65536,
+              "type": "array"
+            },
+            "observations": {
+              "items": {
+                "$ref": "#/$defs/observationsEntry"
+              },
+              "maxItems": 4096,
+              "type": "array"
+            },
+            "receipts": {
+              "items": {
+                "$ref": "#/$defs/receiptsEntry"
+              },
+              "maxItems": 32,
+              "type": "array"
+            },
+            "records": {
+              "items": {
+                "$ref": "#/$defs/recordsEntry"
+              },
+              "maxItems": 4096,
+              "type": "array"
+            },
+            "scopes": {
+              "items": {
+                "$ref": "#/$defs/scopesEntry"
+              },
+              "maxItems": 65536,
+              "type": "array"
+            }
+          },
+          "required": [
+            "records",
+            "bodies",
+            "observations",
+            "memberships",
+            "receipts",
+            "cohorts",
+            "scopes",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "tag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "descriptor",
+        "nativeBinding",
+        "tag",
+        "cursor",
+        "receiptRefs",
+        "tables"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "baseCursor": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "baseTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "descriptor": {
+          "anyOf": [
+            {
+              "const": {
+                "commitment": "mesh.patricia-sha256/1",
+                "protocol": "agent-observer.sync",
+                "schemaDigest": "b7a8602909d04de0074580cd3141cdc2e9823fa84c6994721a65e2da6f300937",
+                "selectorDigest": null,
+                "tables": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ],
+                "version": 1,
+                "view": "full"
+              }
+            },
+            {
+              "const": {
+                "commitment": "mesh.patricia-sha256/1",
+                "protocol": "agent-observer.active-sync",
+                "schemaDigest": "b7a8602909d04de0074580cd3141cdc2e9823fa84c6994721a65e2da6f300937",
+                "selectorDigest": "sha256:73d08f0217e03cea283820e18abed0b06cd5e4c52428e431bab5da1d760ff9d6",
+                "tables": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ],
+                "version": 1,
+                "view": "active"
+              }
+            }
+          ]
+        },
+        "kind": {
+          "const": "transaction"
+        },
+        "nativeBindingDigest": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "operations": {
+          "additionalProperties": false,
+          "properties": {
+            "bodies": {
+              "items": {
+                "$ref": "#/$defs/bodiesOperation"
+              },
+              "maxItems": 8192,
+              "type": "array"
+            },
+            "cohorts": {
+              "items": {
+                "$ref": "#/$defs/cohortsOperation"
+              },
+              "maxItems": 64,
+              "type": "array"
+            },
+            "memberships": {
+              "items": {
+                "$ref": "#/$defs/membershipsOperation"
+              },
+              "maxItems": 73728,
+              "type": "array"
+            },
+            "metadata": {
+              "items": {
+                "$ref": "#/$defs/metadataOperation"
+              },
+              "maxItems": 131072,
+              "type": "array"
+            },
+            "observations": {
+              "items": {
+                "$ref": "#/$defs/observationsOperation"
+              },
+              "maxItems": 8192,
+              "type": "array"
+            },
+            "receipts": {
+              "items": {
+                "$ref": "#/$defs/receiptsOperation"
+              },
+              "maxItems": 64,
+              "type": "array"
+            },
+            "records": {
+              "items": {
+                "$ref": "#/$defs/recordsOperation"
+              },
+              "maxItems": 8192,
+              "type": "array"
+            },
+            "scopes": {
+              "items": {
+                "$ref": "#/$defs/scopesOperation"
+              },
+              "maxItems": 131072,
+              "type": "array"
+            }
+          },
+          "required": [
+            "records",
+            "bodies",
+            "observations",
+            "memberships",
+            "receipts",
+            "cohorts",
+            "scopes",
+            "metadata"
+          ],
+          "type": "object"
+        },
+        "receiptRefs": {
+          "additionalProperties": false,
+          "properties": {
+            "after": {
+              "items": {
+                "$ref": "#/$defs/receiptKey"
+              },
+              "maxItems": 32,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "before": {
+              "items": {
+                "$ref": "#/$defs/receiptKey"
+              },
+              "maxItems": 32,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "before",
+            "after"
+          ],
+          "type": "object"
+        },
+        "resultCursor": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 36,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "resultTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "transactionId": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "descriptor",
+        "nativeBindingDigest",
+        "transactionId",
+        "baseTag",
+        "resultTag",
+        "baseCursor",
+        "resultCursor",
+        "receiptRefs",
+        "operations"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "attenuation": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/value"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "items": {
+                  "$ref": "#/$defs/value"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "runtime",
+                      "history"
+                    ]
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 32,
+          "type": "array"
+        },
+        "challenge": {
+          "additionalProperties": {
+            "$ref": "#/$defs/value"
+          },
+          "type": "object"
+        },
+        "cohortHeads": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/value"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "items": {
+                  "$ref": "#/$defs/value"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "runtime",
+                      "history"
+                    ]
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "accepted": {
+                    "maximum": 9007199254740991,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "expiresBoottimeMs": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "sampledBoottimeMs": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "seal": {
+                    "items": {
+                      "$ref": "#/$defs/value"
+                    },
+                    "maxItems": 3,
+                    "minItems": 3,
+                    "prefixItems": [
+                      {
+                        "maximum": 18446744073709551615,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "maxLength": 64,
+                        "minLength": 1,
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      {
+                        "maximum": 36864,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "seal",
+                  "accepted",
+                  "sampledBoottimeMs",
+                  "expiresBoottimeMs"
+                ],
+                "type": "object"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 32,
+          "type": "array"
+        },
+        "descriptor": {
+          "additionalProperties": false,
+          "properties": {
+            "commitment": {
+              "const": "mesh.patricia-sha256/1"
+            },
+            "protocol": {
+              "enum": [
+                "agent-observer.sync",
+                "agent-observer.active-sync"
+              ]
+            },
+            "schemaDigest": {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "selectorDigest": {
+              "anyOf": [
+                {
+                  "maxLength": 71,
+                  "minLength": 1,
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "tables": {
+              "items": {
+                "enum": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ]
+              },
+              "maxItems": 8,
+              "type": "array"
+            },
+            "version": {
+              "const": 1
+            },
+            "view": {
+              "enum": [
+                "full",
+                "active"
+              ]
+            }
+          },
+          "required": [
+            "protocol",
+            "version",
+            "schemaDigest",
+            "commitment",
+            "view",
+            "selectorDigest",
+            "tables"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "head"
+        },
+        "nativeBindingDigest": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "originalReceipts": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/value"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "items": {
+                  "$ref": "#/$defs/value"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "prefixItems": [
+                  {
+                    "enum": [
+                      "codex",
+                      "claude"
+                    ]
+                  },
+                  {
+                    "maxLength": 71,
+                    "minLength": 1,
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "runtime",
+                      "history"
+                    ]
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "accepted": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "attempts": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "contextGeneration": {
+                    "maximum": 9007199254740991,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "expiresBoottimeMs": {
+                    "maximum": 4000000000000,
+                    "minimum": 0,
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "health": {
+                    "enum": [
+                      "warming",
+                      "current",
+                      "partial",
+                      "stale",
+                      "unavailable"
+                    ]
+                  },
+                  "inFlight": {
+                    "type": "boolean"
+                  },
+                  "lastResult": {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[a-z][a-z0-9_]{0,127}$",
+                    "type": "string"
+                  },
+                  "name": {
+                    "enum": [
+                      "runtime",
+                      "history"
+                    ]
+                  },
+                  "sampledBoottimeMs": {
+                    "maximum": 4000000000000,
+                    "minimum": 0,
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "serviceId": {
+                    "maxLength": 36,
+                    "minLength": 1,
+                    "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "attempts",
+                  "accepted",
+                  "sampledBoottimeMs",
+                  "expiresBoottimeMs",
+                  "health",
+                  "lastResult",
+                  "inFlight",
+                  "serviceId",
+                  "contextGeneration"
+                ],
+                "type": "object"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 32,
+          "type": "array"
+        },
+        "ownerClock": {
+          "additionalProperties": false,
+          "properties": {
+            "bootId": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "boottimeMs": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "clockDomain": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^time:\\[[0-9]+\\]$",
+              "type": "string"
+            },
+            "hostScope": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+              "type": "string"
+            },
+            "ownerEpoch": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "uid": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "bootId",
+            "clockDomain",
+            "boottimeMs",
+            "ownerEpoch",
+            "uid",
+            "hostScope"
+          ],
+          "type": "object"
+        },
+        "tag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "descriptor",
+        "nativeBindingDigest",
+        "tag",
+        "challenge",
+        "ownerClock",
+        "originalReceipts",
+        "cohortHeads",
+        "attenuation"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "baseTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "maxLength": 36,
+                    "minLength": 1,
+                    "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "maximum": 18446744073709551615,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "maxLength": 36,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "maximum": 18446744073709551615,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "descriptor": {
+          "additionalProperties": false,
+          "properties": {
+            "commitment": {
+              "const": "mesh.patricia-sha256/1"
+            },
+            "protocol": {
+              "enum": [
+                "agent-observer.sync",
+                "agent-observer.active-sync"
+              ]
+            },
+            "schemaDigest": {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "selectorDigest": {
+              "anyOf": [
+                {
+                  "maxLength": 71,
+                  "minLength": 1,
+                  "pattern": "^sha256:[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "tables": {
+              "items": {
+                "enum": [
+                  "records",
+                  "bodies",
+                  "observations",
+                  "memberships",
+                  "receipts",
+                  "cohorts",
+                  "scopes",
+                  "metadata"
+                ]
+              },
+              "maxItems": 8,
+              "type": "array"
+            },
+            "version": {
+              "const": 1
+            },
+            "view": {
+              "enum": [
+                "full",
+                "active"
+              ]
+            }
+          },
+          "required": [
+            "protocol",
+            "version",
+            "schemaDigest",
+            "commitment",
+            "view",
+            "selectorDigest",
+            "tables"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "control"
+        },
+        "ownerClock": {
+          "additionalProperties": false,
+          "properties": {
+            "bootId": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "boottimeMs": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "clockDomain": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^time:\\[[0-9]+\\]$",
+              "type": "string"
+            },
+            "hostScope": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$",
+              "type": "string"
+            },
+            "ownerEpoch": {
+              "maxLength": 36,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "uid": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "bootId",
+            "clockDomain",
+            "boottimeMs",
+            "ownerEpoch",
+            "uid",
+            "hostScope"
+          ],
+          "type": "object"
+        },
+        "reason": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]{0,127}$",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "baseline_required",
+            "gap",
+            "error",
+            "heartbeat",
+            "warming"
+          ]
+        },
+        "tag": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "maximum": 18446744073709551615,
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                ]
+              },
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "maximum": 18446744073709551615,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "maxLength": 64,
+                  "minLength": 1,
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetTag": {
+          "items": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "maximum": 18446744073709551615,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "descriptor",
+        "status",
+        "reason",
+        "tag",
+        "cursor",
+        "ownerClock"
+      ],
+      "type": "object"
+    }
+  ]
+}
