@@ -264,7 +264,7 @@ envelope and original receipts. Opaque body/operation trees are not decoded;
 domain, entry, duplicate opaque-key, commitment and proof admission remain
 mandatory at the Mesh boundary. Its closeable header ticket retains its decoded
 reservation and grants no currentness or admission authority. It has no Mesh,
-provider or service import, and is not yet wired into acquisition.
+provider or service import. The opt-in source implementation below now uses it.
 
 An explicit owned-input adapter is requested from Mesh: reservation precedes
 socket/framing copies, sealing transfers that reservation to an opaque ref,
@@ -273,10 +273,11 @@ close. Baseline, change batches, watch frames and head/control payloads need tha
 same lifetime rule. Existing plain-byte source methods remain a separate ABI;
 a bytes subclass cannot preserve ownership across ordinary copies. This public
 common cache-backed handoff is now agreed at the source-contract boundary
-below; its Observer implementation and compact normalization remain open.
+below; its Observer source implementation is a controlled source checkpoint.
+Aggregate qualification and compact normalization remain open.
 No private cache access or uncharged transfer substitutes for that work.
 
-The agreed additive ownership shape is not yet implemented by Observer:
+The agreed additive ownership shape used by the Observer source is:
 
 ```text
 OwnedSyncCache.input_owner() -> InputOwner
@@ -296,7 +297,7 @@ Sealing transfers only the exact raw buffer/bookkeeping credit without copying;
 other framing/header/container credit remains on its original lease. Framing
 includes mutable receive storage, immutable conversion, overlapping chunks and decoder scratch;
 it cannot release credit when a bare byte return crosses the source boundary.
-The explicit owned-source variant would carry refs in baseline tickets,
+The explicit owned-source variant carries refs in baseline tickets,
 transaction tuples, watch values and nonce/control results. Public cache batch
 and confirmation inputs need corresponding additive ref support. Existing bytes
 methods retain their signatures. Failed admission, cancellation and close must
@@ -327,12 +328,41 @@ header/ticket leases keep metadata charged after its data ref is consumed.
 Reserve/resize/seal reject after intake retirement; unsealed buffers and
 consuming pins stay charged until their actual cleanup. Repeated close is safe.
 
-The proposed owned source methods remain `open_session(inputs)`, then session
+The implemented opt-in source methods are `open_session(inputs)`, then session
 `baseline`, `changes`, `watch`, `head_after_nonce` and `aclose`. They return
 closeable owned tickets/controls or opaque input refs; their structural claims
 are unadmitted. The plain-byte methods retain full strict parsing and their
-existing types. Observer will use structural protocols without importing Mesh.
+existing types. Observer uses structural protocols without importing Mesh.
 No relay byte-export capability or admission memo is supplied by this cache API.
+
+`agent_observer.sync_owned_source` prepays a 512 KiB session/control allowance,
+768 KiB per active operation or watch for bounded requests/batches/callback
+scratch, and separate receive/parser/header leases. These are charges within
+the normal shared caps. It reserves receive growth before `recv`/resize,
+immutable conversion and coexisting tail copies; capacity/slack and a 64 KiB
+completed-callback allowance stay charged through retirement. The operation
+lease retains request bytes plus that callback allowance. Structural parsing
+adds 1,835,008 encoded bytes of conservative temporary credit; bounded decoded
+headers retain independent leases until ticket close. These conservative
+credits are not measured physical RSS or a substitute for aggregate gates.
+
+Each operation has a fresh ownership scope, distinct from retained native
+receipt/order history. A timeout after a completed receive revokes that
+operation's otherwise lost result without revoking prior tickets. Whole API
+operations are cancelled and awaited through cleanup, including outer request
+and batch storage after inner I/O tasks complete. Watch close revokes its refs,
+drops unread coalesced tails and clears decoded request frames before refunds.
+Caller challenge/tuple preflight bounds allocation before the unchanged strict
+request validator; it supplies no admission or proof authority.
+
+Controlled protected-socket tests cover real full/active baselines reaching
+independent receiver admission as unconfirmed candidates, full/active aliases
+on one ledger, four-item batches, paused partial batches and coalesced watches,
+foreign/consumed handles, header versus opaque duplicate rejection, quotas,
+disconnect, repeated cancellation, saved failure traces and scope retirement
+with cyclic GC disabled. This is source/test compatibility with exact Mesh
+`0ca3b99`, not installed pairing or complete proof/IPC/SSH/resource acceptance.
+Mesh's acquisition controller is not adapted by this Observer checkpoint.
 
 Aggregate intake qualification must include each physically unique live buffer
 and container: receive chunk, mutable pending bytes, immutable conversion and

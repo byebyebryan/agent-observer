@@ -12,7 +12,8 @@ immutable input buffer; this parser reserves only its own scratch and bounded
 decoded projection. An injected budget implements reserve(amount, encoded=0)
 and returns an idempotently closeable lease. The returned ticket owns its
 decoded reservation until close; retaining detached application values remains
-the caller's responsibility. This is not the pending OwnedInputRef handoff.
+the caller's responsibility. The opt-in owned source separately prepays and
+transfers its input buffer; neither ticket grants admission authority.
 """
 
 from __future__ import annotations

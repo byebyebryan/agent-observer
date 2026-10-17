@@ -58,6 +58,8 @@ class _Stream:
     cursor: tuple | None = None
     change_tag: tuple | None = None
     terminal: bool = False
+    intake: object | None = None
+    scope: object | None = None
 
 
 @dataclass
@@ -97,7 +99,7 @@ class SourceWatch:
         self._history = _History()
 
     async def __aenter__(self):
-        if self._closed or self.source._closed:
+        if self._closed or self.source._unavailable():
             raise ContractError("sync_source_closed")
         return self
 
@@ -108,11 +110,11 @@ class SourceWatch:
         return self
 
     async def __anext__(self):
-        if self._closed or self.source._closed:
+        if self._closed or self.source._unavailable():
             raise StopAsyncIteration
         if self._pending is not None:
             raise ContractError("sync_watch_busy")
-        if len(self.source._tasks) >= MAX_CHANNELS:
+        if self.source._family_count("_tasks") >= MAX_CHANNELS:
             raise ContractError("sync_acquisition_capacity")
         if self._iterator is None:
             self._iterator = self.source._frames(self.request, history=self._history)
@@ -164,12 +166,34 @@ class CachedAgentSyncSource:
         self.host, self.path, self.view, self.timeout = host, Path(path), view, timeout
         self._closed = False
         self._close_task = None
+        self._sessions = set()
+        self._parent_source = None
         self._tasks, self._sockets, self._watches = set(), set(), set()
         self._counts = {"requests": 0, "frames": 0, "receivedBytes": 0}
         self._service, self._binding, self._receipts = None, None, {}
         self._retired = set()
         self._histories = {operation: _History() for operation in ("baseline", "head")}
         self._read_locks = {operation: asyncio.Lock() for operation in self._histories}
+
+    def _unavailable(self):
+        parent = None if self._parent_source is None else self._parent_source()
+        return self._closed or self._parent_source is not None and (parent is None or parent._closed)
+
+    def _family_count(self, name):
+        parent = None if self._parent_source is None else self._parent_source()
+        root = self if parent is None else parent
+        return len(getattr(root, name)) + sum(len(getattr(session._client, name))
+                                             for session in root._sessions)
+
+    def open_session(self, inputs):
+        """Opt into prepaid, unadmitted input refs through structural protocols."""
+        if self._unavailable():
+            raise ContractError("sync_source_closed")
+        if len(self._sessions) >= MAX_CHANNELS:
+            raise ContractError("sync_acquisition_capacity")
+        from .sync_owned_source import open_session
+
+        return open_session(self, inputs)
 
     @property
     def protocol(self):
@@ -273,6 +297,41 @@ class CachedAgentSyncSource:
             if current_receipts:
                 history.receipts = current_receipts
 
+    def _check_frame(self, request, node, stream, history, value):
+        operation = request["operation"]
+        current = self._socket_policy()
+        if (current.st_dev, current.st_ino) != (node.st_dev, node.st_ino):
+            raise ContractError("service_socket_changed")
+        kind = value["kind"]
+        if kind != "control" and kind != {"baseline": "baseline", "head": "head",
+                                          "changes": "transaction", "watch": "transaction"}[operation]:
+            raise ContractError("sync_operation_binding")
+        if kind == "head" and value["challenge"] != request["challenge"]:
+            raise ContractError("sync_challenge_binding")
+        if kind == "transaction" and operation == "changes":
+            target, result = tuple(request["targetTag"]), tuple(value["resultTag"])
+            if (tuple(value["baseTag"]) != stream.change_tag or result[0] != target[0]
+                    or result[1] > target[1] or result[1] == target[1] and result != target):
+                raise ContractError("sync_change_order")
+            stream.change_tag = result
+        if kind == "transaction" and operation == "watch":
+            if tuple(value["baseCursor"]) != stream.cursor:
+                raise ContractError("sync_watch_order")
+            stream.cursor = tuple(value["resultCursor"])
+        if kind == "control" and operation == "watch" and value["status"] in {"complete", "heartbeat"}:
+            if value.get("cursor") is not None and tuple(value["cursor"]) != stream.cursor:
+                raise ContractError("sync_watch_order")
+        if kind == "control" and operation == "changes" and value["status"] == "complete":
+            if (value.get("baseTag") != request["baseTag"]
+                    or value.get("targetTag") != request["targetTag"]
+                    or stream.change_tag != tuple(request["targetTag"])):
+                raise ContractError("sync_change_target")
+        self._admit(value, history=history)
+        self._counts["frames"] += 1
+        stream.terminal = (operation in {"baseline", "head"}
+                           or kind == "control" and (operation == "changes"
+                               or value["status"] not in {"complete", "heartbeat"}))
+
     async def _read_frame(self, peer, request, node, stream, history):
         """Retire parse/framing locals before a subscription can pause."""
         operation = request["operation"]
@@ -299,38 +358,7 @@ class CachedAgentSyncSource:
             if len(raw) > limit:
                 raise ContractError("sync_message_limit")
             value = parse_message(raw, view=self.view, expected_host=self.host)
-            current = self._socket_policy()
-            if (current.st_dev, current.st_ino) != (node.st_dev, node.st_ino):
-                raise ContractError("service_socket_changed")
-            kind = value["kind"]
-            if kind != "control" and kind != {"baseline": "baseline", "head": "head",
-                                              "changes": "transaction", "watch": "transaction"}[operation]:
-                raise ContractError("sync_operation_binding")
-            if kind == "head" and value["challenge"] != request["challenge"]:
-                raise ContractError("sync_challenge_binding")
-            if kind == "transaction" and operation == "changes":
-                target, result = tuple(request["targetTag"]), tuple(value["resultTag"])
-                if (tuple(value["baseTag"]) != stream.change_tag or result[0] != target[0]
-                        or result[1] > target[1] or result[1] == target[1] and result != target):
-                    raise ContractError("sync_change_order")
-                stream.change_tag = result
-            if kind == "transaction" and operation == "watch":
-                if tuple(value["baseCursor"]) != stream.cursor:
-                    raise ContractError("sync_watch_order")
-                stream.cursor = tuple(value["resultCursor"])
-            if kind == "control" and operation == "watch" and value["status"] in {"complete", "heartbeat"}:
-                if value.get("cursor") is not None and tuple(value["cursor"]) != stream.cursor:
-                    raise ContractError("sync_watch_order")
-            if kind == "control" and operation == "changes" and value["status"] == "complete":
-                if (value.get("baseTag") != request["baseTag"]
-                        or value.get("targetTag") != request["targetTag"]
-                        or stream.change_tag != tuple(request["targetTag"])):
-                    raise ContractError("sync_change_target")
-            self._admit(value, history=history)
-            self._counts["frames"] += 1
-            stream.terminal = (operation in {"baseline", "head"}
-                               or kind == "control" and (operation == "changes"
-                                   or value["status"] not in {"complete", "heartbeat"}))
+            self._check_frame(request, node, stream, history, value)
             # Strict parsing and transport checks above still see the whole
             # document. Only bounded ticket/control fields cross this boundary.
             header = {key: value[key] for key in (
@@ -343,19 +371,20 @@ class CachedAgentSyncSource:
         finally:
             raw = part = value = None
 
-    async def _frames(self, raw_request, *, history=None):
+    async def _frames(self, raw_request, *, history=None, scope=None):
         request = parse_request(raw_request, expected_host=self.host, expected_protocol=self.protocol)
         node = self._socket_policy()
-        if self._closed:
+        if self._unavailable():
             raise ContractError("sync_source_closed")
-        if len(self._sockets) >= MAX_CHANNELS:
+        if self._family_count("_sockets") >= MAX_CHANNELS:
             raise ContractError("sync_acquisition_capacity")
         peer = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self._sockets.add(peer)
         operation = request["operation"]
         loop = asyncio.get_running_loop()
         stream = _Stream(cursor=tuple(request["cursor"]) if operation == "watch" else None,
-                         change_tag=tuple(request["baseTag"]) if operation == "changes" else None)
+                         change_tag=tuple(request["baseTag"]) if operation == "changes" else None,
+                         scope=history if scope is None else scope)
         self._counts["requests"] += 1
         try:
             peer.setblocking(False)
@@ -373,12 +402,15 @@ class CachedAgentSyncSource:
                 yield await self._read_frame(peer, request, node, stream, history)
         finally:
             stream.pending.clear()
+            if stream.intake is not None:
+                stream.intake.close()
+                stream.intake = None
             peer.close()
             self._sockets.discard(peer)
 
-    async def _single(self, request, operation):
+    async def _single(self, request, operation, *, scope=None):
         async with self._read_locks[operation]:
-            iterator = self._frames(request, history=self._histories[operation])
+            iterator = self._frames(request, history=self._histories[operation], scope=scope)
             try:
                 return await anext(iterator)
             finally:
@@ -432,24 +464,27 @@ class CachedAgentSyncSource:
         return await self._owned(self._io(self._changes(request), self.timeout))
 
     def watch(self, cursor):
-        if self._closed:
+        if self._unavailable():
             raise ContractError("sync_source_closed")
-        if len(self._watches) >= MAX_CHANNELS:
+        if self._family_count("_watches") >= MAX_CHANNELS:
             raise ContractError("sync_acquisition_capacity")
         result = SourceWatch(self, self._request("watch", cursor=list(cursor)))
         self._watches.add(result)
         return result
 
     def inspect(self):
-        return {"closed": self._closed, "activeTasks": len(self._tasks),
-                "activeSockets": len(self._sockets), "activeWatches": len(self._watches),
-                **self._counts}
+        counts = {name: value + sum(session._client._counts[name] for session in self._sessions)
+                  for name, value in self._counts.items()}
+        return {"closed": self._closed, "activeTasks": self._family_count("_tasks"),
+                "activeSockets": self._family_count("_sockets"),
+                "activeWatches": self._family_count("_watches"),
+                "activeSessions": len(self._sessions), **counts}
 
     async def _owned(self, operation):
-        if self._closed:
+        if self._unavailable():
             operation.close()
             raise ContractError("sync_source_closed")
-        if len(self._tasks) >= MAX_CHANNELS:
+        if self._family_count("_tasks") >= MAX_CHANNELS:
             operation.close()
             raise ContractError("sync_acquisition_capacity")
         task = asyncio.create_task(operation)
@@ -470,16 +505,20 @@ class CachedAgentSyncSource:
             # Revoke blocked acquisitions before yielding to cleanup.
             for peer in tuple(self._sockets):
                 peer.close()
+            for session in tuple(self._sessions):
+                session._begin_close()
             self._close_task = asyncio.create_task(self._close())
         await _finish_owned(self._close_task)
 
     async def _close(self):
+        sessions = await asyncio.gather(*(session.aclose() for session in tuple(self._sessions)),
+                                        return_exceptions=True)
         tasks = [task for task in self._tasks if task is not asyncio.current_task()]
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
         self._tasks.difference_update(tasks)
         results = await asyncio.gather(*(watch.aclose() for watch in tuple(self._watches)), return_exceptions=True)
-        for result in results:
+        for result in (*sessions, *results):
             if isinstance(result, BaseException):
                 raise result

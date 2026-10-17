@@ -312,12 +312,12 @@ All existing failed/open performance, packing, resource and ABI gates remain.
 
 ## Remaining work
 
-- Complete the public owned-input transfer and compact codec ABI with Mesh,
+- Qualify the implemented public owned-input transfer and complete the compact codec ABI with Mesh,
   including provisional alias declarations versus the profile's independently
   derived final alias index, mask assertions and resource ownership.
 - Implement packed baseline/change emission and strict budgeted normalization.
-  The draft source's full parser/raw-frame lifetime is not an accepted aggregate
-  budget handoff.
+  The opt-in source ownership tests are not aggregate memory/RSS or paired
+  transport acceptance.
 - Resolve the failed dense producer overhead case and qualify cold/all-body/
   forced recovery. A timestamp pass does not settle those gates.
 - Run the remaining exact native, immutable artifact, installed paired IPC/SSH,
@@ -326,3 +326,48 @@ All existing failed/open performance, packing, resource and ABI gates remain.
 
 No installation, version allocation, rollout or provider operation is authorized
 by this source checkpoint.
+
+## Opt-in prepaid source intake
+
+The source now implements `CachedAgentSyncSource.open_session(inputs)` using
+only the public structural API agreed against Mesh `0ca3b99`. The exact
+source-contract document remains SHA256
+`7f7751ecd9df93277a3e7110ca72ebfda343d38fa629cd0212ec40b3a8f1d124`.
+The implementation has no Mesh import. Existing plain-byte methods keep full
+strict parsing and their return types; owned methods structurally scan native
+headers and return opaque single-consume refs or closeable header tickets.
+Sealing still grants no schema/domain/root/currentness authority.
+
+All receive/growth/copy, unread-tail, parser/header, request/batch and completed
+callback credit is prepaid through the configured InputOwner. The source keeps
+header leases independent of consumed data refs, and its state, request and
+temporary encoding allowances count inside the existing 64 MiB heap / 32 MiB
+encoded caps. The [interface note](../../delta-sync-interface.md#acquisition-budget-seam-still-open)
+records the actual allowances and cleanup boundary. These are conservative
+accounting reservations, not observed RSS or a capacity/performance pass.
+
+Twenty new controlled protected-socket tests exercise baseline, head/control,
+four-item and partial batches, coalesced paused-watch tails, source/watch/parent
+cleanup, foreign and consumed refs, independent full/active cache handles on a
+shared ledger, allocation refusal, malformed/duplicate headers and deferred
+opaque duplicate rejection. Real ServiceState full/active fixture baselines
+reach independently validated, still-unconfirmed receiver candidates. A
+fabricated structural baseline still rejects at the receiver. No source-only
+ticket can publish a view.
+
+Additional regressions hold outer-operation storage after inner I/O has ended,
+repeat cancellation during cleanup, and keep a saved timeout while cyclic GC
+is disabled. Close waits before refunding; a lost late result retires only its
+operation scope, preserving older tickets. Watch failure traces do not retain
+decoded request or receive frames after their leases close. Closing a session
+leaves the shared cache-minted InputOwner and sibling source/session usable;
+the remaining owner-base charge is intentional until cache teardown.
+
+Exact source manifests and verification commands/results are recorded in
+[owned-source-compatibility.json](owned-source-compatibility.json). This is an
+Observer source checkpoint only. It does not adapt Mesh's acquisition controller,
+provide A1 relay authority/byte export, freeze the compact codec, or qualify
+aggregate intake+material peaks, RSS, installed/native/SSH proof delivery,
+immutable artifacts or the failed dense combined CPU gate. Expanded full 2,000
+baseline/recovery remains undeliverable under the fixed frame limit; the
+historical ownership probes and their limited head-only case remain separate.
