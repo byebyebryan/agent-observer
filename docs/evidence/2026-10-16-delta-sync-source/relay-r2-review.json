@@ -1,0 +1,160 @@
+{
+  "artifactsOrInstalls": false,
+  "completionOrigin": "Existing Observer normalization decision35b1911388e75f4bc2a87087f23f07f7ca95346719933d7b37a5365d528734d6, not a new semantic capability or byte export.",
+  "decision": "R2 typed source/ref/role/head/context shape plus explicit R3 lifecycle/bootstrap choices fit Observer. Exact public HeaderRef access/copy-cost completion still requires Mesh agreement; no unconditional API signoff or root A1 closure.",
+  "event": "e-0ce299ca",
+  "framingBoundary": "Retained toy vector has structural LF inside JSON and no terminal transport LF. Arithmetic/JSON-fragment preservation only, not actual native newline/LineChannel acceptance.",
+  "host": "starship",
+  "independentVerifier": {
+    "byteIdentical": true,
+    "outputSha256": "bedda7ac9ff57897d7d26d57dee6bb03fbfa6eef82c4ae0af02564ba0252c273",
+    "path": "docs/evidence/2026-10-16-delta-sync-source/verify_relay_r2_vectors.py",
+    "pythonVersions": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "result": {
+      "envelopeBytes": 1896,
+      "fixtureDeliveryStructuralLf": 50,
+      "fixtureHeadStructuralLf": 50,
+      "fixtureSha256": "968ea89860e86fc8493681f6a8edc472c99794fbf580275d9bde5a2efa29c39d",
+      "framingCoverage": "JSON-fragment byte preservation only; fixture uses structural LF and no terminal transport LF.",
+      "nativeHeadBytes": 1121,
+      "nativeOrRelayRuntimeExecuted": false,
+      "nativeRootValidityEstablished": false,
+      "positiveCases": [
+        "encoding-binding",
+        "request-role-relay",
+        "request-role-material",
+        "request-other-encoding",
+        "source-full",
+        "source-second-alias",
+        "nonce-challenge",
+        "proof-exact-native-splice",
+        "within-binding-moved-head",
+        "attenuate-15ms",
+        "zero-native-remaining",
+        "elapsed-remaining"
+      ],
+      "rejections": [
+        "boolean-remaining",
+        "negative-remaining",
+        "bridge-before-native",
+        "whole-rtt-over-two-seconds"
+      ],
+      "result": "PASS",
+      "totalBytes": 3017
+    },
+    "sha256": "1d03b245eca8858c306f1b57dfd497ed53d2bb2f26661c8293119a3e63f8bf65"
+  },
+  "meshR2": {
+    "commit": "e68b26417035b9dd78b1a50c1f228120926bac52",
+    "inputs": [
+      {
+        "bytes": 27392,
+        "path": "docs/delta-sync-relay-api-r2.md",
+        "sha256": "8616bfba7c05dcf8982e431309bcd0bdf354c91bc023fdf0fcf85dcbe4c7abdd"
+      },
+      {
+        "bytes": 9594,
+        "path": "scripts/reproduce-sync-relay-vectors.py",
+        "sha256": "defeb1d4c67b811a3fefc3f3586759d8005fd758cbe19bf110bbdca2469defcf"
+      },
+      {
+        "bytes": 12690,
+        "path": "docs/evidence/2026-10-16-delta-sync/relay-api-r2-vectors.json",
+        "sha256": "968ea89860e86fc8493681f6a8edc472c99794fbf580275d9bde5a2efa29c39d"
+      },
+      {
+        "bytes": 1905,
+        "path": "docs/evidence/2026-10-16-delta-sync/relay-api-r2-review.json",
+        "sha256": "92035073d95392fd31d53d72118b5eb82855baae3182234917710fd94157a6ee"
+      },
+      {
+        "bytes": 4383,
+        "path": "docs/evidence/2026-10-16-delta-sync/RELAY-API-R2.md",
+        "sha256": "d7361fab5eec9c1fcda1dc6871125dd6c68a29331a184ef84e99679dee8b24aa"
+      }
+    ]
+  },
+  "meshR3": {
+    "commit": "50b6e686ecb45ca91f4f694d7d0fd76c679fbff1",
+    "inputs": [
+      {
+        "bytes": 12316,
+        "path": "docs/delta-sync-relay-lifecycle-r3.md",
+        "sha256": "eb5c217c544bbe10766c7c0f32d574294412c6f6230c7ad6b95a2a57483c0c9f"
+      },
+      {
+        "bytes": 1393,
+        "path": "docs/evidence/2026-10-16-delta-sync/relay-lifecycle-r3-review.json",
+        "sha256": "fe0e34c725636cbe4420cf2ae67eac9a02979b2e30b385080925f03dce994af6"
+      },
+      {
+        "bytes": 2746,
+        "path": "docs/evidence/2026-10-16-delta-sync/RELAY-LIFECYCLE-R3.md",
+        "sha256": "19fb93f5d55578799c1db0e6900f17b393a23fbdd2f16c925262e1503213a396"
+      }
+    ]
+  },
+  "nativeProviderActions": false,
+  "observerReviewBaseCommit": "384d0cb1eeb98bd2784e42e4b73e90ef9a1f3e85",
+  "observerRuntimeCommit": "4030d50c0d21c1e34daad45c29e2373502a3413a",
+  "observerSourceTestHashMatches": 153,
+  "productionRuntimeChanged": false,
+  "publicCompletion": [
+    "HeaderRef.materialization_bytes: int",
+    "HeaderRef.materialize() -> bounded detached dict",
+    "both reject after ticket retirement; caller prepays and retains detached-copy credit until physical retirement"
+  ],
+  "referenceContracts": [
+    {
+      "bytes": 6186,
+      "commit": "665f6caaed99740a755de9467c7ae53322f7e720",
+      "path": "projects/agent-dashboard/docs/delta-sync-relay-addendum.md",
+      "repository": "/home/bryan/code/esp32-rlcd",
+      "sha256": "6eaa408376f91bb7c5e4276812927fd2bfce2445412fb02a211bea22a5e52aef"
+    },
+    {
+      "bytes": 28802,
+      "commit": "ed771e5c8843dca718700c8b8b1d6804ae9134f0",
+      "path": "docs/delta-sync-contract-appendix.md",
+      "repository": "/home/bryan/code/mesh-plus",
+      "sha256": "a376bc848a78027d4fd723e8a2959dbbc4e00114da132d3a5d2733a6ebce2eb6"
+    },
+    {
+      "bytes": 12680,
+      "commit": "0ca3b99c7413d2542ab48ff11e8e58fb82f73d93",
+      "path": "docs/delta-sync-owned-input-api.md",
+      "repository": "/home/bryan/code/mesh-plus",
+      "sha256": "7f7751ecd9df93277a3e7110ca72ebfda343d38fa629cd0212ec40b3a8f1d124"
+    }
+  ],
+  "relayExecuted": false,
+  "remainingGates": [
+    "HeaderRef exact agreement and root A1 record",
+    "native structural/compact facade and capsule/ref implementation",
+    "independent Reader rejection/proof and runtime framing",
+    "aggregate intake/output/pin resource and GC-disabled error retirement",
+    "dense CPU/cold/packed recovery",
+    "actual native IPC/fixed SSH",
+    "installed exact paired artifacts"
+  ],
+  "siblingEdits": false,
+  "upstreamReplay": {
+    "byteIdentical": true,
+    "independentImplementation": false,
+    "outputSha256": "a057b59e7ada020e4294cf5ec5f61ce2d171cdc27aef82cfc8cae193fd61c943",
+    "pythonVersions": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "result": {
+      "bytes": 12690,
+      "rejections": 4,
+      "scope": "binding, exact native splicing and attenuation; no material or transport admission",
+      "sha256": "968ea89860e86fc8493681f6a8edc472c99794fbf580275d9bde5a2efa29c39d",
+      "vectors": 12
+    }
+  }
+}

@@ -102,6 +102,10 @@ that historical packet. The later packet and its supplements need their own
 explicit same-byte decision with Mesh and RLCD. This review does not accept
 them by substitution or duplicate a pending interface request.
 
+The later [R2+R3 review](delta-sync-relay-r2-review.md) identifies its exact
+separate inputs, compatible source/lifecycle choices and remaining public
+header-access completion. It leaves this original-byte review unchanged.
+
 ## Arithmetic and acceptance boundary
 
 The independent stdlib
