@@ -241,6 +241,32 @@ def _newline(parts):
     yield b"\n"
 
 
+def _transaction_parts(parts, unsigned_size):
+    # transactionId sorts after every unsigned header field. Hash the unsigned
+    # closing brace, then replace it with the final ID field and transport LF.
+    # This combines hashing and final output without retaining a document or
+    # performing a third transformation of every changed row.
+    digest = hashlib.sha256(b"mesh-sync-transaction\0" + unsigned_size.to_bytes(8, "big"))
+    remaining = unsigned_size
+    try:
+        for part in parts:
+            remaining -= len(part)
+            digest.update(part)
+            if remaining > 0:
+                yield part
+            elif remaining == 0 and part == b"}":
+                yield b',"transactionId":"'
+                yield digest.hexdigest().encode("ascii")
+                yield b'"}\n'
+            else:
+                raise ContractError("sync_compact_transaction_size")
+        if remaining:
+            raise ContractError("sync_compact_transaction_size")
+    finally:
+        # Saved failures must not retain the previous encoded row or iterator.
+        part = parts = digest = None
+
+
 def transaction(cache, stage, before, current, changes):
     from .sync_state import FRAME_LIMIT, JOURNAL_LIMIT, _encode_parts
 
@@ -254,16 +280,12 @@ def transaction(cache, stage, before, current, changes):
         size = unsigned_size + len(b',"transactionId":"') + 64 + len(b'"') + 1
         if size > min(FRAME_LIMIT, JOURNAL_LIMIT):
             return None, None, 0
-        digest = hashlib.sha256(b"mesh-sync-transaction\0" + unsigned_size.to_bytes(8, "big"))
-        with closing(export.parts(header, changes)) as parts:
-            for part in parts:
-                digest.update(part)
-        header["transactionId"] = digest.hexdigest()
         stage.charge_encoded(size * 2)
         try:
             with cache.account.reserve(size * 2 + 8192, kind="encoded") as constructor:
                 with closing(export.parts(header, changes)) as parts:
-                    data = _encode_parts(_newline(parts), size)
+                    with closing(_transaction_parts(parts, unsigned_size)) as signed:
+                        data = _encode_parts(signed, size)
                 lease = cache.account.retain_bytes(data, size=512, credit=constructor)
         except BaseException:
             stage.release_encoded(size * 2)
