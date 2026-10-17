@@ -21,7 +21,12 @@ def boottime_ms():
 
 class ServiceState(ObservationEngine):
     def __init__(self, *, host_scope, configs, uid=None, clock=boottime_ms,
-                 boot_id=None, clock_domain=None):
+                 boot_id=None, clock_domain=None, sync_serialization="expanded"):
+        from .contract import ContractError
+
+        if type(sync_serialization) is not str or sync_serialization not in {"expanded", "compact"}:
+            raise ContractError("sync_owner_serialization")
+        self._sync_serialization = sync_serialization
         self.service_id = str(uuid.uuid4())
         self.active_projector = ActiveFeedProjector(service_id=self.service_id)
         # Sync is opt-in. A cold baseline can initialize its shared cache;
@@ -73,7 +78,8 @@ class ServiceState(ObservationEngine):
         if self._sync_cache is None:
             from .sync_state import OwnerSyncCache
 
-            self._sync_cache = OwnerSyncCache(self, backend="encoded")
+            self._sync_cache = OwnerSyncCache(self, backend="encoded",
+                                              serialization=self._sync_serialization)
         return self._sync_cache
 
     def sync_baseline(self, view):

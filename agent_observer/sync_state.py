@@ -559,12 +559,18 @@ class _BirthSeed:
 class OwnerSyncCache:
     """Shared full/active cache, bounded roots and encoded acquisition buffers."""
 
-    def __init__(self, state, *, decoded_limit=64 * 1024 * 1024, backend="frozen"):
+    def __init__(self, state, *, decoded_limit=64 * 1024 * 1024, backend="frozen",
+                 serialization="expanded"):
         if backend not in {"frozen", "encoded"}:
             raise ContractError("sync_owner_backend")
+        if type(serialization) is not str or serialization not in {"expanded", "compact"}:
+            raise ContractError("sync_owner_serialization")
+        if serialization == "compact" and backend != "encoded":
+            raise ContractError("sync_owner_compact_backend")
         self.state = state
         self._closed = False
         self.backend = backend
+        self._serialization = serialization
         self.account = AllocationAccount(decoded_limit)
         self.views = {}
         self.query_buffers = {}
@@ -1070,7 +1076,18 @@ class OwnerSyncCache:
         transaction = None
         transaction_lease = None
         transaction_reservation = 0
-        if prior is not None:
+        if prior is not None and self._serialization == "compact":
+            from .sync_compact_export import transaction as compact_transaction
+
+            try:
+                transaction, transaction_lease, transaction_reservation = compact_transaction(
+                    self, stage, prior, current, changes)
+            except (BudgetExceeded, ContractError) as error:
+                if not isinstance(error, BudgetExceeded) and error.args != ("sync_encoding_limit",):
+                    raise
+                # The optional compact journal has the same bounded recovery
+                # behavior as expanded output. Never serialize a fallback.
+        elif prior is not None:
             header = {
                 "kind": "transaction", "descriptor": desc,
                 "nativeBindingDigest": tag[0], "baseTag": prior.tag,
@@ -1339,6 +1356,10 @@ class OwnerSyncCache:
         if slot.baseline is not None:
             return slot.baseline.data
         current = slot.current
+        if self._serialization == "compact":
+            from .sync_compact_export import baseline as compact_baseline
+
+            return compact_baseline(self, view, slot, current)
         with self.account.reserve(32768, kind="stage") as scratch:
             scratch.resize(32768 + _json_bound(current.binding) * 16)
             return self._baseline_encoded(view, slot, current)

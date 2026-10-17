@@ -392,6 +392,12 @@ checks do not establish installed/native acceptance or satisfy the remaining
 controlled CPU, cold/recovery, IPC/SSH and capacity gates. Candidate packaging
 and independent installed/native qualification remain pending.
 
+The explicit [compact native serializer](delta-sync-compact-export.md) writes the
+agreed candidate baseline and sparse transaction representation directly from
+committed tables. Its default, logical roots, nonce head and completion bytes
+are unchanged. Source dispatch, identifiers/freeze, aggregate capacity, recovery,
+total CPU and native/installed pair acceptance remain separate.
+
 The [source checkpoint report](evidence/2026-10-16-delta-sync-source/REPORT.md)
 pins the current implementation and matched ABBA samples. At `100637b`, real
 N-row timestamps meet the source producer target (+7.37%), while changing a
