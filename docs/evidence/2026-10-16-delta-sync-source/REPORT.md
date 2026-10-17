@@ -85,6 +85,12 @@ remain the historical `100637b` checkpoint.
 
 ## Compact-layout feasibility
 
+The subsequent [shared-ownership diagnostic](OWNERSHIP.md) records internal
+canonical/output/stage/pin union and overlap at aggregate peaks, rejected
+constructor reservations and exact additive CPU totals. Both encoded and heap
+caps include canonical buffers. Its bounded source accounting evidence does
+not settle the failed CPU or unfinished full-roster delivery gates.
+
 The runtime's expanded baseline still needs 11,823,094 bytes at 2,000 rows,
 exceeding the unchanged 8,404,992-byte frame cap. It is not a usable large-roster
 wire format.
