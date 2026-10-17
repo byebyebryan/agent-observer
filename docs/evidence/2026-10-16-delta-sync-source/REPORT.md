@@ -171,9 +171,18 @@ A rejection publishes no candidate. Mesh's bounded decoder memo may remain
 charged until store close; close retires all allocations and reservations.
 
 [profile-stream-capacity.json](profile-stream-capacity.json) records an unpaired
-100/500-row source diagnostic using Mesh `8b06de3` and its existing script.
+100/500-row source diagnostic using Observer `58c20b3`, Mesh `8b06de3` plus
+the hash-pinned `cache.py` and `canonical.py` overlays, and its existing script.
+All 79 Observer inputs match that commit. Of the 57 Mesh inputs, the two
+overlays differ from the committed base: `src/mesh_plus/sync/cache.py` is
+SHA256 `ffa71e5498193b73f4408e62672932f168a09e53659b3ee31e2620a2aaef3010`,
+and `src/mesh_plus/sync/canonical.py` is SHA256
+`3d481c03157934c479dcf6a501ee3a91638a5c3b0cad3d61b91b4a0ca57a507f`.
+The unchanged JSON, SHA256
+`461eb37c4a2a0514d7420eb77c2cf5bee68561e0613c4b09630a37d10083dbef`,
+binds the complete input manifest; it is not a clean committed Mesh tuple.
 The 500-row four-membership fixture still has a 2,125,267-byte native baseline
-versus 683,333 legacy full bytes. Its accounted peak is about 30.7 MB, including
+versus 683,333 legacy full bytes. Its accounted peak is 30,668,001 bytes, including
 conservative callback charges and Mesh's new preallocation accounting. The
 earlier 17.4 MB figure omitted not-yet-retained staging; these are different
 accounting/source revisions and establish no memory or CPU regression ratio.
