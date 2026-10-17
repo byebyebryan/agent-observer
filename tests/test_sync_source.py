@@ -3,18 +3,20 @@
 import asyncio
 import contextlib
 import copy
+import gc
 import json
 import os
 import tempfile
 import unittest
 import uuid
+import weakref
 from pathlib import Path
 from unittest.mock import patch
 
 from agent_observer.contract import ContractError, store_namespace
 from agent_observer.mesh_source import MAX_INCARNATIONS, boottime_ms
 from agent_observer.sync_commitment import canonical, native_binding_digest
-from agent_observer.sync_native import TABLES, descriptor, validate_message
+from agent_observer.sync_native import TABLES, descriptor, parse_message, validate_message
 from agent_observer.sync_source import (
     BaselineTicket,
     CachedAgentSyncSource,
@@ -22,6 +24,7 @@ from agent_observer.sync_source import (
     SourceWatch,
     SyncControl,
     _History,
+    _Received,
 )
 
 
@@ -321,6 +324,7 @@ class SyncSourceAcquisitionTest(unittest.IsolatedAsyncioTestCase):
             task.cancel()
         await asyncio.gather(*self.handlers, return_exceptions=True)
         await self.server.wait_closed()
+        self.directory.cleanup()
         self.assertEqual(self.source.inspect()["activeSockets"], 0)
         self.assertEqual(self.source.inspect()["activeTasks"], 0)
 
@@ -357,6 +361,104 @@ class SyncSourceAcquisitionTest(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(await anext(watch), wire(self.transaction))
         self.assertEqual([value["operation"] for value in self.requests], ["baseline", "head", "changes", "watch"])
         self.assertTrue(all(value["syncProtocol"] == "agent-observer.sync" for value in self.requests))
+        self.assertEqual(self.source.inspect()["activeSockets"], 0)
+
+    async def test_paused_watch_retires_parsed_frame_and_received_ticket_without_gc(self):
+        class Parsed(dict):
+            pass
+
+        parsed, tickets = [], []
+
+        def parse(raw, **kwargs):
+            result = Parsed(parse_message(raw, **kwargs))
+            parsed.append(weakref.ref(result))
+            return result
+
+        def received(*args):
+            result = _Received(*args)
+            tickets.append(weakref.ref(result))
+            return result
+
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            with patch("agent_observer.sync_source.parse_message", side_effect=parse), patch(
+                "agent_observer.sync_source._Received", side_effect=received,
+            ):
+                async with self.source.watch(self.baseline["cursor"]) as watch:
+                    control = await anext(watch)
+                    self.assertIsInstance(control, SyncControl)
+                    self.assertIsNone(parsed[-1]())
+                    # Let the completed task's wake-up callback retire; the
+                    # subscription remains paused throughout this loop turn.
+                    await asyncio.sleep(0)
+                    self.assertIsNone(tickets[-1]())
+                    self.updates.put_nowait(self.transaction)
+                    data = await anext(watch)
+                    self.assertEqual(data, wire(self.transaction))
+                    await asyncio.sleep(0)
+                    self.assertIsNone(parsed[-1]())
+                    self.assertIsNone(tickets[-1]())
+                    self.assertEqual(len(parsed), 2)
+                    # The source is paused with its socket open, not closed to
+                    # manufacture reclamation; its strict byte output survives.
+                    self.assertEqual(self.source.inspect()["activeSockets"], 1)
+                    self.assertEqual(json.loads(data)["kind"], "transaction")
+        finally:
+            if enabled:
+                gc.enable()
+
+    async def test_failed_batch_drops_partial_inputs_even_with_saved_traceback(self):
+        class Parsed(dict):
+            pass
+
+        parsed, tickets = [], []
+
+        def parse(raw, **kwargs):
+            result = Parsed(parse_message(raw, **kwargs))
+            parsed.append(weakref.ref(result))
+            return result
+
+        def received(*args):
+            result = _Received(*args)
+            tickets.append(weakref.ref(result))
+            return result
+
+        self.mode = "missing_terminal"
+        enabled = gc.isenabled()
+        gc.disable()
+        try:
+            with patch("agent_observer.sync_source.parse_message", side_effect=parse), patch(
+                "agent_observer.sync_source._Received", side_effect=received,
+            ):
+                try:
+                    await self.source.changes(self.baseline["tag"], target=self.transaction["resultTag"])
+                except ContractError as error:
+                    failure = error
+                else:
+                    self.fail("partial chain returned")
+            self.assertEqual(str(failure), "sync_disconnected")
+            self.assertEqual(len(parsed), 1)
+            self.assertTrue(all(item() is None for item in parsed + tickets))
+            frame = failure.__traceback__
+            while frame is not None:
+                if frame.tb_frame.f_code.co_name == "_changes":
+                    self.assertEqual(frame.tb_frame.f_locals["result"], [])
+                    self.assertIsNone(frame.tb_frame.f_locals["received"])
+                frame = frame.tb_next
+            self.assertEqual(self.source.inspect()["activeSockets"], 0)
+        finally:
+            if enabled:
+                gc.enable()
+
+    async def test_watch_still_strictly_rejects_invalid_opaque_operations(self):
+        async with self.source.watch(self.baseline["cursor"]) as watch:
+            self.assertIsInstance(await anext(watch), SyncControl)
+            invalid = copy.deepcopy(self.transaction)
+            invalid["operations"]["bodies"] = [["put", "body", None]]
+            self.updates.put_nowait(invalid)
+            with self.assertRaisesRegex(ContractError, "sync_operation_shape"):
+                await anext(watch)
         self.assertEqual(self.source.inspect()["activeSockets"], 0)
 
     async def test_partial_or_wrong_chain_never_returns_a_partial_result(self):

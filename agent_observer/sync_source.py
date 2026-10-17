@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .contract import ContractError
 from .mesh_source import MAX_INCARNATIONS, CachedAgentSource, boottime_ms
+from .sync_acquisition import _retire_failure
 from .sync_contract import (
     ACTIVE_SYNC_PROTOCOL,
     MAX_CHANGE_BYTES,
@@ -49,6 +50,14 @@ class ResyncRequired(SyncControl):
 class _Received:
     data: bytes
     document: dict
+
+
+@dataclass
+class _Stream:
+    pending: bytearray = field(default_factory=bytearray)
+    cursor: tuple | None = None
+    change_tag: tuple | None = None
+    terminal: bool = False
 
 
 @dataclass
@@ -264,6 +273,76 @@ class CachedAgentSyncSource:
             if current_receipts:
                 history.receipts = current_receipts
 
+    async def _read_frame(self, peer, request, node, stream, history):
+        """Retire parse/framing locals before a subscription can pause."""
+        operation = request["operation"]
+        limit = MAX_HEAD_BYTES if operation == "head" else MAX_MESSAGE_BYTES
+        loop = asyncio.get_running_loop()
+        raw = part = value = None
+        try:
+            deadline = boottime_ms() + int(self.timeout * 1000)
+            while b"\n" not in stream.pending:
+                remaining = (deadline - boottime_ms()) / 1000
+                if remaining <= 0:
+                    raise ContractError("service_transport_timeout")
+                part = await self._io(loop.sock_recv(peer, min(65536, limit + 1 - len(stream.pending))), remaining)
+                if not part:
+                    raise ContractError("sync_disconnected")
+                self._counts["receivedBytes"] += len(part)
+                stream.pending.extend(part)
+                part = None
+                if len(stream.pending) > limit and b"\n" not in stream.pending:
+                    raise ContractError("sync_message_limit")
+            end = stream.pending.index(b"\n") + 1
+            raw = bytes(memoryview(stream.pending)[:end])
+            del stream.pending[:end]
+            if len(raw) > limit:
+                raise ContractError("sync_message_limit")
+            value = parse_message(raw, view=self.view, expected_host=self.host)
+            current = self._socket_policy()
+            if (current.st_dev, current.st_ino) != (node.st_dev, node.st_ino):
+                raise ContractError("service_socket_changed")
+            kind = value["kind"]
+            if kind != "control" and kind != {"baseline": "baseline", "head": "head",
+                                              "changes": "transaction", "watch": "transaction"}[operation]:
+                raise ContractError("sync_operation_binding")
+            if kind == "head" and value["challenge"] != request["challenge"]:
+                raise ContractError("sync_challenge_binding")
+            if kind == "transaction" and operation == "changes":
+                target, result = tuple(request["targetTag"]), tuple(value["resultTag"])
+                if (tuple(value["baseTag"]) != stream.change_tag or result[0] != target[0]
+                        or result[1] > target[1] or result[1] == target[1] and result != target):
+                    raise ContractError("sync_change_order")
+                stream.change_tag = result
+            if kind == "transaction" and operation == "watch":
+                if tuple(value["baseCursor"]) != stream.cursor:
+                    raise ContractError("sync_watch_order")
+                stream.cursor = tuple(value["resultCursor"])
+            if kind == "control" and operation == "watch" and value["status"] in {"complete", "heartbeat"}:
+                if value.get("cursor") is not None and tuple(value["cursor"]) != stream.cursor:
+                    raise ContractError("sync_watch_order")
+            if kind == "control" and operation == "changes" and value["status"] == "complete":
+                if (value.get("baseTag") != request["baseTag"]
+                        or value.get("targetTag") != request["targetTag"]
+                        or stream.change_tag != tuple(request["targetTag"])):
+                    raise ContractError("sync_change_target")
+            self._admit(value, history=history)
+            self._counts["frames"] += 1
+            stream.terminal = (operation in {"baseline", "head"}
+                               or kind == "control" and (operation == "changes"
+                                   or value["status"] not in {"complete", "heartbeat"}))
+            # Strict parsing and transport checks above still see the whole
+            # document. Only bounded ticket/control fields cross this boundary.
+            header = {key: value[key] for key in (
+                "kind", "tag", "cursor", "baseTag", "resultTag", "targetTag", "status", "reason",
+            ) if key in value}
+            return _Received(raw, header)
+        except BaseException as error:
+            _retire_failure(error)
+            raise error from None
+        finally:
+            raw = part = value = None
+
     async def _frames(self, raw_request, *, history=None):
         request = parse_request(raw_request, expected_host=self.host, expected_protocol=self.protocol)
         node = self._socket_policy()
@@ -274,10 +353,9 @@ class CachedAgentSyncSource:
         peer = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self._sockets.add(peer)
         operation = request["operation"]
-        limit = MAX_HEAD_BYTES if operation == "head" else MAX_MESSAGE_BYTES
         loop = asyncio.get_running_loop()
-        cursor = tuple(request["cursor"]) if operation == "watch" else None
-        change_tag = tuple(request["baseTag"]) if operation == "changes" else None
+        stream = _Stream(cursor=tuple(request["cursor"]) if operation == "watch" else None,
+                         change_tag=tuple(request["baseTag"]) if operation == "changes" else None)
         self._counts["requests"] += 1
         try:
             peer.setblocking(False)
@@ -289,64 +367,12 @@ class CachedAgentSyncSource:
             if uid != os.geteuid():
                 raise ContractError("service_peer_ownership")
             await self._io(loop.sock_sendall(peer, raw_request), min(2, self.timeout))
-            pending = bytearray()
-            while True:
-                deadline = boottime_ms() + int(self.timeout * 1000)
-                while b"\n" not in pending:
-                    remaining = (deadline - boottime_ms()) / 1000
-                    if remaining <= 0:
-                        raise ContractError("service_transport_timeout")
-                    part = await self._io(loop.sock_recv(peer, min(65536, limit + 1 - len(pending))), remaining)
-                    if not part:
-                        raise ContractError("sync_disconnected")
-                    self._counts["receivedBytes"] += len(part)
-                    pending.extend(part)
-                    if len(pending) > limit and b"\n" not in pending:
-                        raise ContractError("sync_message_limit")
-                line, _, rest = pending.partition(b"\n")
-                pending = bytearray(rest)
-                raw = bytes(line) + b"\n"
-                del line, rest
-                if len(raw) > limit:
-                    raise ContractError("sync_message_limit")
-                value = parse_message(raw, view=self.view, expected_host=self.host)
-                current = self._socket_policy()
-                if (current.st_dev, current.st_ino) != (node.st_dev, node.st_ino):
-                    raise ContractError("service_socket_changed")
-                kind = value["kind"]
-                if kind != "control" and kind != {"baseline": "baseline", "head": "head",
-                                                  "changes": "transaction", "watch": "transaction"}[operation]:
-                    raise ContractError("sync_operation_binding")
-                if kind == "head" and value["challenge"] != request["challenge"]:
-                    raise ContractError("sync_challenge_binding")
-                if kind == "transaction" and operation == "changes":
-                    target, result = tuple(request["targetTag"]), tuple(value["resultTag"])
-                    if (tuple(value["baseTag"]) != change_tag or result[0] != target[0]
-                            or result[1] > target[1] or result[1] == target[1] and result != target):
-                        raise ContractError("sync_change_order")
-                    change_tag = result
-                if kind == "transaction" and operation == "watch":
-                    if tuple(value["baseCursor"]) != cursor:
-                        raise ContractError("sync_watch_order")
-                    cursor = tuple(value["resultCursor"])
-                if kind == "control" and operation == "watch" and value["status"] in {"complete", "heartbeat"}:
-                    if value.get("cursor") is not None and tuple(value["cursor"]) != cursor:
-                        raise ContractError("sync_watch_order")
-                if kind == "control" and operation == "changes" and value["status"] == "complete":
-                    if (value.get("baseTag") != request["baseTag"]
-                            or value.get("targetTag") != request["targetTag"]
-                            or change_tag != tuple(request["targetTag"])):
-                        raise ContractError("sync_change_target")
-                self._admit(value, history=history)
-                self._counts["frames"] += 1
-                terminal = (operation in {"baseline", "head"}
-                            or kind == "control" and (operation == "changes"
-                                or value["status"] not in {"complete", "heartbeat"}))
-                yield _Received(raw, value)
-                del value, raw
-                if terminal:
-                    return
+            while not stream.terminal:
+                # Do not assign the result here: a paused generator would pin
+                # the previous input even after its consumer has dropped it.
+                yield await self._read_frame(peer, request, node, stream, history)
         finally:
+            stream.pending.clear()
             peer.close()
             self._sockets.discard(peer)
 
@@ -396,6 +422,8 @@ class CachedAgentSyncSource:
                 del value, received
             raise ContractError("sync_change_incomplete")
         finally:
+            result.clear()
+            value = received = control = None  # noqa: F841 - retire saved-failure frame references
             await iterator.aclose()
 
     async def changes(self, base, *, target, max_transactions=MAX_TRANSACTIONS, max_bytes=MAX_CHANGE_BYTES):

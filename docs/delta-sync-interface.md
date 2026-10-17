@@ -250,8 +250,11 @@ installed/native acceptance. Expanded packing and the full gates remain open.
 ## Acquisition budget seam still open
 
 The draft `CachedAgentSyncSource` is not yet an aggregate-budget implementation.
-Its full parser can retain a raw frame and decoded document while a watch is
-paused. Byte and node caps alone cannot bound Python heap: 1.1 million empty
+Its strict full parser still allocates the whole decoded input. A subsequent
+lifetime fix retires that document before a watch pauses, keeps only bounded
+ticket/control fields and clears partial batches on failure. Unconsumed framing
+bytes and intentional raw batch outputs remain retained. Byte and node caps
+alone cannot bound Python heap: 1.1 million empty
 arrays occupy about 3.3 MB of JSON but more than 64 MiB in list storage alone.
 No source, installed-package or native acceptance is claimed for this path.
 
@@ -298,6 +301,28 @@ shared-byte handle minting remain counterpart decisions: aliases may share
 physical storage under the same aggregate ledger, while each admission and
 proof creates independent configured authority. Reusing storage must neither
 rebind a retired request nor share a confirmed source/profile capability.
+
+Mesh's later explicit session/relay packet is reviewed at `a7be9ae`,
+`docs/delta-sync-relay-api-proposal.md`, SHA256
+`05e5a9bef61d0235d6d82c326e630209dac610a122f581117bdb65beaa36183d`.
+Its opt-in structural source session and unchanged strict bytes route fit the
+Observer boundary; the transport relay has no profile/admission capability.
+An exact lifecycle correction remains requested: a session must revoke and
+retire its own reservations/refs without an unbounded consumed-handle history,
+without closing a sibling's ledger or the shared owner service. Ticket/control
+metadata needs independent credit if its data ref is consumed while the ticket
+still retains that metadata. Reserve, resize and seal must reject after scoped
+retirement. This packet is not yet agreed or implemented here.
+
+Aggregate intake qualification must include each physically unique live buffer
+and container: receive chunk, mutable pending bytes, immutable conversion and
+any framing overlap; strict DTO or structural scan scratch/header; accumulated
+change batch; paused watch and outstanding baseline/head/control/ticket refs;
+output/stage/decoder pins and alias copies. A transfer can drop credit only
+after physical retirement or gap-free handoff under the same ledger. Cancels,
+rejections, saved exception traces and retired source/session/request paths must
+leave no usable handle or uncharged retained input. The existing source-only
+heap figures do not establish these peaks or the matched total CPU gate.
 
 Changed-body admission validates the joined API 4 row once and computes its nine
 tokens. Observation-only admission uses a compact cached semantic rule and

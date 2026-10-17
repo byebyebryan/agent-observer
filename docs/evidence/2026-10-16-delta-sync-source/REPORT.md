@@ -218,6 +218,35 @@ after the measured operations. This is bounded synthetic lifetime evidence,
 not installed RSS/plateau, native, transport or producer acceptance. The
 packing, aggregate resource and failed CPU gates remain open.
 
+## Paused acquisition lifetime
+
+The next owning source change moves complete strict frame parsing and socket,
+operation, receipt and order checks into a per-frame coroutine. It returns only
+raw bytes and bounded ticket/control fields. That coroutine retires its full
+parsed graph and receive/conversion locals before the async generator pauses;
+the generator keeps only actual unread framing bytes and bounded stream state.
+Framing now copies the complete line once without intermediate partitioned
+line/rest buffers. Failed change batches clear their partial byte list, and
+unwound parser failures retire saved traceback references. The existing plain
+byte methods and full validation behavior remain unchanged.
+
+New controlled Unix-socket tests disable cyclic GC and check that parsed frames
+and received tickets retire while a subscription remains open and paused. A
+completed I/O task can retain its return until its event-loop callback retires;
+the checks allow that loop turn without collecting. A saved partial-chain
+failure retains neither its old parsed frame nor a partial batch. An invalid
+opaque operation still fails strict parsing rather than gaining admission from
+its structural header. The 20 source and 16 header tests pass on Python 3.14
+and 3.11, without skips.
+
+This removes avoidable retention; it is not a prepaid intake implementation or
+an aggregate memory/CPU acceptance result. Mutable pending bytes, actual batch
+outputs, decoder scratch, tickets and all I/O/stage pins still need the agreed
+public ownership lifetime. The exact Mesh session/relay API review and its
+remaining scoped-retirement/metadata-credit question are recorded in the
+[interface note](../../delta-sync-interface.md#acquisition-budget-seam-still-open).
+No role, schema, cap, artifact or installed service changes accompany this fix.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,
