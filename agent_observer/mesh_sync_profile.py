@@ -7,6 +7,8 @@ implement compact wire normalization, or export through private cache objects.
 from __future__ import annotations
 
 import copy
+import sys
+from contextlib import contextmanager
 from dataclasses import dataclass
 
 from jsonschema import Draft202012Validator
@@ -56,6 +58,59 @@ def _plain(value):
         return ABSENT
     materialize = getattr(value, "materialize", None)
     return materialize() if materialize is not None else value
+
+
+def _copy_bound(value):
+    if not callable(getattr(value, "materialize", None)):
+        return 0
+    bound = getattr(value, "materialization_bytes", None)
+    check(type(bound) is int and bound >= 0, "agent_sync_materialization_budget")
+    return bound
+
+
+def _copy_call(ctx, callback, *refs):
+    # Cover detached copies, the row join/token inputs and validation scratch.
+    # Callback locals disappear before the reservation ends. Any compact patch
+    # output is separately charged before it escapes the callback.
+    with ctx.budget.reserve(4096 + 4 * sum(_copy_bound(ref) for ref in refs)):
+        return callback(*(_plain(ref) for ref in refs))
+
+
+@contextmanager
+def _key_copy(ctx, ref):
+    with ctx.budget.reserve(1024 + 2 * _copy_bound(ref)):
+        yield _plain(ref)
+
+
+class _Changes:
+    """Reiterable public changed keys; values remain opaque and unmaterialized."""
+
+    def __init__(self, ctx, *spaces):
+        self.ctx, self.spaces = ctx, spaces
+
+    def __iter__(self):
+        for space in self.spaces:
+            for op in self.ctx.changed(space):
+                with _key_copy(self.ctx, op.key) as key:
+                    yield space, op.op, key, None
+
+
+def _graph_bytes(*roots):
+    # Only bounded domain-index keys/values, never stable bodies or a roster.
+    seen, pending, size = set(), list(roots), 0
+    while pending:
+        value = pending.pop()
+        marker = id(value)
+        if marker in seen or value is ABSENT:
+            continue
+        seen.add(marker)
+        size += sys.getsizeof(value)
+        if type(value) is dict:
+            pending.extend(value)
+            pending.extend(value.values())
+        elif type(value) in (tuple, list):
+            pending.extend(value)
+    return size
 
 
 def _key(value):
@@ -217,11 +272,15 @@ class _Patch:
     def put(self, name, key, value):
         old = self.get(name, key)
         if old is ABSENT or old != value:
-            self.values[name, _key(key)] = key, value
+            encoded = _key(key)
+            self.ctx.budget.charge(1024 + _graph_bytes(key, value) + 2 * len(encoded))
+            self.values[name, encoded] = key, value
 
     def remove(self, name, key):
         if self.get(name, key) is not ABSENT:
-            self.values[name, _key(key)] = key, ABSENT
+            encoded = _key(key)
+            self.ctx.budget.charge(1024 + _graph_bytes(key) + 2 * len(encoded))
+            self.values[name, encoded] = key, ABSENT
 
     def add(self, name, key, amount):
         old = self.get(name, key)
@@ -229,7 +288,14 @@ class _Patch:
         check(_integer(value), "agent_sync_index_count")
         self.put(name, key, value)
 
+    def token(self, ref, field, token, encoded):
+        marker = encoded, field
+        if marker not in self.tokens:
+            self.ctx.budget.charge(640 + _graph_bytes(ref) + sys.getsizeof(token) + len(encoded))
+        self.tokens[marker] = FieldTokenWrite(ref, field, token)
+
     def result(self, scopes):
+        self.ctx.budget.charge(1024 + 512 * len(self.values) + 16 * len(self.tokens))
         writes, removes = [], []
         for (name, _), (key, value) in self.values.items():
             if value is ABSENT:
@@ -277,10 +343,8 @@ class AgentSyncProfile:
     def check_head(self, ctx, head):
         """Restrict a proof's exact original receipts; never mint authority."""
         check(ctx is not None and ctx.descriptor is self.descriptor, "agent_sync_commit_context")
-        # Public refs currently have no encoded-size/pre-copy budget operation.
-        # Head/native-binding ceilings provide an explicit conservative staging
-        # envelope here; a future size seam must replace this before profiling
-        # can claim precise public materialization allocation accounting.
+        # Head/native-binding ceilings provide bounded staging independent of
+        # roster size. Material row copies use public pre-copy bounds below.
         with ctx.budget.reserve(16 * (MAX_HEAD_BYTES + 16 * 1024)):
             original = _plain(head)
             binding = _plain(ctx.binding)
@@ -381,185 +445,73 @@ class AgentSyncProfile:
 
     def _admit(self, ctx):
         check(ctx.descriptor is self.descriptor, "agent_sync_descriptor_instance")
-        # Public materialization is explicit. Reserve conservative staging for
-        # operation descriptors before detached changed-value copies are made.
-        ctx.budget.charge(2048 + len(ctx.operations) * 384)
-        operations = []
-        for op in ctx.operations:
-            key, value = _plain(op.key), _plain(op.value)
-            ctx.budget.charge(len(canonical([key, value])) * 6 + 256)
-            operations.append((op.space, op.op, key, value))
-        binding = _plain(ctx.binding)
+        ctx.budget.charge(4096)
+        return _copy_call(ctx, lambda binding: self._admit_binding(ctx, binding), ctx.binding)
+
+    def _admit_binding(self, ctx, binding):
         empty = {name: [] for name in TABLES}
         validate_message({"kind": "baseline", "descriptor": native_descriptor(self.view),
                           "nativeBinding": binding, "tag": ctx.proposed_tag.wire(),
                           "cursor": [binding["ownerEpoch"], ctx.proposed_tag.generation,
                                      ctx.proposed_tag.root], "tables": empty}, self.view,
                          binding["hostScope"])
-        sources, validation, metadata = self._metadata(ctx, binding, operations)
-        receipts = self._receipts(ctx, binding, sources, operations)
-        self._cohorts(ctx, receipts, operations)
-        patch = _Patch(ctx)
-        affected, changed_bodies, changed_observations = {}, {}, {}
-        for space, op, key, value in operations:
+        # Only native/service headers and <=32 receipts/cohorts survive the
+        # row loop. Reserve from their public bounds before detached copies,
+        # independently of roster size and without assuming short header data.
+        names = ("service", "snapshot") if self.view == "full" else (
+            "service", "projection", "scopeOrder", "validationSources")
+        headers = [ctx.after.lookup("metadata", name) for name in names]
+        headers.extend(ctx.after.lookup(space, [source["provider"], source["namespace"], component])
+                       for source in binding["sourceContexts"]
+                       for component in ("runtime", "history")
+                       for space in ("receipts", "cohorts"))
+        with ctx.budget.reserve(4096 + 4 * sum(_copy_bound(ref) for ref in headers)):
+            return self._admit_stream(ctx, binding)
+
+    def _admit_stream(self, ctx, binding):
+        sources, validation, metadata = self._metadata(ctx, binding, _Changes(ctx, "metadata"))
+        receipts = self._receipts(ctx, binding, sources, _Changes(ctx, "receipts"))
+        self._cohorts(ctx, receipts, _Changes(ctx, "cohorts"))
+        patch, affected = _Patch(ctx), {}
+        for space, _op, key, _ in _Changes(ctx, "records", "observations", "memberships", "scopes"):
             if space == "records":
                 identity = key
-            elif space == "bodies":
-                changed_bodies[key] = value if op == "put" else ABSENT
-                if op == "remove":
-                    previous = ctx.before.lookup("bodies", key)
-                    check(previous is not ABSENT, "agent_sync_removed_body")
-                    # Only a removed body's identity projection is needed;
-                    # unchanged bodies are never fetched or materialized.
-                    identity = list(identity_key(_plain(previous["identity"])))
-                else:
-                    check(type(value) is dict and "identity" in value, "agent_sync_body")
-                    identity = list(identity_key(value["identity"]))
             elif space == "observations":
                 check(type(key) is list and len(key) == 2, "agent_sync_observation_key")
                 identity = key[0]
-                changed_observations[_key(key)] = value if op == "put" else ABSENT
             elif space == "memberships":
                 check(type(key) is list and len(key) == 4, "agent_sync_membership_key")
                 _receipt_key(key[0])
                 check(key[3] in SUPPORT_FIELDS, "agent_sync_membership_field")
                 identity = key[1]
-            elif space == "scopes":
+            else:
                 check(type(key) is list and len(key) in {3, 4}, "agent_sync_scope_key")
                 if len(key) == 3:
                     continue
                 identity = key[3]
-            else:
-                continue
             _identity(identity, binding)
             check(tuple(identity[1:3]) in sources, "agent_sync_record_source")
-            affected[_key(identity)] = identity
-        previous_slots = {}
-        for encoded, identity in affected.items():
-            old = _plain(ctx.before.lookup("records", identity))
-            previous_slots[encoded] = old
-            if old is not ABSENT and ctx.after.lookup("records", identity) is ABSENT:
-                patch.remove("aliases", old["alias"])
-                patch.remove("order", old["order"] if self.view == "full" else [0, identity])
-        for encoded, identity in affected.items():
-            slot = _plain(ctx.after.lookup("records", identity))
-            old = previous_slots[encoded]
-            if slot is ABSENT:
-                if old is not ABSENT:
-                    self._removed(ctx, patch, identity, old)
+            encoded = _key(identity)
+            if encoded not in affected:
+                ctx.budget.charge(512 + _graph_bytes(identity) + 2 * len(encoded))
+                affected[encoded] = identity
+        # Remove aliases first so a valid same-transaction deletion/insertion
+        # can reuse an alias. No previous row DTO survives this first pass.
+        for _space, op, identity, _ in _Changes(ctx, "records"):
+            if op == "remove":
+                _copy_call(ctx, lambda old, identity=identity: self._retire_alias(patch, identity, old),
+                           ctx.before.lookup("records", identity))
+        for identity in affected.values():
+            _copy_call(ctx, lambda slot, old, identity=identity: self._admit_row(
+                ctx, patch, binding, sources, validation, receipts, identity, slot, old),
+                ctx.after.lookup("records", identity), ctx.before.lookup("records", identity))
+        for space, op, key, _ in _Changes(ctx, "memberships", "observations"):
+            if op != "put":
                 continue
-            self._slot(slot, identity, old, binding, ctx.proposed_tag.generation,
-                       baseline=ctx.base_tag is None)
-            if old is not ABSENT and slot["body"] != old["body"]:
-                check(ctx.after.lookup("bodies", old["body"]) is ABSENT,
-                      "agent_sync_replaced_body_retained")
-            ref = [identity, slot["birth"]]
-            if old is ABSENT:
-                existing = patch.get("aliases", slot["alias"])
-                check(existing is ABSENT or existing == ref, "agent_sync_duplicate_reference")
-                patch.put("aliases", slot["alias"], ref)
-            observed = self._observed(ctx, ref, changed_observations)
-            check(observed is not ABSENT, "agent_sync_dangling_record")
-            _closed(observed, ("fields", "supports"), "agent_sync_observation")
-            check(type(observed["supports"]) is dict and
-                  set(observed["supports"]) == set(SUPPORT_FIELDS), "agent_sync_field_supports")
-            body = changed_bodies.get(slot["body"], ABSENT)
-            body_changed = body is not ABSENT
-            if body_changed:
-                row, values = admit_record(body, observed["fields"], binding["hostScope"], validation)
-                check(list(identity_key(row["identity"])) == identity, "agent_sync_body_identity")
-                rule = _row_rule(row)
-                patch.put("row_rules", ref, rule)
-            else:
-                check(old is not ABSENT and slot["body"] == old["body"], "agent_sync_unadmitted_body")
-                rule = patch.get("row_rules", ref)
-                check(rule is not ABSENT, "agent_sync_row_rule_missing")
-                _observation_rule(observed["fields"], rule, validation[tuple(identity[1:3])])
-            check(canonical(slot["order"]) == canonical([int(not rule & _RUNNING), identity]),
-                  "agent_sync_order_key")
-            if old is ABSENT or old["order"] != slot["order"]:
-                # The active contract currently admits one configured scope;
-                # its source ordinal is therefore exactly zero. Full order
-                # keeps the reviewed runtime group then five-part identity.
-                if old is not ABSENT:
-                    patch.remove("order", old["order"] if self.view == "full" else [0, identity])
-                patch.put("order", slot["order"] if self.view == "full" else [0, identity], ref)
-            previous_observed = (None if old is ABSENT else
-                                 _plain(ctx.before.lookup("observations", [identity, old["birth"]])))
-            for field in SUPPORT_FIELDS:
-                support_ref = observed["supports"][field]
-                current = type(support_ref) is list and len(support_ref) == 2 and support_ref[0] == "cohort"
-                old_token = ctx.field_token(ref, field) if body_changed or current else None
-                if body_changed:
-                    token = field_token(self.descriptor.native_descriptor_digest, identity, slot["birth"],
-                                        field, values[field])
-                    if old_token is ABSENT or old_token != token:
-                        patch.tokens[_key(ref), field] = FieldTokenWrite(ref, field, token)
-                else:
-                    check(not current or old_token is not ABSENT, "agent_sync_field_token_missing")
-                    token = old_token
-                previous_ref = None if previous_observed is None else previous_observed["supports"][field]
-                self._field(ctx, binding, sources, receipts, identity, slot["birth"],
-                            field, observed["supports"][field], token, previous_ref)
-            for name in ("lastUpdated", "latestTurn"):
-                support = observed["supports"][name]
-                if observed["fields"][name]["health"] != "current" or support is None or support[0] != "cohort":
-                    continue
-                original = observed["fields"][name]["receipt"]
-                receipt = receipts[tuple(support[1])]
-                check(original is not None and original["component"] == support[1][2]
-                      and original["contextGeneration"] == receipt["contextGeneration"]
-                      and original["sampledBoottimeMs"] == receipt["sampledBoottimeMs"]
-                      and receipt["sampledBoottimeMs"] <= original["observedBoottimeMs"]
-                      < receipt["expiresBoottimeMs"], "agent_sync_timing_support")
-            self._capabilities(patch, identity, None if previous_observed is None else
-                               previous_observed["fields"], observed["fields"])
-            if self.view == "active":
-                check(rule & _RUNNING and observed["fields"]["runtime"]["health"] == "current"
-                      and rule & _SELECTED, "agent_sync_active_member")
-                refs = observed["supports"]
-                check(refs["runtime"] == ["cohort", [*identity[1:3], "runtime"]],
-                      "agent_sync_active_runtime_support")
-                if rule & _KIND:
-                    check(refs["kind"] is not None and refs["kind"][0] == "cohort",
-                          "agent_sync_active_kind_support")
-                required = {
-                    "phase": bool(rule & _PHASE_KNOWN),
-                    "activity": bool(rule & _ACTIVITY),
-                    "outcome": bool(rule & _OUTCOME_KNOWN),
-                    "workspace": bool(rule & _WORKSPACE),
-                    "lastUpdated": observed["fields"]["lastUpdated"]["health"] == "current",
-                    "latestTurn": observed["fields"]["latestTurn"]["health"] == "current",
-                }
-                check(all(not needed or refs[field] is not None and refs[field][0] == "cohort"
-                          for field, needed in required.items()), "agent_sync_active_field_support")
-                check(not required["phase"] or refs["phase"] == refs["runtime"],
-                      "agent_sync_active_phase_support")
-                member = _plain(ctx.after.lookup("scopes", [*identity[1:3], "members", identity]))
-                check(member is not ABSENT, "agent_sync_active_member_missing")
-                self._scope_fact(ctx, binding, sources, [*identity[1:3], "members", identity], member,
-                                 observed=observed)
-        for space, op, key, _value in operations:
-            if space != "memberships" or op != "put":
-                continue
-            slot = _plain(ctx.after.lookup("records", key[1]))
-            check(slot is not ABSENT and slot["birth"] == key[2], "agent_sync_orphan_membership")
-            observed = self._observed(ctx, key[1:3], changed_observations)
-            check(observed["supports"].get(key[3]) == ["cohort", key[0]],
-                  "agent_sync_unreferenced_membership")
-        for digest, body in changed_bodies.items():
-            if body is ABSENT:
-                continue
-            identity = list(identity_key(body["identity"]))
-            slot = _plain(ctx.after.lookup("records", identity))
-            check(slot is not ABSENT and slot["body"] == digest, "agent_sync_orphan_body")
-        for space, _, ref, _ in operations:
-            if space == "observations":
-                actual = changed_observations[_key(ref)]
-                slot = _plain(ctx.after.lookup("records", ref[0]))
-                check(actual is ABSENT or slot is not ABSENT and slot["birth"] == ref[1],
-                      "agent_sync_orphan_observation")
-        scopes = self._scopes(ctx, binding, sources, receipts, metadata, operations, patch)
+            _copy_call(ctx, lambda slot, space=space, key=key: self._check_link(ctx, space, key, slot),
+                       ctx.after.lookup("records", key[1] if space == "memberships" else key[0]))
+        scopes = self._scopes(ctx, binding, sources, receipts, metadata,
+                              _Changes(ctx, "records", "scopes"), patch)
         for key, source in validation.items():
             for field in ("lastUpdated", "latestTurn"):
                 count = patch.get("capability_counts", [*key, field])
@@ -567,9 +519,128 @@ class AgentSyncProfile:
                       "timing_capability_missing")
         return patch.result(scopes)
 
-    def _observed(self, ctx, ref, changed):
-        key = _key(ref)
-        return changed[key] if key in changed else _plain(ctx.after.lookup("observations", ref))
+    def _retire_alias(self, patch, identity, old):
+        check(old is not ABSENT, "agent_sync_removed_record")
+        patch.remove("aliases", old["alias"])
+        patch.remove("order", old["order"] if self.view == "full" else [0, identity])
+
+    def _check_link(self, ctx, space, key, slot):
+        identity, birth = key[1:3] if space == "memberships" else key
+        check(slot is not ABSENT and slot["birth"] == birth,
+              "agent_sync_orphan_membership" if space == "memberships" else "agent_sync_orphan_observation")
+        if space == "memberships":
+            _copy_call(ctx, lambda observed: check(observed["supports"].get(key[3]) == ["cohort", key[0]],
+                                                 "agent_sync_unreferenced_membership"),
+                       ctx.after.lookup("observations", [identity, birth]))
+
+    def _admit_row(self, ctx, patch, binding, sources, validation, receipts, identity, slot, old):
+        if slot is ABSENT:
+            if old is not ABSENT:
+                _copy_call(ctx, lambda observed: self._removed(ctx, patch, identity, old, observed),
+                           ctx.before.lookup("observations", [identity, old["birth"]]))
+            return
+        self._slot(slot, identity, old, binding, ctx.proposed_tag.generation,
+                   baseline=ctx.base_tag is None)
+        if old is not ABSENT and slot["body"] != old["body"]:
+            check(ctx.after.lookup("bodies", old["body"]) is ABSENT,
+                  "agent_sync_replaced_body_retained")
+        ref = [identity, slot["birth"]]
+        if old is ABSENT:
+            existing = patch.get("aliases", slot["alias"])
+            check(existing is ABSENT or existing == ref, "agent_sync_duplicate_reference")
+            patch.put("aliases", slot["alias"], ref)
+        observed_ref = ctx.after.lookup("observations", ref)
+        previous_ref = (None if old is ABSENT else
+                        ctx.before.lookup("observations", [identity, old["birth"]]))
+        body_changed = old is ABSENT or slot["body"] != old["body"]
+        body_ref = ctx.after.lookup("bodies", slot["body"]) if body_changed else ABSENT
+        return _copy_call(ctx, lambda observed, previous_observed, body:
+                          self._admit_fields(ctx, patch, binding, sources, validation, receipts,
+                                             identity, slot, old, observed, previous_observed, body),
+                          observed_ref, previous_ref, body_ref)
+
+    def _admit_fields(self, ctx, patch, binding, sources, validation, receipts,
+                      identity, slot, old, observed, previous_observed, body):
+        ref = [identity, slot["birth"]]
+        ref_key = _key(ref)
+        check(observed is not ABSENT, "agent_sync_dangling_record")
+        _closed(observed, ("fields", "supports"), "agent_sync_observation")
+        check(type(observed["supports"]) is dict and
+              set(observed["supports"]) == set(SUPPORT_FIELDS), "agent_sync_field_supports")
+        body_changed = body is not ABSENT
+        if body_changed:
+            row, values = admit_record(body, observed["fields"], binding["hostScope"], validation)
+            check(list(identity_key(row["identity"])) == identity, "agent_sync_body_identity")
+            rule = _row_rule(row)
+            patch.put("row_rules", ref, rule)
+        else:
+            check(old is not ABSENT and slot["body"] == old["body"], "agent_sync_unadmitted_body")
+            rule = patch.get("row_rules", ref)
+            check(rule is not ABSENT, "agent_sync_row_rule_missing")
+            _observation_rule(observed["fields"], rule, validation[tuple(identity[1:3])])
+        check(canonical(slot["order"]) == canonical([int(not rule & _RUNNING), identity]),
+              "agent_sync_order_key")
+        if old is ABSENT or old["order"] != slot["order"]:
+            # The active contract currently admits one configured scope;
+            # its source ordinal is therefore exactly zero. Full order
+            # keeps the reviewed runtime group then five-part identity.
+            if old is not ABSENT:
+                patch.remove("order", old["order"] if self.view == "full" else [0, identity])
+            patch.put("order", slot["order"] if self.view == "full" else [0, identity], ref)
+        for field in SUPPORT_FIELDS:
+            support_ref = observed["supports"][field]
+            current = type(support_ref) is list and len(support_ref) == 2 and support_ref[0] == "cohort"
+            old_token = ctx.field_token(ref, field) if body_changed or current else None
+            if body_changed:
+                token = field_token(self.descriptor.native_descriptor_digest, identity, slot["birth"],
+                                    field, values[field])
+                if old_token is ABSENT or old_token != token:
+                    patch.token(ref, field, token, ref_key)
+            else:
+                check(not current or old_token is not ABSENT, "agent_sync_field_token_missing")
+                token = old_token
+            previous_ref = None if previous_observed is None else previous_observed["supports"][field]
+            self._field(ctx, binding, sources, receipts, identity, slot["birth"],
+                        field, observed["supports"][field], token, previous_ref)
+        for name in ("lastUpdated", "latestTurn"):
+            support = observed["supports"][name]
+            if observed["fields"][name]["health"] != "current" or support is None or support[0] != "cohort":
+                continue
+            original = observed["fields"][name]["receipt"]
+            receipt = receipts[tuple(support[1])]
+            check(original is not None and original["component"] == support[1][2]
+                  and original["contextGeneration"] == receipt["contextGeneration"]
+                  and original["sampledBoottimeMs"] == receipt["sampledBoottimeMs"]
+                  and receipt["sampledBoottimeMs"] <= original["observedBoottimeMs"]
+                  < receipt["expiresBoottimeMs"], "agent_sync_timing_support")
+        self._capabilities(patch, identity, None if previous_observed is None else
+                           previous_observed["fields"], observed["fields"])
+        if self.view == "active":
+            check(rule & _RUNNING and observed["fields"]["runtime"]["health"] == "current"
+                  and rule & _SELECTED, "agent_sync_active_member")
+            refs = observed["supports"]
+            check(refs["runtime"] == ["cohort", [*identity[1:3], "runtime"]],
+                  "agent_sync_active_runtime_support")
+            if rule & _KIND:
+                check(refs["kind"] is not None and refs["kind"][0] == "cohort",
+                      "agent_sync_active_kind_support")
+            required = {
+                "phase": bool(rule & _PHASE_KNOWN),
+                "activity": bool(rule & _ACTIVITY),
+                "outcome": bool(rule & _OUTCOME_KNOWN),
+                "workspace": bool(rule & _WORKSPACE),
+                "lastUpdated": observed["fields"]["lastUpdated"]["health"] == "current",
+                "latestTurn": observed["fields"]["latestTurn"]["health"] == "current",
+            }
+            check(all(not needed or refs[field] is not None and refs[field][0] == "cohort"
+                      for field, needed in required.items()), "agent_sync_active_field_support")
+            check(not required["phase"] or refs["phase"] == refs["runtime"],
+                  "agent_sync_active_phase_support")
+            member_ref = ctx.after.lookup("scopes", [*identity[1:3], "members", identity])
+            check(member_ref is not ABSENT, "agent_sync_active_member_missing")
+            _copy_call(ctx, lambda member: self._scope_fact(
+                ctx, binding, sources, [*identity[1:3], "members", identity], member,
+                observed=observed), member_ref)
 
     def _metadata(self, ctx, binding, operations):
         names = {"service", "snapshot"} if self.view == "full" else {
@@ -743,9 +814,9 @@ class AgentSyncProfile:
                 if field == "runtime":
                     check(ref[1][2] == "runtime", "agent_sync_runtime_support")
 
-    def _removed(self, ctx, patch, identity, old):
+    def _removed(self, ctx, patch, identity, old, observed):
         ref = [identity, old["birth"]]
-        observed = _plain(ctx.before.lookup("observations", ref))
+        ref_key = _key(ref)
         check(ctx.after.lookup("bodies", old["body"]) is ABSENT and
               ctx.after.lookup("observations", ref) is ABSENT, "agent_sync_removed_references")
         for field in SUPPORT_FIELDS:
@@ -754,7 +825,7 @@ class AgentSyncProfile:
                 key = [previous[1], identity, old["birth"], field]
                 check(ctx.after.lookup("memberships", key) is ABSENT, "agent_sync_removed_membership")
             if ctx.field_token(ref, field) is not ABSENT:
-                patch.tokens[_key(ref), field] = FieldTokenWrite(ref, field, None)
+                patch.token(ref, field, None, ref_key)
         patch.remove("row_rules", ref)
         if self.view == "active":
             check(ctx.after.lookup("scopes", [*identity[1:3], "members", identity]) is ABSENT,
@@ -771,7 +842,6 @@ class AgentSyncProfile:
 
     def _scopes(self, ctx, binding, sources, receipts, metadata, operations, patch):
         affected = set()
-        baseline_scopes = {}
         for space, _, key, _value in operations:
             if space == "records":
                 scope = tuple(key[1:3])
@@ -789,12 +859,9 @@ class AgentSyncProfile:
                 elif len(key) == 4:
                     check(key[2] in {"members", "nonmembers", "uncertain"}, "agent_sync_scope_fact")
                     self._scope_count(patch, scope, key[2], int(after is not ABSENT) - int(before is not ABSENT))
-                    self._scope_size(patch, scope, key[2], _plain(before), -1)
-                    self._scope_size(patch, scope, key[2], _plain(after), 1)
-                    if after is not ABSENT:
-                        self._scope_fact(ctx, binding, sources, key, _plain(after))
-                        if ctx.base_tag is None:
-                            baseline_scopes.setdefault(scope, {}).setdefault(key[2], []).append(_plain(after))
+                    _copy_call(ctx, lambda previous, current, key=key, scope=scope:
+                               self._scope_edit(ctx, patch, binding, sources, scope, key, previous, current),
+                               before, after)
                 else:
                     check(key[2] == "coverage", "agent_sync_scope_key")
                 if before is ABSENT and after is not ABSENT:
@@ -835,15 +902,6 @@ class AgentSyncProfile:
                       "agent_sync_complete_uncertain")
                 total = self._ledger_bytes(patch, scope, value, sources, binding)
                 check(total + 2 <= MAX_LEDGER_BYTES, "agent_sync_ledger_capacity")
-                if ctx.base_tag is None:
-                    facts = baseline_scopes.get(scope, {})
-                    oracle = {**value, "members": [], "nonmembers": facts.get("nonmembers", []),
-                              "uncertain": facts.get("uncertain", [])}
-                    for member in facts.get("members", []):
-                        fields = {field: None if cohort is None else self._fact_support(
-                            sources[scope], binding, cohort[2]) for field, cohort in member["fields"].items()}
-                        oracle["members"].append({"identity": member["identity"], "fieldSupports": fields})
-                    check(total == len(canonical(oracle)), "agent_sync_ledger_accounting")
             else:
                 _closed(value, ("coverage", "sourceHealth", "contextGeneration", "supports", "censusStatus"),
                         "agent_sync_full_coverage")
@@ -866,6 +924,12 @@ class AgentSyncProfile:
                 if value["coverage"]["saved"]["status"] == "complete":
                     self._support_set([value["supports"]["saved"]], source, binding)
         return tuple(list(scope) for scope in sorted(affected))
+
+    def _scope_edit(self, ctx, patch, binding, sources, scope, key, previous, current):
+        self._scope_size(patch, scope, key[2], previous, -1)
+        self._scope_size(patch, scope, key[2], current, 1)
+        if current is not ABSENT:
+            self._scope_fact(ctx, binding, sources, key, current)
 
     def _scope_count(self, patch, scope, kind, amount):
         stats = patch.get("scope_stats", list(scope))
@@ -932,10 +996,13 @@ class AgentSyncProfile:
             _closed(value, ("identity", "fields"), "agent_sync_scope_member")
             check(type(value["fields"]) is dict and set(value["fields"]) == set(SUPPORT_FIELDS),
                   "agent_sync_scope_fields")
-            slot = _plain(ctx.after.lookup("records", identity))
-            check(slot is not ABSENT, "agent_sync_orphan_scope_member")
+            slot_ref = ctx.after.lookup("records", identity)
+            check(slot_ref is not ABSENT, "agent_sync_orphan_scope_member")
             if observed is None:
-                observed = _plain(ctx.after.lookup("observations", [identity, slot["birth"]]))
+                _copy_call(ctx, lambda slot: _copy_call(ctx, lambda fields: self._scope_fact(
+                    ctx, binding, sources, key, value, observed=fields),
+                    ctx.after.lookup("observations", [identity, slot["birth"]])), slot_ref)
+                return
             for field, cohort in value["fields"].items():
                 check((None if cohort is None else ["cohort", cohort]) == observed["supports"][field],
                       "agent_sync_scope_support")

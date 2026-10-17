@@ -3,6 +3,8 @@
 import copy
 import hashlib
 import unittest
+import weakref
+from contextlib import contextmanager
 from unittest.mock import patch
 
 from test_service_state import provider_snapshot
@@ -20,9 +22,16 @@ try:
     from mesh_plus.protocol import ProtocolError
     from mesh_plus.sync.cache import OwnedSyncCache, ViewRef, source_binding
     from mesh_plus.sync.canonical import Atom, canonical
-    from mesh_plus.sync.commitment import MerkleMap, binding_digest, native_root
+    from mesh_plus.sync.commitment import ABSENT, MerkleMap, binding_digest, native_root
+    from mesh_plus.sync.context import ObjectRef
     from mesh_plus.sync.model import NativeTag
-    from mesh_plus.sync.reconstruction import Operation, PublicStateRef, ReconstructionStore
+    from mesh_plus.sync.reconstruction import (
+        BudgetRef,
+        Operation,
+        PublicOperation,
+        PublicStateRef,
+        ReconstructionStore,
+    )
 
     from agent_observer.mesh_sync_profile import (
         ACTIVE_PROFILE_ID,
@@ -191,6 +200,130 @@ class MeshSyncProfileTest(unittest.TestCase):
             profile = AgentSyncProfile(profile_schema_digest="a" * 64, view=view,
                                        native=message["descriptor"])
             self.assertEqual(profile.descriptor, store.descriptor)
+
+    def test_baseline_detaches_one_body_at_a_time_under_pre_copy_reservation(self):
+        owner = self.owner(self.fixture(12))
+        for view in ("full", "active"):
+            active, peak, count = [0], [0], [0]
+            reservations, body_refs = [], set()
+            materialize, reserve, lookup = ObjectRef.materialize, BudgetRef.reserve, PublicStateRef.lookup
+
+            class Lifetime:
+                pass
+
+            def retired(active=active):
+                active[0] -= 1
+
+            def admitted(body, *args, active=active, peak=peak, count=count,
+                         retired=retired, Lifetime=Lifetime):
+                result = native_admit_record(body, *args)
+                active[0] += 1
+                peak[0] = max(peak[0], active[0])
+                count[0] += 1
+                # Added after independent admission, solely to observe the
+                # detached input's lifetime; the immutable native body stays
+                # untouched and the marker is absent from row/token outputs.
+                marker = Lifetime()
+                weakref.finalize(marker, retired)
+                body["test_lifetime"] = marker
+                return result
+
+            def looked_up(ref, space, key, lookup=lookup, body_refs=body_refs):
+                value = lookup(ref, space, key)
+                if space == "bodies" and value is not ABSENT:
+                    body_refs.add(id(value))
+                return value
+
+            @contextmanager
+            def reserved(budget, amount, reserve=reserve, reservations=reservations):
+                with reserve(budget, amount):
+                    reservations.append(amount)
+                    try:
+                        yield
+                    finally:
+                        reservations.pop()
+
+            def copied(ref, body_refs=body_refs, reservations=reservations,
+                       active=active, materialize=materialize):
+                if id(ref) in body_refs:
+                    body_refs.remove(id(ref))
+                    self.assertTrue(reservations)
+                    self.assertGreaterEqual(reservations[-1], 4096 + 4 * ref.materialization_bytes)
+                    self.assertEqual(active[0], 0, "previous detached body survives into the next row")
+                return materialize(ref)
+
+            with (patch.object(PublicStateRef, "lookup", looked_up),
+                  patch.object(BudgetRef, "reserve", reserved),
+                  patch.object(ObjectRef, "materialize", copied),
+                  patch("agent_observer.mesh_sync_profile.admit_record", admitted)):
+                stage(self.store(view), self.baseline(owner, view))
+            self.assertEqual((count[0], peak[0], active[0]), (12, 1, 0))
+
+    def test_same_digest_body_put_reuses_admission_without_body_copy(self):
+        owner = self.owner()
+        message = self.baseline(owner)
+        store = self.store()
+        stage(store, message)
+        store.advance_material()
+        tx, _ = observation_transaction(message, {})
+        digest, body = message["tables"]["bodies"][0]
+        tx["operations"]["bodies"] = [["put", digest, value_hash("bodies", body), body]]
+        unsigned = {k: v for k, v in tx.items() if k != "transactionId"}
+        tx["transactionId"] = hashlib.sha256(
+            b"mesh-sync-transaction\0" + frame(canonical(unsigned))).hexdigest()
+        lookup, value = PublicStateRef.lookup, PublicOperation.value
+
+        def no_body_lookup(ref, space, key):
+            self.assertNotEqual(space, "bodies")
+            return lookup(ref, space, key)
+
+        def no_body_value(op):
+            self.assertNotEqual(op.space, "bodies")
+            return value.fget(op)
+
+        with (patch.object(PublicStateRef, "lookup", no_body_lookup),
+              patch.object(PublicOperation, "value", property(no_body_value)),
+              patch("agent_observer.mesh_sync_profile.admit_record", side_effect=AssertionError("readmit"))):
+            stage(store, tx)
+
+    def test_body_reservation_rejection_precedes_detached_copy(self):
+        owner, store = self.owner(), self.store()
+        lookup, materialize, reserve = PublicStateRef.lookup, ObjectRef.materialize, BudgetRef.reserve
+        requested, copied = [False], [False]
+        body_refs = set()
+
+        def looked_up(ref, space, key):
+            value = lookup(ref, space, key)
+            if space == "bodies" and value is not ABSENT:
+                requested[0] = True
+                body_refs.add(id(value))
+            return value
+
+        @contextmanager
+        def rejected(budget, amount):
+            if requested[0]:
+                raise ProtocolError("test_pre_copy_capacity")
+            with reserve(budget, amount):
+                yield
+
+        def detached(ref):
+            if id(ref) in body_refs:
+                copied[0] = True
+            return materialize(ref)
+
+        with (patch.object(PublicStateRef, "lookup", looked_up),
+              patch.object(BudgetRef, "reserve", rejected),
+              patch.object(ObjectRef, "materialize", detached)):
+            with self.assertRaisesRegex(ProtocolError, "test_pre_copy_capacity"):
+                stage(store, self.baseline(owner))
+        self.assertTrue(requested[0])
+        self.assertFalse(copied[0])
+        self.assertIsNone(store.candidate)
+        # Mesh may retain bounded, charged decoder memo entries after rejected
+        # admission. Closing the store must retire those and all reservations.
+        store.close()
+        self.assertEqual(store.ledger.used, 0)
+        self.assertEqual(store.ledger.reserved, 0)
 
     def test_warming_empty_baselines_are_material_only(self):
         owner = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")},

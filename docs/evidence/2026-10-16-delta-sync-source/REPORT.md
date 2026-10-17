@@ -145,6 +145,46 @@ or a passed producer gate. The matched dense ABBA above remains **FAIL**;
 compact recovery and the other required workloads remain open. No omission of
 delivery/recovery work is credited as a saving.
 
+## Streaming profile admission
+
+The next Observer-only profile checkpoint removes its eagerly detached operation
+list and changed-body/observation DTO dictionaries. It reads metadata, receipts
+and cohorts first, then collects affected identities from public changed keys.
+Each affected row is admitted under a public pre-copy reservation and its body,
+observation, joined row and token-input DTOs retire before the next row. Compact
+index writes, rules, tokens and affected keys are charged before retention.
+The active baseline also uses its incrementally checked whole-ledger byte count
+without reconstructing a second full ledger DTO merely to repeat that count.
+The independent exact-byte fixture tests retain that oracle comparison.
+
+Mesh independently checks body digests, one-to-one record/body linkage and
+orphan removal before the callback. Changed record slots drive new body
+admission; a no-op put of the same admitted body digest requires no body lookup,
+copy or schema revalidation. Observation-only changes still use the admitted
+compact rule without stable-body fallback. Original support/expiry, birth,
+identity, order, orphan, scope and cross-record checks remain exercised.
+
+New tests observe a detached-body lifetime peak of one in full and active
+baseline admission, verify reservation precedes body copying, reject before a
+copy when that reservation fails, and forbid body work for a no-op body put.
+A rejection publishes no candidate. Mesh's bounded decoder memo may remain
+charged until store close; close retires all allocations and reservations.
+
+[profile-stream-capacity.json](profile-stream-capacity.json) records an unpaired
+100/500-row source diagnostic using Mesh `8b06de3` and its existing script.
+The 500-row four-membership fixture still has a 2,125,267-byte native baseline
+versus 683,333 legacy full bytes. Its accounted peak is about 30.7 MB, including
+conservative callback charges and Mesh's new preallocation accounting. The
+earlier 17.4 MB figure omitted not-yet-retained staging; these are different
+accounting/source revisions and establish no memory or CPU regression ratio.
+Both new diagnostic cases close with zero bytes/reservations. They are not
+dense nine-field, RSS, installed, native IPC/SSH or producer acceptance.
+
+This fixes callback roster materialization using the existing public changed-ref
+and reservation APIs. Compact normalization/input ownership, aggregate capacity
+and the failed producer CPU gate remain open. No shared codec ABI, schema, cap,
+artifact, provider or normal service changes accompany it.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,
