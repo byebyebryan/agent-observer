@@ -32,6 +32,25 @@ mapping with the R4 `id`, `schema`, `nativeDescriptor` fields. Configured codecs
 are immutable. Generic transport captures its supported adapter/configuration
 and callback identities through its own public interface.
 
+Mesh confirmation `e-eab9a9d2` closes the pending Mapping/adapter compatibility
+question for exact Observer `af2bc7bf9316bc0fb58c83ec8f560a83788467e4` and Mesh
+runtime `ea25fcb07bac14162453b0f8626aa416db10edf3`. Mesh accepts the public
+`Mapping` protocol, captures canonical encoding bytes and callback identities,
+and binds `encodingDigest = SHA256(C(encoding))`. No Mesh-specific frozen wrapper
+is required. Trusted composition passes the explicitly configured source,
+`SyncDescriptor` and `native_codec`; the generic relay imports no Observer
+modules or profile/semantic hooks. `open_session(inputs)` is synchronous and
+structural. `fixture-expanded/1` remains a source-test identifier; this
+confirmation allocates no production expanded/compact encoding ID and adds no
+wire sniffing or fallback.
+
+The [compatibility receipt](evidence/2026-10-16-delta-sync-source/transport-mapping-agreement.json)
+pins the exact source/report inputs and records the counterpart confirmation.
+Its reported controlled two-IPC/independent-Reader checks retain their original
+source provenance and are not independently rerun or broadened by this receipt.
+Later completion-transfer and compact-source/controller work keep their separate
+coordination and implementation boundaries.
+
 For an authenticated source the caller passes its exact configured host. The
 existing `CachedAgentSyncSource.open_session(inputs)` remains the Mesh-free,
 structural prepaid-source protocol; it does not choose cache versus relay role.
