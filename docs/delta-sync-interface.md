@@ -324,8 +324,11 @@ A source session immediately revokes its own sealed refs when close starts,
 then cancels and awaits its I/O. Receive/header reservations close only after
 their physical storage retires. It never closes the shared cache-minted
 InputOwner or parent source/service. Its ref registry can remain bounded by the public 64-item
-ownership limit, pruning consumed/retired handles using the documented
-`nbytes`/`sync_input_retired` behavior rather than private state. Independent
+ownership limit, preserving revokers for consuming refs and pruning only refs
+known logically revoked rather than inspecting private state. The current
+[`nbytes`-based implementation has a reproduced consuming-pin gap](delta-sync-source-pin-revocation.md);
+an explicit public status query is proposed for owning agreement before its fix.
+`nbytes` rejection alone is insufficient evidence of terminal retirement. Independent
 header/ticket leases keep metadata charged after its data ref is consumed.
 Reserve/resize/seal reject after intake retirement; unsealed buffers and
 consuming pins stay charged until their actual cleanup. Repeated close is safe.
