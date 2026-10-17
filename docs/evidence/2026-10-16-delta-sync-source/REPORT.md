@@ -264,6 +264,23 @@ and objects after close. Accounted peaks are 62,171,223 and 62,130,231 bytes.
 This bounded optimization leaves the failed combined producer CPU gate and all
 packed recovery/intake/installed/native acceptance work open.
 
+## Exact Mesh source compatibility
+
+A later independent compatibility check pairs Observer `38e2b64` with an export
+of Mesh `e15764b56a42847d0d72258bd7ca533ef4c39236`. The live Mesh worktree had
+concurrent owned-input changes; those bytes were excluded. All 58 exported
+package/pyproject files match the manifest in Mesh's qualification JSON SHA256
+`9d27e728a0e2d80e6cf8d04fdccac3d0a115a436681ff378db419c01ac6c75be`
+before and after the checks.
+
+The strict profile, facade, cached source and structural-header suites pass
+79 tests with zero skips on each of Python 3.14 and 3.11. Exact inputs and logs
+are in [mesh-e15764b-compatibility.json](mesh-e15764b-compatibility.json).
+This is source compatibility, not an installed paired artifact, sync IPC/SSH,
+resource/CPU or native acceptance. It neither accepts concurrent public intake
+work nor resolves the compact codec/alias/mask or A1 relay review. The reported
+expanded-wire byte and 2,000-row frame-limit failures remain open.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,
