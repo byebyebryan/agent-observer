@@ -1,7 +1,9 @@
 # Source registry and consuming-pin revocation
 
-Status: **current-source gap reproduced; exact owner-bound public query agreed;
-no consuming-pin fix or acceptance claimed**.
+Status: **historical source gap reproduced; the supported query and scoped
+source fix now have separate bounded final-pair checks**. See the
+[implementation follow-up](delta-sync-source-retirement.md). Broader producer
+acceptance remains open.
 
 Mesh's `be6470edab0ae7d67063fd08b61a8019c2093e35` diagnostic also reproduces
 against the current Observer runtime `2f697d468eb3b0cb895276fd07cb746acbd23d37`,
@@ -12,7 +14,7 @@ source completion method already exists; this does not reopen its agreement.
 
 ## Reproduced source defect
 
-`OwnedSourceSession._prune_refs()` currently removes a ref when public `nbytes`
+In source checkpoints through `7213084`, `_prune_refs()` removes a ref when public `nbytes`
 raises `sync_input_retired`. The generic owner uses that same rejection while a
 ref is actively consuming and its physical raw pin is still live. Public
 `inspect()` calls the pruning method, as does automatic receive/seal preparation.
@@ -102,9 +104,8 @@ failures and two passing controls, with cyclic GC disabled and final counters
 zero. The [hardening receipt](evidence/2026-10-16-delta-sync-source/source-pin-helper-hardening.json)
 keeps this test-only change separate from the original unchanged before logs.
 
-After the agreed public query is available, implement the source fix through
-that supported seam, rerun the hardened regressions, and qualify cache/relay
-refs, receive, watch, batch and session cancellation with consuming pins held.
-The current source revocation prerequisite remains open. No native provider,
+The [implementation follow-up](delta-sync-source-retirement.md) uses the committed
+public query and reruns the hardened regressions plus scoped cache/relay lifetime
+checks. The original logs above remain unchanged before evidence. No native provider,
 normal service, sibling source, artifact, installed role, cap/deadline, source
 encoding, A1/R4/R2 acceptance or broader producer gate changes here.

@@ -189,6 +189,7 @@ class CompletedChanges:
         return self._completion
 
     def close(self):
+        session = self._session()
         transactions, self._transactions = self._transactions, None
         completion, self._completion = self._completion, None
         lease, self._lease = self._lease, None
@@ -196,15 +197,15 @@ class CompletedChanges:
         if transactions is not None:
             for data in transactions:
                 data.close()
+                if session is not None:
+                    session._refs.pop(id(data), None)
             data = None
         if completion is not None:
             completion.close()
         # Retire our aliases before releasing their independent container credit.
         transactions = completion = None
-        session = self._session()
         if session is not None:
             session._batches.discard(self)
-            session._prune_refs()
         if lease is not None:
             lease.close()
 
@@ -403,8 +404,9 @@ def _challenge_preflight(value):
 class OwnedSourceSession:
     """One opt-in source's I/O, refs and leases; owns no native service."""
 
-    def __init__(self, parent, inputs, state_credit):
+    def __init__(self, parent, inputs, state_credit, ref_is_retired):
         self._parent, self._inputs = weakref.ref(parent), inputs
+        self._ref_is_retired = ref_is_retired
         self._state_credit = state_credit
         self._refs, self._packets, self._leases, self._calls = {}, set(), set(), set()
         self._batches = set()
@@ -432,11 +434,10 @@ class OwnedSourceSession:
 
     def _prune_refs(self):
         for marker, (data, _scope) in tuple(self._refs.items()):
-            try:
-                _ = data.nbytes
-            except ValueError as error:
-                if error.args != ("sync_input_retired",):
-                    raise
+            retired = self._ref_is_retired(data)
+            if type(retired) is not bool:
+                raise ContractError("sync_source_input_owner")
+            if retired:
                 del self._refs[marker]
 
     def _revoke_scope(self, scope):
@@ -668,14 +669,17 @@ class OwnedSourceSession:
                 for name, value in self._client._counts.items():
                     parent._counts[name] += value
             self._state_credit.close()
+            self._ref_is_retired = None
 
 
 def open_session(parent, inputs):
-    if not callable(getattr(inputs, "reserve", None)) or not callable(getattr(inputs, "buffer_heap", None)):
+    ref_is_retired = getattr(inputs, "ref_is_retired", None)
+    if (not callable(ref_is_retired) or not callable(getattr(inputs, "reserve", None))
+            or not callable(getattr(inputs, "buffer_heap", None))):
         raise ContractError("sync_source_input_owner")
     state_credit = inputs.reserve(_STATE_HEAP, encoded_bytes=0)
     try:
-        return OwnedSourceSession(parent, inputs, state_credit)
+        return OwnedSourceSession(parent, inputs, state_credit, ref_is_retired)
     except BaseException as error:
         _retire_failure(error)
         state_credit.close()
