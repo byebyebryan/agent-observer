@@ -272,14 +272,19 @@ and input remains charged through decoder/stage consumption or deterministic
 close. Baseline, change batches, watch frames and head/control payloads need that
 same lifetime rule. Existing plain-byte source methods remain a separate ABI;
 a bytes subclass cannot preserve ownership across ordinary copies. This public
-handoff and the compact-normalization seam are pending counterpart agreement,
-so no private cache access or uncharged transfer is used as a substitute.
+common cache-backed handoff is now agreed at the source-contract boundary
+below; its Observer implementation and compact normalization remain open.
+No private cache access or uncharged transfer substitutes for that work.
 
-The requested public ownership shape is additive, not implemented here:
+The agreed additive ownership shape is not yet implemented by Observer:
 
 ```text
 OwnedSyncCache.input_owner() -> InputOwner
+InputOwner.buffer_heap(nbytes) -> heap_bytes
+InputOwner.close() -> None                 # cache/owning Reader only
 InputOwner.reserve(heap_bytes, *, encoded_bytes) -> InputReservation
+InputReservation.heap_bytes: int
+InputReservation.encoded_bytes: int
 InputReservation.resize(heap_bytes, *, encoded_bytes) -> None
 InputReservation.seal(exact_immutable_bytes) -> OwnedInputRef
 InputReservation.close() -> None
@@ -287,8 +292,9 @@ OwnedInputRef.nbytes: int
 OwnedInputRef.close() -> None
 ```
 
-Sealing transfers existing credit without copying. Framing includes mutable
-receive storage, immutable conversion, overlapping chunks and decoder scratch;
+Sealing transfers only the exact raw buffer/bookkeeping credit without copying;
+other framing/header/container credit remains on its original lease. Framing
+includes mutable receive storage, immutable conversion, overlapping chunks and decoder scratch;
 it cannot release credit when a bare byte return crosses the source boundary.
 The explicit owned-source variant would carry refs in baseline tickets,
 transaction tuples, watch values and nonce/control results. Public cache batch
@@ -296,23 +302,37 @@ and confirmation inputs need corresponding additive ref support. Existing bytes
 methods retain their signatures. Failed admission, cancellation and close must
 retire refs deterministically, including saved-failure tracebacks.
 
-Input refs confer byte ownership only. Exact configuration/epoch checks and
-shared-byte handle minting remain counterpart decisions: aliases may share
-physical storage under the same aggregate ledger, while each admission and
-proof creates independent configured authority. Reusing storage must neither
-rebind a retired request nor share a confirmed source/profile capability.
+Input refs confer byte ownership only. The cache binds them to its exact
+source/descriptor/callback/request configuration and intake epoch; foreign,
+retired or consumed refs reject. First-version aliases use separate handles
+and charges; physical backing-store sharing across aliases is not a public
+capability. Every receiving admission and proof grants independent authority.
 
-Mesh's later explicit session/relay packet is reviewed at `a7be9ae`,
-`docs/delta-sync-relay-api-proposal.md`, SHA256
-`05e5a9bef61d0235d6d82c326e630209dac610a122f581117bdb65beaa36183d`.
-Its opt-in structural source session and unchanged strict bytes route fit the
-Observer boundary; the transport relay has no profile/admission capability.
-An exact lifecycle correction remains requested: a session must revoke and
-retire its own reservations/refs without an unbounded consumed-handle history,
-without closing a sibling's ledger or the shared owner service. Ticket/control
-metadata needs independent credit if its data ref is consumed while the ticket
-still retains that metadata. Reserve, resize and seal must reject after scoped
-retirement. This packet is not yet agreed or implemented here.
+Mesh's earlier A1 session/relay packet at `a7be9ae`, SHA256
+`05e5a9bef61d0235d6d82c326e630209dac610a122f581117bdb65beaa36183d`,
+remains a separate role review. Its lifecycle question is addressed for the
+cache-backed intake by Mesh `0ca3b99`, `docs/delta-sync-owned-input-api.md`,
+SHA256 `7f7751ecd9df93277a3e7110ca72ebfda343d38fa629cd0212ec40b3a8f1d124`.
+Observer accepts that exact common public signature/state contract for its
+opt-in source implementation; this is not API/schema freeze, A1 relay approval
+or implementation/resource acceptance.
+
+A source session immediately revokes its own sealed refs when close starts,
+then cancels and awaits its I/O. Receive/header reservations close only after
+their physical storage retires. It never closes the shared cache-minted
+InputOwner or parent source/service. Its ref registry can remain bounded by the public 64-item
+ownership limit, pruning consumed/retired handles using the documented
+`nbytes`/`sync_input_retired` behavior rather than private state. Independent
+header/ticket leases keep metadata charged after its data ref is consumed.
+Reserve/resize/seal reject after intake retirement; unsealed buffers and
+consuming pins stay charged until their actual cleanup. Repeated close is safe.
+
+The proposed owned source methods remain `open_session(inputs)`, then session
+`baseline`, `changes`, `watch`, `head_after_nonce` and `aclose`. They return
+closeable owned tickets/controls or opaque input refs; their structural claims
+are unadmitted. The plain-byte methods retain full strict parsing and their
+existing types. Observer will use structural protocols without importing Mesh.
+No relay byte-export capability or admission memo is supplied by this cache API.
 
 Aggregate intake qualification must include each physically unique live buffer
 and container: receive chunk, mutable pending bytes, immutable conversion and
