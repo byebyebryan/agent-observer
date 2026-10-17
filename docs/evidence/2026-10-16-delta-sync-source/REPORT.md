@@ -247,6 +247,23 @@ remaining scoped-retirement/metadata-credit question are recorded in the
 [interface note](../../delta-sync-interface.md#acquisition-budget-seam-still-open).
 No role, schema, cap, artifact or installed service changes accompany this fix.
 
+## Changed-token read probe
+
+A subsequent owner-only change skips reading/decoding an old membership token
+when changed body content already requires deriving its new token. The final
+membership edit still independently compares the old value, and grouped/global
+roots retain their ordinary checks. Unchanged-body/new-support lookup is kept.
+
+One serial 2,000-row dense source pair at parent `02c78a4` measured total owner
+CPU of 1,743.59 versus 1,720.13 ms per generation (1.35% lower in this pair).
+Common-work medians also varied, so this is not evidence of a repeatable saving
+or a new ABBA gate. [token-read-pair.json](token-read-pair.json) preserves each
+sample and exact transitive source hashes. All six signatures match; both runs
+have six baseline-required fallbacks, no failed roots, and zero live allocations
+and objects after close. Accounted peaks are 62,171,223 and 62,130,231 bytes.
+This bounded optimization leaves the failed combined producer CPU gate and all
+packed recovery/intake/installed/native acceptance work open.
+
 ## Remaining work
 
 - Complete the public owned-input transfer and compact codec ABI with Mesh,

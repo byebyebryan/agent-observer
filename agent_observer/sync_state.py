@@ -956,8 +956,11 @@ class OwnerSyncCache:
                             refs[field] = previous
                             continue
                         key = [cohort, identity, birth, field]
-                        token = tables["memberships"].get(key)
-                        if token is ABSENT or not body_unchanged:
+                        # A changed body always derives its exact new token
+                        # below. Reading/decoding the old cell here cannot
+                        # affect it; _membership still checks the old edit.
+                        token = tables["memberships"].get(key) if body_unchanged else ABSENT
+                        if token is ABSENT:
                             if tokens_input is None:
                                 # This owner-only content comes from the
                                 # engine's already validated API 4 snapshot.
