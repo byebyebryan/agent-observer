@@ -419,3 +419,81 @@ callback intents while proposing an explicit single-writer rule for compact
 membership expansion. Exact compact ABI/domain vectors, A1 role and storage
 implementation/acceptance remain open. [density-source-review.json](density-source-review.json)
 records checked hashes, reported counters and evidence limits.
+
+## Concrete normalization agreement proposal
+
+RLCD's exact density review is committed at `0aa5f5b`, SHA256
+`8dac4913e166eaa8ffed30bf604a4777bf6712ed1eaab0155a4190a0d16f7b18`.
+It confirms that native-owner fit cannot establish Reader fit and releases
+independent private Mesh storage work while shared normalization is reviewed.
+The [single Observer decision packet](../../delta-sync-normalization-decision.md),
+SHA256 `35b1911388e75f4bc2a87087f23f07f7ca95346719933d7b37a5365d528734d6`,
+accepts the proposed revision-1 per-space codec surface, separate before and
+declared-after aliases, independently derived final aliases and provisional
+mask/validated-token flow. It explicitly completes the HeaderRef/AliasSpec
+surface, phases strict streaming validation without a full DTO roster, and
+requires an empty compact `membership_expansion` patch so generic expansion is
+the single cell writer. The already agreed common input API covers reserve,
+seal, consume and batch/head cleanup. Its source implementation stays `4030d50`.
+Mesh same-byte agreement is pending; no absent candidate class is treated as a
+failure and no dependent normalization implementation has started.
+
+[verify_codec_arithmetic.py](verify_codec_arithmetic.py) independently uses
+stdlib JSON/hash functions and a bit-string Patricia oracle, importing neither
+producer. It reproduces eight positive cases, all eight table roots/native
+roots, 11 record/group permutations and four distinct optional-value tokens
+from Mesh's pinned toy fixtures on Python 3.14 and 3.11. Its exact changed-cell
+counts are 0, 1, 1, 2, 1, 1, 0 and 4. Separately replaying Mesh's own pinned
+stdlib script reproduces its eight positive/37 rejection fixture bytes on both
+versions; that replay is not an independent implementation of the rejections.
+
+[joined_codec_vectors.py](joined_codec_vectors.py) independently extracts
+literal native moved paths/nine token inputs and hashes them, then compares
+public native split/join/admission/token helpers. Its
+[retained synthetic vectors](joined-codec-vectors.json) are byte-identical on
+both Python versions: eight full/active cases, 72 tokens and four partition
+rejections. Running versus parked/null phase is explicit. Observation-only
+clock/receipt refresh changes no body/token; a real lastUpdated value change
+changes exactly that token. These are native-shaped fixtures, not provider,
+new compact schema/runtime, support-authority or transport acceptance.
+[normalization-decision-evidence.json](normalization-decision-evidence.json)
+binds exact inputs, hashes, coverage and remaining agreement/gates.
+
+The implemented public intake/source/header/profile/facade suites also pass
+99 tests with zero skips on each Python version against an immutable export
+of Mesh `32090d69c0603955613421d100386b3809e0ab90`, including its later input
+control prepayment and terminal callback retirement fixes. All 88 exported
+inputs and the previously captured 153 Observer source/test inputs match
+before/after. This independently checks the existing cache-backed API; it does
+not execute or accept proposed codec classes or supply installed/native proof.
+
+## Continued dense producer CPU investigation
+
+A fresh serialized 500-row dense cProfile screen still places substantial time
+in immutable map construction and allocation/encoded-ledger work. Profiled
+times include instrumentation overhead and are not compared with unprofiled
+performance results. A five-point shard-lookup inlining trial kept its exact
+hash function, accounting and input semantics; 69 commitment/encoded-budget
+checks passed before the experiment.
+
+Four serial 2,000-row trials ran before/after/after/before under the shared CPU
+lock, six generations each. Pooled per-generation medians were 1,719.56 and
+1,710.13 ms, a 0.55% difference with mixed trial results. This does not establish
+a repeatable saving, and the micro-optimization was reverted. The
+[retained trial patch](dense-shard-inline.patch) and
+[exact results/manifests](dense-shard-inline.json) preserve the candidate for
+inspection; no runtime change from that trial is selected.
+
+| Trial side (12 generation samples) | Retained legacy plus oracle ms | Added sync ms | Combined new owner ms |
+| --- | ---: | ---: | ---: |
+| Before micro-optimization | 7,180.476 | 13,106.634 | 20,287.110 |
+| After micro-optimization | 7,179.981 | 13,060.097 | 20,240.078 |
+
+Both sides are sync-enabled source: this is not a new comparison with the old
+installed owner and cannot qualify the 25% ceiling. All snapshot/projection/
+support/census signatures agree; native delivered wire/root parity is outside
+this timing probe. Each trial retains six baseline-required fallbacks rather
+than delivered recovery. Close leaves zero live allocations/objects/leases,
+with only the account's fixed base charge. The earlier matched producer CPU
+gate stays failed, and Reader density, 2,000-row packed recovery, aggregate
+resources/RSS, A1, native/installed and immutable paired artifacts stay open.

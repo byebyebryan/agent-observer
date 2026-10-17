@@ -1,0 +1,1513 @@
+{
+  "cases": [
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "c9a24a3ac379db21a466fe2a49615a81998b9c237dd6229bcf19042344c1a9da",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "running",
+      "nativeDescriptorDigest": "2b015a1f9532344feeb1f494918c60a05e91a55272c258fc62d900996097b626",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000020000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "f3de68c036ed9f035e9ac8b6ce2e06b21b1bec4bbdedb47a622c896560f12bce",
+        "kind": "a92f61d2366637ab5500f7e5e34898bb062425da385556bb98b9a0cb5b6c0333",
+        "lastUpdated": "d302cd5436b0a1e337300f72cd96a78083f24d52e28763157ee519e68dc63a61",
+        "latestTurn": "886183a114e8e1d4103c3b7e53b50a38d565cd4582d5736752cc909b6aa5440e",
+        "outcome": "5f8955a933930b02c26e5a9378b93ceab87e70ec7a4b02b0f6883b23fdc66137",
+        "phase": "2d8eed0e7970d145c39408ef2f79d7039de72e7b2857e0f28c4a40e34ec7a005",
+        "runtime": "a96d2e8bea4c32a887ff9ca0f0c9e5b91702f4dbc67dcbeebb20abceb0eb0a05",
+        "savedIdentity": "472e4eb2550530479319cb9218d4bf156145c59cb9ef92bdd6968ced35246e2b",
+        "workspace": "966d56e1f0abfa2d1cd6eada30a97bed459ebbfcd5b4be864316343fae03e7e2"
+      },
+      "view": "full"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": null,
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "parked"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "9b9fca714e03498bccaeb49992f9cf08f09f6615431da826cb0d852b8090a0f6",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": null,
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "parked"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "parked-null-phase",
+      "nativeDescriptorDigest": "2b015a1f9532344feeb1f494918c60a05e91a55272c258fc62d900996097b626",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "f3de68c036ed9f035e9ac8b6ce2e06b21b1bec4bbdedb47a622c896560f12bce",
+        "kind": "a92f61d2366637ab5500f7e5e34898bb062425da385556bb98b9a0cb5b6c0333",
+        "lastUpdated": "d302cd5436b0a1e337300f72cd96a78083f24d52e28763157ee519e68dc63a61",
+        "latestTurn": "886183a114e8e1d4103c3b7e53b50a38d565cd4582d5736752cc909b6aa5440e",
+        "outcome": "5f8955a933930b02c26e5a9378b93ceab87e70ec7a4b02b0f6883b23fdc66137",
+        "phase": "85302e90e1568d78f57d9ba8b681efd3dd386630b3d6a69cfce3a994384a1356",
+        "runtime": "9c1afdfebc9afaf59d29bbe7aa5be7f4303854b9fc03b7410e58b4e7314cf4c2",
+        "savedIdentity": "472e4eb2550530479319cb9218d4bf156145c59cb9ef92bdd6968ced35246e2b",
+        "workspace": "966d56e1f0abfa2d1cd6eada30a97bed459ebbfcd5b4be864316343fae03e7e2"
+      },
+      "view": "full"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "c9a24a3ac379db21a466fe2a49615a81998b9c237dd6229bcf19042344c1a9da",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "observation-only-refresh",
+      "nativeDescriptorDigest": "2b015a1f9532344feeb1f494918c60a05e91a55272c258fc62d900996097b626",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000021000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15001,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000021000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15001,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000021000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000021000
+        }
+      },
+      "tokens": {
+        "activity": "f3de68c036ed9f035e9ac8b6ce2e06b21b1bec4bbdedb47a622c896560f12bce",
+        "kind": "a92f61d2366637ab5500f7e5e34898bb062425da385556bb98b9a0cb5b6c0333",
+        "lastUpdated": "d302cd5436b0a1e337300f72cd96a78083f24d52e28763157ee519e68dc63a61",
+        "latestTurn": "886183a114e8e1d4103c3b7e53b50a38d565cd4582d5736752cc909b6aa5440e",
+        "outcome": "5f8955a933930b02c26e5a9378b93ceab87e70ec7a4b02b0f6883b23fdc66137",
+        "phase": "2d8eed0e7970d145c39408ef2f79d7039de72e7b2857e0f28c4a40e34ec7a005",
+        "runtime": "a96d2e8bea4c32a887ff9ca0f0c9e5b91702f4dbc67dcbeebb20abceb0eb0a05",
+        "savedIdentity": "472e4eb2550530479319cb9218d4bf156145c59cb9ef92bdd6968ced35246e2b",
+        "workspace": "966d56e1f0abfa2d1cd6eada30a97bed459ebbfcd5b4be864316343fae03e7e2"
+      },
+      "view": "full"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000020000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "40f720a7df9efda4afb9bbd2938737a454680e519405ff3f95e6c0cb14f560a7",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000020000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "native-lastUpdated-value-change",
+      "nativeDescriptorDigest": "2b015a1f9532344feeb1f494918c60a05e91a55272c258fc62d900996097b626",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000020000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "f3de68c036ed9f035e9ac8b6ce2e06b21b1bec4bbdedb47a622c896560f12bce",
+        "kind": "a92f61d2366637ab5500f7e5e34898bb062425da385556bb98b9a0cb5b6c0333",
+        "lastUpdated": "b1610923dd363b32640cba9c57f04015e11f7ac7fd2c882d8983d6d94861f1eb",
+        "latestTurn": "886183a114e8e1d4103c3b7e53b50a38d565cd4582d5736752cc909b6aa5440e",
+        "outcome": "5f8955a933930b02c26e5a9378b93ceab87e70ec7a4b02b0f6883b23fdc66137",
+        "phase": "2d8eed0e7970d145c39408ef2f79d7039de72e7b2857e0f28c4a40e34ec7a005",
+        "runtime": "a96d2e8bea4c32a887ff9ca0f0c9e5b91702f4dbc67dcbeebb20abceb0eb0a05",
+        "savedIdentity": "472e4eb2550530479319cb9218d4bf156145c59cb9ef92bdd6968ced35246e2b",
+        "workspace": "966d56e1f0abfa2d1cd6eada30a97bed459ebbfcd5b4be864316343fae03e7e2"
+      },
+      "view": "full"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "c2f66c5a76922689f62e302538bd9d924d86cc521ce73f61f2aabc7950b72986",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "running",
+      "nativeDescriptorDigest": "be0209a9d1ac85747c85542835b5afbb8e34cc55b5b40b16230f5ed48f2d38fe",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000020000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "775e518d372eefa77552303a959fd895c69f2aeef0097aada6a0ac2d3b515c75",
+        "kind": "0f24fd28b8528854279fd2a3d94e05c1694721cb902bb6212f221cc6a5a5628c",
+        "lastUpdated": "737c07e17fdf6bea21033ad30c89cbb2beb5d94601c42980d0315c656844cfd2",
+        "latestTurn": "7e453108c0f6d8ef5f4e52873cde1761100300ae759492cfd5dd13c94301a8da",
+        "outcome": "36c04211ee78c34006b045376e42861964a8323ccd8fe1a042e379b7a8503a1d",
+        "phase": "9930e52ea321e757ce98591a81fdaed525260a9e21afb977a07ae7b585502b0a",
+        "runtime": "b0fc0c66216edc4aa0b30ae378ddda7b92af2fabec0903bce09c3c2859ba78f4",
+        "savedIdentity": "cbd3a2a3fdf491a211e3b091ae7f4b168138ec940173d4a31255b5dd5be8ca7a",
+        "workspace": "b4ec27e3bf6c4b666aa0d971590cc9688158cbd3de148f99d53c91dcfe664c6d"
+      },
+      "view": "active"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": null,
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "parked"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "3c0ed1a8641a24ef02299c573acf78501485c732df9f15eabff3567d701624c5",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": null,
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "parked"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "parked-null-phase",
+      "nativeDescriptorDigest": "be0209a9d1ac85747c85542835b5afbb8e34cc55b5b40b16230f5ed48f2d38fe",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "775e518d372eefa77552303a959fd895c69f2aeef0097aada6a0ac2d3b515c75",
+        "kind": "0f24fd28b8528854279fd2a3d94e05c1694721cb902bb6212f221cc6a5a5628c",
+        "lastUpdated": "737c07e17fdf6bea21033ad30c89cbb2beb5d94601c42980d0315c656844cfd2",
+        "latestTurn": "7e453108c0f6d8ef5f4e52873cde1761100300ae759492cfd5dd13c94301a8da",
+        "outcome": "36c04211ee78c34006b045376e42861964a8323ccd8fe1a042e379b7a8503a1d",
+        "phase": "5a996f3226293462232852ec96e95e204c432614bc06d7a99278deca1ff35e1a",
+        "runtime": "30d9fd59d327fd8988c51f53f3b824cc476ec514a6b60c106ff41bd051b2b4e3",
+        "savedIdentity": "cbd3a2a3fdf491a211e3b091ae7f4b168138ec940173d4a31255b5dd5be8ca7a",
+        "workspace": "b4ec27e3bf6c4b666aa0d971590cc9688158cbd3de148f99d53c91dcfe664c6d"
+      },
+      "view": "active"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "c2f66c5a76922689f62e302538bd9d924d86cc521ce73f61f2aabc7950b72986",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000019000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "observation-only-refresh",
+      "nativeDescriptorDigest": "be0209a9d1ac85747c85542835b5afbb8e34cc55b5b40b16230f5ed48f2d38fe",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000021000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15001,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000021000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15001,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000021000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000021000
+        }
+      },
+      "tokens": {
+        "activity": "775e518d372eefa77552303a959fd895c69f2aeef0097aada6a0ac2d3b515c75",
+        "kind": "0f24fd28b8528854279fd2a3d94e05c1694721cb902bb6212f221cc6a5a5628c",
+        "lastUpdated": "737c07e17fdf6bea21033ad30c89cbb2beb5d94601c42980d0315c656844cfd2",
+        "latestTurn": "7e453108c0f6d8ef5f4e52873cde1761100300ae759492cfd5dd13c94301a8da",
+        "outcome": "36c04211ee78c34006b045376e42861964a8323ccd8fe1a042e379b7a8503a1d",
+        "phase": "9930e52ea321e757ce98591a81fdaed525260a9e21afb977a07ae7b585502b0a",
+        "runtime": "b0fc0c66216edc4aa0b30ae378ddda7b92af2fabec0903bce09c3c2859ba78f4",
+        "savedIdentity": "cbd3a2a3fdf491a211e3b091ae7f4b168138ec940173d4a31255b5dd5be8ca7a",
+        "workspace": "b4ec27e3bf6c4b666aa0d971590cc9688158cbd3de148f99d53c91dcfe664c6d"
+      },
+      "view": "active"
+    },
+    {
+      "birth": [
+        "00000000-0000-4000-8000-000000000001",
+        1
+      ],
+      "body": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "blockedReasons": [
+          "approval"
+        ],
+        "createdAt": 1700000000000,
+        "cwd": "/fixture/project",
+        "cwdSource": "codex_rpc",
+        "hasSavedHistory": true,
+        "identity": {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000001",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        },
+        "inventory": "saved",
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000020000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "metadataIssues": [],
+        "nativeIds": {
+          "sessionTreeRootId": "00000000-0000-0000-0000-000000000001",
+          "threadId": "00000000-0000-0000-0000-000000000001"
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "blocked"
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "title": "native-shape-0",
+        "workspace": null
+      },
+      "bodyId": "a8e37597af94b54d7dec5a3c95004b60f39c6ee0d23a1cbe8af959a9ad423826",
+      "fieldInputs": {
+        "activity": {
+          "at": 1700000019000,
+          "reason": "native_conversation_event",
+          "source": "codex_turn_metadata"
+        },
+        "kind": "user",
+        "lastUpdated": {
+          "at": 1700000020000,
+          "reason": "native_thread_update",
+          "source": "codex_thread_metadata",
+          "timestampPrecisionMs": 1000
+        },
+        "latestTurn": {
+          "reason": "native_latest_turn",
+          "source": "codex_turn_metadata",
+          "value": {
+            "completedAt": 1700000019000,
+            "durationMs": 9000,
+            "id": "turn-0",
+            "startedAt": 1700000010000,
+            "status": "completed",
+            "timestampPrecisionMs": 1000
+          }
+        },
+        "outcome": {
+          "clock": "native",
+          "observedAt": 1700000019000,
+          "reason": "latest_terminal_turn",
+          "source": "codex_turn_metadata",
+          "value": "completed"
+        },
+        "phase": {
+          "blockedReasons": [
+            "approval"
+          ],
+          "phase": {
+            "clock": "sample",
+            "reason": "native_snapshot",
+            "source": "codex_rpc",
+            "value": "blocked"
+          }
+        },
+        "runtime": {
+          "clock": "sample",
+          "reason": "native_snapshot",
+          "source": "codex_rpc",
+          "value": "running"
+        },
+        "savedIdentity": {
+          "hasSavedHistory": true,
+          "inventory": "saved"
+        },
+        "workspace": {
+          "cwd": "/fixture/project",
+          "cwdSource": "codex_rpc",
+          "workspace": null
+        }
+      },
+      "identity": [
+        "fixture",
+        "codex",
+        "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+        "thread",
+        "00000000-0000-0000-0000-000000000001"
+      ],
+      "name": "native-lastUpdated-value-change",
+      "nativeDescriptorDigest": "be0209a9d1ac85747c85542835b5afbb8e34cc55b5b40b16230f5ed48f2d38fe",
+      "observations": {
+        "activity": {
+          "health": "current"
+        },
+        "lastUpdated": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "latestTurn": {
+          "health": "current",
+          "observedAt": 1700000020000,
+          "receipt": {
+            "component": "history",
+            "contextGeneration": 0,
+            "observedBoottimeMs": 15000,
+            "sampledBoottimeMs": 15000
+          }
+        },
+        "outcome": {
+          "health": "current"
+        },
+        "phase": {
+          "health": "current",
+          "observedAt": 1700000020000
+        },
+        "runtime": {
+          "health": "current",
+          "observedAt": 1700000020000
+        }
+      },
+      "tokens": {
+        "activity": "775e518d372eefa77552303a959fd895c69f2aeef0097aada6a0ac2d3b515c75",
+        "kind": "0f24fd28b8528854279fd2a3d94e05c1694721cb902bb6212f221cc6a5a5628c",
+        "lastUpdated": "d21fd47f99c873ba0a20ed0d0fb6adf57a6827712600ba80c50a87d20ed5d954",
+        "latestTurn": "7e453108c0f6d8ef5f4e52873cde1761100300ae759492cfd5dd13c94301a8da",
+        "outcome": "36c04211ee78c34006b045376e42861964a8323ccd8fe1a042e379b7a8503a1d",
+        "phase": "9930e52ea321e757ce98591a81fdaed525260a9e21afb977a07ae7b585502b0a",
+        "runtime": "b0fc0c66216edc4aa0b30ae378ddda7b92af2fabec0903bce09c3c2859ba78f4",
+        "savedIdentity": "cbd3a2a3fdf491a211e3b091ae7f4b168138ec940173d4a31255b5dd5be8ca7a",
+        "workspace": "b4ec27e3bf6c4b666aa0d971590cc9688158cbd3de148f99d53c91dcfe664c6d"
+      },
+      "view": "active"
+    }
+  ],
+  "inputs": {
+    "agent_observer/contract.py": "2d06bcbcf770aed7641588fc88b88ba3c89374ad68093923b416069aa29f934a",
+    "agent_observer/sync_contract.py": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236",
+    "agent_observer/sync_native.py": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d",
+    "docs/evidence/2026-10-16-delta-sync-source/joined_codec_vectors.py": "a9a58bd45303619c148e3a838b104c5ee3811532c0fdb17e6b3726e3ea418cdd",
+    "tests/bench_sync_producer.py": "ccddb015b42626bd4d6fe953b305ab6b8375bd8747cdabc73f2d546b2e4a2466",
+    "tests/fixtures/service-v4/view.json": "f657b8847142bbf36084c12527d83d31919a71205b5c5ffc271a424cdf0770a5"
+  },
+  "rejections": [
+    {
+      "error": "sync_record_partition",
+      "name": "missing-runtime-observation",
+      "view": "full"
+    },
+    {
+      "error": "sync_record_partition",
+      "name": "null-runtime-observation",
+      "view": "full"
+    },
+    {
+      "error": "sync_record_partition",
+      "name": "missing-runtime-observation",
+      "view": "active"
+    },
+    {
+      "error": "sync_record_partition",
+      "name": "null-runtime-observation",
+      "view": "active"
+    }
+  ],
+  "scope": "synthetic joined native body/observation/token vectors; no compact runtime/admission/authority or storage acceptance"
+}
