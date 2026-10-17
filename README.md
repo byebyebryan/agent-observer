@@ -20,6 +20,10 @@ Starship device gates.
 
 ## Current status
 
+The [active + recent projection plan](docs/working-set-projection-plan.md)
+generalizes the existing active view with a proposed 3-day history window.
+It is design-only, with implementation, contract and deployment gates pending.
+
 Snapshot/delta-sync is an unreleased, [deferred dark feature](docs/delta-sync-dark-feature.md).
 The local runtime denies sync requests by default; controlled library experiments
 must opt in explicitly. CPU and 2,000-row capacity gates still fail, and ordinary

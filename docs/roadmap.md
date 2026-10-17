@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+A [planning draft for generalized active + recent selection](working-set-projection-plan.md)
+uses the existing replacement projection with a proposed 3-day window. Source
+clock/quiet-cutoff semantics, compatibility and capacity gates precede any
+implementation. This is design-only; it does not reopen delta synchronization.
+
 Snapshot/delta synchronization is [deferred behind a default-off gate](delta-sync-dark-feature.md)
 as of 2026-10-17. Implementation and evidence are retained for a future explicit
 resume request. CPU, 2,000-row capacity/recovery and remaining producer gates are
