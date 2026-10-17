@@ -344,6 +344,9 @@ the exact original terminal control alongside its bounded transaction tuple;
 legacy `changes()` retains its transaction-only success result. Its independently
 prepaid container/header credit survives data consumption and retires with the
 result. This source prerequisite does not accept relay/controller integration.
+The later [immutable completion join](delta-sync-completion-join-recheck.md)
+separately exercises actual source/relay forwarding and fresh independent Reader
+confirmation on small synthetic full/active fixtures; wider gates remain open.
 
 `agent_observer.sync_owned_source` prepays a 512 KiB session/control allowance,
 768 KiB per active operation or watch for bounded requests/batches/callback

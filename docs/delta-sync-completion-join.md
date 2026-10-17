@@ -2,6 +2,11 @@
 
 Status: **FAIL / actual joined completion remains unqualified**.
 
+This status belongs to the exact historical pair below. The later
+[immutable recheck](delta-sync-completion-join-recheck.md) records the corrected
+Mesh source with actual Observer completion and independent Reader coverage;
+it preserves the original failure and its narrower remaining gates.
+
 This independently joins immutable Observer
 `2f697d468eb3b0cb895276fd07cb746acbd23d37` with immutable Mesh
 `b57c2176d60a8593fa2f85d7322655384a3227b6` on Starship. Observer's
