@@ -1,0 +1,8 @@
+test_first_refusal_allocates_no_buffer_and_leaves_legacy_reads_available (test_working_set_encoding_refusal.WorkingSetEncodingRefusalTest.test_first_refusal_allocates_no_buffer_and_leaves_legacy_reads_available) ... ok
+test_refused_first_stage_cannot_increase_saturated_encoded_counter (test_working_set_encoding_refusal.WorkingSetEncodingRefusalTest.test_refused_first_stage_cannot_increase_saturated_encoded_counter) ... ok
+test_retained_owner_buffer_blocks_reads_until_new_generation_reserves (test_working_set_encoding_refusal.WorkingSetEncodingRefusalTest.test_retained_owner_buffer_blocks_reads_until_new_generation_reserves) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.016s
+
+OK

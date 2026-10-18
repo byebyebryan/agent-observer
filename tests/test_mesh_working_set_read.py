@@ -210,5 +210,95 @@ class WorkingSetReadPolicyTest(unittest.TestCase):
             PreparedWorkingSetAgentWatch("candidate-request")
 
 
+class WorkingSetGapPolicyTest(unittest.TestCase):
+    """No SDK bypass: native admission plus direct translated-header policy."""
+
+    @staticmethod
+    def frames():
+        low = profile_fixture.MeshWorkingSetProfileTest.frame(runtime="parked")
+        high = copy.deepcopy(low)
+        high["clockCeiling"] += 4000
+        high["projection"]["scopes"][0]["members"][0]["recent"]["lowerBoottimeMs"] -= 4000
+        high["projection"]["scopes"][0]["continuity"] = 3
+        low["projection"]["scopes"][0]["continuity"] = 3
+        low["sequence"] += 1
+        low["viewRevision"] += 1
+        validate_frame(high)
+        validate_frame(low)
+        now = high["projection"]["scopes"][0]["members"][0]["recent"]["lowerBoottimeMs"] + OFFSET + 1
+        return high, low, now
+
+    def test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock(self):
+        high, low, now = self.frames()
+        reader, admitted = selection(high)
+        expired = reader.evaluate(admitted, now)
+        self.assertEqual(expired.members, [])
+        self.assertEqual(expired.scopes[0]["coverage"]["status"], "partial")
+        reader.retain(None)
+        self.assertEqual(reader.evaluate(None, now).members, [])
+        self.assertIsNone(reader.snapshot)
+        self.assertEqual(reader.rows, {})
+        with self.assertRaisesRegex(ProtocolError, "working_set_clock_regression"):
+            reader.retain(context(low))
+
+    def test_no_generation_read_keeps_scope_continuity_without_row_history(self):
+        high, _, now = self.frames()
+        reader, admitted = selection(high)
+        reader.evaluate(admitted, now)
+        reader.evaluate(None, now)
+        older = copy.deepcopy(high)
+        older["projection"]["scopes"][0]["continuity"] -= 1
+        validate_frame(older)
+        self.assertIsNone(reader.snapshot)
+        with self.assertRaisesRegex(ProtocolError, "working_set_scope_continuity"):
+            reader.retain(context(older))
+
+    def test_reader_time_cannot_regress_during_or_after_gap(self):
+        high, _, now = self.frames()
+        for restore in (False, True):
+            with self.subTest(restore=restore):
+                reader, admitted = selection(high)
+                reader.evaluate(admitted, now)
+                reader.retain(None)
+                reader.evaluate(None, now + 1)
+                if restore:
+                    reader.retain(copy.deepcopy(admitted))
+                with self.assertRaisesRegex(ProtocolError, "working_set_reader_clock_regression"):
+                    reader.evaluate(admitted if restore else None, now)
+
+    def test_valid_same_incarnation_resync_preserves_expiry_and_bounded_watermarks(self):
+        high, _, now = self.frames()
+        reader, admitted = selection(high)
+        reader.evaluate(admitted, now)
+        for step in range(12):
+            reader.retain(None)
+            unavailable = reader.evaluate(None, now + step)
+            self.assertIsNone(unavailable.context)
+            self.assertEqual(unavailable.members + unavailable.nonmembers, [])
+            reader.retain(copy.deepcopy(admitted))
+            resumed = reader.evaluate(admitted, now + step)
+            self.assertEqual(resumed.members + resumed.nonmembers, [])
+            self.assertEqual(resumed.scopes[0]["coverage"]["status"], "partial")
+            self.assertEqual(len(resumed.uncertain), 1)
+            self.assertEqual(len(reader.clocks), 1)
+            self.assertEqual(len(reader.bindings), 1)
+
+    def test_terminal_clear_releases_watermarks_and_rows(self):
+        high, low, now = self.frames()
+        reader, admitted = selection(high)
+        reader.evaluate(admitted, now)
+        reader.clear()
+        self.assertEqual(reader.clocks, {})
+        self.assertEqual(reader.bindings, {})
+        self.assertIsNone(reader.last_now)
+        self.assertIsNone(reader.snapshot)
+        self.assertEqual(reader.rows, {})
+        # A new terminal watch has its own independent baseline/clock. This
+        # helper test does not replace those generic Reader admission checks.
+        fresh = context(low)
+        reader.retain(fresh)
+        self.assertEqual(len(reader.evaluate(fresh, now - 1).members), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

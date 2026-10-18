@@ -1,0 +1,105 @@
+{
+  "artifacts": {
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/README.md": {
+      "bytes": 2252,
+      "sha256": "f99a9e5500d63b70332604c2aa2bef2fd0f6df4b4f819f85f80d627780ba991e"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/after-311.json": {
+      "bytes": 6038,
+      "sha256": "ff6f04b0721c72d5975c86467eb80d219368fc7de950343edcd8ff7177b7619f"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/after-311.log": {
+      "bytes": 737,
+      "sha256": "61c748aa3b4f7f0839c544216949d1484f919a4b818183ced3e3c5a8b468f194"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/after-314.json": {
+      "bytes": 6037,
+      "sha256": "f70083df458b7a9f5c326bb89564c85c57331839f95c72ef803edea521027d7a"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/after-314.log": {
+      "bytes": 737,
+      "sha256": "3341f8f891c9b51f8534509315b1a0d36d7bfd55008c1f9dd304d4f903281674"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/before-311.json": {
+      "bytes": 6037,
+      "sha256": "45a69f2aeb7f3bcedc023b8c14294216dcea6402ea36e2b6716a35af302cf540"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/before-311.log": {
+      "bytes": 6446,
+      "sha256": "bf67798938392dff353c29f624dcc48dffb3eb225581cae164692e288888eb9f"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/before-314.json": {
+      "bytes": 6036,
+      "sha256": "832712462019b8402b9f8bcbfc66a0ef303c82e7cb2c97f47b1a3b4a60723446"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/before-314.log": {
+      "bytes": 6903,
+      "sha256": "4d48fdd918f22fe7ac7b2500bfaf34db2cd0b42b7e7a8f24bf29641dbf66da57"
+    },
+    "docs/evidence/2026-10-18-working-set/encoding-refusal/run_probe.py": {
+      "bytes": 1754,
+      "sha256": "8d94d10de8b64d449d5f759247a78de72e599eb919de41647cbeb6aed7cc9130"
+    }
+  },
+  "beforeAndAfter": {
+    "afterEachPython": "3 methods PASS, 0 errors/skips, GC disabled; loaded32Observer exact",
+    "beforeEachPython": "3 methods, 3 assertion failures, 0 errors/skips, GC disabled; loaded32Observer exact",
+    "behavior": "no replacement encoding on refusal, retain/count prior buffer but publish native error/no projection; preserve K/guards/provider health; admitted replacement recovery",
+    "limitScope": "private exact saturated test boundary, not a default64MiB or physical/RSS overrun claim",
+    "unhookedCounterAfter": {
+      "retainedAfter": 562,
+      "testOnlyLimit": 562
+    },
+    "unhookedCounterBefore": {
+      "retainedAfter": 878,
+      "testOnlyLimit": 562
+    }
+  },
+  "beforeCodeCommit": "c4db1200279477c02679b41d8dc56bb11d080521",
+  "canonical": {
+    "canonicalLoadedInventory": "not captured; static67Python+29schema optional Mesh blobs verified separately",
+    "errors": 0,
+    "failures": 0,
+    "log": {
+      "bytes": 196260,
+      "sha256": "2b9fb113c61febf89d4aa4b61d9730ae1ccbdfb2ac48fd49be4bb127feed654f"
+    },
+    "markdown": 227,
+    "python": "3.14.8",
+    "skips": 0,
+    "tests": 1072
+  },
+  "focusedEachPython": {
+    "errors": 0,
+    "failures": 0,
+    "gcEnabled": false,
+    "loadedMesh": 17,
+    "loadedObserver": 57,
+    "python": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "skips": 0,
+    "tests": 123
+  },
+  "guide": {
+    "bytes": 3124,
+    "sha256": "d753e0657f29433d2e95e500739f234541cd9c9a8045f9442cd560d9dabd0a18"
+  },
+  "preserved": "R1/R2/R3 and candidate native schema bytes; prior P2/worker/cost evidence source tuples; full/active defaults, a7/a23 selected roles, providers, siblings, dark delta and cleanup-coordination closure",
+  "remaining": [
+    "exact Mesh correction review and additive SDK1 descriptor/schema/validator/CLI/lock registration",
+    "actual ordinary working-set Reader/proof/gap/resync and transport integration",
+    "inclusive combined full/active/working-set pins/stage/resources/RSS and workload/cadence performance qualification",
+    "isolated native/IPC/fixedSSH and immutable installed pair plus rollback qualification; no normal-role rollout"
+  ],
+  "sameFinalSourceInputs": {
+    "bytes": 25949,
+    "sha256": "b01b5e0a2f76ab97bbba3940b1981eb576f89ab86051c341585abd7cc965e4c6"
+  },
+  "scope": "bounded encoding-refusal ownership source prerequisite only",
+  "sharedCombinedPacketReceipt": {
+    "bytes": 13015,
+    "sha256": "928e2a14801ff160a77f1514c1874cb145995bbfc391c67f0d19cc044db6ad46"
+  }
+}

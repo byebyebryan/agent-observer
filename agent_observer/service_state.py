@@ -36,6 +36,7 @@ class ServiceState(ObservationEngine):
         self.working_set_clocks = None
         self.working_set_projector = None
         self.working_set_reserver = None
+        self._working_set_blocked_sample = None
         self.service_id = str(uuid.uuid4())
         self.active_projector = ActiveFeedProjector(service_id=self.service_id)
         # Sync is opt-in. A cold baseline can initialize its shared cache;
@@ -105,19 +106,35 @@ class ServiceState(ObservationEngine):
             return
         samples = {name: receipt.data["collectionId"] if receipt.data is not None else None
                    for name, receipt in self.receipts["codex"].items()}
+        source = self.source_meta("codex")
+        sample_key = (
+            source["provider"], source["namespace"], source["contextGeneration"],
+            tuple(
+                (name, receipt.accepted, samples[name])
+                for name, receipt in sorted(self.receipts["codex"].items())
+            ),
+        )
+        projector = self.working_set_projector
+        if projector._capacity_blocked:
+            # Do not retry the same accepted generation from unrelated publish
+            # or expiry work. Recovery must be triggered by a new accepted
+            # sample and a successful reservation.
+            if sample_key == self._working_set_blocked_sample or self.working_set_reserver is None:
+                return
         if self.working_set_reserver is not None:
             from .working_set_contract import MAX_FRAME_BYTES, MAX_LEDGER_BYTES
 
             if not self.working_set_reserver(MAX_FRAME_BYTES + 2 * MAX_LEDGER_BYTES):
-                self.working_set_projector.refuse_capacity(
-                    self.source_meta("codex"), observation_revision=self.revision,
-                )
+                projector.refuse_capacity(source, observation_revision=self.revision)
+                self._working_set_blocked_sample = sample_key
                 return
-        self.working_set_projector._accept_owned(
+        projector._accept_owned(
             self.snapshot, self.projection_support, self.projection_census,
-            [self.source_meta("codex")], observation_revision=self.revision,
+            [source], observation_revision=self.revision,
             now_ms=now, sample_ids=samples,
         )
+        if not projector._capacity_blocked:
+            self._working_set_blocked_sample = None
 
     def expire(self, now=None):
         now = self.clock() if now is None else now
@@ -159,6 +176,8 @@ class ServiceState(ObservationEngine):
         include = (include_projection if include_projection is not None
                    else kind in {"view", "resync", "status"})
         projection = self.working_set_projector.snapshot() if include and sources else None
+        if self.working_set_projector._capacity_blocked:
+            kind, reason, projection = "error", "projection_encoding_capacity", None
         policy = selector(self.working_set_window_ms)
         return validate_working_set_frame({
             "workingSetProtocol": 1, "selector": policy, "selectorDigest": selector_digest(policy),

@@ -1,0 +1,10 @@
+test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock) ... ok
+test_no_generation_read_keeps_scope_continuity_without_row_history (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_no_generation_read_keeps_scope_continuity_without_row_history) ... ok
+test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) ... ok
+test_terminal_clear_releases_watermarks_and_rows (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_terminal_clear_releases_watermarks_and_rows) ... ok
+test_valid_same_incarnation_resync_preserves_expiry_and_bounded_watermarks (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_valid_same_incarnation_resync_preserves_expiry_and_bounded_watermarks) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.030s
+
+OK

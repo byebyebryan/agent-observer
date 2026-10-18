@@ -50,6 +50,7 @@ class WorkingSetProjector:
         self._context, self._ledger, self._encoded = None, {}, None
         self._clock_state = None
         self._failed, self._continuity = False, 1
+        self._capacity_blocked = False
         self.revision = self.generations = 0
         self.observation_revision = None
         self.next_deadline_ms = None
@@ -57,7 +58,7 @@ class WorkingSetProjector:
     def snapshot(self):
         return (
             None
-            if self._encoded is None
+            if self._encoded is None or self._capacity_blocked
             else decode_document(
                 self._encoded,
                 max_bytes=MAX_BYTES,
@@ -70,23 +71,21 @@ class WorkingSetProjector:
         return self.next_deadline_ms is not None and now_ms >= self.next_deadline_ms
 
     def refuse_capacity(self, source, *, observation_revision):
-        """Publish explicit unavailability without changing provider receipts.
+        """Mark the projection unavailable without allocating another buffer.
 
-        Guard/K state survives. Existing delivery copies/pins remain separately
-        owned by Runtime, including after replacement of this owner's buffer.
+        Keep the last committed bytes physically owned and accounted, but make
+        them unavailable to readers. Guard/K and accepted-context state survive.
         """
-        scope = {
-            "provider": source["provider"],
-            "namespace": source["namespace"],
-            "contextGeneration": source["contextGeneration"],
-            "clocks": [],
-        }
-        encoded = canonical(self._failure(scope, "projection_encoding_capacity")).encode()
         clock_state = self.clocks.ceiling, self.clocks.generation
-        if encoded != self._encoded or clock_state != self._clock_state:
-            self._encoded = encoded
+        first_block = not self._capacity_blocked
+        if not self._failed:
+            self._continuity += 1
+            self._failed = True
+        self._ledger = {}
+        if first_block or clock_state != self._clock_state:
             self.revision += 1
             self.generations += 1
+        self._capacity_blocked = True
         self._clock_state = clock_state
         self.observation_revision, self.next_deadline_ms = observation_revision, None
 
@@ -413,10 +412,17 @@ class WorkingSetProjector:
         if encoded is None:
             encoded = canonical(projection).encode()
         clock_state = self.clocks.ceiling, self.clocks.generation
-        if encoded != self._encoded or clock_state != self._clock_state:
+        if (
+            encoded != self._encoded
+            or clock_state != self._clock_state
+            or self._capacity_blocked
+        ):
             self._encoded = encoded
             self._clock_state = clock_state
             self.revision += 1
             self.generations += 1
+        # Only a fully constructed and committed replacement releases a
+        # capacity refusal. A failed encode/validation path leaves it blocked.
+        self._capacity_blocked = False
         self.observation_revision = observation_revision
         self.next_deadline_ms = min(deadlines, default=None)

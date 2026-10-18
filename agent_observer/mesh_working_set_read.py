@@ -56,15 +56,20 @@ class _WorkingSetSelection:
         self.clear()
 
     def clear(self):
-        self.snapshot = None
-        self.rows = {}
+        """Terminal watch retirement; a new watch owns a new reader clock."""
+        self.revoke()
         self.bindings = {}
         self.clocks = {}
         self.last_now = None
 
+    def revoke(self):
+        """Drop current material without forgetting this watch's watermarks."""
+        self.snapshot = None
+        self.rows = {}
+
     def retain(self, snapshot):
         if snapshot is None:
-            self.clear()
+            self.revoke()
             return
         check(snapshot["protocol"] == WORKING_SET_PROFILE_ID, "working_set_profile_binding")
         # One current scope and clock binding per admitted host/provider. Do not
@@ -132,13 +137,13 @@ class _WorkingSetSelection:
         }
 
     def evaluate(self, current, now_ms):
-        if current is None or self.snapshot is None:
-            self.clear()
-            return WorkingSetAgentRead(None, [], [], [], [])
         check(type(now_ms) is int and now_ms >= 0
               and (self.last_now is None or now_ms >= self.last_now),
               "working_set_reader_clock_regression")
         self.last_now = now_ms
+        if current is None or self.snapshot is None:
+            self.revoke()
+            return WorkingSetAgentRead(None, [], [], [], [])
         check(current["protocol"] == WORKING_SET_PROFILE_ID, "working_set_profile_binding")
         members, uncertain, nonmembers, scopes = [], [], [], []
         for host in current["mesh"]["hosts"]:
@@ -274,7 +279,7 @@ class PreparedWorkingSetAgentWatch:
         """Detached admitted diagnostic replacement; supplies no current claim."""
         try:
             if self._guard.context() is None:
-                self._selection.clear()
+                self._selection.revoke()
             return copy.deepcopy(self._selection.snapshot)
         except BaseException:
             self.disconnect()

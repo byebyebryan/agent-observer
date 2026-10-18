@@ -1,0 +1,147 @@
+{
+  "exactUpstreamRunner": {
+    "bytes": 1830,
+    "sha256": "743d2067a8349ef752ef343fb692aaaa8fda75237f65fcc50cbfa2887526b706"
+  },
+  "independentExecutionsOfOwningRegression": {
+    "after-311": {
+      "errors": 0,
+      "failures": 0,
+      "gcDisabled": true,
+      "loadedGitPins": 32,
+      "log": {
+        "bytes": 1115,
+        "sha256": "800c1d52024030f3f8061fce207abb125041914757fff8d46e9506ce12284eff"
+      },
+      "python": "3.11.17",
+      "report": {
+        "bytes": 6008,
+        "sha256": "ddf2b1760f71941ac91b393bc9114f6f2a17fe10023e952b653c61dc4ab8b5e9"
+      },
+      "skips": 0,
+      "tests": 5
+    },
+    "after-314": {
+      "errors": 0,
+      "failures": 0,
+      "gcDisabled": true,
+      "loadedGitPins": 32,
+      "log": {
+        "bytes": 1115,
+        "sha256": "6201840d12e5e490f12361e71f614d25c2f8c47cbf23007c3121cff542da40f1"
+      },
+      "python": "3.14.8",
+      "report": {
+        "bytes": 6007,
+        "sha256": "e9da79cdabaf56c2503731576314978af2b07d7426b60b651b80c27677169469"
+      },
+      "skips": 0,
+      "tests": 5
+    },
+    "before-311": {
+      "errors": 0,
+      "failures": 1,
+      "gcDisabled": true,
+      "loadedGitPins": 32,
+      "log": {
+        "bytes": 1560,
+        "sha256": "1930fd30075733e57048c438a2bc817dffdd80731d14e0ec764ef8953d1217b0"
+      },
+      "python": "3.11.17",
+      "report": {
+        "bytes": 6007,
+        "sha256": "20b26d64edc3fe9518304a1a5e0ed2d7505018ac9cfde3c3fc1596d6547d7f94"
+      },
+      "skips": 0,
+      "tests": 1
+    },
+    "before-314": {
+      "errors": 0,
+      "failures": 1,
+      "gcDisabled": true,
+      "loadedGitPins": 32,
+      "log": {
+        "bytes": 1656,
+        "sha256": "a05ebfeee4dc4b7dcdc51e2cc2966df8bce873c776d1ae7b5b2fd40886449d03"
+      },
+      "python": "3.14.8",
+      "report": {
+        "bytes": 6006,
+        "sha256": "29ea8f9603953bbfe1f6ca7b2f384cd24429d1387cf2a2b9fb4df309d2c0c5d2"
+      },
+      "skips": 0,
+      "tests": 1
+    }
+  },
+  "inputGuide": {
+    "bytes": 2659,
+    "sha256": "e6c52af070a675ba1f6a477271283901d2b66e7fbb379d75531c45dd13e70c40"
+  },
+  "inputReceipt": {
+    "bytes": 6417,
+    "sha256": "0c0fe0b39efea42e179603c3e6befbd7db44c3e2b0d08ae2dc4fc3640b175958"
+  },
+  "meshHeadAtReview": "bea028964f5c1f89c6527fcd9f04e4d634c00d7b",
+  "noMeshTrackedChanges": true,
+  "noRegistrationAllocationDeltaSelectionOrRollout": true,
+  "noSiblingChanges": true,
+  "notExecuted": "Supplied115 whole-working-set and1064 canonical gates hash/inventory-verified only; not rerun. No native provider/IPC/SSH/installed/resource/CPU gate.",
+  "observerAfter": "9687c00db555ba0e42a5ada3578a0ead261cf8aa",
+  "observerBefore": "c6a238fbe60ba9b4084734ef9302a9205fc99ca1",
+  "observerHeadAtReview": "c4db1200279477c02679b41d8dc56bb11d080521",
+  "reviewScript": {
+    "bytes": 9098,
+    "sha256": "5fcafe370686679579802345ba1a522c748f1e7006e5e1334cd31cfd01fd131d"
+  },
+  "scope": "Exact native canonical-worker provenance correction, component source prerequisite only",
+  "separateOpenItems": [
+    "Client facade gap/None paths erase clock/continuity/reader-now history; original c6 client withholding remains separate.",
+    "SDK1 schema/descriptor/validator/lock/package registration and actual ordinary working-set Reader remain open.",
+    "Performance evidence c4db120 retains its a7/c6 direct accepted-state provenance and was not rerun or attributed to this fix."
+  ],
+  "staticReview": [
+    "Constructor captures only an exact bound MethodType whose self is this runtime and func is the installed canonical spawn implementation.",
+    "Worker startup uses one local factory reference; only the captured identical callable receives a private token after successful creation.",
+    "Canonical spawn runs the isolated installed worker path; worker JSON cannot carry or synthesize the private token.",
+    "Completion gates accepted BOOTTIME metadata on the private token and current scheduler generation; ServiceState installs brackets only after accepted=True.",
+    "Unsupported/replaced/overridden spawn workers retain ordinary observations and independent active authority; receipt sample/counter joins prevent borrowing prior clock metadata.",
+    "Runtime/history mirror, superseded acceptedFalse and nonborrowing controls pass with Popen mocked; no provider subprocess or normal service executed."
+  ],
+  "verdict": "Original e482 worker-clock-provenance finding resolved at bounded native source prerequisite scope on exact 9687c00; no remaining conflict found in this correction.",
+  "verified": {
+    "artifacts": 19,
+    "currentObserverFilesEqualReviewedPins": true,
+    "declaredImmutableMeshSourcePins": 96,
+    "observerSourcePins": 238,
+    "onlyProductionChange": [
+      "agent_observer/service_runtime.py"
+    ],
+    "savedLoadedInventoryCounts": {
+      "after-candidate-311.json": {
+        "mesh": 0,
+        "observer": 32
+      },
+      "after-candidate-314.json": {
+        "mesh": 0,
+        "observer": 32
+      },
+      "before-c6-311.json": {
+        "mesh": 0,
+        "observer": 32
+      },
+      "before-c6-314.json": {
+        "mesh": 0,
+        "observer": 32
+      },
+      "focused311.json": {
+        "mesh": 17,
+        "observer": 56
+      },
+      "focused314.json": {
+        "mesh": 17,
+        "observer": 56
+      }
+    },
+    "unchangedNativeAndContractInputs": 6
+  }
+}

@@ -1,0 +1,42 @@
+test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock) ... FAIL
+test_no_generation_read_keeps_scope_continuity_without_row_history (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_no_generation_read_keeps_scope_continuity_without_row_history) ... FAIL
+test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) ... 
+  test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) (restore=False) ... FAIL
+  test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) (restore=True) ... FAIL
+
+======================================================================
+FAIL: test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bryan/.cache/agent-observer-working-set-20261018/client-gap/before-c4db120/tests/test_mesh_working_set_read.py", line 241, in test_gap_cannot_reauthorize_expired_row_with_regressed_native_clock
+    with self.assertRaisesRegex(ProtocolError, "working_set_clock_regression"):
+AssertionError: ProtocolError not raised
+
+======================================================================
+FAIL: test_no_generation_read_keeps_scope_continuity_without_row_history (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_no_generation_read_keeps_scope_continuity_without_row_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bryan/.cache/agent-observer-working-set-20261018/client-gap/before-c4db120/tests/test_mesh_working_set_read.py", line 253, in test_no_generation_read_keeps_scope_continuity_without_row_history
+    with self.assertRaisesRegex(ProtocolError, "working_set_scope_continuity"):
+AssertionError: ProtocolError not raised
+
+======================================================================
+FAIL: test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) (restore=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bryan/.cache/agent-observer-working-set-20261018/client-gap/before-c4db120/tests/test_mesh_working_set_read.py", line 266, in test_reader_time_cannot_regress_during_or_after_gap
+    with self.assertRaisesRegex(ProtocolError, "working_set_reader_clock_regression"):
+AssertionError: ProtocolError not raised
+
+======================================================================
+FAIL: test_reader_time_cannot_regress_during_or_after_gap (test_mesh_working_set_read.WorkingSetGapPolicyTest.test_reader_time_cannot_regress_during_or_after_gap) (restore=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bryan/.cache/agent-observer-working-set-20261018/client-gap/before-c4db120/tests/test_mesh_working_set_read.py", line 266, in test_reader_time_cannot_regress_during_or_after_gap
+    with self.assertRaisesRegex(ProtocolError, "working_set_reader_clock_regression"):
+AssertionError: ProtocolError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.017s
+
+FAILED (failures=4)

@@ -172,14 +172,8 @@ class WorkingSetDeliveryTest(unittest.TestCase):
         self.now += 1
         self.accept(generation=2)
         frame = self.state.working_set_frame("status", 1)
-        self.assertEqual(frame["projection"]["sessions"], [])
-        self.assertEqual(
-            frame["projection"]["scopes"][0]["coverage"],
-            {
-                "status": "unavailable",
-                "reason": "projection_encoding_capacity",
-                "supports": [],
-            },
-        )
+        self.assertEqual(frame["kind"], "error")
+        self.assertEqual(frame["reason"], "projection_encoding_capacity")
+        self.assertIsNone(frame["projection"])
         self.assertEqual(self.state.receipts["codex"]["runtime"].health, "current")
         self.assertEqual(self.state.receipts["codex"]["runtime"].accepted, 2)
