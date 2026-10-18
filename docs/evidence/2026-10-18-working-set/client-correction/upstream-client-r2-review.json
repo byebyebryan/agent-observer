@@ -1,0 +1,179 @@
+{
+  "artifacts": {
+    "client-311.json": {
+      "bytes": 618,
+      "sha256": "5b8134aad3de715aa530fd96bade2bea0396562fd9a5734026de14869d7f04a4"
+    },
+    "client-314.json": {
+      "bytes": 618,
+      "sha256": "5b8134aad3de715aa530fd96bade2bea0396562fd9a5734026de14869d7f04a4"
+    },
+    "client_r2_vectors.py": {
+      "bytes": 3968,
+      "sha256": "771e646cfcbdd2b4adad1f8d5726aa86b3dc4fbf0cfbd34302073bc8f476f5cb"
+    },
+    "contract-r2.md": {
+      "bytes": 6604,
+      "sha256": "937d442402064a4e43258412d12e906fd5ca98b7fe0244c45f9ac1699884ccea"
+    },
+    "p1-r2-review.json": {
+      "bytes": 3216,
+      "sha256": "eed4a58e1b9a3ed25012d0a0ba54ad512ea4b6867a6a50b74629de1522a76224"
+    },
+    "range-311.json": {
+      "bytes": 906,
+      "sha256": "f903ada03bec692226ba90049cc5d2211c2effc94f77026708e3eeb4604d0ad3"
+    },
+    "range-314.json": {
+      "bytes": 906,
+      "sha256": "f903ada03bec692226ba90049cc5d2211c2effc94f77026708e3eeb4604d0ad3"
+    },
+    "range_counterexample.py": {
+      "bytes": 2072,
+      "sha256": "a3af2b98881a43e4a525d8b70369b10240469b3aed831539cc43146360be944a"
+    },
+    "run_checks.py": {
+      "bytes": 1556,
+      "sha256": "a69e2a968bfc657843dd943ab7ef840ad3b7494eb837fbdbad6f37464b5938f5"
+    },
+    "runs.json": {
+      "bytes": 1198,
+      "sha256": "563ed3736984b1baf35004cda8cd7fa81e60e73353d676634b4a73fa80685d02"
+    },
+    "upstream-311.json": {
+      "bytes": 5070,
+      "sha256": "7aa01df4c98d4cdca13ef7c68ff84cbb35b1cb57097935ccb231e3b2f55a7fdd"
+    },
+    "upstream-314.json": {
+      "bytes": 5070,
+      "sha256": "7aa01df4c98d4cdca13ef7c68ff84cbb35b1cb57097935ccb231e3b2f55a7fdd"
+    },
+    "verification.json": {
+      "bytes": 704,
+      "sha256": "b0eb38f79e610110bf756227b24e095626c89aa3914e0815cb4e473dba2edbc6"
+    }
+  },
+  "clientContractResult": "ACCEPT exact R1+R2 client semantics; no remaining client contract conflict under explicit R2 union/coverage precedence",
+  "event": "e-a4818115",
+  "independentClientVectors": {
+    "counts": {
+      "coverageExpiryChecks": 3564,
+      "cutoffMinima": 16384,
+      "scalarPrefixes": 1024,
+      "unionHorizonChecks": 5200
+    },
+    "pass": true,
+    "positiveExpiryCounterexample": {
+      "coverage": "partial",
+      "now": 3,
+      "states": [
+        "unresolved",
+        "member"
+      ]
+    },
+    "priorRangeCorrection": "Source helper unchanged; see separate exact-current-checkpoint counterexample",
+    "safeUnknownAgeRule": "Current eligible A=true wins R=unknown; unknown field remains unknown",
+    "scope": "Independent finite arithmetic and coverage model only; no cache/timer/capacity/native/GC qualification"
+  },
+  "preservedRequirements": [
+    "K nondecreasing for clock incarnation, retained through namespace/context/roster/capacity changes; reset only new service/boot/time-domain baseline",
+    "Dhi exact current bracket, never inferred from K or positive translated expiry",
+    "last-T guard retained under 4096/1MiB with visible recent_tracking_capacity latch; no same-scope eviction/re-arm",
+    "Eligibility horizon caps independent max(active-minimum,recent-minimum); no flattened union minimum",
+    "Scope currentness includes all required census/selection/negative supports, and live union proof for every member of admitted complete frame",
+    "Quiet positive loss is partial/unresolved until separately admitted current negative; no context timeout",
+    "Complete-empty remains current explicit census/negative proof; negative-support expiry also loses complete authority",
+    "Mesh public translation/profile seam remains its existing assignment, no duplicate request",
+    "a7/a23/routes and dark delta remain unchanged"
+  ],
+  "priorFindings": {
+    "WS-P1-1": "Client semantic concern resolved by R2 separate branch evaluation, selected union horizons, mandatory sole-positive-loss downgrade and explicit allowance for conservative partial coverage. Unknown recent age cannot suppress independent active membership. An editorial clarification of the original sentence remains useful, but is not a new semantic gate.",
+    "WS-P1-2": "OPEN preparatory-helper conformance, separately reproduced on 58b04ac. Helper/source/tests unchanged from R1. Contract already requires unknown on signed-range overflow; exact contract acceptance does not assert helper conformance or runtime acceptance. Existing owning correction m194 remains the one request."
+  },
+  "rangeCounterexample": {
+    "gcDisabled": true,
+    "loadedInputs": {
+      "agent_observer/__init__.py": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09",
+      "agent_observer/observation_support.py": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32",
+      "agent_observer/working_set_policy.py": "8bcc5f3a58aca0fc8102a57095d991bed74536bf24b5a2fabde19da2ff248d49"
+    },
+    "rangeMismatch": {
+      "L": 9007199254730991,
+      "U": 9007199254731001,
+      "activityAt": 1699999999000,
+      "actualDecision": true,
+      "actualDhi": 9007199513930002,
+      "actualDlo": 9007199513929990,
+      "actualReason": "recent",
+      "contractExpected": "unknown with no usable out-of-range cutoff",
+      "maximum": 9007199254740991,
+      "now": 9007199254731091,
+      "receiptExpiry": 9007199254740990,
+      "wall": 1700000000000,
+      "windowMs": 259200000
+    },
+    "scope": "Preparatory helper mismatch only; no runtime claim"
+  },
+  "review": "R1+R2 exact client semantics review",
+  "runs": [
+    {
+      "check": "upstream",
+      "output": "upstream-314.json",
+      "python": "Python 3.14.8",
+      "returncode": 0,
+      "sha256": "7aa01df4c98d4cdca13ef7c68ff84cbb35b1cb57097935ccb231e3b2f55a7fdd"
+    },
+    {
+      "check": "client",
+      "output": "client-314.json",
+      "python": "Python 3.14.8",
+      "returncode": 0,
+      "sha256": "5b8134aad3de715aa530fd96bade2bea0396562fd9a5734026de14869d7f04a4"
+    },
+    {
+      "check": "range",
+      "output": "range-314.json",
+      "python": "Python 3.14.8",
+      "returncode": 0,
+      "sha256": "f903ada03bec692226ba90049cc5d2211c2effc94f77026708e3eeb4604d0ad3"
+    },
+    {
+      "check": "upstream",
+      "output": "upstream-311.json",
+      "python": "Python 3.11.17",
+      "returncode": 0,
+      "sha256": "7aa01df4c98d4cdca13ef7c68ff84cbb35b1cb57097935ccb231e3b2f55a7fdd"
+    },
+    {
+      "check": "client",
+      "output": "client-311.json",
+      "python": "Python 3.11.17",
+      "returncode": 0,
+      "sha256": "5b8134aad3de715aa530fd96bade2bea0396562fd9a5734026de14869d7f04a4"
+    },
+    {
+      "check": "range",
+      "output": "range-311.json",
+      "python": "Python 3.11.17",
+      "returncode": 0,
+      "sha256": "f903ada03bec692226ba90049cc5d2211c2effc94f77026708e3eeb4604d0ad3"
+    }
+  ],
+  "scope": "Contract and finite models only; no actual cache/timer/capacity/native/profile/schema/producer/runtime/installed/consumer acceptance",
+  "upstreamNamedCases": 16,
+  "upstreamResultSha256": "7aa01df4c98d4cdca13ef7c68ff84cbb35b1cb57097935ccb231e3b2f55a7fdd",
+  "verification": {
+    "event": "e-a4818115",
+    "export": "/home/bryan/code/esp32-rlcd/.cache/observer-working-set-20261018/p1-r2-58b04ac/observer-58b04ac",
+    "identifierAllocation": false,
+    "implementationOrSelection": false,
+    "manifestArtifactsVerified": 10,
+    "parentR1": "995401e0a902c2f69571a731d7cd433f5bf40739",
+    "r1Sha256": "4b4f55dff8308daee6aec442848a6c841c8e18b128ef4b91c01959e87aa33ec8",
+    "r2Sha256": "937d442402064a4e43258412d12e906fd5ca98b7fe0244c45f9ac1699884ccea",
+    "receiptSha256": "eed4a58e1b9a3ed25012d0a0ba54ad512ea4b6867a6a50b74629de1522a76224",
+    "revision": "58b04ac478edcfb47ab1695199f7db728d5a1238",
+    "savedCanonical961VerifiedNotRerun": true,
+    "sourceTestsPyprojectUnchangedFromR1": true
+  }
+}

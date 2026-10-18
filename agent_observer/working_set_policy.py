@@ -15,6 +15,7 @@ from .observation_support import support_matches
 
 DEFAULT_WINDOW_MS = 72 * 60 * 60 * 1000
 MAX_WINDOW_MS = 30 * 24 * 60 * 60 * 1000
+_MAX_SAFE_INTEGER = 2**53 - 1
 _UUID = re.compile(r"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$")
 _COMPONENTS = frozenset({"runtime", "history"})
 
@@ -182,6 +183,11 @@ def recent_activity(
     # owner BOOTTIME to a remote clock here.
     lower = sample_clock.lower_boottime_ms + window_ms - age_ms - 1
     upper = sample_clock.upper_boottime_ms + window_ms - age_ms + 1
+    if not (
+        -_MAX_SAFE_INTEGER <= lower <= _MAX_SAFE_INTEGER
+        and -_MAX_SAFE_INTEGER <= upper <= _MAX_SAFE_INTEGER
+    ):
+        return _unknown("cutoff_out_of_range")
     now = now_boottime_ms
     if now < lower:
         decision, reason = True, "recent"

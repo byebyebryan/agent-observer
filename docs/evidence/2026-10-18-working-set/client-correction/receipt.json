@@ -1,0 +1,151 @@
+{
+  "R1R2BytesChanged": false,
+  "artifacts": {
+    "agent_observer/working_set_policy.py": {
+      "bytes": 8223,
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/README.md": {
+      "bytes": 2172,
+      "sha256": "adedd8ceb35c753ca51486c4efd2f6ddf7b47fbea320e866792570d251869a67"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-policy-311.json": {
+      "bytes": 767,
+      "sha256": "bd7a98a56850bf8f86cdf5172a0c71aaa733a3426b502588c974cc930703e653"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-policy-311.log": {
+      "bytes": 2635,
+      "sha256": "19e690cbdd28817aa45f4f6ecf4ecc35ac29d2faf736bf9cf2b7f1f5d8a5ab70"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-policy-314.json": {
+      "bytes": 766,
+      "sha256": "4ebed15ab3691dd83d1cb613bc9eaf6d2eefa912aca6ad6f257e51b8e1cbe36a"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-policy-314.log": {
+      "bytes": 2635,
+      "sha256": "19e690cbdd28817aa45f4f6ecf4ecc35ac29d2faf736bf9cf2b7f1f5d8a5ab70"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-range-311.json": {
+      "bytes": 830,
+      "sha256": "e4c62757914363d0d1b1c182bccef0f0b6e461c93809eca74750466e9a4ed57c"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/after-range-314.json": {
+      "bytes": 829,
+      "sha256": "d512d47181d1f64cae158f8315240a1796b49b8668196fcb7f41bb5bfc8d5312"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-policy-311.json": {
+      "bytes": 754,
+      "sha256": "8df16973823c77bd07694bfb98289e16c7f2b9e004f09c7640302c91ff2a461e"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-policy-311.log": {
+      "bytes": 3920,
+      "sha256": "62a89abf1caf5f53c51d4734da8657d6a7255a3aad90d1f5fe1d45f08b3f5ef1"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-policy-314.json": {
+      "bytes": 753,
+      "sha256": "215c2a5ab204a41b306606a4ceedd98146511bee81948e23d17ae6cfcbe53e0a"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-policy-314.log": {
+      "bytes": 3998,
+      "sha256": "70df334d7b7e3d387a117b292853a04a1d01998b4f26f04d43aa8283c31ba0c2"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-range-311.json": {
+      "bytes": 689,
+      "sha256": "b65af00243031f33835f268714c2ada0e46806422383a04055aa63d8c2b0d622"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/before-range-314.json": {
+      "bytes": 688,
+      "sha256": "73f2efbae5bdb32d748aaabd3a3aaa45e7a8e0b6d059950d13d917119bc7d3c6"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/canonical-314.log": {
+      "bytes": 175561,
+      "sha256": "6f5e19246260182a9c3910fafc977c90e08d9cb3c1b8ff48b0dd5ba4f6617433"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/checks.json": {
+      "bytes": 420,
+      "sha256": "877c066f12efcf764c8ed6a445086b4eb2497aea78a27da390762c2244caa1f0"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/initial-link-diagnostic-canonical-314.log": {
+      "bytes": 131,
+      "sha256": "f424e662f5989a20561d3627d9963673ea2a8032c602d37ab77c175cae26b602"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/initial-link-diagnostic-checks.json": {
+      "bytes": 253,
+      "sha256": "425fcdca77bc49a8c03418eb98274cc912610f0acfec2dc73682539880e2c68c"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/original-before-311.json": {
+      "bytes": 1543,
+      "sha256": "819cfcf55f2d6c60a27f5be50e09031495daf470c8d690b07194af2a182c2fb3"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/original-before-314.json": {
+      "bytes": 1542,
+      "sha256": "91b7a541e61dd8cef1e54c26eadaaae4ac1fc8b7052f0dc01b521c8f7e1f5061"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/original-client_vectors.py": {
+      "bytes": 4693,
+      "sha256": "43c1e65ae47e42200b185b719a2a9565c2240e84c63f6868f42d2f98e8983817"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/run_policy_overlay.py": {
+      "bytes": 1503,
+      "sha256": "7bd7fe4037c957c45e7f2e5bbcb8f54cf78c22290f4daf99a6a16e4b865a4dc6"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/upstream-client-contract-26c0c487.md": {
+      "bytes": 6875,
+      "sha256": "73553f8d93aad02c91239d24a2d597dc5749a002e31330cc89c831b81b7fb436"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/upstream-client-contract-2a4678ef.md": {
+      "bytes": 11189,
+      "sha256": "20b5c928ad563239bd64c22238922a7ebe29aaf8864c0604941348ba9fcd2b9c"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/upstream-client-r2-review.json": {
+      "bytes": 7762,
+      "sha256": "84253f07957d6a7efcdbf1a4440d22e4915a62ea112c23fffe78a5fac267f835"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/upstream-review.json": {
+      "bytes": 7272,
+      "sha256": "15f926c1cb4869713bd651aebce3c5e44241495ffd070e88fb0489cc9acd3d0c"
+    },
+    "docs/evidence/2026-10-18-working-set/client-correction/verify_cutoff_range.py": {
+      "bytes": 3769,
+      "sha256": "281e05870f0606e0e7ff173f1a997553776187b99d9d92e66ad888108b0b8235"
+    },
+    "docs/working-set-contract-r3.md": {
+      "bytes": 3981,
+      "sha256": "65815ad9997d00d8fc6c34fa56c9e920df9f13a13a25ff9b1a3e303ce8d7c797"
+    },
+    "tests/test_working_set_policy.py": {
+      "bytes": 17429,
+      "sha256": "cd62f76fe89d1fdc7f22d8b685f6b20bfb06431dae75703350f4385159f120ba"
+    }
+  },
+  "clientReviews": {
+    "acceptedR1R2": {
+      "commit": "2a4678ef6a12f8090ce02b63ff7df95f9b7ee499",
+      "docSha256": "20b5c928ad563239bd64c22238922a7ebe29aaf8864c0604941348ba9fcd2b9c",
+      "reviewSha256": "84253f07957d6a7efcdbf1a4440d22e4915a62ea112c23fffe78a5fac267f835"
+    },
+    "initialR1": {
+      "commit": "26c0c48749e5f6f7658dc2177d5c1ae6cbed5c2f",
+      "docSha256": "73553f8d93aad02c91239d24a2d597dc5749a002e31330cc89c831b81b7fb436",
+      "reviewSha256": "15f926c1cb4869713bd651aebce3c5e44241495ffd070e88fb0489cc9acd3d0c"
+    }
+  },
+  "immutableBefore": "58b04ac478edcfb47ab1695199f7db728d5a1238, helper same bytes as995401e",
+  "lunaContribution": "six-line computed-cutoff bound guard, three new tests preserving12, active-positive assertion; focused15bothPython and scopedRuff",
+  "nativeOrServiceChanges": false,
+  "originalClientProbe": "original-client_vectors.py byte unchanged SHA43c1e65ae47e42200b185b719a2a9565c2240e84c63f6868f42d2f98e8983817; old positive overflow reproduced bothPython",
+  "parent": "58b04ac478edcfb47ab1695199f7db728d5a1238",
+  "phase": "WS-P1-1 editorial completion and WS-P1-2 pure-helper conformance correction only",
+  "primaryContribution": "verified immutable client/source reports; reproduced original before; corrected explicit wording; reviewed patch and independent named probe; final-overlay before/after bothPython with4loaded source/test pins and GCdisabled; canonical gate",
+  "producerAcceptance": false,
+  "remaining": "Mesh exactR2 supported-direction review; then already-authorized P2 clock/cache/timer/native/profile/source integration and original producer gates; helper correction does not assert stateful/runtime conformance",
+  "schemaOrIDAllocated": false,
+  "verification": {
+    "afterFocused": "15tests eachPython0fail/error/skip",
+    "beforeFinalOverlay": "15tests eachPython, exactly2named overflow failures13passes0errors0skips",
+    "canonical314": "964tests0skip;213Markdown/link/whitespace/Gitdiff checks",
+    "namedRangeProbe": "identical counterexample beforeTrue/out-of-range versus afterunknown/None bounds; independent active remainsselected",
+    "ruff": "changed module/test and two owning probe/runners pass",
+    "setupDiagnostic": "initial README link error preserved separately, no runtime tests ran until corrected"
+  }
+}

@@ -67,6 +67,33 @@ def fixture(*, upper_boottime_ms=UPPER_BOOT_MS):
     return activity, support, clock, source
 
 
+def fixture_with_clock_bracket(*, lower, upper, wall, activity_at, receipt_expiry):
+    activity, support, clock, source = fixture(upper_boottime_ms=upper)
+    support = {
+        **support,
+        "sampledBoottimeMs": lower,
+        "expiresBoottimeMs": receipt_expiry,
+    }
+    source = {
+        **source,
+        "components": [
+            {
+                **source["components"][0],
+                "sampledBoottimeMs": lower,
+                "expiresBoottimeMs": receipt_expiry,
+            }
+        ],
+    }
+    clock = replace(
+        clock,
+        lower_boottime_ms=lower,
+        wall_ms=wall,
+        upper_boottime_ms=upper,
+    )
+    activity = {"health": "current", "at": activity_at, "source": "latest_turn"}
+    return activity, support, clock, source
+
+
 def decide(
     *,
     now_boottime_ms,
@@ -278,6 +305,114 @@ class WorkingSetPolicyTest(unittest.TestCase):
         self.assertLess(result.deadline_lower_boottime_ms, 0)
         self.assertLess(result.deadline_upper_boottime_ms, 0)
 
+    def test_cutoff_out_of_range_with_valid_joined_inputs_is_unknown(self):
+        max_safe = 9_007_199_254_740_991
+        lower_clock = 9_007_199_254_730_991
+        upper_clock = 9_007_199_254_731_001
+        now = 9_007_199_254_731_091
+        receipt_expiry = 9_007_199_254_740_990
+        wall = 1_700_000_000_000
+        activity_at = 1_699_999_999_000
+        window = 259_200_000
+        activity, support, clock, source = fixture_with_clock_bracket(
+            lower=lower_clock,
+            upper=upper_clock,
+            wall=wall,
+            activity_at=activity_at,
+            receipt_expiry=receipt_expiry,
+        )
+
+        expected_lower = lower_clock + window - (wall - activity_at) - 1
+        expected_upper = upper_clock + window - (wall - activity_at) + 1
+        self.assertEqual(expected_lower, 9_007_199_513_929_990)
+        self.assertEqual(expected_upper, 9_007_199_513_930_002)
+        self.assertGreater(expected_lower, max_safe)
+        self.assertGreater(expected_upper, max_safe)
+
+        result = decide(
+            now_boottime_ms=now,
+            activity=activity,
+            support=support,
+            clock=clock,
+            source=source,
+            window_ms=window,
+        )
+
+        self.assertIsNone(result.decision)
+        self.assertEqual(result.reason, "cutoff_out_of_range")
+        self.assertIsNone(result.deadline_lower_boottime_ms)
+        self.assertIsNone(result.deadline_upper_boottime_ms)
+
+    def test_upper_cutoff_alone_out_of_range_invalidates_both_bounds(self):
+        max_safe = 9_007_199_254_740_991
+        window = DEFAULT_WINDOW_MS
+        lower_clock = max_safe - window + 999
+        activity, support, clock, source = fixture_with_clock_bracket(
+            lower=lower_clock,
+            upper=lower_clock + 1,
+            wall=WALL_MS,
+            activity_at=ACTIVITY_AT,
+            receipt_expiry=max_safe,
+        )
+        expected_lower = lower_clock + window - 1_000 - 1
+        expected_upper = lower_clock + 1 + window - 1_000 + 1
+        self.assertEqual(expected_lower, max_safe - 2)
+        self.assertEqual(expected_upper, max_safe + 1)
+
+        result = decide(
+            now_boottime_ms=lower_clock + 1,
+            activity=activity,
+            support=support,
+            clock=clock,
+            source=source,
+        )
+
+        self.assertIsNone(result.decision)
+        self.assertEqual(result.reason, "cutoff_out_of_range")
+        self.assertIsNone(result.deadline_lower_boottime_ms)
+        self.assertIsNone(result.deadline_upper_boottime_ms)
+
+    def test_signed_safe_cutoff_endpoints_are_inclusive(self):
+        max_safe = 9_007_199_254_740_991
+        max_window = DEFAULT_WINDOW_MS
+        lower_clock = max_safe - max_window + 999
+        activity, support, clock, source = fixture_with_clock_bracket(
+            lower=lower_clock,
+            upper=lower_clock,
+            wall=WALL_MS,
+            activity_at=ACTIVITY_AT,
+            receipt_expiry=max_safe,
+        )
+        positive = decide(
+            now_boottime_ms=lower_clock,
+            activity=activity,
+            support=support,
+            clock=clock,
+            source=source,
+        )
+        self.assertTrue(positive.decision)
+        self.assertEqual(positive.deadline_lower_boottime_ms, max_safe - 2)
+        self.assertEqual(positive.deadline_upper_boottime_ms, max_safe)
+
+        activity, support, clock, source = fixture_with_clock_bracket(
+            lower=0,
+            upper=0,
+            wall=max_safe,
+            activity_at=0,
+            receipt_expiry=max_safe,
+        )
+        negative = decide(
+            now_boottime_ms=0,
+            activity=activity,
+            support=support,
+            clock=clock,
+            source=source,
+            window_ms=1,
+        )
+        self.assertFalse(negative.decision)
+        self.assertEqual(negative.deadline_lower_boottime_ms, -max_safe)
+        self.assertEqual(negative.deadline_upper_boottime_ms, -max_safe + 2)
+
     def test_three_valued_union_truth_table_and_positive_recent_branch(self):
         for eligible, active, recent in product((False, None, True), repeat=3):
             if eligible is False or (active is False and recent is False):
@@ -291,6 +426,7 @@ class WorkingSetPolicyTest(unittest.TestCase):
 
         # Runtime/active membership may be unknown while a proved recent branch
         # still selects the row.
+        self.assertTrue(combine_membership(True, True, None).decision)
         self.assertTrue(combine_membership(True, None, True).decision)
         self.assertIsNone(combine_membership(None, False, True).decision)
         self.assertFalse(combine_membership(False, True, True).decision)
