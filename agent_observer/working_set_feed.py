@@ -94,7 +94,7 @@ class WorkingSetProjector:
         self, snapshot, supports, census, sources, *, observation_revision, now_ms, sample_ids
     ):
         validate_snapshot(snapshot)
-        return self._accept_owned(
+        self._accept_owned(
             snapshot,
             supports,
             census,
@@ -103,6 +103,7 @@ class WorkingSetProjector:
             now_ms=now_ms,
             sample_ids=sample_ids,
         )
+        return self.snapshot()
 
     def _failure(self, scope, reason):
         if not self._failed:
@@ -385,23 +386,32 @@ class WorkingSetProjector:
             + 1024
         )
         projection = {"scopes": [scope], "sessions": bodies}
+        encoded = None
         if (
             tracking_capacity
             or len(tracked) > self.max_identities
             or combined > self.max_ledger_bytes
         ):
             projection = self._failure(scope, "projection_tracking_capacity")
-        elif len(canonical(projection).encode()) > MAX_BYTES:
-            projection = self._failure(scope, "projection_frame_capacity")
         else:
-            if self._failed:
-                self._continuity += 1
-                scope["continuity"] = self._continuity
-            self._failed, self._ledger = False, ledger
+            recovering = self._failed
+            if recovering:
+                # Measure the continuity value recovery would publish, but do
+                # not commit it until the final candidate passes its size cap.
+                scope["continuity"] = self._continuity + 1
+            encoded = canonical(projection).encode()
+            if len(encoded) > MAX_BYTES:
+                projection = self._failure(scope, "projection_frame_capacity")
+                encoded = None
+            else:
+                if recovering:
+                    self._continuity = scope["continuity"]
+                self._failed, self._ledger = False, ledger
         for entry in self._ledger.values():
             if entry["horizonBoottimeMs"] > now_ms:
                 deadlines.append(entry["horizonBoottimeMs"])
-        encoded = canonical(projection).encode()
+        if encoded is None:
+            encoded = canonical(projection).encode()
         clock_state = self.clocks.ceiling, self.clocks.generation
         if encoded != self._encoded or clock_state != self._clock_state:
             self._encoded = encoded
@@ -410,4 +420,3 @@ class WorkingSetProjector:
             self.generations += 1
         self.observation_revision = observation_revision
         self.next_deadline_ms = min(deadlines, default=None)
-        return self.snapshot()
