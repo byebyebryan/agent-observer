@@ -10,6 +10,12 @@ components are implemented as candidates. See the
 [native component](working-set-native-candidate.md) and
 [client component](working-set-client-candidate.md). The public SDK descriptor
 registration, actual working-set Reader and producer qualification remain open.
+The [source resource screen](evidence/2026-10-18-working-set/resource-source/README.md)
+records fourteen complete selections and eight explicit tracking refusals across
+both Python versions. Small selections completed with 2,000 history rows;
+larger selected unions remain capacity failures. Encoded accounting stayed
+within the existing service limit in those fixtures; heap/RSS, SDK delivery and
+immutable installed/native qualification remain open.
 Routine implementation needs no repeated general approval. Deployment
 and consumer/device adoption retain separate authorization. Earlier planning-only
 statements below describe the c7f41ea checkpoint, not a new stop instruction.

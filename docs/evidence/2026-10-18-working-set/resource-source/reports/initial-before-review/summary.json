@@ -1,0 +1,399 @@
+{
+  "allPlannedCasesProducedReports": true,
+  "caseCount": 20,
+  "caseRunnerSha256": "f873973b6be4ad7d5b14145462345c03af12a9336c63d44b59e03194f7e6f28e",
+  "cases": [
+    {
+      "admittedReservationHighWaterBytes": 10794433,
+      "case": "py314-n100-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 433330,
+      "log": "py314-n100-small-ordinary.log",
+      "logSha256": "5efa86afe1bc605253b16ae3a24c4b68f6d2d441331cb9ab24951b1fb716f9e1",
+      "nativeSnapshotHighWaterBytes": 124485,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n100-small-ordinary.json",
+      "reportSha256": "2d3582306724c5170a88217bc988f72881424688d6fa275326028180f40f1ac1",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11157900,
+      "case": "py314-n100-quarter-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 918592,
+      "log": "py314-n100-quarter-ordinary.log",
+      "logSha256": "264948e6627c157b279ea6c712399d50a9d758a97fbddc621673077455510c8c",
+      "nativeSnapshotHighWaterBytes": 126403,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n100-quarter-ordinary.json",
+      "reportSha256": "42119d3f3ad0cf9f18bd5cce756e377de9b3abb541e2f7945f550445ca74d167",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11691874,
+      "case": "py314-n100-burst-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 1628940,
+      "log": "py314-n100-burst-ordinary.log",
+      "logSha256": "c46e60cae3e14836547f72d3b9f7d5154c9fa1ffea2377d77feeb0cab4ec43f6",
+      "nativeSnapshotHighWaterBytes": 124348,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n100-burst-ordinary.json",
+      "reportSha256": "054100e66198e8c6dfea5e2b5d88419adc0735ea419bb304872a7b82ed5b57d0",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11806476,
+      "case": "py314-n500-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 1946633,
+      "log": "py314-n500-small-ordinary.log",
+      "logSha256": "d77bbd957ebfaa6d2a84a11878496dbc6a38a39ea9a021d66690110c15be6ee1",
+      "nativeSnapshotHighWaterBytes": 616222,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n500-small-ordinary.json",
+      "reportSha256": "cd4d3be9dd08c1c12a523e1a4b26de1aacd57c6d6cbb08d86612867c134f1e74",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 13710340,
+      "case": "py314-n500-quarter-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 4488452,
+      "log": "py314-n500-quarter-ordinary.log",
+      "logSha256": "341eab2ebc4778a548fc1650f83e05752979b2ad8724dd99116cce7776beeb3e",
+      "nativeSnapshotHighWaterBytes": 626223,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n500-quarter-ordinary.json",
+      "reportSha256": "9dc4f028cd453adbc53b167b6e283832c101a776e3129488d8dbf367d284f657",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11742710,
+      "case": "py314-n500-burst-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 1861620,
+      "log": "py314-n500-burst-ordinary.log",
+      "logSha256": "b5dbc6a60dab72af6c9775746ef3423b0642ff2614718fa02f9f8edafe488bf1",
+      "nativeSnapshotHighWaterBytes": 615948,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n500-burst-ordinary.json",
+      "reportSha256": "5eb7f2bdb25099d52d5bdd1d2606b8253910db1c552dfdd054176177fe6029d4",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 15724220,
+      "case": "py314-n2000-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 7785157,
+      "log": "py314-n2000-small-ordinary.log",
+      "logSha256": "36192ba17ac8e90cbbff214014a3f2f853a09920ed1934cf5a07675d7b85fa29",
+      "nativeSnapshotHighWaterBytes": 2460818,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n2000-small-ordinary.json",
+      "reportSha256": "d94054741a3f42f3644ff794cb791ed4209116cb72e12031a86a1d1e8760bc0f",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 18269026,
+      "case": "py314-n2000-quarter-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 11192507,
+      "log": "py314-n2000-quarter-ordinary.log",
+      "logSha256": "e99f9adf8f35a908aac5cb58cb1d12d5d39192567d6069d7a2a10859ed6425e1",
+      "nativeSnapshotHighWaterBytes": 2500548,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n2000-quarter-ordinary.json",
+      "reportSha256": "b8ef90c5d7641ebc29f680b40999a7364524485d3374ae3570569bb29e06de06",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 15429710,
+      "case": "py314-n2000-burst-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 7392120,
+      "log": "py314-n2000-burst-ordinary.log",
+      "logSha256": "ae60e36caf6f8eb3829039e335378037b4035878fffa5297e205d0d4de69ed48",
+      "nativeSnapshotHighWaterBytes": 2459448,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n2000-burst-ordinary.json",
+      "reportSha256": "58c4839910d4cc58b754512a765d237d097ff31439237628ae7e19b2db1e3773",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 24389126,
+      "case": "py314-n2000-quarter-long-title-cwd",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 20185307,
+      "log": "py314-n2000-quarter-long-title-cwd.log",
+      "logSha256": "8c1d71166f7dd334a841a9e161918a246c9528d84ae9be3bec8ed13b5ab5299b",
+      "nativeSnapshotHighWaterBytes": 4998548,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.14.8",
+      "refusedReservationCount": 0,
+      "report": "py314-n2000-quarter-long-title-cwd.json",
+      "reportSha256": "f6be497565b01281bc74a3e0f0ef76af5779bd44f13d942d8593628f0cf18e79",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 10794433,
+      "case": "py311-n100-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 433330,
+      "log": "py311-n100-small-ordinary.log",
+      "logSha256": "aefc01a333b73035a08c534117a20fe3b63c72650f47190e9fb52f7cc8924b20",
+      "nativeSnapshotHighWaterBytes": 124485,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n100-small-ordinary.json",
+      "reportSha256": "28df47eb29989a6d94ff0ae3c14c965d8ed1a752db0e4d92e819d3a24b0cae92",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11157900,
+      "case": "py311-n100-quarter-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 918592,
+      "log": "py311-n100-quarter-ordinary.log",
+      "logSha256": "182ec7500dcbdb8a2dd823094ce4fc8b1e11df0100d3617170d58fc37aaf64d7",
+      "nativeSnapshotHighWaterBytes": 126403,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n100-quarter-ordinary.json",
+      "reportSha256": "2ffa01a5d3f239dd95c63d724e78b5cdd833f074acb6ea22549e4a6a39c53d15",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11691874,
+      "case": "py311-n100-burst-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 1628940,
+      "log": "py311-n100-burst-ordinary.log",
+      "logSha256": "d6c510f552375fa60a9f751bb388474b9e085e78b2df8679558f947c354380a2",
+      "nativeSnapshotHighWaterBytes": 124348,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n100-burst-ordinary.json",
+      "reportSha256": "debf217b962ed217c3410283039a0a0fa14ff0ac1a9c8bc806a7f86b2f85a260",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11806476,
+      "case": "py311-n500-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 1946633,
+      "log": "py311-n500-small-ordinary.log",
+      "logSha256": "53b9e265dfb27167333b6afed1eebf80d7f9678c7049854c4ab40d713c2c7e40",
+      "nativeSnapshotHighWaterBytes": 616222,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n500-small-ordinary.json",
+      "reportSha256": "b4fb3398da822332aebfe961aae0a5389772359d6bc0746e24e4ac1545623422",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 13710340,
+      "case": "py311-n500-quarter-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 4488452,
+      "log": "py311-n500-quarter-ordinary.log",
+      "logSha256": "560b69276dd75a248152fc06d0a588153a4906a5ce4d15401c8f0a96ff73128b",
+      "nativeSnapshotHighWaterBytes": 626223,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n500-quarter-ordinary.json",
+      "reportSha256": "536ea9455d2920ec2c06c33fc596d60d2d07bc63dd8874f4610c603d4b7f0dbf",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 11742710,
+      "case": "py311-n500-burst-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 1861620,
+      "log": "py311-n500-burst-ordinary.log",
+      "logSha256": "b977d044af75c72c134b6887bf4b1f402675ca2d380004d38bd9c66d898550e7",
+      "nativeSnapshotHighWaterBytes": 615948,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n500-burst-ordinary.json",
+      "reportSha256": "5d8bcc00f53a425bb12a01f7e0ddd9a98e72b6a79529749b9c66a339d9708818",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 15724220,
+      "case": "py311-n2000-small-ordinary",
+      "caseStatus": "complete",
+      "encodedCounterHighWaterBytes": 7785157,
+      "log": "py311-n2000-small-ordinary.log",
+      "logSha256": "129bed6590c10079c6123e36bcd3b98893138211ac73617bbf0bd4f0d06039a9",
+      "nativeSnapshotHighWaterBytes": 2460818,
+      "outcomes": [
+        "complete",
+        "complete",
+        "complete"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n2000-small-ordinary.json",
+      "reportSha256": "9610eb2acd2a4c80ddb6014ab4c678d68b0d3314431ed29e5d687f758c1a6e67",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 18269026,
+      "case": "py311-n2000-quarter-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 11192507,
+      "log": "py311-n2000-quarter-ordinary.log",
+      "logSha256": "36b53ac0acd8622141a84466d7360ecc6118876208b30a69a77b73ebd9cdc645",
+      "nativeSnapshotHighWaterBytes": 2500548,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n2000-quarter-ordinary.json",
+      "reportSha256": "56689406c417d9f13971ebaf7a3aa3b1d3877c9f726c4b94016e33c691759c74",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 15429710,
+      "case": "py311-n2000-burst-ordinary",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 7392120,
+      "log": "py311-n2000-burst-ordinary.log",
+      "logSha256": "4e81e0f22331261add0c2d6ff473726a958c9d36bba0b32984f3c15791f58ffe",
+      "nativeSnapshotHighWaterBytes": 2459448,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n2000-burst-ordinary.json",
+      "reportSha256": "64d20639c179fa716add265f58e4253ebb2a6c777492d45cded2bc723bee5a0c",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    },
+    {
+      "admittedReservationHighWaterBytes": 24389126,
+      "case": "py311-n2000-quarter-long-title-cwd",
+      "caseStatus": "explicit_bounded_refusal",
+      "encodedCounterHighWaterBytes": 20185307,
+      "log": "py311-n2000-quarter-long-title-cwd.log",
+      "logSha256": "e98509abfd809ecbccc9bcbeb2f96776e0fbe85cc54d6126b4429d68a807399c",
+      "nativeSnapshotHighWaterBytes": 4998548,
+      "outcomes": [
+        "bounded_refusal",
+        "bounded_refusal",
+        "bounded_refusal"
+      ],
+      "pythonVersion": "3.11.17",
+      "refusedReservationCount": 0,
+      "report": "py311-n2000-quarter-long-title-cwd.json",
+      "reportSha256": "9f113a18d86ae0de63ceff7d6e6ad286305f074bd59350dae3c3f66d648ab888",
+      "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+    }
+  ],
+  "failureCount": 0,
+  "failures": [],
+  "plannedCaseCount": 20,
+  "pythonEntrypoints": {
+    "py311": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "py314": "/home/bryan/code/mesh-plus/.venv/bin/python"
+  },
+  "root": "/home/bryan/code/agent-observer-working-set",
+  "runnerSha256": "9ee4e1b61a0bc36738e95f32279ef8a848168d3e3c82ac78b8af6f552def0f00",
+  "schema": "working-set-resource-source-matrix-v1",
+  "scope": "serial fresh-process synthetic source resource qualification; not a CPU, heap/RSS, provider, service, Mesh, SDK, network, delta, or production qualification",
+  "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+}

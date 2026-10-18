@@ -1,0 +1,23 @@
+{
+  "case": "py311-n100-small-ordinary",
+  "command": [
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "-B",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py",
+    "/home/bryan/code/agent-observer-working-set",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/reports/bb7b8aab/py311-n100-small-ordinary.json",
+    "--source-revision",
+    "bb7b8aab91574fc3a325325ac8debf21b525712a",
+    "--python-entrypoint",
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "--rows",
+    "100",
+    "--mix",
+    "small",
+    "--fields",
+    "ordinary"
+  ],
+  "exitCode": 0,
+  "stderr": "",
+  "stdout": "{\"case\": {\"acceptedBoottimeMsFirst\": 10001, \"activeCount\": 1, \"activityAtMs\": 1699996420000, \"boottimeBracketWidthMs\": 1, \"eventTimestampFixedAcrossGenerations\": true, \"expectedActiveIdentityDigest\": \"e82239971627a6744f19f314802948f16ed751683cacac1738bc75b850e8e795\", \"expectedRecentIdentityDigest\": \"16d6efc8f908eb5ca850dec13ed8fb5ee4cd0fe3c0eb398c0d86a05b62202da8\", \"expectedUnionCount\": 2, \"expectedUnionIdentityDigest\": \"d62677269f070c056d47fa5bc0b8a4af73f05df1a0e2de0e728206116710301d\", \"fields\": \"ordinary\", \"freshCollectionIds\": [\"00000000-0000-0000-0000-0000000000c8\", \"00000000-0000-0000-0000-0000000000c9\", \"00000000-0000-0000-0000-0000000000ca\"], \"initialInputSha256\": \"d2edf61cf299a802d0c21027e8a99da2847d36d34b018e69e4d5d5b482770ac8\", \"initialNativeSnapshotBytes\": 124485, \"longCwdChars\": null, \"longTitleChars\": null, \"maximumNativeSnapshotBytes\": 8387584, \"mix\": \"small\", \"oldActivityAtMs\": 1699136020000, \"recentActivityAtMs\": 1699996420000, \"recentCount\": 1, \"rows\": 100, \"sampledBoottimeMsFirst\": 10000, \"wallIncrementPerGenerationMs\": 1, \"wallMsFirst\": 1700000020000, \"windowMs\": 259200000}, \"caseStatus\": \"complete\", \"encodedCounterHighWaterBytes\": 433330, \"outcomes\": [\"complete\", \"complete\", \"complete\"], \"sourceRevision\": \"bb7b8aab91574fc3a325325ac8debf21b525712a\"}\n"
+}

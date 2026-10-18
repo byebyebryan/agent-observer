@@ -1,0 +1,23 @@
+{
+  "case": "py314-n2000-quarter-ordinary",
+  "command": [
+    "/home/bryan/code/mesh-plus/.venv/bin/python",
+    "-B",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py",
+    "/home/bryan/code/agent-observer-working-set",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/reports/bb7b8aab/py314-n2000-quarter-ordinary.json",
+    "--source-revision",
+    "bb7b8aab91574fc3a325325ac8debf21b525712a",
+    "--python-entrypoint",
+    "/home/bryan/code/mesh-plus/.venv/bin/python",
+    "--rows",
+    "2000",
+    "--mix",
+    "quarter",
+    "--fields",
+    "ordinary"
+  ],
+  "exitCode": 0,
+  "stderr": "",
+  "stdout": "{\"case\": {\"acceptedBoottimeMsFirst\": 10001, \"activeCount\": 300, \"activityAtMs\": 1699996420000, \"boottimeBracketWidthMs\": 1, \"eventTimestampFixedAcrossGenerations\": true, \"expectedActiveIdentityDigest\": \"4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5\", \"expectedRecentIdentityDigest\": \"923c96c2da65fd8ebead580cff8a93eca9b37837c93b58ba2ef4888815946c9a\", \"expectedUnionCount\": 500, \"expectedUnionIdentityDigest\": \"ae6423260690090d126900edaa3887e7ef1b47656a7ab9e71754b9e354d8ac7f\", \"fields\": \"ordinary\", \"freshCollectionIds\": [\"00000000-0000-0000-0000-0000000000c8\", \"00000000-0000-0000-0000-0000000000c9\", \"00000000-0000-0000-0000-0000000000ca\"], \"initialInputSha256\": \"d2edf61cf299a802d0c21027e8a99da2847d36d34b018e69e4d5d5b482770ac8\", \"initialNativeSnapshotBytes\": 2500548, \"longCwdChars\": null, \"longTitleChars\": null, \"maximumNativeSnapshotBytes\": 8387584, \"mix\": \"quarter\", \"oldActivityAtMs\": 1699136020000, \"recentActivityAtMs\": 1699996420000, \"recentCount\": 300, \"rows\": 2000, \"sampledBoottimeMsFirst\": 10000, \"wallIncrementPerGenerationMs\": 1, \"wallMsFirst\": 1700000020000, \"windowMs\": 259200000}, \"caseStatus\": \"explicit_bounded_refusal\", \"encodedCounterHighWaterBytes\": 11192507, \"outcomes\": [\"bounded_refusal\", \"bounded_refusal\", \"bounded_refusal\"], \"sourceRevision\": \"bb7b8aab91574fc3a325325ac8debf21b525712a\"}\n"
+}

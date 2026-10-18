@@ -1,0 +1,23 @@
+{
+  "case": "py311-n2000-quarter-long-title-cwd",
+  "command": [
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "-B",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py",
+    "/home/bryan/code/agent-observer-working-set",
+    "/tmp/ws-resource-matrix-smoke-20261018/py311-n2000-quarter-long-title-cwd.json",
+    "--source-revision",
+    "bb7b8aab91574fc3a325325ac8debf21b525712a",
+    "--python-entrypoint",
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "--rows",
+    "2000",
+    "--mix",
+    "quarter",
+    "--fields",
+    "long-title-cwd"
+  ],
+  "exitCode": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py\", line 804, in <module>\n    main()\n  File \"/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py\", line 399, in main\n    seed, roles, active_ids, recent_ids, expected_ids, input_bytes = make_seed(\n                                                                     ^^^^^^^^^^\n  File \"/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-source/resource_case.py\", line 187, in make_seed\n    validate_snapshot(value)\n  File \"/home/bryan/code/agent-observer-working-set/agent_observer/contract.py\", line 459, in validate_snapshot\n    _SNAPSHOT_SHAPE(value)\n  File \"/home/bryan/code/agent-observer-working-set/agent_observer/contract_shape.py\", line 150, in validate\n    child(item)\n  File \"/home/bryan/code/agent-observer-working-set/agent_observer/contract_shape.py\", line 155, in validate\n    item_check(item)\n  File \"/home/bryan/code/agent-observer-working-set/agent_observer/contract_shape.py\", line 150, in validate\n    child(item)\n  File \"/home/bryan/code/agent-observer-working-set/agent_observer/contract_shape.py\", line 158, in validate\n    raise error_type(\"invalid_contract_text\")\nagent_observer.contract.ContractError: invalid_contract_text\n",
+  "stdout": ""
+}

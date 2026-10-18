@@ -1,0 +1,1730 @@
+{
+  "admittedReservationHighWaterBytes": 24389126,
+  "allActualCountersWithinDefaultLimit": true,
+  "allAdmittedReservationsWithinDefaultLimit": true,
+  "allCountersMatchConservativeRoleCharge": true,
+  "case": {
+    "acceptedBoottimeMsFirst": 10001,
+    "activeCount": 300,
+    "activityAtMs": 1699996420000,
+    "boottimeBracketWidthMs": 1,
+    "eventTimestampFixedAcrossGenerations": true,
+    "expectedActiveIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+    "expectedRecentIdentityDigest": "923c96c2da65fd8ebead580cff8a93eca9b37837c93b58ba2ef4888815946c9a",
+    "expectedUnionCount": 500,
+    "expectedUnionIdentityDigest": "ae6423260690090d126900edaa3887e7ef1b47656a7ab9e71754b9e354d8ac7f",
+    "fields": "long-title-cwd",
+    "freshCollectionIds": [
+      "00000000-0000-0000-0000-0000000000c8",
+      "00000000-0000-0000-0000-0000000000c9",
+      "00000000-0000-0000-0000-0000000000ca"
+    ],
+    "initialInputSha256": "d2edf61cf299a802d0c21027e8a99da2847d36d34b018e69e4d5d5b482770ac8",
+    "initialNativeSnapshotBytes": 4998548,
+    "longCwdChars": 1024,
+    "longTitleChars": 256,
+    "maximumNativeSnapshotBytes": 8387584,
+    "mix": "quarter",
+    "oldActivityAtMs": 1699136020000,
+    "recentActivityAtMs": 1699996420000,
+    "recentCount": 300,
+    "rows": 2000,
+    "sampledBoottimeMsFirst": 10000,
+    "wallIncrementPerGenerationMs": 1,
+    "wallMsFirst": 1700000020000,
+    "windowMs": 259200000
+  },
+  "caseStatus": "explicit_bounded_refusal",
+  "cleanup": {
+    "cacheReferencesCleared": true,
+    "gcDisabledOwnerZeroClaim": false,
+    "ownerBuffersRetainedAfterCleanup": [
+      {
+        "bytes": 1293560,
+        "role": "active_owner"
+      },
+      {
+        "bytes": 506,
+        "role": "working_set_owner"
+      }
+    ],
+    "peerBodyPinsRetainedAfterCleanup": 0,
+    "peerFragmentPartsRetainedAfterCleanup": 0,
+    "peerSocketsClosed": true,
+    "peersClosed": 15,
+    "processRssHighWaterKiB": 90360,
+    "receiverSocketsAllClosed": true,
+    "receiverSocketsClosed": 15,
+    "rssCurrentKiB": 65756,
+    "runtimeBodiesAfterCleanup": 0,
+    "runtimeEncodedBytesAfterCleanup": 1294066,
+    "runtimeLatestAfterCleanup": 0,
+    "runtimePeersAfterCleanup": 0,
+    "selectorClosed": true,
+    "workingSetReserverRemoved": true
+  },
+  "counterPoints": [
+    {
+      "bufferReferenceCount": 0,
+      "counterMatchesRoleCharge": true,
+      "generation": null,
+      "label": "startup",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 0,
+      "processRssHighWaterKiB": 46832,
+      "roleReferences": {},
+      "rssCurrentKiB": 34248,
+      "runtimeEncodedBytes": 0,
+      "uniqueBufferBytesByRole": {},
+      "uniqueBufferObjectCount": 0,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 1,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "reservation_after_room",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 1293560,
+      "processRssHighWaterKiB": 59176,
+      "roleReferences": {
+        "owner": {
+          "referenceBytes": 1293560,
+          "references": 1
+        }
+      },
+      "rssCurrentKiB": 56736,
+      "runtimeEncodedBytes": 1293560,
+      "uniqueBufferBytesByRole": {
+        "owner": 1293560
+      },
+      "uniqueBufferObjectCount": 1,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 2,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "accepted_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 1294066,
+      "processRssHighWaterKiB": 65736,
+      "roleReferences": {
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        }
+      },
+      "rssCurrentKiB": 57576,
+      "runtimeEncodedBytes": 1294066,
+      "uniqueBufferBytesByRole": {
+        "owner": 1294066
+      },
+      "uniqueBufferObjectCount": 2,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 5,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "full_queue_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 6293513,
+      "processRssHighWaterKiB": 65736,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 4998563,
+          "references": 1
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 884,
+          "references": 2
+        }
+      },
+      "rssCurrentKiB": 66572,
+      "runtimeEncodedBytes": 6293513,
+      "uniqueBufferBytesByRole": {
+        "cache": 4998563,
+        "owner": 1294066,
+        "peer": 884
+      },
+      "uniqueBufferObjectCount": 5,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 7,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "full_queue_peer_1",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 6294397,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 4998563,
+          "references": 1
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 1768,
+          "references": 4
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 6294397,
+      "uniqueBufferBytesByRole": {
+        "cache": 4998563,
+        "owner": 1294066,
+        "peer": 1766
+      },
+      "uniqueBufferObjectCount": 6,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 7,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "full_write_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 6294397,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 4998563,
+          "references": 1
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 1768,
+          "references": 4
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 6294397,
+      "uniqueBufferBytesByRole": {
+        "cache": 4998563,
+        "owner": 1294066,
+        "peer": 1766
+      },
+      "uniqueBufferObjectCount": 6,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 10,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "active_queue_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7589068,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292123,
+          "references": 2
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 2879,
+          "references": 6
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7589068,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292123,
+        "owner": 1294066,
+        "peer": 2875
+      },
+      "uniqueBufferObjectCount": 8,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 12,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "active_queue_peer_1",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590179,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292123,
+          "references": 2
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7590179,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292123,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 9,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 12,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "active_write_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590179,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292123,
+          "references": 2
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7590179,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292123,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 9,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 15,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "working_set_queue_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7591980,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292629,
+          "references": 3
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 5285,
+          "references": 10
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7591980,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292629,
+        "owner": 1294066,
+        "peer": 5277
+      },
+      "uniqueBufferObjectCount": 11,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 13,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "working_set_write_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590685,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292629,
+          "references": 3
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7590685,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292629,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 10,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 13,
+      "counterMatchesRoleCharge": true,
+      "generation": 0,
+      "label": "queued_and_written_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590685,
+      "processRssHighWaterKiB": 75444,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292629,
+          "references": 3
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 71452,
+      "runtimeEncodedBytes": 7590685,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292629,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 10,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 13,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "reservation_after_room",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590685,
+      "processRssHighWaterKiB": 79872,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292629,
+          "references": 3
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 75392,
+      "runtimeEncodedBytes": 7590685,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292629,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 10,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 13,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "accepted_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 7590685,
+      "processRssHighWaterKiB": 80036,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 6292629,
+          "references": 3
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 3990,
+          "references": 8
+        }
+      },
+      "rssCurrentKiB": 70648,
+      "runtimeEncodedBytes": 7590685,
+      "uniqueBufferBytesByRole": {
+        "cache": 6292629,
+        "owner": 1294066,
+        "peer": 3984
+      },
+      "uniqueBufferObjectCount": 10,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 16,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "full_queue_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 12590132,
+      "processRssHighWaterKiB": 80036,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 11291192,
+          "references": 4
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 4874,
+          "references": 10
+        }
+      },
+      "rssCurrentKiB": 80280,
+      "runtimeEncodedBytes": 12590132,
+      "uniqueBufferBytesByRole": {
+        "cache": 11291192,
+        "owner": 1294066,
+        "peer": 4866
+      },
+      "uniqueBufferObjectCount": 12,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 18,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "full_queue_peer_3",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 12591016,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 11291192,
+          "references": 4
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 5758,
+          "references": 12
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 12591016,
+      "uniqueBufferBytesByRole": {
+        "cache": 11291192,
+        "owner": 1294066,
+        "peer": 5748
+      },
+      "uniqueBufferObjectCount": 13,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 18,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "full_write_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 12591016,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 11291192,
+          "references": 4
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 5758,
+          "references": 12
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 12591016,
+      "uniqueBufferBytesByRole": {
+        "cache": 11291192,
+        "owner": 1294066,
+        "peer": 5748
+      },
+      "uniqueBufferObjectCount": 13,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 21,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "active_queue_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13885687,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 6869,
+          "references": 14
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13885687,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 6857
+      },
+      "uniqueBufferObjectCount": 15,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 21,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "active_write_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13885687,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 6869,
+          "references": 14
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13885687,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 6857
+      },
+      "uniqueBufferObjectCount": 15,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 23,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "working_set_queue_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13886982,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 8164,
+          "references": 16
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13886982,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 8150
+      },
+      "uniqueBufferObjectCount": 16,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 25,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "working_set_queue_peer_1",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13888277,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 9459,
+          "references": 18
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13888277,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 9443
+      },
+      "uniqueBufferObjectCount": 17,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 23,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "working_set_write_peer_0",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13886982,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 8164,
+          "references": 16
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13886982,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 8150
+      },
+      "uniqueBufferObjectCount": 16,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 23,
+      "counterMatchesRoleCharge": true,
+      "generation": 1,
+      "label": "queued_and_written_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13886982,
+      "processRssHighWaterKiB": 89348,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 8164,
+          "references": 16
+        }
+      },
+      "rssCurrentKiB": 85164,
+      "runtimeEncodedBytes": 13886982,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 8150
+      },
+      "uniqueBufferObjectCount": 16,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 23,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "reservation_after_room",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13886982,
+      "processRssHighWaterKiB": 90296,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 8164,
+          "references": 16
+        }
+      },
+      "rssCurrentKiB": 86176,
+      "runtimeEncodedBytes": 13886982,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 8150
+      },
+      "uniqueBufferObjectCount": 16,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 23,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "accepted_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 13886982,
+      "processRssHighWaterKiB": 90308,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 12584752,
+          "references": 5
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 8164,
+          "references": 16
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 13886982,
+      "uniqueBufferBytesByRole": {
+        "cache": 12584752,
+        "owner": 1294066,
+        "peer": 8150
+      },
+      "uniqueBufferObjectCount": 16,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 26,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "full_queue_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 18886429,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 17583315,
+          "references": 6
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 9048,
+          "references": 18
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 18886429,
+      "uniqueBufferBytesByRole": {
+        "cache": 17583315,
+        "owner": 1294066,
+        "peer": 9032
+      },
+      "uniqueBufferObjectCount": 18,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 26,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "full_write_peer_4",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 18886429,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 17583315,
+          "references": 6
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 9048,
+          "references": 18
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 18886429,
+      "uniqueBufferBytesByRole": {
+        "cache": 17583315,
+        "owner": 1294066,
+        "peer": 9032
+      },
+      "uniqueBufferObjectCount": 18,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 29,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "active_queue_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20181100,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18876875,
+          "references": 7
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 10159,
+          "references": 20
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20181100,
+      "uniqueBufferBytesByRole": {
+        "cache": 18876875,
+        "owner": 1294066,
+        "peer": 10141
+      },
+      "uniqueBufferObjectCount": 20,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 31,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "active_queue_peer_3",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20182211,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18876875,
+          "references": 7
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 11270,
+          "references": 22
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20182211,
+      "uniqueBufferBytesByRole": {
+        "cache": 18876875,
+        "owner": 1294066,
+        "peer": 11250
+      },
+      "uniqueBufferObjectCount": 21,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 31,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "active_write_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20182211,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18876875,
+          "references": 7
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 11270,
+          "references": 22
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20182211,
+      "uniqueBufferBytesByRole": {
+        "cache": 18876875,
+        "owner": 1294066,
+        "peer": 11250
+      },
+      "uniqueBufferObjectCount": 21,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 34,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "working_set_queue_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20184012,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18877381,
+          "references": 8
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 12565,
+          "references": 24
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20184012,
+      "uniqueBufferBytesByRole": {
+        "cache": 18877381,
+        "owner": 1294066,
+        "peer": 12543
+      },
+      "uniqueBufferObjectCount": 23,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 36,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "working_set_queue_peer_3",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20185307,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18877381,
+          "references": 8
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 13860,
+          "references": 26
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20185307,
+      "uniqueBufferBytesByRole": {
+        "cache": 18877381,
+        "owner": 1294066,
+        "peer": 13836
+      },
+      "uniqueBufferObjectCount": 24,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 34,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "working_set_write_peer_2",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20184012,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18877381,
+          "references": 8
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 12565,
+          "references": 24
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20184012,
+      "uniqueBufferBytesByRole": {
+        "cache": 18877381,
+        "owner": 1294066,
+        "peer": 12543
+      },
+      "uniqueBufferObjectCount": 23,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 34,
+      "counterMatchesRoleCharge": true,
+      "generation": 2,
+      "label": "queued_and_written_generation",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 20184012,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "cache": {
+          "referenceBytes": 18877381,
+          "references": 8
+        },
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        },
+        "peer": {
+          "referenceBytes": 12565,
+          "references": 24
+        }
+      },
+      "rssCurrentKiB": 86180,
+      "runtimeEncodedBytes": 20184012,
+      "uniqueBufferBytesByRole": {
+        "cache": 18877381,
+        "owner": 1294066,
+        "peer": 12543
+      },
+      "uniqueBufferObjectCount": 23,
+      "withinLimit": true
+    },
+    {
+      "bufferReferenceCount": 2,
+      "counterMatchesRoleCharge": true,
+      "generation": null,
+      "label": "cleanup_after_cache_clear",
+      "limitBytes": 67108864,
+      "manualChargedBytes": 1294066,
+      "processRssHighWaterKiB": 90360,
+      "roleReferences": {
+        "owner": {
+          "referenceBytes": 1294066,
+          "references": 2
+        }
+      },
+      "rssCurrentKiB": 65756,
+      "runtimeEncodedBytes": 1294066,
+      "uniqueBufferBytesByRole": {
+        "owner": 1294066
+      },
+      "uniqueBufferObjectCount": 2,
+      "withinLimit": true
+    }
+  ],
+  "encodedCounterHighWaterBytes": 20185307,
+  "failures": [],
+  "finalInventoryBeforeCleanup": {
+    "bufferReferenceCount": 34,
+    "counterMatchesRoleCharge": true,
+    "limitBytes": 67108864,
+    "manualChargedBytes": 20184012,
+    "processRssHighWaterKiB": 90360,
+    "roleReferences": {
+      "cache": {
+        "referenceBytes": 18877381,
+        "references": 8
+      },
+      "owner": {
+        "referenceBytes": 1294066,
+        "references": 2
+      },
+      "peer": {
+        "referenceBytes": 12565,
+        "references": 24
+      }
+    },
+    "rssCurrentKiB": 86180,
+    "runtimeEncodedBytes": 20184012,
+    "uniqueBufferBytesByRole": {
+      "cache": 18877381,
+      "owner": 1294066,
+      "peer": 12543
+    },
+    "uniqueBufferObjectCount": 23,
+    "withinLimit": true
+  },
+  "gcEnabled": false,
+  "generations": [
+    {
+      "activeDtoDigest": "2d7d02e34b516d0cae9ad1aada5a1ebc4e2656327fc2ba5c38a524ab0c7a56de",
+      "activeIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "actualActiveCount": 300,
+      "actualWorkingSetCount": 0,
+      "actualWorkingSetIdentityDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "capacityOutcome": "projection_tracking_capacity",
+      "coverageReason": "projection_tracking_capacity",
+      "coverageStatus": "unavailable",
+      "deliveryFamilies": {
+        "active": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "active-0",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "full": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "full-0",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "working_set": {
+          "queuedPeerCount": 1,
+          "sharedSameGenerationBody": null,
+          "slowPeerBodyRevisionPinned": false,
+          "slowPeerLabel": "working_set-4",
+          "slowPeerStillHasFragments": false,
+          "slowPeerWriteAttempted": true
+        }
+      },
+      "exactMembershipWhenComplete": null,
+      "expectedActiveCount": 300,
+      "expectedWorkingSetCount": 500,
+      "expectedWorkingSetIdentityDigest": "ae6423260690090d126900edaa3887e7ef1b47656a7ab9e71754b9e354d8ac7f",
+      "fullDtoDigest": "cd4a32ff72b91667d6a2ac1a40093171b07aaa8b5cd8e152eda05caabb60da97",
+      "fullIdentityDigest": "27743bfbaae16cf98e50fe0b5520ee0a1bfb534ef60453c0ddedd83a2dcc8824",
+      "fullRows": 2000,
+      "generation": 0,
+      "inputSnapshotBytes": 4998548,
+      "originalFullDtoEqualityWhenComplete": null,
+      "pinnedPeerBodiesAfterQueue": [],
+      "processRssHighWaterKiB": 65736,
+      "providerRuntimeAccepted": 1,
+      "providerRuntimeHealth": "current",
+      "rssCurrentKiB": 57576,
+      "runtimeDroppedConnectionCount": 0,
+      "runtimePeerCount": 15,
+      "serviceRevision": 1,
+      "workingSetBlocked": false,
+      "workingSetErrorReason": null,
+      "workingSetKind": "status",
+      "workingSetMissingActiveCount": 300,
+      "workingSetMissingActiveIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "workingSetViewRevision": 1
+    },
+    {
+      "activeDtoDigest": "2d7d02e34b516d0cae9ad1aada5a1ebc4e2656327fc2ba5c38a524ab0c7a56de",
+      "activeIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "actualActiveCount": 300,
+      "actualWorkingSetCount": 0,
+      "actualWorkingSetIdentityDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "capacityOutcome": "projection_tracking_capacity",
+      "coverageReason": "projection_tracking_capacity",
+      "coverageStatus": "unavailable",
+      "deliveryFamilies": {
+        "active": {
+          "queuedPeerCount": 1,
+          "sharedSameGenerationBody": null,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "active-4",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "full": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "full-2",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "working_set": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": false,
+          "slowPeerLabel": "working_set-0",
+          "slowPeerStillHasFragments": false,
+          "slowPeerWriteAttempted": true
+        }
+      },
+      "exactMembershipWhenComplete": null,
+      "expectedActiveCount": 300,
+      "expectedWorkingSetCount": 500,
+      "expectedWorkingSetIdentityDigest": "ae6423260690090d126900edaa3887e7ef1b47656a7ab9e71754b9e354d8ac7f",
+      "fullDtoDigest": "cd4a32ff72b91667d6a2ac1a40093171b07aaa8b5cd8e152eda05caabb60da97",
+      "fullIdentityDigest": "27743bfbaae16cf98e50fe0b5520ee0a1bfb534ef60453c0ddedd83a2dcc8824",
+      "fullRows": 2000,
+      "generation": 1,
+      "inputSnapshotBytes": 4998548,
+      "originalFullDtoEqualityWhenComplete": null,
+      "pinnedPeerBodiesAfterQueue": [
+        {
+          "bodyRetained": true,
+          "bodyRevision": "1",
+          "peer": "full-0"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "1",
+          "peer": "full-1"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "2",
+          "peer": "full-2"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "2",
+          "peer": "full-3"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 1)",
+          "peer": "active-0"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 1)",
+          "peer": "active-1"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 2)",
+          "peer": "active-4"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('working_set', 2)",
+          "peer": "working_set-1"
+        }
+      ],
+      "processRssHighWaterKiB": 80036,
+      "providerRuntimeAccepted": 2,
+      "providerRuntimeHealth": "current",
+      "rssCurrentKiB": 70648,
+      "runtimeDroppedConnectionCount": 0,
+      "runtimePeerCount": 15,
+      "serviceRevision": 2,
+      "workingSetBlocked": false,
+      "workingSetErrorReason": null,
+      "workingSetKind": "status",
+      "workingSetMissingActiveCount": 300,
+      "workingSetMissingActiveIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "workingSetViewRevision": 2
+    },
+    {
+      "activeDtoDigest": "2d7d02e34b516d0cae9ad1aada5a1ebc4e2656327fc2ba5c38a524ab0c7a56de",
+      "activeIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "actualActiveCount": 300,
+      "actualWorkingSetCount": 0,
+      "actualWorkingSetIdentityDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "capacityOutcome": "projection_tracking_capacity",
+      "coverageReason": "projection_tracking_capacity",
+      "coverageStatus": "unavailable",
+      "deliveryFamilies": {
+        "active": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "active-2",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "full": {
+          "queuedPeerCount": 1,
+          "sharedSameGenerationBody": null,
+          "slowPeerBodyRevisionPinned": true,
+          "slowPeerLabel": "full-4",
+          "slowPeerStillHasFragments": true,
+          "slowPeerWriteAttempted": true
+        },
+        "working_set": {
+          "queuedPeerCount": 2,
+          "sharedSameGenerationBody": true,
+          "slowPeerBodyRevisionPinned": false,
+          "slowPeerLabel": "working_set-2",
+          "slowPeerStillHasFragments": false,
+          "slowPeerWriteAttempted": true
+        }
+      },
+      "exactMembershipWhenComplete": null,
+      "expectedActiveCount": 300,
+      "expectedWorkingSetCount": 500,
+      "expectedWorkingSetIdentityDigest": "ae6423260690090d126900edaa3887e7ef1b47656a7ab9e71754b9e354d8ac7f",
+      "fullDtoDigest": "cd4a32ff72b91667d6a2ac1a40093171b07aaa8b5cd8e152eda05caabb60da97",
+      "fullIdentityDigest": "27743bfbaae16cf98e50fe0b5520ee0a1bfb534ef60453c0ddedd83a2dcc8824",
+      "fullRows": 2000,
+      "generation": 2,
+      "inputSnapshotBytes": 4998548,
+      "originalFullDtoEqualityWhenComplete": null,
+      "pinnedPeerBodiesAfterQueue": [
+        {
+          "bodyRetained": true,
+          "bodyRevision": "1",
+          "peer": "full-0"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "1",
+          "peer": "full-1"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "2",
+          "peer": "full-2"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "2",
+          "peer": "full-3"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "3",
+          "peer": "full-4"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 1)",
+          "peer": "active-0"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 1)",
+          "peer": "active-1"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 3)",
+          "peer": "active-2"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 3)",
+          "peer": "active-3"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('active', 2)",
+          "peer": "active-4"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('working_set', 2)",
+          "peer": "working_set-1"
+        },
+        {
+          "bodyRetained": true,
+          "bodyRevision": "('working_set', 3)",
+          "peer": "working_set-3"
+        }
+      ],
+      "processRssHighWaterKiB": 90308,
+      "providerRuntimeAccepted": 3,
+      "providerRuntimeHealth": "current",
+      "rssCurrentKiB": 86180,
+      "runtimeDroppedConnectionCount": 0,
+      "runtimePeerCount": 15,
+      "serviceRevision": 3,
+      "workingSetBlocked": false,
+      "workingSetErrorReason": null,
+      "workingSetKind": "status",
+      "workingSetMissingActiveCount": 300,
+      "workingSetMissingActiveIdentityDigest": "4e1f45e69a4f4a83da04c9de9f030ef30aacf1d5242e223f648d0f4ae87321f5",
+      "workingSetViewRevision": 3
+    }
+  ],
+  "meshImports": [],
+  "outcomes": [
+    "bounded_refusal",
+    "bounded_refusal",
+    "bounded_refusal"
+  ],
+  "pythonEntrypoint": "/home/bryan/code/mesh-plus/.venv/bin/python",
+  "pythonExecutableDiagnostic": "/home/bryan/code/mesh-plus/.venv/bin/python",
+  "pythonVersion": "3.14.8",
+  "refusedReservationCount": 0,
+  "requestedCurrentPlusReservationHighWaterBytes": 24389126,
+  "reservations": [
+    {
+      "admitted": true,
+      "admittedCurrentPlusAdditionalBytes": 11795704,
+      "admittedReservationFitsLimit": true,
+      "counterAfterRoom": {
+        "bufferReferenceCount": 1,
+        "counterMatchesRoleCharge": true,
+        "limitBytes": 67108864,
+        "manualChargedBytes": 1293560,
+        "processRssHighWaterKiB": 59176,
+        "roleReferences": {
+          "owner": {
+            "referenceBytes": 1293560,
+            "references": 1
+          }
+        },
+        "rssCurrentKiB": 56736,
+        "runtimeEncodedBytes": 1293560,
+        "uniqueBufferBytesByRole": {
+          "owner": 1293560
+        },
+        "uniqueBufferObjectCount": 1,
+        "withinLimit": true
+      },
+      "currentBytesAfterRoom": 1293560,
+      "currentBytesBefore": 1293560,
+      "droppedPeerLabels": [],
+      "generation": 0,
+      "limitBytes": 67108864,
+      "requestedCurrentPlusAdditionalBytes": 11795704,
+      "worstCaseAdditionalBytes": 10502144
+    },
+    {
+      "admitted": true,
+      "admittedCurrentPlusAdditionalBytes": 18092829,
+      "admittedReservationFitsLimit": true,
+      "counterAfterRoom": {
+        "bufferReferenceCount": 13,
+        "counterMatchesRoleCharge": true,
+        "limitBytes": 67108864,
+        "manualChargedBytes": 7590685,
+        "processRssHighWaterKiB": 79872,
+        "roleReferences": {
+          "cache": {
+            "referenceBytes": 6292629,
+            "references": 3
+          },
+          "owner": {
+            "referenceBytes": 1294066,
+            "references": 2
+          },
+          "peer": {
+            "referenceBytes": 3990,
+            "references": 8
+          }
+        },
+        "rssCurrentKiB": 75392,
+        "runtimeEncodedBytes": 7590685,
+        "uniqueBufferBytesByRole": {
+          "cache": 6292629,
+          "owner": 1294066,
+          "peer": 3984
+        },
+        "uniqueBufferObjectCount": 10,
+        "withinLimit": true
+      },
+      "currentBytesAfterRoom": 7590685,
+      "currentBytesBefore": 7590685,
+      "droppedPeerLabels": [],
+      "generation": 1,
+      "limitBytes": 67108864,
+      "requestedCurrentPlusAdditionalBytes": 18092829,
+      "worstCaseAdditionalBytes": 10502144
+    },
+    {
+      "admitted": true,
+      "admittedCurrentPlusAdditionalBytes": 24389126,
+      "admittedReservationFitsLimit": true,
+      "counterAfterRoom": {
+        "bufferReferenceCount": 23,
+        "counterMatchesRoleCharge": true,
+        "limitBytes": 67108864,
+        "manualChargedBytes": 13886982,
+        "processRssHighWaterKiB": 90296,
+        "roleReferences": {
+          "cache": {
+            "referenceBytes": 12584752,
+            "references": 5
+          },
+          "owner": {
+            "referenceBytes": 1294066,
+            "references": 2
+          },
+          "peer": {
+            "referenceBytes": 8164,
+            "references": 16
+          }
+        },
+        "rssCurrentKiB": 86176,
+        "runtimeEncodedBytes": 13886982,
+        "uniqueBufferBytesByRole": {
+          "cache": 12584752,
+          "owner": 1294066,
+          "peer": 8150
+        },
+        "uniqueBufferObjectCount": 16,
+        "withinLimit": true
+      },
+      "currentBytesAfterRoom": 13886982,
+      "currentBytesBefore": 13886982,
+      "droppedPeerLabels": [],
+      "generation": 2,
+      "limitBytes": 67108864,
+      "requestedCurrentPlusAdditionalBytes": 24389126,
+      "worstCaseAdditionalBytes": 10502144
+    }
+  ],
+  "root": "/home/bryan/code/agent-observer-working-set",
+  "rssScope": "process current/high-water includes imports, fixture, oracle, state, peers and caches; not a production RSS or heap bound",
+  "runtime": {
+    "collect": false,
+    "encodedLimitBytes": 67108864,
+    "encodedLimitChanged": false,
+    "maxClients": 16,
+    "runtimePeerCountAtPeak": 15,
+    "socketBufferSettings": [
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "full-0",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "full-1",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "full-2",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "full-3",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "full-4",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "active-0",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "active-1",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "active-2",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "active-3",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "active-4",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "working_set-0",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "working_set-1",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "working_set-2",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "working_set-3",
+        "requestedSendBufferBytes": 1024
+      },
+      {
+        "actualReceiveBufferBytes": 2304,
+        "actualSendBufferBytes": 4608,
+        "label": "working_set-4",
+        "requestedSendBufferBytes": 1024
+      }
+    ],
+    "socketpairPeerCount": 15,
+    "workersStarted": 0,
+    "workingSetFrameLimitBytes": 8404992,
+    "workingSetLedgerLimitBytes": 1048576,
+    "worstCaseStageReservationBytes": 10502144
+  },
+  "schema": "working-set-resource-source-case-v1",
+  "scope": "synthetic accepted ServiceState plus actual Runtime reservation/queue/write and socketpairs; no provider, service process, Mesh, SDK, network, CPU, delta or production operation",
+  "sourceFilesSha256": {
+    "agent_observer/__init__.py": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09",
+    "agent_observer/_image_memo.py": "e51920f262521b25d00812458f52b67474039334581426108703cfeb5604c331",
+    "agent_observer/active_contract.py": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf",
+    "agent_observer/active_feed.py": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de",
+    "agent_observer/activity.py": "f8ad39a1992070347988b0b9c73710bc7acecd3336afb1cf47dcefcbd67bbff1",
+    "agent_observer/bounded_json.py": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6",
+    "agent_observer/contract.py": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b",
+    "agent_observer/contract_shape.py": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc",
+    "agent_observer/contracts/snapshot.schema.json": "f3f493a206e3375ac81d6432d4d8168f9116a529bfc56caf368c492de2424905",
+    "agent_observer/native_artifacts.py": "743e30c5a67cf3f3d9b5cf7d1990859d9a0df8b725dcb4245fd73415fe54d773",
+    "agent_observer/observation_engine.py": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79",
+    "agent_observer/observation_evidence.py": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c",
+    "agent_observer/observation_scheduler.py": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6",
+    "agent_observer/observation_support.py": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32",
+    "agent_observer/provider.py": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8",
+    "agent_observer/service_contract.py": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8",
+    "agent_observer/service_runtime.py": "2f988eb46a5531daca38b366fc98f0bb4be394cfe4ebac99494d965e78984c33",
+    "agent_observer/service_state.py": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf",
+    "agent_observer/sync_commitment.py": "544fba79d3a05ac898a925432d0923de9eca31658481ae15e1118cc8c0be1ff5",
+    "agent_observer/sync_contract.py": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236",
+    "agent_observer/sync_native.py": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d",
+    "agent_observer/timing.py": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d",
+    "agent_observer/working_set_clocks.py": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c",
+    "agent_observer/working_set_contract.py": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1",
+    "agent_observer/working_set_decisions.py": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626",
+    "agent_observer/working_set_feed.py": "b15c61d5fc3c83e64c1b288e21eb874fb66b3d36f5992b438b60f66b1dd0fa60",
+    "agent_observer/working_set_policy.py": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519",
+    "agent_observer/workspace.py": "4b8a63d362af880b6acd4326e767d32a800df3f5f6e1282e5c4d62d4263ac92e",
+    "resource-source/resource_case.py": "f873973b6be4ad7d5b14145462345c03af12a9336c63d44b59e03194f7e6f28e",
+    "tests/fixtures/service-v4/view.json": "f657b8847142bbf36084c12527d83d31919a71205b5c5ffc271a424cdf0770a5",
+    "tests/test_service_contract.py": "78c340327e737b7cbe66457604a59b0212bb6dcde3cfaf1416fb97b9e9334d18",
+    "tests/test_service_state.py": "e2538cbafa0718774a034b9e4d92980b32c617d3bca4b38da0f021f805b71742"
+  },
+  "sourceRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a"
+}
