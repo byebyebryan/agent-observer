@@ -1,0 +1,15 @@
+{
+  "conservativeUnknownChecks": 4032,
+  "flooredCaptureChecks": 11804,
+  "negativeTranslationCounterexample": {
+    "nativeExpiry": 500,
+    "nativeNegativeCutoff": 400,
+    "translatedExpiry": 450,
+    "unsafeEarlyNegative": 350
+  },
+  "pass": true,
+  "positiveTranslationChecks": 410,
+  "provedNegativeChecks": 6336,
+  "provedPositiveChecks": 1436,
+  "scope": "independent bounded arithmetic only; no runtime, native or profile acceptance"
+}

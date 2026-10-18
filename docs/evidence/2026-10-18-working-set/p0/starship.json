@@ -1,0 +1,79 @@
+{
+  "active": 6,
+  "activeBodyBytes": 12213,
+  "allBodyBytes": 707756,
+  "cachedFrameBytes": 710925,
+  "eligibleAgeBins": {
+    "24hTo3d": 4,
+    "3dTo7d": 8,
+    "7dOrOlder": 125,
+    "under24h": 8
+  },
+  "eligibleByPublishedKind": 145,
+  "hostScope": "starship",
+  "kinds": {
+    "child": 255,
+    "unknown": 46,
+    "user": 99
+  },
+  "limits": [
+    "one cached public snapshot; not independent native classification",
+    "published kind/runtime/activity estimates; transient exact FactSupport unavailable in full wire",
+    "age uses existing current runtime sample contract; not a new wall/BOOTTIME anchor proof",
+    "body-byte totals exclude projected support/coverage/header ownership and all CPU/RSS claims"
+  ],
+  "nativeHostname": "starship",
+  "readerExecutable": "/home/bryan/.local/share/agent-observer/0.7.0a5-25cd5663560c973b-cpu/bin/agent-observer",
+  "rows": 400,
+  "runtimeHealths": {
+    "current": 400
+  },
+  "runtimes": {
+    "parked": 391,
+    "running": 9
+  },
+  "serviceProtocol": 4,
+  "serviceState": "ready",
+  "snapshotHealth": "current",
+  "sourceAgeFields": {
+    "activityCurrent": 145,
+    "runtimeSampleClockCurrent": 145
+  },
+  "sources": [
+    {
+      "coverage": {
+        "runtime": {
+          "reason": "native_snapshot",
+          "scope": "daemon_threads",
+          "status": "complete"
+        },
+        "saved": {
+          "reason": "native_snapshot",
+          "status": "complete"
+        }
+      },
+      "provider": "codex",
+      "sourceHealth": "current"
+    }
+  ],
+  "status": "cached_source_screen",
+  "unknownRuntimeRecent": {},
+  "viewRevision": 14907,
+  "windows": {
+    "24h": {
+      "recentNonactive": 2,
+      "selected": 8,
+      "selectedBodyBytes": 16122
+    },
+    "3d": {
+      "recentNonactive": 6,
+      "selected": 12,
+      "selectedBodyBytes": 23677
+    },
+    "7d": {
+      "recentNonactive": 14,
+      "selected": 20,
+      "selectedBodyBytes": 39103
+    }
+  }
+}

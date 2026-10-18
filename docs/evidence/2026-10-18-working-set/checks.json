@@ -1,0 +1,8 @@
+{
+  "canonical-314": {
+    "bytes": 175059,
+    "returncode": 0,
+    "sha256": "2aabeb960539a53dd5915ab6b85e517a8022f9a3b13b838af353269dade447ea"
+  },
+  "reasonForFinalReplay": "Luna found two P1 prose conflicts; exact signed deadlines and older-event unknown rule now resolve them; runtime helper unchanged"
+}

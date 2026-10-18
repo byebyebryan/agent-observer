@@ -1,5 +1,13 @@
 # Generalized active and recent-session projection
 
+Execution update, 2026-10-18: Bryan explicitly requested the Luna goal loop to
+execute this plan. P0 cached workload sizing is recorded in the
+[sanitized screen](evidence/2026-10-18-working-set/p0/README.md); the source-clock
+and joint P1 contract gates remain open. Routine owning investigation and later
+implementation after those gates need no repeated general approval. Deployment
+and consumer/device adoption retain separate authorization. Earlier planning-only
+statements below describe the c7f41ea checkpoint, not a new stop instruction.
+
 Status: planning draft, 2026-10-17. Bryan requested a proper plan before
 implementation and selected **3 days** as the everyday recent-history window.
 This document proposes generalizing the existing active projector. It authorizes
