@@ -329,7 +329,7 @@ def _admitted_identity_key(identity):
             identity["nativeIdKind"], identity["nativeId"])
 
 
-def _validate_record_semantics(row, host_scope, sources):
+def _validate_record_semantics(row, host_scope, sources, *, check_capabilities=True):
     """Already-shaped API 4 row against an admitted provider/namespace index."""
     identity = row["identity"]
     if (
@@ -385,7 +385,7 @@ def _validate_record_semantics(row, host_scope, sources):
         known = "lastKnownAt" if name == "lastUpdated" else "lastKnownValue"
         if record["health"] == "current" and (record["source"] is None or record["observedAt"] is None):
             raise ContractError("missing_timing_provenance")
-        if record["health"] == "current" and not sources[identity["provider"], identity["namespace"]]["capabilities"]["timing"][name]:
+        if check_capabilities and record["health"] == "current" and not sources[identity["provider"], identity["namespace"]]["capabilities"]["timing"][name]:
             raise ContractError("timing_capability_missing")
         if record["health"] != "current" and record[key] is not None:
             raise ContractError("invalid_current_timing")

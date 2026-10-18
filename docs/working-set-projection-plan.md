@@ -2,9 +2,12 @@
 
 Execution update, 2026-10-18: Bryan explicitly requested the Luna goal loop to
 execute this plan. P0 cached workload sizing is recorded in the
-[sanitized screen](evidence/2026-10-18-working-set/p0/README.md); the source-clock
-and joint P1 contract gates remain open. Routine owning investigation and later
-implementation after those gates need no repeated general approval. Deployment
+[sanitized screen](evidence/2026-10-18-working-set/p0/README.md). Joint P1 public
+interface and clock-policy direction is accepted by both Mesh and RLCD in the
+[exact review record](evidence/2026-10-18-working-set/joint-contract/README.md).
+Opt-in P2 producer implementation is in progress; actual source-clock capture,
+timer, native/profile integration and producer qualification remain open.
+Routine implementation needs no repeated general approval. Deployment
 and consumer/device adoption retain separate authorization. Earlier planning-only
 statements below describe the c7f41ea checkpoint, not a new stop instruction.
 

@@ -200,6 +200,7 @@ class Runtime:
         self.hint_diagnostics, self.hints = hint_diagnostics, None
         self.image_memos = {provider: ImageMemo(provider) for provider in state.configs}
         self._sync_reserver = self._reserve_sync
+        self._working_set_reserver = self._reserve_working_set
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -297,7 +298,9 @@ class Runtime:
         self.bodies = {rev: body for rev, body in self.bodies.items() if rev in keep}
 
     def encoded_bytes(self):
-        return self.sync_encoded_bytes() + sum(len(body) for body in self.bodies.values()) + sum(
+        retained = getattr(self.state, "working_set_retained_buffers", lambda: ())()
+        owner = {id(value): value for value in retained}
+        return self.sync_encoded_bytes() + sum(map(len, owner.values())) + sum(len(body) for body in self.bodies.values()) + sum(
             sum(len(part) for index, part in enumerate(p.parts) if not (index == 1 and p.body_revision is not None))
             for p in self.peers if p.sync_view is None
         )
@@ -339,6 +342,15 @@ class Runtime:
             return False
         return True
 
+    def _reserve_working_set(self, additional_bytes):
+        try:
+            self._room(additional_bytes)
+        except ValueError as error:
+            if error.args != ("service_encoding_limit",):
+                raise
+            return False
+        return True
+
     def _room(self, reserve, *, protected=None):
         while self.encoded_bytes() + reserve > self.encoded_limit:
             # The two families share one budget. An idle family's latest body
@@ -371,8 +383,9 @@ class Runtime:
 
     def _queue(self, peer, kind, reason="observed_view"):
         peer.sequence += 1
-        make_frame = self.state.active_frame if peer.family == "active" else self.state.frame
-        payload_key = "projection" if peer.family == "active" else "snapshot"
+        make_frame = (self.state.working_set_frame if peer.family == "working_set" else
+                      self.state.active_frame if peer.family == "active" else self.state.frame)
+        payload_key = "projection" if peer.family in {"active", "working_set"} else "snapshot"
         frame = make_frame(kind, peer.sequence, reason=reason)
         if kind == "heartbeat" and frame["viewRevision"] != peer.sent_revision:
             frame = make_frame("view", peer.sequence, reason="lease_expired")
@@ -384,7 +397,8 @@ class Runtime:
             if snapshot is not None:
                 # Frame construction can expire leases and advance the revision.
                 # Resolve the key only after constructing the authoritative frame.
-                revision = ("active", frame["viewRevision"]) if peer.family == "active" else frame["viewRevision"]
+                revision = ((peer.family, frame["viewRevision"])
+                            if peer.family in {"active", "working_set"} else frame["viewRevision"])
                 prefix = (canonical(frame)[:-1] + ',"' + payload_key + '":').encode()
                 self._body(revision, snapshot, overhead=len(prefix) + 2)
                 if peer not in self.peers:
@@ -558,14 +572,21 @@ class Runtime:
                                   max_nodes=MAX_SYNC_REQUEST_NODES, max_depth=MAX_SYNC_REQUEST_DEPTH,
                                   line_framed=True)
         if not isinstance(request, dict) or sum(key in request for key in (
-            "serviceProtocol", "activeFeedProtocol", "syncProtocol",
+            "serviceProtocol", "activeFeedProtocol", "syncProtocol", "workingSetProtocol",
         )) != 1:
             raise ValueError("service_request_family")
         if "syncProtocol" in request:
             peer.incoming.clear()
             self._sync_request(peer, request)
             return
-        if "activeFeedProtocol" in request:
+        if "workingSetProtocol" in request:
+            from .working_set_contract import validate_request as validate_working_set_request
+
+            if getattr(self.state, "working_set_window_ms", None) is None:
+                raise ValueError("working_set_disabled")
+            validate_working_set_request(request, expected_window_ms=self.state.working_set_window_ms)
+            peer.family = "working_set"
+        elif "activeFeedProtocol" in request:
             validate_active_request(request)
             peer.family = "active"
         else:
@@ -574,7 +595,8 @@ class Runtime:
         peer.operation = request["operation"]
         if request["hostScope"] != self.state.host_scope:
             peer.operation = "error"
-            reason = "active_host_mismatch" if peer.family == "active" else "service_host_mismatch"
+            reason = ("working_set_host_mismatch" if peer.family == "working_set" else
+                      "active_host_mismatch" if peer.family == "active" else "service_host_mismatch")
             self._queue(peer, "error", reason)
             return
         kind = "status" if peer.operation == "status" or self.state.snapshot is None else "view"
@@ -665,17 +687,21 @@ class Runtime:
         exit_status = self._exit_status(process)
         self._stop_worker(worker)
         success = False
+        accepted = False
         prior_context = self.state.contexts[provider]
         if not timed_out and exit_status == 0:
             try:
                 value = parse_snapshot(bytes(worker.buffer))
+                accepted_ms = self.state.clock()
                 ttl = max(self.scheduler.timeout + 2 * self.scheduler.intervals[worker.job.component] + 1000, 3 * self.scheduler.intervals[worker.job.component])
                 if worker.job.generation == self.scheduler.generation[provider]:
-                    self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl, runtime_ttl_ms=max(self.scheduler.timeout + 2 * self.scheduler.intervals["runtime"] + 1000, 3 * self.scheduler.intervals["runtime"]))
+                    clock_metadata = ({"accepted_boottime_ms": accepted_ms}
+                                      if getattr(self.state, "working_set_clocks", None) is not None else {})
+                    accepted = self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl, runtime_ttl_ms=max(self.scheduler.timeout + 2 * self.scheduler.intervals["runtime"] + 1000, 3 * self.scheduler.intervals["runtime"]), **clock_metadata)
                     success = True
             except (ValueError, OSError):
                 pass
-        eligible = success and prior_context is not None and prior_context == self.state.contexts[provider]
+        eligible = accepted and prior_context is not None and prior_context == self.state.contexts[provider]
         if success:
             eligible = eligible and value['sources'][0]['runtime'] is not None and value['sources'][0]['coverage']['runtime']['status'] in {'complete', 'partial'}
         self._take_image_memo(process, provider, eligible=eligible)
@@ -688,6 +714,8 @@ class Runtime:
     def run(self, stop):
         if hasattr(self.state, "sync_reserver"):
             self.state.sync_reserver = self._sync_reserver
+        if hasattr(self.state, "working_set_reserver"):
+            self.state.working_set_reserver = self._working_set_reserver
         try:
             with Endpoint(self.path) as listener:
                 self.selector.register(listener, selectors.EVENT_READ, ("listener", None))
@@ -737,13 +765,15 @@ class Runtime:
                             except (ValueError, OSError):
                                 self._drop(peer)
                             continue
-                        if peer.operation == "watch" and self.state.revision > peer.sent_revision:
+                        revision = (self.state.working_set_revision if peer.family == "working_set"
+                                    else self.state.revision)
+                        if peer.operation == "watch" and revision > peer.sent_revision:
                             if peer.parts:
-                                if self.state.revision > peer.frame_revision:
-                                    peer.skipped |= self.state.revision > max(peer.frame_revision, peer.pending or 0) + 1 or peer.pending is not None and peer.pending != self.state.revision
-                                    peer.pending = self.state.revision
+                                if revision > peer.frame_revision:
+                                    peer.skipped |= revision > max(peer.frame_revision, peer.pending or 0) + 1 or peer.pending is not None and peer.pending != revision
+                                    peer.pending = revision
                             elif self.state.snapshot is not None:
-                                if self.state.revision > peer.sent_revision + 1:
+                                if revision > peer.sent_revision + 1:
                                     peer.recover = True
                                     self._queue(peer, "gap", "delivery_coalesced")
                                 else:
@@ -785,6 +815,8 @@ class Runtime:
                                 self._drop(obj)
                     self._prune()
         finally:
+            if getattr(self.state, "working_set_reserver", None) is self._working_set_reserver:
+                self.state.working_set_reserver = None
             if getattr(self.state, "sync_reserver", None) is self._sync_reserver:
                 self.state.sync_reserver = None
             if self.hints:

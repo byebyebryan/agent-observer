@@ -21,12 +21,21 @@ def boottime_ms():
 
 class ServiceState(ObservationEngine):
     def __init__(self, *, host_scope, configs, uid=None, clock=boottime_ms,
-                 boot_id=None, clock_domain=None, sync_serialization="expanded"):
+                 boot_id=None, clock_domain=None, sync_serialization="expanded",
+                 working_set_window_ms=None):
         from .contract import ContractError
 
         if type(sync_serialization) is not str or sync_serialization not in {"expanded", "compact"}:
             raise ContractError("sync_owner_serialization")
         self._sync_serialization = sync_serialization
+        if working_set_window_ms is not None:
+            from .working_set_contract import selector
+
+            selector(working_set_window_ms)
+        self._working_set_window_ms = working_set_window_ms
+        self.working_set_clocks = None
+        self.working_set_projector = None
+        self.working_set_reserver = None
         self.service_id = str(uuid.uuid4())
         self.active_projector = ActiveFeedProjector(service_id=self.service_id)
         # Sync is opt-in. A cold baseline can initialize its shared cache;
@@ -43,6 +52,15 @@ class ServiceState(ObservationEngine):
                          support_incarnation=self.service_id)
         self.boot_id = boot_id or Path("/proc/sys/kernel/random/boot_id").read_text().strip()
         self.clock_domain = clock_domain or os.readlink("/proc/self/ns/time")
+        if working_set_window_ms is not None:
+            from .working_set_clocks import WorkingSetClocks
+            from .working_set_feed import WorkingSetProjector
+
+            self.working_set_clocks = WorkingSetClocks(self.service_id, self.boot_id, self.clock_domain)
+            self.working_set_projector = WorkingSetProjector(
+                service_id=self.service_id, clocks=self.working_set_clocks,
+                window_ms=working_set_window_ms,
+            )
         self.frame("status", 1)
 
     def publish(self):
@@ -54,13 +72,16 @@ class ServiceState(ObservationEngine):
         )
         if self._sync_cache is not None:
             self._sync_cache.publish()
+        if self.working_set_projector is not None and not self._sync_accepting:
+            self._refresh_working_set(self.clock())
 
     def attempt(self, provider, component):
         super().attempt(provider, component)
         if self._sync_cache is not None and not self._sync_accepting:
             self._sync_cache.publish(diagnostics_only=True)
 
-    def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None):
+    def accept(self, provider, component, value, *, sampled_ms, ttl_ms, runtime_ttl_ms=None,
+               accepted_boottime_ms=None):
         # History acceptance can internally attempt/promote runtime. Neither
         # its intermediate receipts nor its half-reconciled roster may escape
         # as a separate sync transaction.
@@ -70,9 +91,118 @@ class ServiceState(ObservationEngine):
                                       ttl_ms=ttl_ms, runtime_ttl_ms=runtime_ttl_ms)
         finally:
             self._sync_accepting = False
+        if accepted and self.working_set_clocks is not None and accepted_boottime_ms is not None:
+            self._capture_working_clock(provider, component, value,
+                                        sampled_ms=sampled_ms, accepted_ms=accepted_boottime_ms)
+        if accepted and self.working_set_projector is not None:
+            self._refresh_working_set(self.clock())
         if not accepted and self._sync_cache is not None:
             self._sync_cache.publish(diagnostics_only=True)
         return accepted
+
+    def _refresh_working_set(self, now):
+        if self.snapshot is None or "codex" not in self.configs:
+            return
+        samples = {name: receipt.data["collectionId"] if receipt.data is not None else None
+                   for name, receipt in self.receipts["codex"].items()}
+        if self.working_set_reserver is not None:
+            from .working_set_contract import MAX_FRAME_BYTES, MAX_LEDGER_BYTES
+
+            if not self.working_set_reserver(MAX_FRAME_BYTES + 2 * MAX_LEDGER_BYTES):
+                self.working_set_projector.refuse_capacity(
+                    self.source_meta("codex"), observation_revision=self.revision,
+                )
+                return
+        self.working_set_projector._accept_owned(
+            self.snapshot, self.projection_support, self.projection_census,
+            [self.source_meta("codex")], observation_revision=self.revision,
+            now_ms=now, sample_ids=samples,
+        )
+
+    def expire(self, now=None):
+        now = self.clock() if now is None else now
+        changed = super().expire(now)
+        if (self.working_set_projector is not None and self.snapshot is not None
+                and self.working_set_projector.due(now)):
+            self._refresh_working_set(now)
+        return changed
+
+    @property
+    def working_set_revision(self):
+        return 0 if self.working_set_projector is None else self.working_set_projector.revision
+
+    @property
+    def working_set_window_ms(self):
+        """Startup-fixed policy; a different policy requires a new owner."""
+        return self._working_set_window_ms
+
+    def working_set_retained_buffers(self):
+        """Actual encoded owner buffers for opt-in shared delivery accounting."""
+        if self.working_set_projector is None:
+            return ()
+        return tuple(value for value in (
+            self.active_projector._encoded, self.working_set_projector._encoded,
+        ) if value is not None)
+
+    def working_set_frame(self, kind, sequence, *, reason="observed_view", include_projection=None):
+        from .contract import ContractError
+        from .working_set_contract import selector, selector_digest
+        from .working_set_contract import validate_frame as validate_working_set_frame
+
+        if self.working_set_projector is None:
+            raise ContractError("working_set_disabled")
+        now = self.clock()
+        self.expire(now)
+        sources = [self.source_meta("codex")] if "codex" in self.configs else []
+        if not sources:
+            kind, reason = "error", "working_set_source_unsupported"
+        include = (include_projection if include_projection is not None
+                   else kind in {"view", "resync", "status"})
+        projection = self.working_set_projector.snapshot() if include and sources else None
+        policy = selector(self.working_set_window_ms)
+        return validate_working_set_frame({
+            "workingSetProtocol": 1, "selector": policy, "selectorDigest": selector_digest(policy),
+            "serviceId": self.service_id, "bootId": self.boot_id, "uid": self.uid,
+            "hostScope": self.host_scope, "sequence": sequence,
+            "viewRevision": self.working_set_revision, "observationRevision": self.revision,
+            "clockCeiling": self.working_set_clocks.ceiling,
+            "clockGeneration": self.working_set_clocks.generation, "kind": kind,
+            "state": "ready" if self.snapshot is not None else "warming",
+            "emittedAt": time.time_ns() // 1_000_000, "emittedBoottimeMs": now,
+            "clock": "boottime", "clockDomain": self.clock_domain,
+            "reason": reason, "sources": sources, "projection": projection,
+        })
+
+    def _capture_working_clock(self, provider, origin, value, *, sampled_ms, accepted_ms):
+        """Install only an actually accepted, exact original worker sample.
+
+        Called synchronously before control returns to local delivery. History
+        can mirror the same original sample into runtime; each binding still
+        names its own accepted counter. Invalid/unavailable clock metadata
+        supplies no recency authority and never marks a newer receipt failed.
+        """
+        from .working_set_policy import SampleClock
+
+        if provider != "codex" or type(accepted_ms) is not int or accepted_ms > self.clock():
+            return
+        source = self.source_meta(provider)
+        clock = SampleClock(
+            sample_id=value["collectionId"], origin_component=origin,
+            service_id=self.service_id, provider=provider, namespace=source["namespace"],
+            context_generation=source["contextGeneration"], boot_id=self.boot_id,
+            clock_domain=self.clock_domain, lower_boottime_ms=sampled_ms,
+            wall_ms=value["collectedAt"], upper_boottime_ms=accepted_ms,
+        )
+        for component, receipt in self.receipts[provider].items():
+            if (receipt.data is None or receipt.data["collectionId"] != clock.sample_id
+                    or receipt.sampledBoottimeMs != sampled_ms):
+                continue
+            try:
+                self.working_set_clocks.accept(clock, component=component, accepted=receipt.accepted)
+            except ValueError:
+                # The old binding cannot join this receipt's accepted counter,
+                # so classification is unknown; K is never reset as recovery.
+                continue
 
     def _sync_owner(self):
         if self._sync_cache is None:

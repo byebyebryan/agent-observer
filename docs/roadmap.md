@@ -1,9 +1,10 @@
 # Agent Observer roadmap
 
-A [planning draft for generalized active + recent selection](working-set-projection-plan.md)
-uses the existing replacement projection with a proposed 3-day window. Source
-clock/quiet-cutoff semantics, compatibility and capacity gates precede any
-implementation. This is design-only; it does not reopen delta synchronization.
+A [generalized active + recent projection](working-set-projection-plan.md) is
+being implemented as an opt-in source with a 3-day window after joint P1
+contract review. Producer clock/timer/native integration, capacity, cost and
+delivery gates remain open. No normal role or consumer is selected. This work
+uses complete replacements and does not reopen delta synchronization.
 
 Snapshot/delta synchronization is [deferred behind a default-off gate](delta-sync-dark-feature.md)
 as of 2026-10-17. Implementation and evidence are retained for a future explicit
