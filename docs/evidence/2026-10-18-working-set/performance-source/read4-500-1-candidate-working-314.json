@@ -1,0 +1,316 @@
+{
+  "activeDigest": "cf90bf88716a660bd8a362762483e032bd87d1f39543f8bae0e442cb62cb306c",
+  "activeRowsPerGeneration": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "ageAnchor": "full-feed filter uses current runtime.observedAt minus activity.at; the synthetic 1h/10d cases are away from the 72h edge and do not prove the private accepted-sample Dlo contract",
+  "combinedCpuByGenerationMs": [
+    94.19714,
+    92.8253,
+    91.7965,
+    93.78623,
+    95.46551,
+    94.382
+  ],
+  "combinedCpuTotalMs": 562.45268,
+  "fullBodyBytesPerGeneration": [
+    617737,
+    617737,
+    617737,
+    617737,
+    617737,
+    617737
+  ],
+  "fullDigest": "75a01b23303bfa8f783e2d4190d6b1991cb0a4e5b219d7dcc0ce373965d5908a",
+  "fullFrameBytesPerGeneration": [
+    618619,
+    618619,
+    618619,
+    618619,
+    618619,
+    618619
+  ],
+  "fullRowsPerGeneration": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+  ],
+  "gcEnabled": false,
+  "generationCpuMs": [
+    85.48827,
+    84.38565,
+    83.12431,
+    85.11982,
+    86.75513,
+    85.70967
+  ],
+  "generationCpuTotalMs": 510.58285,
+  "generationInputDigests": [
+    "024f5b819271885929e235e2a103b19e52bbd0e5f16935f12fd60e3589ff425f",
+    "5f0ba759192642044d383c02a3178ebdc09403526d7a7861ad665858ba0bb322",
+    "50b1186950cd2d86a1fd669b5cd09f4ef127c63730963ea8f2e907183b8388ab",
+    "f96b3367491a22c5eb74dcb968b0b84bc37ac7f841332d5429ddff846771b68b",
+    "e50be1980b7d06c39916a534ada1825c5d1a87607bd590df2bcb797f336f00fe",
+    "3b0a2eb3219b9ff3f19df9c0da95b8bd9112a3ac82a17455b89acf1dc48b2ce7",
+    "66064d2a8fd9d82e106c0d102d67b22240a19f2548e3b9624ed1c8a2a671668d"
+  ],
+  "loadedModules": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "sha256": "b51308ad32159717c101c103baf362afc76cf9b43f003574e60ca33795ca6cce"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "sha256": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "sha256": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "sha256": "6cdb1b934c58c551811681ae216ea2a85894a61b6fb90e0a1acf5187bfb0ac5c"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    }
+  },
+  "measuredGenerations": 6,
+  "measuredReads": 24,
+  "python": "3.14.8",
+  "readBodyBytesByRead": [
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698
+  ],
+  "readCpuByGenerationMs": [
+    8.708870000000001,
+    8.43965,
+    8.672189999999999,
+    8.666409999999999,
+    8.71038,
+    8.67233
+  ],
+  "readCpuMs": [
+    2.27892,
+    2.14562,
+    2.15245,
+    2.13188,
+    2.16654,
+    2.10997,
+    2.08303,
+    2.08011,
+    2.25092,
+    2.13428,
+    2.14345,
+    2.14354,
+    2.22328,
+    2.1599,
+    2.14922,
+    2.13401,
+    2.26763,
+    2.15693,
+    2.14839,
+    2.13743,
+    2.22584,
+    2.15905,
+    2.15508,
+    2.13236
+  ],
+  "readCpuTotalMs": 51.86983,
+  "readFrameBytesByRead": [
+    14991,
+    14991,
+    14991,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992
+  ],
+  "readsPerGeneration": 4,
+  "rows": 500,
+  "scope": "pure ServiceState frame/strict parser read path; no SDK, Mesh, socket transport, native provider, RSS or production acceptance; serialized frame bytes are measured but not physically delivered",
+  "seedInputDigest": "92c1d88dd8f2b37d513d8383b88f33821686524886e52b79f9b814429b60fad9",
+  "selectedDigest": "e8dda618ea77b881027a122e5ac72804d068aa753a86918a53937cc350282346",
+  "selectedRowsBytesByRead": [
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203
+  ],
+  "selectedRowsBytesPerGeneration": [
+    5203,
+    5203,
+    5203,
+    5203,
+    5203,
+    5203
+  ],
+  "selectedRowsPerGeneration": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "sourceInputDigest": "d56e6a3f63e46e20048ce97cfcecc8731bb6ad5fe68bdf6d3b6f003d4eecb8ba",
+  "totalSelectedRowsBytes": 124872,
+  "totalSerializedBodyBytes": 328752,
+  "totalSerializedFrameBytes": 359805,
+  "variant": "candidate-working",
+  "warmupGenerations": 1,
+  "workingBodyBytesPerGeneration": [
+    13698,
+    13698,
+    13698,
+    13698,
+    13698,
+    13698
+  ],
+  "workingCoverage": "complete",
+  "workingDigest": "e8dda618ea77b881027a122e5ac72804d068aa753a86918a53937cc350282346",
+  "workingFrameBytesPerGeneration": [
+    14991,
+    14992,
+    14992,
+    14992,
+    14992,
+    14992
+  ],
+  "workingReason": "complete_native_census",
+  "workingScope": {
+    "contextGeneration": 1,
+    "continuity": 1,
+    "memberIds": [
+      "00000000-0000-0000-0000-0000000003e8",
+      "00000000-0000-0000-0000-0000000003e9",
+      "00000000-0000-0000-0000-0000000003ea",
+      "00000000-0000-0000-0000-0000000003eb"
+    ],
+    "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+    "nonmembers": 0,
+    "provider": "codex",
+    "uncertain": 0
+  },
+  "workingScopeMembers": 4
+}
