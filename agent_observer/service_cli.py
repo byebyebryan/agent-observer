@@ -18,6 +18,16 @@ def socket_path():
     return Path(root) / "agent-observer" / "read.sock"
 
 
+def _window_hours(value):
+    try:
+        hours = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("working-set hours must be an integer from 0 through 720") from None
+    if not 0 <= hours <= 720:
+        raise argparse.ArgumentTypeError("working-set hours must be an integer from 0 through 720")
+    return hours
+
+
 def report(error):
     code = str(error)
     if not code.replace("_", "").isalnum() or len(code) > 128:
@@ -62,10 +72,14 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("api")
     commands.add_parser("active-api")
+    working_api = commands.add_parser("working-set-api")
+    working_api.add_argument("--window-hours", type=_window_hours, default=72)
     schema = commands.add_parser("schema")
     schema.add_argument("--kind", choices=("request", "frame"), required=True)
     active_schema = commands.add_parser("active-schema")
     active_schema.add_argument("--kind", choices=("request", "frame"), required=True)
+    working_schema = commands.add_parser("working-set-schema")
+    working_schema.add_argument("--kind", choices=("request", "frame"), required=True)
     for name in ("status", "snapshot", "list", "watch"):
         sub = commands.add_parser(name)
         sub.add_argument("--socket", type=Path, default=socket_path())
@@ -84,6 +98,13 @@ def main(argv=None):
     if args.command == "watch" and args.human and args.json:
         parser.error("--human and --json are mutually exclusive")
     try:
+        if args.command in {"working-set-api", "working-set-schema"}:
+            from .working_set_contract import interface as working_interface
+            from .working_set_contract import schema_document as working_schema_document
+
+            print(canonical(working_interface(args.window_hours * 3600000)
+                            if args.command == "working-set-api" else working_schema_document(args.kind)))
+            return 0
         if args.command in {"active-api", "active-schema"}:
             from .active_contract import interface as active_interface
             from .active_contract import schema_document as active_schema_document
@@ -159,6 +180,8 @@ def serve(argv=None):
                         help="optional bounded private operator JSON, outside public frames")
     parser.add_argument("--workspace-config", type=Path,
                         help="startup-only local root/project mapping JSON; restart to reload")
+    parser.add_argument("--working-set-window-hours", type=_window_hours, nargs="?", const=72,
+                        help="opt-in candidate active + recent cache; bare flag means 72h, 0 means active only")
     args = parser.parse_args(argv)
     try:
         from .adapters import select_adapters
@@ -172,7 +195,9 @@ def serve(argv=None):
         workspace_config = load_config(args.workspace_config) if args.workspace_config else None
         homes = {"codex": args.codex_home}
         configs = {adapter.provider: (str(homes[adapter.provider]), "explicit") for adapter in adapters}
-        state = ServiceState(host_scope=args.host_scope, configs=configs)
+        working_options = ({"working_set_window_ms": args.working_set_window_hours * 3600000}
+                           if args.working_set_window_hours is not None else {})
+        state = ServiceState(host_scope=args.host_scope, configs=configs, **working_options)
         scheduler = Scheduler(configs, intervals={"runtime": int(args.runtime_interval * 1000), "history": int(args.history_interval * 1000)}, timeout_ms=int(args.collection_timeout * 1000))
         stop = threading.Event()
         handlers = {s: signal.getsignal(s) for s in (signal.SIGTERM, signal.SIGINT)}

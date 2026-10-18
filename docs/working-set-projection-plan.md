@@ -5,8 +5,11 @@ execute this plan. P0 cached workload sizing is recorded in the
 [sanitized screen](evidence/2026-10-18-working-set/p0/README.md). Joint P1 public
 interface and clock-policy direction is accepted by both Mesh and RLCD in the
 [exact review record](evidence/2026-10-18-working-set/joint-contract/README.md).
-Opt-in P2 producer implementation is in progress; actual source-clock capture,
-timer, native/profile integration and producer qualification remain open.
+Opt-in P2 native clock capture, projection/timer and cached source/client
+components are implemented as candidates. See the
+[native component](working-set-native-candidate.md) and
+[client component](working-set-client-candidate.md). The public SDK descriptor
+registration, actual working-set Reader and producer qualification remain open.
 Routine implementation needs no repeated general approval. Deployment
 and consumer/device adoption retain separate authorization. Earlier planning-only
 statements below describe the c7f41ea checkpoint, not a new stop instruction.

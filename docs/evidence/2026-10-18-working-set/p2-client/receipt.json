@@ -1,0 +1,97 @@
+{
+  "artifacts": {
+    "docs/evidence/2026-10-18-working-set/early-owner-cost/README.md": {
+      "bytes": 2892,
+      "sha256": "c4078347bb0b38a55b5fa8268e984d2620a5eb64c5cef784228cf0249555d0f1"
+    },
+    "docs/evidence/2026-10-18-working-set/early-owner-cost/receipt.json": {
+      "bytes": 5311,
+      "sha256": "c4eef3e6b5a3ee2aa3aea37f3f0ac68298886df08c481aa65c35cfe11c23d356"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/README.md": {
+      "bytes": 3228,
+      "sha256": "2ec7ca6ba85b517c2059be9cd438850b48e5d5129fa91b71d9d4c997db5cea0b"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/canonical.log": {
+      "bytes": 193682,
+      "sha256": "92d5e0971bcf3518535dbdc6b2e4b14f17a341deda37adc278d084876492ca2a"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/focused311.json": {
+      "bytes": 14601,
+      "sha256": "41854fe977801b31d1d91319c14ed6bdbfcceeb9316bf9b38cfc71facd6dd6ae"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/focused311.log": {
+      "bytes": 20387,
+      "sha256": "519369ced73ad84a0edaa9c86f8d70b4deeec54160c440614ccf2bdc41c9014a"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/focused314.json": {
+      "bytes": 14600,
+      "sha256": "10a0bed4665e7f6ef897a2ea33f641b163e657f44f9ec01a1c9013cdb130d9d7"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/focused314.log": {
+      "bytes": 20387,
+      "sha256": "1ff8ec494852fef3ce248df5d734c5b97e0fd84d18deb3674f145b2dadf972ba"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/run_focused.py": {
+      "bytes": 1882,
+      "sha256": "6d2ea86f19ef68960054da148a167ffb5422f968742324dee2f31a01c0fbb587"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/source-inputs.json": {
+      "bytes": 37396,
+      "sha256": "2728360a5d14eb8b4eeab7536912f8ee425b8912491f58c3e02e1934bf4bc566"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-client/source-readback.json": {
+      "bytes": 691,
+      "sha256": "68bd7e90621d7548ef4045e491c77a9dba09672d01cd168b6bfee1053452c7bb"
+    },
+    "docs/working-set-client-candidate.md": {
+      "bytes": 5130,
+      "sha256": "8cfe75cb0e10f2e8c93d99b80096692c561aeee906e031c19c70e819f0420197"
+    },
+    "docs/working-set-projection-plan.md": {
+      "bytes": 18843,
+      "sha256": "2301618d01009b81bbaaceb45913c7bdebd966bbe4a44e84e599ec234f0dd21e"
+    }
+  },
+  "baseNativeCommit": "e48240d797d0325174283c861c86a6f0e41d20db",
+  "cacheEncodingCommit": "cc885e54812ca5a42860d9060539187bb06f266c",
+  "canonical": {
+    "command": "python -B ./scripts/check",
+    "errors": 0,
+    "failures": 0,
+    "markdownFiles": 220,
+    "optionalSdk": "pinned immutable source; no canonical loaded-module inventory captured",
+    "python": "3.14.8",
+    "skips": 0,
+    "tests": 1059
+  },
+  "earlyCost": "All R2 owner-only enabled/disabled screens remain above25%; NOT an accepted-a7 matched cost decision; no optimization campaign or relaxed gate",
+  "focused": {
+    "gcDisabled": true,
+    "loadedPerPython": {
+      "mesh": 17,
+      "observerIncludingRunner": 55
+    },
+    "nativeProviderActions": 0,
+    "pythons": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "testsPerPython": 110
+  },
+  "frozenContractPins": {
+    "docs/working-set-contract-r1.md": "4b4f55dff8308daee6aec442848a6c841c8e18b128ef4b91c01959e87aa33ec8",
+    "docs/working-set-contract-r2.md": "937d442402064a4e43258412d12e906fd5ca98b7fe0244c45f9ac1699884ccea",
+    "docs/working-set-contract-r3.md": "65815ad9997d00d8fc6c34fa56c9e920df9f13a13a25ff9b1a3e303ce8d7c797"
+  },
+  "meshEvidenceCommit": "d483351d302bdc090f62bcaa18029788b7ec75be",
+  "preserved": "legacy full/active defaults, selected services/roles/a7+a23 and dark delta; no sibling edits, builds, installs, rollouts, cleanup coordination or ref rewrite",
+  "remaining": [
+    "exact Mesh descriptor/schema/validator/lock registration and actual working-set Reader integration",
+    "matched accepted-a7 CPU and equal-selected-output combined read/byte gates",
+    "inclusive current/new/full/active/slow-peer encoded ownership, heap/RSS/capacity",
+    "native provider parity, local IPC/fixed SSH and exact immutable installed pair/rollback"
+  ],
+  "scope": "opt-in native source/configuration and pure public SDK1 client candidate; current SDK descriptor rejects setup; not actual working-set Mesh Reader, installed/native-provider/cost/resource acceptance",
+  "sourceReadback": "source-readback.json"
+}
