@@ -17,6 +17,7 @@ import sys
 import traceback
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import MethodType
 
 from ._image_memo import ImageMemo
 from ._image_memo import receive as receive_memo
@@ -164,6 +165,10 @@ class Worker:
     process: object
     buffer: bytearray = field(default_factory=bytearray)
     eof: bool = False
+    _clock_provenance: object | None = field(default=None, repr=False)
+
+
+_CANONICAL_CLOCK = object()
 
 
 class Runtime:
@@ -187,6 +192,14 @@ class Runtime:
         self.workspace_config = decode_document(canonical(configured).encode(), max_bytes=MAX_CONFIG_BYTES)
         self.scheduler = scheduler or Scheduler(state.configs)
         self.worker_factory = worker_factory or self._spawn
+        # Only this installed canonical collector establishes W after collect.
+        # Injected/subclass/replaced factories remain ordinary observation
+        # sources without acquiring recency clock authority implicitly.
+        factory = self.worker_factory
+        self._clock_factory = (
+            factory if type(factory) is MethodType and factory.__self__ is self
+            and factory.__func__ is _CANONICAL_SPAWN else None
+        )
         self.collect = collect
         self.max_clients, self.encoded_limit = max_clients, encoded_limit
         self.io_timeout, self.heartbeat = io_timeout_ms, heartbeat_ms
@@ -201,6 +214,12 @@ class Runtime:
         self.image_memos = {provider: ImageMemo(provider) for provider in state.configs}
         self._sync_reserver = self._reserve_sync
         self._working_set_reserver = self._reserve_working_set
+
+    def _start_worker(self, job):
+        factory = self.worker_factory
+        process = factory(job)
+        proof = _CANONICAL_CLOCK if factory is self._clock_factory else None
+        return Worker(job, process, _clock_provenance=proof)
 
     def _spawn(self, job):
         payload = {"hostScope": self.state.host_scope, "provider": job.provider,
@@ -696,7 +715,8 @@ class Runtime:
                 ttl = max(self.scheduler.timeout + 2 * self.scheduler.intervals[worker.job.component] + 1000, 3 * self.scheduler.intervals[worker.job.component])
                 if worker.job.generation == self.scheduler.generation[provider]:
                     clock_metadata = ({"accepted_boottime_ms": accepted_ms}
-                                      if getattr(self.state, "working_set_clocks", None) is not None else {})
+                                      if (getattr(self.state, "working_set_clocks", None) is not None
+                                          and worker._clock_provenance is _CANONICAL_CLOCK) else {})
                     accepted = self.state.accept(provider, worker.job.component, value, sampled_ms=worker.job.started, ttl_ms=ttl, runtime_ttl_ms=max(self.scheduler.timeout + 2 * self.scheduler.intervals["runtime"] + 1000, 3 * self.scheduler.intervals["runtime"]), **clock_metadata)
                     success = True
             except (ValueError, OSError):
@@ -739,9 +759,9 @@ class Runtime:
                             self.state.attempt(job.provider, job.component)
                             process = None
                             try:
-                                process = self.worker_factory(job)
+                                worker = self._start_worker(job)
+                                process = worker.process
                                 os.set_blocking(process.stdout.fileno(), False)
-                                worker = Worker(job, process)
                                 self.workers[job.provider] = worker
                                 self.selector.register(process.stdout, selectors.EVENT_READ, ("worker", worker))
                                 self.counts["workerStarts"] += 1
@@ -830,3 +850,8 @@ class Runtime:
             for memo in self.image_memos.values():
                 memo.close()
             self.selector.close()
+
+
+# Capture the implementation, not a later monkeypatch/subclass hook. No public
+# worker-attestation API is introduced; equivalent custom workers need review.
+_CANONICAL_SPAWN = Runtime._spawn

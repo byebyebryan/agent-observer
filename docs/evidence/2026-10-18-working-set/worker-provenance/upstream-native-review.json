@@ -1,0 +1,132 @@
+{
+  "scope": "Read-only exact native candidate/SDK1 decomposition and names/packaged-validator review; no Mesh runtime/API edits, ID allocation, qualification campaign or delta work",
+  "observerCommit": "e48240d797d0325174283c861c86a6f0e41d20db",
+  "meshHead": "bea028964f5c1f89c6527fcd9f04e4d634c00d7b",
+  "verdict": {
+    "sdkShapeAndProposedNames": "SUPPORTED DIRECTION within SDK1",
+    "unconditionalNativeTupleAgreement": false,
+    "reason": "Concrete P1 canonical-worker clock-provenance conflict in Runtime._complete; no generic Mesh API blocker"
+  },
+  "inputs": {
+    "docs/working-set-native-candidate.md": {
+      "bytes": 6347,
+      "sha256": "ec0a1687a174d850f4665e53763385b82ccaf233a227e6a2b656bb5218253b33"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/receipt.json": {
+      "bytes": 5017,
+      "sha256": "e01d66cabcd73a53097dbfa0d8e85d2246c20e81b4a72cbe72080789d5751e02"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/source-inputs.json": {
+      "bytes": 34725,
+      "sha256": "644a9a5c2a590c9276efc7518283a916183e878f7dcb05c8b5e6d810abda07c1"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/candidate-frame.schema.json": {
+      "bytes": 128580,
+      "sha256": "0bc51d1323dfa21d9855fab4fbf9e03ad231f21b2093e2a7b834da7dc01f4841"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/candidate-request.schema.json": {
+      "bytes": 2987,
+      "sha256": "4f9b3f83ce00aab688830a7b452d476111abf26d52aca608548da8aba2318aeb"
+    },
+    "docs/working-set-contract-r1.md": {
+      "bytes": 16800,
+      "sha256": "4b4f55dff8308daee6aec442848a6c841c8e18b128ef4b91c01959e87aa33ec8"
+    },
+    "docs/working-set-contract-r2.md": {
+      "bytes": 6604,
+      "sha256": "937d442402064a4e43258412d12e906fd5ca98b7fe0244c45f9ac1699884ccea"
+    }
+  },
+  "sourceVerification": {
+    "all234SourcePinsVerifiedAgainstCommittedE48240d": true,
+    "all234WorkingSourceBytesMatchCommit": true,
+    "all12CommittedEvidenceArtifactsVerified": true
+  },
+  "staticChecks": {
+    "candidateFrameAndRequestDraft202012Schemas": "valid",
+    "candidateRowsEqualFrozenAPI4V3Schema": true,
+    "projectionExactlyScopesAndSessions": true,
+    "framePropertiesClosedAndAllRequired": true,
+    "nativeWorkingSetProtocol": 1,
+    "noRuntimeOrNativeTestsExecuted": true
+  },
+  "supportedDescriptorDirection": {
+    "sdk_version": 1,
+    "profile_id": "agent-observer.mesh-working-set.v1",
+    "native_protocol": "agent-observer.working-set",
+    "native_version": 1,
+    "frame_bytes": 8404992,
+    "contract_digest": "sha256 of future reviewed packaged Mesh working-set profile schema, NOT native-frame digest; not allocated or registered"
+  },
+  "nativeStateMapping": {
+    "owner.protocol": "agent-observer.working-set",
+    "owner.version": 1,
+    "owner.metadata": "null if projection=null, else projection minus sessions",
+    "owner.service": "entire native frame minus projection, preserving selector/digest, observation/view revisions, clockCeiling/generation and sources",
+    "records": "[]/() if projection=null else original ordered projection.sessions",
+    "clock": "original bootId and canonical source BOOTTIME/timeNamespace mapping",
+    "publisher": "serviceId",
+    "emitted_ms": "emittedBoottimeMs",
+    "receipts": "original provider:namespace/component/accepted/health/expiry; null projection must downgrade current/partial to nonpositive as existing active codec does"
+  },
+  "validatorAndIntegrationRequirements": [
+    "New explicitly reviewed profile/native-schema/request-schema addendum and lock entries; preserve all prior normative/schema bytes and frozen defaults",
+    "Packaged profile owner metadata exactly closed scopes schema/null, owner service exactly new native header schema without projection, sessions exactly frozen API4 schema; restore is exact inverse",
+    "Native candidate request/frame exported hashes remain individually pinned, and Mesh profile digest binds its own packaged schema",
+    "Selector/window is configurable within fixed family: do not copy fixed active selectorDigest const or hardcode72h into generic profile; pure trusted source/codec/profile/preparation/facade capture one immutable expected selector and validate every frame/proof/reconnect",
+    "Later explicit state.descriptor, view.profile_validator suffix, trusted CLI factory allowlist/schema package parity integration; current a23 must keep rejecting unsupported ID until approved integration",
+    "Bound codec performs full strict native semantic admission and Mesh independently retains byte/scope/identity/roundtrip/clock/proof/receipt checks; schema-only success is insufficient",
+    "New profile cannot reuse active-only running eligibility or conjunction as OR; public snapshot/current-before-context facade independently evaluates A/R/eligibility and complete-to-partial expiry using translated original supports",
+    "Keep signed cutoff/clockCeiling bounds and exact origin sample/mirror joins; no receiver wall-clock or Dhi inference from attenuation",
+    "Current source export/frame metadata and tests remain candidate/unreleased; no installed/selection/native-provider/resource/CPU/SSH/producer acceptance inferred"
+  ],
+  "concreteConflict": {
+    "title": "Clock authority is automatically granted for injected noncanonical worker factories",
+    "contract": "R1 Trusted source sample step4: unsupported custom workers install no clock authority; only accepted canonical causal L/W/U bracket grants recency",
+    "source": [
+      "service_runtime.py:189 captures worker_factory or self._spawn without a clock-provenance capability",
+      "service_runtime.py:698-700 supplies accepted_boottime_ms whenever working_set_clocks exists, independent of factory provenance",
+      "service_state.py:94-96 and176-201 install clocks after accepted sample; no canonical-worker discriminator"
+    ],
+    "effect": "An accepted injected/cached worker snapshot with structurally valid collectedAt follows the same clock-authority path despite absence of canonical W-capture guarantee. This is a source-level path finding, not a measured native/host exploit.",
+    "alternative": "Capture a local immutable clock-provenance capability at Runtime construction; enable it for built-in canonical worker only by default, and withhold clock metadata for arbitrary injected factories. Explicitly reviewed equivalent custom workers/test fixtures can attest the same causal bracket through an owning local mechanism; no Mesh API/wire addition is required.",
+    "requiredEvidence": "Owning focused regression: default canonical path still supplies bracket; unsupported injected worker can supply ordinary accepted state but no positive recency/bracket (active branch remains independent); actual accepted-only/superseded sample/history-mirror cases remain correct. Then return one revised immutable candidate.",
+    "oldAcceptedBoolTrap": "Fixed at source inspection: state.accept returned bool is captured and ServiceState installs only when true; scheduler success flag no longer grants bracket by itself"
+  },
+  "notReplayed": {
+    "sourceReported1030Canonical": true,
+    "sourceReported81FocusedEachPython": true,
+    "nativeIPCOrProvider": true,
+    "CPUOrResourceOrInstalled": true
+  },
+  "meshSourcePins": {
+    "src/mesh_plus/state.py": {
+      "bytes": 11531,
+      "sha256": "0f438cd968da7efe9da364e836042c82b4fbc84192170b5745c672bea0b70f6b"
+    },
+    "src/mesh_plus/view.py": {
+      "bytes": 15569,
+      "sha256": "fab26477371397eba6b655eec5a157d5f69e69254df2b59971aa11ee674403e6"
+    },
+    "src/mesh_plus/prepared.py": {
+      "bytes": 12593,
+      "sha256": "333f179ebf6eeabf5528d9d938cdc7ef484fb2ffcf9ec41608e7f29719f77486"
+    },
+    "src/mesh_plus/cli.py": {
+      "bytes": 13352,
+      "sha256": "6c84091e9a0f5513bfc989c85d2e6bf491f81c2fa88d6f604a35872675ee9291"
+    },
+    "src/mesh_plus/schemas/read-agent-active.profile.schema.json": {
+      "bytes": 117194,
+      "sha256": "9f29bfd0fe1803f4ccf30c4cbfbc8f63de4423fdb6eda234291685d99bef46ae"
+    },
+    "contracts/agent-profile-v3/profile.schema.json": {
+      "bytes": 25707,
+      "sha256": "f36c2298ac9f5f6b6282c23a994711247486ca9791fbca4bcc70e3fb110d0261"
+    },
+    "contracts/LOCK.json": {
+      "bytes": 8617,
+      "sha256": "11736752d08b7e29688a5816327b86477a615b1c7af8c76bfb47278dcc1890a4"
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "artifacts": {
+    "docs/evidence/2026-10-18-working-set/worker-provenance/README.md": {
+      "bytes": 1638,
+      "sha256": "f35c7507f348135a690a98db9e525da5dae8e8471401c4b99b903df5decfa080"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/after-candidate-311.json": {
+      "bytes": 6008,
+      "sha256": "ddf2b1760f71941ac91b393bc9114f6f2a17fe10023e952b653c61dc4ab8b5e9"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/after-candidate-311.log": {
+      "bytes": 1115,
+      "sha256": "f557277fc3490b7a173d1e5d074cd68749eaa374756e48ac1e40abcdaddfe183"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/after-candidate-314.json": {
+      "bytes": 6007,
+      "sha256": "e9da79cdabaf56c2503731576314978af2b07d7426b60b651b80c27677169469"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/after-candidate-314.log": {
+      "bytes": 1115,
+      "sha256": "66537ce0e6f98c7feedd0af10192c4fd3a925bfe44b6e3ef55905299731b96af"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/before-c6-311.json": {
+      "bytes": 6007,
+      "sha256": "20b26d64edc3fe9518304a1a5e0ed2d7505018ac9cfde3c3fc1596d6547d7f94"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/before-c6-311.log": {
+      "bytes": 1527,
+      "sha256": "f53ff6b2f14077231c1f7cb3dc5634a92648ce0448a789c3dcfaca00a9a1a1c0"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/before-c6-314.json": {
+      "bytes": 6006,
+      "sha256": "29ea8f9603953bbfe1f6ca7b2f384cd24429d1387cf2a2b9fb4df309d2c0c5d2"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/before-c6-314.log": {
+      "bytes": 1623,
+      "sha256": "c097d7066cc1ed91b8a7e749b5f61f9f4546dc0f60bcc42e1442cb20185abeb3"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/canonical.log": {
+      "bytes": 194699,
+      "sha256": "bf73984116d70f7ace0eb017dbdfcaa4051dcfe4c0cc29dadd0bdef37b0d2265"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/focused311.json": {
+      "bytes": 14822,
+      "sha256": "f87711f5819e5bb9755bf966e2370723e99ad1c4009c7dad56259e1e8017f3e0"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/focused311.log": {
+      "bytes": 21404,
+      "sha256": "6fa0d4df30c50ca570195c2c09e6aec90db85cd866efea6208876aa378875dd1"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/focused314.json": {
+      "bytes": 14821,
+      "sha256": "779de77514846476968c001bbc93251851b935c0c5e37357cc1fee5b86a493e2"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/focused314.log": {
+      "bytes": 21404,
+      "sha256": "608ab0d44bf80b85dfb45f04115da8409324c1708daeee741efe2c086bb55eda"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/run_probe.py": {
+      "bytes": 1830,
+      "sha256": "743d2067a8349ef752ef343fb692aaaa8fda75237f65fcc50cbfa2887526b706"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/source-inputs.json": {
+      "bytes": 25559,
+      "sha256": "78c5da413b2266f8d49afc81ede162d9f6fe2787a36e9c31e88640e38214a396"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/source-readback.json": {
+      "bytes": 624,
+      "sha256": "66a713a01bd88e288ceaa19521750d711d6aa22fc555eb156b01b0b3332461b9"
+    },
+    "docs/evidence/2026-10-18-working-set/worker-provenance/upstream-native-review.json": {
+      "bytes": 8345,
+      "sha256": "34100086422b532e583192a5bbfa2964a1c2c750dac36c4c57d981bf2680a1d1"
+    },
+    "docs/working-set-worker-provenance.md": {
+      "bytes": 2659,
+      "sha256": "e6c52af070a675ba1f6a477271283901d2b66e7fbb379d75531c45dd13e70c40"
+    }
+  },
+  "authority": "private local token minted only for exact captured installed _spawn callable actually used; unsupported/replaced/subclass worker accepted data has no automatic source clock; default bracket remains accepted-only",
+  "beforeSource": "c6a238f",
+  "canonical": {
+    "errors": 0,
+    "failures": 0,
+    "markdownFiles": 223,
+    "optionalMesh": "unchanged immutable d483 source,96filesverified; no canonical imported-file inventory captured",
+    "python": "3.14.8",
+    "skips": 0,
+    "tests": 1064
+  },
+  "focused": {
+    "afterNewMethodsEach": {
+      "errors": 0,
+      "failures": 0,
+      "loaded": 32,
+      "skips": 0,
+      "tests": 5
+    },
+    "beforeSameOneMethod": {
+      "errors": 0,
+      "loaded": 32,
+      "semanticFailures": 1,
+      "skips": 0,
+      "tests": 1
+    },
+    "gcDisabled": true,
+    "pythons": [
+      "3.14.8",
+      "3.11.17"
+    ],
+    "wholeWorkingSetLoadedEach": {
+      "mesh": 17,
+      "observerIncludingRunner": 56
+    },
+    "wholeWorkingSetTestsEach": 115
+  },
+  "preserved": "full/active wire defaults, P1 contracts, source/profile/factory/facade public APIs, caps/deadlines, selections/services, all earlier evidence and dark delta; no source-worker/provider process executed in focused tests",
+  "runtimeSource": {
+    "bytes": 40816,
+    "sha256": "2f988eb46a5531daca38b366fc98f0bb4be394cfe4ebac99494d965e78984c33"
+  },
+  "scope": "canonical-worker provenance prerequisite correction, not native/provider/installed/SDK/resource/performance acceptance",
+  "sourceReadback": "source-readback.json",
+  "testOverlay": {
+    "bytes": 7595,
+    "sha256": "1867bcdff6e286ccd8e26320475e3a04d2527874759940faf6a95dbd0242c65c"
+  },
+  "unchangedNativeAndContractInputs": {
+    "agent_observer/working_set_contract.py": {
+      "bytes": 26460,
+      "sha256": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/candidate-frame.schema.json": {
+      "bytes": 128580,
+      "sha256": "0bc51d1323dfa21d9855fab4fbf9e03ad231f21b2093e2a7b834da7dc01f4841"
+    },
+    "docs/evidence/2026-10-18-working-set/p2-native/candidate-request.schema.json": {
+      "bytes": 2987,
+      "sha256": "4f9b3f83ce00aab688830a7b452d476111abf26d52aca608548da8aba2318aeb"
+    },
+    "docs/working-set-contract-r1.md": {
+      "bytes": 16800,
+      "sha256": "4b4f55dff8308daee6aec442848a6c841c8e18b128ef4b91c01959e87aa33ec8"
+    },
+    "docs/working-set-contract-r2.md": {
+      "bytes": 6604,
+      "sha256": "937d442402064a4e43258412d12e906fd5ca98b7fe0244c45f9ac1699884ccea"
+    },
+    "docs/working-set-contract-r3.md": {
+      "bytes": 3981,
+      "sha256": "65815ad9997d00d8fc6c34fa56c9e920df9f13a13a25ff9b1a3e303ce8d7c797"
+    }
+  }
+}

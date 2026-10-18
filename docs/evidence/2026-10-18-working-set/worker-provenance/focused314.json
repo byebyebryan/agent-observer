@@ -1,0 +1,376 @@
+{
+  "errors": 0,
+  "failures": 0,
+  "gcEnabled": false,
+  "loadedProjectModules": {
+    "__main__": {
+      "path": "docs/evidence/2026-10-18-working-set/p2-client/run_focused.py",
+      "repo": "observer",
+      "sha256": "6d2ea86f19ef68960054da148a167ffb5422f968742324dee2f31a01c0fbb587"
+    },
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "repo": "observer",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer._image_memo": {
+      "path": "agent_observer/_image_memo.py",
+      "repo": "observer",
+      "sha256": "e51920f262521b25d00812458f52b67474039334581426108703cfeb5604c331"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "repo": "observer",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "repo": "observer",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.activity": {
+      "path": "agent_observer/activity.py",
+      "repo": "observer",
+      "sha256": "f8ad39a1992070347988b0b9c73710bc7acecd3336afb1cf47dcefcbd67bbff1"
+    },
+    "agent_observer.adapters": {
+      "path": "agent_observer/adapters.py",
+      "repo": "observer",
+      "sha256": "21511b8de49d91d49a4dde26eae87458db6da5a9babab8421feade7b67e2b276"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "repo": "observer",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "repo": "observer",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "repo": "observer",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.mesh_source": {
+      "path": "agent_observer/mesh_source.py",
+      "repo": "observer",
+      "sha256": "bcbbba27b0296c2ff9792697b31c1b89410c407f15df71b522262313ba987fae"
+    },
+    "agent_observer.mesh_working_set_profile": {
+      "path": "agent_observer/mesh_working_set_profile.py",
+      "repo": "observer",
+      "sha256": "bb0dee8ac810aca5736e3a1d7864361271a13522b07b79750cf8d5e2147ead3b"
+    },
+    "agent_observer.mesh_working_set_publisher": {
+      "path": "agent_observer/mesh_working_set_publisher.py",
+      "repo": "observer",
+      "sha256": "f1830a32baed77055758dfe4345b27b7308383ed556bb9ea6a610a0c30fd315e"
+    },
+    "agent_observer.mesh_working_set_read": {
+      "path": "agent_observer/mesh_working_set_read.py",
+      "repo": "observer",
+      "sha256": "3925e85259aaa43c23284d612859c66b2bab3b55abb28d5a6b916965cbc097af"
+    },
+    "agent_observer.mesh_working_set_source": {
+      "path": "agent_observer/mesh_working_set_source.py",
+      "repo": "observer",
+      "sha256": "e5b239a49e4d27f32d4f421290a251785dcdb62a7c9a43777f2ae1369b0b582a"
+    },
+    "agent_observer.native_artifacts": {
+      "path": "agent_observer/native_artifacts.py",
+      "repo": "observer",
+      "sha256": "743e30c5a67cf3f3d9b5cf7d1990859d9a0df8b725dcb4245fd73415fe54d773"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "repo": "observer",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "repo": "observer",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_scheduler": {
+      "path": "agent_observer/observation_scheduler.py",
+      "repo": "observer",
+      "sha256": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "repo": "observer",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "repo": "observer",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.read_cache": {
+      "path": "agent_observer/read_cache.py",
+      "repo": "observer",
+      "sha256": "5cd1932a36badeede7729f72c0bc0d82cd1be64477d2618b026f2cc452e1a71d"
+    },
+    "agent_observer.service_cli": {
+      "path": "agent_observer/service_cli.py",
+      "repo": "observer",
+      "sha256": "61c2b96bee5d919e1f30275294c9d50dab1ab01dc994f0f3fd46c0d6fd2003fe"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "repo": "observer",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_public": {
+      "path": "agent_observer/service_public.py",
+      "repo": "observer",
+      "sha256": "704cfe0065dfe2a8c86c27766f14f88916f55a827211762576efba05512ec41a"
+    },
+    "agent_observer.service_runtime": {
+      "path": "agent_observer/service_runtime.py",
+      "repo": "observer",
+      "sha256": "2f988eb46a5531daca38b366fc98f0bb4be394cfe4ebac99494d965e78984c33"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "repo": "observer",
+      "sha256": "b51308ad32159717c101c103baf362afc76cf9b43f003574e60ca33795ca6cce"
+    },
+    "agent_observer.sync_commitment": {
+      "path": "agent_observer/sync_commitment.py",
+      "repo": "observer",
+      "sha256": "544fba79d3a05ac898a925432d0923de9eca31658481ae15e1118cc8c0be1ff5"
+    },
+    "agent_observer.sync_contract": {
+      "path": "agent_observer/sync_contract.py",
+      "repo": "observer",
+      "sha256": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236"
+    },
+    "agent_observer.sync_native": {
+      "path": "agent_observer/sync_native.py",
+      "repo": "observer",
+      "sha256": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "repo": "observer",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "repo": "observer",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "repo": "observer",
+      "sha256": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "repo": "observer",
+      "sha256": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "repo": "observer",
+      "sha256": "6cdb1b934c58c551811681ae216ea2a85894a61b6fb90e0a1acf5187bfb0ac5c"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "repo": "observer",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    },
+    "agent_observer.workspace": {
+      "path": "agent_observer/workspace.py",
+      "repo": "observer",
+      "sha256": "4b8a63d362af880b6acd4326e767d32a800df3f5f6e1282e5c4d62d4263ac92e"
+    },
+    "mesh_plus": {
+      "path": "mesh_plus/__init__.py",
+      "repo": "mesh",
+      "sha256": "d4c9f162318ab9942f47c730884001fafaeffc5ddfab1967ce961acd89eb268f"
+    },
+    "mesh_plus._receipt_history": {
+      "path": "mesh_plus/_receipt_history.py",
+      "repo": "mesh",
+      "sha256": "d5703497b3acfdea53318e7de1da828867ac68e937971c3c7640dbe76b5ab70a"
+    },
+    "mesh_plus.admission": {
+      "path": "mesh_plus/admission.py",
+      "repo": "mesh",
+      "sha256": "2b703d4c84a0ae966fee8d4db637b01fc0fdb4971351d4484a85c6e18d2d85bb"
+    },
+    "mesh_plus.api": {
+      "path": "mesh_plus/api.py",
+      "repo": "mesh",
+      "sha256": "8b63c94e7da9a886280b7a8ce5baa8ab26e010edc7284b6dbec4889db53353cc"
+    },
+    "mesh_plus.bridge": {
+      "path": "mesh_plus/bridge.py",
+      "repo": "mesh",
+      "sha256": "c369664856a6eccb05f3f5168efe60302037e4930991775a8eb1ecb0a9d6fe9f"
+    },
+    "mesh_plus.catalog": {
+      "path": "mesh_plus/catalog.py",
+      "repo": "mesh",
+      "sha256": "f8d52f8e8f73f84504b931bdd2970ab60eeac3b69fce22d3fde7d6bb8d6cdb1a"
+    },
+    "mesh_plus.client": {
+      "path": "mesh_plus/client.py",
+      "repo": "mesh",
+      "sha256": "03945c23300079f8f6fe75c7c9fad781552bf854f5ce1c1e6b5aadaa576a2101"
+    },
+    "mesh_plus.configured_read": {
+      "path": "mesh_plus/configured_read.py",
+      "repo": "mesh",
+      "sha256": "dc39f08d557b4ce6ca9f988eeb91e8749f363c8d930fe915cf801df82d77a32c"
+    },
+    "mesh_plus.evidence": {
+      "path": "mesh_plus/evidence.py",
+      "repo": "mesh",
+      "sha256": "224dae58b30c28f142ea1fa0e31038c76704f383082b79989cfef3908ceb388c"
+    },
+    "mesh_plus.prepared": {
+      "path": "mesh_plus/prepared.py",
+      "repo": "mesh",
+      "sha256": "333f179ebf6eeabf5528d9d938cdc7ef484fb2ffcf9ec41608e7f29719f77486"
+    },
+    "mesh_plus.protocol": {
+      "path": "mesh_plus/protocol.py",
+      "repo": "mesh",
+      "sha256": "5a53fa9bec8ffa7c0fe4ba0911dec6c38a2f4739d281be52775d0c56349125c3"
+    },
+    "mesh_plus.publisher": {
+      "path": "mesh_plus/publisher.py",
+      "repo": "mesh",
+      "sha256": "0dfbf1461a4555f3c0a9b02f8788cd85c9b7c8ae90087d11c84ea4c3a4188336"
+    },
+    "mesh_plus.reader": {
+      "path": "mesh_plus/reader.py",
+      "repo": "mesh",
+      "sha256": "c99270d28ac92762f2e31307ec437ce96a6def69bac4c3ffcea8039d181a1674"
+    },
+    "mesh_plus.remote": {
+      "path": "mesh_plus/remote.py",
+      "repo": "mesh",
+      "sha256": "eb2d4165e3b086ed298ba991a51d04309821b50e46dfc4702f0ab081e87c890b"
+    },
+    "mesh_plus.state": {
+      "path": "mesh_plus/state.py",
+      "repo": "mesh",
+      "sha256": "0f438cd968da7efe9da364e836042c82b4fbc84192170b5745c672bea0b70f6b"
+    },
+    "mesh_plus.transport": {
+      "path": "mesh_plus/transport.py",
+      "repo": "mesh",
+      "sha256": "4a12f03711baf4fa106b1d52d069063694ff12a66c61500815e9cea4967244ca"
+    },
+    "mesh_plus.view": {
+      "path": "mesh_plus/view.py",
+      "repo": "mesh",
+      "sha256": "fab26477371397eba6b655eec5a157d5f69e69254df2b59971aa11ee674403e6"
+    },
+    "test_active_contract": {
+      "path": "tests/test_active_contract.py",
+      "repo": "observer",
+      "sha256": "226483b34461a3c65b51fac40b3a13ff47fdbe63ed17beebc59478a2dc8de638"
+    },
+    "test_active_projection": {
+      "path": "tests/test_active_projection.py",
+      "repo": "observer",
+      "sha256": "c902f34f653fbc111a6be1ff50972a4e33cb5111269c688ae177ca61a70ca16e"
+    },
+    "test_active_service_delivery": {
+      "path": "tests/test_active_service_delivery.py",
+      "repo": "observer",
+      "sha256": "ce711c00ba29f8a0b3fafdecd9a94374ecec3a8e7b32f1a7ea47856a8f81f39f"
+    },
+    "test_mesh_working_set_profile": {
+      "path": "tests/test_mesh_working_set_profile.py",
+      "repo": "observer",
+      "sha256": "615e51de5ea15f7e0f5c9a95c9ff2a3c700079f60c67efe65e11004ff0c1e79a"
+    },
+    "test_mesh_working_set_read": {
+      "path": "tests/test_mesh_working_set_read.py",
+      "repo": "observer",
+      "sha256": "150fa4650e54cedbe60bc36075be625b1258477cd373a54e5025abfb78360417"
+    },
+    "test_service_contract": {
+      "path": "tests/test_service_contract.py",
+      "repo": "observer",
+      "sha256": "78c340327e737b7cbe66457604a59b0212bb6dcde3cfaf1416fb97b9e9334d18"
+    },
+    "test_service_runtime": {
+      "path": "tests/test_service_runtime.py",
+      "repo": "observer",
+      "sha256": "35275647a577f7220bdc205bfe5e31b2017fd7caf5d8cfa64b139aa5dd4853a1"
+    },
+    "test_service_state": {
+      "path": "tests/test_service_state.py",
+      "repo": "observer",
+      "sha256": "e2538cbafa0718774a034b9e4d92980b32c617d3bca4b38da0f021f805b71742"
+    },
+    "test_working_set_cached_encoding": {
+      "path": "tests/test_working_set_cached_encoding.py",
+      "repo": "observer",
+      "sha256": "3c762563228c08735eaa5bc4d7f239c0ad4c817ccb8d86d6a7b786627a91565b"
+    },
+    "test_working_set_capture": {
+      "path": "tests/test_working_set_capture.py",
+      "repo": "observer",
+      "sha256": "2b13b57c8610d22f9af1e4279f7d5c79a51c1e59c62bfeeab7fae039f2242e83"
+    },
+    "test_working_set_cli": {
+      "path": "tests/test_working_set_cli.py",
+      "repo": "observer",
+      "sha256": "73f8d6f8058ec984b6e1eca79678d5e98c7d8a5371c3ba95c385e462c9806325"
+    },
+    "test_working_set_clocks": {
+      "path": "tests/test_working_set_clocks.py",
+      "repo": "observer",
+      "sha256": "0e39359867d64a00948664619de3d3c29f967b3c242bbee4ab1aef6078905f7d"
+    },
+    "test_working_set_contract": {
+      "path": "tests/test_working_set_contract.py",
+      "repo": "observer",
+      "sha256": "3975360220212f057071ceaf84eb6dbb70fc99be31824a1e2e52808802b654af"
+    },
+    "test_working_set_decisions": {
+      "path": "tests/test_working_set_decisions.py",
+      "repo": "observer",
+      "sha256": "24e057df19f7cfd3a7fb83282af3a57bb09f2070a11b4d85b8ca11e5bf8db5d1"
+    },
+    "test_working_set_delivery": {
+      "path": "tests/test_working_set_delivery.py",
+      "repo": "observer",
+      "sha256": "18afaefb1bc714f3098e9fbe5909d4318f714a1f0241744a8b88c2d5ebfcf69c"
+    },
+    "test_working_set_policy": {
+      "path": "tests/test_working_set_policy.py",
+      "repo": "observer",
+      "sha256": "cd62f76fe89d1fdc7f22d8b685f6b20bfb06431dae75703350f4385159f120ba"
+    },
+    "test_working_set_projection": {
+      "path": "tests/test_working_set_projection.py",
+      "repo": "observer",
+      "sha256": "ca2254a42f4047f69ad2f59e04104d1188dc5216e9009a8d465a463fd0de4328"
+    },
+    "test_working_set_source": {
+      "path": "tests/test_working_set_source.py",
+      "repo": "observer",
+      "sha256": "28950b701b5127c2fcfcae1b5f362241e93cd817c0d0594c0ee8bdb2df25d191"
+    },
+    "test_working_set_worker_provenance": {
+      "path": "tests/test_working_set_worker_provenance.py",
+      "repo": "observer",
+      "sha256": "1867bcdff6e286ccd8e26320475e3a04d2527874759940faf6a95dbd0242c65c"
+    }
+  },
+  "python": "3.14.8",
+  "scope": "synthetic native/CLI/local socket/domain policy; current SDK rejects candidate profile; no actual working-set Reader, native provider, installed or cost acceptance",
+  "skips": 0,
+  "testsRun": 115
+}
