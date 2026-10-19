@@ -341,7 +341,10 @@ class WorkingSetDecisions:
         self.max_identities = max_identities
         self.max_guard_bytes = max_guard_bytes
         self._context: tuple[str, str, int] | None = None
-        self._guards: dict[tuple[str, ...], tuple[int, int]] = {}
+        # ``_identity_prefix`` is the exact shared host/provider/namespace/kind
+        # boundary for this context. The dictionary retains only an owned
+        # native-ID string per guard, after each row has matched that prefix.
+        self._guards: dict[str, tuple[int, int]] = {}
         self._identity_prefix: tuple[str, str, str, str] | None = None
         self._prefix_bytes = 0
         self._guard_entries_bytes = 0
@@ -681,15 +684,13 @@ class WorkingSetDecisions:
         )
 
     @staticmethod
-    def _guard_entry_charge(identity: tuple[str, ...], event_at: int, epoch: int) -> int:
-        # The key tuple shares four immutable prefix strings. Count its own
-        # pointer array, the per-identity native ID, timestamp/epoch value and
-        # event pair. Dictionary capacity is prepaid separately before growth.
-        native_id = identity[4]
+    def _guard_entry_charge(native_id: str, event_at: int, epoch: int) -> int:
+        # The exact identity prefix is owned once per context. Each entry owns
+        # only its native-ID string plus timestamp/epoch value and event pair.
+        # Dictionary capacity is prepaid separately before growth.
         event = (event_at, epoch)
         return (
             len(native_id.encode("ascii"))
-            + sys.getsizeof(identity)
             + sys.getsizeof(native_id)
             + sys.getsizeof(event)
             + sys.getsizeof(event_at)
@@ -734,11 +735,10 @@ class WorkingSetDecisions:
         if self._identity_prefix is not None and self._identity_prefix != identity_prefix:
             return "identity_scope_mismatch"
 
-        # Build only a borrowed tuple for lookup and quota arithmetic. The
-        # fixed table-base reserve includes this small temporary object and
-        # encoded-string scratch used by the charge calculation.
-        borrowed_identity = (*identity_prefix, native_id)
-        previous = self._guards.get(borrowed_identity)
+        # This row's exact prefix was compared above. The per-context map can
+        # therefore use only the native ID without widening identity scope.
+        # The fixed table-base reserve includes lookup/encoding scratch.
+        previous = self._guards.get(native_id)
         if previous is not None:
             previous_at, confirmed_generation = previous
             if event_at < previous_at:
@@ -748,7 +748,7 @@ class WorkingSetDecisions:
                     return "clock_discontinuity"
                 return None
             old_charge = self._guard_entry_charge(
-                borrowed_identity, previous_at, confirmed_generation
+                native_id, previous_at, confirmed_generation
             )
         else:
             if len(self._guards) >= self.max_identities:
@@ -758,7 +758,7 @@ class WorkingSetDecisions:
         # A first event after a clock discontinuity is retained as a key but
         # remains unconfirmed; only a strictly newer supported T can reopen R.
         epoch = clock_generation if previous is not None or clock_generation == 0 else -1
-        new_charge = self._guard_entry_charge(borrowed_identity, event_at, epoch)
+        new_charge = self._guard_entry_charge(native_id, event_at, epoch)
         prefix_bytes = (
             self._prefix_bytes
             if self._identity_prefix is not None
@@ -773,14 +773,14 @@ class WorkingSetDecisions:
         if projected > self.max_guard_bytes:
             return self._latch_capacity()
 
-        owned_prefix = (
-            self._identity_prefix
-            if self._identity_prefix is not None
-            else self._owned_prefix(identity_prefix)
-        )
-        owned_native_id = self._owned_ascii(native_id)
-        owned_identity = (*owned_prefix, owned_native_id)
-        self._guards[owned_identity] = event_at, epoch
+        owned_prefix = self._identity_prefix
+        if owned_prefix is None:
+            owned_prefix = self._owned_prefix(identity_prefix)
+        # Existing-key assignment replaces only its event value; CPython keeps
+        # the stored owned key object. New keys are copied only after quota
+        # preflight succeeds.
+        guard_key = native_id if previous is not None else self._owned_ascii(native_id)
+        self._guards[guard_key] = event_at, epoch
         if self._identity_prefix is None:
             self._identity_prefix = owned_prefix
             self._prefix_bytes = prefix_bytes

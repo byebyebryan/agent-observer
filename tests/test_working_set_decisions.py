@@ -385,13 +385,23 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         decision_owner = owner(max_identities=1)
         first = fixture(identity_number=10, runtime_value="parked")
         self.assertTrue(classify(decision_owner, first).recent.decision)
+        old_key, _ = next(iter(decision_owner._guards.items()))
+        old_prefix = decision_owner._identity_prefix
         second = fixture(identity_number=11, sample_number=21, runtime_value="parked")
-        result = classify(decision_owner, second)
+        with patch.object(
+            WorkingSetDecisions,
+            "_owned_ascii",
+            side_effect=AssertionError("identity-cap refusal copied an identity string"),
+        ) as owned_copy:
+            result = classify(decision_owner, second)
+
+        owned_copy.assert_not_called()
         self.assertIsNone(result.recent.decision)
         self.assertEqual(result.recent.reason, "recent_tracking_capacity")
         self.assertTrue(decision_owner.latched)
         self.assertEqual(decision_owner.guard_count, 0)
         self.assertEqual(decision_owner.guard_bytes, 0)
+        self.assertIsNone(decision_owner._identity_prefix)
 
         self.assertFalse(decision_owner.reset_context(PROVIDER, NAMESPACE, CONTEXT_GENERATION))
         result = classify(decision_owner, first)
@@ -405,9 +415,14 @@ class WorkingSetDecisionsTest(unittest.TestCase):
             runtime_value="parked",
         )
         self.assertTrue(decision_owner.reset_context(PROVIDER, "scope-b", CONTEXT_GENERATION + 1))
+        self.assertIsNone(decision_owner._identity_prefix)
         result = classify(decision_owner, moved)
         self.assertTrue(result.recent.decision)
         self.assertFalse(decision_owner.latched)
+        new_key, _ = next(iter(decision_owner._guards.items()))
+        self.assertEqual(new_key, old_key)
+        self.assertIsNot(new_key, old_key)
+        self.assertIsNot(decision_owner._identity_prefix, old_prefix)
 
     def test_byte_capacity_latches_and_exact_integer_inputs_are_enforced(self):
         decision_owner = owner(max_guard_bytes=1)
@@ -446,8 +461,10 @@ class WorkingSetDecisionsTest(unittest.TestCase):
 
     def test_guard_shares_owned_prefix_and_fits_two_thousand_ascii_identities(self):
         decision_owner = owner()
+        original_ids = []
         for number in range(10_000, 12_000):
             values = fixture(identity_number=number, runtime_value="unknown")
+            original_ids.append(values[0]["identity"]["nativeId"])
             result = classify(decision_owner, values)
             self.assertTrue(result.recent.decision)
 
@@ -456,10 +473,11 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         self.assertLessEqual(decision_owner.guard_bytes, 1024 * 1024)
         keys = tuple(decision_owner._guards)
         self.assertEqual(len(keys), 2_000)
-        for key in keys[1:]:
-            for index in range(4):
-                self.assertIs(key[index], keys[0][index])
-        self.assertIs(decision_owner._identity_prefix[0], keys[0][0])
+        self.assertTrue(all(type(key) is str for key in keys))
+        for key, original in zip(keys, original_ids, strict=True):
+            self.assertEqual(key, original)
+            self.assertIsNot(key, original)
+        self.assertEqual(len(decision_owner._identity_prefix), 4)
         original_prefix = (
             "fixture",
             PROVIDER,
@@ -470,11 +488,34 @@ class WorkingSetDecisionsTest(unittest.TestCase):
             self.assertEqual(owned, original)
             self.assertIsNot(owned, original)
 
+        # Count the actual reachable guard graph once per object. The source
+        # charge includes ASCII copy scratch and old/new dict resize reserve,
+        # so it must cover the currently retained Python object graph.
+        retained = {id(decision_owner._guards): decision_owner._guards}
+
+        def include(value):
+            retained[id(value)] = value
+
+        include(decision_owner._identity_prefix)
+        for value in decision_owner._identity_prefix:
+            include(value)
+        for key, event in decision_owner._guards.items():
+            include(key)
+            include(event)
+            include(event[0])
+            include(event[1])
+        actual_unique_bytes = sum(sys.getsizeof(value) for value in retained.values())
+        self.assertLessEqual(actual_unique_bytes, decision_owner.guard_bytes)
+        self.assertGreaterEqual(
+            decision_owner._dict_table_reserve(decision_owner.guard_count),
+            sys.getsizeof(decision_owner._guards),
+        )
+
     def test_prepaid_table_bound_covers_old_plus_new_size_at_every_resize(self):
         table = {}
         previous_size = sys.getsizeof(table)
         for count in range(1, 4097):
-            table[(count,)] = (count, 0)
+            table[str(UUID(int=count))] = (1_700_000_000_000 + count, 0)
             current_size = sys.getsizeof(table)
             prepaid = 512 + 128 * count
             self.assertLessEqual(previous_size + current_size, prepaid)
@@ -581,6 +622,9 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         self.assertIsNone(result.recent.decision)
         self.assertEqual(result.recent.reason, "identity_scope_mismatch")
         self.assertEqual(decision_owner.guard_count, 1)
+        stored_key, stored_event = next(iter(decision_owner._guards.items()))
+        self.assertEqual(stored_key, first[0]["identity"]["nativeId"])
+        self.assertEqual(stored_event, (ACTIVITY_AT, 0))
 
         foreign_kind = copy.deepcopy(first)
         foreign_kind[0]["identity"]["nativeIdKind"] = "session"
@@ -595,6 +639,29 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         self.assertIsNone(result.selected)
         self.assertEqual(result.recent.reason, "identity_unproved")
         self.assertEqual(decision_owner.guard_count, 1)
+
+    def test_newer_event_replaces_value_without_replacing_owned_native_id_key(self):
+        decision_owner = owner()
+        first = fixture(identity_number=10)
+        self.assertTrue(classify(decision_owner, first).recent.decision)
+        old_key, old_event = next(iter(decision_owner._guards.items()))
+
+        newer = fixture(identity_number=10, sample_number=21, event_at=ACTIVITY_AT + 1)
+        with patch.object(
+            WorkingSetDecisions,
+            "_owned_ascii",
+            side_effect=AssertionError("existing identity update copied its native ID"),
+        ) as owned_copy:
+            result = classify(decision_owner, newer)
+
+        owned_copy.assert_not_called()
+        self.assertTrue(result.recent.decision)
+        self.assertEqual(decision_owner.guard_count, 1)
+        new_key, new_event = next(iter(decision_owner._guards.items()))
+        self.assertIs(new_key, old_key)
+        self.assertIsNot(new_event, old_event)
+        self.assertEqual(new_event, (ACTIVITY_AT + 1, 0))
+        self.assertLessEqual(decision_owner.guard_bytes, decision_owner.max_guard_bytes)
 
     def test_context_generation_cannot_regress_within_provider_namespace(self):
         decision_owner = owner()
