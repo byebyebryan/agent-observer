@@ -1,0 +1,1680 @@
+#!/usr/bin/env python3
+"""Bounded, passive native comparison for an isolated installed working set.
+
+The owner starts the candidate service. This command first samples Codex,
+announces a sanitized rendezvous line, waits for that exact private service
+socket, reads its first cached working-set view, and samples Codex again. It
+never starts or repairs either endpoint and never persists provider data.
+"""
+
+from __future__ import annotations
+
+import argparse
+import ast
+import collections
+import contextlib
+import hashlib
+import hmac
+import importlib
+import importlib.metadata
+import json
+import os
+import re
+import socket
+import stat
+import struct
+import sys
+import time
+import types
+from pathlib import Path
+
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+_SCOPE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$")
+_UUID = re.compile(r"^[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$")
+_MAX_NATIVE_ROWS = 2048
+_MAX_NATIVE_PAGES = 32
+_MAX_FRAME_COUNT = 16
+_MAX_CURSOR_BYTES = 4096
+_MAX_PROC_FDS = 4096
+_MAX_ORACLE_BYTES = 1024 * 1024
+_MISSING_ATTRIBUTE = object()
+_NATIVE_REASON_CODES = frozenset({
+    "native_file_rejected", "native_file_limit", "native_file_changed", "native_duplicate_key",
+    "native_image_rejected", "native_image_changed", "native_endpoint_unavailable",
+    "native_endpoint_rejected", "native_peer_rejected", "native_provider_locator_rejected",
+    "native_reference_digest_changed", "native_upgrade_limit", "native_upgrade_rejected",
+    "native_store_mismatch", "native_peer_closed", "native_frame_rejected",
+    "native_message_limit", "native_opcode_rejected", "native_frame_limit",
+    "non_read_method_rejected", "content_read_rejected", "native_rpc_timeout",
+    "native_rpc_error", "native_notification_limit", "native_inventory_limit",
+    "native_cursor_cycle", "native_page_limit", "native_detail_identity_conflict",
+    "native_id_invalid", "native_items_not_excluded", "native_runtime_changed",
+    "native_saved_detail_unavailable", "installed_cli_failed", "installed_cli_output_limit",
+    "installed_show_mismatch", "reference_default_home_required", "reference_digest_invalid",
+    "service_scope_unavailable",
+})
+
+
+class QualificationError(Exception):
+    """A content-free, bounded reason safe to print."""
+
+    def __init__(self, code: str, status: str = "unsupported"):
+        code = code if re.fullmatch(r"[a-z][a-z0-9_]{0,95}", code) else "qualification_failed"
+        self.code, self.status = code, status
+        super().__init__(code)
+
+
+class NativeLimit(Exception):
+    """Stops the reused oracle when a caller-owned bound is reached."""
+
+    def __init__(self, code):
+        self.code = code if re.fullmatch(r"[a-z][a-z0-9_]{0,95}", code) else "native_limit"
+        super().__init__(self.code)
+
+
+def _wall_ms() -> int:
+    return time.time_ns() // 1_000_000
+
+
+def _boot_ms() -> int:
+    return int(time.clock_gettime(time.CLOCK_BOOTTIME) * 1000)
+
+
+def _stable_read(path: Path, *, limit: int, owner_uids: tuple[int, ...] | None = None) -> bytes:
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
+    fd = os.open(path, flags)
+    try:
+        before = os.fstat(fd)
+        if (not stat.S_ISREG(before.st_mode) or before.st_size > limit
+                or owner_uids is not None and before.st_uid not in owner_uids
+                or before.st_mode & 0o022):
+            raise QualificationError("metadata_file_rejected")
+        data = bytearray()
+        while len(data) <= limit:
+            part = os.read(fd, min(65536, limit + 1 - len(data)))
+            if not part:
+                break
+            data.extend(part)
+        after = os.fstat(fd)
+        def signature(info):
+            return (info.st_dev, info.st_ino, info.st_size,
+                    info.st_mtime_ns, info.st_ctime_ns)
+
+        try:
+            named = path.lstat()
+        except OSError:
+            raise QualificationError("metadata_file_changed") from None
+        if (len(data) != before.st_size or len(data) > limit
+                or signature(before) != signature(after) or signature(before) != signature(named)):
+            raise QualificationError("metadata_file_changed")
+        return bytes(data)
+    finally:
+        os.close(fd)
+
+
+def _digest_file(path: Path, *, allow_root: bool = True) -> tuple[str, os.stat_result, Path]:
+    if not path.is_absolute():
+        raise QualificationError("artifact_path_not_absolute")
+    try:
+        resolved = path.resolve(strict=True)
+        info = resolved.stat()
+    except OSError:
+        raise QualificationError("artifact_unavailable") from None
+    owners = {os.getuid()} | ({0} if allow_root else set())
+    if (not stat.S_ISREG(info.st_mode) or info.st_uid not in owners
+            or info.st_mode & 0o022 or not 0 < info.st_size <= 512 * 1024 * 1024):
+        raise QualificationError("artifact_rejected")
+    digest = hashlib.sha256()
+    try:
+        with resolved.open("rb") as stream:
+            before = os.fstat(stream.fileno())
+            while chunk := stream.read(1024 * 1024):
+                digest.update(chunk)
+            after = os.fstat(stream.fileno())
+    except OSError:
+        raise QualificationError("artifact_unavailable") from None
+    def signature(stat_result):
+        return (stat_result.st_dev, stat_result.st_ino, stat_result.st_size,
+                stat_result.st_mtime_ns, stat_result.st_ctime_ns)
+
+    if signature(info) != signature(before) or signature(before) != signature(after):
+        raise QualificationError("artifact_changed")
+    return digest.hexdigest(), after, resolved
+
+
+def _lexical_absolute(path: Path) -> Path:
+    if not path.is_absolute():
+        raise QualificationError("artifact_path_not_absolute")
+    return Path(os.path.abspath(os.fspath(path)))
+
+
+def _candidate_python_identity(candidate: Path, running: Path, prefix: str,
+                               base_prefix: str) -> tuple[Path, Path]:
+    """Bind the requested venv entrypoint lexically, before hashing its binary."""
+    try:
+        expected = _lexical_absolute(candidate)
+        actual = _lexical_absolute(running)
+        expected_prefix = Path(os.path.abspath(prefix))
+    except (OSError, QualificationError):
+        raise QualificationError("candidate_python_unavailable") from None
+    if (expected != actual or prefix == base_prefix
+            or expected.parent.parent != expected_prefix):
+        raise QualificationError("candidate_python_identity_mismatch")
+    return expected, expected_prefix
+
+
+def _check_cli(path: Path, expected_sha: str, python_path: Path) -> dict:
+    actual_sha, info, resolved = _digest_file(path, allow_root=False)
+    if actual_sha != expected_sha:
+        raise QualificationError("candidate_cli_digest_mismatch")
+    if not os.access(resolved, os.X_OK):
+        raise QualificationError("candidate_cli_not_executable")
+    try:
+        first = _stable_read(resolved, limit=4096, owner_uids=(os.getuid(),))
+    except QualificationError:
+        raise
+    first_line = first.splitlines()[0] if first else b""
+    if not first_line.startswith(b"#!"):
+        raise QualificationError("candidate_cli_interpreter_unproved")
+    interpreter_text = first_line[2:].decode("utf-8", "strict").strip().split(" ", 1)[0]
+    try:
+        interpreter = _lexical_absolute(Path(interpreter_text))
+        expected = _lexical_absolute(python_path)
+        expected_prefix = Path(os.path.abspath(sys.prefix))
+        expected_python_bin = expected.parent.parent
+    except (OSError, QualificationError):
+        raise QualificationError("candidate_cli_interpreter_unproved") from None
+    if interpreter != expected:
+        raise QualificationError("candidate_cli_interpreter_mismatch")
+    if resolved.parent != expected_python_bin / "bin" or expected_python_bin != expected_prefix:
+        raise QualificationError("candidate_cli_install_location_mismatch")
+    return {"path": str(resolved), "sha256": actual_sha, "device": info.st_dev, "inode": info.st_ino}
+
+
+def _distribution(name: str, version: str | None, expected_wheel_sha: str,
+                  prefix: Path) -> dict:
+    try:
+        dist = importlib.metadata.distribution(name)
+        raw = dist.read_text("direct_url.json")
+        direct = json.loads(raw) if raw else {}
+        current_version = dist.version
+        install_path = Path(dist.locate_file("")).resolve(strict=True)
+        resolved_prefix = prefix.resolve(strict=True)
+    except Exception:
+        raise QualificationError("candidate_distribution_unavailable") from None
+    if not isinstance(direct, dict):
+        raise QualificationError("candidate_distribution_provenance_mismatch")
+    archive = direct.get("archive_info")
+    legacy = archive.get("hash") if isinstance(archive, dict) else None
+    hashes = archive.get("hashes") if isinstance(archive, dict) else None
+    plural_sha = hashes.get("sha256") if isinstance(hashes, dict) else None
+    digests = []
+    if legacy is not None:
+        if not isinstance(legacy, str) or not legacy.startswith("sha256="):
+            raise QualificationError("candidate_distribution_provenance_mismatch")
+        digests.append(legacy.removeprefix("sha256="))
+    if hashes is not None:
+        if not isinstance(hashes, dict) or not isinstance(plural_sha, str):
+            raise QualificationError("candidate_distribution_provenance_mismatch")
+        digests.append(plural_sha)
+    if (not isinstance(archive, dict) or not digests
+            or any(_SHA256.fullmatch(value) is None or value != expected_wheel_sha for value in digests)
+            or "dir_info" in direct or "vcs_info" in direct
+            or version is not None and current_version != version
+            or resolved_prefix not in install_path.parents):
+        raise QualificationError("candidate_distribution_provenance_mismatch")
+    return {"name": name, "version": current_version, "wheelSha256": expected_wheel_sha,
+            "installPath": str(install_path)}
+
+
+def _verify_installed_provenance(args) -> dict:
+    if sys.version_info[:2] not in {(3, 11), (3, 14)}:
+        raise QualificationError("candidate_python_version_unsupported")
+    if not args.candidate_python.is_absolute():
+        raise QualificationError("candidate_python_path_not_absolute")
+    expected_python_lexical, expected_prefix = _candidate_python_identity(
+        args.candidate_python, Path(sys.executable), sys.prefix, sys.base_prefix)
+    expected_python = expected_python_lexical.resolve(strict=True)
+    python_sha, python_info, _ = _digest_file(expected_python, allow_root=True)
+    if python_sha != args.candidate_python_sha256:
+        raise QualificationError("candidate_python_digest_mismatch")
+    observer = _distribution("agent-observer", args.observer_version,
+                             args.observer_wheel_sha256, expected_prefix)
+    mesh = _distribution("mesh-plus", args.mesh_version,
+                         args.mesh_wheel_sha256, expected_prefix)
+    observer_cli = _check_cli(args.observer_service_cli, args.observer_service_cli_sha256,
+                              expected_python_lexical)
+    mesh_cli = _check_cli(args.mesh_cli, args.mesh_cli_sha256, expected_python_lexical)
+    try:
+        package = importlib.import_module("agent_observer")
+        parser_module = importlib.import_module("agent_observer.working_set_contract")
+        observer_dist = importlib.metadata.distribution("agent-observer")
+        expected_parser = Path(observer_dist.locate_file("agent_observer/working_set_contract.py")).resolve(strict=True)
+        actual_parser = Path(parser_module.__file__).resolve(strict=True)
+    except Exception:
+        raise QualificationError("candidate_public_parser_unavailable") from None
+    if actual_parser != expected_parser or Path(package.__file__).resolve(strict=True).parent not in actual_parser.parents:
+        raise QualificationError("candidate_public_parser_not_installed")
+    if not callable(getattr(parser_module, "parse_frame", None)):
+        raise QualificationError("candidate_public_parser_unavailable")
+    return {
+        "python": {"path": str(expected_python_lexical), "executablePath": str(expected_python),
+                   "sha256": python_sha,
+                   "device": python_info.st_dev, "inode": python_info.st_ino,
+                   "version": "{}.{}.{}".format(*sys.version_info[:3]),
+                   "prefix": str(expected_prefix)},
+        "observer": observer,
+        "mesh": mesh,
+        "observerServiceCli": observer_cli,
+        "meshCli": mesh_cli,
+        "parserPath": str(actual_parser),
+    }
+
+
+def _load_native_oracle() -> tuple[types.ModuleType, str]:
+    path = Path(__file__).resolve().parent / "evaluate-observation"
+    if not path.is_absolute() or path.is_symlink():
+        raise QualificationError("native_oracle_path_rejected")
+    source = _stable_read(path, limit=_MAX_ORACLE_BYTES, owner_uids=(0, os.getuid()))
+    digest = hashlib.sha256(source).hexdigest()
+    try:
+        tree = ast.parse(source, filename=str(path))
+    except (SyntaxError, ValueError):
+        raise QualificationError("native_oracle_source_invalid") from None
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            names = ([a.name.split(".", 1)[0] for a in node.names]
+                     if isinstance(node, ast.Import) else [node.module.split(".", 1)[0] if node.module else ""])
+            if any(name not in sys.stdlib_module_names for name in names):
+                raise QualificationError("native_oracle_import_rejected")
+    module = types.ModuleType("observer_native_oracle_readonly")
+    module.__file__ = str(path)
+    module.__package__ = ""
+    try:
+        exec(compile(source, str(path), "exec"), module.__dict__)
+    except Exception:
+        raise QualificationError("native_oracle_load_failed") from None
+    if not callable(getattr(module, "NativeRPC", None)) or not callable(getattr(module, "codex_reference", None)):
+        raise QualificationError("native_oracle_api_unavailable")
+    return module, digest
+
+
+def _expected_native_endpoint(home: Path, requested: Path | None) -> tuple[Path, os.stat_result]:
+    try:
+        control = home / "app-server-control/app-server-control.sock"
+        info = control.lstat()
+        if not stat.S_ISLNK(info.st_mode) or info.st_uid != os.getuid():
+            raise QualificationError("native_control_link_rejected")
+        target_text = os.readlink(control)
+        expected = Path(f"/tmp/codex-daemon-{os.getuid()}") / hashlib.sha256(str(control).encode()).hexdigest()
+        target = Path(target_text)
+        if target != expected or not target.is_absolute():
+            raise QualificationError("native_endpoint_namespace_mismatch")
+        socket_info = target.lstat()
+        if (not stat.S_ISSOCK(socket_info.st_mode) or socket_info.st_uid != os.getuid()
+                or stat.S_IMODE(socket_info.st_mode) != 0o600):
+            raise QualificationError("native_endpoint_ownership_mismatch")
+        if requested is not None and target != requested:
+            raise QualificationError("native_endpoint_argument_mismatch")
+        return target, socket_info
+    except QualificationError:
+        raise
+    except OSError:
+        raise QualificationError("native_endpoint_unavailable") from None
+
+
+def _proc_birth(proc_root: Path, pid: int) -> int:
+    try:
+        fields = (proc_root / str(pid) / "stat").read_text().rsplit(")", 1)[1].split()
+        return int(fields[19])
+    except (OSError, ValueError, IndexError):
+        raise QualificationError("peer_incarnation_unavailable") from None
+
+
+def _proc_uid(proc_root: Path, pid: int) -> int:
+    try:
+        for line in (proc_root / str(pid) / "status").read_text().splitlines():
+            if line.startswith("Uid:"):
+                return int(line.split()[1])
+    except (OSError, ValueError, IndexError):
+        pass
+    raise QualificationError("peer_owner_unavailable")
+
+
+def _listener_identity(path: Path, pid: int, *, proc_root: Path = Path("/proc")) -> tuple[int, int, int]:
+    try:
+        node = path.lstat()
+        if (not stat.S_ISSOCK(node.st_mode) or node.st_uid != os.getuid()
+                or stat.S_IMODE(node.st_mode) != 0o600):
+            raise QualificationError("candidate_socket_ownership_mismatch")
+        lines = (proc_root / "net/unix").read_text().splitlines()[1:]
+        listeners = set()
+        for line in lines:
+            fields = line.split(maxsplit=7)
+            if len(fields) != 8 or fields[7] != str(path):
+                continue
+            try:
+                if int(fields[3], 16) & 0x10000 and int(fields[4], 16) == 1:
+                    listeners.add(int(fields[6]))
+            except ValueError:
+                raise QualificationError("candidate_socket_metadata_invalid") from None
+        if len(listeners) != 1:
+            raise QualificationError("candidate_listener_ambiguous")
+        inode = next(iter(listeners))
+        owned = False
+        for index, fd in enumerate((proc_root / str(pid) / "fd").iterdir()):
+            if index >= _MAX_PROC_FDS:
+                raise QualificationError("candidate_process_inspection_limit")
+            try:
+                if os.readlink(fd) == f"socket:[{inode}]":
+                    owned = True
+                    break
+            except FileNotFoundError:
+                continue
+        if not owned:
+            raise QualificationError("candidate_listener_owner_mismatch")
+        return node.st_dev, node.st_ino, inode
+    except QualificationError:
+        raise
+    except OSError:
+        raise QualificationError("candidate_socket_unavailable") from None
+
+
+def _check_private_path(path: Path) -> os.stat_result | None:
+    if not path.is_absolute() or len(os.fsencode(path)) > 100:
+        raise QualificationError("candidate_socket_path_invalid")
+    runtime = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"))
+    try:
+        runtime = runtime.resolve(strict=True)
+        parent = path.parent
+        if parent.resolve(strict=True) != parent or runtime not in parent.parents:
+            raise QualificationError("candidate_socket_not_private")
+        parent_info = parent.stat()
+        if parent_info.st_uid != os.getuid() or stat.S_IMODE(parent_info.st_mode) != 0o700:
+            raise QualificationError("candidate_socket_directory_rejected")
+        try:
+            node = path.lstat()
+        except FileNotFoundError:
+            return None
+        if not stat.S_ISSOCK(node.st_mode) or node.st_uid != os.getuid():
+            raise QualificationError("candidate_socket_preexisting")
+        return node
+    except QualificationError:
+        raise
+    except OSError:
+        raise QualificationError("candidate_socket_directory_unavailable") from None
+
+
+def _service_arguments(proc_root: Path, pid: int, *, python_entrypoint: Path, cli_entrypoint: Path,
+                       host: str, home: Path, service_socket: Path, window_hours: int) -> None:
+    """Inspect only allowlisted invocation fields; never retain or report argv."""
+    try:
+        raw = (proc_root / str(pid) / "cmdline").read_bytes()
+    except OSError:
+        raise QualificationError("candidate_process_arguments_unavailable") from None
+    if not raw or len(raw) > 16384 or raw[-1:] != b"\0":
+        raise QualificationError("candidate_process_arguments_rejected")
+    values = raw[:-1].split(b"\0")
+    if not 1 <= len(values) <= 64 or any(len(value) > 4096 for value in values):
+        raise QualificationError("candidate_process_arguments_rejected")
+    try:
+        argv = [value.decode("utf-8", "strict") for value in values]
+    except UnicodeDecodeError:
+        raise QualificationError("candidate_process_arguments_rejected") from None
+    expected_python = _lexical_absolute(python_entrypoint)
+    expected_cli = Path(cli_entrypoint).resolve(strict=True)
+    try:
+        actual_python = _lexical_absolute(Path(argv[0]))
+        actual_cli = Path(argv[1]).resolve(strict=True)
+    except (IndexError, OSError, QualificationError):
+        raise QualificationError("candidate_process_entrypoint_unproved") from None
+    if actual_python != expected_python or actual_cli != expected_cli:
+        raise QualificationError("candidate_process_entrypoint_mismatch")
+    if len(argv) < 3 or argv[2] != "serve":
+        raise QualificationError("candidate_process_command_mismatch")
+    options = argv[3:]
+    required = {
+        "--host-scope": host,
+        "--socket": str(service_socket),
+        "--provider": "codex",
+        "--codex-home": str(home),
+        "--working-set-window-hours": str(window_hours),
+    }
+    for option, value in required.items():
+        positions = [index for index, item in enumerate(options) if item == option]
+        if len(positions) != 1 or positions[0] + 1 >= len(options) or options[positions[0] + 1] != value:
+            raise QualificationError("candidate_process_configuration_mismatch")
+    # Keep candidate-only service configuration explicit and reject ambiguous
+    # provider, socket, home or working-set overrides elsewhere in argv.
+    for option in ("--host-scope", "--socket", "--provider", "--codex-home",
+                   "--working-set-window-hours"):
+        if options.count(option) != 1:
+            raise QualificationError("candidate_process_configuration_ambiguous")
+    if len(options) != 2 * len(required):
+        raise QualificationError("candidate_process_extra_configuration")
+
+
+def _service_peer(path: Path, expected_python: Path, expected_python_sha: str,
+                  observer_cli: Path, host: str, home: Path, window_hours: int) -> tuple[socket.socket, dict]:
+    node = _check_private_path(path)
+    if node is None:
+        raise QualificationError("candidate_socket_not_ready", "unresolved")
+    connection = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    connection.settimeout(2.0)
+    try:
+        connection.connect(str(path))
+        pid, uid, _gid = struct.unpack("3i", connection.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
+        if uid != os.getuid() or _proc_uid(Path("/proc"), pid) != os.getuid():
+            raise QualificationError("candidate_peer_owner_mismatch")
+        start = _proc_birth(Path("/proc"), pid)
+        _service_arguments(Path("/proc"), pid, python_entrypoint=expected_python,
+                            cli_entrypoint=observer_cli, host=host, home=home,
+                            service_socket=path, window_hours=window_hours)
+        try:
+            executable_path = Path(os.readlink(f"/proc/{pid}/exe")).resolve(strict=True)
+        except OSError:
+            raise QualificationError("candidate_peer_executable_unavailable") from None
+        executable_sha, executable_info, _ = _digest_file(executable_path, allow_root=True)
+        if executable_path != expected_python.resolve(strict=True) or executable_sha != expected_python_sha:
+            raise QualificationError("candidate_peer_executable_mismatch")
+        device, inode, listener_inode = _listener_identity(path, pid)
+        if (node.st_dev, node.st_ino) != (device, inode):
+            raise QualificationError("candidate_socket_changed")
+        if _proc_birth(Path("/proc"), pid) != start:
+            raise QualificationError("candidate_peer_incarnation_changed")
+        return connection, {
+            "uid": uid,
+            "startTicks": start,
+            "executable": str(executable_path),
+            "executableSha256": executable_sha,
+            "executableDevice": executable_info.st_dev,
+            "executableInode": executable_info.st_ino,
+            "socketPath": str(path),
+            "socketDevice": device,
+            "socketInode": inode,
+            "listenerInode": listener_inode,
+            "pid": pid,
+        }
+    except BaseException:
+        connection.close()
+        raise
+
+
+def _recheck_service(path: Path, identity: dict) -> None:
+    try:
+        if _proc_birth(Path("/proc"), identity["pid"]) != identity["startTicks"]:
+            raise QualificationError("candidate_peer_incarnation_changed")
+        executable_path = Path(os.readlink(f"/proc/{identity['pid']}/exe")).resolve(strict=True)
+        digest, info, _ = _digest_file(executable_path, allow_root=True)
+        if (digest != identity["executableSha256"] or str(executable_path) != identity["executable"]
+                or info.st_dev != identity["executableDevice"] or info.st_ino != identity["executableInode"]):
+            raise QualificationError("candidate_peer_executable_changed")
+        current = _listener_identity(path, identity["pid"])
+        if current != (identity["socketDevice"], identity["socketInode"], identity["listenerInode"]):
+            raise QualificationError("candidate_listener_changed")
+    except QualificationError:
+        raise
+    except OSError:
+        raise QualificationError("candidate_peer_recheck_failed") from None
+
+
+def _read_candidate(path: Path, *, host: str, window_ms: int, expected_python: Path,
+                    expected_python_sha: str, observer_cli: Path, home: Path,
+                    deadline: float) -> tuple[dict, dict]:
+    parser = importlib.import_module("agent_observer.working_set_contract")
+    window = window_ms
+    policy = parser.selector(window)
+    request = parser.validate_request({
+        "workingSetProtocol": 1,
+        "operation": "watch",
+        "hostScope": host,
+        "selector": policy,
+        "selectorDigest": parser.selector_digest(policy),
+    }, expected_window_ms=window)
+    connection, peer = _service_peer(path, expected_python, expected_python_sha,
+                                     observer_cli, host, home, window_ms // 3600000)
+    guard = parser.StreamGuard(expected_host=host, expected_uid=os.getuid(), expected_window_ms=window)
+    max_frame_bytes = parser.MAX_FRAME_BYTES
+    try:
+        connection.settimeout(min(2.0, max(0.001, deadline - time.monotonic())))
+        connection.sendall((parser.canonical(request) + "\n").encode("utf-8"))
+        pending = bytearray()
+        for _ in range(_MAX_FRAME_COUNT):
+            while b"\n" not in pending:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise QualificationError("candidate_first_view_timeout", "unresolved")
+                connection.settimeout(min(2.0, remaining))
+                try:
+                    part = connection.recv(min(65536, max_frame_bytes + 1 - len(pending)))
+                except TimeoutError:
+                    if time.monotonic() >= deadline:
+                        raise QualificationError("candidate_first_view_timeout", "unresolved") from None
+                    continue
+                except OSError:
+                    raise QualificationError("candidate_transport_failed") from None
+                if not part:
+                    raise QualificationError("candidate_service_disconnected", "unresolved")
+                pending.extend(part)
+                if len(pending) > max_frame_bytes and b"\n" not in pending:
+                    raise QualificationError("candidate_frame_limit")
+            line, _, rest = pending.partition(b"\n")
+            pending = bytearray(rest)
+            if len(line) + 1 > max_frame_bytes:
+                raise QualificationError("candidate_frame_limit")
+            try:
+                frame = guard.parse(bytes(line) + b"\n")
+            except Exception as exc:
+                code = _reason_code(exc, "candidate_frame_rejected")
+                raise QualificationError(code, "unsupported") from None
+            if frame["kind"] in {"gap", "error"}:
+                reason = frame.get("reason")
+                raise QualificationError(_safe_code(reason, "candidate_gap_or_error"), "unresolved")
+            if frame["projection"] is None:
+                continue
+            if frame["kind"] != "view" or frame["state"] == "warming":
+                raise QualificationError("candidate_initial_projection_not_view", "unresolved")
+            if frame["sequence"] > _MAX_FRAME_COUNT or not frame["projection"]["scopes"]:
+                raise QualificationError("candidate_initial_projection_invalid", "unresolved")
+            _recheck_service(path, peer)
+            return frame, peer
+        raise QualificationError("candidate_first_view_frame_limit", "unresolved")
+    finally:
+        connection.close()
+
+
+def _safe_code(value, fallback: str) -> str:
+    return value if isinstance(value, str) and re.fullmatch(r"[a-z][a-z0-9_]{0,95}", value) else fallback
+
+
+def _reason_code(exc: BaseException, fallback: str) -> str:
+    if isinstance(exc, QualificationError):
+        return exc.code
+    if isinstance(exc, NativeLimit):
+        return exc.code
+    if (type(exc).__name__ == "ContractError"
+            and type(exc).__module__ == "agent_observer.contract"):
+        # The public contract exception carries only a finite static code.
+        return _safe_code(str(exc), fallback)
+    # Native helper diagnostics may append an identity to a known code. Keep
+    # only allowlisted operational prefixes; arbitrary exception text is data.
+    value = str(exc).split(":", 1)[0]
+    return value if value in _NATIVE_REASON_CODES else fallback
+
+
+def _identity_key(identity: dict) -> tuple[str, str, str, str, str]:
+    return (identity["hostScope"], identity["provider"], identity["namespace"],
+            identity["nativeIdKind"], identity["nativeId"])
+
+
+def _native_namespace(home: Path, uid: int) -> str:
+    value = json.dumps(["codex", str(home), "explicit", uid], separators=(",", ":")).encode()
+    return "sha256:" + hashlib.sha256(value).hexdigest()
+
+
+def _native_semantics(sample: dict, host: str, namespace: str) -> tuple[dict, set, set, list[str]]:
+    loaded_values, saved_values = sample.get("loaded"), sample.get("saved")
+    if (not isinstance(loaded_values, list) or not isinstance(saved_values, list)
+            or len(loaded_values) > _MAX_NATIVE_ROWS or len(saved_values) > _MAX_NATIVE_ROWS):
+        raise QualificationError("native_inventory_limit", "unresolved")
+    try:
+        loaded, saved = set(loaded_values), set(saved_values)
+    except TypeError:
+        raise QualificationError("native_inventory_identity_invalid", "unresolved") from None
+    if (len(loaded) != len(loaded_values) or len(saved) != len(saved_values)
+            or any(not isinstance(value, str) or _UUID.fullmatch(value) is None
+                   for value in loaded | saved)):
+        raise QualificationError("native_inventory_identity_invalid", "unresolved")
+    rows = {}
+    gaps = []
+    raw_gaps = sample.get("runtimeGaps", ())
+    if not isinstance(raw_gaps, list):
+        raise QualificationError("native_gap_metadata_invalid", "unresolved")
+    for raw_gap in raw_gaps:
+        gaps.append(_safe_code(str(raw_gap).split(":", 1)[0], "native_classification_gap"))
+    loaded_after = sample.get("loadedAfter")
+    if (not isinstance(loaded_after, list) or len(loaded_after) > _MAX_NATIVE_ROWS
+            or any(not isinstance(value, str) or _UUID.fullmatch(value) is None for value in loaded_after)
+            or len(set(loaded_after)) != len(loaded_after)):
+        raise QualificationError("native_inventory_identity_invalid", "unresolved")
+    if set(loaded_after) != loaded:
+        gaps.append("native_loaded_inventory_changed_during_sample")
+    native_rows = sample.get("rows")
+    if not isinstance(native_rows, dict) or len(native_rows) > _MAX_NATIVE_ROWS:
+        raise QualificationError("native_inventory_limit", "unresolved")
+    for native_id, raw in native_rows.items():
+        if not isinstance(native_id, str) or _UUID.fullmatch(native_id) is None or not isinstance(raw, dict):
+            gaps.append("native_identity_invalid")
+            continue
+        kind = raw.get("kind")
+        runtime = raw.get("runtime")
+        activity = raw.get("activity")
+        if not isinstance(kind, str) or kind not in {"user", "child", "system", "unknown"}:
+            kind = "unknown"
+            gaps.append("native_kind_unclassified")
+        if not isinstance(runtime, str) or runtime not in {"running", "parked", "unknown"}:
+            runtime = "unknown"
+        saved_history = raw.get("hasSavedHistory") is True
+        status = raw.get("status")
+        if saved_history and native_id not in saved:
+            saved_history = False
+            gaps.append("native_saved_identity_unjoined")
+        if runtime == "parked" and (
+            status != "notLoaded" or not saved_history or native_id not in saved or native_id in loaded
+        ):
+            runtime = "unknown"
+            gaps.append("native_parked_not_proven")
+        if status == "notLoaded" and (
+            runtime != "parked" or not saved_history or native_id not in saved or native_id in loaded
+        ):
+            runtime = "unknown"
+            gaps.append("native_not_loaded_identity_unproved")
+        if type(activity) is not int or activity < 0:
+            activity = None
+        latest = raw.get("latestTurn")
+        if not isinstance(latest, dict):
+            latest = None
+        key = (host, "codex", namespace, "thread", native_id)
+        rows[key] = {
+            "identity": key,
+            "kind": kind,
+            "runtime": runtime,
+            "activity": activity,
+            "activityReason": _safe_code(raw.get("activityReason"), "native_activity_unavailable"),
+            "nativeNoTurn": (raw.get("activityReason") == "no_native_turn_clock"
+                             and "latestTurn" in raw and raw.get("latestTurn") is None
+                             and saved_history and native_id in saved),
+            "hasSavedHistory": saved_history,
+            "sessionTreeRootId": raw.get("sessionTreeRootId"),
+            "latestTurn": latest,
+            "status": (status if isinstance(status, str)
+                       and status in {"idle", "active", "systemError", "notLoaded"} else None),
+            "nativeId": native_id,
+        }
+    if set(native_rows) != loaded | saved:
+        gaps.append("native_inventory_detail_incomplete")
+    for native_id in saved:
+        row = rows.get((host, "codex", namespace, "thread", native_id))
+        if row is not None and not row["hasSavedHistory"]:
+            gaps.append("native_saved_identity_unreadable")
+    return rows, loaded, saved, sorted(set(gaps))
+
+
+def _row_fact_equal(left: dict, right: dict) -> bool:
+    fields = ("kind", "runtime", "activity", "activityReason", "nativeNoTurn", "hasSavedHistory")
+    if any(left.get(name) != right.get(name) for name in fields):
+        return False
+    # A no-turn absence is part of the recency predicate; compare that bounded
+    # public metadata exactly. Other latest-turn details do not decide the set.
+    if left.get("activityReason") == "no_native_turn_clock":
+        return left.get("latestTurn") == right.get("latestTurn")
+    return True
+
+
+def _three_or(value: bool | None, other: bool | None) -> bool | None:
+    if value is True or other is True:
+        return True
+    if value is False and other is False:
+        return False
+    return None
+
+
+def _three_and(eligible: bool | None, branch: bool | None) -> bool | None:
+    if eligible is False or branch is False:
+        return False
+    if eligible is True and branch is True:
+        return True
+    return None
+
+
+def _current_no_turn(row: dict | None, native: dict, nonmember: dict | None) -> bool:
+    if not native.get("nativeNoTurn") or not native.get("hasSavedHistory"):
+        return False
+    activity = row.get("activity") if row is not None else None
+    turn = row.get("latestTurn") if row is not None else None
+    if row is None and isinstance(nonmember, dict):
+        recent = nonmember.get("recent")
+        absence = recent.get("absence") if isinstance(recent, dict) else None
+        if isinstance(absence, dict):
+            activity = absence.get("activity")
+            turn = absence.get("latestTurn")
+    return (isinstance(activity, dict) and activity.get("at") is None
+            and activity.get("health") == "unavailable"
+            and activity.get("reason") == "no_conversation_activity"
+            and isinstance(turn, dict) and turn.get("health") == "current"
+            and turn.get("value") is None and turn.get("reason") == "no_native_turn"
+            and turn.get("receipt") is not None and turn.get("source") is not None
+            and "lastKnownValue" not in turn)
+
+
+def _clock_for_recent(scope: dict, resolved_member: dict | None, resolved_nonmember: dict | None) -> tuple[dict | None, dict | None]:
+    support = None
+    if resolved_member is not None:
+        support = resolved_member.get("fieldSupports", {}).get("activity")
+    if support is None and resolved_nonmember is not None:
+        recent = resolved_nonmember.get("recent")
+        if isinstance(recent, dict):
+            support = recent.get("support")
+    if not isinstance(support, dict):
+        return None, None
+    matches = [clock for clock in scope.get("clocks", ())
+               if clock.get("component") == support.get("component")
+               and clock.get("accepted") == support.get("accepted")]
+    if len(matches) != 1:
+        return support, None
+    clock = matches[0]
+    if (support.get("sampledBoottimeMs") != clock.get("sampledBoottimeMs")
+            or not isinstance(clock.get("sampleId"), str)
+            or not isinstance(clock.get("originComponent"), str)):
+        return support, None
+    return support, clock
+
+
+def _recent_decision(native: dict, row: dict | None, nonmember: dict | None,
+                     support: dict | None, clock: dict | None,
+                     frame: dict, window_ms: int, source_k_min: int | None,
+                     *, clock_bracket_ok: bool, scope: dict | None = None,
+                     clock_census_complete: bool = False) -> tuple[bool | None, str]:
+    if window_ms == 0:
+        return False, "window_disabled"
+    activity_at = native.get("activity")
+    if activity_at is None:
+        if _current_no_turn(row, native, nonmember):
+            return False, "no_native_turn"
+        return None, "activity_unproved"
+    if not clock_bracket_ok:
+        return None, "source_clock_outside_external_envelope"
+    scope_clocks = (scope or {}).get("clocks", ())
+    if not isinstance(support, dict) or not isinstance(clock, dict):
+        # A never-selected native row has no row-level proof DTO by design.
+        # Use the complete, externally bracketed scope clock census to prove
+        # only clear positives or negatives; output omission never supplies
+        # the expected result itself.
+        if row is not None or nonmember is not None or not scope_clocks:
+            return None, "activity_clock_support_unproved"
+        if not clock_census_complete:
+            return None, "activity_clock_census_incomplete"
+        wall_values = [item.get("wallMs") for item in scope_clocks]
+        accepted_values = [item.get("acceptedBoottimeMs") for item in scope_clocks]
+        if (any(type(value) is not int for value in wall_values + accepted_values)
+                or activity_at > min(wall_values)):
+            return None, "activity_clock_support_unproved"
+        ceiling = frame.get("clockCeiling")
+        now = frame.get("emittedBoottimeMs")
+        if (type(ceiling) is not int or type(now) is not int
+                or type(source_k_min) is not int or ceiling < source_k_min):
+            return None, "source_clock_unproved"
+        lower = activity_at + window_ms - ceiling
+        upper = max(accepted + window_ms - (wall - activity_at) + 1
+                    for wall, accepted in zip(wall_values, accepted_values, strict=True))
+        safe = 2**53 - 1
+        if not (-safe <= lower <= upper <= safe):
+            return None, "source_cutoff_out_of_range"
+        precision = 1000
+        if lower - precision <= now <= lower + precision or upper - precision <= now <= upper + precision:
+            return None, "near_recency_boundary"
+        if now < lower - precision:
+            return True, "recent_from_scope_clock_census"
+        if now >= upper + precision:
+            return False, "outside_window_from_scope_clock_census"
+        return None, "clock_bracket_overlap"
+    recent_record = nonmember.get("recent") if isinstance(nonmember, dict) else None
+    activity = row.get("activity") if row is not None else None
+    source_activity_at = (activity.get("at") if isinstance(activity, dict) else
+                          recent_record.get("activityAt") if isinstance(recent_record, dict) else None)
+    if source_activity_at != activity_at or (row is not None and
+            (not isinstance(activity, dict) or activity.get("health") != "current")):
+        return None, "activity_input_mismatch"
+    ceiling = frame.get("clockCeiling")
+    now = frame.get("emittedBoottimeMs")
+    wall = clock.get("wallMs")
+    accepted = clock.get("acceptedBoottimeMs")
+    if (type(ceiling) is not int or type(now) is not int or type(wall) is not int
+            or type(accepted) is not int or type(source_k_min) is not int
+            or ceiling < source_k_min or activity_at > wall):
+        return None, "source_clock_unproved"
+    age = wall - activity_at
+    lower = activity_at + window_ms - ceiling
+    upper = accepted + window_ms - age + 1
+    safe = 2**53 - 1
+    if not (-safe <= lower <= upper <= safe):
+        return None, "source_cutoff_out_of_range"
+    # Codex timestamps in the independent oracle have one-second source
+    # precision. Keep the entire precision/floor neighborhood unresolved.
+    precision = 1000
+    if lower - precision <= now <= lower + precision or upper - precision <= now <= upper + precision:
+        return None, "near_recency_boundary"
+    if now < lower - precision:
+        return True, "recent"
+    if now >= upper + precision:
+        return False, "outside_window"
+    return None, "clock_bracket_overlap"
+
+
+def _expected_selection(native: dict, row: dict | None, nonmember: dict | None,
+                        support: dict | None, clock: dict | None,
+                        frame: dict, window_ms: int, source_k_min: int | None,
+                        *, clock_bracket_ok: bool, scope: dict | None = None,
+                        clock_census_complete: bool = False) -> tuple[bool | None, str]:
+    eligible = native["kind"] in {"user", "unknown"}
+    if not eligible:
+        return False, "ineligible_kind"
+    active = True if native["runtime"] == "running" else False if (
+        native["runtime"] == "parked" and native["hasSavedHistory"]
+    ) else None
+    if active is True:
+        return True, "active_positive"
+    recent, reason = _recent_decision(native, row, nonmember, support, clock, frame,
+                                       window_ms, source_k_min,
+                                       clock_bracket_ok=clock_bracket_ok, scope=scope,
+                                       clock_census_complete=clock_census_complete)
+    return _three_and(eligible, _three_or(active, recent)), reason
+
+
+def _hmac_identity(key: bytes, identity: tuple[str, ...]) -> str:
+    payload = json.dumps(identity, separators=(",", ":"), ensure_ascii=True).encode()
+    return hmac.new(key, payload, hashlib.sha256).hexdigest()[:32]
+
+
+def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, home: Path,
+                  window_ms: int, start_wall_ms: int, end_wall_ms: int,
+                  start_boot_ms: int, end_boot_ms: int, hash_key: bytes | None = None) -> dict:
+    """Compare admitted public frame against stable independent native facts.
+
+    Raw thread/session values remain in local variables and are never returned.
+    """
+    namespace = _native_namespace(home, os.getuid())
+    before, loaded_before, saved_before, gaps_before = _native_semantics(before_raw, host, namespace)
+    after, loaded_after, saved_after, gaps_after = _native_semantics(after_raw, host, namespace)
+    if (start_wall_ms > end_wall_ms or start_boot_ms > end_boot_ms
+            or frame.get("emittedAt") is None
+            or not start_wall_ms - 1 <= frame["emittedAt"] <= end_wall_ms + 1
+            or not start_boot_ms - 1 <= frame.get("emittedBoottimeMs", -1) <= end_boot_ms + 1):
+        raise QualificationError("external_bracket_invalid", "unresolved")
+    reasons: collections.Counter[str] = collections.Counter()
+    mismatches: collections.Counter[str] = collections.Counter()
+    fields: collections.Counter[str] = collections.Counter()
+    member_unresolved, member_mismatches = set(), set()
+    field_unresolved, field_mismatches = set(), set()
+    hash_key = os.urandom(32) if hash_key is None else hash_key
+    projection = frame.get("projection")
+    if not isinstance(projection, dict) or frame.get("kind") != "view":
+        reasons["candidate_projection_unavailable"] += 1
+        projection = {"scopes": [], "sessions": []}
+    scopes = projection.get("scopes", [])
+    scope = scopes[0] if len(scopes) == 1 else None
+    candidate_binding_valid = True
+    if (scope is None or scope.get("provider") != "codex"
+            or scope.get("namespace") != namespace):
+        reasons["candidate_source_scope_mismatch"] += 1
+        candidate_binding_valid = False
+        scope = None
+    if scope is not None:
+        source = next((item for item in frame.get("sources", ()) if item.get("provider") == "codex"), None)
+        if (source is None or source.get("configHome") != str(home)
+                or source.get("configHomeKind") != "explicit"):
+            reasons["candidate_native_home_mismatch"] += 1
+            candidate_binding_valid = False
+
+    candidate_rows = {}
+    member_meta, nonmember_meta = {}, {}
+    candidate_members, candidate_nonmembers, candidate_uncertain = set(), set(), set()
+    if scope is not None:
+        parser = importlib.import_module("agent_observer.working_set_contract")
+        for member in scope["members"]:
+            key = _identity_key(member["identity"])
+            if key in candidate_members:
+                reasons["candidate_duplicate_identity"] += 1
+            candidate_members.add(key)
+            member_meta[key] = parser.resolve_member(scope, member)
+        for entry in scope["nonmembers"]:
+            key = _identity_key(entry["identity"])
+            if key in candidate_nonmembers:
+                reasons["candidate_duplicate_identity"] += 1
+            candidate_nonmembers.add(key)
+            nonmember_meta[key] = parser.resolve_nonmember(scope, entry)
+        for entry in scope["uncertain"]:
+            key = _identity_key(entry["identity"])
+            if key in candidate_uncertain:
+                reasons["candidate_duplicate_identity"] += 1
+            candidate_uncertain.add(key)
+        for row in projection.get("sessions", ()):
+            key = _identity_key(row["identity"])
+            if key in candidate_rows:
+                reasons["candidate_duplicate_body"] += 1
+            candidate_rows[key] = row
+        if set(candidate_rows) != candidate_members:
+            reasons["candidate_member_body_mismatch"] += 1
+        if scope["coverage"]["status"] != "complete":
+            reasons["candidate_coverage_not_complete"] += 1
+
+    # Recheck the installed frame's original receipt/component joins after the
+    # strict public parser admitted it. Recency still uses the producer's K;
+    # these checks establish sample scope, not independent K provenance.
+    source_clock_lower_bounds = []
+    source_clocks = (scope or {}).get("clocks", ())
+    clock_bracket_ok = bool(source_clocks)
+    source = next((item for item in frame.get("sources", ()) if item.get("provider") == "codex"), None)
+    receipts = ({item["name"]: item for item in source.get("components", ())}
+                if isinstance(source, dict) else {})
+    current_clock_components = {
+        name for name, receipt in receipts.items()
+        if receipt.get("health") in {"current", "partial"}
+    }
+    clock_component_counts: collections.Counter[str] = collections.Counter()
+    joined_clock_components = set()
+    sample_joins: dict[str, tuple] = {}
+    for clock in source_clocks:
+        component_name = clock.get("component")
+        component = receipts.get(component_name)
+        clock_component_counts[component_name] += 1
+        join_ok = (component is not None
+                   and component.get("health") in {"current", "partial"}
+                   and component.get("accepted") == clock.get("accepted")
+                   and component.get("sampledBoottimeMs") == clock.get("sampledBoottimeMs")
+                   and clock.get("originComponent") in {"runtime", "history"}
+                   and isinstance(clock.get("sampleId"), str))
+        signature = tuple(clock.get(name) for name in (
+            "originComponent", "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs"))
+        prior = sample_joins.get(clock.get("sampleId"))
+        if prior is not None and prior != signature:
+            join_ok = False
+        if isinstance(clock.get("sampleId"), str):
+            sample_joins[clock["sampleId"]] = signature
+        times_ok = (
+            start_wall_ms - 1 <= clock.get("wallMs", -1) <= end_wall_ms + 1
+            and start_boot_ms - 1 <= clock.get("sampledBoottimeMs", -1) <= end_boot_ms + 1
+            and start_boot_ms - 1 <= clock.get("acceptedBoottimeMs", -1) <= end_boot_ms + 1
+        )
+        if not join_ok:
+            reasons["source_clock_component_sample_join_unproved"] += 1
+            clock_bracket_ok = False
+        if not times_ok:
+            reasons["source_clock_outside_external_envelope"] += 1
+            clock_bracket_ok = False
+        if join_ok:
+            source_clock_lower_bounds.append(clock["wallMs"] - clock["sampledBoottimeMs"] + 1)
+            if times_ok:
+                joined_clock_components.add(component_name)
+    clock_census_complete = (
+        bool(current_clock_components)
+        and len(source_clocks) == len(current_clock_components)
+        and set(clock_component_counts) == current_clock_components
+        and all(count == 1 for count in clock_component_counts.values())
+        and joined_clock_components == current_clock_components
+    )
+    if not clock_census_complete:
+        reasons["source_clock_census_incomplete"] += 1
+    source_k_min = max(source_clock_lower_bounds, default=None)
+    ceiling = frame.get("clockCeiling")
+    ceiling_bound_ok = (type(ceiling) is int and type(source_k_min) is int and ceiling >= source_k_min)
+    if source_clocks and not ceiling_bound_ok:
+        reasons["source_clock_ceiling_lower_bound_unproved"] += 1
+        clock_bracket_ok = False
+    if not source_clocks:
+        reasons["source_clock_samples_missing"] += 1
+    census_stable = (loaded_before == loaded_after and saved_before == saved_after
+                     and set(before) == set(after))
+    if not census_stable:
+        reasons["native_census_changed"] += 1
+    for reason in gaps_before + gaps_after:
+        reasons[reason] += 1
+    native_complete = census_stable and not gaps_before and not gaps_after
+    native_union = set(before) | set(after)
+    all_keys = sorted(native_union | set(candidate_rows) | candidate_members
+                      | candidate_nonmembers | candidate_uncertain)
+    expected_true = expected_false = expected_unknown = selected_match = 0
+    candidate_omitted_expected_negative = 0
+    conditional_memberships = 0
+    for key in all_keys:
+        digest = _hmac_identity(hash_key, key)
+        left, right = before.get(key), after.get(key)
+        candidate = candidate_rows.get(key)
+        if left is None or right is None or not _row_fact_equal(left, right):
+            member_unresolved.add(digest)
+            field_unresolved.add(digest)
+            reasons["native_row_raced_or_missing"] += 1
+            continue
+        native = right
+
+        # Compare only the requested native dimensions. Unknown native values
+        # remain evidence limits; they do not become false mismatches.
+        if candidate is not None:
+            candidate_runtime = candidate.get("runtime", {})
+            actual_runtime = candidate_runtime.get("value")
+            if candidate_runtime.get("health") == "current":
+                fields["runtime_checked"] += 1
+                if actual_runtime == native["runtime"]:
+                    fields["runtime_match"] += 1
+                elif native["runtime"] == "unknown":
+                    field_unresolved.add(digest)
+                    reasons["native_runtime_unknown"] += 1
+                else:
+                    mismatches["runtime_mismatch"] += 1
+                    field_mismatches.add(digest)
+            else:
+                field_unresolved.add(digest)
+                reasons["candidate_runtime_not_current"] += 1
+
+            fields["kind_checked"] += 1
+            if candidate.get("kind") == native["kind"]:
+                fields["kind_match"] += 1
+            elif native["kind"] == "unknown":
+                field_unresolved.add(digest)
+                reasons["native_kind_unknown"] += 1
+            else:
+                mismatches["kind_mismatch"] += 1
+                field_mismatches.add(digest)
+
+            activity = candidate.get("activity", {})
+            actual_activity = activity.get("at")
+            if type(native["activity"]) is int:
+                if activity.get("health") == "current" and actual_activity == native["activity"]:
+                    fields["activity_match"] += 1
+                elif activity.get("health") == "current" and type(actual_activity) is int:
+                    mismatches["activity_mismatch"] += 1
+                    field_mismatches.add(digest)
+                else:
+                    field_unresolved.add(digest)
+                    reasons["activity_unproved"] += 1
+            elif native["activityReason"] == "no_native_turn_clock" and _current_no_turn(candidate, native, None):
+                fields["activity_no_turn_match"] += 1
+            elif activity.get("health") == "current" and type(actual_activity) is int:
+                mismatches["activity_mismatch"] += 1
+                field_mismatches.add(digest)
+            else:
+                field_unresolved.add(digest)
+                reasons["activity_unproved"] += 1
+        elif key in candidate_members:
+            # A strict member cannot normally lack its public row body. Keep a
+            # defensive unresolved path if an adapter bypasses that invariant.
+            field_unresolved.add(digest)
+            reasons["candidate_member_body_missing"] += 1
+        elif key in candidate_nonmembers:
+            nonmember = nonmember_meta.get(key)
+            represented = nonmember.get("value") if isinstance(nonmember, dict) else None
+            if represented in {"child", "system"}:
+                fields["kind_checked"] += 1
+                if represented == native["kind"]:
+                    fields["kind_match"] += 1
+                elif native["kind"] == "unknown":
+                    field_unresolved.add(digest)
+                    reasons["native_kind_unknown"] += 1
+                else:
+                    mismatches["kind_mismatch"] += 1
+                    field_mismatches.add(digest)
+                field_unresolved.add(digest)
+                reasons["nonmember_runtime_activity_unavailable"] += 1
+            elif represented == "parked":
+                fields["runtime_checked"] += 1
+                if native["runtime"] == "parked" and native["hasSavedHistory"]:
+                    fields["runtime_match"] += 1
+                elif native["runtime"] != "unknown":
+                    mismatches["runtime_mismatch"] += 1
+                    field_mismatches.add(digest)
+                else:
+                    field_unresolved.add(digest)
+                    reasons["native_runtime_unknown"] += 1
+                recent = nonmember.get("recent") if isinstance(nonmember, dict) else None
+                activity_at = recent.get("activityAt") if isinstance(recent, dict) else None
+                if type(native["activity"]) is int and activity_at == native["activity"]:
+                    fields["activity_match"] += 1
+                elif type(native["activity"]) is int and type(activity_at) is int:
+                    mismatches["activity_mismatch"] += 1
+                    field_mismatches.add(digest)
+                elif (native["activityReason"] == "no_native_turn_clock"
+                      and isinstance(recent, dict)
+                      and recent.get("kind") == "no_activity"
+                      and _current_no_turn(None, native, nonmember)):
+                    fields["activity_no_turn_match"] += 1
+                else:
+                    field_unresolved.add(digest)
+                    reasons["activity_unproved"] += 1
+                field_unresolved.add(digest)
+                reasons["nonmember_kind_unavailable"] += 1
+            else:
+                field_unresolved.add(digest)
+                reasons["nonmember_fields_unavailable"] += 1
+
+        resolved_member = member_meta.get(key)
+        resolved_nonmember = nonmember_meta.get(key)
+        support, clock = _clock_for_recent(scope or {}, resolved_member, resolved_nonmember)
+        expected, membership_reason = _expected_selection(
+            native, candidate, resolved_nonmember, support, clock,
+            frame, window_ms, source_k_min, clock_bracket_ok=clock_bracket_ok,
+            scope=scope, clock_census_complete=clock_census_complete,
+        )
+        if expected is True and membership_reason in {
+            "recent", "recent_from_scope_clock_census",
+        }:
+            expected_true += 1
+            conditional_memberships += 1
+            member_unresolved.add(digest)
+            reasons["membership_conditional_on_producer_clock_ceiling"] += 1
+        elif expected is True:
+            expected_true += 1
+            if key in candidate_members:
+                selected_match += 1
+            elif key in candidate_nonmembers and (scope or {}).get("coverage", {}).get("status") == "complete":
+                mismatches["native_selected_candidate_excluded"] += 1
+                member_mismatches.add(digest)
+            elif key in candidate_uncertain:
+                member_unresolved.add(digest)
+                reasons["candidate_membership_uncertain"] += 1
+            elif (scope or {}).get("coverage", {}).get("status") == "complete":
+                mismatches["native_selected_candidate_missing"] += 1
+                member_mismatches.add(digest)
+            else:
+                member_unresolved.add(digest)
+                reasons["candidate_positive_membership_missing"] += 1
+        elif expected is False:
+            expected_false += 1
+            if key in candidate_members:
+                mismatches["candidate_selected_native_excluded"] += 1
+                member_mismatches.add(digest)
+            elif key in candidate_nonmembers:
+                selected_match += 1
+            elif key in candidate_uncertain:
+                member_unresolved.add(digest)
+                reasons["candidate_membership_uncertain"] += 1
+            elif (scope or {}).get("coverage", {}).get("status") == "complete":
+                selected_match += 1
+                candidate_omitted_expected_negative += 1
+            else:
+                member_unresolved.add(digest)
+                reasons["negative_census_entry_missing"] += 1
+        else:
+            expected_unknown += 1
+            member_unresolved.add(digest)
+            reasons[_safe_code(membership_reason, "membership_unresolved")] += 1
+
+    for key in candidate_members - native_union:
+        digest = _hmac_identity(hash_key, key)
+        member_unresolved.add(digest)
+        field_unresolved.add(digest)
+        reasons["candidate_identity_missing_from_native_census"] += 1
+    for key in candidate_uncertain & native_union:
+        member_unresolved.add(_hmac_identity(hash_key, key))
+        reasons["candidate_marks_identity_uncertain"] += 1
+
+    coverage_complete = (scope or {}).get("coverage", {}).get("status") == "complete"
+    membership_status = ("mismatch" if member_mismatches else
+                         "unresolved" if (member_unresolved or not native_complete
+                                          or not coverage_complete or not candidate_binding_valid)
+                         else "match")
+    field_status = ("mismatch" if field_mismatches else
+                    "unresolved" if field_unresolved or not candidate_binding_valid else "match")
+    # A full-set pass requires complete native census and candidate coverage.
+    status = ("mismatch" if mismatches else "unresolved"
+              if (membership_status != "match" or field_status != "match"
+                  or not native_complete or not coverage_complete or not candidate_binding_valid)
+              else "match")
+    identity_hashes = sorted(member_mismatches | member_unresolved | field_mismatches | field_unresolved)
+    return {
+        "schema": "agent-observer.working-set-native-qualification.v1",
+        "status": status,
+        "exitCode": 2 if mismatches else 3 if status != "match" else 0,
+        "membershipStatus": membership_status,
+        "conditionalMembershipStatus": (
+            "producer_clock_ceiling_dependent" if conditional_memberships else "none"
+        ),
+        "fieldStatus": field_status,
+        "hostScope": host,
+        "windowMs": window_ms,
+        "oracle": "independent_codex_app_server_read_subset",
+        "sourceK": {"status": "producer_asserted_not_independently_proven",
+                    "candidateCeiling": ceiling,
+                    "independentCurrentClockLowerBound": source_k_min,
+                    "clockBracketAndComponentSampleJoins": "checked" if clock_bracket_ok else "unresolved",
+                    "currentComponentClockCensus": "complete" if clock_census_complete else "incomplete"},
+        "counts": {
+            "nativeBefore": len(before), "nativeAfter": len(after),
+            "candidateBodies": len(candidate_rows), "candidateMembers": len(candidate_members),
+            "candidateNonmembers": len(candidate_nonmembers), "candidateUncertain": len(candidate_uncertain),
+            "expectedMembers": expected_true, "expectedNonmembers": expected_false,
+            "membershipUnresolved": expected_unknown, "membershipMatches": selected_match,
+            "conditionalMemberships": conditional_memberships,
+            "candidateOmittedExpectedNegative": candidate_omitted_expected_negative,
+            "nativeCensusStable": census_stable, "nativeComplete": native_complete,
+            "membershipUnresolvedIdentities": len(member_unresolved),
+            "fieldUnresolvedIdentities": len(field_unresolved),
+            "mismatchedIdentities": len(member_mismatches | field_mismatches),
+        },
+        "fieldCounts": dict(fields),
+        "reasonCounts": dict(sorted(reasons.items())),
+        "mismatchCounts": dict(sorted(mismatches.items())),
+        "identityDigests": identity_hashes[:512],
+        "candidate": {
+            "serviceIdDigest": hmac.new(hash_key, str(frame.get("serviceId", "")).encode(), hashlib.sha256).hexdigest()[:32],
+            "bootIdDigest": hmac.new(hash_key, str(frame.get("bootId", "")).encode(), hashlib.sha256).hexdigest()[:32],
+            "sequence": frame.get("sequence"), "viewRevision": frame.get("viewRevision"),
+            "observationRevision": frame.get("observationRevision"),
+        },
+        "coverageLimits": [
+            "comparison is limited to stable rows bracketed by native-before and native-after",
+            "transient changes that begin and revert inside the bracket cannot be excluded",
+            "source clock ceiling is producer-asserted and is not independently proven here",
+            "R-only positive membership remains conditional on the producer clock ceiling",
+            "omitted-row recency requires a complete joined clock census for current source components",
+            "native before/after census and row facts are read-only but can be incomplete or raced",
+            "no provider payload, prompts, responses, title, cwd or native identifier is emitted",
+        ],
+    }
+
+
+def _window_hours(value: str) -> int:
+    try:
+        hours = int(value, 10)
+    except ValueError:
+        raise argparse.ArgumentTypeError("window_hours_invalid") from None
+    if not 1 <= hours <= 720:
+        raise argparse.ArgumentTypeError("window_hours_out_of_range")
+    return hours
+
+
+def _bounded_int(minimum: int, maximum: int, code: str):
+    def parse(value: str) -> int:
+        try:
+            result = int(value, 10)
+        except ValueError:
+            raise argparse.ArgumentTypeError(code) from None
+        if not minimum <= result <= maximum:
+            raise argparse.ArgumentTypeError(code)
+        return result
+    return parse
+
+
+def _sha256_arg(value: str) -> str:
+    if _SHA256.fullmatch(value) is None:
+        raise argparse.ArgumentTypeError("sha256_invalid")
+    return value
+
+
+def _wait_for_candidate_socket(path: Path, deadline: float) -> None:
+    while time.monotonic() < deadline:
+        if _check_private_path(path) is not None:
+            return
+        time.sleep(min(0.05, max(0.001, deadline - time.monotonic())))
+    raise QualificationError("candidate_socket_wait_timeout", "unresolved")
+
+
+def _bounded_native_reference(module: types.ModuleType, client, *, deadline: float,
+                              rpc_timeout_seconds: int, max_rows: int) -> dict:
+    original_call = client.call
+    original_overrides = {
+        name: vars(client).get(name, _MISSING_ATTRIBUTE)
+        for name in ("recv", "call", "pages")
+    }
+    original_socket_timeout = client.sock.gettimeout()
+
+    def recv(count):
+        while len(client.buffer) < count:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise NativeLimit("native_read_deadline")
+            client.sock.settimeout(min(float(rpc_timeout_seconds), remaining))
+            try:
+                data = client.sock.recv(count - len(client.buffer))
+            except (TimeoutError, OSError):
+                if time.monotonic() >= deadline:
+                    raise NativeLimit("native_read_deadline") from None
+                raise NativeLimit("native_rpc_timeout") from None
+            if not data:
+                raise QualificationError("native_peer_closed", "unresolved")
+            client.buffer.extend(data)
+        value = bytes(client.buffer[:count])
+        del client.buffer[:count]
+        return value
+
+    def call(method, params):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise NativeLimit("native_read_deadline")
+        client.sock.settimeout(min(float(rpc_timeout_seconds), remaining))
+        try:
+            result = original_call(method, params)
+        except NativeLimit:
+            raise
+        except (TimeoutError, OSError):
+            raise NativeLimit("native_rpc_timeout") from None
+        except ValueError as exc:
+            code = _reason_code(exc, "native_rpc_failed")
+            if code in {"native_rpc_timeout", "native_frame_limit", "native_message_limit",
+                        "native_notification_limit", "native_upgrade_limit"}:
+                raise NativeLimit(code) from None
+            raise
+        if method == "thread/read":
+            thread = result.get("thread") if isinstance(result, dict) else None
+            if isinstance(thread, dict) and "turns" in thread:
+                turns = thread.get("turns")
+                if type(turns) is not list or turns:
+                    raise QualificationError("native_content_read_unexpected", "unsupported")
+                del thread["turns"]
+        if method == "thread/turns/list":
+            rows = result.get("data") if isinstance(result, dict) else None
+            if not isinstance(rows, list):
+                raise QualificationError("native_turn_metadata_unavailable", "unresolved")
+            for row in rows:
+                if (not isinstance(row, dict) or row.get("items") != []
+                        or row.get("itemsView") != "notLoaded"):
+                    raise QualificationError("native_content_exclusion_unproved", "unsupported")
+        return result
+
+    def pages(method):
+        rows, cursors, cursor = [], set(), None
+        for _ in range(_MAX_NATIVE_PAGES):
+            if time.monotonic() >= deadline:
+                raise NativeLimit("native_read_deadline")
+            params = {"cursor": cursor}
+            if method == "thread/list":
+                params["limit"] = 100
+                params["sourceKinds"] = [
+                    "cli", "vscode", "exec", "appServer", "subAgent", "subAgentReview",
+                    "subAgentCompact", "subAgentThreadSpawn", "subAgentOther", "unknown",
+                ]
+                params["useStateDbOnly"] = True
+            response = call(method, params)
+            page = response.get("data") if isinstance(response, dict) else None
+            if not isinstance(page, list):
+                raise QualificationError("native_inventory_page_unavailable", "unresolved")
+            rows.extend(page)
+            if len(rows) > max_rows:
+                raise NativeLimit("native_inventory_limit")
+            cursor = response.get("nextCursor")
+            if cursor is None:
+                return rows
+            if (not isinstance(cursor, str) or not cursor or len(cursor.encode("utf-8")) > _MAX_CURSOR_BYTES
+                    or any(ord(char) < 0x20 for char in cursor)):
+                raise QualificationError("native_cursor_unproved", "unresolved")
+            if cursor in cursors:
+                raise NativeLimit("native_cursor_cycle")
+            cursors.add(cursor)
+        raise NativeLimit("native_page_limit")
+
+    client.recv = recv
+    client.call = call
+    client.pages = pages
+    try:
+        return module.codex_reference(client)
+    except NativeLimit:
+        raise
+    except QualificationError:
+        raise
+    except (TimeoutError, OSError):
+        raise NativeLimit("native_rpc_timeout") from None
+    except Exception as exc:
+        code = _reason_code(exc, "native_reference_failed")
+        raise QualificationError(code, "unresolved") from None
+    finally:
+        try:
+            for name, original in original_overrides.items():
+                if original is _MISSING_ATTRIBUTE:
+                    with contextlib.suppress(AttributeError):
+                        delattr(client, name)
+                else:
+                    setattr(client, name, original)
+            client.sock.settimeout(original_socket_timeout)
+        except OSError:
+            pass
+
+
+def _native_process_metadata(module: types.ModuleType, client, home: Path,
+                              expected_endpoint: Path | None = None,
+                              expected_inode: tuple[int, int] | None = None) -> dict:
+    try:
+        endpoint, socket_info = _expected_native_endpoint(home, expected_endpoint)
+        birth = module.birth(client.pid)[0]
+        process_owner = Path(f"/proc/{client.pid}").stat().st_uid
+        executable = os.readlink(f"/proc/{client.pid}/exe").removesuffix(" (deleted)")
+        executable_info = Path(f"/proc/{client.pid}/exe").stat()
+        actual = module.image(f"/proc/{client.pid}/exe", "codex")
+    except QualificationError:
+        raise
+    except Exception:
+        raise QualificationError("native_process_identity_unavailable", "unresolved") from None
+    match = re.fullmatch(
+        re.escape(str(home))
+        + r"/packages/app-server-daemon/releases/(\d+\.\d+\.\d+)-x86_64-unknown-linux-musl/bin/codex",
+        executable,
+    )
+    if (birth != client.start or process_owner != os.getuid()
+            or actual.get("sha256") != client.artifact.get("sha256") or match is None
+            or match.group(1) != client.artifact.get("version")):
+        raise QualificationError("native_process_identity_changed", "unresolved")
+    if expected_inode is not None and (socket_info.st_dev, socket_info.st_ino) != expected_inode:
+        raise QualificationError("native_endpoint_incarnation_changed", "unresolved")
+    return {
+        "endpointPath": str(endpoint),
+        "endpointDevice": socket_info.st_dev,
+        "endpointInode": socket_info.st_ino,
+        "uid": process_owner,
+        "executablePath": executable,
+        "executableSha256": actual["sha256"],
+        "executableDevice": executable_info.st_dev,
+        "executableInode": executable_info.st_ino,
+        "version": client.artifact.get("version"),
+        "pid": client.pid,
+        "start": birth,
+    }
+
+
+def _native_round(module: types.ModuleType, client, home: Path, *, deadline: float,
+                  rpc_timeout_seconds: int, max_rows: int,
+                  endpoint_inode: tuple[int, int]) -> tuple[dict, dict]:
+    start_wall, start_boot = _wall_ms(), _boot_ms()
+    before = _native_process_metadata(module, client, home, expected_inode=endpoint_inode)
+    sample = _bounded_native_reference(module, client, deadline=deadline,
+                                       rpc_timeout_seconds=rpc_timeout_seconds,
+                                       max_rows=max_rows)
+    end_wall, end_boot = _wall_ms(), _boot_ms()
+    after = _native_process_metadata(module, client, home, expected_inode=endpoint_inode)
+    if before["pid"] != after["pid"] or before["start"] != after["start"]:
+        raise QualificationError("native_daemon_incarnation_changed", "unresolved")
+    sample_at = sample.get("sampleAt") if isinstance(sample, dict) else None
+    if type(sample_at) is not int or not start_wall - 1 <= sample_at <= end_wall + 1:
+        raise QualificationError("native_sample_outside_external_envelope", "unresolved")
+    return sample, {
+        "startWallMs": start_wall, "endWallMs": end_wall,
+        "startBoottimeMs": start_boot, "endBoottimeMs": end_boot,
+        "durationMs": max(0, end_boot - start_boot),
+        "nativeSampleAtMs": sample_at,
+    }
+
+
+def _parse_args(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--codex-home", required=True, type=Path)
+    parser.add_argument("--native-endpoint", required=True, type=Path)
+    parser.add_argument("--host-scope", required=True)
+    parser.add_argument("--window-hours", required=True, type=_window_hours)
+    parser.add_argument("--service-socket", required=True, type=Path)
+    parser.add_argument("--candidate-python", required=True, type=Path)
+    parser.add_argument("--candidate-python-sha256", required=True, type=_sha256_arg)
+    parser.add_argument("--observer-service-cli", required=True, type=Path)
+    parser.add_argument("--observer-service-cli-sha256", required=True, type=_sha256_arg)
+    parser.add_argument("--mesh-cli", required=True, type=Path)
+    parser.add_argument("--mesh-cli-sha256", required=True, type=_sha256_arg)
+    parser.add_argument("--observer-wheel-sha256", required=True, type=_sha256_arg)
+    parser.add_argument("--mesh-wheel-sha256", required=True, type=_sha256_arg)
+    parser.add_argument("--observer-version")
+    parser.add_argument("--mesh-version")
+    parser.add_argument("--native-reference-sha256", type=_sha256_arg)
+    parser.add_argument("--deadline-seconds", type=_bounded_int(30, 600, "deadline_out_of_range"), default=240)
+    parser.add_argument("--service-wait-seconds", type=_bounded_int(1, 240, "service_wait_out_of_range"), default=90)
+    parser.add_argument("--rpc-timeout-seconds", type=_bounded_int(1, 30, "rpc_timeout_out_of_range"), default=12)
+    parser.add_argument("--max-native-rows", type=_bounded_int(1, _MAX_NATIVE_ROWS, "native_row_limit_out_of_range"), default=_MAX_NATIVE_ROWS)
+    args = parser.parse_args(argv)
+    if not _SCOPE.fullmatch(args.host_scope):
+        parser.error("host_scope_invalid")
+    return args
+
+
+def _result_error(status: str, reason: str) -> dict:
+    return {
+        "schema": "agent-observer.working-set-native-qualification.v1",
+        "status": status,
+        "exitCode": 3 if status in {"unresolved", "unsupported"} else 4,
+        "reasonCode": _safe_code(reason, "qualification_failed"),
+        "coverageLimits": [
+            "native and candidate payloads remain transient",
+            "no native action, service autostart or endpoint repair is performed",
+        ],
+    }
+
+
+def _run(args) -> dict:
+    if args.window_hours * 3600000 > 30 * 24 * 60 * 60 * 1000:
+        raise QualificationError("working_set_window_out_of_range")
+    try:
+        home = args.codex_home.resolve(strict=True)
+        if not args.codex_home.is_absolute() or home != args.codex_home or not home.is_dir():
+            raise QualificationError("codex_home_path_rejected")
+    except OSError:
+        raise QualificationError("codex_home_unavailable") from None
+    if not args.native_endpoint.is_absolute():
+        raise QualificationError("native_endpoint_path_not_absolute")
+    endpoint, endpoint_info = _expected_native_endpoint(home, args.native_endpoint)
+    _check_private_path(args.service_socket)
+    if _check_private_path(args.service_socket) is not None:
+        raise QualificationError("candidate_socket_preexisting")
+    provenance = _verify_installed_provenance(args)
+    oracle, oracle_sha = _load_native_oracle()
+    run_deadline = time.monotonic() + args.deadline_seconds
+    native_client = None
+    try:
+        native_client = oracle.NativeRPC(home, reference_sha256=args.native_reference_sha256)
+        native_peer = _native_process_metadata(
+            oracle, native_client, home, expected_endpoint=endpoint,
+            expected_inode=(endpoint_info.st_dev, endpoint_info.st_ino),
+        )
+        run_key = os.urandom(32)
+        before, before_timing = _native_round(
+            oracle, native_client, home, deadline=run_deadline,
+            rpc_timeout_seconds=args.rpc_timeout_seconds, max_rows=args.max_native_rows,
+            endpoint_inode=(endpoint_info.st_dev, endpoint_info.st_ino),
+        )
+        print(json.dumps({
+            "schema": "agent-observer.working-set-native-qualification.progress.v1",
+            "event": "native_before_complete",
+            "nativeRows": len(before.get("rows", {})) if isinstance(before.get("rows"), dict) else 0,
+            "nativeVersion": native_peer["version"],
+            "nativeExecutableSha256": native_peer["executableSha256"],
+            "candidateServiceSocket": str(args.service_socket),
+        }, sort_keys=True, separators=(",", ":")), flush=True)
+        wait_deadline = min(run_deadline, time.monotonic() + args.service_wait_seconds)
+        _wait_for_candidate_socket(args.service_socket, wait_deadline)
+        window_ms = args.window_hours * 3600000
+        frame, candidate_peer = _read_candidate(
+            args.service_socket, host=args.host_scope, window_ms=window_ms,
+            expected_python=args.candidate_python,
+            expected_python_sha=args.candidate_python_sha256,
+            observer_cli=provenance["observerServiceCli"]["path"], home=home,
+            deadline=run_deadline,
+        )
+        # End the cached-frame/native bracket immediately before the after read.
+        after_bracket_wall, after_bracket_boot = _wall_ms(), _boot_ms()
+        after, after_timing = _native_round(
+            oracle, native_client, home, deadline=run_deadline,
+            rpc_timeout_seconds=args.rpc_timeout_seconds, max_rows=args.max_native_rows,
+            endpoint_inode=(endpoint_info.st_dev, endpoint_info.st_ino),
+        )
+        end_wall, end_boot = _wall_ms(), _boot_ms()
+        if after_timing["startWallMs"] < after_bracket_wall - 1 or after_timing["startBoottimeMs"] < after_bracket_boot - 1:
+            raise QualificationError("external_bracket_order_invalid", "unresolved")
+        comparison = compare_frame(
+            before, frame, after, host=args.host_scope, home=home,
+            window_ms=window_ms,
+            start_wall_ms=before_timing["startWallMs"], end_wall_ms=end_wall,
+            start_boot_ms=before_timing["startBoottimeMs"], end_boot_ms=end_boot,
+            hash_key=run_key,
+        )
+        native_final = _native_process_metadata(
+            oracle, native_client, home, expected_endpoint=endpoint,
+            expected_inode=(endpoint_info.st_dev, endpoint_info.st_ino),
+        )
+        native_signature = (native_peer["pid"], native_peer["start"],
+                            native_peer["executableSha256"], native_peer["endpointInode"])
+        final_signature = (native_final["pid"], native_final["start"],
+                           native_final["executableSha256"], native_final["endpointInode"])
+        if native_signature != final_signature:
+            raise QualificationError("native_daemon_incarnation_changed", "unresolved")
+        candidate_public = {
+            "python": provenance["python"],
+            "observer": provenance["observer"],
+            "mesh": provenance["mesh"],
+            "observerServiceCli": provenance["observerServiceCli"],
+            "meshCli": provenance["meshCli"],
+            "parserPath": provenance["parserPath"],
+            "socketPath": candidate_peer["socketPath"],
+            "socketDevice": candidate_peer["socketDevice"],
+            "socketInode": candidate_peer["socketInode"],
+            "listenerInode": candidate_peer["listenerInode"],
+            "peerUid": candidate_peer["uid"],
+            "peerExecutablePath": candidate_peer["executable"],
+            "peerExecutableSha256": candidate_peer["executableSha256"],
+            "peerExecutableDevice": candidate_peer["executableDevice"],
+            "peerExecutableInode": candidate_peer["executableInode"],
+            "serviceIncarnationDigest": hmac.new(
+                run_key, f"{candidate_peer['pid']}:{candidate_peer['startTicks']}:{candidate_peer['listenerInode']}".encode(),
+                hashlib.sha256,
+            ).hexdigest()[:32],
+        }
+        native_public = {
+            "endpointPath": native_final["endpointPath"],
+            "endpointDevice": native_final["endpointDevice"],
+            "endpointInode": native_final["endpointInode"],
+            "peerUid": native_final["uid"],
+            "executablePath": native_final["executablePath"],
+            "executableSha256": native_final["executableSha256"],
+            "executableDevice": native_final["executableDevice"],
+            "executableInode": native_final["executableInode"],
+            "version": native_final["version"],
+            "processIncarnationDigest": hmac.new(
+                run_key, f"{native_final['pid']}:{native_final['start']}:{native_final['endpointInode']}".encode(),
+                hashlib.sha256,
+            ).hexdigest()[:32],
+        }
+        comparison.update({
+            "native": native_public,
+            "nativeOracle": {"path": str(Path(__file__).resolve().parent / "evaluate-observation"),
+                             "sha256": oracle_sha, "reusedReadSubset": True},
+            "candidateInstall": candidate_public,
+            "timing": {
+                "nativeBeforeDurationMs": before_timing["durationMs"],
+                "nativeAfterDurationMs": after_timing["durationMs"],
+                "externalWallBracketMs": [before_timing["startWallMs"], end_wall],
+                "externalBoottimeBracketMs": [before_timing["startBoottimeMs"], end_boot],
+                "candidateFrameSequence": frame["sequence"],
+                "candidateFrameEmittedBoottimeMs": frame["emittedBoottimeMs"],
+                "candidateFrameEmittedAtMs": frame["emittedAt"],
+            },
+        })
+        return comparison
+    finally:
+        if native_client is not None:
+            try:
+                native_client.close()
+            except Exception:
+                pass
+
+
+def main(argv=None) -> int:
+    try:
+        args = _parse_args(argv)
+        result = _run(args)
+    except QualificationError as exc:
+        result = _result_error(exc.status, exc.code)
+    except NativeLimit as exc:
+        result = _result_error("unresolved", exc.code)
+    except SystemExit:
+        raise
+    except Exception as exc:
+        result = _result_error("unsupported", _reason_code(exc, "qualification_failed"))
+    print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+    return int(result.get("exitCode", 4))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
