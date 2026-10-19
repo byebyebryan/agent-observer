@@ -843,21 +843,35 @@ class Runtime:
                                 self._drop(obj)
                     self._prune()
         finally:
-            if getattr(self.state, "working_set_reserver", None) is self._working_set_reserver:
-                self.state.working_set_reserver = None
-            if getattr(self.state, "sync_reserver", None) is self._sync_reserver:
-                self.state.sync_reserver = None
-            if self.hints:
-                self.hints.close()
-            for peer in list(self.peers):
-                self._drop(peer)
-            for worker in list(self.workers.values()):
-                self._stop_worker(worker)
-                self._close_memo_channel(worker.process)
-                worker.process.stdout.close()
-            for memo in self.image_memos.values():
-                memo.close()
-            self.selector.close()
+            try:
+                if getattr(self.state, "working_set_reserver", None) is self._working_set_reserver:
+                    self.state.working_set_reserver = None
+                if getattr(self.state, "sync_reserver", None) is self._sync_reserver:
+                    self.state.sync_reserver = None
+                if self.hints:
+                    self.hints.close()
+                for peer in list(self.peers):
+                    self._drop(peer)
+                for worker in list(self.workers.values()):
+                    self._stop_worker(worker)
+                    self._close_memo_channel(worker.process)
+                    worker.process.stdout.close()
+                for memo in self.image_memos.values():
+                    memo.close()
+                self.selector.close()
+            finally:
+                # run() is terminal. Drop only callbacks that still form a
+                # direct self-cycle; caller-injected and sibling replacements
+                # remain untouched.
+                for name in (
+                    "worker_factory",
+                    "_clock_factory",
+                    "_sync_reserver",
+                    "_working_set_reserver",
+                ):
+                    callback = getattr(self, name, None)
+                    if type(callback) is MethodType and callback.__self__ is self:
+                        setattr(self, name, None)
 
 
 # Capture the implementation, not a later monkeypatch/subclass hook. No public

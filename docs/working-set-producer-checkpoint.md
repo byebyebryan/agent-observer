@@ -37,6 +37,12 @@ The [final owner resource packet](evidence/2026-10-18-working-set/final-owner-re
 records the exact ledger, owner CPU and slow-peer results, including the
 preserved cross-interpreter pressure-audit failure and its bounded reconciliation.
 
+A subsequent [terminal Runtime correction](working-set-runtime-retirement.md)
+removes stored self-bound callback cycles after shutdown, including startup and
+cleanup failures. It preserves live behavior, caller-owned state and sibling
+callbacks. The resource and installed reports above remain bound to `196a8e2b`;
+they do not certify the later correction or its rebuilt installed artifacts.
+
 Remaining work follows P3 in the [execution plan](working-set-projection-plan.md):
 resolve the pipeline and fixed-SSH harness findings; qualify matched producer/read CPU and actual
 delivery at the agreed cadences; finish inclusive ownership, slow-peer and
