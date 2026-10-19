@@ -70,6 +70,26 @@ census dependencies. Delivery/context failure removes positive and negative
 authority while retaining explicitly informational identity context. This code
 adds no presentation history or context-retirement timeout.
 
+### Bounded downstream presentation leases
+
+The additive `WORKING_SET_MEMBER_LEASE_INTERFACE_VERSION = 1` exports a detached
+`member_leases` list with each `WorkingSetAgentRead`. Entries match the current
+`members` by exact identity and contain `activeExpiresAtMs`,
+`recentExpiresAtMs`, `membershipExpiresAtMs`, and a `fieldExpiresAtMs` map.
+All deadlines use the receiving Reader's BOOTTIME domain. Expired or unsupported
+branches and fields have null deadlines. Membership uses the maximum live branch
+horizon, capped by the required kind support for a known kind. The recent horizon
+already contains the original positive-only cutoff attenuation.
+
+Consumers use these already-computed leases to bound downstream display packets;
+they do not reconstruct membership from raw metadata, translate Dhi into absence,
+renew a lease on a timer tick, or infer running from recent membership. A display
+packet must also respect the current support of every field it displays. Mutating
+the exported list, identity or deadline map does not affect retained state.
+Delivery loss, terminal disconnect and positive expiry export no member lease.
+This is a read-facade addition: no native frame, Mesh descriptor, schema or wire
+contract changes, and it does not independently qualify installed/native delivery.
+
 ## Evidence boundary
 
 The [component record](evidence/2026-10-18-working-set/p2-client/README.md)

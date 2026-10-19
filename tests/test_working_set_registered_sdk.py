@@ -164,6 +164,10 @@ class RegisteredWorkingSetTests(unittest.IsolatedAsyncioTestCase):
                     if host["delivery"]["status"] != "ready":
                         continue
                     self.assertEqual(result.members, expected)
+                    self.assertEqual([lease["identity"] for lease in result.member_leases],
+                                     [row["identity"] for row in result.members])
+                    self.assertTrue(all(lease["membershipExpiresAtMs"] > reader_now()
+                                        for lease in result.member_leases))
                     self.assertEqual([identity_key(row["identity"]) for row in result.members],
                                      [identity_key(row["identity"]) for row in expected])
                     self.assertEqual(result.scopes[0]["coverage"]["status"], "complete")

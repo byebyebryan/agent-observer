@@ -8,7 +8,7 @@ No I/O, presentation history or implicit full-history fallback is owned here.
 from __future__ import annotations
 
 import copy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from mesh_plus import api as mesh_api
 from mesh_plus.api import PreparedReadGuard
@@ -33,6 +33,7 @@ from .working_set_supports import (
 )
 
 WORKING_SET_READ_INTERFACE_VERSION = 1
+WORKING_SET_MEMBER_LEASE_INTERFACE_VERSION = 1
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,10 @@ class WorkingSetAgentRead:
     uncertain: list
     nonmembers: list
     scopes: list
+    # Detached receiving-clock leases for bounded downstream presentation.
+    # Selection and branch arithmetic stay in this domain facade; these exports
+    # grant no authority beyond the matching current member in this read.
+    member_leases: list = field(default_factory=list)
 
     @property
     def sessions(self):
@@ -155,7 +160,7 @@ class _WorkingSetSelection:
             self.revoke()
             return WorkingSetAgentRead(None, [], [], [], [])
         check(current["protocol"] == WORKING_SET_PROFILE_ID, "working_set_profile_binding")
-        members, uncertain, nonmembers, scopes = [], [], [], []
+        members, uncertain, nonmembers, scopes, member_leases = [], [], [], [], []
         for host in current["mesh"]["hosts"]:
             owner = host["owner"]
             if owner is None or owner["metadata"] is None:
@@ -228,6 +233,16 @@ class _WorkingSetSelection:
                             "health": "stale", "reason": "working_set_support_expired", "clock": None,
                         }
                     members.append(clean)
+                    membership_horizon = max(positive)
+                    if row["kind"] != "unknown":
+                        membership_horizon = min(membership_horizon, horizon(fields["kind"]))
+                    member_leases.append({
+                        "identity": copy.deepcopy(entry["identity"]),
+                        "activeExpiresAtMs": active if active is not None and active > now_ms else None,
+                        "recentExpiresAtMs": recent if recent is not None and recent > now_ms else None,
+                        "membershipExpiresAtMs": membership_horizon,
+                        "fieldExpiresAtMs": {name: horizon(ref) for name, ref in fields.items()},
+                    })
                 for compact_entry in scope["nonmembers"]:
                     entry = resolve_nonmember(scope, compact_entry)
                     if entry["supports"] and all(valid(ref) for ref in entry["supports"]):
@@ -250,7 +265,8 @@ class _WorkingSetSelection:
                         "provider", "namespace", "contextGeneration", "continuity",
                     )}, "coverage": coverage,
                 })
-        return WorkingSetAgentRead(copy.deepcopy(current["mesh"]), members, uncertain, nonmembers, scopes)
+        return WorkingSetAgentRead(copy.deepcopy(current["mesh"]), members, uncertain, nonmembers, scopes,
+                                   member_leases)
 
 
 class PreparedWorkingSetAgentWatch:
