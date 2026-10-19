@@ -1,5 +1,20 @@
 # Working-set qualification status
 
+Execution update, 2026-10-18: Bryan approved the Mesh implementation expansion
+and resumed the Luna goal loop. The earlier review-only stop below is historical.
+The opt-in support-table representation, additive SDK1 registration and ordinary
+public Reader path are implemented in separate owning worktrees. See the
+[current producer checkpoint](working-set-producer-checkpoint.md). The latest
+source gate passes 1,122 tests with zero skips; installed package parity passes
+on Python 3.14 and 3.11. Multi-generation cost/transport and independent native
+qualification remain open. No normal service or consumer selection changed.
+
+## Earlier review checkpoint
+
+The remainder of this document preserves the `bb7b8aa` / `610afaa` checkpoint.
+Its unimplemented-registration and model-only statements describe that source
+tuple, not the current implementation or a renewed approval requirement.
+
 The active-plus-recent design is settled, with a default of 72 hours and an
 explicit full-history path. Its Observer source candidate is implemented and
 the reported clock, gap and refusal defects are corrected. It is ready for an
