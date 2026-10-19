@@ -1,0 +1,517 @@
+{
+  "baselineSourceRevision": "610afaac658903ddd6c466c793f9856b45e9f03e",
+  "caseCount": 12,
+  "cases": [
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 18089,
+        "python314": 18089
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 10926,
+        "python314": 10926
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 100,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 5
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 34395,
+        "python314": 34395
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 19784,
+        "python314": 19784
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 100,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 10
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 66735,
+        "python314": 66735
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 37494,
+        "python314": 37494
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 100,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 20
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 79671,
+        "python314": 79671
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 44578,
+        "python314": 44578
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 100,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 24
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 82769,
+        "python314": 82769
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 46346,
+        "python314": 46346
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 500,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 5
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 163755,
+        "python314": 163755
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 90624,
+        "python314": 90624
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 500,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 10
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 325455,
+        "python314": 325455
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 179174,
+        "python314": 179174
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 500,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 20
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 390135,
+        "python314": 390135
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": true,
+          "reason": "complete_native_census"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 214594,
+        "python314": 214594
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 500,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": true
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 24
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 1799,
+        "python314": 1799
+      },
+      "coverage": {
+        "python311": {
+          "complete": true,
+          "reason": "complete_native_census"
+        },
+        "python314": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 179174,
+        "python314": 1817
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 2000,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": true,
+        "python314": false
+      },
+      "sameOutcomeAcrossPython": false,
+      "selectionPercent": 5
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 1799,
+        "python314": 1799
+      },
+      "coverage": {
+        "python311": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        },
+        "python314": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 1817,
+        "python314": 1817
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 2000,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": false,
+        "python314": false
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 10
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 1799,
+        "python314": 1799
+      },
+      "coverage": {
+        "python311": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        },
+        "python314": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 1817,
+        "python314": 1817
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 2000,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": false,
+        "python314": false
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 20
+    },
+    {
+      "baselineWorkingFrameBytes": {
+        "python311": 1799,
+        "python314": 1799
+      },
+      "coverage": {
+        "python311": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        },
+        "python314": {
+          "complete": false,
+          "reason": "projection_tracking_capacity"
+        }
+      },
+      "currentWorkingFrameBytes": {
+        "python311": 1817,
+        "python314": 1817
+      },
+      "fullNativeFrameBytesMatch610": true,
+      "inputAndFullRowBytesMatch610": true,
+      "rows": 2000,
+      "runnerAssertedExactIndependentDtoOnComplete": {
+        "python311": false,
+        "python314": false
+      },
+      "sameOutcomeAcrossPython": true,
+      "selectionPercent": 24
+    }
+  ],
+  "crossPythonDifferences": [
+    {
+      "fields": [
+        "byteReductionPercent",
+        "complete",
+        "component50PercentTargetApplies",
+        "component50PercentTargetPass",
+        "reason",
+        "workingNativeFrameBytes"
+      ],
+      "python311": {
+        "byteReductionPercent": 92.75536300210861,
+        "complete": true,
+        "component50PercentTargetApplies": true,
+        "component50PercentTargetPass": true,
+        "reason": "complete_native_census",
+        "workingNativeFrameBytes": 179174
+      },
+      "python314": {
+        "byteReductionPercent": null,
+        "complete": false,
+        "component50PercentTargetApplies": false,
+        "component50PercentTargetPass": null,
+        "reason": "projection_tracking_capacity",
+        "workingNativeFrameBytes": 1817
+      },
+      "rows": 2000,
+      "selectionPercent": 5
+    }
+  ],
+  "crossPythonScalarResultsEqual": false,
+  "currentCompleteCases": {
+    "python311": 9,
+    "python314": 8
+  },
+  "currentRefusalReasons": {
+    "python311": [
+      "projection_tracking_capacity"
+    ],
+    "python314": [
+      "projection_tracking_capacity"
+    ]
+  },
+  "diagnostic": {
+    "diagnostic311": {
+      "diagnostic": {
+        "candidateLedgerBytes": 258,
+        "candidateLedgerBytesAtReturn": 59257,
+        "candidateLedgerEntries": 100,
+        "combinedTrackingBytes": 1035863,
+        "coverageReason": "complete_native_census",
+        "coverageStatus": "complete",
+        "encodedBytes": 177881,
+        "guardBytes": 890962,
+        "guardEntryBytes": 634000,
+        "guardIdentityCount": 2000,
+        "guardLatched": false,
+        "guardLimitBytes": 1040384,
+        "guardPrefixBytes": 450,
+        "guardTableReserveBytes": 256512,
+        "maxLedgerBytes": 1048576,
+        "oldLedgerBytes": 258,
+        "projectorBlocked": false,
+        "scopeCanonicalBytes": 47807,
+        "scopeMembers": 100,
+        "scopeNonmembers": 0,
+        "scopeUncertain": 0,
+        "supportBuilderEntriesStillRetained": 0,
+        "supportPreflightCharge": 39155,
+        "supportReferenceCount": 551,
+        "supportRetainedOverheadCharge": 36555,
+        "supportTableEntriesInScope": 1,
+        "trackedIdentities": 2000,
+        "trackingBaseBytesAtReturn": 1005790,
+        "trackingCapacity": false
+      },
+      "pythonVersion": "3.11.17",
+      "sha256": "f6ee80bce2aa4377bb6bb0aca9916c1e352139c6d682029b3c8a7cf00bd5de3d"
+    },
+    "diagnostic314": {
+      "diagnostic": {
+        "candidateLedgerBytes": 258,
+        "candidateLedgerBytesAtReturn": 53947,
+        "candidateLedgerEntries": 91,
+        "combinedTrackingBytes": 1038493,
+        "coverageReason": "projection_tracking_capacity",
+        "coverageStatus": "unavailable",
+        "encodedBytes": 524,
+        "guardBytes": 906938,
+        "guardEntryBytes": 650000,
+        "guardIdentityCount": 2000,
+        "guardLatched": false,
+        "guardLimitBytes": 1040384,
+        "guardPrefixBytes": 426,
+        "guardTableReserveBytes": 256512,
+        "maxLedgerBytes": 1048576,
+        "oldLedgerBytes": 258,
+        "projectorBlocked": false,
+        "rejectedEntry": {
+          "additionalLedgerCharge": 591,
+          "attemptPreflightCharge": 340,
+          "attemptTotalCharge": 1049055,
+          "candidateBodiesBeforeAttempt": 91,
+          "candidateLedgerBytesBeforeAttempt": 53947,
+          "candidateLedgerEntriesBeforeAttempt": 91,
+          "candidateMembersBeforeAttempt": 91,
+          "compactEntryBytes": 535,
+          "currentCharge": 1011562,
+          "entryReferences": 5,
+          "limit": 1048576,
+          "pendingUniqueMaps": 0,
+          "previousPreflightCharge": 36027,
+          "priorPreflightCharge": 36027,
+          "priorReferenceCount": 505,
+          "priorRetainedMaps": 1,
+          "priorRetainedOverheadCharge": 33611
+        },
+        "scopeCanonicalBytes": 499,
+        "scopeMembers": 0,
+        "scopeNonmembers": 0,
+        "scopeUncertain": 0,
+        "supportBuilderEntriesStillRetained": 1,
+        "supportPreflightCharge": 36027,
+        "supportReferenceCount": 505,
+        "supportRetainedOverheadCharge": 33611,
+        "supportTableEntriesInScope": 0,
+        "trackedIdentities": 2000,
+        "trackingBaseBytesAtReturn": 1011562,
+        "trackingCapacity": true
+      },
+      "pythonVersion": "3.14.8",
+      "sha256": "ba6c8f811b75d43d6035ab4130aa9e0553bdccfc117d091e5d4b90b0144ce18d"
+    }
+  },
+  "fixtureAndFullFramePreservedAgainst610": true,
+  "inputReports": {
+    "baseline311": {
+      "path": "docs/evidence/2026-10-18-working-set/wire-density-source/wire-311.json",
+      "sha256": "433f87ea6a6a3a0ea61676cce94450569e0490b0403e93762ac3f81484b93cbf"
+    },
+    "baseline314": {
+      "path": "docs/evidence/2026-10-18-working-set/wire-density-source/wire-314.json",
+      "sha256": "f2bb8b983c48a84a2acc2a9f74206cd1f59153ccd7f7492d0247f0d5119eacac"
+    },
+    "candidate311": {
+      "path": "docs/evidence/2026-10-18-working-set/support-table-density-source/wire-311.json",
+      "sha256": "99862516bf2e14d31efddfc6976a54fcb5b12dc5370d994c69aebf8a700e58ff"
+    },
+    "candidate314": {
+      "path": "docs/evidence/2026-10-18-working-set/support-table-density-source/wire-314.json",
+      "sha256": "0223b84d1827cb268df1de56a2e37a08aaaf4d6fc3aefcd4a54663afd93c7bfc"
+    },
+    "diagnostic311": {
+      "path": "docs/evidence/2026-10-18-working-set/support-table-density-source/diagnostic-311.json",
+      "sha256": "f6ee80bce2aa4377bb6bb0aca9916c1e352139c6d682029b3c8a7cf00bd5de3d"
+    },
+    "diagnostic314": {
+      "path": "docs/evidence/2026-10-18-working-set/support-table-density-source/diagnostic-314.json",
+      "sha256": "ba6c8f811b75d43d6035ab4130aa9e0553bdccfc117d091e5d4b90b0144ce18d"
+    }
+  },
+  "scope": "untimed source wire-density comparison; no native/SDK/transport/RSS claim",
+  "sourceRevision": "a0d8bbf1f3892eab557ce46e0f841cb8d448ed47"
+}

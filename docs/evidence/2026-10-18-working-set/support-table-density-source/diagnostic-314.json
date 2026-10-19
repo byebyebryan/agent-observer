@@ -1,0 +1,142 @@
+{
+  "accepted": true,
+  "acceptedInputSha256": "88a84606bacd1862eb443f4e99689f4d9b5555eed0d20d7b5e8affed98b464ac",
+  "diagnostic": {
+    "candidateLedgerBytes": 258,
+    "candidateLedgerBytesAtReturn": 53947,
+    "candidateLedgerEntries": 91,
+    "combinedTrackingBytes": 1038493,
+    "coverageReason": "projection_tracking_capacity",
+    "coverageStatus": "unavailable",
+    "encodedBytes": 524,
+    "guardBytes": 906938,
+    "guardEntryBytes": 650000,
+    "guardIdentityCount": 2000,
+    "guardLatched": false,
+    "guardLimitBytes": 1040384,
+    "guardPrefixBytes": 426,
+    "guardTableReserveBytes": 256512,
+    "maxLedgerBytes": 1048576,
+    "oldLedgerBytes": 258,
+    "projectorBlocked": false,
+    "rejectedEntry": {
+      "additionalLedgerCharge": 591,
+      "attemptPreflightCharge": 340,
+      "attemptTotalCharge": 1049055,
+      "candidateBodiesBeforeAttempt": 91,
+      "candidateLedgerBytesBeforeAttempt": 53947,
+      "candidateLedgerEntriesBeforeAttempt": 91,
+      "candidateMembersBeforeAttempt": 91,
+      "compactEntryBytes": 535,
+      "currentCharge": 1011562,
+      "entryReferences": 5,
+      "limit": 1048576,
+      "pendingUniqueMaps": 0,
+      "previousPreflightCharge": 36027,
+      "priorPreflightCharge": 36027,
+      "priorReferenceCount": 505,
+      "priorRetainedMaps": 1,
+      "priorRetainedOverheadCharge": 33611
+    },
+    "scopeCanonicalBytes": 499,
+    "scopeMembers": 0,
+    "scopeNonmembers": 0,
+    "scopeUncertain": 0,
+    "supportBuilderEntriesStillRetained": 1,
+    "supportPreflightCharge": 36027,
+    "supportReferenceCount": 505,
+    "supportRetainedOverheadCharge": 33611,
+    "supportTableEntriesInScope": 0,
+    "trackedIdentities": 2000,
+    "trackingBaseBytesAtReturn": 1011562,
+    "trackingCapacity": true
+  },
+  "fixtureHelperSha256": "ccf91435e078fc5c1aadc5a1070e7e1973bdb06265351a8e1508b07c3644895b",
+  "gcEnabled": false,
+  "loaded": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "sha256": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "sha256": "8f1499aa724c292f2d19aeb8995569f36d1c86ccec6967c4ed34583594ed9093"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "sha256": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "sha256": "e671cafc8c56608d650009c5280b82636e008ec58fa5f02f24fe694753207081"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    },
+    "agent_observer.working_set_supports": {
+      "path": "agent_observer/working_set_supports.py",
+      "sha256": "dddf187efa59c9d6676c74068b8a0f91c4cf9098cc21f946ec6fde68f03198d7"
+    }
+  },
+  "maxLedgerBytesConstant": 1048576,
+  "pythonVersion": "3.14.8",
+  "runnerSha256": "a47cfcc04937309e9bf83b30fc30d54969e3020ef9eca5c7d24f41246977fcd2",
+  "scope": "single untimed accepted 2,000-row / 100-selected tracking diagnostic",
+  "seedSha256": "92c1d88dd8f2b37d513d8383b88f33821686524886e52b79f9b814429b60fad9",
+  "sourceRevision": "a0d8bbf1f3892eab557ce46e0f841cb8d448ed47",
+  "wireCoverageReason": "observed_view",
+  "wireProjectionPresent": true
+}
