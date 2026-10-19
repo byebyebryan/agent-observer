@@ -15,8 +15,9 @@ import weakref
 from pathlib import Path
 from unittest.mock import patch
 
+from test_active_contract import support as support_ref
 from test_active_service_delivery import local_uid
-from test_working_set_contract import fixture, outside
+from test_working_set_contract import compact_scope, expand_scope, fixture, outside
 
 from agent_observer.contract import canonical
 from agent_observer.working_set_contract import validate_frame
@@ -92,7 +93,8 @@ def native_sample(frame, *, runtime="running", kind=None, activity=None, status=
     }
 
 
-def compare(frame, before=None, after=None, *, first_acceptance_provenance=False):
+def compare(frame, before=None, after=None, *, first_acceptance_provenance=False,
+            observed_prefix=None):
     sample = native_sample(frame) if before is None else before
     after = sample if after is None else after
     clocks = frame["projection"]["scopes"][0]["clocks"]
@@ -105,6 +107,7 @@ def compare(frame, before=None, after=None, *, first_acceptance_provenance=False
         start_boot_ms=min(boots) - 10, end_boot_ms=max(boots) + 10,
         hash_key=b"qualification-test-key",
         _first_acceptance_provenance=first_acceptance_provenance,
+        _observed_clock_prefix=observed_prefix,
     )
 
 
@@ -220,6 +223,71 @@ def set_runtime_counter(frame, accepted):
     return frame
 
 
+def observed_prefix_frames():
+    first = set_never_accepted_history(working_frame(recent=True, active=False))
+    first_scope = first["projection"]["scopes"][0]
+    first_scope["coverage"].update(status="partial", supports=[])
+    validate_frame(first, expected_host="fixture", expected_uid=os.getuid(),
+                   expected_window_ms=WINDOW_MS)
+
+    final = working_frame(recent=True, active=False)
+    final["sequence"] = first["sequence"] + 1
+    final["viewRevision"] = first["viewRevision"] + 1
+    final["observationRevision"] = first["observationRevision"] + 1
+    final["emittedAt"] = first["emittedAt"] + 1000
+    final["emittedBoottimeMs"] = first["emittedBoottimeMs"] + 10000
+    source = final["sources"][0]
+    runtime, history = source["components"]
+    runtime.update(accepted=2, attempts=2, sampledBoottimeMs=20000,
+                   expiresBoottimeMs=20000 + WINDOW_MS)
+    history.update(sampledBoottimeMs=20000,
+                   expiresBoottimeMs=20000 + WINDOW_MS)
+    scope = final["projection"]["scopes"][0]
+    runtime_support = scope["supportTable"][0]
+    runtime_support.update(accepted=2, sampledBoottimeMs=20000,
+                           expiresBoottimeMs=20000 + WINDOW_MS)
+    set_runtime_counter(final, 2)
+    sample_id = "00000000-0000-0000-0000-000000000012"
+    runtime_clock = copy.deepcopy(scope["clocks"][0])
+    runtime_clock.update(
+        accepted=2,
+        sampleId=sample_id,
+        sampledBoottimeMs=20000,
+        wallMs=final["emittedAt"],
+        acceptedBoottimeMs=20001,
+    )
+    history_clock = copy.deepcopy(runtime_clock)
+    history_clock.update(component="history", accepted=1)
+    scope["clocks"] = [runtime_clock, history_clock]
+    # The first clock's larger lower bound is retained even though the latest
+    # mirrored sample has a smaller W-L+1 value.
+    final["clockCeiling"] = first["clockCeiling"]
+    scope["coverage"].update(status="complete", supports=[0])
+    activity_at = final["projection"]["sessions"][0]["activity"]["at"]
+    set_activity_at(final, activity_at)
+    validate_frame(final, expected_host="fixture", expected_uid=os.getuid(),
+                   expected_window_ms=WINDOW_MS)
+    return first, final
+
+
+def observe_prefix(frames, *, start_wall_ms=None, start_boot_ms=9000,
+                   receive_offset_ms=10, key=b"qualification-test-key"):
+    prefix = qualifier._ObservedClockPrefix(
+        host="fixture", uid=os.getuid(), home=HOME,
+        namespace=qualifier._native_namespace(HOME, os.getuid()),
+        window_ms=WINDOW_MS,
+        start_wall_ms=WALL_MS - 100 if start_wall_ms is None else start_wall_ms,
+        start_boot_ms=start_boot_ms, hash_key=key,
+    )
+    for frame in frames:
+        prefix.observe(
+            frame,
+            receive_wall_ms=frame["emittedAt"] + receive_offset_ms,
+            receive_boot_ms=frame["emittedBoottimeMs"] + receive_offset_ms,
+        )
+    return prefix.finish(frames[-1]), prefix
+
+
 class FakeConnection:
     def __init__(self, payload):
         self.payload = payload
@@ -282,6 +350,82 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
                        "SENSITIVE_NATIVE_TITLE", "SENSITIVE_TURN_ID", "/sensitive/native/cwd"):
             self.assertNotIn(secret, encoded)
 
+    def test_projected_fields_match_parked_negative_while_legacy_status_stays_strict(self):
+        frame = working_frame(recent=True, active=False)
+        old_activity = WALL_MS - WINDOW_MS - 1000
+        set_activity_at(frame, old_activity)
+        native = native_sample(frame, runtime="parked", status="notLoaded", loaded=False)
+        outside(frame)
+        validate_frame(frame, expected_host="fixture", expected_uid=os.getuid(),
+                       expected_window_ms=WINDOW_MS)
+
+        result = compare(frame, native)
+
+        self.assertEqual(result["membershipStatus"], "match")
+        self.assertEqual(result["fieldStatus"], "unresolved")
+        self.assertEqual(result["projectedFieldStatus"], "match")
+        self.assertEqual(result["projectionStatus"], "match")
+        self.assertEqual(result["status"], "unresolved")
+        self.assertEqual(result["exitCode"], 3)
+        self.assertEqual(result["reasonCounts"]["nonmember_kind_unavailable"], 1)
+        self.assertEqual(result["counts"]["fieldUnresolvedIdentities"], 1)
+        self.assertEqual(result["counts"]["projectedFieldUnresolvedIdentities"], 0)
+        self.assertEqual(result["counts"]["projectedFieldUnrequestedNonmemberBodies"], 1)
+
+    def test_projected_fields_compare_excluded_child_kind_and_keep_omitted_fields_unrequested(self):
+        frame = working_frame(recent=True, active=False)
+        native = native_sample(frame, runtime="parked", status="notLoaded", loaded=False,
+                               kind="child")
+        outside(frame)
+        scope = expand_scope(frame["projection"]["scopes"][0])
+        entry = scope["nonmembers"][0]
+        entry.update(reason="excluded_kind", value="child", recent=None,
+                     supports=[support_ref(frame, "history")])
+        frame["projection"]["scopes"][0] = compact_scope(scope)
+        validate_frame(frame, expected_host="fixture", expected_uid=os.getuid(),
+                       expected_window_ms=WINDOW_MS)
+
+        matched = compare(frame, native)
+        self.assertEqual(matched["membershipStatus"], "match")
+        self.assertEqual(matched["fieldStatus"], "unresolved")
+        self.assertEqual(matched["projectedFieldStatus"], "match")
+        self.assertEqual(matched["projectionStatus"], "match")
+        self.assertEqual(matched["reasonCounts"]["nonmember_runtime_activity_unavailable"], 1)
+
+        wrong_kind = copy.deepcopy(native)
+        native_id = next(iter(wrong_kind["rows"]))
+        wrong_kind["rows"][native_id]["kind"] = "user"
+        mismatch = compare(frame, wrong_kind)
+        self.assertEqual(mismatch["projectedFieldStatus"], "mismatch")
+        self.assertEqual(mismatch["projectionStatus"], "mismatch")
+        self.assertEqual(mismatch["mismatchCounts"]["kind_mismatch"], 1)
+
+    def test_parked_negative_represented_runtime_and_activity_mismatches_are_hard(self):
+        frame = working_frame(recent=True, active=False)
+        old_activity = WALL_MS - WINDOW_MS - 1000
+        set_activity_at(frame, old_activity)
+        running_native = native_sample(
+            frame, runtime="running", status="active", loaded=True,
+            activity=old_activity,
+        )
+        changed_activity_native = native_sample(
+            frame, runtime="parked", status="notLoaded", loaded=False,
+            activity=old_activity + 1,
+        )
+        outside(frame)
+        validate_frame(frame, expected_host="fixture", expected_uid=os.getuid(),
+                       expected_window_ms=WINDOW_MS)
+
+        wrong_runtime = compare(frame, running_native)
+        self.assertEqual(wrong_runtime["projectedFieldStatus"], "mismatch")
+        self.assertEqual(wrong_runtime["projectionStatus"], "mismatch")
+        self.assertEqual(wrong_runtime["mismatchCounts"]["runtime_mismatch"], 1)
+
+        wrong_activity = compare(frame, changed_activity_native)
+        self.assertEqual(wrong_activity["projectedFieldStatus"], "mismatch")
+        self.assertEqual(wrong_activity["projectionStatus"], "mismatch")
+        self.assertEqual(wrong_activity["mismatchCounts"]["activity_mismatch"], 1)
+
     def test_runtime_mismatch_is_reported_and_native_race_is_unresolved(self):
         parked_frame = working_frame(recent=True, active=False)
         mismatch = compare(
@@ -299,6 +443,8 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
         raced = compare(frame, before, after)
         self.assertEqual(raced["membershipStatus"], "unresolved")
         self.assertEqual(raced["status"], "unresolved")
+        self.assertEqual(raced["projectedFieldStatus"], "unresolved")
+        self.assertEqual(raced["projectionStatus"], "unresolved")
         self.assertGreater(raced["reasonCounts"].get("native_row_raced_or_missing", 0), 0)
 
     def test_unknown_kind_and_runtime_can_select_on_independently_positive_recent(self):
@@ -325,7 +471,19 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
         self.assertEqual(result["counts"]["conditionalMemberships"], 1)
         self.assertEqual(result["conditionalMembershipStatus"], "producer_clock_ceiling_dependent")
         self.assertEqual(result["status"], "unresolved")
+        self.assertEqual(result["projectedFieldStatus"], "unresolved")
+        self.assertEqual(result["projectionStatus"], "unresolved")
         self.assertGreater(result["reasonCounts"].get("candidate_runtime_not_current", 0), 0)
+
+    def test_native_unknown_runtime_stays_projected_unresolved(self):
+        frame = working_frame(recent=True, active=True)
+        result = compare(
+            frame,
+            native_sample(frame, runtime="unknown", status=None, loaded=False),
+        )
+        self.assertEqual(result["projectedFieldStatus"], "unresolved")
+        self.assertEqual(result["projectionStatus"], "unresolved")
+        self.assertGreater(result["reasonCounts"].get("native_runtime_unknown", 0), 0)
 
     def test_r_only_positive_at_current_clock_floor_is_conditional_on_historical_k(self):
         frame = working_frame(recent=True, active=False)
@@ -392,6 +550,210 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
         self.assertEqual(mirrored_result["status"], "match")
         self.assertEqual(mirrored_result["sourceK"]["firstAcceptanceSet"], "recomputed")
         self.assertEqual(mirrored_result["counts"]["independentlyProvenRecentMemberships"], 1)
+
+    def test_observed_clock_prefix_proves_partial_to_complete_history_mirror(self):
+        first, final = observed_prefix_frames()
+        latest_clock = final["projection"]["scopes"][0]["clocks"][0]
+        latest_k = latest_clock["wallMs"] - latest_clock["sampledBoottimeMs"] + 1
+        self.assertGreater(first["clockCeiling"], latest_k)
+
+        prefix, _state = observe_prefix([first, final])
+        self.assertEqual(prefix["status"], "recomputed")
+        self.assertEqual(prefix["baselineCounters"], {"runtime": 1, "history": 0})
+        self.assertEqual(prefix["finalCounters"], {"runtime": 2, "history": 1})
+        self.assertEqual(prefix["acceptedTransitions"], 2)
+        self.assertEqual(prefix["recomputedCeiling"], first["clockCeiling"])
+
+        native = native_sample(final, runtime="parked", status="notLoaded", loaded=False)
+        proven = compare(
+            final, native, copy.deepcopy(native), first_acceptance_provenance=True,
+            observed_prefix=prefix,
+        )
+        self.assertEqual(proven["status"], "match")
+        self.assertEqual(proven["membershipStatus"], "match")
+        self.assertEqual(proven["sourceK"]["status"],
+                         "independently_recomputed_observed_clock_prefix")
+        self.assertEqual(proven["sourceK"]["observedClockPrefix"]["frames"], 2)
+        self.assertEqual(proven["sourceK"]["recomputedObservedClockPrefixCeiling"],
+                         first["clockCeiling"])
+
+        direct = compare(final, native, copy.deepcopy(native), observed_prefix=prefix)
+        self.assertEqual(direct["membershipStatus"], "unresolved")
+        self.assertEqual(direct["counts"]["conditionalMemberships"], 1)
+        self.assertNotIn("observedClockPrefix", direct["sourceK"])
+        encoded = json.dumps(proven, sort_keys=True)
+        self.assertNotIn(final["projection"]["sessions"][0]["identity"]["nativeId"],
+                         encoded)
+        self.assertRegex(prefix["finalMetadataFingerprint"], r"^[0-9a-f]{64}$")
+
+    def test_observed_clock_prefix_sticky_rejections(self):
+        first, final = observed_prefix_frames()
+
+        gap = copy.deepcopy(final)
+        set_runtime_counter(gap, 3)
+        prefix, _state = observe_prefix([first, gap])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_counter_gap_or_regression")
+
+        changed = copy.deepcopy(final)
+        set_runtime_counter(changed, 1)
+        runtime = changed["sources"][0]["components"][0]
+        runtime.update(accepted=1, attempts=1)
+        changed["projection"]["scopes"][0]["clocks"] = [
+            clock for clock in changed["projection"]["scopes"][0]["clocks"]
+            if clock["component"] == "runtime"
+        ]
+        history = changed["sources"][0]["components"][1]
+        history.update(accepted=0, sampledBoottimeMs=None, expiresBoottimeMs=None,
+                       health="warming", lastResult="not_observed")
+        runtime_clock = changed["projection"]["scopes"][0]["clocks"][0]
+        runtime_clock.update(
+            sampleId="00000000-0000-0000-0000-000000000013",
+            sampledBoottimeMs=21000, wallMs=changed["emittedAt"],
+            acceptedBoottimeMs=21001,
+        )
+        runtime.update(sampledBoottimeMs=21000,
+                       expiresBoottimeMs=21000 + WINDOW_MS)
+        support = changed["projection"]["scopes"][0]["supportTable"][0]
+        support.update(sampledBoottimeMs=21000,
+                       expiresBoottimeMs=21000 + WINDOW_MS)
+        changed["clockCeiling"] = first["clockCeiling"]
+        set_activity_at(changed, changed["projection"]["sessions"][0]["activity"]["at"])
+        prefix, _state = observe_prefix([first, changed])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_same_counter_clock_changed")
+
+        mismatched = copy.deepcopy(final)
+        mismatched["clockCeiling"] += 1
+        prefix, _state = observe_prefix([first, mismatched])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "candidate_ceiling_mismatch")
+
+        context = copy.deepcopy(final)
+        context["sources"][0]["contextGeneration"] = 2
+        context["projection"]["scopes"][0]["contextGeneration"] = 2
+        prefix, _state = observe_prefix([first, context])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "initial_context_unproved")
+
+        hidden = copy.deepcopy(first)
+        hidden.update(kind="heartbeat", state="warming", projection=None, clockCeiling=None)
+        prefix, state = observe_prefix([hidden, first, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_unprojected_acceptance")
+        self.assertEqual(state.first_failure, "observed_prefix_unprojected_acceptance")
+
+    def test_observed_clock_prefix_warming_zero_then_first_projected_one_is_allowed(self):
+        first, final = observed_prefix_frames()
+        warming = copy.deepcopy(first)
+        warming["kind"] = "heartbeat"
+        warming["state"] = "warming"
+        warming["projection"] = None
+        warming["clockCeiling"] = None
+        warming["sequence"] = 1
+        warming["emittedAt"] = first["emittedAt"] - 100
+        warming["emittedBoottimeMs"] = first["emittedBoottimeMs"] - 100
+        for receipt in warming["sources"][0]["components"]:
+            receipt.update(accepted=0, sampledBoottimeMs=None, expiresBoottimeMs=None,
+                           health="warming", lastResult="not_observed")
+        first["sequence"] = 2
+        final["sequence"] = 3
+        prefix, _state = observe_prefix([warming, first, final])
+        self.assertEqual(prefix["status"], "recomputed")
+        self.assertEqual(prefix["baselineCounters"], {"runtime": 0, "history": 0})
+        self.assertEqual(prefix["finalCounters"], {"runtime": 2, "history": 1})
+        self.assertEqual(prefix["acceptedTransitions"], 3)
+
+        first_too_late = copy.deepcopy(first)
+        set_runtime_counter(first_too_late, 2)
+        first_too_late["sources"][0]["components"][0]["attempts"] = 2
+        prefix, _state = observe_prefix([first_too_late, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "accepted_counter_not_first")
+
+    def test_observed_clock_prefix_enforces_native_before_receive_envelope(self):
+        first, final = observed_prefix_frames()
+        first["emittedAt"] += 100
+        prefix, _state = observe_prefix(
+            [first, final], start_wall_ms=first["emittedAt"] - 50,
+        )
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_clock_outside_receive_envelope")
+
+        prefix, _state = observe_prefix([first, final], start_boot_ms=11000)
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_clock_outside_receive_envelope")
+
+        first, final = observed_prefix_frames()
+        for clock in final["projection"]["scopes"][0]["clocks"]:
+            clock["wallMs"] = final["emittedAt"] + 100
+        prefix, _state = observe_prefix([first, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_clock_outside_receive_envelope")
+
+    def test_observed_clock_prefix_final_fingerprint_binds_metadata_and_direct_calls(self):
+        first, final = observed_prefix_frames()
+        prefix, _state = observe_prefix([first, final])
+        native = native_sample(final, runtime="parked", status="notLoaded", loaded=False)
+
+        tampered = copy.deepcopy(final)
+        tampered["emittedAt"] += 1
+        tampered_result = compare(
+            tampered, native, copy.deepcopy(native), first_acceptance_provenance=True,
+            observed_prefix=prefix,
+        )
+        self.assertNotEqual(tampered_result["sourceK"]["status"],
+                            "independently_recomputed_observed_clock_prefix")
+        self.assertEqual(tampered_result["sourceK"]["observedClockPrefix"]["reason"],
+                         "observed_prefix_final_fingerprint_mismatch")
+
+        no_installed_provenance = qualifier._verify_observed_clock_prefix(
+            prefix, final, final["sources"][0], final["projection"]["scopes"][0],
+            host="fixture", home=HOME,
+            namespace=qualifier._native_namespace(HOME, os.getuid()),
+            window_ms=WINDOW_MS, hash_key=b"qualification-test-key",
+            installed_provenance=False, clock_bracket_ok=True,
+            clock_census_complete=True,
+        )
+        self.assertIsNone(no_installed_provenance[0])
+        self.assertEqual(no_installed_provenance[1], "installed_provenance_missing")
+
+    def test_read_candidate_waits_for_complete_view_after_partial_prefix_with_gc_off(self):
+        first, final = observed_prefix_frames()
+        payload = (canonical(first) + "\n" + canonical(final) + "\n").encode()
+        connection = FakeConnection(payload)
+        connection_ref = weakref.ref(connection)
+        fake_peer = {"socketPath": "/private/fixture.sock", "pid": 1234}
+        prefix_out = []
+        gc_was_enabled = gc.isenabled()
+        gc.disable()
+        try:
+            with patch.object(qualifier, "_service_peer", return_value=(connection, fake_peer)), \
+                    patch.object(qualifier, "_recheck_service"):
+                accepted, peer = qualifier._read_candidate(
+                    Path("/private/fixture.sock"), host="fixture", window_ms=WINDOW_MS,
+                    expected_python=Path("/venv/bin/python"), expected_python_sha="0" * 64,
+                    observer_cli=Path("/venv/bin/observer-service"), home=HOME,
+                    deadline=time.monotonic() + 1, observed_prefix_out=prefix_out,
+                    prefix_hash_key=b"qualification-test-key",
+                    native_before_start_wall_ms=WALL_MS - 100,
+                    native_before_start_boot_ms=9000,
+                )
+            self.assertEqual(accepted["sequence"], final["sequence"])
+            self.assertEqual(peer["pid"], 1234)
+            self.assertEqual(prefix_out[0]["status"], "recomputed")
+            self.assertEqual(prefix_out[0]["frames"], 2)
+            self.assertEqual(prefix_out[0]["finalCounters"], {"runtime": 2, "history": 1})
+            self.assertTrue(connection.closed)
+            request = json.loads(connection.request)
+            self.assertEqual(request["operation"], "watch")
+            self.assertTrue(gc.isenabled() is False)
+        finally:
+            if gc_was_enabled:
+                gc.enable()
+        del connection
+        gc.collect()
+        self.assertIsNone(connection_ref())
 
     def test_first_acceptance_proof_rejects_old_history_or_reset_context(self):
         old_history = working_frame(recent=True, active=False)

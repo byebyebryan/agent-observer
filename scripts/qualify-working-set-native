@@ -522,7 +522,10 @@ def _recheck_service(path: Path, identity: dict) -> None:
 
 def _read_candidate(path: Path, *, host: str, window_ms: int, expected_python: Path,
                     expected_python_sha: str, observer_cli: Path, home: Path,
-                    deadline: float) -> tuple[dict, dict]:
+                    deadline: float, observed_prefix_out: list | None = None,
+                    prefix_hash_key: bytes | None = None,
+                    native_before_start_wall_ms: int | None = None,
+                    native_before_start_boot_ms: int | None = None) -> tuple[dict, dict]:
     parser = importlib.import_module("agent_observer.working_set_contract")
     window = window_ms
     policy = parser.selector(window)
@@ -536,6 +539,23 @@ def _read_candidate(path: Path, *, host: str, window_ms: int, expected_python: P
     connection, peer = _service_peer(path, expected_python, expected_python_sha,
                                      observer_cli, host, home, window_ms // 3600000)
     guard = parser.StreamGuard(expected_host=host, expected_uid=os.getuid(), expected_window_ms=window)
+    prefix = None
+    if observed_prefix_out is not None:
+        if (not isinstance(prefix_hash_key, bytes) or len(prefix_hash_key) < 16
+                or type(native_before_start_wall_ms) is not int
+                or type(native_before_start_boot_ms) is not int):
+            connection.close()
+            raise QualificationError("observed_clock_prefix_inputs_invalid", "unresolved")
+        prefix = _ObservedClockPrefix(
+            host=host,
+            uid=os.getuid(),
+            home=home,
+            namespace=_native_namespace(home, os.getuid()),
+            window_ms=window,
+            start_wall_ms=native_before_start_wall_ms,
+            start_boot_ms=native_before_start_boot_ms,
+            hash_key=prefix_hash_key,
+        )
     max_frame_bytes = parser.MAX_FRAME_BYTES
     try:
         connection.settimeout(min(2.0, max(0.001, deadline - time.monotonic())))
@@ -569,6 +589,8 @@ def _read_candidate(path: Path, *, host: str, window_ms: int, expected_python: P
             except Exception as exc:
                 code = _reason_code(exc, "candidate_frame_rejected")
                 raise QualificationError(code, "unsupported") from None
+            if prefix is not None:
+                prefix.observe(frame, receive_wall_ms=_wall_ms(), receive_boot_ms=_boot_ms())
             if frame["kind"] in {"gap", "error"}:
                 reason = frame.get("reason")
                 raise QualificationError(_safe_code(reason, "candidate_gap_or_error"), "unresolved")
@@ -578,7 +600,12 @@ def _read_candidate(path: Path, *, host: str, window_ms: int, expected_python: P
                 raise QualificationError("candidate_initial_projection_not_view", "unresolved")
             if frame["sequence"] > _MAX_FRAME_COUNT or not frame["projection"]["scopes"]:
                 raise QualificationError("candidate_initial_projection_invalid", "unresolved")
+            scopes = frame["projection"]["scopes"]
+            if len(scopes) != 1 or scopes[0].get("coverage", {}).get("status") != "complete":
+                continue
             _recheck_service(path, peer)
+            if prefix is not None:
+                observed_prefix_out.append(prefix.finish(frame))
             return frame, peer
         raise QualificationError("candidate_first_view_frame_limit", "unresolved")
     finally:
@@ -772,6 +799,158 @@ def _clock_for_recent(scope: dict, resolved_member: dict | None, resolved_nonmem
     return support, clock
 
 
+def _validate_current_clock_set(
+    frame: dict,
+    source: dict | None,
+    scope: dict | None,
+    *,
+    home: Path,
+    namespace: str,
+    clock_bracket_ok: bool,
+    clock_census_complete: bool,
+    max_accepted: int | None = None,
+    allow_empty: bool = False,
+) -> tuple[dict | None, int | None, str | None]:
+    """Validate the current receipt/clock set and return only two component summaries."""
+    if not isinstance(source, dict) or not isinstance(scope, dict):
+        return None, None, "source_scope_unproved"
+    scope_context_generation = scope.get("contextGeneration")
+    if type(scope_context_generation) is not int:
+        return None, None, "source_scope_unproved"
+    scope_continuity = scope.get("continuity")
+    if type(scope_continuity) is not int or scope_continuity != 1:
+        return None, None, "projection_continuity_unproved"
+    if frame.get("kind") != "view" or frame.get("projection") is None:
+        return None, None, "projection_unavailable"
+    sources = frame.get("sources")
+    if (not isinstance(sources, list) or len(sources) != 1 or sources[0] is not source
+            or source.get("provider") != "codex" or source.get("configHome") != str(home)
+            or source.get("configHomeKind") != "explicit"
+            or source.get("namespace") != namespace
+            or scope.get("provider") != "codex" or scope.get("namespace") != namespace
+            or scope_context_generation != source.get("contextGeneration")):
+        return None, None, "source_scope_unproved"
+
+    context_generation = source.get("contextGeneration")
+    if type(context_generation) is not int or context_generation != 1:
+        return None, None, "initial_context_unproved"
+    if type(frame.get("clockGeneration")) is not int or frame["clockGeneration"] != 0:
+        return None, None, "clock_discontinuity_unproved"
+    if not clock_bracket_ok:
+        return None, None, "clock_bracket_unproved"
+    if not clock_census_complete:
+        return None, None, "clock_census_incomplete"
+
+    components = source.get("components")
+    clocks = scope.get("clocks")
+    support_table = scope.get("supportTable")
+    if (not isinstance(components, list) or len(components) != 2
+            or not isinstance(clocks, list) or not isinstance(support_table, list)):
+        return None, None, "component_census_unproved"
+    receipts = {}
+    for receipt in components:
+        if not isinstance(receipt, dict):
+            return None, None, "component_receipt_unproved"
+        name = receipt.get("name")
+        if name not in {"runtime", "history"} or name in receipts:
+            return None, None, "component_receipt_unproved"
+        receipts[name] = receipt
+    if set(receipts) != {"runtime", "history"}:
+        return None, None, "component_receipt_unproved"
+
+    clocks_by_component: dict[str, list[dict]] = {name: [] for name in receipts}
+    sample_signatures = {}
+    for clock in clocks:
+        if not isinstance(clock, dict):
+            return None, None, "component_clock_unproved"
+        name = clock.get("component")
+        if name not in clocks_by_component:
+            return None, None, "component_clock_unproved"
+        clocks_by_component[name].append(clock)
+        sample_id = clock.get("sampleId")
+        signature = tuple(clock.get(key) for key in (
+            "originComponent", "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs",
+        ))
+        previous = sample_signatures.get(sample_id)
+        if previous is not None and previous != signature:
+            return None, None, "mirrored_sample_unproved"
+        sample_signatures[sample_id] = signature
+
+    states = {}
+    bracket_keys = []
+    for name, receipt in receipts.items():
+        accepted = receipt.get("accepted")
+        if (type(accepted) is not int or accepted < 0
+                or accepted > _MAX_SAFE_INTEGER):
+            return None, None, "accepted_counter_not_first" if max_accepted == 1 else "accepted_counter_unproved"
+        if max_accepted is not None and accepted > max_accepted:
+            return None, None, "accepted_counter_not_first"
+        component_clocks = clocks_by_component[name]
+        if accepted == 0:
+            if (receipt.get("health") != "warming"
+                    or receipt.get("lastResult") != "not_observed"
+                    or receipt.get("sampledBoottimeMs") is not None
+                    or receipt.get("expiresBoottimeMs") is not None
+                    or component_clocks):
+                return None, None, "never_accepted_receipt_unproved"
+            for support in support_table:
+                if not isinstance(support, dict):
+                    return None, None, "support_table_unproved"
+                if support.get("component") == name:
+                    return None, None, "never_accepted_support_present"
+            states[name] = {
+                "accepted": 0,
+                "sampledBoottimeMs": None,
+                "expiresBoottimeMs": None,
+                "clock": None,
+            }
+            continue
+
+        if (receipt.get("health") not in {"current", "partial"}
+                or receipt.get("lastResult") != "accepted"
+                or len(component_clocks) != 1):
+            return None, None, "first_sample_receipt_unproved"
+        sampled = receipt.get("sampledBoottimeMs")
+        expires = receipt.get("expiresBoottimeMs")
+        if (type(sampled) is not int or type(expires) is not int
+                or not 0 <= sampled < expires <= _MAX_SAFE_INTEGER):
+            return None, None, "first_sample_receipt_unproved"
+        clock = component_clocks[0]
+        clock_sampled = clock.get("sampledBoottimeMs")
+        wall = clock.get("wallMs")
+        accepted_boot = clock.get("acceptedBoottimeMs")
+        if (type(clock.get("accepted")) is not int or clock.get("accepted") != accepted
+                or type(clock_sampled) is not int or clock_sampled != sampled
+                or type(wall) is not int or not 0 <= wall <= _MAX_CLOCK_WALL_MS
+                or type(accepted_boot) is not int
+                or not 0 <= clock_sampled <= accepted_boot <= _MAX_SAFE_INTEGER
+                or clock.get("originComponent") not in {"runtime", "history"}
+                or not isinstance(clock.get("sampleId"), str)
+                or _UUID.fullmatch(clock["sampleId"]) is None):
+            return None, None, "first_sample_clock_unproved"
+        k = wall - clock_sampled + 1
+        if not -_MAX_SAFE_INTEGER <= k <= _MAX_SAFE_INTEGER:
+            return None, None, "recomputed_ceiling_out_of_range"
+        bracket_keys.append(k)
+        states[name] = {
+            "accepted": accepted,
+            "sampledBoottimeMs": sampled,
+            "expiresBoottimeMs": expires,
+            "clock": tuple(clock[key] for key in (
+                "component", "accepted", "sampleId", "originComponent",
+                "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs",
+            )),
+        }
+
+    if (any(bool(clocks_by_component[name]) != (states[name]["accepted"] > 0)
+            for name in clocks_by_component)
+            or len(clocks) != len(bracket_keys)):
+        return None, None, "component_census_unproved"
+    if not bracket_keys and not allow_empty:
+        return None, None, "component_census_unproved"
+    return states, max(bracket_keys) if bracket_keys else None, None
+
+
 def _first_acceptance_clock_ceiling(
     frame: dict,
     source: dict | None,
@@ -782,138 +961,504 @@ def _first_acceptance_clock_ceiling(
     clock_bracket_ok: bool,
     clock_census_complete: bool,
 ) -> tuple[int | None, str]:
-    """Recompute K only for a complete, unreset first accepted source set.
-
-    The installed isolated-run path may opt into this check after it has
-    verified the candidate installation, exact serve invocation and peer.
-    Synthetic/direct comparisons do not get that provenance by default.
-    """
-    if not isinstance(source, dict) or not isinstance(scope, dict):
-        return None, "source_scope_unproved"
-    scope_context_generation = scope.get("contextGeneration")
-    if type(scope_context_generation) is not int:
-        return None, "source_scope_unproved"
-    scope_continuity = scope.get("continuity")
-    if type(scope_continuity) is not int or scope_continuity != 1:
-        return None, "projection_continuity_unproved"
-    if frame.get("kind") != "view" or frame.get("projection") is None:
-        return None, "projection_unavailable"
-    sources = frame.get("sources")
-    if (not isinstance(sources, list) or len(sources) != 1 or sources[0] is not source
-            or source.get("provider") != "codex" or source.get("configHome") != str(home)
-            or source.get("configHomeKind") != "explicit"
-            or source.get("namespace") != namespace
-            or scope.get("provider") != "codex" or scope.get("namespace") != namespace
-            or scope_context_generation != source.get("contextGeneration")):
-        return None, "source_scope_unproved"
-
-    context_generation = source.get("contextGeneration")
-    if type(context_generation) is not int or context_generation != 1:
-        return None, "initial_context_unproved"
-    clock_generation = frame.get("clockGeneration")
-    if type(clock_generation) is not int or clock_generation != 0:
-        return None, "clock_discontinuity_unproved"
-    if not clock_bracket_ok:
-        return None, "clock_bracket_unproved"
-    if not clock_census_complete:
-        return None, "clock_census_incomplete"
-
-    components = source.get("components")
-    clocks = scope.get("clocks")
-    support_table = scope.get("supportTable")
-    if (not isinstance(components, list) or len(components) != 2
-            or not isinstance(clocks, list) or not isinstance(support_table, list)):
+    """Recompute K only for a complete, unreset first accepted source set."""
+    _states, recomputed, reason = _validate_current_clock_set(
+        frame, source, scope, home=home, namespace=namespace,
+        clock_bracket_ok=clock_bracket_ok,
+        clock_census_complete=clock_census_complete,
+        max_accepted=1,
+    )
+    if reason is not None:
+        return None, reason
+    if recomputed is None:
         return None, "component_census_unproved"
-    receipts = {}
-    for receipt in components:
-        if not isinstance(receipt, dict):
-            return None, "component_receipt_unproved"
-        name = receipt.get("name")
-        if name not in {"runtime", "history"} or name in receipts:
-            return None, "component_receipt_unproved"
-        receipts[name] = receipt
-    if set(receipts) != {"runtime", "history"}:
-        return None, "component_receipt_unproved"
-
-    clocks_by_component: dict[str, list[dict]] = {name: [] for name in receipts}
-    sample_signatures = {}
-    for clock in clocks:
-        if not isinstance(clock, dict):
-            return None, "component_clock_unproved"
-        name = clock.get("component")
-        if name not in clocks_by_component:
-            return None, "component_clock_unproved"
-        clocks_by_component[name].append(clock)
-        sample_id = clock.get("sampleId")
-        signature = tuple(clock.get(key) for key in (
-            "originComponent", "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs",
-        ))
-        previous = sample_signatures.get(sample_id)
-        if previous is not None and previous != signature:
-            return None, "mirrored_sample_unproved"
-        sample_signatures[sample_id] = signature
-
-    first_sample_components = set()
-    bracket_keys = []
-    for name, receipt in receipts.items():
-        accepted = receipt.get("accepted")
-        if type(accepted) is not int or accepted not in (0, 1):
-            return None, "accepted_counter_not_first"
-        component_clocks = clocks_by_component[name]
-        if accepted == 0:
-            if (receipt.get("health") != "warming"
-                    or receipt.get("lastResult") != "not_observed"
-                    or receipt.get("sampledBoottimeMs") is not None
-                    or receipt.get("expiresBoottimeMs") is not None
-                    or component_clocks):
-                return None, "never_accepted_receipt_unproved"
-            for support in support_table:
-                if not isinstance(support, dict):
-                    return None, "support_table_unproved"
-                if support.get("component") == name:
-                    return None, "never_accepted_support_present"
-            continue
-
-        if (receipt.get("health") not in {"current", "partial"}
-                or receipt.get("lastResult") != "accepted"
-                or len(component_clocks) != 1):
-            return None, "first_sample_receipt_unproved"
-        sampled = receipt.get("sampledBoottimeMs")
-        expires = receipt.get("expiresBoottimeMs")
-        if (type(sampled) is not int or type(expires) is not int
-                or not 0 <= sampled < expires <= _MAX_SAFE_INTEGER):
-            return None, "first_sample_receipt_unproved"
-        clock = component_clocks[0]
-        clock_sampled = clock.get("sampledBoottimeMs")
-        wall = clock.get("wallMs")
-        accepted_boot = clock.get("acceptedBoottimeMs")
-        if (type(clock.get("accepted")) is not int or clock.get("accepted") != 1
-                or type(clock_sampled) is not int or clock_sampled != sampled
-                or type(wall) is not int or not 0 <= wall <= _MAX_CLOCK_WALL_MS
-                or type(accepted_boot) is not int
-                or not 0 <= clock_sampled <= accepted_boot <= _MAX_SAFE_INTEGER
-                or clock.get("originComponent") not in {"runtime", "history"}
-                or not isinstance(clock.get("sampleId"), str)
-                or _UUID.fullmatch(clock["sampleId"]) is None):
-            return None, "first_sample_clock_unproved"
-        first_sample_components.add(name)
-        k = wall - clock_sampled + 1
-        if not -_MAX_SAFE_INTEGER <= k <= _MAX_SAFE_INTEGER:
-            return None, "recomputed_ceiling_out_of_range"
-        bracket_keys.append(k)
-
-    if (not bracket_keys
-            or any(bool(clocks_by_component[name]) != (name in first_sample_components)
-                   for name in clocks_by_component)
-            or len(clocks) != len(first_sample_components)):
-        return None, "component_census_unproved"
-    recomputed = max(bracket_keys)
     candidate = frame.get("clockCeiling")
     if type(candidate) is not int or not -_MAX_SAFE_INTEGER <= candidate <= _MAX_SAFE_INTEGER:
         return None, "candidate_ceiling_unproved"
     if candidate != recomputed:
         return None, "candidate_ceiling_mismatch"
     return recomputed, "first_acceptance_set_recomputed"
+
+
+_PREFIX_CLOCK_FIELDS = (
+    "component", "accepted", "sampleId", "originComponent",
+    "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs",
+)
+
+
+def _component_receipt_states(source: dict) -> tuple[dict | None, str | None]:
+    components = source.get("components")
+    if not isinstance(components, list) or len(components) != 2:
+        return None, "component_census_unproved"
+    states = {}
+    for receipt in components:
+        if not isinstance(receipt, dict):
+            return None, "component_receipt_unproved"
+        name = receipt.get("name")
+        if name not in {"runtime", "history"} or name in states:
+            return None, "component_receipt_unproved"
+        accepted = receipt.get("accepted")
+        if type(accepted) is not int or not 0 <= accepted <= _MAX_SAFE_INTEGER:
+            return None, "accepted_counter_unproved"
+        sampled = receipt.get("sampledBoottimeMs")
+        expires = receipt.get("expiresBoottimeMs")
+        if accepted == 0:
+            if (receipt.get("health") != "warming"
+                    or receipt.get("lastResult") != "not_observed"
+                    or sampled is not None or expires is not None):
+                return None, "never_accepted_receipt_unproved"
+        elif (receipt.get("health") not in {"current", "partial"}
+              or receipt.get("lastResult") != "accepted"
+              or type(sampled) is not int or type(expires) is not int
+              or not 0 <= sampled < expires <= _MAX_SAFE_INTEGER):
+            return None, "first_sample_receipt_unproved"
+        states[name] = {
+            "accepted": accepted,
+            "sampledBoottimeMs": sampled,
+            "expiresBoottimeMs": expires,
+            "clock": None,
+        }
+    if set(states) != {"runtime", "history"}:
+        return None, "component_receipt_unproved"
+    return states, None
+
+
+def _observed_prefix_metadata(frame: dict, *, host: str, uid: int, home: Path,
+                              namespace: str, window_ms: int,
+                              include_scope: bool) -> tuple[dict | None, dict | None, dict | None, str | None]:
+    if (frame.get("hostScope") != host or frame.get("uid") != uid
+            or type(frame.get("clockGeneration")) is not int
+            or frame["clockGeneration"] != 0):
+        return None, None, None, "observed_prefix_incarnation_unproved"
+    parser = importlib.import_module("agent_observer.working_set_contract")
+    expected_selector = parser.selector_digest(parser.selector(window_ms))
+    if frame.get("selectorDigest") != expected_selector:
+        return None, None, None, "observed_prefix_selector_changed"
+    sources = frame.get("sources")
+    if not isinstance(sources, list) or len(sources) != 1 or not isinstance(sources[0], dict):
+        return None, None, None, "source_scope_unproved"
+    source = sources[0]
+    if (source.get("provider") != "codex" or source.get("configHome") != str(home)
+            or source.get("configHomeKind") != "explicit"
+            or source.get("namespace") != namespace):
+        return None, None, None, "observed_prefix_source_changed"
+    context_generation = source.get("contextGeneration")
+    if type(context_generation) is not int or context_generation != 1:
+        return None, None, None, "initial_context_unproved"
+    metadata = {
+        "serviceId": frame.get("serviceId"),
+        "bootId": frame.get("bootId"),
+        "clockDomain": frame.get("clockDomain"),
+        "hostScope": host,
+        "uid": uid,
+        "selectorDigest": expected_selector,
+        "clockGeneration": 0,
+        "source": {
+            "provider": "codex",
+            "configHome": str(home),
+            "configHomeKind": "explicit",
+            "namespace": namespace,
+            "contextGeneration": 1,
+        },
+    }
+    scope = None
+    if include_scope:
+        projection = frame.get("projection")
+        scopes = projection.get("scopes") if isinstance(projection, dict) else None
+        if not isinstance(scopes, list) or len(scopes) != 1 or not isinstance(scopes[0], dict):
+            return None, source, None, "source_scope_unproved"
+        scope = scopes[0]
+        scope_context = scope.get("contextGeneration")
+        if type(scope_context) is not int or scope_context != 1:
+            return None, source, None, "initial_context_unproved"
+        if type(scope.get("continuity")) is not int or scope["continuity"] != 1:
+            return None, source, None, "projection_continuity_unproved"
+        if scope.get("provider") != "codex" or scope.get("namespace") != namespace:
+            return None, source, None, "observed_prefix_scope_changed"
+        metadata["scope"] = {
+            "provider": "codex",
+            "namespace": namespace,
+            "contextGeneration": 1,
+            "continuity": 1,
+        }
+    return metadata, source, scope, None
+
+
+def _prefix_fingerprint(frame: dict, metadata: dict, states: dict,
+                        ceiling: int | None, frames: int, accepted_transitions: int,
+                        baseline_counters: dict, hash_key: bytes) -> str:
+    material = {
+        "metadata": metadata,
+        "components": states,
+        "clockCeiling": ceiling,
+        "frames": frames,
+        "acceptedTransitions": accepted_transitions,
+        "baselineCounters": baseline_counters,
+        "finalFrame": {
+            "kind": frame.get("kind"),
+            "state": frame.get("state"),
+            "sequence": frame.get("sequence"),
+            "viewRevision": frame.get("viewRevision"),
+            "observationRevision": frame.get("observationRevision"),
+            "emittedAt": frame.get("emittedAt"),
+            "emittedBoottimeMs": frame.get("emittedBoottimeMs"),
+        },
+    }
+    encoded = json.dumps(material, sort_keys=True, separators=(",", ":")).encode()
+    return hmac.new(hash_key, encoded, hashlib.sha256).hexdigest()
+
+
+class _ObservedClockPrefix:
+    """Bounded receipt/clock continuity proof across the candidate's first frames."""
+
+    def __init__(self, *, host: str, uid: int, home: Path, namespace: str,
+                 window_ms: int, start_wall_ms: int, start_boot_ms: int,
+                 hash_key: bytes):
+        self.host, self.uid, self.home = host, uid, home
+        self.namespace, self.window_ms = namespace, window_ms
+        self.start_wall_ms, self.start_boot_ms = start_wall_ms, start_boot_ms
+        self.hash_key = hash_key
+        self.frames = 0
+        self.accepted_transitions = 0
+        self.first_failure = None
+        self.fixed_metadata = None
+        self.scope_metadata = None
+        self.states = None
+        self.ceiling = None
+        self.baseline_counters = None
+
+    def _fail(self, code: str):
+        if self.first_failure is None:
+            self.first_failure = _safe_code(code, "observed_prefix_unproved")
+
+    def _metadata(self, frame: dict, *, include_scope: bool):
+        metadata, source, scope, reason = _observed_prefix_metadata(
+            frame, host=self.host, uid=self.uid, home=self.home,
+            namespace=self.namespace, window_ms=self.window_ms,
+            include_scope=include_scope,
+        )
+        if reason is not None:
+            self._fail(reason)
+            return None, source, scope
+        base = {key: value for key, value in metadata.items() if key != "scope"}
+        if self.fixed_metadata is None:
+            self.fixed_metadata = base
+        elif self.fixed_metadata != base:
+            self._fail("observed_prefix_incarnation_or_context_changed")
+        if include_scope:
+            scope_metadata = metadata.get("scope")
+            if self.scope_metadata is None:
+                self.scope_metadata = scope_metadata
+            elif self.scope_metadata != scope_metadata:
+                self._fail("observed_prefix_scope_changed")
+        return metadata, source, scope
+
+    def _check_new_clock(self, clock: tuple, receive_wall_ms: int,
+                         receive_boot_ms: int, frame: dict) -> bool:
+        if (type(receive_wall_ms) is not int or type(receive_boot_ms) is not int
+                or receive_wall_ms < self.start_wall_ms - 1
+                or receive_boot_ms < self.start_boot_ms - 1
+                or not self.start_wall_ms - 1 <= frame.get("emittedAt", -1) <= receive_wall_ms + 1
+                or not self.start_boot_ms - 1
+                <= frame.get("emittedBoottimeMs", -1) <= receive_boot_ms + 1):
+            self._fail("observed_prefix_receive_envelope_unproved")
+            return False
+        sampled, wall, accepted_boot = clock[4], clock[5], clock[6]
+        if (not self.start_boot_ms - 1 <= sampled <= receive_boot_ms + 1
+                or not self.start_boot_ms - 1 <= accepted_boot <= receive_boot_ms + 1
+                or not self.start_wall_ms - 1 <= wall <= receive_wall_ms + 1):
+            self._fail("observed_prefix_clock_outside_receive_envelope")
+            return False
+        return True
+
+    def observe(self, frame: dict, *, receive_wall_ms: int, receive_boot_ms: int):
+        self.frames += 1
+        if self.first_failure is not None:
+            return
+        if self.frames > _MAX_FRAME_COUNT:
+            self._fail("candidate_first_view_frame_limit")
+            return
+        has_projection = frame.get("projection") is not None
+        metadata, source, scope = self._metadata(frame, include_scope=has_projection)
+        if self.first_failure is not None:
+            return
+        if not has_projection:
+            states, reason = _component_receipt_states(source)
+            if reason is not None:
+                self._fail(reason)
+                return
+            ceiling = frame.get("clockCeiling")
+            if self.states is None:
+                if (frame.get("state") != "warming"
+                        or any(state["accepted"] != 0 for state in states.values())
+                        or ceiling is not None):
+                    self._fail("observed_prefix_unprojected_acceptance")
+                    return
+                self.baseline_counters = {
+                    name: state["accepted"] for name, state in states.items()
+                }
+                self.states, self.ceiling = states, None
+                return
+            if any(state["accepted"] != 0 for state in self.states.values()):
+                if any(states[name]["accepted"] != self.states[name]["accepted"]
+                       or states[name]["sampledBoottimeMs"] != self.states[name]["sampledBoottimeMs"]
+                       or states[name]["expiresBoottimeMs"] != self.states[name]["expiresBoottimeMs"]
+                       for name in states):
+                    self._fail("observed_prefix_unprojected_acceptance")
+                    return
+                if ceiling != self.ceiling:
+                    self._fail("observed_prefix_unprojected_ceiling_changed")
+                    return
+                for name in states:
+                    states[name]["clock"] = self.states[name]["clock"]
+                self.states = states
+                return
+            if (frame.get("state") != "warming"
+                    or any(state["accepted"] != 0 for state in states.values())
+                    or ceiling is not None
+                    or states != self.states):
+                self._fail("observed_prefix_unprojected_acceptance")
+                return
+            self.states, self.ceiling = states, None
+            return
+
+        if frame.get("kind") != "view" or frame.get("state") == "warming":
+            self._fail("candidate_initial_projection_not_view")
+            return
+        states, current_k, reason = _validate_current_clock_set(
+            frame, source, scope, home=self.home, namespace=self.namespace,
+            clock_bracket_ok=True, clock_census_complete=True,
+            allow_empty=True,
+        )
+        if reason is not None or states is None:
+            self._fail(reason or "observed_prefix_clock_set_unproved")
+            return
+        if self.states is None:
+            if any(state["accepted"] > 1 for state in states.values()):
+                self._fail("accepted_counter_not_first")
+                return
+            self.baseline_counters = {
+                name: state["accepted"] for name, state in states.items()
+            }
+            previous_ceiling = None
+        else:
+            previous_ceiling = self.ceiling
+            for name, current in states.items():
+                prior = self.states[name]
+                prior_count, current_count = prior["accepted"], current["accepted"]
+                if current_count == prior_count:
+                    if (current["clock"] != prior["clock"]
+                            or current["sampledBoottimeMs"] != prior["sampledBoottimeMs"]
+                            or current["expiresBoottimeMs"] != prior["expiresBoottimeMs"]):
+                        self._fail("observed_prefix_same_counter_clock_changed")
+                        return
+                elif current_count == prior_count + 1:
+                    if current["clock"] is None:
+                        self._fail("observed_prefix_new_acceptance_clock_missing")
+                        return
+                    if (prior["clock"] is not None
+                            and current["clock"][2] == prior["clock"][2]):
+                        self._fail("observed_prefix_new_acceptance_sample_reused")
+                        return
+                    self.accepted_transitions += 1
+                else:
+                    self._fail("observed_prefix_counter_gap_or_regression")
+                    return
+        expected_ceiling = max(
+            (value for value in (previous_ceiling, current_k) if value is not None),
+            default=None,
+        )
+        if frame.get("clockCeiling") != expected_ceiling:
+            self._fail("candidate_ceiling_mismatch")
+            return
+        for name, state in states.items():
+            clock = state["clock"]
+            if clock is None:
+                continue
+            prior_clock = None if self.states is None else self.states[name]["clock"]
+            if prior_clock != clock and not self._check_new_clock(
+                clock, receive_wall_ms, receive_boot_ms, frame
+            ):
+                return
+        self.states, self.ceiling = states, expected_ceiling
+
+    def finish(self, frame: dict) -> dict:
+        summary = {
+            "status": "unproved",
+            "reason": self.first_failure or "observed_prefix_state_unavailable",
+            "frames": min(self.frames, _MAX_FRAME_COUNT),
+            "acceptedTransitions": min(self.accepted_transitions, _MAX_FRAME_COUNT * 2),
+            "baselineCounters": self.baseline_counters,
+            "finalCounters": None if self.states is None else {
+                name: state["accepted"] for name, state in self.states.items()
+            },
+            "recomputedCeiling": None,
+            "finalMetadataFingerprint": None,
+            "fixedMetadata": self.fixed_metadata,
+            "componentStates": self.states,
+        }
+        if self.first_failure is not None or self.states is None or self.ceiling is None:
+            return summary
+        metadata, _source, _scope, reason = _observed_prefix_metadata(
+            frame, host=self.host, uid=self.uid, home=self.home,
+            namespace=self.namespace, window_ms=self.window_ms,
+            include_scope=True,
+        )
+        if reason is not None:
+            summary["reason"] = reason
+            return summary
+        final_metadata = {key: value for key, value in metadata.items() if key != "scope"}
+        final_metadata["scope"] = metadata["scope"]
+        fixed = dict(self.fixed_metadata)
+        fixed["scope"] = self.scope_metadata
+        if final_metadata != fixed or frame.get("clockCeiling") != self.ceiling:
+            summary["reason"] = "observed_prefix_final_metadata_changed"
+            return summary
+        summary.update(
+            status="recomputed",
+            reason="observed_clock_prefix_recomputed",
+            recomputedCeiling=self.ceiling,
+            finalMetadataFingerprint=_prefix_fingerprint(
+                frame, fixed, self.states, self.ceiling, self.frames,
+                self.accepted_transitions, self.baseline_counters, self.hash_key,
+            ),
+            fixedMetadata=fixed,
+        )
+        return summary
+
+
+def _observed_prefix_report(prefix: dict | None) -> dict:
+    if not isinstance(prefix, dict):
+        return {
+            "status": "unproved",
+            "reason": "observed_prefix_missing",
+            "frames": 0,
+            "acceptedTransitions": 0,
+            "baselineCounters": None,
+            "finalCounters": None,
+            "recomputedCeiling": None,
+            "finalMetadataFingerprint": None,
+        }
+    result = {}
+    for key in ("status",):
+        value = prefix.get(key)
+        result[key] = value if value in {"recomputed", "unproved"} else "unproved"
+    result["reason"] = _safe_code(prefix.get("reason"), "observed_prefix_unproved")
+    frames = prefix.get("frames")
+    result["frames"] = frames if type(frames) is int and 0 <= frames <= _MAX_FRAME_COUNT else 0
+    transitions = prefix.get("acceptedTransitions")
+    result["acceptedTransitions"] = (
+        transitions
+        if type(transitions) is int and 0 <= transitions <= _MAX_FRAME_COUNT * 2
+        else 0
+    )
+    for key in ("baselineCounters", "finalCounters"):
+        counters = prefix.get(key)
+        if (isinstance(counters, dict)
+                and set(counters) == {"runtime", "history"}
+                and all(type(value) is int and 0 <= value <= _MAX_SAFE_INTEGER
+                        for value in counters.values())):
+            result[key] = dict(counters)
+        else:
+            result[key] = None
+    ceiling = prefix.get("recomputedCeiling")
+    result["recomputedCeiling"] = (
+        ceiling if type(ceiling) is int and abs(ceiling) <= _MAX_SAFE_INTEGER else None
+    )
+    fingerprint = prefix.get("finalMetadataFingerprint")
+    result["finalMetadataFingerprint"] = (
+        fingerprint
+        if isinstance(fingerprint, str) and _SHA256.fullmatch(fingerprint)
+        else None
+    )
+    return result
+
+
+def _verify_observed_clock_prefix(
+    prefix: dict | None,
+    frame: dict,
+    source: dict | None,
+    scope: dict | None,
+    *,
+    host: str,
+    home: Path,
+    namespace: str,
+    window_ms: int,
+    hash_key: bytes,
+    installed_provenance: bool,
+    clock_bracket_ok: bool,
+    clock_census_complete: bool,
+) -> tuple[int | None, str, dict]:
+    report = _observed_prefix_report(prefix)
+
+    def failed(reason: str) -> tuple[None, str, dict]:
+        reason = _safe_code(reason, "observed_prefix_unproved")
+        report.update(status="unproved", reason=reason)
+        return None, reason, report
+
+    if not installed_provenance:
+        return failed("installed_provenance_missing")
+    if not isinstance(prefix, dict) or prefix.get("status") != "recomputed":
+        return failed(report["reason"])
+    if not clock_bracket_ok:
+        return failed("clock_bracket_unproved")
+    if not clock_census_complete:
+        return failed("clock_census_incomplete")
+    states, current_k, reason = _validate_current_clock_set(
+        frame, source, scope, home=home, namespace=namespace,
+        clock_bracket_ok=clock_bracket_ok,
+        clock_census_complete=clock_census_complete,
+        allow_empty=True,
+    )
+    if reason is not None or states is None:
+        return failed(reason or "observed_prefix_final_clock_set_unproved")
+    metadata, _source, _scope, reason = _observed_prefix_metadata(
+        frame, host=host, uid=os.getuid(), home=home, namespace=namespace,
+        window_ms=window_ms, include_scope=True,
+    )
+    if reason is not None or metadata is None:
+        return failed(reason or "observed_prefix_final_metadata_unproved")
+    fixed = {key: value for key, value in metadata.items() if key != "scope"}
+    fixed["scope"] = metadata["scope"]
+    if prefix.get("fixedMetadata") != fixed:
+        return failed("observed_prefix_final_metadata_changed")
+    if prefix.get("componentStates") != states:
+        return failed("observed_prefix_final_receipts_changed")
+    frames = prefix.get("frames")
+    transitions = prefix.get("acceptedTransitions")
+    baseline = prefix.get("baselineCounters")
+    final = prefix.get("finalCounters")
+    if (type(frames) is not int or not 1 <= frames <= _MAX_FRAME_COUNT
+            or type(transitions) is not int or not 0 <= transitions <= _MAX_FRAME_COUNT * 2
+            or not isinstance(baseline, dict) or set(baseline) != {"runtime", "history"}
+            or not isinstance(final, dict) or set(final) != {"runtime", "history"}
+            or any(type(baseline[name]) is not int or baseline[name] not in (0, 1)
+                   for name in baseline)
+            or any(type(final[name]) is not int or final[name] < baseline[name]
+                   or final[name] > _MAX_SAFE_INTEGER for name in final)
+            or sum(final[name] - baseline[name] for name in final) != transitions):
+        return failed("observed_prefix_counters_unproved")
+    if final != {name: states[name]["accepted"] for name in states}:
+        return failed("observed_prefix_final_counters_changed")
+    ceiling = prefix.get("recomputedCeiling")
+    fingerprint = prefix.get("finalMetadataFingerprint")
+    if (type(ceiling) is not int or abs(ceiling) > _MAX_SAFE_INTEGER
+            or current_k is not None and ceiling < current_k
+            or frame.get("clockCeiling") != ceiling
+            or not isinstance(fingerprint, str) or _SHA256.fullmatch(fingerprint) is None):
+        return failed("observed_prefix_final_ceiling_unproved")
+    expected = _prefix_fingerprint(
+        frame, fixed, states, ceiling, frames, transitions, baseline, hash_key,
+    )
+    if not hmac.compare_digest(fingerprint, expected):
+        return failed("observed_prefix_final_fingerprint_mismatch")
+    report.update(
+        status="recomputed",
+        reason="observed_clock_prefix_recomputed",
+        recomputedCeiling=ceiling,
+        finalMetadataFingerprint=fingerprint,
+    )
+    return ceiling, "observed_clock_prefix_recomputed", report
 
 
 def _recent_decision(native: dict, row: dict | None, nonmember: dict | None,
@@ -1025,7 +1570,8 @@ def _hmac_identity(key: bytes, identity: tuple[str, ...]) -> str:
 def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, home: Path,
                   window_ms: int, start_wall_ms: int, end_wall_ms: int,
                   start_boot_ms: int, end_boot_ms: int, hash_key: bytes | None = None,
-                  _first_acceptance_provenance: bool = False) -> dict:
+                  _first_acceptance_provenance: bool = False,
+                  _observed_clock_prefix: dict | None = None) -> dict:
     """Compare admitted public frame against stable independent native facts.
 
     Raw thread/session values remain in local variables and are never returned.
@@ -1043,6 +1589,17 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
     fields: collections.Counter[str] = collections.Counter()
     member_unresolved, member_mismatches = set(), set()
     field_unresolved, field_mismatches = set(), set()
+    projected_field_unresolved, projected_field_mismatches = set(), set()
+    projected_field_checked, projected_field_unrequested = set(), set()
+
+    def mark_projected_field_unresolved(digest: str) -> None:
+        field_unresolved.add(digest)
+        projected_field_unresolved.add(digest)
+
+    def mark_field_mismatch(digest: str) -> None:
+        field_mismatches.add(digest)
+        projected_field_mismatches.add(digest)
+
     hash_key = os.urandom(32) if hash_key is None else hash_key
     projection = frame.get("projection")
     if not isinstance(projection, dict) or frame.get("kind") != "view":
@@ -1163,15 +1720,38 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         reasons["source_clock_samples_missing"] += 1
     first_acceptance_k = None
     first_acceptance_reason = "not_requested"
+    observed_prefix_k = None
+    observed_prefix_reason = "not_requested"
+    observed_prefix_report = _observed_prefix_report(_observed_clock_prefix)
     if _first_acceptance_provenance is True:
-        first_acceptance_k, first_acceptance_reason = _first_acceptance_clock_ceiling(
-            frame, source, scope, home=home, namespace=namespace,
-            clock_bracket_ok=clock_bracket_ok,
-            clock_census_complete=clock_census_complete,
-        )
+        if _observed_clock_prefix is not None:
+            observed_prefix_k, observed_prefix_reason, observed_prefix_report = (
+                _verify_observed_clock_prefix(
+                    _observed_clock_prefix, frame, source, scope,
+                    host=host, home=home, namespace=namespace,
+                    window_ms=window_ms, hash_key=hash_key,
+                    installed_provenance=True,
+                    clock_bracket_ok=clock_bracket_ok,
+                    clock_census_complete=clock_census_complete,
+                )
+            )
+        else:
+            first_acceptance_k, first_acceptance_reason = _first_acceptance_clock_ceiling(
+                frame, source, scope, home=home, namespace=namespace,
+                clock_bracket_ok=clock_bracket_ok,
+                clock_census_complete=clock_census_complete,
+            )
     first_acceptance_k_proven = first_acceptance_k is not None
+    observed_prefix_k_proven = observed_prefix_k is not None
+    independent_source_k_proven = first_acceptance_k_proven or observed_prefix_k_proven
+    effective_source_k = (observed_prefix_k if observed_prefix_k_proven
+                          else first_acceptance_k if first_acceptance_k_proven
+                          else source_k_min)
     if _first_acceptance_provenance is True and not first_acceptance_k_proven:
-        reasons[first_acceptance_reason] += 1
+        if _observed_clock_prefix is None:
+            reasons[first_acceptance_reason] += 1
+        elif not observed_prefix_k_proven:
+            reasons[observed_prefix_reason] += 1
     census_stable = (loaded_before == loaded_after and saved_before == saved_after
                      and set(before) == set(after))
     if not census_stable:
@@ -1192,7 +1772,7 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         candidate = candidate_rows.get(key)
         if left is None or right is None or not _row_fact_equal(left, right):
             member_unresolved.add(digest)
-            field_unresolved.add(digest)
+            mark_projected_field_unresolved(digest)
             reasons["native_row_raced_or_missing"] += 1
             continue
         native = right
@@ -1200,6 +1780,7 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         # Compare only the requested native dimensions. Unknown native values
         # remain evidence limits; they do not become false mismatches.
         if candidate is not None:
+            projected_field_checked.add(digest)
             candidate_runtime = candidate.get("runtime", {})
             actual_runtime = candidate_runtime.get("value")
             if candidate_runtime.get("health") == "current":
@@ -1207,24 +1788,24 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
                 if actual_runtime == native["runtime"]:
                     fields["runtime_match"] += 1
                 elif native["runtime"] == "unknown":
-                    field_unresolved.add(digest)
+                    mark_projected_field_unresolved(digest)
                     reasons["native_runtime_unknown"] += 1
                 else:
                     mismatches["runtime_mismatch"] += 1
-                    field_mismatches.add(digest)
+                    mark_field_mismatch(digest)
             else:
-                field_unresolved.add(digest)
+                mark_projected_field_unresolved(digest)
                 reasons["candidate_runtime_not_current"] += 1
 
             fields["kind_checked"] += 1
             if candidate.get("kind") == native["kind"]:
                 fields["kind_match"] += 1
             elif native["kind"] == "unknown":
-                field_unresolved.add(digest)
+                mark_projected_field_unresolved(digest)
                 reasons["native_kind_unknown"] += 1
             else:
                 mismatches["kind_mismatch"] += 1
-                field_mismatches.add(digest)
+                mark_field_mismatch(digest)
 
             activity = candidate.get("activity", {})
             actual_activity = activity.get("at")
@@ -1233,47 +1814,51 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
                     fields["activity_match"] += 1
                 elif activity.get("health") == "current" and type(actual_activity) is int:
                     mismatches["activity_mismatch"] += 1
-                    field_mismatches.add(digest)
+                    mark_field_mismatch(digest)
                 else:
-                    field_unresolved.add(digest)
+                    mark_projected_field_unresolved(digest)
                     reasons["activity_unproved"] += 1
             elif native["activityReason"] == "no_native_turn_clock" and _current_no_turn(candidate, native, None):
                 fields["activity_no_turn_match"] += 1
             elif activity.get("health") == "current" and type(actual_activity) is int:
                 mismatches["activity_mismatch"] += 1
-                field_mismatches.add(digest)
+                mark_field_mismatch(digest)
             else:
-                field_unresolved.add(digest)
+                mark_projected_field_unresolved(digest)
                 reasons["activity_unproved"] += 1
         elif key in candidate_members:
             # A strict member cannot normally lack its public row body. Keep a
             # defensive unresolved path if an adapter bypasses that invariant.
-            field_unresolved.add(digest)
+            mark_projected_field_unresolved(digest)
             reasons["candidate_member_body_missing"] += 1
         elif key in candidate_nonmembers:
             nonmember = nonmember_meta.get(key)
             represented = nonmember.get("value") if isinstance(nonmember, dict) else None
             if represented in {"child", "system"}:
+                projected_field_checked.add(digest)
+                projected_field_unrequested.add(digest)
                 fields["kind_checked"] += 1
                 if represented == native["kind"]:
                     fields["kind_match"] += 1
                 elif native["kind"] == "unknown":
-                    field_unresolved.add(digest)
+                    mark_projected_field_unresolved(digest)
                     reasons["native_kind_unknown"] += 1
                 else:
                     mismatches["kind_mismatch"] += 1
-                    field_mismatches.add(digest)
+                    mark_field_mismatch(digest)
                 field_unresolved.add(digest)
                 reasons["nonmember_runtime_activity_unavailable"] += 1
             elif represented == "parked":
+                projected_field_checked.add(digest)
+                projected_field_unrequested.add(digest)
                 fields["runtime_checked"] += 1
                 if native["runtime"] == "parked" and native["hasSavedHistory"]:
                     fields["runtime_match"] += 1
                 elif native["runtime"] != "unknown":
                     mismatches["runtime_mismatch"] += 1
-                    field_mismatches.add(digest)
+                    mark_field_mismatch(digest)
                 else:
-                    field_unresolved.add(digest)
+                    mark_projected_field_unresolved(digest)
                     reasons["native_runtime_unknown"] += 1
                 recent = nonmember.get("recent") if isinstance(nonmember, dict) else None
                 activity_at = recent.get("activityAt") if isinstance(recent, dict) else None
@@ -1281,19 +1866,19 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
                     fields["activity_match"] += 1
                 elif type(native["activity"]) is int and type(activity_at) is int:
                     mismatches["activity_mismatch"] += 1
-                    field_mismatches.add(digest)
+                    mark_field_mismatch(digest)
                 elif (native["activityReason"] == "no_native_turn_clock"
                       and isinstance(recent, dict)
                       and recent.get("kind") == "no_activity"
                       and _current_no_turn(None, native, nonmember)):
                     fields["activity_no_turn_match"] += 1
                 else:
-                    field_unresolved.add(digest)
+                    mark_projected_field_unresolved(digest)
                     reasons["activity_unproved"] += 1
                 field_unresolved.add(digest)
                 reasons["nonmember_kind_unavailable"] += 1
             else:
-                field_unresolved.add(digest)
+                mark_projected_field_unresolved(digest)
                 reasons["nonmember_fields_unavailable"] += 1
 
         resolved_member = member_meta.get(key)
@@ -1301,19 +1886,20 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         support, clock = _clock_for_recent(scope or {}, resolved_member, resolved_nonmember)
         expected, membership_reason = _expected_selection(
             native, candidate, resolved_nonmember, support, clock,
-            frame, window_ms, source_k_min, clock_bracket_ok=clock_bracket_ok,
+            frame, window_ms, effective_source_k, clock_bracket_ok=clock_bracket_ok,
             scope=scope, clock_census_complete=clock_census_complete,
         )
         if (expected is True and membership_reason in {
             "recent", "recent_from_scope_clock_census",
-        } and not first_acceptance_k_proven):
+        } and not independent_source_k_proven):
             expected_true += 1
             conditional_memberships += 1
             member_unresolved.add(digest)
             reasons["membership_conditional_on_producer_clock_ceiling"] += 1
         elif expected is True:
             expected_true += 1
-            if membership_reason in {"recent", "recent_from_scope_clock_census"}:
+            if (membership_reason in {"recent", "recent_from_scope_clock_census"}
+                    and independent_source_k_proven):
                 independently_proven_recent_memberships += 1
             if key in candidate_members:
                 selected_match += 1
@@ -1353,7 +1939,7 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
     for key in candidate_members - native_union:
         digest = _hmac_identity(hash_key, key)
         member_unresolved.add(digest)
-        field_unresolved.add(digest)
+        mark_projected_field_unresolved(digest)
         reasons["candidate_identity_missing_from_native_census"] += 1
     for key in candidate_uncertain & native_union:
         member_unresolved.add(_hmac_identity(hash_key, key))
@@ -1366,6 +1952,17 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
                          else "match")
     field_status = ("mismatch" if field_mismatches else
                     "unresolved" if field_unresolved or not candidate_binding_valid else "match")
+    projected_field_status = (
+        "mismatch" if projected_field_mismatches else
+        "unresolved" if projected_field_unresolved or not candidate_binding_valid else "match"
+    )
+    projection_status = (
+        "mismatch" if member_mismatches or projected_field_mismatches else
+        "unresolved" if (membership_status != "match" or projected_field_status != "match"
+                         or not native_complete or not coverage_complete
+                         or not candidate_binding_valid)
+        else "match"
+    )
     # A full-set pass requires complete native census and candidate coverage.
     status = ("mismatch" if mismatches else "unresolved"
               if (membership_status != "match" or field_status != "match"
@@ -1381,6 +1978,22 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
             "producer_clock_ceiling_dependent" if conditional_memberships else "none"
         ),
         "fieldStatus": field_status,
+        "projectedFieldStatus": projected_field_status,
+        "projectionStatus": projection_status,
+        "fieldScope": {
+            "selectedBodies": ["runtime", "kind", "activity"],
+            "negativeFacts": {
+                "excludedChildOrSystem": ["kind"],
+                "parked": ["runtime", "activity"],
+                "compactBodyOmissions": "unrequested",
+            },
+            "legacyFieldStatus": "retains full-row requirements for compact nonmembers",
+            "projectionStatusRequires": [
+                "membershipStatus=match", "projectedFieldStatus=match",
+                "stable complete native census", "complete candidate scope coverage",
+                "valid candidate binding",
+            ],
+        },
         "hostScope": host,
         "windowMs": window_ms,
         "oracle": "independent_codex_app_server_read_subset",
@@ -1401,6 +2014,10 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
             "membershipUnresolvedIdentities": len(member_unresolved),
             "fieldUnresolvedIdentities": len(field_unresolved),
             "mismatchedIdentities": len(member_mismatches | field_mismatches),
+            "projectedFieldComparedIdentities": len(projected_field_checked),
+            "projectedFieldUnresolvedIdentities": len(projected_field_unresolved),
+            "projectedFieldMismatchedIdentities": len(projected_field_mismatches),
+            "projectedFieldUnrequestedNonmemberBodies": len(projected_field_unrequested),
         },
         "fieldCounts": dict(fields),
         "reasonCounts": dict(sorted(reasons.items())),
@@ -1423,20 +2040,36 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         ],
     }
     if _first_acceptance_provenance is True:
-        if first_acceptance_k_proven:
+        if observed_prefix_k_proven:
+            result["sourceK"]["status"] = "independently_recomputed_observed_clock_prefix"
+        elif first_acceptance_k_proven:
             result["sourceK"]["status"] = "independently_recomputed_first_acceptance_set"
         result["sourceK"].update({
-            "firstAcceptanceSet": "recomputed" if first_acceptance_k_proven else "unproved",
-            "firstAcceptanceReason": first_acceptance_reason,
+            "firstAcceptanceSet": (
+                "not_used" if _observed_clock_prefix is not None
+                else "recomputed" if first_acceptance_k_proven else "unproved"
+            ),
+            "firstAcceptanceReason": (
+                "observed_clock_prefix_path_selected" if _observed_clock_prefix is not None
+                else first_acceptance_reason
+            ),
             "recomputedFirstAcceptanceCeiling": first_acceptance_k,
         })
+        result["sourceK"]["observedClockPrefix"] = observed_prefix_report
         result["counts"]["independentlyProvenRecentMemberships"] = (
             independently_proven_recent_memberships
         )
-        result["coverageLimits"][2:4] = [
-            "first-acceptance clock proof applies only to an installed isolated candidate and its exact first receipt set",
-            "all other recent-only positives remain conditional on the producer clock ceiling",
-        ]
+        if observed_prefix_k_proven:
+            result["sourceK"]["recomputedObservedClockPrefixCeiling"] = observed_prefix_k
+            result["coverageLimits"][2:4] = [
+                "observed clock-prefix proof applies only to the bounded initial installed-service receipt sequence",
+                "frames outside that observed prefix remain conditional on the producer clock ceiling",
+            ]
+        elif _observed_clock_prefix is None:
+            result["coverageLimits"][2:4] = [
+                "first-acceptance clock proof applies only to an installed isolated candidate and its exact first receipt set",
+                "all other recent-only positives remain conditional on the producer clock ceiling",
+            ]
     return result
 
 
@@ -1742,13 +2375,19 @@ def _run(args) -> dict:
         wait_deadline = min(run_deadline, time.monotonic() + args.service_wait_seconds)
         _wait_for_candidate_socket(args.service_socket, wait_deadline)
         window_ms = args.window_hours * 3600000
+        observed_prefix = []
         frame, candidate_peer = _read_candidate(
             args.service_socket, host=args.host_scope, window_ms=window_ms,
             expected_python=args.candidate_python,
             expected_python_sha=args.candidate_python_sha256,
-            observer_cli=provenance["observerServiceCli"]["path"], home=home,
-            deadline=run_deadline,
+            observer_cli=Path(provenance["observerServiceCli"]["path"]), home=home,
+            deadline=run_deadline, observed_prefix_out=observed_prefix,
+            prefix_hash_key=run_key,
+            native_before_start_wall_ms=before_timing["startWallMs"],
+            native_before_start_boot_ms=before_timing["startBoottimeMs"],
         )
+        if len(observed_prefix) != 1 or not isinstance(observed_prefix[0], dict):
+            raise QualificationError("observed_prefix_result_missing", "unresolved")
         # End the cached-frame/native bracket immediately before the after read.
         after_bracket_wall, after_bracket_boot = _wall_ms(), _boot_ms()
         after, after_timing = _native_round(
@@ -1770,6 +2409,7 @@ def _run(args) -> dict:
             # point means installed artifacts, exact service argv, peer and
             # socket incarnation have all passed their existing checks.
             _first_acceptance_provenance=True,
+            _observed_clock_prefix=observed_prefix[0] if len(observed_prefix) == 1 else None,
         )
         native_final = _native_process_metadata(
             oracle, native_client, home, expected_endpoint=endpoint,

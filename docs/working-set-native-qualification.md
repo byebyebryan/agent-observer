@@ -63,12 +63,42 @@ unresolved. Missing loaded membership does not prove parked. A current native
 exclude turns/items; a nonempty unexpected content array is rejected.
 
 The original accepted-sample clock joins and a coarse external time envelope
-are checked. The installed run has one narrowly bounded way to independently
-recompute the accumulated lower-cutoff ceiling `K`: its exact first accepted
-receipt set. This check is private to the installed run path and has no CLI
-switch. It runs only after the installed lexical Python, wheel and CLI digests,
-the candidate peer, socket incarnation, and exact `serve` argv have passed the
-existing provenance checks.
+are checked. Direct and synthetic `compare_frame` calls retain the first-set
+clock check described below. The installed run instead uses a bounded observed
+clock-prefix proof so it can wait through an incomplete initial view without
+assuming that the first complete view is the service's first accepted sample.
+This check is private to the installed run path and has no CLI switch. It runs
+only after the installed lexical Python, wheel and CLI digests, the candidate
+peer, socket incarnation, and exact `serve` argv have passed the existing
+provenance checks.
+
+The candidate reader observes no more than the existing 16-frame limit and
+still requires the first returned projection to be a complete single Codex
+scope. Before that complete view, every parsed frame contributes only a bounded
+pair of runtime/history receipt counters and clock tuples plus fixed service,
+source and scope metadata. No earlier DTO, roster or native identity is kept.
+The first projected receipt set may have counters 0 or 1; a first value above 1
+is unproved. After that baseline, each component counter must either stay
+unchanged with its exact full clock tuple unchanged, or increase by exactly one
+with a new valid joined clock. Counter gaps, regression, a changed clock at the
+same counter, an unprojected acceptance, clock-ceiling mismatch, failed/stale
+receipt, clock outside the native-before-to-receive envelope, context or scope
+change, missing complete view, or any other prefix failure stays unproved for
+the rest of the read. A later clean frame cannot restore it.
+
+For every projected prefix frame, the reported ceiling must equal the maximum
+`W - L + 1` among the currently joined clocks and the previously observed
+ceiling. This preserves a larger earlier `K` when a later component mirrors a
+new sample with a smaller lower bound. The native comparison rechecks the final
+receipt/census and coarse external bracket, then verifies a per-run keyed
+fingerprint of the final fixed metadata, receipt/clock pair, ceiling and frame
+marker before using this recomputed value. A prefix report contains only finite
+status/reason codes, bounded frame and transition counts, component counters,
+the recomputed ceiling and its keyed fingerprint. Prefix mode never falls
+back to the first-set proof when the observed prefix failed; recent-only
+membership then remains conditional or unresolved. Direct/synthetic calls
+without the private installed provenance flag cannot use a supplied prefix as
+proof.
 
 For that first-set proof, the frame must be a view with exactly one Codex source
 bound to the selected home and namespace; source and scope context generation
@@ -88,11 +118,13 @@ sample are allowed when their bracket metadata agrees.
 Any accepted count above 1, malformed/coerced count, stale or failed receipt,
 missing or extra clock, context mismatch/reset, discontinuity, incomplete
 census, source-scope mismatch or ceiling mismatch leaves the first-set proof
-unproved. The comparison then preserves the original behavior: recent-only
-positives remain conditional on the producer's ceiling. Direct and synthetic
-`compare_frame` calls also remain conditional by default. Later accepted
-receipts cannot use this shortcut because the public frame carries only current
-component clocks while `K` retains every accepted bracket.
+unproved. In installed prefix mode, a later count above 1 is allowed only when
+each intervening increment and its new joined clock were observed; a missing
+step remains unproved. Recent-only positives stay conditional on the producer
+ceiling whenever the applicable proof is unproved. Direct and synthetic
+`compare_frame` calls remain conditional by default. A final current frame
+alone cannot recover a missing prefix because the public frame carries only
+current component clocks while `K` retains every accepted bracket.
 
 The public FactSupport does not carry the original snapshot collection ID. The
 qualifier checks the clock's UUID shape, mirrored-sample consistency and exact
@@ -101,19 +133,38 @@ that UUID with the private snapshot collection ID. The reviewed installed
 capture path supplies that join. Recomputed `K*` uses the bracket values, not
 the UUID.
 
-The first-set proof only removes uncertainty about `K` for the corresponding
-recent-positive calculation. It does not prove a native census, candidate
-coverage, row identity, runtime, or native-before/after stability. The
-independent native census, exact joins, and existing one-second precision
-boundary still apply. An independently active positive remains independent of
-recency. Omitted-row recency requires a complete joined clock census for every
-current source component; a missing component cannot establish absence. Native
-empty-turn evidence requires an explicit current no-turn result, not a metadata
-response that merely omitted turn details.
+A valid first-set proof or observed prefix only removes uncertainty about `K`
+for the corresponding recent-positive calculation. It does not prove a native
+census, candidate coverage, row identity, runtime, or native-before/after
+stability. The independent native census, exact joins, and existing one-second
+precision boundary still apply. An independently active positive remains
+independent of recency. Omitted-row recency requires a complete joined clock
+census for every current source component; a missing component cannot
+establish absence. Native empty-turn evidence requires an explicit current
+no-turn result, not a metadata response that merely omitted turn details.
 
-The focused first-set tests are synthetic controls for the arithmetic and
-receipt-state gates. They do not claim an installed native comparison or a
-producer acceptance result.
+The report also includes additive `projectedFieldStatus` and `projectionStatus`
+values. `projectedFieldStatus` compares runtime, kind and activity for every
+selected body, plus every field represented by a compact nonmember fact: kind
+for excluded child/system entries and runtime/activity for parked entries.
+Fields omitted from compact nonmember bodies are unrequested by this comparison.
+The legacy `fieldStatus`, its reason/count fields, overall `status` and
+`exitCode` retain their existing stricter full-row semantics; for example, a
+parked negative can have `projectedFieldStatus=match` while
+`fieldStatus=unresolved`, overall `status=unresolved` and `exitCode=3`.
+`projectionStatus` is an additive projection-scope result: it is `match` only
+when the unchanged membership result and projected field result match and the
+native census, candidate scope coverage and candidate binding are complete.
+Represented field or membership mismatches remain mismatches, and missing or
+unknown represented evidence remains unresolved. A projected match does not
+claim full-history body parity or change the qualifier's existing exit result.
+The additive projected field counts distinguish compared identities,
+unresolved and mismatched identities, and compact nonmember bodies with
+intentionally unrequested fields; they contain no raw identity values.
+
+The focused first-set and observed-prefix tests are synthetic controls for the
+arithmetic, ordering and receipt-state gates. They do not claim an installed
+native comparison or a producer acceptance result.
 
 Exit 0 means all of this tool's full-set comparisons matched. Exit 2 records a
 mismatch. Exit 3 records unresolved or unsupported evidence, and exit 4 records
