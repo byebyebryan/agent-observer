@@ -1,0 +1,297 @@
+{
+  "abba": [
+    "full",
+    "working",
+    "working",
+    "full"
+  ],
+  "copiesPerGeneration": 4,
+  "format": "agent-observer.working-set.sdk-pipeline-matrix.v3.6.abba-manifest.v1",
+  "generationsPerTrial": 3,
+  "interpreters": [
+    {
+      "name": "py314",
+      "path": "/home/bryan/code/mesh-plus/.venv/bin/python"
+    },
+    {
+      "name": "py311",
+      "path": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python"
+    }
+  ],
+  "nativeIpcWireBytes": "unmeasured; Mesh completed JSON-line counters are retained per trial",
+  "rows": [
+    500,
+    2000
+  ],
+  "rssScope": "not measured in this tranche",
+  "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+c06b33e058339d9d1d89ecf6844044867d816c58",
+  "sourcePin": {
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "meshSourceRoot": "/home/bryan/code/mesh-plus-working-set/src",
+    "observerArchiveSha256": "a1785e81f1f998a134cf23f283eb638f398b681395ab71a4c69948f26e78c47e",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "observerFilesVerified": 2223,
+    "observerManifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877"
+  },
+  "status": "pass",
+  "timingScope": "process CPU from generation through required native IPC, public Mesh watch/proof admission and facade copies; fixture/oracle/import/audit/cleanup excluded",
+  "trials": [
+    {
+      "cellId": "py314-500",
+      "cellPosition": 1,
+      "generationProcessCpuMs": [
+        712.43216,
+        702.166389,
+        709.576879
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-01-full.json",
+      "reportSha256": "461547d257a2c71d6be940a56344363f64c13b88e1051da1f03339b0485ab2b6",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-01-full.runner.json",
+      "trialIndex": 0,
+      "variant": "full"
+    },
+    {
+      "cellId": "py314-500",
+      "cellPosition": 2,
+      "generationProcessCpuMs": [
+        120.58526,
+        113.05348,
+        113.61744
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-02-working.json",
+      "reportSha256": "daebb9caeb870d6c7adab5fd079c49d2251bf2152df0a9fd35a986e8f70105e4",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-02-working.runner.json",
+      "trialIndex": 1,
+      "variant": "working"
+    },
+    {
+      "cellId": "py314-500",
+      "cellPosition": 3,
+      "generationProcessCpuMs": [
+        122.87678,
+        117.58943,
+        113.41973
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-03-working.json",
+      "reportSha256": "3048748d616455a0ea66ca6231c00d2fcedaa54b5ec5c21e2bf211a9ac913af1",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-03-working.runner.json",
+      "trialIndex": 2,
+      "variant": "working"
+    },
+    {
+      "cellId": "py314-500",
+      "cellPosition": 4,
+      "generationProcessCpuMs": [
+        722.71792,
+        708.22194,
+        723.258169
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-04-full.json",
+      "reportSha256": "4506ca86a7592a28b02d4c7ac451a54b3a2085a3dc432ae02945967770985695",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-500-04-full.runner.json",
+      "trialIndex": 3,
+      "variant": "full"
+    },
+    {
+      "cellId": "py314-2000",
+      "cellPosition": 1,
+      "generationProcessCpuMs": [
+        2779.157317,
+        2834.411668,
+        3635.136626
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-01-full.json",
+      "reportSha256": "b5622663633fd1d7f5ce15372a03adb7b25d7ac77a54ca9c265624e4b1f3857b",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-01-full.runner.json",
+      "trialIndex": 4,
+      "variant": "full"
+    },
+    {
+      "cellId": "py314-2000",
+      "cellPosition": 2,
+      "generationProcessCpuMs": [
+        441.885079,
+        432.44462,
+        429.968059
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-02-working.json",
+      "reportSha256": "ecec4409286a8789f17a73a4c3347cff02f0b6a5a9145dd898cb94c4dccc7643",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-02-working.runner.json",
+      "trialIndex": 5,
+      "variant": "working"
+    },
+    {
+      "cellId": "py314-2000",
+      "cellPosition": 3,
+      "generationProcessCpuMs": [
+        437.447019,
+        437.28514,
+        433.906309
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-03-working.json",
+      "reportSha256": "30e71f69ba58a9062d26c53dd2d0f2cfac2951c399d5a0aa40a43696bd5b9881",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-03-working.runner.json",
+      "trialIndex": 6,
+      "variant": "working"
+    },
+    {
+      "cellId": "py314-2000",
+      "cellPosition": 4,
+      "generationProcessCpuMs": [
+        2854.046677,
+        2705.393757,
+        3809.105825
+      ],
+      "interpreterName": "py314",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-04-full.json",
+      "reportSha256": "761386f8736a86c639970e6a1319e948f5030a0fd55078d8822cfc0e2b7cb07a",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py314-2000-04-full.runner.json",
+      "trialIndex": 7,
+      "variant": "full"
+    },
+    {
+      "cellId": "py311-500",
+      "cellPosition": 1,
+      "generationProcessCpuMs": [
+        769.919099,
+        729.808099,
+        756.203619
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-01-full.json",
+      "reportSha256": "97fd9a479de5e7554392094be820d8a5941e027a42f5711f9220bc9f4d3f06ba",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-01-full.runner.json",
+      "trialIndex": 8,
+      "variant": "full"
+    },
+    {
+      "cellId": "py311-500",
+      "cellPosition": 2,
+      "generationProcessCpuMs": [
+        139.41202,
+        131.55033,
+        128.81824
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-02-working.json",
+      "reportSha256": "e6e0b8c90cb500981cecb036a6753ec157b7db04324b9a11f14c6b29e5252478",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-02-working.runner.json",
+      "trialIndex": 9,
+      "variant": "working"
+    },
+    {
+      "cellId": "py311-500",
+      "cellPosition": 3,
+      "generationProcessCpuMs": [
+        138.86976,
+        130.34884,
+        126.89484
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-03-working.json",
+      "reportSha256": "d65d281389cc09b6803487e24d9c84bca049115beb9776daa1c839eb368165a4",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-03-working.runner.json",
+      "trialIndex": 10,
+      "variant": "working"
+    },
+    {
+      "cellId": "py311-500",
+      "cellPosition": 4,
+      "generationProcessCpuMs": [
+        754.96299,
+        719.65029,
+        783.472379
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-04-full.json",
+      "reportSha256": "28f5b6b9abd1c58e158b34ed61af8366edc21713422a4af64c3bdae8aeeaca96",
+      "rows": 500,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-500-04-full.runner.json",
+      "trialIndex": 11,
+      "variant": "full"
+    },
+    {
+      "cellId": "py311-2000",
+      "cellPosition": 1,
+      "generationProcessCpuMs": [
+        3011.666747,
+        2905.372557,
+        3997.526957
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-01-full.json",
+      "reportSha256": "767dd7ddd25d00baa2b6b2df61a6fb2530978535999bc08099c70eb8a565181e",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-01-full.runner.json",
+      "trialIndex": 12,
+      "variant": "full"
+    },
+    {
+      "cellId": "py311-2000",
+      "cellPosition": 2,
+      "generationProcessCpuMs": [
+        509.771559,
+        498.54875,
+        508.381579
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.json",
+      "reportSha256": "3eecab053bcdae77a67fd8dffbde6162ad9800b0b1c17266f5df1aa5ff3638c9",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.runner.json",
+      "trialIndex": 13,
+      "variant": "working"
+    },
+    {
+      "cellId": "py311-2000",
+      "cellPosition": 3,
+      "generationProcessCpuMs": [
+        505.304829,
+        506.975399,
+        488.23151
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-03-working.json",
+      "reportSha256": "a2487cdb2c87642c10ac5589401d3539f052c6c170b1cd724ad19fc7de23cf1f",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-03-working.runner.json",
+      "trialIndex": 14,
+      "variant": "working"
+    },
+    {
+      "cellId": "py311-2000",
+      "cellPosition": 4,
+      "generationProcessCpuMs": [
+        3052.388107,
+        2947.988837,
+        3995.095325
+      ],
+      "interpreterName": "py311",
+      "report": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-04-full.json",
+      "reportSha256": "10904f149f33e06495c9384314c49bd52fb5c5a3c0d2e27066e23c804d3b0553",
+      "rows": 2000,
+      "runnerMetadata": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-04-full.runner.json",
+      "trialIndex": 15,
+      "variant": "full"
+    }
+  ],
+  "workloadPattern": "one Reader.watch_admitted event per generation plus four detached local facade copies; not four SDK deliveries"
+}

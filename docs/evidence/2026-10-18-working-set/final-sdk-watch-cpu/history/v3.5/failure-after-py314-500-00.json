@@ -1,0 +1,19 @@
+{
+  "cellId": "py314-500",
+  "completedTrials": [],
+  "errorCode": "trial_report_verification_failed",
+  "errorType": "RuntimeError",
+  "format": "agent-observer.working-set.sdk-pipeline-matrix.v3.5.abba-failure.v1",
+  "nextTrialIndex": 0,
+  "noLaterTrialStarted": true,
+  "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+c06b33e058339d9d1d89ecf6844044867d816c58",
+  "sourcePin": {
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "meshSourceRoot": "/home/bryan/code/mesh-plus-working-set/src",
+    "observerArchiveSha256": "a1785e81f1f998a134cf23f283eb638f398b681395ab71a4c69948f26e78c47e",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "observerFilesVerified": 2223,
+    "observerManifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877"
+  },
+  "status": "aborted_at_first_failed_trial"
+}

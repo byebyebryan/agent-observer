@@ -1,0 +1,670 @@
+{
+  "argv": [
+    "rtk",
+    "proxy",
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.runner.py",
+    "--mode",
+    "trial",
+    "--observer-id",
+    "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "--mesh-id",
+    "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "--approved-source-pair",
+    "b176ac06b39daeead4be0a33ff9d781304091fe0+c06b33e058339d9d1d89ecf6844044867d816c58",
+    "--trial-rows",
+    "2000",
+    "--trial-variant",
+    "working",
+    "--trial-index",
+    "13",
+    "--variant-order",
+    "full,working,working,full",
+    "--output",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.json"
+  ],
+  "argvSha256": "7259950771b5b4a09e6d30362ce2824d07b27f0402331ecdc66bb8f2ef0a28ae",
+  "cellId": "py311-2000",
+  "cellPosition": 2,
+  "cleanupBalanced": true,
+  "exitCode": 0,
+  "format": "agent-observer.working-set.sdk-pipeline-matrix.v3.6.runner.v1",
+  "freshCurrentProofs": true,
+  "generationProcessCpuMs": [
+    509.771559,
+    498.54875,
+    508.381579
+  ],
+  "independentExpectedDtoMatchesAllFourFacadeCopies": true,
+  "interpreterName": "py311",
+  "interpreterPath": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+  "loadedModuleCounts": {
+    "agent_observer": 43,
+    "mesh_plus": 17
+  },
+  "loadedProjectModules": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "root": "agent_observer",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer._image_memo": {
+      "path": "agent_observer/_image_memo.py",
+      "root": "agent_observer",
+      "sha256": "e51920f262521b25d00812458f52b67474039334581426108703cfeb5604c331"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "root": "agent_observer",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "root": "agent_observer",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.activity": {
+      "path": "agent_observer/activity.py",
+      "root": "agent_observer",
+      "sha256": "f8ad39a1992070347988b0b9c73710bc7acecd3336afb1cf47dcefcbd67bbff1"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "root": "agent_observer",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "root": "agent_observer",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "root": "agent_observer",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.mesh_preparation": {
+      "path": "agent_observer/mesh_preparation.py",
+      "root": "agent_observer",
+      "sha256": "0b85236725203a3e41754e181e9c3edbe42621da067abd27fc0c0e804c737151"
+    },
+    "agent_observer.mesh_profile": {
+      "path": "agent_observer/mesh_profile.py",
+      "root": "agent_observer",
+      "sha256": "fd0db8045fbe18b50ea8dca233e46a980ef9f644562b3971323b0be946489fa4"
+    },
+    "agent_observer.mesh_publisher": {
+      "path": "agent_observer/mesh_publisher.py",
+      "root": "agent_observer",
+      "sha256": "bfc75f895fb3df131100b019dc2bf34f7109e6dbc891c699e1652c8033b58b03"
+    },
+    "agent_observer.mesh_read": {
+      "path": "agent_observer/mesh_read.py",
+      "root": "agent_observer",
+      "sha256": "8da2d5bd178cf7f932af37804c7adbc3a64d0c6034be28c074125bb862c17183"
+    },
+    "agent_observer.mesh_selection": {
+      "path": "agent_observer/mesh_selection.py",
+      "root": "agent_observer",
+      "sha256": "45bb781ad7cf8aed59540ce9ea8dc73d61eae8a9ac95c10fd6cacae265216257"
+    },
+    "agent_observer.mesh_source": {
+      "path": "agent_observer/mesh_source.py",
+      "root": "agent_observer",
+      "sha256": "bcbbba27b0296c2ff9792697b31c1b89410c407f15df71b522262313ba987fae"
+    },
+    "agent_observer.mesh_working_set_profile": {
+      "path": "agent_observer/mesh_working_set_profile.py",
+      "root": "agent_observer",
+      "sha256": "da003bca249a6a33bf145eb10280d1b6e674158f9e840ba04ed0222ebc0dcc7c"
+    },
+    "agent_observer.mesh_working_set_publisher": {
+      "path": "agent_observer/mesh_working_set_publisher.py",
+      "root": "agent_observer",
+      "sha256": "f1830a32baed77055758dfe4345b27b7308383ed556bb9ea6a610a0c30fd315e"
+    },
+    "agent_observer.mesh_working_set_read": {
+      "path": "agent_observer/mesh_working_set_read.py",
+      "root": "agent_observer",
+      "sha256": "05d9953294123c9f1f75e414e365a2ba06c2a9c883b29e7037ae5c7550e42a24"
+    },
+    "agent_observer.mesh_working_set_source": {
+      "path": "agent_observer/mesh_working_set_source.py",
+      "root": "agent_observer",
+      "sha256": "e5b239a49e4d27f32d4f421290a251785dcdb62a7c9a43777f2ae1369b0b582a"
+    },
+    "agent_observer.native_artifacts": {
+      "path": "agent_observer/native_artifacts.py",
+      "root": "agent_observer",
+      "sha256": "743e30c5a67cf3f3d9b5cf7d1990859d9a0df8b725dcb4245fd73415fe54d773"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "root": "agent_observer",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "root": "agent_observer",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_scheduler": {
+      "path": "agent_observer/observation_scheduler.py",
+      "root": "agent_observer",
+      "sha256": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "root": "agent_observer",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "root": "agent_observer",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.public": {
+      "path": "agent_observer/public.py",
+      "root": "agent_observer",
+      "sha256": "710e0a86ca1248fbf46bab406725fb1901877012c9002a01921e7662dbe27610"
+    },
+    "agent_observer.read_cache": {
+      "path": "agent_observer/read_cache.py",
+      "root": "agent_observer",
+      "sha256": "5cd1932a36badeede7729f72c0bc0d82cd1be64477d2618b026f2cc452e1a71d"
+    },
+    "agent_observer.read_client": {
+      "path": "agent_observer/read_client.py",
+      "root": "agent_observer",
+      "sha256": "3a2b2258f7f005cad809bc5d0e744055fbae960451b6333473aa3e92b73c007e"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "root": "agent_observer",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_public": {
+      "path": "agent_observer/service_public.py",
+      "root": "agent_observer",
+      "sha256": "704cfe0065dfe2a8c86c27766f14f88916f55a827211762576efba05512ec41a"
+    },
+    "agent_observer.service_runtime": {
+      "path": "agent_observer/service_runtime.py",
+      "root": "agent_observer",
+      "sha256": "faeb5f753a9c8d275acdd66d491d96da4e50b75c8c98772cd7ff9d82a6c61d39"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "root": "agent_observer",
+      "sha256": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf"
+    },
+    "agent_observer.sync_commitment": {
+      "path": "agent_observer/sync_commitment.py",
+      "root": "agent_observer",
+      "sha256": "544fba79d3a05ac898a925432d0923de9eca31658481ae15e1118cc8c0be1ff5"
+    },
+    "agent_observer.sync_contract": {
+      "path": "agent_observer/sync_contract.py",
+      "root": "agent_observer",
+      "sha256": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236"
+    },
+    "agent_observer.sync_native": {
+      "path": "agent_observer/sync_native.py",
+      "root": "agent_observer",
+      "sha256": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "root": "agent_observer",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "root": "agent_observer",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "root": "agent_observer",
+      "sha256": "8f1499aa724c292f2d19aeb8995569f36d1c86ccec6967c4ed34583594ed9093"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "root": "agent_observer",
+      "sha256": "104423810e003ecc812451faa9b9d8e730284c76a93d02fdd84c40149bb3f008"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "root": "agent_observer",
+      "sha256": "bb8fb1e79d89d0f8e3a6d9b6c38e473fe6d7332acad13ba491eb3d548768eef6"
+    },
+    "agent_observer.working_set_ledger": {
+      "path": "agent_observer/working_set_ledger.py",
+      "root": "agent_observer",
+      "sha256": "48381ecc8b0e1c678aff05ea94ea7e4848137fb2493295cf0ab1c598e067b7aa"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "root": "agent_observer",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    },
+    "agent_observer.working_set_supports": {
+      "path": "agent_observer/working_set_supports.py",
+      "root": "agent_observer",
+      "sha256": "20ba9d34d3af30a2766e9bbda4ff2ab449a324bc7a52b8e18451c94ec4fe05c2"
+    },
+    "agent_observer.workspace": {
+      "path": "agent_observer/workspace.py",
+      "root": "agent_observer",
+      "sha256": "4b8a63d362af880b6acd4326e767d32a800df3f5f6e1282e5c4d62d4263ac92e"
+    },
+    "mesh_plus": {
+      "path": "mesh_plus/__init__.py",
+      "root": "mesh_plus",
+      "sha256": "d4c9f162318ab9942f47c730884001fafaeffc5ddfab1967ce961acd89eb268f"
+    },
+    "mesh_plus._receipt_history": {
+      "path": "mesh_plus/_receipt_history.py",
+      "root": "mesh_plus",
+      "sha256": "d5703497b3acfdea53318e7de1da828867ac68e937971c3c7640dbe76b5ab70a"
+    },
+    "mesh_plus.admission": {
+      "path": "mesh_plus/admission.py",
+      "root": "mesh_plus",
+      "sha256": "2b703d4c84a0ae966fee8d4db637b01fc0fdb4971351d4484a85c6e18d2d85bb"
+    },
+    "mesh_plus.api": {
+      "path": "mesh_plus/api.py",
+      "root": "mesh_plus",
+      "sha256": "8b63c94e7da9a886280b7a8ce5baa8ab26e010edc7284b6dbec4889db53353cc"
+    },
+    "mesh_plus.bridge": {
+      "path": "mesh_plus/bridge.py",
+      "root": "mesh_plus",
+      "sha256": "c369664856a6eccb05f3f5168efe60302037e4930991775a8eb1ecb0a9d6fe9f"
+    },
+    "mesh_plus.catalog": {
+      "path": "mesh_plus/catalog.py",
+      "root": "mesh_plus",
+      "sha256": "f8d52f8e8f73f84504b931bdd2970ab60eeac3b69fce22d3fde7d6bb8d6cdb1a"
+    },
+    "mesh_plus.client": {
+      "path": "mesh_plus/client.py",
+      "root": "mesh_plus",
+      "sha256": "03945c23300079f8f6fe75c7c9fad781552bf854f5ce1c1e6b5aadaa576a2101"
+    },
+    "mesh_plus.configured_read": {
+      "path": "mesh_plus/configured_read.py",
+      "root": "mesh_plus",
+      "sha256": "dc39f08d557b4ce6ca9f988eeb91e8749f363c8d930fe915cf801df82d77a32c"
+    },
+    "mesh_plus.evidence": {
+      "path": "mesh_plus/evidence.py",
+      "root": "mesh_plus",
+      "sha256": "224dae58b30c28f142ea1fa0e31038c76704f383082b79989cfef3908ceb388c"
+    },
+    "mesh_plus.prepared": {
+      "path": "mesh_plus/prepared.py",
+      "root": "mesh_plus",
+      "sha256": "333f179ebf6eeabf5528d9d938cdc7ef484fb2ffcf9ec41608e7f29719f77486"
+    },
+    "mesh_plus.protocol": {
+      "path": "mesh_plus/protocol.py",
+      "root": "mesh_plus",
+      "sha256": "5a53fa9bec8ffa7c0fe4ba0911dec6c38a2f4739d281be52775d0c56349125c3"
+    },
+    "mesh_plus.publisher": {
+      "path": "mesh_plus/publisher.py",
+      "root": "mesh_plus",
+      "sha256": "0dfbf1461a4555f3c0a9b02f8788cd85c9b7c8ae90087d11c84ea4c3a4188336"
+    },
+    "mesh_plus.reader": {
+      "path": "mesh_plus/reader.py",
+      "root": "mesh_plus",
+      "sha256": "c99270d28ac92762f2e31307ec437ce96a6def69bac4c3ffcea8039d181a1674"
+    },
+    "mesh_plus.remote": {
+      "path": "mesh_plus/remote.py",
+      "root": "mesh_plus",
+      "sha256": "eb2d4165e3b086ed298ba991a51d04309821b50e46dfc4702f0ab081e87c890b"
+    },
+    "mesh_plus.state": {
+      "path": "mesh_plus/state.py",
+      "root": "mesh_plus",
+      "sha256": "d95a9132cf89982072637383e8c96ac3b619e8ddf478e995f95585ba74907330"
+    },
+    "mesh_plus.transport": {
+      "path": "mesh_plus/transport.py",
+      "root": "mesh_plus",
+      "sha256": "4a12f03711baf4fa106b1d52d069063694ff12a66c61500815e9cea4967244ca"
+    },
+    "mesh_plus.view": {
+      "path": "mesh_plus/view.py",
+      "root": "mesh_plus",
+      "sha256": "9efa74e1f0b69a293b0f454be937d3580c5cd986e94fbe0edcd7a5a039bdbe6c"
+    }
+  },
+  "nativeFrameHashesMatchPublicProofOwnerDigest": true,
+  "publicCompletedSenderTotalsIncludingTeardown": {
+    "bytes": 233071,
+    "frames": 16
+  },
+  "publicCounterDiagnostics": {
+    "bidirectionalByteCountsMatch": true,
+    "counterDiagnostics": {
+      "allCompletedSenderWritesIncludedThroughTeardown": true,
+      "bridgeAuditOverflow": false,
+      "counterEqualityUsedForFunctionalAcceptance": false,
+      "nativeIpcBytesMeasured": false,
+      "postShutdownDifferencesByPathAndKind": [],
+      "preShutdownDifferencesByPathAndKind": [
+        {
+          "bytes": 230,
+          "frames": 1,
+          "kind": "credit",
+          "path": "clientSentMinusBridgeReceived"
+        }
+      ],
+      "preShutdownQuiescenceRequired": false,
+      "publicClientRefusalOrHistoryOverflow": false,
+      "readerMetricsPartial": false,
+      "scope": "public completed application-channel counters; write completion and validated receive only, not raw wire or proof of peer parsing",
+      "terminalCloseOnlyDelta": {
+        "basis": "signed difference in completed public close-kind counters from pre-shutdown to post-shutdown",
+        "clientReceivedMinusBridgeSent": {
+          "bytes": 0,
+          "frames": 0
+        },
+        "clientSentMinusBridgeReceived": {
+          "bytes": 0,
+          "frames": 0
+        },
+        "physicalOrRawSocketDeliveryClaimed": false
+      }
+    },
+    "postShutdownCounterDeltas": {
+      "clientBridgeDeltas": {
+        "clientReceivedMinusBridgeSent": {
+          "byKind": {
+            "data": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "hello": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "result": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "subscribed": {
+              "bytes": 0,
+              "frames": 0
+            }
+          },
+          "bytes": 0,
+          "direction": "bridge_to_client",
+          "frames": 0
+        },
+        "clientSentMinusBridgeReceived": {
+          "byKind": {
+            "close": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "credit": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "hello": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "request": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "subscribe": {
+              "bytes": 0,
+              "frames": 0
+            }
+          },
+          "bytes": 0,
+          "direction": "client_to_bridge",
+          "frames": 0
+        }
+      },
+      "readerClientByKindDeltas": {
+        "received": {
+          "data": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "hello": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "result": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "subscribed": {
+            "bytes": 0,
+            "frames": 0
+          }
+        },
+        "sent": {
+          "close": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "credit": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "hello": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "request": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "subscribe": {
+            "bytes": 0,
+            "frames": 0
+          }
+        }
+      }
+    },
+    "preShutdownCounterDeltas": {
+      "clientBridgeDeltas": {
+        "clientReceivedMinusBridgeSent": {
+          "byKind": {
+            "data": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "hello": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "result": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "subscribed": {
+              "bytes": 0,
+              "frames": 0
+            }
+          },
+          "bytes": 0,
+          "direction": "bridge_to_client",
+          "frames": 0
+        },
+        "clientSentMinusBridgeReceived": {
+          "byKind": {
+            "credit": {
+              "bytes": 230,
+              "frames": 1
+            },
+            "hello": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "request": {
+              "bytes": 0,
+              "frames": 0
+            },
+            "subscribe": {
+              "bytes": 0,
+              "frames": 0
+            }
+          },
+          "bytes": 230,
+          "direction": "client_to_bridge",
+          "frames": 1
+        }
+      },
+      "readerClientByKindDeltas": {
+        "received": {
+          "data": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "hello": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "result": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "subscribed": {
+            "bytes": 0,
+            "frames": 0
+          }
+        },
+        "sent": {
+          "credit": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "hello": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "request": {
+            "bytes": 0,
+            "frames": 0
+          },
+          "subscribe": {
+            "bytes": 0,
+            "frames": 0
+          }
+        }
+      }
+    }
+  },
+  "publicValidatedReceiverTotalsIncludingTeardown": {
+    "bytes": 233071,
+    "frames": 16
+  },
+  "readerAndBridgeCompletedJsonLineCounters": {
+    "bidirectionalByteCountsMatch": true,
+    "bridge": {
+      "byKind": {
+        "received": {
+          "close": {
+            "bytes": 161,
+            "frames": 1
+          },
+          "credit": {
+            "bytes": 460,
+            "frames": 2
+          },
+          "hello": {
+            "bytes": 371,
+            "frames": 1
+          },
+          "request": {
+            "bytes": 846,
+            "frames": 3
+          },
+          "subscribe": {
+            "bytes": 275,
+            "frames": 1
+          }
+        },
+        "sent": {
+          "data": {
+            "bytes": 114702,
+            "frames": 3
+          },
+          "hello": {
+            "bytes": 416,
+            "frames": 1
+          },
+          "result": {
+            "bytes": 115518,
+            "frames": 3
+          },
+          "subscribed": {
+            "bytes": 322,
+            "frames": 1
+          }
+        }
+      },
+      "byteScope": "completed-json-lines",
+      "receivedBytes": 2113,
+      "receivedFrames": 8,
+      "sentBytes": 230958,
+      "sentFrames": 8
+    },
+    "completedSenderBytes": 233071,
+    "completedSenderFrames": 16,
+    "physicalOrRawSocketDeliveryClaimed": false,
+    "reader": {
+      "byteScope": "completed-json-lines",
+      "receivedBytes": 230958,
+      "receivedFrames": 8,
+      "sentBytes": 2113,
+      "sentFrames": 8
+    },
+    "scope": "partial public application-channel counters from IPCServer, Client LineChannel, and Reader.inspect; write completion/validated receive, not raw wire or proof of peer parsing",
+    "terminalCloseOnlyDelta": {
+      "basis": "signed difference in completed public close-kind counters from pre-shutdown to post-shutdown",
+      "clientReceivedMinusBridgeSent": {
+        "bytes": 0,
+        "frames": 0
+      },
+      "clientSentMinusBridgeReceived": {
+        "bytes": 0,
+        "frames": 0
+      },
+      "physicalOrRawSocketDeliveryClaimed": false
+    },
+    "validatedReceiverBytes": 233071
+  },
+  "reportSha256": "3eecab053bcdae77a67fd8dffbde6162ad9800b0b1c17266f5df1aa5ff3638c9",
+  "rows": 2000,
+  "runnerPath": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.runner.py",
+  "runnerSha256": "8f28c1d30669a42bda37ccde190979edf8c96b4dd95abc455450f60c91a4a825",
+  "runnerSha256AfterProcess": "8f28c1d30669a42bda37ccde190979edf8c96b4dd95abc455450f60c91a4a825",
+  "sourceModuleMapSha256": "40eeb232f824777ad2569565db1e09cc3f5d6dd37e245ba075d293512442f2de",
+  "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+c06b33e058339d9d1d89ecf6844044867d816c58",
+  "sourcePin": {
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "meshSourceRoot": "/home/bryan/code/mesh-plus-working-set/src",
+    "observerArchiveSha256": "a1785e81f1f998a134cf23f283eb638f398b681395ab71a4c69948f26e78c47e",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "observerFilesVerified": 2223,
+    "observerManifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877"
+  },
+  "status": "pass",
+  "stderrPath": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.stderr.log",
+  "stdoutPath": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.6-runs/final-b176ac06-watch-copy-abba-v3-6-20261018/py311-2000-02-working.stdout.log",
+  "trialIndex": 13,
+  "variant": "working"
+}

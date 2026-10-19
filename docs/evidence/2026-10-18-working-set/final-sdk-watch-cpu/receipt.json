@@ -1,0 +1,263 @@
+{
+  "acceptanceChecks": {
+    "allCleanupBalanced": true,
+    "allExpectedDtoCopiesMatch": true,
+    "allProofsFresh": true,
+    "counterEqualityRole": "diagnostic only; not an acceptance gate or wire-byte measurement",
+    "runnerBytesStableAcrossExecution": true,
+    "senderReceiverTeardownCounterEqualityTrials": 11,
+    "senderReceiverTeardownCounterTrialCount": 16,
+    "trialPassCount": 16,
+    "uniqueExecutedRunnerSha256": "8f28c1d30669a42bda37ccde190979edf8c96b4dd95abc455450f60c91a4a825"
+  },
+  "date": "2026-10-18",
+  "design": {
+    "abbaOrder": [
+      "full",
+      "working",
+      "working",
+      "full"
+    ],
+    "cyclicGcDisabled": true,
+    "detachedLocalFacadeCopiesPerGeneration": 4,
+    "detachedLocalFacadeCopyCount": 192,
+    "excluded": [
+      "imports",
+      "constructor and warmup",
+      "native provider collection",
+      "canonical collector parent parsing",
+      "fixture and independent oracle",
+      "hash comparison",
+      "post-close audit and cleanup"
+    ],
+    "experimentalUnit": "three-generation process trial; median of two complete totals per variant includes every generation",
+    "freshProcessPerTrial": true,
+    "generationCount": 48,
+    "generationsPerTrial": 3,
+    "rows": [
+      500,
+      2000
+    ],
+    "selectedRowsByInputRows": {
+      "2000": 20,
+      "500": 4
+    },
+    "sharedLockPath": "/home/bryan/.cache/agent-active-feed-cpu.lock",
+    "timed": true,
+    "timingScope": "process CPU from generation through required native IPC, public Mesh watch/proof admission and facade copies; fixture/oracle/import/audit/cleanup excluded",
+    "trialCount": 16
+  },
+  "format": "agent-observer.working-set.final-sdk-watch-cpu.v1",
+  "hashManifest": {
+    "path": "SHA256SUMS",
+    "scope": "Hashes README.md, receipt.json, and every included file except SHA256SUMS itself. receipt.json packetFiles lists the included non-manifest files other than receipt.json to avoid recursion."
+  },
+  "historicalV35": {
+    "copiedExactFiles": [
+      "history/v3.5/README-v3.5.md",
+      "history/v3.5/failure-after-py314-500-00.json"
+    ],
+    "originalRowShapedReportAndCounterClassifier": "paths and hashes are in history/v3.5/preserved-artifact-pointers.json; original files remain in the private cache and were not copied",
+    "status": "failed measurement retained separately; not rewritten or promoted"
+  },
+  "interpreters": [
+    {
+      "name": "py314",
+      "path": "/home/bryan/code/mesh-plus/.venv/bin/python",
+      "version": "3.14.8"
+    },
+    {
+      "name": "py311",
+      "path": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+      "version": "3.11.17"
+    }
+  ],
+  "notQualified": [
+    "native provider collection or daemon behavior",
+    "installed service process or production artifact",
+    "SSH, external authentication, or deployed consumer",
+    "actual wire bytes or peer parsing",
+    "RSS, Python heap, physical memory limit, or global memory bound",
+    "production role selection or rollout"
+  ],
+  "packetFiles": {
+    "README.md": {
+      "bytes": 4631,
+      "sha256": "b85e10d590455da66bf48fe8b4c4cabf4ee9c1012bd8c7efbd926ba6b639ee91"
+    },
+    "history/v3.5/README-v3.5.md": {
+      "bytes": 2441,
+      "sha256": "b7b3c41fada83ea95914b72128a42ed19cd862a4bd3b0b010318f51ae53e0504"
+    },
+    "history/v3.5/failure-after-py314-500-00.json": {
+      "bytes": 865,
+      "sha256": "96c65effaf98cdd4ff450303cede06a2eec949082d2fd5046db396ad3e78e683"
+    },
+    "history/v3.5/preserved-artifact-pointers.json": {
+      "bytes": 1513,
+      "sha256": "ed5922883dfae385af247b9df5bd26c2543ffe9dd8274e76cc89b8d2554271a6"
+    },
+    "runners/run_v3_6_watch_copy_abba.py": {
+      "bytes": 22190,
+      "sha256": "3cbc62d5ee47370f1cbf62c6fae278981e07fc79f6be4022e4f28e0589e434d8"
+    },
+    "runners/sdk_pipeline_matrix_v3_6_watch_copy.py": {
+      "bytes": 107073,
+      "sha256": "8f28c1d30669a42bda37ccde190979edf8c96b4dd95abc455450f60c91a4a825"
+    },
+    "summaries/abba-manifest.json": {
+      "bytes": 13227,
+      "sha256": "9c57040c4b0841b105bcfb4724732d0da418ebc6c2a610b0cbfd843b303a0aeb"
+    },
+    "summaries/primary-cpu-reconciliation.json": {
+      "bytes": 1664,
+      "sha256": "9efcbe331b8025c1343ce399a4976f546a8ef179a7384162737ba19714759005"
+    },
+    "trials/py311-2000-01-full.runner.json": {
+      "bytes": 22589,
+      "sha256": "5c7b43cd0792f8de8bc6711cfd8ea0acb2418e82f3cd2bbb99ecbfbfdbe6439e"
+    },
+    "trials/py311-2000-02-working.runner.json": {
+      "bytes": 22933,
+      "sha256": "40507ec5db664ffffa152b569e9b2693f12f48ce4c8fb33ec28d913968df605c"
+    },
+    "trials/py311-2000-03-working.runner.json": {
+      "bytes": 22933,
+      "sha256": "17e41c990b25d9684049456709ce6f4d3a9734eb822ab478d9e08369a2b4d157"
+    },
+    "trials/py311-2000-04-full.runner.json": {
+      "bytes": 22589,
+      "sha256": "6d605d572fe02e90a0cfc409f80ab575c551cdeda1237b76885ec2f80f4d2cab"
+    },
+    "trials/py311-500-01-full.runner.json": {
+      "bytes": 21893,
+      "sha256": "5b37ac2a8698c7b102f5caeeff466d3676365a01068baebecac3f0eb76ed064c"
+    },
+    "trials/py311-500-02-working.runner.json": {
+      "bytes": 22913,
+      "sha256": "a215872105412367635a54667b0e441e31a5559a19a663a84fb3c2a407dee677"
+    },
+    "trials/py311-500-03-working.runner.json": {
+      "bytes": 22915,
+      "sha256": "56ee8c7484b837308afa481a7bbd8ec7be83c4b84c8e85e3f162076085a15d48"
+    },
+    "trials/py311-500-04-full.runner.json": {
+      "bytes": 21804,
+      "sha256": "3d47d3870f8d8172eb01cf752cc1973024584aef0c7ca332e2555c543ca08d84"
+    },
+    "trials/py314-2000-01-full.runner.json": {
+      "bytes": 22507,
+      "sha256": "fceffafc3965517807c20e401eac9ab6d575399e1836b94812df4e4f29736329"
+    },
+    "trials/py314-2000-02-working.runner.json": {
+      "bytes": 22695,
+      "sha256": "d4562b262e404ab9b5038d869d2649c00b535c21218d7645239ad62a38c7f8c6"
+    },
+    "trials/py314-2000-03-working.runner.json": {
+      "bytes": 22695,
+      "sha256": "62c710a00e9fee6f2100e1a329af4f468337d4b055c8c370d093be23979d1318"
+    },
+    "trials/py314-2000-04-full.runner.json": {
+      "bytes": 22507,
+      "sha256": "c34557410ff14a4cf54ed9c2459617b61926a8679c4a84a5c528b7ab6177f5a6"
+    },
+    "trials/py314-500-01-full.runner.json": {
+      "bytes": 21567,
+      "sha256": "8cd68513afc705ef6dc554db441fe662b76ac05dce37eec2b744e1366d6bb4d4"
+    },
+    "trials/py314-500-02-working.runner.json": {
+      "bytes": 22677,
+      "sha256": "4c2553347676b2536d55cc3d029287a9755400dea13d8d036827678bcd4cbd5f"
+    },
+    "trials/py314-500-03-working.runner.json": {
+      "bytes": 22677,
+      "sha256": "5dbcff1508ed1d9c3be00423b78f9dbdde830b1d5931938ea3872782bc9b350f"
+    },
+    "trials/py314-500-04-full.runner.json": {
+      "bytes": 21566,
+      "sha256": "3c0bedb073d0aa21f0148f24bd8cc67507cd2aaae0531b1681725bb67e22eb71"
+    }
+  },
+  "primaryReconciliation": {
+    "loadedModuleRefsVerified": 920,
+    "perTrialReportHashesRetainedIn": "summaries/abba-manifest.json",
+    "reportCount": 16,
+    "rowShapedReportsCopied": false,
+    "runnerCopiesVerified": 16,
+    "status": "pass",
+    "wholeTrialSummaries": [
+      {
+        "cell": "py314-500",
+        "fullTrialTotalsMs": [
+          2124.175428,
+          2154.198029
+        ],
+        "medianFullThreeGenerationMs": 2139.1867285,
+        "medianWorkingThreeGenerationMs": 350.57106,
+        "percentChange": -83.61194675857863,
+        "workingTrialTotalsMs": [
+          347.25618,
+          353.88594
+        ]
+      },
+      {
+        "cell": "py314-2000",
+        "fullTrialTotalsMs": [
+          9248.705611000001,
+          9368.546258999999
+        ],
+        "medianFullThreeGenerationMs": 9308.625935,
+        "medianWorkingThreeGenerationMs": 1306.468113,
+        "percentChange": -85.96497354042619,
+        "workingTrialTotalsMs": [
+          1304.297758,
+          1308.638468
+        ]
+      },
+      {
+        "cell": "py311-500",
+        "fullTrialTotalsMs": [
+          2255.930817,
+          2258.0856590000003
+        ],
+        "medianFullThreeGenerationMs": 2257.0082380000003,
+        "medianWorkingThreeGenerationMs": 397.947015,
+        "percentChange": -82.36838447020325,
+        "workingTrialTotalsMs": [
+          399.78059,
+          396.11344
+        ]
+      },
+      {
+        "cell": "py311-2000",
+        "fullTrialTotalsMs": [
+          9914.566261,
+          9995.472269
+        ],
+        "medianFullThreeGenerationMs": 9955.019264999999,
+        "medianWorkingThreeGenerationMs": 1508.6068129999999,
+        "percentChange": -84.84576701620276,
+        "workingTrialTotalsMs": [
+          1516.701888,
+          1500.511738
+        ]
+      }
+    ]
+  },
+  "source": {
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "meshSourcePrivatePath": "/home/bryan/code/mesh-plus-working-set/src",
+    "observerArchivePrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/final-source-b176ac06.tar",
+    "observerArchiveSha256": "a1785e81f1f998a134cf23f283eb638f398b681395ab71a4c69948f26e78c47e",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "observerFilesVerified": 2223,
+    "observerManifestPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/final-source-b176ac06-manifest.json",
+    "observerManifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877",
+    "sourceModuleMapHashes": [
+      "40eeb232f824777ad2569565db1e09cc3f5d6dd37e245ba075d293512442f2de",
+      "6c6c988194f5bb3e480005474ca3a9885951a16e48922e306b2b7cd103a81792"
+    ],
+    "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+c06b33e058339d9d1d89ecf6844044867d816c58"
+  },
+  "status": "reviewable_source_evidence"
+}

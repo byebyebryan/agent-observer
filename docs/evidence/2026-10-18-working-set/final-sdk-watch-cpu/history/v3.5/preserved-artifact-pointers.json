@@ -1,0 +1,27 @@
+{
+  "artifacts": [
+    {
+      "path": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.5-runs/final-b176ac06-watch-copy-abba-20261018/py314-500-01-full.json",
+      "role": "v3.5_saved_trial_used_by_counter_classifier",
+      "sha256": "a811549d5740433c19712ed69e820fc8b9c03957be11e30a6a2a5d9c77ac54f1"
+    },
+    {
+      "path": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/test_v3_6_counter_classifier.py",
+      "role": "v3.6_counter_classifier_test_over_saved_v3.5_report",
+      "sha256": "142ff457d61b6223a76e3bb8cb17eccc982cbbd56514d26646e2edf0f69d45d6"
+    },
+    {
+      "path": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.5-runs/final-b176ac06-watch-copy-abba-20261018/failure-after-py314-500-00.json",
+      "role": "v3.5_abba_failure_before_any_trial",
+      "sha256": "96c65effaf98cdd4ff450303cede06a2eec949082d2fd5046db396ad3e78e683"
+    },
+    {
+      "path": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/README-v3.5.md",
+      "role": "v3.5_readme",
+      "sha256": "b7b3c41fada83ea95914b72128a42ed19cd862a4bd3b0b010318f51ae53e0504"
+    }
+  ],
+  "format": "agent-observer.working-set.sdk-pipeline-matrix.v3.5-preserved-pointers.v1",
+  "note": "The row-shaped V3.5 report and its harness test remain at the original private paths; they are referenced by hash and not copied into this packet.",
+  "status": "original_private_artifacts_preserved_unmodified"
+}
