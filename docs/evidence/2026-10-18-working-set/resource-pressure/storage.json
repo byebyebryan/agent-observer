@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "originalPath": "reports/final3-610afaac/py311-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6435166,
+      "rawSha256": "733062dc1fe58f7a5265c68b1b76337846651efac970aa0d1aa0d3e72b73020c",
+      "storedBytes": 101838,
+      "storedPath": "reports/final3-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "3b8e096380e723998afb7488e40fd3aabbcb39ff97c927c8f642dbc3c731414e"
+    },
+    {
+      "originalPath": "reports/final3-610afaac/py314-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6435085,
+      "rawSha256": "9bc181e35713af855425aca2994993c9853adb3335a2cdb1a4882d9d80a9ecc8",
+      "storedBytes": 101812,
+      "storedPath": "reports/final3-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "419848302fa2ba06fe247ab7aa6fb808079f7fd95262d9f7a58ece36957764ea"
+    },
+    {
+      "originalPath": "reports/final4-610afaac/py311-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6437794,
+      "rawSha256": "d42a10933ac094e754b83c68e0e6522f6fddb011b65edbc00cf4156e08243015",
+      "storedBytes": 103076,
+      "storedPath": "reports/final4-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "12bf8fb8dee6b296c9881a987bea074afd3fed01ce7a196409c30350e0924f2d"
+    },
+    {
+      "originalPath": "reports/final4-610afaac/py314-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6437714,
+      "rawSha256": "09b7302e6666ca160a9a075bb9cd5464da85749f7a923505a9dfc638b453e057",
+      "storedBytes": 103124,
+      "storedPath": "reports/final4-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "3e4ae379d44162d232158f1c486bbe1bd2621b5f542e7c8f8cd8ff8e6bc65a69"
+    },
+    {
+      "originalPath": "reports/final5-610afaac/py311-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6437794,
+      "rawSha256": "8d3a617b5a03077fae6d8f93480d4a5bce5e57cf5de2e7a104e0e232395e1bce",
+      "storedBytes": 103282,
+      "storedPath": "reports/final5-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "213c630eca8902ba49f1cd4acfeffba6faff44a24e9ed224fa3646c5c34127af"
+    },
+    {
+      "originalPath": "reports/final5-610afaac/py314-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6437714,
+      "rawSha256": "20ee65284195d288db8c6538a3c05b34e970e065ef65a0e03c647467f5ae5be2",
+      "storedBytes": 103219,
+      "storedPath": "reports/final5-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "6e433e33db45ae09ea26cc89546b8abcbd4920237eedbebc5fe09de89c5580f0"
+    },
+    {
+      "originalPath": "reports/final6-610afaac/py311-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6438858,
+      "rawSha256": "3026b6384a3dd5730fa28dde7a019af53c01bd0f3a27233a82c8361b45fcf46e",
+      "storedBytes": 103373,
+      "storedPath": "reports/final6-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "272d7156a1a7ea1874889120c7654783666047d76929e59f9dcc9379a0481164"
+    },
+    {
+      "originalPath": "reports/final6-610afaac/py314-n2000-long-title-cwd-slow-pressure.json",
+      "rawBytes": 6438777,
+      "rawSha256": "f5becf44c9eb79ad5abda380945fb8c57117e308df69ef88d4bd7f36e5d5b70a",
+      "storedBytes": 103337,
+      "storedPath": "reports/final6-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz",
+      "storedSha256": "c34c5e7a7b5bac3253737214b877b11e2795aa104597449729f60160ba410fd3"
+    }
+  ],
+  "privateRawBackup": "/home/bryan/.cache/agent-observer-working-set-20261018/review-checkpoint-610afaa/pressure-raw",
+  "schema": "lossless-evidence-storage-v1",
+  "scope": "Generated report JSON is gzip-compressed without changing its original bytes. Original summary report hashes refer to the decompressed bytes. Older runner versions were not retained. No tracked historical evidence changed."
+}

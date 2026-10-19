@@ -1,0 +1,205 @@
+{
+  "artifactCount": 44,
+  "artifacts": {
+    "docs/evidence/2026-10-18-working-set/resource-pressure/README.md": {
+      "bytes": 8692,
+      "sha256": "fb3de7970716853a1888727de9c7775b99984d587af77e8b30359a5943f1c8f2"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/pressure_case.py": {
+      "bytes": 52799,
+      "sha256": "30629f5035459e37fbac1132247e9171f1f815a9f77beb8f30fdf6920804ed81"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1441,
+      "sha256": "dbf36bca0dfc556fea5b39ed7a7b3761b1319be29c300b74d99eb8c747ba5e9a"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1373,
+      "sha256": "bada7ee5d577cb828096442670097dc73d84b87fdc3539858a041de4f363b358"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final-610afaac/summary.json": {
+      "bytes": 1055,
+      "sha256": "395fa24b405f05b9cfa00b23bcc998ae00b2d1c9e291053c1f5c22db271944f5"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final2-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 2685,
+      "sha256": "06c2024aee06ccea3c8427510046dc51f6dd8f13e15938c6846b55e7f402262f"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final2-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 2705,
+      "sha256": "5bbcb2cd5cbbd91f88be2264e26f97c66dcc26443b26271fdcbec7428850aab5"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final2-610afaac/summary.json": {
+      "bytes": 1055,
+      "sha256": "59c27a7cb910195ed8c890e44290f9745d65d7fc399290a696d6c8e9ebcb805e"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 101838,
+      "sha256": "3b8e096380e723998afb7488e40fd3aabbcb39ff97c927c8f642dbc3c731414e"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1973,
+      "sha256": "7928f531b7f89d80e927a066b6969213fdafeddbc3d7d8252db649746bbbce10"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 101812,
+      "sha256": "419848302fa2ba06fe247ab7aa6fb808079f7fd95262d9f7a58ece36957764ea"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1893,
+      "sha256": "e965e134a232188a7252ffa0c22eab2c2738cdc21a14c4adec689fa63517b4dd"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/summary.json": {
+      "bytes": 7724,
+      "sha256": "0da5bf8de1ad3f0e02eb831abda4ed9b46f673be3e9695971fcf619d13ac6906"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final4-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103076,
+      "sha256": "12bf8fb8dee6b296c9881a987bea074afd3fed01ce7a196409c30350e0924f2d"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final4-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1401,
+      "sha256": "4affe4a33464a88795a964c912c6b6a5c55ec0e61f6218c08c8a73a4188c31f3"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final4-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103124,
+      "sha256": "3e4ae379d44162d232158f1c486bbe1bd2621b5f542e7c8f8cd8ff8e6bc65a69"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final4-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1321,
+      "sha256": "9df0f962ea7a2616027134623b976cb26c4190e19951509d71b15bca39341ed4"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final4-610afaac/summary.json": {
+      "bytes": 5037,
+      "sha256": "d6ecf005a6a021f845a206912f142d3928f0de91cedad397a0de42bcd009aec1"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final5-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103282,
+      "sha256": "213c630eca8902ba49f1cd4acfeffba6faff44a24e9ed224fa3646c5c34127af"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final5-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1401,
+      "sha256": "45b7cbb36485c58e3bf5635fbc36a8cb30bdcee4bd4f14356cd5ebb5797fc8ef"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final5-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103219,
+      "sha256": "6e433e33db45ae09ea26cc89546b8abcbd4920237eedbebc5fe09de89c5580f0"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final5-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1321,
+      "sha256": "1c8958b99492ad8e81276339ddab1ebbdac2a02270846e74ad1522199e2635c9"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final5-610afaac/summary.json": {
+      "bytes": 5311,
+      "sha256": "e0d8b63037f5fc9b456ecdf8629cef954e14a6b5819ba341e432d06c0b1dbc81"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final6-610afaac/py311-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103373,
+      "sha256": "272d7156a1a7ea1874889120c7654783666047d76929e59f9dcc9379a0481164"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final6-610afaac/py311-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1401,
+      "sha256": "22f4d165de0dfa08a8ce696a96bb490732a4128f0a28fc72e970453296acb61b"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final6-610afaac/py314-n2000-long-title-cwd-slow-pressure.json.gz": {
+      "bytes": 103337,
+      "sha256": "c34c5e7a7b5bac3253737214b877b11e2795aa104597449729f60160ba410fd3"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final6-610afaac/py314-n2000-long-title-cwd-slow-pressure.log": {
+      "bytes": 1321,
+      "sha256": "0587a0d99b9c2c107338a58c1d2c7b4af1dcf335a668bbd5bae9b524fa34f5be"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/reports/final6-610afaac/summary.json": {
+      "bytes": 5311,
+      "sha256": "66064402e0fc2e3f523dd8b39750d3f96d36a5c929cfad94c141730ca7097e9a"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/run_pressure.py": {
+      "bytes": 9633,
+      "sha256": "9cf4f36bea56d4095084e331f78bdabc0d4dd438f0f0014a6115a9608a25dee0"
+    },
+    "docs/evidence/2026-10-18-working-set/resource-pressure/storage.json": {
+      "bytes": 3908,
+      "sha256": "6fdd53c6ecde3e15dd90a61ae55bc36734d49525e0eb52d984dd125e01fa9216"
+    },
+    "docs/evidence/2026-10-18-working-set/review-checkpoint/README.md": {
+      "bytes": 2664,
+      "sha256": "182c1e181fe3f0fa5dba9bfadc761e0bc37c25160e6d8c0cc3552f12257dd4d1"
+    },
+    "docs/evidence/2026-10-18-working-set/review-checkpoint/canonical.log": {
+      "bytes": 196260,
+      "sha256": "2ba0fa91f5f0484a58c8aae6342b5baed3a9e78a11b5bd6eb11bc316cbdccb60"
+    },
+    "docs/evidence/2026-10-18-working-set/review-checkpoint/verification.json": {
+      "bytes": 756,
+      "sha256": "c4454122d92dba6501466941ddf794d8702f81da172ae72ebc07b6bd54971a10"
+    },
+    "docs/evidence/2026-10-18-working-set/review-checkpoint/verify_saved.py": {
+      "bytes": 8497,
+      "sha256": "4fbe6ab63febf11777411a2d28a64e344799de290e43e139ee828eb6a083f155"
+    },
+    "docs/evidence/2026-10-18-working-set/support-density-model/README.md": {
+      "bytes": 9239,
+      "sha256": "0e1722bd1f61bf496b9031338c4161c105536cc63c059a08383a54cd0872c3c9"
+    },
+    "docs/evidence/2026-10-18-working-set/support-density-model/run_support_density.py": {
+      "bytes": 25930,
+      "sha256": "7149fb872a7a3a341385378c3c52aa02ce7002ec0fdde92cf100513e2916c3b6"
+    },
+    "docs/evidence/2026-10-18-working-set/support-density-model/support-density-311.json": {
+      "bytes": 12564,
+      "sha256": "0304e1f1c7868650d630fef16def40631eef73696782995454b5611b13658d89"
+    },
+    "docs/evidence/2026-10-18-working-set/support-density-model/support-density-314.json": {
+      "bytes": 12482,
+      "sha256": "cabeed3e50e13cb1fd382edc155e484db351d040e57effb5e53d9e2e152a7444"
+    },
+    "docs/evidence/2026-10-18-working-set/wire-density-source/README.md": {
+      "bytes": 3880,
+      "sha256": "c4d47a29d381dd7d0c520361c39f0bad914299e5b58eb509dcbba89040fc2b69"
+    },
+    "docs/evidence/2026-10-18-working-set/wire-density-source/run_wire_density.py": {
+      "bytes": 5662,
+      "sha256": "de93076d55ba10e1090cddf967cc2b60a15812ea43f1ca787a70840a92181573"
+    },
+    "docs/evidence/2026-10-18-working-set/wire-density-source/wire-311.json": {
+      "bytes": 11138,
+      "sha256": "433f87ea6a6a3a0ea61676cce94450569e0490b0403e93762ac3f81484b93cbf"
+    },
+    "docs/evidence/2026-10-18-working-set/wire-density-source/wire-314.json": {
+      "bytes": 11137,
+      "sha256": "f2bb8b983c48a84a2acc2a9f74206cd1f59153ccd7f7492d0247f0d5119eacac"
+    },
+    "docs/working-set-projection-plan.md": {
+      "bytes": 19482,
+      "sha256": "1d0cdae3ae4c61af077b19095e7be48d0dbecafceabcc1adc0dfa885e684dea6"
+    },
+    "docs/working-set-qualification-status.md": {
+      "bytes": 8192,
+      "sha256": "e5ea23f3cb37ee56bf470480a7ae94f1b8a81e06c5094e2b8f7f58b5dab4bfc8"
+    }
+  },
+  "gate": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<immutable-mesh-d483351d>/src:<observer-root> /home/bryan/code/mesh-plus/.venv/bin/python -B ./scripts/check",
+    "exitCode": 0,
+    "markdownFiles": 233,
+    "optionalMeshEvidenceRevision": "d483351d302bdc090f62bcaa18029788b7ec75be",
+    "optionalMeshRuntimeRevision": "03a681f95a609b20eaa20134f7241d3d14d441a6",
+    "seconds": 39.786,
+    "skips": 0,
+    "tests": 1072
+  },
+  "newExperimentsStartedAfterCheckpointRequest": false,
+  "openGates": [
+    "candidate metadata representation and selected-density capacity",
+    "Mesh registration and ordinary SDK Reader admission",
+    "inclusive transient encoded and physical heap/RSS ownership",
+    "complete workload CPU and wire targets",
+    "independent native/installed pair and transport qualification"
+  ],
+  "productionPathsMatchSourceRevision": true,
+  "runtimeRevision": "bb7b8aab91574fc3a325325ac8debf21b525712a",
+  "savedVerification": "docs/evidence/2026-10-18-working-set/review-checkpoint/verification.json",
+  "schema": "working-set-overall-review-checkpoint-v1",
+  "scope": "Review checkpoint, documentation and saved evidence only. No production/source/test/Mesh change, native experiment, SDK registration, deployment or adoption.",
+  "sourceRevision": "610afaac658903ddd6c466c793f9856b45e9f03e"
+}

@@ -1,0 +1,303 @@
+{
+  "exportsSha256": "71574437196fc8b026d7fea63b1467281dd30dabe1ddf821649b2f06c06a9808",
+  "fixtureHelperPath": "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/performance-source/read_matched.py",
+  "fixtureHelperSha256": "ccf91435e078fc5c1aadc5a1070e7e1973bdb06265351a8e1508b07c3644895b",
+  "gcEnabled": false,
+  "interpreterSetupSha256": "1d235fe82c27d7b46b1664e91701821b8cab18a5d407a9c1a454c35e6bc07192",
+  "loaded": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "sha256": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "sha256": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "sha256": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "sha256": "b15c61d5fc3c83e64c1b288e21eb874fb66b3d36f5992b438b60f66b1dd0fa60"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    }
+  },
+  "pythonEntrypoint": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+  "pythonExecutable": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+  "pythonVersion": "3.11.17",
+  "results": [
+    {
+      "accepted": true,
+      "activeIdentityCount": 25,
+      "activeRows": 25,
+      "actualFrameInputSha256": "2d949c04af95c791a0a12d0cc0d537cf0d128d1318b3f006cad675ab978a77b3",
+      "actualSelectedIdentityCount": 50,
+      "completeExactDTOEquality": true,
+      "coverage": "complete",
+      "coverageReason": "complete_native_census",
+      "exactDTOEqualityChecked": true,
+      "expectedSelectedIdentityCount": 50,
+      "expectedTrackingCapacityRefusal": false,
+      "fullNativeFrameBytesWithLf": 621770,
+      "fullOriginalRowArrayBytes": 619426,
+      "independentlySelectedOriginalRowArrayBytes": 65026,
+      "inputCanonicalBytes": 620873,
+      "inputSha256": "2d949c04af95c791a0a12d0cc0d537cf0d128d1318b3f006cad675ab978a77b3",
+      "projectionPresent": true,
+      "recentOnlyRows": 25,
+      "returnedNativeScopeCanonicalBytes": 97411,
+      "rows": 500,
+      "scope": {
+        "combinedTrackingLimitBytes": 1048576,
+        "currentCombinedTrackingBytes": 348200,
+        "currentGuardBytes": 223462,
+        "currentPriorLedgerCanonicalBytes": 26301,
+        "currentScopeArrayBytes": 97413,
+        "duplicatedSupportCanonicalMapBytes": 73425,
+        "modelQualification": "arithmetic only; candidate grammar is not frozen or admitted",
+        "modelRejectVectors": [
+          {
+            "name": "bool_reference",
+            "rejected": true
+          },
+          {
+            "name": "out_of_range_reference",
+            "rejected": true
+          },
+          {
+            "name": "cross_scope_reference_form",
+            "rejected": true
+          },
+          {
+            "name": "duplicate_table_entry",
+            "rejected": true
+          },
+          {
+            "name": "unreferenced_table_entry",
+            "rejected": true
+          },
+          {
+            "name": "noncanonical_table_order",
+            "rejected": true
+          }
+        ],
+        "modeledCanonicalBytes": 24290,
+        "modeledCombinedTrackingBytesArithmeticOnly": 275079,
+        "modeledCombinedWithinLimitArithmeticOnly": true,
+        "modeledScopeArrayCanonicalBytes": 24292,
+        "modeledWholeNativeFrameBytesWithLf": 90634,
+        "nativeFrameByteDelta": 73121,
+        "originalCanonicalBytes": 97411,
+        "roundTripCanonicalBytesEqual": true,
+        "roundTripObjectEqual": true,
+        "scopeByteDelta": 73121,
+        "supportOccurrenceCanonicalMapBytes": 73692,
+        "supportOccurrenceCount": 276,
+        "supportTableCount": 1,
+        "supportTableEntryCanonicalMapBytes": 267,
+        "tablePreservesEveryUniqueOriginalMap": true,
+        "uniqueSupportCanonicalMapBytes": 267,
+        "uniqueSupportTupleCount": 1
+      },
+      "selectedRows": 50,
+      "workingKind": "status",
+      "workingNativeFrameBytesWithLf": 163755
+    },
+    {
+      "accepted": true,
+      "activeIdentityCount": 50,
+      "activeRows": 50,
+      "actualFrameInputSha256": "94c4fe357b9b77a469a6285a65e235e199268a3a13e93595330b0d79da66cd7b",
+      "actualSelectedIdentityCount": 100,
+      "completeExactDTOEquality": true,
+      "coverage": "complete",
+      "coverageReason": "complete_native_census",
+      "exactDTOEqualityChecked": true,
+      "expectedSelectedIdentityCount": 100,
+      "expectedTrackingCapacityRefusal": false,
+      "fullNativeFrameBytesWithLf": 625195,
+      "fullOriginalRowArrayBytes": 622851,
+      "independentlySelectedOriginalRowArrayBytes": 130051,
+      "inputCanonicalBytes": 624298,
+      "inputSha256": "94c4fe357b9b77a469a6285a65e235e199268a3a13e93595330b0d79da66cd7b",
+      "projectionPresent": true,
+      "recentOnlyRows": 50,
+      "returnedNativeScopeCanonicalBytes": 194086,
+      "rows": 500,
+      "scope": {
+        "combinedTrackingLimitBytes": 1048576,
+        "currentCombinedTrackingBytes": 471175,
+        "currentGuardBytes": 223462,
+        "currentPriorLedgerCanonicalBytes": 52601,
+        "currentScopeArrayBytes": 194088,
+        "duplicatedSupportCanonicalMapBytes": 146850,
+        "modelQualification": "arithmetic only; candidate grammar is not frozen or admitted",
+        "modelRejectVectors": [
+          {
+            "name": "bool_reference",
+            "rejected": true
+          },
+          {
+            "name": "out_of_range_reference",
+            "rejected": true
+          },
+          {
+            "name": "cross_scope_reference_form",
+            "rejected": true
+          },
+          {
+            "name": "duplicate_table_entry",
+            "rejected": true
+          },
+          {
+            "name": "unreferenced_table_entry",
+            "rejected": true
+          },
+          {
+            "name": "noncanonical_table_order",
+            "rejected": true
+          }
+        ],
+        "modeledCanonicalBytes": 47815,
+        "modeledCombinedTrackingBytesArithmeticOnly": 324904,
+        "modeledCombinedWithinLimitArithmeticOnly": true,
+        "modeledScopeArrayCanonicalBytes": 47817,
+        "modeledWholeNativeFrameBytesWithLf": 179184,
+        "nativeFrameByteDelta": 146271,
+        "originalCanonicalBytes": 194086,
+        "roundTripCanonicalBytesEqual": true,
+        "roundTripObjectEqual": true,
+        "scopeByteDelta": 146271,
+        "supportOccurrenceCanonicalMapBytes": 147117,
+        "supportOccurrenceCount": 551,
+        "supportTableCount": 1,
+        "supportTableEntryCanonicalMapBytes": 267,
+        "tablePreservesEveryUniqueOriginalMap": true,
+        "uniqueSupportCanonicalMapBytes": 267,
+        "uniqueSupportTupleCount": 1
+      },
+      "selectedRows": 100,
+      "workingKind": "status",
+      "workingNativeFrameBytesWithLf": 325455
+    },
+    {
+      "accepted": true,
+      "activeIdentityCount": 50,
+      "activeRows": 50,
+      "actualFrameInputSha256": "88a84606bacd1862eb443f4e99689f4d9b5555eed0d20d7b5e8affed98b464ac",
+      "actualSelectedIdentityCount": 0,
+      "completeExactDTOEquality": null,
+      "coverage": "unavailable",
+      "coverageReason": "projection_tracking_capacity",
+      "exactDTOEqualityChecked": false,
+      "expectedSelectedIdentityCount": 100,
+      "expectedTrackingCapacityRefusal": true,
+      "fullNativeFrameBytesWithLf": 2473195,
+      "fullOriginalRowArrayBytes": 2470851,
+      "hypotheticalFullSelectedScope": {
+        "constructed": false,
+        "note": "No full 100-member scope was built inside the callback or inferred from its partial local candidate."
+      },
+      "independentlySelectedOriginalRowArrayBytes": 130051,
+      "inputCanonicalBytes": 2472298,
+      "inputSha256": "88a84606bacd1862eb443f4e99689f4d9b5555eed0d20d7b5e8affed98b464ac",
+      "preFailureLocals": {
+        "candidateCombinedFixedReserveBytes": 1024,
+        "candidateCombinedLimitBytes": 1048576,
+        "candidateCombinedLimitHeadroomBytes": 7973,
+        "candidateCombinedTrackingBytes": 1040603,
+        "candidateIdentityLimit": 4096,
+        "candidateLedgerCanonicalBytes": 31035,
+        "candidateLedgerEntries": 59,
+        "candidateRows": 2000,
+        "candidateTrackedIdentities": 2000,
+        "candidateTrackingBytesBeforeScopeCheck": 1049426,
+        "candidateTrackingCapacityAlreadyExceeded": true,
+        "candidateTrackingGuardLedgerStaticBytes": 930189,
+        "candidateTrackingLimitOverByBytes": 850,
+        "candidateTrackingPerMemberMetadataAndEntryBytes": 119237,
+        "candidateTrackingStaticReserveBytes": 8192,
+        "guardBytes": 890962,
+        "guardCount": 2000,
+        "partialBodies": 59,
+        "partialMembers": 59,
+        "partialNonmembers": 0,
+        "partialUncertain": 0,
+        "selectedCandidateScopeArrayBytes": 117582,
+        "selectedCandidateScopeObjectBytes": 117580,
+        "selectedCandidateSupportDuplicateBytes": 92115,
+        "selectedCandidateSupportOccurrences": 346,
+        "selectedCandidateUniqueSupportTuples": 1
+      },
+      "projectionPresent": true,
+      "recentOnlyRows": 50,
+      "returnedNativeScopeCanonicalBytes": 479,
+      "rows": 2000,
+      "selectedRows": 100,
+      "workingKind": "status",
+      "workingNativeFrameBytesWithLf": 1799
+    }
+  ],
+  "runnerSha256": "7149fb872a7a3a341385378c3c52aa02ce7002ec0fdde92cf100513e2916c3b6",
+  "scope": "stdlib arithmetic representation model over strictly parsed synthetic source frames; not frozen-schema, admission, resource, CPU, heap, RSS or provider qualification",
+  "seedFileSha256": "92c1d88dd8f2b37d513d8383b88f33821686524886e52b79f9b814429b60fad9",
+  "sourceExportVerifiedFiles": 243,
+  "sourceRevision": "610afaac658903ddd6c466c793f9856b45e9f03e",
+  "sourceRoot": "/home/bryan/.cache/agent-observer-working-set-20261018/cadence-cost-610afaa/candidate"
+}

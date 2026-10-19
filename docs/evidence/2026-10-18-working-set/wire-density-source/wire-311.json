@@ -1,0 +1,289 @@
+{
+  "fixtureHelperSha256": "ccf91435e078fc5c1aadc5a1070e7e1973bdb06265351a8e1508b07c3644895b",
+  "gcEnabled": false,
+  "loaded": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "sha256": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "sha256": "ab1aef0cb076bd4e84009d9128fd06db0a26f69f8ca61f6b07cf70d6fa07a0c1"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "sha256": "ccabca9d318669b5ebb14b2218978b1ac33633272eebbd0f6fb7c8e7997a4626"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "sha256": "b15c61d5fc3c83e64c1b288e21eb874fb66b3d36f5992b438b60f66b1dd0fa60"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    }
+  },
+  "pythonVersion": "3.11.17",
+  "results": [
+    {
+      "byteReductionPercent": 85.62299811634173,
+      "complete": true,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 125819,
+      "fullOriginalRowBytes": 123475,
+      "inputBytes": 124922,
+      "inputSha256": "516c6de2e86162185ad07a2ced24ecb8c3bc49138b58e100da7b757f4c213e77",
+      "reason": "complete_native_census",
+      "rows": 100,
+      "selectedBodyRatio": 0.05211581291759466,
+      "selectedOriginalRowBytes": 6435,
+      "selectedRows": 5,
+      "selectionPercent": 5,
+      "workingNativeFrameBytes": 18089
+    },
+    {
+      "byteReductionPercent": 72.75211914758773,
+      "complete": true,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 126230,
+      "fullOriginalRowBytes": 123886,
+      "inputBytes": 125333,
+      "inputSha256": "cd8aed952b04bee63b722533a951237c92e68607804f135b32f66f480031bbe6",
+      "reason": "complete_native_census",
+      "rows": 100,
+      "selectedBodyRatio": 0.10498361396767997,
+      "selectedOriginalRowBytes": 13006,
+      "selectedRows": 10,
+      "selectionPercent": 10,
+      "workingNativeFrameBytes": 34395
+    },
+    {
+      "byteReductionPercent": 47.417562935823184,
+      "complete": true,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 126915,
+      "fullOriginalRowBytes": 124571,
+      "inputBytes": 126018,
+      "inputSha256": "b504658ee4f275aba76af7ed14a74317b57c9f4a04fad09485b79a2e2d62e91e",
+      "reason": "complete_native_census",
+      "rows": 100,
+      "selectedBodyRatio": 0.20880461744707837,
+      "selectedOriginalRowBytes": 26011,
+      "selectedRows": 20,
+      "selectionPercent": 20,
+      "workingNativeFrameBytes": 66735
+    },
+    {
+      "byteReductionPercent": 37.36014906949501,
+      "complete": true,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 127189,
+      "fullOriginalRowBytes": 124845,
+      "inputBytes": 126292,
+      "inputSha256": "bd2f25f2d117d3ca22837bbf216967612ade9e60465255f48ec93eedf2f3f1bf",
+      "reason": "complete_native_census",
+      "rows": 100,
+      "selectedBodyRatio": 0.2500140173815531,
+      "selectedOriginalRowBytes": 31213,
+      "selectedRows": 24,
+      "selectionPercent": 24,
+      "workingNativeFrameBytes": 79671
+    },
+    {
+      "byteReductionPercent": 86.64992443414319,
+      "complete": true,
+      "component50PercentTargetApplies": true,
+      "component50PercentTargetPass": true,
+      "fullNativeFrameBytes": 619989,
+      "fullOriginalRowBytes": 617645,
+      "inputBytes": 619092,
+      "inputSha256": "606cad65647875d70ba212b486f2cd240ad78e009e9d5165e5d26a8836079524",
+      "reason": "complete_native_census",
+      "rows": 500,
+      "selectedBodyRatio": 0.05253017510058367,
+      "selectedOriginalRowBytes": 32445,
+      "selectedRows": 25,
+      "selectionPercent": 5,
+      "workingNativeFrameBytes": 82769
+    },
+    {
+      "byteReductionPercent": 73.66309085353105,
+      "complete": true,
+      "component50PercentTargetApplies": true,
+      "component50PercentTargetPass": true,
+      "fullNativeFrameBytes": 621770,
+      "fullOriginalRowBytes": 619426,
+      "inputBytes": 620873,
+      "inputSha256": "2d949c04af95c791a0a12d0cc0d537cf0d128d1318b3f006cad675ab978a77b3",
+      "reason": "complete_native_census",
+      "rows": 500,
+      "selectedBodyRatio": 0.10497783431757789,
+      "selectedOriginalRowBytes": 65026,
+      "selectedRows": 50,
+      "selectionPercent": 10,
+      "workingNativeFrameBytes": 163755
+    },
+    {
+      "byteReductionPercent": 47.94344164620639,
+      "complete": true,
+      "component50PercentTargetApplies": true,
+      "component50PercentTargetPass": false,
+      "fullNativeFrameBytes": 625195,
+      "fullOriginalRowBytes": 622851,
+      "inputBytes": 624298,
+      "inputSha256": "94c4fe357b9b77a469a6285a65e235e199268a3a13e93595330b0d79da66cd7b",
+      "reason": "complete_native_census",
+      "rows": 500,
+      "selectedBodyRatio": 0.2087995363257023,
+      "selectedOriginalRowBytes": 130051,
+      "selectedRows": 100,
+      "selectionPercent": 20,
+      "workingNativeFrameBytes": 325455
+    },
+    {
+      "byteReductionPercent": 37.73431327954802,
+      "complete": true,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 626565,
+      "fullOriginalRowBytes": 624221,
+      "inputBytes": 625668,
+      "inputSha256": "74e397d0572dbd545c217d2b374883dafbe6dfc31bc9df649203d9e97719883a",
+      "reason": "complete_native_census",
+      "rows": 500,
+      "selectedBodyRatio": 0.25000921148119015,
+      "selectedOriginalRowBytes": 156061,
+      "selectedRows": 120,
+      "selectionPercent": 24,
+      "workingNativeFrameBytes": 390135
+    },
+    {
+      "byteReductionPercent": null,
+      "complete": false,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 2473195,
+      "fullOriginalRowBytes": 2470851,
+      "inputBytes": 2472298,
+      "inputSha256": "88a84606bacd1862eb443f4e99689f4d9b5555eed0d20d7b5e8affed98b464ac",
+      "reason": "projection_tracking_capacity",
+      "rows": 2000,
+      "selectedBodyRatio": 0.05263409246449907,
+      "selectedOriginalRowBytes": 130051,
+      "selectedRows": 100,
+      "selectionPercent": 5,
+      "workingNativeFrameBytes": 1799
+    },
+    {
+      "byteReductionPercent": null,
+      "complete": false,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 2480045,
+      "fullOriginalRowBytes": 2477701,
+      "inputBytes": 2479148,
+      "inputSha256": "7f26b99d1d8c0b8a8585fa167416414c92f6f8d0a46e459d258d8ee8a2068955",
+      "reason": "projection_tracking_capacity",
+      "rows": 2000,
+      "selectedBodyRatio": 0.10497675062487362,
+      "selectedOriginalRowBytes": 260101,
+      "selectedRows": 200,
+      "selectionPercent": 10,
+      "workingNativeFrameBytes": 1799
+    },
+    {
+      "byteReductionPercent": null,
+      "complete": false,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 2493745,
+      "fullOriginalRowBytes": 2491401,
+      "inputBytes": 2492848,
+      "inputSha256": "a11b4bcbaa285e412eacc43752c438c61f1b2b16ef484953ab630e34226a7345",
+      "reason": "projection_tracking_capacity",
+      "rows": 2000,
+      "selectedBodyRatio": 0.20879858360817868,
+      "selectedOriginalRowBytes": 520201,
+      "selectedRows": 400,
+      "selectionPercent": 20,
+      "workingNativeFrameBytes": 1799
+    },
+    {
+      "byteReductionPercent": null,
+      "complete": false,
+      "component50PercentTargetApplies": false,
+      "component50PercentTargetPass": null,
+      "fullNativeFrameBytes": 2499225,
+      "fullOriginalRowBytes": 2496881,
+      "inputBytes": 2498328,
+      "inputSha256": "945452b1a871d22d005eff1d40f9f70327405012bc0cb26ad915455cf2a69cfa",
+      "reason": "projection_tracking_capacity",
+      "rows": 2000,
+      "selectedBodyRatio": 0.25000831036801513,
+      "selectedOriginalRowBytes": 624241,
+      "selectedRows": 480,
+      "selectionPercent": 24,
+      "workingNativeFrameBytes": 1799
+    }
+  ],
+  "runnerSha256": "de93076d55ba10e1090cddf967cc2b60a15812ea43f1ca787a70840a92181573",
+  "scope": "untimed native source-frame density only, not SDK/transport/CPU or producer acceptance",
+  "seedSha256": "92c1d88dd8f2b37d513d8383b88f33821686524886e52b79f9b814429b60fad9",
+  "sourceRevision": "610afaac658903ddd6c466c793f9856b45e9f03e"
+}

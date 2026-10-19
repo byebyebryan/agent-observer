@@ -16,6 +16,9 @@ both Python versions. Small selections completed with 2,000 history rows;
 larger selected unions remain capacity failures. Encoded accounting stayed
 within the existing service limit in those fixtures; heap/RSS, SDK delivery and
 immutable installed/native qualification remain open.
+The [qualification audit](working-set-qualification-status.md) maps each exit
+requirement to its evidence and remaining work; a passing repository suite does
+not close the producer gate.
 Routine implementation needs no repeated general approval. Deployment
 and consumer/device adoption retain separate authorization. Earlier planning-only
 statements below describe the c7f41ea checkpoint, not a new stop instruction.

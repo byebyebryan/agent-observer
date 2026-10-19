@@ -1,0 +1,23 @@
+{
+  "case": "py314-n2000-long-title-cwd-slow-pressure",
+  "command": [
+    "/home/bryan/code/mesh-plus/.venv/bin/python",
+    "-B",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-pressure/pressure_case.py",
+    "--root",
+    "/home/bryan/code/agent-observer-working-set",
+    "--output",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-pressure/reports/final3-610afaac/py314-n2000-long-title-cwd-slow-pressure.json",
+    "--source-revision",
+    "610afaac658903ddd6c466c793f9856b45e9f03e",
+    "--runtime-source-revision",
+    "bb7b8aab91574fc3a325325ac8debf21b525712a",
+    "--python-entrypoint",
+    "/home/bryan/code/mesh-plus/.venv/bin/python",
+    "--driver",
+    "/home/bryan/code/agent-observer-working-set/docs/evidence/2026-10-18-working-set/resource-pressure/run_pressure.py"
+  ],
+  "exitCode": 1,
+  "stderr": "pressure_case_failures:healthy_full_wire_mismatch:0,slow_full_body_not_current_shared_dto:0,healthy_full_wire_mismatch:1,slow_full_body_not_current_shared_dto:1,healthy_full_wire_mismatch:2,slow_full_body_not_current_shared_dto:2,healthy_full_wire_mismatch:3,slow_full_body_not_current_shared_dto:3,healthy_full_wire_mismatch:4,slow_full_body_not_current_shared_dto:4,healthy_full_wire_mismatch:5,slow_full_body_not_current_shared_dto:5,healthy_full_wire_mismatch:6,slow_full_body_not_current_shared_dto:6,healthy_full_wire_mismatch:7,slow_full_body_not_current_shared_dto:7,healthy_full_wire_mismatch:8,slow_full_body_not_current_shared_dto:8,healthy_full_wire_mismatch:9,slow_full_body_not_current_shared_dto:9,healthy_full_wire_mismatch:10,slow_full_body_not_current_shared_dto:10,healthy_full_wire_mismatch:11,slow_full_body_not_current_shared_dto:11,healthy_full_wire_mismatch:12,slow_full_body_not_current_shared_dto:12,healthy_full_wire_mismatch:13\n",
+  "stdout": ""
+}

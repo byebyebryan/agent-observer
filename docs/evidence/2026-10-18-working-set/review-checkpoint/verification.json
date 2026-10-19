@@ -1,0 +1,25 @@
+{
+  "modelCasesPerInterpreter": 3,
+  "pressure": {
+    "historicalSummariesHashChecked": 6,
+    "losslessCompressedReports": 8,
+    "reports": [
+      {
+        "gitPins": 31,
+        "inventoryEquationsCheckedIncludingNestedCopies": 827,
+        "python": "3.14.8"
+      },
+      {
+        "gitPins": 31,
+        "inventoryEquationsCheckedIncludingNestedCopies": 827,
+        "python": "3.11.17"
+      }
+    ]
+  },
+  "schema": "working-set-review-checkpoint-verification-v1",
+  "scope": "Saved bytes, Git pins and scalar equations only; no experiment, model, CPU, native or SDK replay.",
+  "sourceRevision": "610afaac658903ddd6c466c793f9856b45e9f03e",
+  "status": "PASS",
+  "wireAndModelLoadedGitPinsPerInterpreter": 18,
+  "wireCasesPerInterpreter": 12
+}
