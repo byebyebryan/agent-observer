@@ -21,8 +21,11 @@ published or installed into a normal role.
 | Reconnect continuity | Observer `6c87e03` binds scope watermarks to native service/boot/clock incarnation, separately from current transport epoch. The prior source fails eight checks across three methods; the committed correction passes the same three methods on both interpreters with cyclic GC disabled. This includes a genuine Reader baseline followed by controlled, individually valid public resync frames. It does not assert that an ordinary Reader emitted a regressed frame. |
 | Repeated ledger updates | Observer `a6c1416` retains one exact identity prefix, native-ID keys and shared immutable full support maps. Old and candidate roots stay funded through staging. The preflight includes dictionary growth, scalar referents and original overlap; the 4,096 identities and combined 1 MiB tracking limit remain unchanged. Capacity refusal remains explicit. |
 | Repository checks | The final runtime/test bytes pass 1,122 tests, zero skips, plus 237 Markdown/link/whitespace checks. Another 51 affected tests pass on Python 3.11 with cyclic GC disabled. An initial gate wrapper used its shebang interpreter and lacked dependencies; that setup failure is preserved separately from the corrected exact-interpreter gate. |
-| Private installed pair | Fresh Python 3.14/3.11 environments have noneditable local-wheel provenance, exact package inventories and schemas, and verified CLI ownership/help. This is static package parity, not installed native or SSH acceptance. |
-| Cost and delivery | Earlier owner-only ABBA and byte screens retain their original source tuples. The final three-generation pipeline benchmark stopped on DTO/coverage/digest assertions and is being investigated without timing claims. No failed check is converted to a saving. |
+| Private installed pair | Fresh Python 3.14/3.11 environments have noneditable local-wheel provenance, exact package inventories and schemas, and verified CLI ownership/help. Four ordinary installed Reader methods pass on each interpreter against synthetic local IPC. This is installed component evidence, not live native or fixed-SSH acceptance. |
+| Owner cost | The final 24-trial paired A7 screen passes the maximum 25% owner-overhead gate: enabled candidate medians are 18.13–19.55% below A7. This measures six `ServiceState.attempt/accept` generations per trial, excluding native collection, parent parsing, SDK delivery, construction and warmup. Current-disabled controls remain cheaper than the enabled candidate. |
+| Repeated capacity and slow peers | Final three-generation screens complete at 2,000 history rows with 100 or 200 selected rows on both interpreters; 400 selected rows explicitly refuse tracking capacity. The separate 14-generation, 16-peer pressure fixture peaks at 59,727,787 encoded bytes within the unchanged 64 MiB encoded limit. Two oldest slow full-feed peers are dropped before admitting overlapping staging. This establishes neither a process-heap cap nor an RSS plateau. |
+| Pipeline cost and delivery | The corrected private remote-proof harness delivers three generations and four detached reads per generation at 2,000 history rows with 20 selected rows. The full-view reference encounters a timeout on both interpreters. A harness reconnect restriction and terminal-counter differences are being corrected separately; no failed comparison supplies a CPU or total-wire saving. Earlier failed harness runs and source tuples remain preserved. |
+| Fixed SSH | The private installed synthetic fixture reached the ordinary Reader over the fixed Snap route, but the latest run stopped before DTO comparison because the local harness treated an opaque admitted response as a dictionary. All remote Runtime cleanup flags and isolated-path/process retirement are independently confirmed; its recorded nonzero Bridge exit remains unresolved. No native provider was invoked by this fixture. |
 | Native comparison | A bounded Starship native-before read stopped on conflicting list/detail session-tree-root metadata before starting a candidate. Snap's corrected read-only prerequisite completed 102 saved-row detail/turn reads with no conflict, but had no loaded rows. Neither result is a full installed producer pass. The independent tool also leaves recent-only claims conditional when it cannot independently prove accumulated clock ceiling K. |
 
 The private wheel digests are:
@@ -30,8 +33,12 @@ The private wheel digests are:
 - Observer: `cb4d7f72750d4d3ad1d9205f06a8ea57ccdfd2f1603f8f358614f7e8b9737ec0`.
 - Mesh: `287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a`.
 
+The [final owner resource packet](evidence/2026-10-18-working-set/final-owner-resource/README.md)
+records the exact ledger, owner CPU and slow-peer results, including the
+preserved cross-interpreter pressure-audit failure and its bounded reconciliation.
+
 Remaining work follows P3 in the [execution plan](working-set-projection-plan.md):
-resolve the pipeline assertions; qualify matched producer/read CPU and actual
+resolve the pipeline and fixed-SSH harness findings; qualify matched producer/read CPU and actual
 delivery at the agreed cadences; finish inclusive ownership, slow-peer and
 RSS/plateau evidence; and run the exact isolated installed pair through IPC,
 fixed SSH and independent native comparisons on both hosts. Source accounting,

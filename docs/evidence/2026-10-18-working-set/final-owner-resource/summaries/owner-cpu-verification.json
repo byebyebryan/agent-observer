@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "candidateCoverage": "complete",
+      "candidateGuardBytes": 183438,
+      "candidateVsPairedA7Percent": -19.545040261576197,
+      "candidateWorkingBodies": 4,
+      "mediansCpuMs": {
+        "a7": 643.1124895,
+        "candidate": 517.4158945,
+        "current-disabled": 392.97087450000004
+      },
+      "ownerOverhead25PercentPass": true,
+      "python": "314",
+      "rows": 500,
+      "sixGenerationComponentSumsMatched": true
+    },
+    {
+      "candidateCoverage": "complete",
+      "candidateGuardBytes": 730938,
+      "candidateVsPairedA7Percent": -19.08754990953202,
+      "candidateWorkingBodies": 20,
+      "mediansCpuMs": {
+        "a7": 2611.3755425,
+        "candidate": 2112.9279324999998,
+        "current-disabled": 1635.565344
+      },
+      "ownerOverhead25PercentPass": true,
+      "python": "314",
+      "rows": 2000,
+      "sixGenerationComponentSumsMatched": true
+    },
+    {
+      "candidateCoverage": "complete",
+      "candidateGuardBytes": 183462,
+      "candidateVsPairedA7Percent": -18.912656729881494,
+      "candidateWorkingBodies": 4,
+      "mediansCpuMs": {
+        "a7": 746.3742245000001,
+        "candidate": 605.2150295,
+        "current-disabled": 486.9605545
+      },
+      "ownerOverhead25PercentPass": true,
+      "python": "311",
+      "rows": 500,
+      "sixGenerationComponentSumsMatched": true
+    },
+    {
+      "candidateCoverage": "complete",
+      "candidateGuardBytes": 730962,
+      "candidateVsPairedA7Percent": -18.133003873512486,
+      "candidateWorkingBodies": 20,
+      "mediansCpuMs": {
+        "a7": 3058.785532,
+        "candidate": 2504.1358330000003,
+        "current-disabled": 2060.8316735
+      },
+      "ownerOverhead25PercentPass": true,
+      "python": "311",
+      "rows": 2000,
+      "sixGenerationComponentSumsMatched": true
+    }
+  ],
+  "loadedReferencesChecked": 360,
+  "records": 24,
+  "scope": "Primary read-only recomputation; no benchmark rerun; DTO comparisons use six explicit common keys, candidate-only diagnostics compared within each report",
+  "status": "pass",
+  "uniqueGitBlobs": 32,
+  "verificationSha256": "e9f6b6694ea6e8060bc7f2936bb5bafd0045764ce23d57ace501a1d8a7d655c0"
+}
