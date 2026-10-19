@@ -1,5 +1,15 @@
 # Generalized active and recent-session projection
 
+Source closeout, 2026-10-19: Bryan cleared the execution goal and requested a
+quicker wrap-up. The endpoint is a completed source checkpoint with the current
+validation and explicit qualification follow-ups. The implementation, additive
+SDK1 integration and controlled/private-installed evidence are retained in the
+[producer checkpoint](working-set-producer-checkpoint.md). The tested
+[Codex catalog/detail correction](codex-catalog-detail-identity.md) is included.
+Rebuilt installed/native comparisons on both hosts and full producer acceptance
+are deferred. This plan schedules no further qualification, optimization or
+automatic continuation. A later operational adoption decision remains separate.
+
 Execution resumption, 2026-10-18: Bryan explicitly approved expansion into Mesh
 implementation and requested a new Luna goal loop to finish. Observer receipt
 representation and additive SDK1 registration now proceed in separate owning

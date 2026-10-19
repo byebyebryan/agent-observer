@@ -11,6 +11,7 @@ from agent_observer.native_artifacts import CODEX, CODEX_DAEMON
 
 FIRST = "01234567-0123-4567-89ab-0123456789ab"
 SECOND = "11234567-0123-4567-89ab-0123456789ab"
+ROOT = "21234567-0123-4567-89ab-0123456789ab"
 
 
 def native(identifier):
@@ -23,6 +24,16 @@ def native(identifier):
         "threadSource": "user",
         "ephemeral": False,
         "status": {"type": "idle"},
+    }
+
+
+def child_native(identifier, *, tree_root=ROOT, status="idle"):
+    return {
+        **native(identifier),
+        "sessionId": tree_root,
+        "threadSource": "subagent",
+        "source": {"subAgent": {"thread_spawn": {"parent_thread_id": ROOT}}},
+        "status": {"type": status},
     }
 
 
@@ -376,6 +387,121 @@ class SnapshotCollectionTest(unittest.TestCase):
         )
         self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}])
         self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
+
+    def test_child_catalog_self_root_preserves_detail_and_healthy_sibling(self):
+        for history in (True, False):
+            with self.subTest(include_history=history):
+                client = FakeClient(
+                    {"data": [FIRST, SECOND], "nextCursor": None},
+                    {"data": [child_native(FIRST, tree_root=FIRST), native(SECOND)],
+                     "nextCursor": None},
+                )
+                client.read_thread = lambda identifier: {
+                    "thread": child_native(identifier) if identifier == FIRST else native(identifier)
+                }
+                result = self.collect(client, include_history=history)
+                rows = {row["identity"]["nativeId"]: row for row in result["sessions"]}
+                self.assertEqual(result["errors"], [])
+                self.assertEqual(result["sourceHealth"], "current")
+                self.assertTrue(result["coverage"]["loaded"]["complete"])
+                self.assertTrue(result["coverage"]["saved"]["complete"])
+                self.assertEqual(rows[FIRST]["nativeIds"], {"threadId": FIRST, "sessionId": ROOT})
+                self.assertEqual(rows[FIRST]["threadKind"], "child")
+                self.assertTrue(rows[FIRST]["savedIdentity"])
+                self.assertEqual(rows[FIRST]["runtimeDisposition"]["value"], "running")
+                self.assertEqual(rows[SECOND]["presence"]["health"], "current")
+
+    def test_catalog_cannot_replace_child_detail_when_later_read_fails(self):
+        client = FakeClient(
+            {"data": [FIRST], "nextCursor": None},
+            {"data": [child_native(FIRST, tree_root=FIRST)], "nextCursor": None},
+        )
+        reads = 0
+        def read(identifier):
+            nonlocal reads
+            reads += 1
+            if reads > 1:
+                raise TransportError("rpc_error")
+            return {"thread": child_native(identifier)}
+        client.read_thread = read
+        result = self.collect(client)
+        self.assertEqual(result["sessions"][0]["nativeIds"]["sessionId"], ROOT)
+        self.assertEqual(result["sessions"][0]["runtimeDisposition"]["value"], "unknown")
+        self.assertEqual(result["errors"], [{"code": "rpc_error"}])
+        self.assertEqual(result["sourceHealth"], "partial")
+
+    def test_saved_child_current_detail_can_resolve_catalog_self_root(self):
+        client = FakeClient(
+            {"data": [], "nextCursor": None},
+            {"data": [child_native(FIRST, tree_root=FIRST, status="notLoaded")],
+             "nextCursor": None},
+        )
+        client.read_thread = lambda identifier: {"thread": child_native(identifier)}
+        result = self.collect(client)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["sourceHealth"], "current")
+        self.assertEqual(result["sessions"][0]["nativeIds"]["sessionId"], ROOT)
+        self.assertTrue(result["sessions"][0]["savedIdentity"])
+
+    def test_loaded_child_can_resolve_catalog_after_first_detail_failure(self):
+        client = FakeClient(
+            {"data": [FIRST], "nextCursor": None},
+            {"data": [child_native(FIRST, tree_root=FIRST)], "nextCursor": None},
+        )
+        reads = 0
+        def read(identifier):
+            nonlocal reads
+            reads += 1
+            if reads == 1:
+                raise TransportError("rpc_error")
+            return {"thread": child_native(identifier)}
+        client.read_thread = read
+        result = self.collect(client)
+        self.assertEqual(result["errors"], [{"code": "rpc_error"}])
+        self.assertEqual(result["sourceHealth"], "partial")
+        self.assertEqual(result["sessions"][0]["nativeIds"]["sessionId"], ROOT)
+
+    def test_conflicting_child_detail_reads_still_invalidate_runtime(self):
+        client = FakeClient(
+            {"data": [FIRST, SECOND], "nextCursor": None},
+            {"data": [child_native(FIRST, tree_root=FIRST)], "nextCursor": None},
+        )
+        child_reads = 0
+        def read(identifier):
+            nonlocal child_reads
+            if identifier != FIRST:
+                return {"thread": native(identifier)}
+            child_reads += 1
+            return {"thread": child_native(identifier, tree_root=ROOT if child_reads == 1 else SECOND)}
+        client.read_thread = read
+        result = self.collect(client)
+        self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}])
+        self.assertEqual(result["sourceHealth"], "stale")
+        self.assertTrue(all(row["presence"]["value"] == "unknown" for row in result["sessions"]))
+
+    def test_other_catalog_tree_disagreements_remain_conflicts(self):
+        cases = (
+            (child_native(FIRST, tree_root=SECOND), child_native(FIRST)),
+            (child_native(FIRST, tree_root=FIRST), child_native(FIRST, status="notLoaded")),
+            (child_native(FIRST, tree_root=FIRST), child_native(FIRST, status="futureState")),
+            (child_native(FIRST, tree_root=FIRST), child_native(SECOND)),
+            (native(FIRST), child_native(FIRST)),
+            (child_native(FIRST, tree_root=FIRST), {**native(FIRST), "sessionId": ROOT}),
+            (child_native(FIRST, tree_root=FIRST), {
+                **child_native(FIRST),
+                "source": {"subAgent": {"thread_spawn": {"parent_thread_id": "malformed"}}},
+            }),
+        )
+        for catalog, detail in cases:
+            with self.subTest(catalog=catalog, detail=detail):
+                client = FakeClient(
+                    {"data": [], "nextCursor": None},
+                    {"data": [catalog], "nextCursor": None},
+                )
+                client.read_thread = lambda identifier, detail=detail: {"thread": detail}
+                result = self.collect(client)
+                self.assertEqual(result["errors"], [{"code": "native_identity_mapping_conflict"}])
+                self.assertEqual(result["sessions"][0]["presence"]["value"], "unknown")
 
     def test_absent_runtime_reports_failed_coverage_without_connecting(self):
         with (

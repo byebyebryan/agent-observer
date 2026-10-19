@@ -44,6 +44,27 @@ class SnapshotError(ValueError):
     """Finite source/coverage error, never raw native data."""
 
 
+def _catalog_matches_detail(catalog, detail):
+    """Join validated identities without promoting a child catalog self-root.
+
+    Database-only lists can report a loaded child as its own session root while
+    current detail reports its live tree. Reconcile only that observed direction
+    for explicitly classified native children. Other root differences, including
+    differences between two detail reads, remain conflicts.
+    """
+    if catalog["identity"] != detail["identity"]:
+        return False
+    if catalog["nativeIds"] == detail["nativeIds"]:
+        return True
+    return (
+        catalog["nativeIds"]["threadId"] == detail["nativeIds"]["threadId"]
+        and catalog["nativeIds"]["sessionId"] == catalog["nativeIds"]["threadId"]
+        and catalog["sourceKind"] == detail["sourceKind"] == "subagent"
+        and catalog["threadKind"] == detail["threadKind"] == "child"
+        and detail["nativeState"]["type"] in {"idle", "active", "systemError"}
+    )
+
+
 def _page(value, *, loaded=False):
     if not isinstance(value, dict) or not isinstance(value.get("data"), list):
         raise SnapshotError("invalid_inventory_page")
@@ -300,10 +321,14 @@ def collect_codex(
                     # This must remain false if pagination aborts before detail.
                     row["savedIdentity"] = identifier in readable_ids
                     existing = rows.get(identifier)
-                    if existing and existing["nativeIds"] != row["nativeIds"]:
-                        raise SnapshotError("native_identity_mapping_conflict")
-                    if existing and row["threadKind"] == "unknown":
-                        row["threadKind"] = existing["threadKind"]
+                    if existing is not None:
+                        if not _catalog_matches_detail(row, existing):
+                            raise SnapshotError("native_identity_mapping_conflict")
+                        # Preserve actual detail for the later detail/detail
+                        # bracket and for failures of that later read. Catalog
+                        # membership adds saved identity, not newer live facts.
+                        existing["savedIdentity"] = True
+                        continue
                     rows[identifier] = row
                 saved_count += len(data)
                 if following is None:
@@ -334,9 +359,15 @@ def collect_codex(
                         raise MetadataError("invalid_thread_metadata")
                     payload = response.get("thread")
                     detail = live_thread_metadata(payload, **scope, observed_at=_clock())
-                    if detail["identity"]["nativeId"] != identifier or identifier in rows and rows[identifier]["nativeIds"] != detail["nativeIds"]:
+                    if detail["identity"]["nativeId"] != identifier:
+                        raise SnapshotError("native_identity_mapping_conflict")
+                    if identifier in readable_ids:
+                        if rows[identifier]["nativeIds"] != detail["nativeIds"]:
+                            raise SnapshotError("native_identity_mapping_conflict")
+                    elif identifier in rows and not _catalog_matches_detail(rows[identifier], detail):
                         raise SnapshotError("native_identity_mapping_conflict")
                     rows[identifier] = detail
+                    readable_ids.add(identifier)
                     detail["savedIdentity"] = identifier in saved_ids
                 except (TransportError, MetadataError) as error:
                     result["errors"].append({"code": str(error)})
@@ -372,7 +403,7 @@ def collect_codex(
                         row["runtimeDisposition"].update(value="unknown", health="unavailable", reason="saved_summary_unavailable")
                         row["savedIdentity"] = False
                     continue
-                if detail["nativeIds"] != row["nativeIds"]:
+                if not _catalog_matches_detail(row, detail):
                     raise SnapshotError("native_identity_mapping_conflict")
                 if (row["sourceKind"] != "unknown" and detail["sourceKind"] != "unknown" and row["sourceKind"] != detail["sourceKind"]) or "thread_classification_conflict" in row["metadataIssues"]:
                     detail["threadKind"] = "unknown"

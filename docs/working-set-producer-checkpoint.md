@@ -3,8 +3,15 @@
 The opt-in active-plus-recent implementation now has an ordinary public Mesh
 Reader path. It preserves the default 72-hour union, the independent active
 branch, and explicit rare full-history reads. The producer qualification is
-still in progress. Delta-sync remains dark and the selected a7/a23 services,
+deferred at this source checkpoint. Delta-sync remains dark and the selected a7/a23 services,
 full/Tmux/writer workflows and consumer/device choices remain unchanged.
+
+Closeout, 2026-10-19: Bryan cleared the execution goal and requested a quicker
+wrap-up. Source implementation and the targeted identity correction are complete;
+full producer acceptance is not claimed. Existing results below remain bound to
+their original inputs. Rebuilding the corrected private candidate and completing
+both-host installed/native qualification are recorded follow-ups, not prerequisites
+to closing this source checkpoint. No further automatic work is scheduled.
 
 This checkpoint retains the original Observer `196a8e2b` owner-resource
 screens and later `b176ac06` SDK/installed checks, each with its own immutable
@@ -68,11 +75,15 @@ cleanup. Its first failed attempt remains separate. The
 preserves the new failure and the matrix's stopped cases. Neither packet closes
 the remaining whole-producer gates.
 
-Remaining work follows P3 in the [execution plan](working-set-projection-plan.md):
+Deferred qualification follows P3 in the [execution plan](working-set-projection-plan.md):
 finish independent installed native comparisons on both hosts. Starship's
 recorded list/detail session-tree identity conflict stops qualification before
 candidate startup; it cannot be normalized into a selected row or a passing
-native result. Installed synthetic IPC and fixed-SSH checks remain separate from
+native result. The subsequent [catalog/detail source correction](codex-catalog-detail-identity.md)
+addresses the observed live-child catalog self-root case while preserving exact
+thread checks and detail/detail conflict rejection. It does not retroactively
+change the failed native result or accept a rebuilt installed pair.
+Installed synthetic IPC and fixed-SSH checks remain separate from
 that native gate. Source accounting,
 synthetic native state and one host's evidence cannot substitute for these.
 Failed capacity cases remain visible and cannot claim a complete 72-hour view.

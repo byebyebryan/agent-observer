@@ -22,6 +22,50 @@ SID = "01234567-0123-4567-89ab-0123456789ab"
 
 
 class ObservationEvaluationTest(unittest.TestCase):
+    def child_client(self, *, loaded, catalog_root=SID, detail_root=None, status="idle", detail_fields=None):
+        root = "21234567-0123-4567-89ab-0123456789ab"
+        source = {"subAgent": {"thread_spawn": {"parent_thread_id": root}}}
+        class Client:
+            pid, start, artifact = 123, "456", {}
+            def pages(self, method):
+                return ([SID] if loaded else []) if method == "thread/loaded/list" else [
+                    {"id": SID, "sessionId": catalog_root, "source": source,
+                     "threadSource": "subagent", "status": {"type": "idle"}}
+                ]
+            def call(self, method, params):
+                if method == "thread/read":
+                    return {"thread": {
+                        "id": SID, "sessionId": detail_root or root, "source": source,
+                        "threadSource": "subagent", "status": {"type": status},
+                        **(detail_fields or {}),
+                    }}
+                return {"data": []}
+        return Client()
+
+    def test_current_child_reference_uses_detail_root_not_catalog_placeholder(self):
+        for loaded in (True, False):
+            with self.subTest(loaded=loaded), patch.object(evaluation, "birth", return_value=("456", "S", 1)):
+                result = evaluation.codex_reference(self.child_client(loaded=loaded))
+                row = result["rows"][SID]
+                self.assertEqual(row["sessionTreeRootId"], "21234567-0123-4567-89ab-0123456789ab")
+                self.assertEqual(row["kind"], "child")
+                self.assertEqual(row["runtime"], "running")
+                self.assertTrue(row["hasSavedHistory"])
+
+    def test_reference_does_not_accept_other_tree_disagreements(self):
+        for loaded in (True, False):
+            for fields in ({"catalog_root": "11234567-0123-4567-89ab-0123456789ab"},
+                           {"status": "notLoaded"}, {"status": "futureState"},
+                           {"detail_fields": {"id": "11234567-0123-4567-89ab-0123456789ab"}},
+                           {"detail_fields": {"sessionId": "malformed"}},
+                           {"detail_fields": {"threadSource": "user"}},
+                           {"detail_fields": {"source": {"subAgent": {"thread_spawn": {
+                               "parent_thread_id": "malformed",
+                           }}}}}):
+                with self.subTest(loaded=loaded, **fields), patch.object(evaluation, "birth", return_value=("456", "S", 1)):
+                    with self.assertRaisesRegex(ValueError, "native_detail_identity_conflict"):
+                        evaluation.codex_reference(self.child_client(loaded=loaded, **fields))
+
     def test_catalog_status_cannot_supply_readable_saved_identity(self):
         for status, expected in (("idle", "running"), ("notLoaded", "unknown")):
             with self.subTest(status=status):

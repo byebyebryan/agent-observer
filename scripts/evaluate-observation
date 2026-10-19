@@ -224,6 +224,40 @@ class NativeRPC:
         self.sock.close()
 
 
+def _native_child_source(source):
+    """Independent bounded source marker check; no Observer implementation import."""
+    sub = source.get("subAgent") if isinstance(source, dict) and set(source) == {"subAgent"} else None
+    if isinstance(sub, str) and sub in {"review", "compact", "memory_consolidation"}:
+        return True
+    if isinstance(sub, dict) and set(sub) == {"other"}:
+        return (isinstance(sub["other"], str) and 0 < len(sub["other"]) <= 128
+                and not any(unicodedata.category(c).startswith("C") for c in sub["other"]))
+    if isinstance(sub, dict) and set(sub) == {"thread_spawn"}:
+        spawn = sub["thread_spawn"]
+        return (isinstance(spawn, dict) and isinstance(spawn.get("parent_thread_id"), str)
+                and UUID.fullmatch(spawn["parent_thread_id"]) is not None)
+    return False
+
+
+def _native_detail_matches_catalog(sid, catalog, detail):
+    """Keep exact thread checks; detail can resolve a live child's self-root list."""
+    if detail.get("id") != sid:
+        return False
+    root = detail.get("sessionId")
+    if not isinstance(root, str) or UUID.fullmatch(root) is None:
+        return False
+    if catalog is None or root == catalog.get("sessionId"):
+        return True
+    status = detail.get("status")
+    return (
+        catalog.get("id") == sid and catalog.get("sessionId") == sid
+        and _native_child_source(catalog.get("source"))
+        and _native_child_source(detail.get("source"))
+        and catalog.get("threadSource") != "user" and detail.get("threadSource") != "user"
+        and isinstance(status, dict) and status.get("type") in {"idle", "active", "systemError"}
+    )
+
+
 def codex_reference(client):
     loaded = set(client.pages("thread/loaded/list"))
     saved = client.pages("thread/list")
@@ -232,7 +266,7 @@ def codex_reference(client):
     readable = set()
     for sid in loaded:
         detail = client.call("thread/read", {"threadId": sid, "includeTurns": False})["thread"]
-        if detail.get("id") != sid or sid in records and detail.get("sessionId") != records[sid].get("sessionId"):
+        if not _native_detail_matches_catalog(sid, records.get(sid), detail):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
         readable.add(sid)
@@ -251,7 +285,7 @@ def codex_reference(client):
             classification_gaps.append("native_saved_detail_unavailable:" + sid)
             unreadable_saved.add(sid)
             continue
-        if detail.get("id") != sid or detail.get("sessionId") != record.get("sessionId"):
+        if not _native_detail_matches_catalog(sid, record, detail):
             raise ValueError("native_detail_identity_conflict")
         records[sid] = detail
         readable.add(sid)
@@ -262,13 +296,7 @@ def codex_reference(client):
             raise ValueError("native_id_invalid")
         saved_identity = sid in saved_ids and sid in readable
         source = r.get("source")
-        sub = source.get("subAgent") if isinstance(source, dict) and set(source) == {"subAgent"} else None
-        native_child = (isinstance(sub, str) and sub in {"review", "compact", "memory_consolidation"}
-                        or isinstance(sub, dict) and set(sub) == {"other"} and isinstance(sub["other"], str)
-                        and 0 < len(sub["other"]) <= 128 and not any(unicodedata.category(c).startswith("C") for c in sub["other"]))
-        if isinstance(sub, dict) and set(sub) == {"thread_spawn"}:
-            spawn = sub["thread_spawn"]
-            native_child = isinstance(spawn, dict) and isinstance(spawn.get("parent_thread_id"), str) and UUID.fullmatch(spawn["parent_thread_id"]) is not None
+        native_child = _native_child_source(source)
         classification = r.get("threadSource")
         regular = source is None or isinstance(source, str) and source in {"cli", "vscode", "exec", "appServer", "unknown"}
         kind = "child" if classification == "subagent" or native_child and classification != "user" else "system" if classification in {"system", "thread_title"} and regular else "user" if classification == "user" and regular else "unknown"
