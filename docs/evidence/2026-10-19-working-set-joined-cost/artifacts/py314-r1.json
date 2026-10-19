@@ -1,0 +1,1405 @@
+{
+  "all24PublicWatchRetirementsVerified": true,
+  "cleanup": {
+    "endpointDirectoryRemoved": true,
+    "fixtureServerExitStatus": 0,
+    "fixtureServerReaped": true,
+    "fixtureServerStderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": false
+    },
+    "fullBridgeHandlersActive": 0,
+    "fullReaderActiveConnections": 0,
+    "fullReaderConnectionsBalanced": true,
+    "ownedEndpointRemoved": true,
+    "privateRunDirectoryRemoved": true,
+    "producerResourcesClosed": true,
+    "producerWorkerProcessesReaped": true,
+    "serviceRuntime": {
+      "runtimePeersAfterRun": 0,
+      "runtimeThreadAlive": false,
+      "selectorClosed": true,
+      "selectorHookRestored": true,
+      "selectorRegistrationsAfterRun": 0
+    },
+    "sharedLockReleased": true,
+    "workingBridgeHandlersActive": 0,
+    "workingReaderActiveConnections": 0,
+    "workingReaderConnectionsBalanced": true
+  },
+  "cpu": {
+    "arithmeticPendingUntilFixtureServerReaped": false,
+    "claimLimit": "one joined controlled fixture; derived variants reuse the same one-time producer and server cost",
+    "commonParentCpuNs": 986924598,
+    "commonProducerAndFixtureCpuNs": 1825054598,
+    "derivedFullCpuNs": 11765547498,
+    "derivedWorkingCpuNs": 2251340448,
+    "fixtureServerCpuScope": "full synthetic server process lifetime; conservative setup overhead included once",
+    "fixtureServerDirectWait4CpuNsAddedOnce": 137195000,
+    "observedJoinedPairCpuNs": 12191833348,
+    "ownerCleanupIncludedInParentWindow": false,
+    "parentContinuousCpuNs": 11353703348,
+    "parentCpuHarnessExclusions": [],
+    "parentCpuIncludesRuntimeThreadMeshReadersAndProductFilter": true,
+    "parentFullReadWindowsCpuNs": 9940492900,
+    "parentWorkingReadWindowsCpuNs": 426285850,
+    "scope": "joined controlled b176 canonical producer + same-State full/working public SDK reads",
+    "workerDirectWait4CpuNs": 700935000
+  },
+  "endpointInode": 1165117,
+  "fakeBinarySha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+  "fakeInterpreterConfigSha256": "bfe4bc1be0707d08ba5f4a2b6ff383c905a46937ec13800ce3acb1c4517b19a6",
+  "fixture": {
+    "bytes": 206530,
+    "contentFreeMetadataOnlyTurns": 500,
+    "expectedFixtureIdsSha256": "1ea55b6977d934f4f13a508409462c4add4ffc4d1196f40ea8a52ea68f589235",
+    "expectedSelectedIdsSha256": "2b05a9d642af61f02408ce2784ec7b77019af092b4f0bbbc14fa409519099ee8",
+    "fixtureEpochSeconds": 1792402088,
+    "loaded": 2,
+    "oldParked": 496,
+    "recentParked": 2,
+    "rows": 500,
+    "saved": 498,
+    "sha256": "c9180e9430280484dc8549c2393abef8a6b84492f64d0613966a2af9df4c5ee1"
+  },
+  "fixtureProtocol": {
+    "acceptedConnections": 13,
+    "hardFail": false,
+    "methodCounts": {
+      "initialize": 6,
+      "initialized": 6,
+      "thread/list": 30,
+      "thread/loaded/list": 6,
+      "thread/read": 3012,
+      "thread/turns/list": 1506
+    },
+    "noSyntheticIdentityValuesPersisted": true,
+    "protocolRowCoverageVerified": true,
+    "threadListPageSizes": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "uniqueThreadListRows": 500,
+    "uniqueThreadReadRows": 500,
+    "uniqueTurnRows": 500
+  },
+  "fixtureServerDirectWait4": {
+    "popenReturnCode": 0,
+    "systemCpuNs": 33438000,
+    "userCpuNs": 103757000,
+    "waitStatusExitCode": 0,
+    "waitedPid": 1981689
+  },
+  "fixtureServerIdentity": {
+    "argvExact": true,
+    "executable": "/tmp/joined-sdk-py314-r1-muycun9m/codex-home/packages/app-server-daemon/releases/0.0.0-x86_64-unknown-linux-musl/bin/codex",
+    "executableDevice": 50,
+    "executableInode": 1165107,
+    "pid": 1981689,
+    "startTicks": 49284246,
+    "stateAtCheck": "R"
+  },
+  "generations": [
+    {
+      "clockJoin": {
+        "acceptedStateRevision": 2,
+        "bindings": [
+          {
+            "component": "history",
+            "originComponent": "history",
+            "sampleId": "028ed5b9-8e61-4a68-84f0-786c46a6181a"
+          },
+          {
+            "component": "runtime",
+            "originComponent": "history",
+            "sampleId": "028ed5b9-8e61-4a68-84f0-786c46a6181a"
+          }
+        ],
+        "historyAccepted": 1,
+        "historyHealth": "current",
+        "historyOriginClockBoundToBoth": true,
+        "historyRuntimeSameSample": true,
+        "runtimeAccepted": 2,
+        "runtimeHealth": "current",
+        "sampleId": "028ed5b9-8e61-4a68-84f0-786c46a6181a",
+        "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee"
+      },
+      "complete72HourUnionExpectedCount": 4,
+      "complete72HourUnionExpectedIds": [
+        "00000001-1234-4234-8234-000000000001",
+        "00000002-1234-4234-8234-000000000002",
+        "00000003-1234-4234-8234-000000000003",
+        "00000004-1234-4234-8234-000000000004"
+      ],
+      "completeFixtureIdentityCensus": true,
+      "components": [
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "runtime",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1981690,
+            "systemCpuNs": 12454000,
+            "userCpuNs": 100828000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": true,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1981690,
+            "startTicks": 49284250,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 685228,
+          "workerOutputSha256": "3bc62a9ac89da3d74c03a49bf8811a01e44c2be6a58ff636df59ff2dc03e3ed1"
+        },
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "history",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1981735,
+            "systemCpuNs": 11212000,
+            "userCpuNs": 117539000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": false,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1981735,
+            "startTicks": 49284274,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 904109,
+          "workerOutputSha256": "f7bd1a7355f1ac3b5efb43ff7a2e9e8e78f149a6b62066c0b89137e4bfa2eb73"
+        }
+      ],
+      "controlledBurst": true,
+      "defaultSchedulerFreshForGeneration": true,
+      "defaultSchedulerOrder": [
+        "runtime",
+        "history"
+      ],
+      "generation": 1,
+      "nativeThreadAndSessionRootJoins": 500,
+      "profiles": [
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 1,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": null,
+              "proofNonceSha256": "8703f0f181d4b4f6ac758b862ef4f90946746ce694728a65fff3fc57b12bbc47",
+              "requestId": "a65f558a448d50cfd5c555402ce7396d",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 2,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": null,
+              "proofNonceSha256": "2568d360677e0e78e14dd5becc800dd90bb42e78c5e9c37661eb956b2fa181ad",
+              "requestId": "a9a00aecb36e4fcf6837c2637016c03d",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 2,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": null,
+              "proofNonceSha256": "6b5b5f33003315f23e49aff09a7553ee0fbda94361a258656c0503efe24c84d9",
+              "requestId": "4b5916c2eb742e5b3288b51506cdaf10",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 2,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": null,
+              "proofNonceSha256": "88d7f45dc03e5f9641127f590a0743f754c7ba88d59ac8fc201e8da8b5740b0b",
+              "requestId": "40d9dbedc8958f559e63512f11d2fcd0",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 2,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "full"
+        },
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 1,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": 2,
+              "proofNonceSha256": "79d6f10ad0df54ce7599f9ab8140edeec90ebc2a03e2f628f9bda3f5f94e67ce",
+              "requestId": "071aa410cdf0b45ca9758b7c66a954bb",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 2,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": 2,
+              "proofNonceSha256": "bc914725a3fdbdbf95ae6cce1c4b0fcad4d259f83a73896862c182f37d20c511",
+              "requestId": "b0c48137b1487f203f6e272b22590014",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 2,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": 2,
+              "proofNonceSha256": "cd1c33e2f2217fe4588ad9e8ad408bd93a6f57c0b8829a498623105df99196f8",
+              "requestId": "8c8f058ddf03a5103c1e47435289c358",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 2,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 1,
+              "historyAccepted": 1,
+              "observationRevision": 2,
+              "proofNonceSha256": "e2e52be4020f670fc7d8ebc7f98039b8c589f9cb48fbec39acc08264fad3e6da",
+              "requestId": "92ac22bc4803ff30bfc01a91420a0b86",
+              "runtimeAccepted": 2,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 2,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "working"
+        }
+      ],
+      "rows": 500,
+      "runtimeCoverage": "complete",
+      "savedCoverage": "complete"
+    },
+    {
+      "clockJoin": {
+        "acceptedStateRevision": 4,
+        "bindings": [
+          {
+            "component": "history",
+            "originComponent": "history",
+            "sampleId": "f5f00820-1c5f-4b0f-b5e8-5d028396c74b"
+          },
+          {
+            "component": "runtime",
+            "originComponent": "history",
+            "sampleId": "f5f00820-1c5f-4b0f-b5e8-5d028396c74b"
+          }
+        ],
+        "historyAccepted": 2,
+        "historyHealth": "current",
+        "historyOriginClockBoundToBoth": true,
+        "historyRuntimeSameSample": true,
+        "runtimeAccepted": 4,
+        "runtimeHealth": "current",
+        "sampleId": "f5f00820-1c5f-4b0f-b5e8-5d028396c74b",
+        "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee"
+      },
+      "complete72HourUnionExpectedCount": 4,
+      "complete72HourUnionExpectedIds": [
+        "00000001-1234-4234-8234-000000000001",
+        "00000002-1234-4234-8234-000000000002",
+        "00000003-1234-4234-8234-000000000003",
+        "00000004-1234-4234-8234-000000000004"
+      ],
+      "completeFixtureIdentityCensus": true,
+      "components": [
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "runtime",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1981876,
+            "systemCpuNs": 13774000,
+            "userCpuNs": 97416000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": true,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1981876,
+            "startTicks": 49284655,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 685228,
+          "workerOutputSha256": "0be8def5392f38a81034de03d65c08ba4ccde1c88f26606fdfef46bc268bf0a8"
+        },
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "history",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1981881,
+            "systemCpuNs": 16538000,
+            "userCpuNs": 108071000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": false,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1981881,
+            "startTicks": 49284682,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 904109,
+          "workerOutputSha256": "fdc7e550f4dfce54f06245fa549a752e4ccac516b25b3f9a5970431931602ca2"
+        }
+      ],
+      "controlledBurst": true,
+      "defaultSchedulerFreshForGeneration": true,
+      "defaultSchedulerOrder": [
+        "runtime",
+        "history"
+      ],
+      "generation": 2,
+      "nativeThreadAndSessionRootJoins": 500,
+      "profiles": [
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 2,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": null,
+              "proofNonceSha256": "025439cdac696141c5d0155825d13eff327c3b135cc67ac732ef2e8c6b12ed12",
+              "requestId": "e075ccbde6863140549b6f1e7213d9c9",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 4,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": null,
+              "proofNonceSha256": "3be3f5a13ed714cbfd666f32bdc05c7a1534697dee98616d1f5745106ab77bdc",
+              "requestId": "4026e6fbf2aefce50cc0361b5595c2e3",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 4,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": null,
+              "proofNonceSha256": "8dab0e6fb4377b32dcd5d92f65dddadcf72478c89c88c026061d5ccecab7f62a",
+              "requestId": "5e084e410b79f3a2b647df58e5693e88",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 4,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": null,
+              "proofNonceSha256": "7f9644437276b8259e4385d33ff7929ce7183c9a33aa5772a0c8eeb6d41b9781",
+              "requestId": "d3d2203c85d41a63eb4baa7bdf05c501",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 4,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "full"
+        },
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 2,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": 4,
+              "proofNonceSha256": "b6db540629863bdb8d0c17ebaafcf0853201e5edc86d9a5fd5c8b38794577fab",
+              "requestId": "0fdf3174a79334f777828f5fcc1623e0",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 4,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": 4,
+              "proofNonceSha256": "fb3c861316bb9cb5cf232680c3f00c116c2be292ae49e24ca82eeed0e621a4f3",
+              "requestId": "024d0d6b04f2c3822193e161450540b0",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 4,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": 4,
+              "proofNonceSha256": "5c2220df49ea5564bd33c6dc20e07ad1adc4b13098b775fa846d16d5f7cf9637",
+              "requestId": "140e400081de6415ed8cf6aed17294ec",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 4,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 2,
+              "historyAccepted": 2,
+              "observationRevision": 4,
+              "proofNonceSha256": "899750e627cdac137a3aec186c5b30b0f4d3f10b7a8541357ca03c43845b3b7a",
+              "requestId": "813ac2481f2713f45f265fbfc15bcc6d",
+              "runtimeAccepted": 4,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 4,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "working"
+        }
+      ],
+      "rows": 500,
+      "runtimeCoverage": "complete",
+      "savedCoverage": "complete"
+    },
+    {
+      "clockJoin": {
+        "acceptedStateRevision": 6,
+        "bindings": [
+          {
+            "component": "history",
+            "originComponent": "history",
+            "sampleId": "a1f51007-cea3-4e94-8d5f-ee811655bae7"
+          },
+          {
+            "component": "runtime",
+            "originComponent": "history",
+            "sampleId": "a1f51007-cea3-4e94-8d5f-ee811655bae7"
+          }
+        ],
+        "historyAccepted": 3,
+        "historyHealth": "current",
+        "historyOriginClockBoundToBoth": true,
+        "historyRuntimeSameSample": true,
+        "runtimeAccepted": 6,
+        "runtimeHealth": "current",
+        "sampleId": "a1f51007-cea3-4e94-8d5f-ee811655bae7",
+        "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee"
+      },
+      "complete72HourUnionExpectedCount": 4,
+      "complete72HourUnionExpectedIds": [
+        "00000001-1234-4234-8234-000000000001",
+        "00000002-1234-4234-8234-000000000002",
+        "00000003-1234-4234-8234-000000000003",
+        "00000004-1234-4234-8234-000000000004"
+      ],
+      "completeFixtureIdentityCensus": true,
+      "components": [
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "runtime",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1982003,
+            "systemCpuNs": 11376000,
+            "userCpuNs": 90072000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": true,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1982003,
+            "startTicks": 49285068,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 685228,
+          "workerOutputSha256": "207458a495c5891c17d1f35535b80a31da5295e715227d0362ff592f44c353a7"
+        },
+        {
+          "clockCapabilityMarkerProved": true,
+          "component": "history",
+          "directWait4AtNormalCompleteWait": {
+            "exitStatus": 0,
+            "pid": 1982066,
+            "systemCpuNs": 11825000,
+            "userCpuNs": 109830000
+          },
+          "normalCompleteWaitReapedChild": true,
+          "observedExitStatusUnreapedBeforeComplete": 0,
+          "parentCompleteCalledOnce": true,
+          "runtimeComplete": false,
+          "workerArgvExact": true,
+          "workerIdentity": {
+            "argvExact": true,
+            "executable": "/usr/bin/python3.14",
+            "executableDevice": 36,
+            "executableInode": 21280847,
+            "pid": 1982066,
+            "startTicks": 49285093,
+            "stateAtCheck": "R"
+          },
+          "workerOutputBytes": 904109,
+          "workerOutputSha256": "b834aeeafee9eb41063e37a926d881d4501893f0276f276ed3ffb107120f5e06"
+        }
+      ],
+      "controlledBurst": true,
+      "defaultSchedulerFreshForGeneration": true,
+      "defaultSchedulerOrder": [
+        "runtime",
+        "history"
+      ],
+      "generation": 3,
+      "nativeThreadAndSessionRootJoins": 500,
+      "profiles": [
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 3,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": null,
+              "proofNonceSha256": "7a6bbca8cdfa67d1df5fb06a62cb902e62c05b94babd83c80bcbb0bf9b390bed",
+              "requestId": "99d300df935d0e48073203944c32e7aa",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 6,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": null,
+              "proofNonceSha256": "45c2f777947c5c7e94ab77a174a0e3c4889d0ed991dff81198908451650dc51d",
+              "requestId": "278ca8b94a17bd2ee651073cbade2b0b",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 6,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": null,
+              "proofNonceSha256": "f544f06c666015c73ab67d79908810443fb25069ac05455bc9e3e3c907657879",
+              "requestId": "4e1c83f86dc911553ff00aee4cc80172",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 6,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": 500,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": null,
+              "proofNonceSha256": "0ae88dcae1d588748041e206fcfce047dbb8bd62c5de8de1e70c0eb1b4d6c3ac",
+              "requestId": "7d205c6d687b3da69410722b4973f22b",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "full",
+              "viewRevision": 6,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": null,
+              "workingCoverageStatus": null
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "full"
+        },
+        {
+          "admissions": 4,
+          "bridgeHandlersReturned": 4,
+          "generation": 3,
+          "readerConnectionsClosed": 4,
+          "readerConnectionsOpened": 4,
+          "reads": [
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": 6,
+              "proofNonceSha256": "d7391ad9575a0d7f2f50bab6548cb6d923a284d86ced2a8f3ba9e3a8e8b8131e",
+              "requestId": "2648401e9576be50b077456812b119dd",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 6,
+              "watchIndex": 0,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": 6,
+              "proofNonceSha256": "8267ea28619c2c5b5f3f74971b434e1462a943387d71e3f58c5f47a94add2455",
+              "requestId": "948d1a4ff457ddccff0180f01eb49a22",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 6,
+              "watchIndex": 1,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": 6,
+              "proofNonceSha256": "8376b47a57416a9a038b3e7fad3c0f9feb8ec72083923ec016fe162354586706",
+              "requestId": "5929dc888115661383493d6e92956729",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 6,
+              "watchIndex": 2,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            },
+            {
+              "facadeContextCurrent": true,
+              "freshProof": true,
+              "fullRowCount": null,
+              "generation": 3,
+              "historyAccepted": 3,
+              "observationRevision": 6,
+              "proofNonceSha256": "7d82494a025536308c994afcbf728ea9d5038a88742ae1b1e481cf7cf3180f8b",
+              "requestId": "bb2e9dac46f3956322f59ad9f9efbc92",
+              "runtimeAccepted": 6,
+              "runtimeReady": true,
+              "selectedRowCount": 4,
+              "serviceId": "3fcd78fc-a13b-4ff7-b666-a78c519403ee",
+              "variant": "working",
+              "viewRevision": 6,
+              "watchIndex": 3,
+              "workingCoverageMemberCount": 4,
+              "workingCoverageStatus": "complete"
+            }
+          ],
+          "retirementsVerified": 4,
+          "variant": "working"
+        }
+      ],
+      "rows": 500,
+      "runtimeCoverage": "complete",
+      "savedCoverage": "complete"
+    }
+  ],
+  "interpreter": "py314",
+  "interpreterExecutable": "/home/bryan/code/mesh-plus/.venv/bin/python",
+  "interpreterVersion": "3.14.8",
+  "loadedProjectModules": {
+    "agent_observer": {
+      "path": "agent_observer/__init__.py",
+      "root": "agent_observer",
+      "sha256": "9df4617f6d49419caeebfd258545b9a95d7b08735d221ae3b792f1cb72a18a09"
+    },
+    "agent_observer._image_memo": {
+      "path": "agent_observer/_image_memo.py",
+      "root": "agent_observer",
+      "sha256": "e51920f262521b25d00812458f52b67474039334581426108703cfeb5604c331"
+    },
+    "agent_observer.active_contract": {
+      "path": "agent_observer/active_contract.py",
+      "root": "agent_observer",
+      "sha256": "c9e20d73523b4943328a3f66a6552d7a992d5ffc71a29faed473eb48184600bf"
+    },
+    "agent_observer.active_feed": {
+      "path": "agent_observer/active_feed.py",
+      "root": "agent_observer",
+      "sha256": "93b154e4e187c9be67f6cc66ae3f783c1ec4ca4acccb4e90d0b3f908380a25de"
+    },
+    "agent_observer.adapters": {
+      "path": "agent_observer/adapters.py",
+      "root": "agent_observer",
+      "sha256": "21511b8de49d91d49a4dde26eae87458db6da5a9babab8421feade7b67e2b276"
+    },
+    "agent_observer.bounded_json": {
+      "path": "agent_observer/bounded_json.py",
+      "root": "agent_observer",
+      "sha256": "846a8538de41525359a2147a1f5b71f3958f0028490fd0d23c4041de07b6c0e6"
+    },
+    "agent_observer.codex_endpoint": {
+      "path": "agent_observer/codex_endpoint.py",
+      "root": "agent_observer",
+      "sha256": "9fce9953f3658186f943c880972ce1416b1f420a3781c446ae2df14dd7c1e1fd"
+    },
+    "agent_observer.contract": {
+      "path": "agent_observer/contract.py",
+      "root": "agent_observer",
+      "sha256": "93f14f4375a13d05aeaede24bf30538bd09f5e0d6e74a019793e69c64a81ea6b"
+    },
+    "agent_observer.contract_shape": {
+      "path": "agent_observer/contract_shape.py",
+      "root": "agent_observer",
+      "sha256": "7af867d262ca767aab68ac02ce79483b3ce128ff127a40c391f53882cde700fc"
+    },
+    "agent_observer.mesh_preparation": {
+      "path": "agent_observer/mesh_preparation.py",
+      "root": "agent_observer",
+      "sha256": "0b85236725203a3e41754e181e9c3edbe42621da067abd27fc0c0e804c737151"
+    },
+    "agent_observer.mesh_profile": {
+      "path": "agent_observer/mesh_profile.py",
+      "root": "agent_observer",
+      "sha256": "fd0db8045fbe18b50ea8dca233e46a980ef9f644562b3971323b0be946489fa4"
+    },
+    "agent_observer.mesh_publisher": {
+      "path": "agent_observer/mesh_publisher.py",
+      "root": "agent_observer",
+      "sha256": "bfc75f895fb3df131100b019dc2bf34f7109e6dbc891c699e1652c8033b58b03"
+    },
+    "agent_observer.mesh_read": {
+      "path": "agent_observer/mesh_read.py",
+      "root": "agent_observer",
+      "sha256": "8da2d5bd178cf7f932af37804c7adbc3a64d0c6034be28c074125bb862c17183"
+    },
+    "agent_observer.mesh_selection": {
+      "path": "agent_observer/mesh_selection.py",
+      "root": "agent_observer",
+      "sha256": "45bb781ad7cf8aed59540ce9ea8dc73d61eae8a9ac95c10fd6cacae265216257"
+    },
+    "agent_observer.mesh_source": {
+      "path": "agent_observer/mesh_source.py",
+      "root": "agent_observer",
+      "sha256": "bcbbba27b0296c2ff9792697b31c1b89410c407f15df71b522262313ba987fae"
+    },
+    "agent_observer.mesh_working_set_profile": {
+      "path": "agent_observer/mesh_working_set_profile.py",
+      "root": "agent_observer",
+      "sha256": "da003bca249a6a33bf145eb10280d1b6e674158f9e840ba04ed0222ebc0dcc7c"
+    },
+    "agent_observer.mesh_working_set_publisher": {
+      "path": "agent_observer/mesh_working_set_publisher.py",
+      "root": "agent_observer",
+      "sha256": "f1830a32baed77055758dfe4345b27b7308383ed556bb9ea6a610a0c30fd315e"
+    },
+    "agent_observer.mesh_working_set_read": {
+      "path": "agent_observer/mesh_working_set_read.py",
+      "root": "agent_observer",
+      "sha256": "05d9953294123c9f1f75e414e365a2ba06c2a9c883b29e7037ae5c7550e42a24"
+    },
+    "agent_observer.mesh_working_set_source": {
+      "path": "agent_observer/mesh_working_set_source.py",
+      "root": "agent_observer",
+      "sha256": "e5b239a49e4d27f32d4f421290a251785dcdb62a7c9a43777f2ae1369b0b582a"
+    },
+    "agent_observer.native_artifacts": {
+      "path": "agent_observer/native_artifacts.py",
+      "root": "agent_observer",
+      "sha256": "743e30c5a67cf3f3d9b5cf7d1990859d9a0df8b725dcb4245fd73415fe54d773"
+    },
+    "agent_observer.observation_engine": {
+      "path": "agent_observer/observation_engine.py",
+      "root": "agent_observer",
+      "sha256": "46296dcc9ebbe13ef7cafd808080cdac19cc93092a784b6c6b7986d57f880d79"
+    },
+    "agent_observer.observation_evidence": {
+      "path": "agent_observer/observation_evidence.py",
+      "root": "agent_observer",
+      "sha256": "2e1c004aca8f68d41ec2f613006a0f6e522fac12be1416e7a4bc67904caef24c"
+    },
+    "agent_observer.observation_scheduler": {
+      "path": "agent_observer/observation_scheduler.py",
+      "root": "agent_observer",
+      "sha256": "e3850f0c2791e21600e57daca3d8af8756d7e072065afa0b69febcb690896dd6"
+    },
+    "agent_observer.observation_support": {
+      "path": "agent_observer/observation_support.py",
+      "root": "agent_observer",
+      "sha256": "7319a9b5e6c13f840905ae4e0835392dddc7ec81bb73edece0a5ffa5191fbc32"
+    },
+    "agent_observer.provider": {
+      "path": "agent_observer/provider.py",
+      "root": "agent_observer",
+      "sha256": "98243e7de42af101951b3ffba9de017a66f78483ecc70b651e5f3d48fe61c7b8"
+    },
+    "agent_observer.public": {
+      "path": "agent_observer/public.py",
+      "root": "agent_observer",
+      "sha256": "710e0a86ca1248fbf46bab406725fb1901877012c9002a01921e7662dbe27610"
+    },
+    "agent_observer.read_cache": {
+      "path": "agent_observer/read_cache.py",
+      "root": "agent_observer",
+      "sha256": "5cd1932a36badeede7729f72c0bc0d82cd1be64477d2618b026f2cc452e1a71d"
+    },
+    "agent_observer.read_client": {
+      "path": "agent_observer/read_client.py",
+      "root": "agent_observer",
+      "sha256": "3a2b2258f7f005cad809bc5d0e744055fbae960451b6333473aa3e92b73c007e"
+    },
+    "agent_observer.service_contract": {
+      "path": "agent_observer/service_contract.py",
+      "root": "agent_observer",
+      "sha256": "7cef03366f012d972b47ab0fddad611a9e2613e498214005c98e120ee57905d8"
+    },
+    "agent_observer.service_public": {
+      "path": "agent_observer/service_public.py",
+      "root": "agent_observer",
+      "sha256": "704cfe0065dfe2a8c86c27766f14f88916f55a827211762576efba05512ec41a"
+    },
+    "agent_observer.service_runtime": {
+      "path": "agent_observer/service_runtime.py",
+      "root": "agent_observer",
+      "sha256": "faeb5f753a9c8d275acdd66d491d96da4e50b75c8c98772cd7ff9d82a6c61d39"
+    },
+    "agent_observer.service_state": {
+      "path": "agent_observer/service_state.py",
+      "root": "agent_observer",
+      "sha256": "e879590a0e11dbe6788621501cc563ea5d045cb1d13d7d6d0d32eb3e5208c4cf"
+    },
+    "agent_observer.sync_commitment": {
+      "path": "agent_observer/sync_commitment.py",
+      "root": "agent_observer",
+      "sha256": "544fba79d3a05ac898a925432d0923de9eca31658481ae15e1118cc8c0be1ff5"
+    },
+    "agent_observer.sync_contract": {
+      "path": "agent_observer/sync_contract.py",
+      "root": "agent_observer",
+      "sha256": "49e33c4216de6a951ddfb3c40731860fb510fa1a1cee9e94f43f5e1d99405236"
+    },
+    "agent_observer.sync_native": {
+      "path": "agent_observer/sync_native.py",
+      "root": "agent_observer",
+      "sha256": "09609ea9f6aeb8980f4b767c7768baa22a33287b47c3eeeb09dac39e3462d04d"
+    },
+    "agent_observer.timing": {
+      "path": "agent_observer/timing.py",
+      "root": "agent_observer",
+      "sha256": "8748c4285271f39eb50cf9bb1d58074bf76fe276ebf522a05f588ab83ece942d"
+    },
+    "agent_observer.working_set_clocks": {
+      "path": "agent_observer/working_set_clocks.py",
+      "root": "agent_observer",
+      "sha256": "84651c63c266c7563873034c54b87ec25312fd5022e3cc3bacca580417f67a7c"
+    },
+    "agent_observer.working_set_contract": {
+      "path": "agent_observer/working_set_contract.py",
+      "root": "agent_observer",
+      "sha256": "8f1499aa724c292f2d19aeb8995569f36d1c86ccec6967c4ed34583594ed9093"
+    },
+    "agent_observer.working_set_decisions": {
+      "path": "agent_observer/working_set_decisions.py",
+      "root": "agent_observer",
+      "sha256": "104423810e003ecc812451faa9b9d8e730284c76a93d02fdd84c40149bb3f008"
+    },
+    "agent_observer.working_set_feed": {
+      "path": "agent_observer/working_set_feed.py",
+      "root": "agent_observer",
+      "sha256": "bb8fb1e79d89d0f8e3a6d9b6c38e473fe6d7332acad13ba491eb3d548768eef6"
+    },
+    "agent_observer.working_set_ledger": {
+      "path": "agent_observer/working_set_ledger.py",
+      "root": "agent_observer",
+      "sha256": "48381ecc8b0e1c678aff05ea94ea7e4848137fb2493295cf0ab1c598e067b7aa"
+    },
+    "agent_observer.working_set_policy": {
+      "path": "agent_observer/working_set_policy.py",
+      "root": "agent_observer",
+      "sha256": "1af48f051e4bbddc19ca24b7b4cb891431571c63ff8584b283b0b8b8b2b66519"
+    },
+    "agent_observer.working_set_supports": {
+      "path": "agent_observer/working_set_supports.py",
+      "root": "agent_observer",
+      "sha256": "20ba9d34d3af30a2766e9bbda4ff2ab449a324bc7a52b8e18451c94ec4fe05c2"
+    },
+    "agent_observer.workspace": {
+      "path": "agent_observer/workspace.py",
+      "root": "agent_observer",
+      "sha256": "4b8a63d362af880b6acd4326e767d32a800df3f5f6e1282e5c4d62d4263ac92e"
+    },
+    "mesh_plus": {
+      "path": "mesh_plus/__init__.py",
+      "root": "mesh_plus",
+      "sha256": "d4c9f162318ab9942f47c730884001fafaeffc5ddfab1967ce961acd89eb268f"
+    },
+    "mesh_plus._receipt_history": {
+      "path": "mesh_plus/_receipt_history.py",
+      "root": "mesh_plus",
+      "sha256": "d5703497b3acfdea53318e7de1da828867ac68e937971c3c7640dbe76b5ab70a"
+    },
+    "mesh_plus.admission": {
+      "path": "mesh_plus/admission.py",
+      "root": "mesh_plus",
+      "sha256": "2b703d4c84a0ae966fee8d4db637b01fc0fdb4971351d4484a85c6e18d2d85bb"
+    },
+    "mesh_plus.api": {
+      "path": "mesh_plus/api.py",
+      "root": "mesh_plus",
+      "sha256": "8b63c94e7da9a886280b7a8ce5baa8ab26e010edc7284b6dbec4889db53353cc"
+    },
+    "mesh_plus.bridge": {
+      "path": "mesh_plus/bridge.py",
+      "root": "mesh_plus",
+      "sha256": "3dc93e85501d26f9d680c0eb6e73b83d611bdd9b1237648c1c720c813b26ac80"
+    },
+    "mesh_plus.catalog": {
+      "path": "mesh_plus/catalog.py",
+      "root": "mesh_plus",
+      "sha256": "f8d52f8e8f73f84504b931bdd2970ab60eeac3b69fce22d3fde7d6bb8d6cdb1a"
+    },
+    "mesh_plus.client": {
+      "path": "mesh_plus/client.py",
+      "root": "mesh_plus",
+      "sha256": "b6bcc712080c62952861072c5f77d9b88208f28ef08e998efab55924613bd78e"
+    },
+    "mesh_plus.configured_read": {
+      "path": "mesh_plus/configured_read.py",
+      "root": "mesh_plus",
+      "sha256": "dc39f08d557b4ce6ca9f988eeb91e8749f363c8d930fe915cf801df82d77a32c"
+    },
+    "mesh_plus.evidence": {
+      "path": "mesh_plus/evidence.py",
+      "root": "mesh_plus",
+      "sha256": "224dae58b30c28f142ea1fa0e31038c76704f383082b79989cfef3908ceb388c"
+    },
+    "mesh_plus.prepared": {
+      "path": "mesh_plus/prepared.py",
+      "root": "mesh_plus",
+      "sha256": "333f179ebf6eeabf5528d9d938cdc7ef484fb2ffcf9ec41608e7f29719f77486"
+    },
+    "mesh_plus.protocol": {
+      "path": "mesh_plus/protocol.py",
+      "root": "mesh_plus",
+      "sha256": "5a53fa9bec8ffa7c0fe4ba0911dec6c38a2f4739d281be52775d0c56349125c3"
+    },
+    "mesh_plus.publisher": {
+      "path": "mesh_plus/publisher.py",
+      "root": "mesh_plus",
+      "sha256": "0dfbf1461a4555f3c0a9b02f8788cd85c9b7c8ae90087d11c84ea4c3a4188336"
+    },
+    "mesh_plus.reader": {
+      "path": "mesh_plus/reader.py",
+      "root": "mesh_plus",
+      "sha256": "f3ddd60f5a2510e3d689f044b0b7e66142835a86fe9faf07b3b832e2cfb54670"
+    },
+    "mesh_plus.remote": {
+      "path": "mesh_plus/remote.py",
+      "root": "mesh_plus",
+      "sha256": "eb2d4165e3b086ed298ba991a51d04309821b50e46dfc4702f0ab081e87c890b"
+    },
+    "mesh_plus.state": {
+      "path": "mesh_plus/state.py",
+      "root": "mesh_plus",
+      "sha256": "d95a9132cf89982072637383e8c96ac3b619e8ddf478e995f95585ba74907330"
+    },
+    "mesh_plus.transport": {
+      "path": "mesh_plus/transport.py",
+      "root": "mesh_plus",
+      "sha256": "e5e589f84a0834a075e8ea3443acb7756ddb9f159cd4d12eaebeccee3856130c"
+    },
+    "mesh_plus.view": {
+      "path": "mesh_plus/view.py",
+      "root": "mesh_plus",
+      "sha256": "9efa74e1f0b69a293b0f454be937d3580c5cd986e94fbe0edcd7a5a039bdbe6c"
+    }
+  },
+  "loadedRows": 2,
+  "managedEndpointQualified": true,
+  "meshCommit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+  "oldParkedRows": 496,
+  "pendingWorkerCleanup": [],
+  "privateRuntimeDirectory": {
+    "defaultTempRoot": "/tmp",
+    "device": 50,
+    "inode": 1165098,
+    "maxSocketPathBytes": 54,
+    "mode": 448,
+    "path": "/tmp/joined-sdk-py314-r1-muycun9m",
+    "requiredStrictlyBelowBytes": 104,
+    "socketPathBytes": {
+      "meshFullReader": 48,
+      "meshWorkingReader": 51,
+      "observerService": 46,
+      "producerUnused": 54
+    },
+    "uid": 1000
+  },
+  "profileOrder": [
+    "full",
+    "working"
+  ],
+  "pythonGcEnabledAtTrialEntry": true,
+  "pythonGcMode": "normal-enabled-no-explicit-collect",
+  "readJoin": {
+    "complete2000RowNativeCase": false,
+    "completeCurrent72HourUnion": true,
+    "generations": [
+      {
+        "acceptedHistoryCounter": 1,
+        "acceptedHistoryRuntimeCountersAndSampleStable": true,
+        "acceptedRuntimeCounter": 2,
+        "acceptedStateRevision": 2,
+        "allEightFacadesSameSelectedDto": true,
+        "expectedIdsMatched": true,
+        "fullBodyBytes": 902253,
+        "fullRows": 500,
+        "generation": 1,
+        "historySampleId": "028ed5b9-8e61-4a68-84f0-786c46a6181a",
+        "sameServiceIdAndAcceptedStateRevision": true,
+        "selectedBodyBytes": 7469,
+        "selectedBodyFraction": 0.008278165880301867,
+        "selectedRows": 4,
+        "workingCoverageComplete": true,
+        "workingViewRevision": 2,
+        "workingViewRevisionStableWithinNamespace": true
+      },
+      {
+        "acceptedHistoryCounter": 2,
+        "acceptedHistoryRuntimeCountersAndSampleStable": true,
+        "acceptedRuntimeCounter": 4,
+        "acceptedStateRevision": 4,
+        "allEightFacadesSameSelectedDto": true,
+        "expectedIdsMatched": true,
+        "fullBodyBytes": 902253,
+        "fullRows": 500,
+        "generation": 2,
+        "historySampleId": "f5f00820-1c5f-4b0f-b5e8-5d028396c74b",
+        "sameServiceIdAndAcceptedStateRevision": true,
+        "selectedBodyBytes": 7469,
+        "selectedBodyFraction": 0.008278165880301867,
+        "selectedRows": 4,
+        "workingCoverageComplete": true,
+        "workingViewRevision": 4,
+        "workingViewRevisionStableWithinNamespace": true
+      },
+      {
+        "acceptedHistoryCounter": 3,
+        "acceptedHistoryRuntimeCountersAndSampleStable": true,
+        "acceptedRuntimeCounter": 6,
+        "acceptedStateRevision": 6,
+        "allEightFacadesSameSelectedDto": true,
+        "expectedIdsMatched": true,
+        "fullBodyBytes": 902253,
+        "fullRows": 500,
+        "generation": 3,
+        "historySampleId": "a1f51007-cea3-4e94-8d5f-ee811655bae7",
+        "sameServiceIdAndAcceptedStateRevision": true,
+        "selectedBodyBytes": 7469,
+        "selectedBodyFraction": 0.008278165880301867,
+        "selectedRows": 4,
+        "workingCoverageComplete": true,
+        "workingViewRevision": 6,
+        "workingViewRevisionStableWithinNamespace": true
+      }
+    ],
+    "sameFinalIdsAllGenerations": true,
+    "selectedIds": [
+      "00000001-1234-4234-8234-000000000001",
+      "00000002-1234-4234-8234-000000000002",
+      "00000003-1234-4234-8234-000000000003",
+      "00000004-1234-4234-8234-000000000004"
+    ],
+    "workingSetFrameBytes": 8404992,
+    "workingSetIdentityLimit": 4096,
+    "workingSetLedgerBytes": 1048576,
+    "workingSetWindowMs": 259200000
+  },
+  "readWindowMs": 259200000,
+  "recentParkedRows": 2,
+  "replicate": 1,
+  "rows": 500,
+  "runtimes": {
+    "defaultWorkingSetWindowMs": 259200000,
+    "oneSharedWorkingSetEnabledState": true,
+    "producerRuntimeUsesDefaultCanonicalFactory": true,
+    "producerRuntimeUsesDefaultScheduler": true,
+    "producerWorkerArgv": [
+      "/home/bryan/code/mesh-plus/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/bryan/.cache/agent-observer-working-set-20261018/final-source-b176ac06/agent_observer/_service_worker.py"
+    ],
+    "schedulerIntervalsMs": {
+      "history": 60000,
+      "runtime": 2000
+    },
+    "servingRuntimeCollect": false,
+    "servingRuntimeHeartbeatMs": 10000,
+    "workerTimeoutMs": 10000
+  },
+  "savedRows": 498,
+  "schema": "observer-joined-canonical-sdk-500.v2",
+  "source": "b176",
+  "sourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+  "sourcePins": {
+    "mesh": {
+      "commit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+      "manifestSha256": "d9d9c97f3171c0f6ec3bedcebafad86ee0d16e58b22e5024dbae1a79f5ad7f6a"
+    },
+    "observer": {
+      "commit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "manifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877"
+    }
+  },
+  "status": "pass",
+  "workerProcessCount": 6
+}

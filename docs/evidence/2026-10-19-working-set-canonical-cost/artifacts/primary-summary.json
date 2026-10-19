@@ -1,0 +1,153 @@
+{
+  "CPUAccounting": "parentselectedslices+directworkerswait4rusage+fixtureserverCPUonceperpair; parityparserexcluded",
+  "catalogLimit": 1000,
+  "cells": [
+    {
+      "medianComponentPairCpuMs": 396.66127,
+      "medianFixtureServerCpuMs": 67.542,
+      "medianParentCpuMs": 78.27277000000001,
+      "medianWorkerCpuMs": 250.8465,
+      "python": "py314",
+      "source": "a7"
+    },
+    {
+      "medianComponentPairCpuMs": 365.896755,
+      "medianFixtureServerCpuMs": 73.682,
+      "medianParentCpuMs": 57.053754999999995,
+      "medianWorkerCpuMs": 235.161,
+      "python": "py314",
+      "source": "b176"
+    },
+    {
+      "medianComponentPairCpuMs": 411.46464000000003,
+      "medianFixtureServerCpuMs": 56.5865,
+      "medianParentCpuMs": 78.21964,
+      "medianWorkerCpuMs": 276.6585,
+      "python": "py311",
+      "source": "a7"
+    },
+    {
+      "medianComponentPairCpuMs": 355.27951,
+      "medianFixtureServerCpuMs": 56.976,
+      "medianParentCpuMs": 56.39451,
+      "medianWorkerCpuMs": 241.909,
+      "python": "py311",
+      "source": "b176"
+    }
+  ],
+  "claim": "actual cold canonical worker+parent spawn/drain/strict parse; protocol-controlled500row fixture; State.accept, service/SDK delivery and actualnativeprovider excluded",
+  "complete2000NativeCase": false,
+  "defaultLoadedLimit": 512,
+  "fixedFixtureSha256": "2e6e43f1180a89da2a4b3557f118ee24eae6e334c6c14bcee0f057b8bad0b35f",
+  "fixtureServersReaped": 8,
+  "fullPipelineInputJoin": false,
+  "identityJoins": 8000,
+  "matrixElapsedSeconds": 5.84562115103472,
+  "maxSavedClassifications": 1000,
+  "nativeDistinctUnionCeiling": 1512,
+  "priorFailuresPreserved": [
+    "V1copiedELFstdlibrarysetup",
+    "V3fixturetestmoduleimportswrongselectedpackage,oldworkercleanupunprovedretained",
+    "V4BASEpreexecutionguardthenCounterNameError;actualworkerexit0,allcleanuptrue",
+    "V5correctcomponentsbutwrong3vs5connectionexpectation,allcleanuptrue"
+  ],
+  "sameRawStrictParserJoins": 16,
+  "schema": "working-set-canonical-component-summary.v1",
+  "scopeLimit": "The componentfixture differs from SDK watchbench inputs. This is not a literal joined500row completepipeline measurement or an endtoend producerCPUgate pass.",
+  "sources": {
+    "a7": "/home/bryan/.cache/agent-observer-working-set-20261018/owner-screen-59b1211/a7",
+    "b176": "/home/bryan/.cache/agent-observer-working-set-20261018/final-source-b176ac06"
+  },
+  "status": "pass",
+  "trials": [
+    {
+      "componentPairCpuMs": 428.09335,
+      "parentCpuMs": 80.39435,
+      "python": "py311",
+      "receipt": "py311-a7-r1.json",
+      "receiptSha256": "fdb69bbfc12aed71f202d22de45305eb5b0ba01fac7b4cd9929475a040228d90",
+      "replicate": 1,
+      "serverCpuMs": 59.303,
+      "source": "a7",
+      "workerCpuMs": 288.396
+    },
+    {
+      "componentPairCpuMs": 369.57375,
+      "parentCpuMs": 57.09775,
+      "python": "py314",
+      "receipt": "py314-b176-r1.json",
+      "receiptSha256": "279bb1fffcdfa52d052e94a5ddd45074f312b2df874bf9e8d0afccf57cb99392",
+      "replicate": 1,
+      "serverCpuMs": 73.846,
+      "source": "b176",
+      "workerCpuMs": 238.63
+    },
+    {
+      "componentPairCpuMs": 395.9013,
+      "parentCpuMs": 78.0373,
+      "python": "py314",
+      "receipt": "py314-a7-r1.json",
+      "receiptSha256": "c857de65c2db54dd062d4d715e9c8a17d636a6116107c3b13ec36eb130a65407",
+      "replicate": 1,
+      "serverCpuMs": 67.14,
+      "source": "a7",
+      "workerCpuMs": 250.724
+    },
+    {
+      "componentPairCpuMs": 351.49243,
+      "parentCpuMs": 56.55443,
+      "python": "py311",
+      "receipt": "py311-b176-r1.json",
+      "receiptSha256": "7f3725a9b812dfe4421e8b4deacd62dd9856d8593aae898ca3d06d356cc8943a",
+      "replicate": 1,
+      "serverCpuMs": 55.935,
+      "source": "b176",
+      "workerCpuMs": 239.003
+    },
+    {
+      "componentPairCpuMs": 359.06659,
+      "parentCpuMs": 56.23459,
+      "python": "py311",
+      "receipt": "py311-b176-r2.json",
+      "receiptSha256": "8734e1076f9e4c8eee43de9045a24c0464eec3b452352c3c09132f9ef1f93051",
+      "replicate": 2,
+      "serverCpuMs": 58.017,
+      "source": "b176",
+      "workerCpuMs": 244.815
+    },
+    {
+      "componentPairCpuMs": 397.42124,
+      "parentCpuMs": 78.50824,
+      "python": "py314",
+      "receipt": "py314-a7-r2.json",
+      "receiptSha256": "85aa8098cb12a52ec7b12411384a1bb7736c1b49c7937534c885eaaf440b23a1",
+      "replicate": 2,
+      "serverCpuMs": 67.944,
+      "source": "a7",
+      "workerCpuMs": 250.969
+    },
+    {
+      "componentPairCpuMs": 362.21976,
+      "parentCpuMs": 57.00976,
+      "python": "py314",
+      "receipt": "py314-b176-r2.json",
+      "receiptSha256": "7d5dd82db3ce9aff7246315a8d3460fdafde6fd521b9b1c86fdd6a01270e05f9",
+      "replicate": 2,
+      "serverCpuMs": 73.518,
+      "source": "b176",
+      "workerCpuMs": 231.692
+    },
+    {
+      "componentPairCpuMs": 394.83593,
+      "parentCpuMs": 76.04493,
+      "python": "py311",
+      "receipt": "py311-a7-r2.json",
+      "receiptSha256": "ca7e715ebec90acbbf793af989e7b2bc5098ff038fb7412daa6d13eb65e58c5c",
+      "replicate": 2,
+      "serverCpuMs": 53.87,
+      "source": "a7",
+      "workerCpuMs": 264.921
+    }
+  ],
+  "workersReapedAndVerified": 16
+}

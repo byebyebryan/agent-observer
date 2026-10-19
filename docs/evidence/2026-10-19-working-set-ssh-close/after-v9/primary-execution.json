@@ -1,0 +1,8 @@
+{
+  "returncode": 0,
+  "elapsedSeconds": 5.645729832001962,
+  "sharedLock": true,
+  "planSha256": "ea146442216edb39739603e5df2bd12b51d0541e44a3a984d4ce62ee8885faa3",
+  "stdoutSha256": "ee8d80e5a83afdbbeacf1746f74de734facc39bfb219802ff6260a4576d02235",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

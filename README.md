@@ -20,9 +20,11 @@ Starship device gates.
 
 ## Current status
 
-The opt-in [active + recent projection](docs/working-set-projection-plan.md)
-is being implemented with a 3-day history window after joint contract review.
-Producer qualification and delivery gates remain open; normal roles are unchanged.
+The opt-in [active + recent projection](docs/working-set-producer-checkpoint.md)
+is implemented with a 3-day history window and additive Mesh SDK1 support.
+Controlled IPC, private installed pairs and fixed SSH pass. Producer qualification
+remains gated on independent native evidence and the stated cost/resource limits;
+normal roles are unchanged.
 
 Snapshot/delta-sync is an unreleased, [deferred dark feature](docs/delta-sync-dark-feature.md).
 The local runtime denies sync requests by default; controlled library experiments

@@ -1,0 +1,22 @@
+{
+  "schema": "primary-joined-canonical-sdk-preexecution-review.v1",
+  "status": "reviewed-for-first-case",
+  "fileSha256": {
+    "joined_sdk_trial.py": "a6de67c0676cb3be611a0dc26043176dccd87a6647f8c89423cf6b0bc7adfa98",
+    "fixture_server.py": "a57f5ae6ed70bad29aeb2010eb50ce205794b63242bc1a255e722cd7bfad04f4",
+    "measurement-plan.md": "120345fc0543e313b3f148bf08895b4f35fdaa45e5ac00b574e877bae464fa34",
+    "preparation-receipt.json": "426f4f5c155786a8ad13e63b78f9860be9f4c53cc41638d4c7962b95fb09215d"
+  },
+  "reviewedBoundaries": [
+    "actual canonical Runtime._start_worker/default capturedfactory, WNOWAIT before stop-group/wait/strictparse/State.accept",
+    "original worker and case deadlines",
+    "sameaccepted history sample and counters, separate projection/observation revisions",
+    "short private owned socket directory and no ordinaryprovider/endpoint",
+    "actual two-profile ordinarypublic Reader/proof/facade, fournewwatches/profile/gen andretirement",
+    "continuousprocessCPU/directworkerwait4/fixtureproviderCPUonce, normalGC/defaultheartbeat",
+    "fullproductselectioninsideF, oraclejoinsaftertiming, noCPUsubtractions",
+    "defaultcanonicalcaps and explicitnoactual2kclaim",
+    "onlyexactownedprocess/endpoint/config cleanup"
+  ],
+  "trialPlan": "py311-r1 first; inspect full result and cleanup before any remaining3cases; no warmup or failedcaseretry"
+}

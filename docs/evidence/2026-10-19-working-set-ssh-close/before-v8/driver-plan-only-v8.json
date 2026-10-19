@@ -1,0 +1,17 @@
+{
+  "driverOutput": {
+    "driverSha256": "96c87ba3548989a065954db85ec6ad21bb9d21c70436987c436a7bf7d702a14c",
+    "manifestSha256": "c20056bbc4a9442fd71a61bc6e48d0d97233a70739416a1f718bade983ff288f",
+    "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
+    "readerRunnerSha256": "5b58c58edeb09418a8f8fd6e2cb86dcf08e428dd26dfdb4610a8e8fe33fdd5f5",
+    "remoteReceiverSha256": "911a7a513fd7d3305c99eb20b6f96cc59eee0ca685a5c03f80b6475a9ca1c9c7",
+    "sshExecuted": false,
+    "status": "ready_for_primary_review",
+    "transferPerformed": false
+  },
+  "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
+  "schema": "agent-observer.fixed-ssh-v8-plan-only.v1",
+  "sshExecuted": false,
+  "status": "pass",
+  "transferPerformed": false
+}

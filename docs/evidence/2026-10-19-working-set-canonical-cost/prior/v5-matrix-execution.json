@@ -1,0 +1,92 @@
+{
+  "order": [
+    [
+      "py311",
+      "a7",
+      1
+    ],
+    [
+      "py314",
+      "b176",
+      1
+    ],
+    [
+      "py314",
+      "a7",
+      1
+    ],
+    [
+      "py311",
+      "b176",
+      1
+    ],
+    [
+      "py311",
+      "b176",
+      2
+    ],
+    [
+      "py314",
+      "a7",
+      2
+    ],
+    [
+      "py314",
+      "b176",
+      2
+    ],
+    [
+      "py311",
+      "a7",
+      2
+    ]
+  ],
+  "pins": {
+    "measure_common_cost.py": "07733e076c941968fcd8f0491d5f55392ad0735d32f4c6014259798495a6b4dc",
+    "fixture_server.py": "17c0246d4ca51388d6adf2f3e6948a96e7343a210ed33f63c5263ca7138c7c4d"
+  },
+  "cases": [
+    {
+      "python": "py311",
+      "source": "a7",
+      "replicate": 1,
+      "returncode": 1,
+      "elapsedSeconds": 0.7484270440181717,
+      "command": [
+        "rtk",
+        "proxy",
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v5/measure_common_cost.py",
+        "--source",
+        "a7",
+        "--interpreter",
+        "py311",
+        "--replicate",
+        "1"
+      ],
+      "receiptExists": true,
+      "status": "failed",
+      "failureStage": "verify_fixture_protocol",
+      "failureReason": "fixture_server_protocol_failed",
+      "cleanup": {
+        "canonicalWorkerReaped": true,
+        "endpointDirectoryRemoved": true,
+        "fixtureServerReaped": true,
+        "ownedEndpointRemoved": true,
+        "privateConfigHomeRemoved": true,
+        "sharedLockReleased": true
+      },
+      "accounting": {
+        "canonicalWorkerDirectChildCpuNs": 269988000,
+        "conservativeComponentPairCpuNs": 403741880,
+        "fixtureServerDirectChildCpuNsAddedOnce": 57521000,
+        "parentMeasuredSlicesCpuNs": 76232880,
+        "qualification": "controlled runtime/history component-pair accounting; State.accept and the joined service pipeline are excluded"
+      }
+    }
+  ],
+  "elapsedSeconds": 0.7487083449959755,
+  "timingType": "16coldworker invocations, no warmup, percaseexclusive lock, componentonly"
+}

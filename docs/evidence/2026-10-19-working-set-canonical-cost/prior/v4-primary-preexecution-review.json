@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "scope": "offline fixture factory/source import hygiene; no endpoint or worker/timing",
+  "priorFailure": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v3/py311-a7-r1.json",
+  "fixtureBytesExact": true,
+  "fixtureRows": 500,
+  "fixtureImportedObserver": false,
+  "runnerSha256": "80930cc214e88dddeb4880efacc16639e39751e6d304819763e21ef0075bae50",
+  "fixtureServerSha256": "17c0246d4ca51388d6adf2f3e6948a96e7343a210ed33f63c5263ca7138c7c4d",
+  "sourceSelectorNotOverwritten": true,
+  "priorCleanupUnprovedRetained": true
+}

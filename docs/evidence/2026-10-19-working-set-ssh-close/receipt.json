@@ -1,0 +1,56 @@
+{
+  "schema": "agent-observer.working-set-fixed-ssh-close-receipt.v1",
+  "status": "pass-installed-synthetic-fixed-ssh",
+  "source": {
+    "observer": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "mesh": "bfa91a6936a089d37c1a83752d3267148ba7dc69"
+  },
+  "planSha256": "ea146442216edb39739603e5df2bd12b51d0541e44a3a984d4ce62ee8885faa3",
+  "wheelSha256": {
+    "observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+    "mesh": "9522a60535766d8310acfa5db5b38400a2dd519276bd3d2344eeb65584ca8f62"
+  },
+  "privatePackageArtifactCount": 88,
+  "testsPerPython": {
+    "observer": 8,
+    "meshTerminal": 27,
+    "meshRegistration": 3,
+    "meshCloseOrder": 2
+  },
+  "actualSsh": {
+    "host": "snap",
+    "python": "3.14.8",
+    "elapsedSeconds": 5.645729832001962,
+    "selectedRows": 2,
+    "uncertain": 0,
+    "coverage": "complete",
+    "freshProofNonces": 2,
+    "bridgeCliExit": 0,
+    "sdkOwnedSshExit": 0,
+    "gracefulEof": true,
+    "ownedProcessRuntimeAndPathsRetired": true
+  },
+  "beforeV8": {
+    "mesh": "b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+    "status": "functional_cleanup_pass_transport_terminal",
+    "bridgeCliExit": 1,
+    "error": "RemoteBridgeEOFError",
+    "sdkOwnedSshExit": 255,
+    "gracefulEof": false,
+    "preserved": true
+  },
+  "artifactInventories": [
+    "before-artifacts.json",
+    "new-package-artifacts.json",
+    "after-artifacts.json"
+  ],
+  "sourceCorrectionOwningReceipt": "mesh-source-fix/receipt.json",
+  "boundaries": {
+    "syntheticCollectFalse": true,
+    "nativeProviderInvoked": false,
+    "normalServiceOrSelectionChanged": false,
+    "cpuOrRssEvidenceReattributed": false,
+    "wholeProducerAcceptance": false,
+    "starshipNativeConflictStillOpen": true
+  }
+}

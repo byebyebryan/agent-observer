@@ -1,0 +1,22 @@
+{
+  "coverage": "byte-for-byte copied source exports, exact build input set, and application wheel pins; no native provider or deployment checks",
+  "mesh": {
+    "archiveSha256FromPinnedExportManifest": "363210745e3a965469b23e85111652f589ad9c645e72eeda51f3f4a9cfe8e0ad",
+    "buildInputFiles": 101,
+    "buildInputManifestSha256": "70f8d8e2b5ea5424e9b198f6e373a46f9c1cd9f885268fd700d2d61fd460dd8b",
+    "commit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+    "manifestSha256": "d9d9c97f3171c0f6ec3bedcebafad86ee0d16e58b22e5024dbae1a79f5ad7f6a",
+    "sourceFiles": 1728,
+    "sourceTreeInventorySha256": "0857652909f3e9a072689329a229809ad807129b489b65b88e4bfb4e13097627",
+    "wheelSha256": "9522a60535766d8310acfa5db5b38400a2dd519276bd3d2344eeb65584ca8f62"
+  },
+  "observer": {
+    "commit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "manifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877",
+    "sourceFiles": 2223,
+    "sourceTreeInventorySha256": "72315759ca32ce811f06739f616ba8cf86d706788f049cf68801c171d975df07",
+    "wheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+  },
+  "schema": "agent-observer.installed-pair-source-inputs.v1",
+  "status": "pass"
+}

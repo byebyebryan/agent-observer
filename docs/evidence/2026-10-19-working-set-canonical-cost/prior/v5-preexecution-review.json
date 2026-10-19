@@ -1,0 +1,10 @@
+{
+  "scope": "corrected exactsame500row/source/coldcomponent matrix",
+  "runnerSha256": "07733e076c941968fcd8f0491d5f55392ad0735d32f4c6014259798495a6b4dc",
+  "upstreamV4Failure": "missing Counter import in measurement-only join verification, allownersretired",
+  "priorReceiptsUntouched": true,
+  "BASE": "frozenownparent",
+  "newWorkerLimit": 16,
+  "noWarmups": true,
+  "notFullPipeline": true
+}

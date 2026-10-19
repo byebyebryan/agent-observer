@@ -1,0 +1,5 @@
+{
+  "completedAt": "2026-10-19T08:03:51+00:00",
+  "failure": "RuntimeError:trial_failed:py314:rows100:reads0:a7-full:rc-25",
+  "status": "failed"
+}

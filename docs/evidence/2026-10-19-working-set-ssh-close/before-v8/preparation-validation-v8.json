@@ -1,0 +1,79 @@
+{
+  "embeddedRemoteSourcesParsed": 3,
+  "offlineInstallSimulation": {
+    "bootstrapReceiptSha256": "545d5de6f61fa2b6369fdc98b111879e580c3d7b340e2023f7f8050ad3323a77",
+    "copiedExecutableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+    "copyMode": true,
+    "exactWheelInstallNoDeps": true,
+    "installedRecordCheck": "pass",
+    "installerStdout": "{\"host\": \"starship\", \"pipCheck\": \"pass\", \"publicSurface\": \"pass\", \"receipt\": \"/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/offline-simulation-v8-attempt1/package/fixed-ssh-v8/working-set-fixed-ssh-v8-bootstrap.json\", \"recordCheck\": \"pass\", \"schema\": \"agent-observer.working-set-fixed-ssh-v8-bootstrap.v1\", \"status\": \"pass\", \"uid\": 1000, \"wheelHashesExact\": true}",
+    "offlineNoIndexRequireHashes": true,
+    "packageRoot": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/offline-simulation-v8-attempt1/package",
+    "pep610": {
+      "agent-observer": {
+        "wheelName": "agent_observer-0.7.0a7-py3-none-any.whl",
+        "wheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+      },
+      "mesh-plus": {
+        "wheelName": "mesh_plus-0.1.0a23-py3-none-any.whl",
+        "wheelSha256": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+      }
+    },
+    "pipCheck": "pass",
+    "publicSurface": "pass",
+    "pythonVersion": "3.14.8",
+    "status": "pass",
+    "targetIsSeparateSimulation": true
+  },
+  "packageFacts": {
+    "existing79ArtifactManifestSha256": "ca2e05091cac27746cf072271179d62bfb268e3cd4ce1070e819baa888fdf4e8",
+    "fixtureSourceCopiesExact": true,
+    "manifestBytes": 14170,
+    "manifestSha256": "c20056bbc4a9442fd71a61bc6e48d0d97233a70739416a1f718bade983ff288f",
+    "payloadFileCount": 24,
+    "payloadRawBytes": 1381052
+  },
+  "plan": {
+    "driverPlanOnlyOutput": {
+      "driverSha256": "96c87ba3548989a065954db85ec6ad21bb9d21c70436987c436a7bf7d702a14c",
+      "manifestSha256": "c20056bbc4a9442fd71a61bc6e48d0d97233a70739416a1f718bade983ff288f",
+      "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
+      "readerRunnerSha256": "5b58c58edeb09418a8f8fd6e2cb86dcf08e428dd26dfdb4610a8e8fe33fdd5f5",
+      "remoteReceiverSha256": "911a7a513fd7d3305c99eb20b6f96cc59eee0ca685a5c03f80b6475a9ca1c9c7",
+      "sshExecuted": false,
+      "status": "ready_for_primary_review",
+      "transferPerformed": false
+    },
+    "driverPlanOnlyReport": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/driver-plan-only-v8.json",
+    "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
+    "simulation": {
+      "bootstrapReceiptSha256": "545d5de6f61fa2b6369fdc98b111879e580c3d7b340e2023f7f8050ad3323a77",
+      "copiedExecutableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+      "copyMode": true,
+      "exactWheelInstallNoDeps": true,
+      "installedRecordCheck": "pass",
+      "installerStdout": "{\"host\": \"starship\", \"pipCheck\": \"pass\", \"publicSurface\": \"pass\", \"receipt\": \"/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/offline-simulation-v8-attempt1/package/fixed-ssh-v8/working-set-fixed-ssh-v8-bootstrap.json\", \"recordCheck\": \"pass\", \"schema\": \"agent-observer.working-set-fixed-ssh-v8-bootstrap.v1\", \"status\": \"pass\", \"uid\": 1000, \"wheelHashesExact\": true}",
+      "offlineNoIndexRequireHashes": true,
+      "packageRoot": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/offline-simulation-v8-attempt1/package",
+      "pep610": {
+        "agent-observer": {
+          "wheelName": "agent_observer-0.7.0a7-py3-none-any.whl",
+          "wheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+        },
+        "mesh-plus": {
+          "wheelName": "mesh_plus-0.1.0a23-py3-none-any.whl",
+          "wheelSha256": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+        }
+      },
+      "pipCheck": "pass",
+      "publicSurface": "pass",
+      "pythonVersion": "3.14.8",
+      "status": "pass",
+      "targetIsSeparateSimulation": true
+    }
+  },
+  "pythonSourceCount": 15,
+  "remoteExecution": "not run",
+  "schema": "agent-observer.fixed-ssh-v8-preparation-validation.v1",
+  "status": "pass"
+}

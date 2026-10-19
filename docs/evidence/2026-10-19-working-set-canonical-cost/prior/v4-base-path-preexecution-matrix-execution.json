@@ -1,0 +1,74 @@
+{
+  "order": [
+    [
+      "py311",
+      "a7",
+      1
+    ],
+    [
+      "py314",
+      "b176",
+      1
+    ],
+    [
+      "py314",
+      "a7",
+      1
+    ],
+    [
+      "py311",
+      "b176",
+      1
+    ],
+    [
+      "py311",
+      "b176",
+      2
+    ],
+    [
+      "py314",
+      "a7",
+      2
+    ],
+    [
+      "py314",
+      "b176",
+      2
+    ],
+    [
+      "py311",
+      "a7",
+      2
+    ]
+  ],
+  "pins": {
+    "measure_common_cost.py": "80930cc214e88dddeb4880efacc16639e39751e6d304819763e21ef0075bae50",
+    "fixture_server.py": "17c0246d4ca51388d6adf2f3e6948a96e7343a210ed33f63c5263ca7138c7c4d"
+  },
+  "cases": [
+    {
+      "python": "py311",
+      "source": "a7",
+      "replicate": 1,
+      "returncode": 1,
+      "elapsedSeconds": 0.055611538991797715,
+      "command": [
+        "rtk",
+        "proxy",
+        "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+        "-I",
+        "-B",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v4/measure_common_cost.py",
+        "--source",
+        "a7",
+        "--interpreter",
+        "py311",
+        "--replicate",
+        "1"
+      ],
+      "receiptExists": false
+    }
+  ],
+  "elapsedSeconds": 0.05574018898187205,
+  "timingType": "16coldworker invocations, no warmup, percaseexclusive lock, componentonly"
+}

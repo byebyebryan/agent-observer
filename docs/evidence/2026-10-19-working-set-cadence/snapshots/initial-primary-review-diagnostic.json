@@ -1,0 +1,1 @@
+{"classification":"offline reviewer scalar-versus-member-list assertion error; no producer rerun or source mutation", "actual":"workingScopeMembers is count2; full IDs are in workingScope.memberIds", "assertion":"workingScopeMembers == selectedIds"}

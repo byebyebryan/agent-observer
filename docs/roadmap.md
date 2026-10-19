@@ -1,9 +1,10 @@
 # Agent Observer roadmap
 
-A [generalized active + recent projection](working-set-projection-plan.md) is
-being implemented as an opt-in source with a 3-day window after joint P1
-contract review. Producer clock/timer/native integration, capacity, cost and
-delivery gates remain open. No normal role or consumer is selected. This work
+A [generalized active + recent projection](working-set-producer-checkpoint.md) is
+implemented as an opt-in source with a 3-day window and additive Mesh SDK1
+registration. Controlled public Reader IPC, private installed pairs and fixed
+SSH pass; independent native qualification and the stated cost/resource limits
+still gate producer acceptance. No normal role or consumer is selected. This work
 uses complete replacements and does not reopen delta synchronization.
 
 Snapshot/delta synchronization is [deferred behind a default-off gate](delta-sync-dark-feature.md)

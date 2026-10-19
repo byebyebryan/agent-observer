@@ -1,0 +1,716 @@
+{
+  "artifacts": [
+    {
+      "bytes": 851,
+      "path": "applications-311-v9-r2-stage.json",
+      "sha256": "716fa84239a71b6cf55c207a037f6d93c8e89545a982996f3aa87fbaca23fb28"
+    },
+    {
+      "bytes": 0,
+      "path": "applications-311-v9-r2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 238,
+      "path": "applications-311-v9-r2.stdout",
+      "sha256": "0733a57dd47179731123ee64456dea619895ec9ce4a304b172298c26905fd94c"
+    },
+    {
+      "bytes": 851,
+      "path": "applications-314-v9-r2-stage.json",
+      "sha256": "aefaad37ea041bfb5c543f3ab48a422b4d159c27bb3a40f3d01dd1e770d2e95c"
+    },
+    {
+      "bytes": 0,
+      "path": "applications-314-v9-r2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 239,
+      "path": "applications-314-v9-r2.stdout",
+      "sha256": "697432280706f9df2751f86bfa0a708fa13209596b22b2fa91c39e4cc058214a"
+    },
+    {
+      "bytes": 2559,
+      "path": "build_mesh_wheel-v9-r1.py",
+      "sha256": "c1793fc1057419c0864fd6f3a297c449b6e453b1fa4b83724d461662b7107005"
+    },
+    {
+      "bytes": 0,
+      "path": "dependencies-311-v9-r1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1710,
+      "path": "dependencies-311-v9-r1.stdout",
+      "sha256": "6b57eb7c9f44b6aad198c7cf85d0c98e70dfcb2dfd3f6c0b17c1045fc20519fe"
+    },
+    {
+      "bytes": 853,
+      "path": "dependencies-311-v9-r2-stage.json",
+      "sha256": "b6890bc1545007ed35aacab33b141bf05b9ec61da741b3a83076b1623e02d491"
+    },
+    {
+      "bytes": 0,
+      "path": "dependencies-311-v9-r2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1597,
+      "path": "dependencies-311-v9-r2.stdout",
+      "sha256": "f8f1d4523b2dafc9d1e647c963661bc3a3b5ae8fb7ba1d21db122d9163c8f09e"
+    },
+    {
+      "bytes": 853,
+      "path": "dependencies-314-v9-r2-stage.json",
+      "sha256": "9dbc665ccf971f780a9669c665da6f67a73322eb1005332b522a9f04cec29e21"
+    },
+    {
+      "bytes": 0,
+      "path": "dependencies-314-v9-r2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1451,
+      "path": "dependencies-314-v9-r2.stdout",
+      "sha256": "8cd431159328ca51f8c57fbb08099cf29a8a868135950bde8430dd81d10c7235"
+    },
+    {
+      "bytes": 607,
+      "path": "dependency-requirements-311.txt",
+      "sha256": "3d42319e264dfcd35a820113e71152fedc3b12d70ceec44c91145fff67322138"
+    },
+    {
+      "bytes": 502,
+      "path": "dependency-requirements-314.txt",
+      "sha256": "10cf830034f0bffea89eaa113f14a54e3481c8c068284a898f8860a1ff41b310"
+    },
+    {
+      "bytes": 2912,
+      "path": "dependency-wheelhouse-manifest.json",
+      "sha256": "c3dc47697bc41205120d33f5dd78081207a2331614e17823d9aa425b5974af61"
+    },
+    {
+      "bytes": 67548,
+      "path": "dependency-wheels-311/attrs-26.1.0-py3-none-any.whl",
+      "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+    },
+    {
+      "bytes": 90630,
+      "path": "dependency-wheels-311/jsonschema-4.26.0-py3-none-any.whl",
+      "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+    },
+    {
+      "bytes": 18437,
+      "path": "dependency-wheels-311/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+    },
+    {
+      "bytes": 26766,
+      "path": "dependency-wheels-311/referencing-0.37.0-py3-none-any.whl",
+      "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+    },
+    {
+      "bytes": 375426,
+      "path": "dependency-wheels-311/rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "136a1c3fe4402b7008bc81cb62ee538481795b61a7e83df88dff3b3f02b726ff"
+    },
+    {
+      "bytes": 45571,
+      "path": "dependency-wheels-311/typing_extensions-4.16.0-py3-none-any.whl",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    },
+    {
+      "bytes": 67548,
+      "path": "dependency-wheels-314/attrs-26.1.0-py3-none-any.whl",
+      "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+    },
+    {
+      "bytes": 90630,
+      "path": "dependency-wheels-314/jsonschema-4.26.0-py3-none-any.whl",
+      "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+    },
+    {
+      "bytes": 18437,
+      "path": "dependency-wheels-314/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+    },
+    {
+      "bytes": 26766,
+      "path": "dependency-wheels-314/referencing-0.37.0-py3-none-any.whl",
+      "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+    },
+    {
+      "bytes": 371623,
+      "path": "dependency-wheels-314/rpds_py-2026.9.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "eac2f5dbafd585dfe31f86a23ebf0d3ba480a9d49ebc87947267b5608d4ea0cd"
+    },
+    {
+      "bytes": 10314,
+      "path": "finalize-installed-pair-v9-r2.py",
+      "sha256": "35330db4bcf25ef1faba486d806135d4779436294ff80884ffae9907e3ad4905"
+    },
+    {
+      "bytes": 537,
+      "path": "finalize-installed-pair-v9-r3-attempt.json",
+      "sha256": "e1dde205f6b8cdb6ce2243b15337a2dd1b3574bf5d5ead4bbec571283649f44d"
+    },
+    {
+      "bytes": 10323,
+      "path": "finalize-installed-pair-v9-r3.py",
+      "sha256": "dc6f211bb51bb3411e3e9be429cd14cb6a15f4cd3446c610342f45b729676e43"
+    },
+    {
+      "bytes": 10459,
+      "path": "finalize-installed-pair-v9-r4.py",
+      "sha256": "35c6119e531574f1543b233134751436c6a647f59bb0c88cb50737a4b919ed9c"
+    },
+    {
+      "bytes": 9706,
+      "path": "finalize-installed-pair-v9.py",
+      "sha256": "a433b71cfb76813e569a159bc8dfdfff3d5dd1b4bbe8e0731fa68be8699f9eff"
+    },
+    {
+      "bytes": 3854,
+      "path": "install-v9-offline-r1.py",
+      "sha256": "8fd6f7ea8a5e94f5b982589300486fd4d03b26bc89a5cf98733a8399d1f9ff9c"
+    },
+    {
+      "bytes": 4258,
+      "path": "install-v9-offline-r2.py",
+      "sha256": "1bceab88b0699a43713fcc1881fdad234c13f511a5dcf1c59a838f35b659cb43"
+    },
+    {
+      "bytes": 644,
+      "path": "install-v9-r1-attempt.json",
+      "sha256": "9a1678c3a68e74e51023974ba332b48d08dc69b881b2f109ee2a9067bf537a11"
+    },
+    {
+      "bytes": 590,
+      "path": "install-v9-r1-progress.json",
+      "sha256": "7f9e55a2bc08631908ca80bcf772262a18d74d6d3edca6743ca19dbceaa0adaa"
+    },
+    {
+      "bytes": 5757,
+      "path": "install-v9-r2-result.json",
+      "sha256": "4e77adb09c9da386aeed61c1b28e8b8a3cdd8675dc9ad2bef4f05b03a605373e"
+    },
+    {
+      "bytes": 849,
+      "path": "installed-mesh-registration-tests-311.json",
+      "sha256": "28d58a46a0075936be32fc1e0ab7dfcb1eabacdfa8bf953684a0a86110a058fb"
+    },
+    {
+      "bytes": 848,
+      "path": "installed-mesh-registration-tests-314.json",
+      "sha256": "6fcae0047038e6c5e0d3019939bda0a8c2c267f388eb9ead833b39aec1cea097"
+    },
+    {
+      "bytes": 770,
+      "path": "installed-mesh-terminal-tests-311.json",
+      "sha256": "eac060ad2ed05376cd12495b20b5d040204cc6f14bf569968f8a88215ac6710e"
+    },
+    {
+      "bytes": 769,
+      "path": "installed-mesh-terminal-tests-314.json",
+      "sha256": "f8e40e443399f6bc53cd529bde86833d0885d4bf396e798e5418425bec9e3b08"
+    },
+    {
+      "bytes": 2177,
+      "path": "installed-mesh-transport-tests-311.json",
+      "sha256": "1f31a854524b9dac048bc3677642d6d9c9835e6befa7d5e517b399ab4f9aa7c3"
+    },
+    {
+      "bytes": 2176,
+      "path": "installed-mesh-transport-tests-314.json",
+      "sha256": "d8d254d915cde80cd99ccd2390e1a279ade8eda0c7f91299b7cda09714bc0d1b"
+    },
+    {
+      "bytes": 1308,
+      "path": "installed-records-311.json",
+      "sha256": "435cd9e2d9e7d5a1fd422fb170d389d0d1f549a03993be39ebb505f630ca4bb6"
+    },
+    {
+      "bytes": 1307,
+      "path": "installed-records-314.json",
+      "sha256": "ae6798bb9aec2192d579fd75d550e091328a6b48144718d094b00507017a7883"
+    },
+    {
+      "bytes": 910,
+      "path": "installed-transport-runner-v9-r1-attempt.json",
+      "sha256": "e7d908f0ddad352698d8bd7f676927a612b456b75257e59306e282208e36aa2c"
+    },
+    {
+      "bytes": 1034,
+      "path": "installed-working-set-tests-311.json",
+      "sha256": "18ca127d9ebe71edd83f9b683e3bf4e581f04135a9f98446feecbf66d42128bd"
+    },
+    {
+      "bytes": 1033,
+      "path": "installed-working-set-tests-314.json",
+      "sha256": "4b9ef97f29e385b100af3b63bf1c8fe30df16e9d6cbec300fd448b6d04dba81f"
+    },
+    {
+      "bytes": 231970,
+      "path": "mesh-source-file-hashes.json",
+      "sha256": "a31dd773b8303e6bf1176557794a36b9197eb7f9237b51d65b855b59fc2f700b"
+    },
+    {
+      "bytes": 232206,
+      "path": "mesh-source-manifest.json",
+      "sha256": "d9d9c97f3171c0f6ec3bedcebafad86ee0d16e58b22e5024dbae1a79f5ad7f6a"
+    },
+    {
+      "bytes": 727,
+      "path": "mesh-wheel-build.json",
+      "sha256": "ba09dae4ff548fddef1ac480503465712164bdc46448a1341a06418789ffd05e"
+    },
+    {
+      "bytes": 307978,
+      "path": "observer-source-manifest.json",
+      "sha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877"
+    },
+    {
+      "bytes": 428,
+      "path": "prepare-v9-inputs-r1-attempt.json",
+      "sha256": "dc46eb3caa8f0ce0aba26a3bce86c5bb4acc540a3517e218b60047764f09b4c6"
+    },
+    {
+      "bytes": 7026,
+      "path": "prepare-v9-inputs-r1.py",
+      "sha256": "b00bc815aafbf01e02258a1dd12713efab91cdb433a08bea02c5cb8c21d42181"
+    },
+    {
+      "bytes": 7094,
+      "path": "prepare-v9-inputs-r2.py",
+      "sha256": "082c1a297e8ef13fcdcd067b9ff80369e0d2f2f806824065299bc923d5de6514"
+    },
+    {
+      "bytes": 7765,
+      "path": "qualification-driver-v9-1792400464914840209.json",
+      "sha256": "5f6466d1f190113dd0cd63d374a8d1e07583f2e309cf18848c9848aef16d0ad2"
+    },
+    {
+      "bytes": 14096,
+      "path": "qualification-driver-v9-combined-1792400528153257172.json",
+      "sha256": "de9670522160e7a80bb62c6c469877ebbede4543ef7c9930b2ffc6ae2446bec6"
+    },
+    {
+      "bytes": 528,
+      "path": "qualification-driver-v9-invocation-1.json",
+      "sha256": "7a11b1854e0a2784b79ebda6c6f6ccdb87812eb34d64aba3ec11b82757343538"
+    },
+    {
+      "bytes": 7262,
+      "path": "qualification-driver-v9-r2-1792400528153257172.json",
+      "sha256": "1ba249ae4bc7461d1f0fc80dda0828be18b993b379da62e52a8098737f8816ca"
+    },
+    {
+      "bytes": 6290,
+      "path": "qualification-driver-v9-r2.py",
+      "sha256": "873f5f1a95b388efe97a5046113affd5eec5d89f78e3d83b7c5460e961f4ee84"
+    },
+    {
+      "bytes": 4330,
+      "path": "qualification-driver-v9.py",
+      "sha256": "27b65104312f6d32db71a0cb9772bc8cbf3a28554b2e755ff739e93c2990e9f1"
+    },
+    {
+      "bytes": 5500,
+      "path": "run-installed-mesh-registration-tests-v9.py",
+      "sha256": "0307a68171b5ed4913a2dabf3b6aed8eaa4fdd80c3d01c3bbf7df230dcf93fe2"
+    },
+    {
+      "bytes": 5491,
+      "path": "run-installed-mesh-terminal-tests-v9.py",
+      "sha256": "791041273494f294b0b5bc7178d0837d96fcbb8e6b3d6034c4b206e4d2d6ab5b"
+    },
+    {
+      "bytes": 5581,
+      "path": "run-installed-mesh-transport-tests-v9-r2.py",
+      "sha256": "f26f57d9c1d0566a535e9ef19f538d61197fcee034f113e299a85a3c05f5ce31"
+    },
+    {
+      "bytes": 5528,
+      "path": "run-installed-mesh-transport-tests-v9.py",
+      "sha256": "b972ebbf649f15999c601470f82a20c0c1e16e876cf0648d170384990ba08867"
+    },
+    {
+      "bytes": 6045,
+      "path": "run-installed-working-set-tests-v9.py",
+      "sha256": "6b4b4fe011e18aa8324801a486283d7fa9f36f1ce7c1253c8535601e6a8b1c22"
+    },
+    {
+      "bytes": 1229,
+      "path": "source-input-verification.json",
+      "sha256": "ec2453b5763c43ee80212f78cfc81ae9a0a0ca56bfdcc615157a7940d6b78b5e"
+    },
+    {
+      "bytes": 920,
+      "path": "source-provenance.json",
+      "sha256": "9f1dd81fa0cc182188bd6fc98122b15ad138685cfeeac7b187e4dab6cccce183"
+    },
+    {
+      "bytes": 10180,
+      "path": "static-parity.json",
+      "sha256": "c7cc5b87225d6be07bbfa51c24d460b4b0d95a1a3ebdb2f5c6d1ddd1a75da099"
+    },
+    {
+      "bytes": 0,
+      "path": "venv-311-v9-r1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "venv-311-v9-r1.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 504,
+      "path": "venv-311/pyvenv.cfg",
+      "sha256": "b3be6defa34835a7143183a19967dd513b05eab162a09da6ce1a3d6b2eeb723d"
+    },
+    {
+      "bytes": 512,
+      "path": "venv-314-v9-r2-stage.json",
+      "sha256": "82f674b1d1956694fa05657e449e8096dcbe57a2db3cd99ee5ea8a8aae9c78c5"
+    },
+    {
+      "bytes": 0,
+      "path": "venv-314-v9-r2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "venv-314-v9-r2.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 271,
+      "path": "venv-314/pyvenv.cfg",
+      "sha256": "a089a6192673c5ce7111e874ed82d105595c6fda0ecb2aea10e2964fa8a2ece1"
+    },
+    {
+      "bytes": 1359,
+      "path": "venv-provenance.json",
+      "sha256": "9040162ba2fc4f10b31e8f6e20c288232c5cf92fb58d08bb4d88525672d51727"
+    },
+    {
+      "bytes": 5622,
+      "path": "verify-installed-records.py",
+      "sha256": "c458eaeea4851ef40bf0e4a4f691535664914623db253fc1f4954efe4392e6de"
+    },
+    {
+      "bytes": 548,
+      "path": "verify-source-inputs-v9-r1-attempt.json",
+      "sha256": "fddaa27c74cbead0174fc0206fc201d7a78758e99f277613d306b4fa426534d8"
+    },
+    {
+      "bytes": 5265,
+      "path": "verify-source-inputs-v9-r2.py",
+      "sha256": "5e401bc637eb0f899e97fe412b4f30f65615b046aa5922e9848897925b339f16"
+    },
+    {
+      "bytes": 5268,
+      "path": "verify-source-inputs-v9.py",
+      "sha256": "16f205d15e8e49dd9f1f07152e27e35b3e0d6f8c2d211a48fcb05cc754ba53e1"
+    },
+    {
+      "bytes": 11196,
+      "path": "verify-static-parity.py",
+      "sha256": "850c39e86f6357c60cbccdb93fb7cc1f3ed72404e8abeef8c48d9e7b3095e1e5"
+    },
+    {
+      "bytes": 7000,
+      "path": "verify-working-set-public-surface-v9.py",
+      "sha256": "07130af9054f5be2a8e14c4be0d7e3fdf04aa957fd0cca55067e0e6dc1b737bc"
+    },
+    {
+      "bytes": 353120,
+      "path": "wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+      "sha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+    },
+    {
+      "bytes": 270646,
+      "path": "wheels/mesh_plus-0.1.0a23-py3-none-any.whl",
+      "sha256": "9522a60535766d8310acfa5db5b38400a2dd519276bd3d2344eeb65584ca8f62"
+    },
+    {
+      "bytes": 2826,
+      "path": "working-set-public-surface.json",
+      "sha256": "49be7dba9379f5640404075e9c8406d97553897e8eb8f9002da761b7facaa776"
+    }
+  ],
+  "checks": {
+    "install_v9": {
+      "report": "install-v9-r2-result.json",
+      "reportSha256": "4e77adb09c9da386aeed61c1b28e8b8a3cdd8675dc9ad2bef4f05b03a605373e",
+      "status": "pass"
+    },
+    "installed_records_311": {
+      "report": "installed-records-311.json",
+      "reportSha256": "435cd9e2d9e7d5a1fd422fb170d389d0d1f549a03993be39ebb505f630ca4bb6",
+      "status": "pass"
+    },
+    "installed_records_314": {
+      "report": "installed-records-314.json",
+      "reportSha256": "ae6798bb9aec2192d579fd75d550e091328a6b48144718d094b00507017a7883",
+      "status": "pass"
+    },
+    "mesh_registration_tests_311": {
+      "report": "installed-mesh-registration-tests-311.json",
+      "reportSha256": "28d58a46a0075936be32fc1e0ab7dfcb1eabacdfa8bf953684a0a86110a058fb",
+      "status": "pass"
+    },
+    "mesh_registration_tests_314": {
+      "report": "installed-mesh-registration-tests-314.json",
+      "reportSha256": "6fcae0047038e6c5e0d3019939bda0a8c2c267f388eb9ead833b39aec1cea097",
+      "status": "pass"
+    },
+    "mesh_terminal_tests_311": {
+      "report": "installed-mesh-terminal-tests-311.json",
+      "reportSha256": "eac060ad2ed05376cd12495b20b5d040204cc6f14bf569968f8a88215ac6710e",
+      "status": "pass"
+    },
+    "mesh_terminal_tests_314": {
+      "report": "installed-mesh-terminal-tests-314.json",
+      "reportSha256": "f8e40e443399f6bc53cd529bde86833d0885d4bf396e798e5418425bec9e3b08",
+      "status": "pass"
+    },
+    "mesh_transport_tests_311": {
+      "report": "installed-mesh-transport-tests-311.json",
+      "reportSha256": "1f31a854524b9dac048bc3677642d6d9c9835e6befa7d5e517b399ab4f9aa7c3",
+      "status": "pass"
+    },
+    "mesh_transport_tests_314": {
+      "report": "installed-mesh-transport-tests-314.json",
+      "reportSha256": "d8d254d915cde80cd99ccd2390e1a279ade8eda0c7f91299b7cda09714bc0d1b",
+      "status": "pass"
+    },
+    "mesh_wheel_build": {
+      "report": "mesh-wheel-build.json",
+      "reportSha256": "ba09dae4ff548fddef1ac480503465712164bdc46448a1341a06418789ffd05e",
+      "status": "pass"
+    },
+    "observer_tests_311": {
+      "report": "installed-working-set-tests-311.json",
+      "reportSha256": "18ca127d9ebe71edd83f9b683e3bf4e581f04135a9f98446feecbf66d42128bd",
+      "status": "pass"
+    },
+    "observer_tests_314": {
+      "report": "installed-working-set-tests-314.json",
+      "reportSha256": "4b9ef97f29e385b100af3b63bf1c8fe30df16e9d6cbec300fd448b6d04dba81f",
+      "status": "pass"
+    },
+    "pip_check_311": {
+      "stage": "pip-check-3.11",
+      "status": "pass"
+    },
+    "pip_check_314": {
+      "stage": "pip-check-3.14",
+      "status": "pass"
+    },
+    "public_surface": {
+      "report": "working-set-public-surface.json",
+      "reportSha256": "49be7dba9379f5640404075e9c8406d97553897e8eb8f9002da761b7facaa776",
+      "status": "pass"
+    },
+    "qualification_driver": {
+      "report": "qualification-driver-v9-combined-1792400528153257172.json",
+      "reportSha256": "de9670522160e7a80bb62c6c469877ebbede4543ef7c9930b2ffc6ae2446bec6",
+      "status": "pass"
+    },
+    "source_inputs": {
+      "report": "source-input-verification.json",
+      "reportSha256": "ec2453b5763c43ee80212f78cfc81ae9a0a0ca56bfdcc615157a7940d6b78b5e",
+      "status": "pass"
+    },
+    "static_parity": {
+      "report": "static-parity.json",
+      "reportSha256": "c7cc5b87225d6be07bbfa51c24d460b4b0d95a1a3ebdb2f5c6d1ddd1a75da099",
+      "status": "pass"
+    },
+    "venv_provenance": {
+      "report": "venv-provenance.json",
+      "reportSha256": "9040162ba2fc4f10b31e8f6e20c288232c5cf92fb58d08bb4d88525672d51727",
+      "status": "pass"
+    }
+  },
+  "coverageLimits": [
+    "offline source, wheel, installed package and RECORD/PEP610 parity plus packaged schemas, descriptor and CLI help",
+    "synthetic Observer SDK1 IPC tests use collect=False; Mesh terminal, registration and two close-order transport tests use installed wheel bytes with cyclic GC disabled",
+    "no native provider, SSH carrier, normal service, device, deployment, consumer rollout, provider behavior or whole-process memory claim"
+  ],
+  "dependencyInputs": {
+    "matchPriorB176Pair": true,
+    "requirements311": "3d42319e264dfcd35a820113e71152fedc3b12d70ceec44c91145fff67322138",
+    "requirements314": "10cf830034f0bffea89eaa113f14a54e3481c8c068284a898f8860a1ff41b310",
+    "wheelhouseManifest": {
+      "path": "dependency-wheelhouse-manifest.json",
+      "sha256": "c3dc47697bc41205120d33f5dd78081207a2331614e17823d9aa425b5974af61"
+    }
+  },
+  "directory": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69",
+  "interpreters": {
+    "3.11": {
+      "basePrefixExact": true,
+      "cliHelp": {
+        "agent-observer": {
+          "helpBytes": 690,
+          "helpExitCode": 0,
+          "sha256": "4fc247f1166c593fff23d52e7ecf8179a77fc1534f28663ef89ec1f4fabf7fdc",
+          "shebangExact": true
+        },
+        "agent-observer-service": {
+          "helpBytes": 1722,
+          "helpExitCode": 0,
+          "sha256": "1c8bb713a6f3b5da5cabbf28d6cbb3564e02f342666a4301d00ddb1ba76a54ab",
+          "shebangExact": true
+        },
+        "mesh-plus": {
+          "helpBytes": 595,
+          "helpExitCode": 0,
+          "sha256": "a137a614e1b5157898e3d56af286c887bd982bcf3f80fa1fd2f0068db624b0d4",
+          "shebangExact": true
+        }
+      },
+      "installed": {
+        "agent-observer": {
+          "distInfoPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/lib/python3.11/site-packages/agent_observer-0.7.0a7.dist-info",
+          "localWheelURLExact": true,
+          "packageInventoryExact": {
+            "files": 99,
+            "sha256": "96efea9ef6649332ad51d06fe8d89da8a8da4b3436fef4809afa0f03a64dacda"
+          },
+          "pep610HashFieldsAgree": true,
+          "pep610WheelHashExact": true,
+          "version": "0.7.0a7"
+        },
+        "mesh-plus": {
+          "distInfoPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/lib/python3.11/site-packages/mesh_plus-0.1.0a23.dist-info",
+          "localWheelURLExact": true,
+          "packageInventoryExact": {
+            "files": 99,
+            "sha256": "52c1622d8a2a4a69b40758ed10d62ddd5164407822b7d4e2e13e839ee4da2506"
+          },
+          "pep610HashFieldsAgree": true,
+          "pep610WheelHashExact": true,
+          "version": "0.1.0a23"
+        }
+      },
+      "prefix": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311",
+      "python": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/bin/python",
+      "sitePackages": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/lib/python3.11/site-packages",
+      "version": "3.11.17"
+    },
+    "3.14": {
+      "basePrefixExact": true,
+      "cliHelp": {
+        "agent-observer": {
+          "helpBytes": 668,
+          "helpExitCode": 0,
+          "sha256": "d6317aca5f61945b23c29126c0be2b202ff1198574ab9f93c6d7d1a69d51c178",
+          "shebangExact": true
+        },
+        "agent-observer-service": {
+          "helpBytes": 1722,
+          "helpExitCode": 0,
+          "sha256": "1bc92f15b5deeb5af7d9ff557977e411ad9b1c26db2de4176ff95156bc936c6e",
+          "shebangExact": true
+        },
+        "mesh-plus": {
+          "helpBytes": 595,
+          "helpExitCode": 0,
+          "sha256": "11d58dac1e503c9c2b9e0fd774e6b6236155faa008a8aa3c9a6cd250b2072172",
+          "shebangExact": true
+        }
+      },
+      "installed": {
+        "agent-observer": {
+          "distInfoPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/lib/python3.14/site-packages/agent_observer-0.7.0a7.dist-info",
+          "localWheelURLExact": true,
+          "packageInventoryExact": {
+            "files": 99,
+            "sha256": "96efea9ef6649332ad51d06fe8d89da8a8da4b3436fef4809afa0f03a64dacda"
+          },
+          "pep610HashFieldsAgree": true,
+          "pep610WheelHashExact": true,
+          "version": "0.7.0a7"
+        },
+        "mesh-plus": {
+          "distInfoPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/lib/python3.14/site-packages/mesh_plus-0.1.0a23.dist-info",
+          "localWheelURLExact": true,
+          "packageInventoryExact": {
+            "files": 99,
+            "sha256": "52c1622d8a2a4a69b40758ed10d62ddd5164407822b7d4e2e13e839ee4da2506"
+          },
+          "pep610HashFieldsAgree": true,
+          "pep610WheelHashExact": true,
+          "version": "0.1.0a23"
+        }
+      },
+      "prefix": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314",
+      "python": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/bin/python",
+      "sitePackages": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/lib/python3.14/site-packages",
+      "version": "3.14.8"
+    }
+  },
+  "manifestSelfHashExcluded": true,
+  "provenance": {
+    "coverage": "byte-for-byte copied source exports, exact build input set, and application wheel pins; no native provider or deployment checks",
+    "mesh": {
+      "archiveSha256FromPinnedExportManifest": "363210745e3a965469b23e85111652f589ad9c645e72eeda51f3f4a9cfe8e0ad",
+      "buildInputFiles": 101,
+      "buildInputManifestSha256": "70f8d8e2b5ea5424e9b198f6e373a46f9c1cd9f885268fd700d2d61fd460dd8b",
+      "commit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+      "manifestSha256": "d9d9c97f3171c0f6ec3bedcebafad86ee0d16e58b22e5024dbae1a79f5ad7f6a",
+      "sourceFiles": 1728,
+      "sourceTreeInventorySha256": "0857652909f3e9a072689329a229809ad807129b489b65b88e4bfb4e13097627",
+      "wheelSha256": "9522a60535766d8310acfa5db5b38400a2dd519276bd3d2344eeb65584ca8f62"
+    },
+    "observer": {
+      "commit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "manifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877",
+      "sourceFiles": 2223,
+      "sourceTreeInventorySha256": "72315759ca32ce811f06739f616ba8cf86d706788f049cf68801c171d975df07",
+      "wheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+    },
+    "schema": "agent-observer.installed-pair-source-inputs.v1",
+    "status": "pass"
+  },
+  "schema": "agent-observer.working-set-installed-pair-artifacts.v1",
+  "status": "pass",
+  "venvProvenance": {
+    "3.11": {
+      "baseInterpreter": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+      "includeSystemSitePackages": false,
+      "pipCheck": "pass",
+      "pythonVersion": "3.11.17",
+      "pyvenvCfgSha256": "b3be6defa34835a7143183a19967dd513b05eab162a09da6ce1a3d6b2eeb723d",
+      "venvCopyMode": true,
+      "venvPython": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/bin/python"
+    },
+    "3.14": {
+      "baseInterpreter": "/home/bryan/code/mesh-plus/.venv/bin/python",
+      "includeSystemSitePackages": false,
+      "pipCheck": "pass",
+      "pythonVersion": "3.14.8",
+      "pyvenvCfgSha256": "a089a6192673c5ce7111e874ed82d105595c6fda0ecb2aea10e2964fa8a2ece1",
+      "venvCopyMode": true,
+      "venvPython": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/bin/python"
+    }
+  },
+  "wheels": {
+    "agent_observer": {
+      "path": "wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+      "sha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+    },
+    "mesh_plus": {
+      "path": "wheels/mesh_plus-0.1.0a23-py3-none-any.whl",
+      "sha256": "9522a60535766d8310acfa5db5b38400a2dd519276bd3d2344eeb65584ca8f62",
+      "sourceArchiveSha256": "363210745e3a965469b23e85111652f589ad9c645e72eeda51f3f4a9cfe8e0ad",
+      "sourceCommit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+      "sourceManifestSha256": "d9d9c97f3171c0f6ec3bedcebafad86ee0d16e58b22e5024dbae1a79f5ad7f6a"
+    }
+  }
+}

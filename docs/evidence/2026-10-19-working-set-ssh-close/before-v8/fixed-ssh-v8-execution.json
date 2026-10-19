@@ -1,0 +1,154 @@
+{
+  "claim": "installed synthetic collect=False Observer IPC to installed Mesh stdio Bridge over fixed SSH through ordinary Reader; no provider/native collection",
+  "coverageLimits": [
+    "installed synthetic Observer IPC to installed Mesh stdio Bridge over fixed SSH via ordinary SDK Reader",
+    "functional checks are recorded before SDK close; Bridge terminal exceptions are observed without changing CLI behavior; nonzero owned-close/EOF is not normal CLI success",
+    "physical cleanup is established by one independent bounded post-run receipt/process/path read",
+    "GC is disabled before project imports on both ends; this is a resource/transport flag only, with no heap/RSS inference",
+    "collect=False seeded Observer Runtime; no provider/native collection, normal endpoint or live source acceptance"
+  ],
+  "install": {
+    "host": "80H1VV3",
+    "pipCheck": "pass",
+    "publicSurface": "pass",
+    "receipt": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-bootstrap.json",
+    "recordCheck": "pass",
+    "schema": "agent-observer.working-set-fixed-ssh-v8-bootstrap.v1",
+    "status": "pass",
+    "uid": 1000,
+    "wheelHashesExact": true
+  },
+  "outputs": {
+    "closeReceipt": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-close-receipt-v8.json",
+    "diagnostic": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-diagnostic.json",
+    "preclose": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-preclose.json",
+    "readerReport": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-reader-v8.json"
+  },
+  "reader": {
+    "bridgeExitClassification": "transport_eof_nonzero",
+    "bridgeExitCode": 1,
+    "closeReceipt": {
+      "bridgeClassification": "transport_eof_nonzero",
+      "bridgeExitCode": 1,
+      "bridgeRunTerminal": {
+        "code": null,
+        "expectedTransportTerminal": true,
+        "type": "EOFError"
+      },
+      "caughtSignal": null,
+      "connectAttempts": 1,
+      "exitPath": "bridge_returned",
+      "gcDisabledBeforeProjectImports": true,
+      "gracefulEofPass": false,
+      "loadedModules": {
+        "installedModuleBytesExact": true,
+        "meshModuleCount": 18,
+        "observerModuleCount": 35,
+        "wheelSha256": {
+          "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+          "mesh_plus": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+        }
+      },
+      "loadedModulesFinal": {
+        "installedModuleBytesExact": true,
+        "meshModuleCount": 18,
+        "observerModuleCount": 35,
+        "wheelSha256": {
+          "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+          "mesh_plus": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+        }
+      },
+      "loadedModulesInitial": {
+        "installedModuleBytesExact": true,
+        "meshModuleCount": 2,
+        "observerModuleCount": 30,
+        "wheelSha256": {
+          "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+          "mesh_plus": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+        }
+      },
+      "normalCliExitPass": false,
+      "privateConfigAbsent": true,
+      "reasonCode": "none",
+      "remoteProcess": {
+        "executableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+        "pid": 1241868,
+        "pythonVersion": "3.14.8",
+        "sameIncarnationStillAlive": false,
+        "startTicks": 48853298,
+        "uid": 1000
+      },
+      "runtime": {
+        "collectFalse": true,
+        "peerCount": 0,
+        "selectorClosed": true,
+        "socketPathsAbsent": true,
+        "sourceCleanupComplete": true,
+        "threadStopped": true,
+        "workerCount": 0,
+        "workerStarts": 0
+      },
+      "schema": "agent-observer.working-set-fixed-ssh-close-check.v8",
+      "sshCommandSha256": "238b45b83dea29fec46e1d720122258158c1f18fac713c26348d5d4d9a2fde05",
+      "sshExitCode": 0,
+      "status": "pass"
+    },
+    "coverage": "complete",
+    "proofNonceCount": 2,
+    "selectedCount": 2,
+    "sshExitCode": 255,
+    "status": "functional_cleanup_pass_transport_terminal",
+    "uncertainCount": 0
+  },
+  "remoteAbsencePreflight": {
+    "basePythonExecutableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+    "basePythonVersion": "3.14.8",
+    "host": "80H1VV3",
+    "packageRootAbsent": true,
+    "schema": "agent-observer.fixed-ssh-v8-remote-absence.v1",
+    "status": "pass",
+    "uid": 1000
+  },
+  "reviewedPlanSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
+  "route": {
+    "connectAttempts": {
+      "absence": 1,
+      "closeCheck": 1,
+      "install": 1,
+      "installedPreflight": 1,
+      "reader": 1,
+      "transfer": 1
+    },
+    "hostAlias": "snap",
+    "remoteCommandHashes": {
+      "absence": "1b4d595f43f3dd0904fdb38a0be674cdbf8eaa46692951b91ba5e187dd09fcb8",
+      "installer": "8475a24606c8ec64a8da5e5dacd31773adc5c4426acf5b14519cdc31912c2444",
+      "readerCloseReceipt": "238b45b83dea29fec46e1d720122258158c1f18fac713c26348d5d4d9a2fde05",
+      "readerFixture": "71c10cb7be89524a39b2290dcb93d8bbe9920432df3a67ea6e349e089c0b8ff5",
+      "readerInstalledPreflight": "59f6457113559cf1a0b5591d180bdb97046bcd7e5184ffce983c1d285dc81b5c",
+      "transferReceiver": "911a7a513fd7d3305c99eb20b6f96cc59eee0ca685a5c03f80b6475a9ca1c9c7"
+    },
+    "sshExecutableSha256": "0d82109d60d32e5ca4007bd39b4abf213ff037fca99491bc2669a6b52051b74c",
+    "sshOptionsExact": true,
+    "strictHostKeyChecking": true
+  },
+  "schema": "agent-observer.fixed-ssh-v8-execution.v1",
+  "source": {
+    "meshCommit": "b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0"
+  },
+  "status": "functional_cleanup_pass_transport_terminal",
+  "transfer": {
+    "allDirectories700": true,
+    "allFilesRegular600": true,
+    "allHashesExact": true,
+    "byteCount": 1395222,
+    "fileCount": 25,
+    "host": "80H1VV3",
+    "noLinks": true,
+    "packageRootMode": "0700",
+    "schema": "agent-observer.fixed-ssh-v8-transfer.v1",
+    "status": "pass",
+    "uid": 1000
+  }
+}

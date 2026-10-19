@@ -1,0 +1,92 @@
+{
+  "schema": "agent-observer.working-set-canonical-cost-prior-attempts.v1",
+  "policy": "retain earlier runs unchanged in private cache; include only finite diagnostics and hash pointers here; no ELF binaries, private configuration directories, raw fixture rows, or provider reports are copied",
+  "privateRoot": "/home/bryan/.cache/agent-observer-working-set-20261018",
+  "v1": {
+    "preservedPrivate": true,
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-plan-v1",
+    "references": [
+      {
+        "path": "primary-interpreter-startup-review.json",
+        "sha256": "3a22a8159dbeaf8a1e10faaa746df51a662cc2b00591e0a3a922b785500e9255"
+      },
+      {
+        "path": "measurement-plan.md",
+        "sha256": "17ade3e986a0cf518e8af9c6beb105d5330e6b318e6e309b694c8c5ed8a1605d"
+      }
+    ],
+    "note": "original V1 setup and review artifacts remain private and untouched"
+  },
+  "v2": {
+    "preservedPrivate": true,
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-plan-v2",
+    "resolutionPlanCopiedAsSinglePlan": "artifacts/measurement-plan-resolution.md",
+    "resolutionPlanSha256": "4eaf3a17ebbaee365eb373801535b0552db4838702d250c86380cce924fe1973",
+    "note": "other V2 files remain private and untouched"
+  },
+  "v3": {
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v3",
+    "classification": "invalid baseline fixture provenance and unproved worker retirement; failed harness attempt, not product evidence",
+    "sourceCommit": "7807160384ba39b4d438c5c7f1b5f316c3608dcd",
+    "fixtureSourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "failureStage": "spawn_runtime_worker",
+    "failureReason": "process_handle_identity_mismatch",
+    "canonicalWorkerReaped": false,
+    "privateConfigHomeRemoved": false,
+    "retainedPrivateDirectory": true,
+    "privateReceiptPointer": {
+      "path": "canonical-worker-cost-measure-v3/py311-a7-r1.json",
+      "sha256": "694169eca422889a4f15ead68b8d3467b2e2850d775253c50ea9978c18264b31"
+    },
+    "copiedDiagnostics": {
+      "prior/v3-offline-review-v4.json": "f5a097fbbd4b87de65d800587de33ab0027dea7aca5975a942edb35971bf0341",
+      "prior/v3-source-comparison.json": "3d3420c457324a6d938d652a165ca4a098efea41a92b2537b0746f18e149f07a"
+    }
+  },
+  "v4": {
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v4",
+    "initialAttempt": {
+      "status": "not_run",
+      "reason": "copied BASE pointed to V3; existing receipt guard stopped before lock, endpoint, or worker",
+      "privateExecutionPointer": {
+        "path": "canonical-worker-cost-measure-v4/base-path-preexecution-matrix-execution.json",
+        "sha256": "c0d567c3107ae2da7da4b3562d8d5588b280d14a68d046a5dcf7f3ed560f0817"
+      },
+      "diagnosticSha256": "dfcc928ea2da79c22b3f018e69873828d8b919191e6e19abdbdf0b0a5d611092"
+    },
+    "laterAttempt": {
+      "failureStage": "parse_runtime_snapshot",
+      "failureReason": "NameError",
+      "allOwnedProcessesAndDirectoriesRetired": true,
+      "privateReceiptPointer": {
+        "path": "canonical-worker-cost-measure-v4/py311-a7-r1.json",
+        "sha256": "79806a9ae834103d228fb4f17e375ad599cebb753122b630a6ca2759ea5e0a6b"
+      },
+      "matrixExecutionSha256": "167d666cfd71db3a3cadec645a2816b3bc6115571d8d29438c012f9a302e35d0"
+    },
+    "copiedDiagnostics": {
+      "prior/v4-base-path-preexecution-diagnostic.json": "dfcc928ea2da79c22b3f018e69873828d8b919191e6e19abdbdf0b0a5d611092",
+      "prior/v4-base-path-preexecution-matrix-execution.json": "c0d567c3107ae2da7da4b3562d8d5588b280d14a68d046a5dcf7f3ed560f0817",
+      "prior/v4-primary-preexecution-review.json": "6195eeda3f8ab2d9e3d34af52abe251478199710c5ee93d8376982c1156c881f",
+      "prior/v4-matrix-execution.json": "167d666cfd71db3a3cadec645a2816b3bc6115571d8d29438c012f9a302e35d0"
+    }
+  },
+  "v5": {
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v5",
+    "upstreamV4Failure": "missing Counter import in measurement-only join verification; all owners were retired",
+    "failureStage": "verify_fixture_protocol",
+    "failureReason": "fixture_server_protocol_failed",
+    "expectedAcceptedConnections": 3,
+    "observedAcceptedConnections": 5,
+    "protocolMethodCountsMatched": true,
+    "allOwnedProcessesAndDirectoriesRetired": true,
+    "privateReceiptPointer": {
+      "path": "canonical-worker-cost-measure-v5/py311-a7-r1.json",
+      "sha256": "db5b70152f4f55b764dab8506e37c875962210b5635c882e7e016c14ba588b7a"
+    },
+    "copiedDiagnostics": {
+      "prior/v5-preexecution-review.json": "7a89ebf030af06ccdb07d7a40242db7fbbcfa5d8cc2dac675afe8305828b2ab0",
+      "prior/v5-matrix-execution.json": "f32661b8e7ac731ae719c208f215c34324f58b4a7561b6702e8e7dba9adb99ae"
+    }
+  }
+}

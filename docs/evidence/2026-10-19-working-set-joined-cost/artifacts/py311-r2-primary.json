@@ -1,0 +1,9 @@
+{
+  "case": "py311-r2",
+  "returncode": 0,
+  "elapsedSeconds": 13.384027443011291,
+  "sourceRunnerSha256": "a6de67c0676cb3be611a0dc26043176dccd87a6647f8c89423cf6b0bc7adfa98",
+  "stdoutSha256": "93753b51d9e70144cdf020ccd081c3bc9297519929dbdcc4d79179ac70baea7a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sharedLockOwnedInsideRunner": true
+}

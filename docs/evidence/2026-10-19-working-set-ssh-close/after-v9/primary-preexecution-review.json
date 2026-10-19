@@ -1,0 +1,24 @@
+{
+  "schema": "primary-working-set-fixed-ssh-v9-preexecution-review.v1",
+  "planSha256": "ea146442216edb39739603e5df2bd12b51d0541e44a3a984d4ce62ee8885faa3",
+  "reviewed": {
+    "driverReceiverGuards": true,
+    "exactSnapHostUidBaseInterpreter": true,
+    "freshAbsentTargetNoOverwrite": true,
+    "bounded25FileWhitelist": true,
+    "offlineHashPinnedInstallOnly": true,
+    "syntheticCollectFalseNoNativeProvider": true,
+    "ordinaryIndependentReaderAndFreshProofs": true,
+    "independentRuntimeProcessPathCleanup": true,
+    "requiresNormalBridgeExit": true,
+    "sshExitRecordedSeparately": true,
+    "oldV8ArtifactsUntouched": true
+  },
+  "normalServiceMutationAuthorized": false,
+  "source": {
+    "meshCommit": "bfa91a6936a089d37c1a83752d3267148ba7dc69",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0"
+  },
+  "newInstalledPairStaticReviewSha256": "e16ad35971a47bae4d271e24dd1f5fd136ff701678730d37527767dda1114131",
+  "execution": "one reviewed driver invocation under shared exclusive lock; no automatic retry"
+}

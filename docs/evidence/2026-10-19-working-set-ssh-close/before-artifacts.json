@@ -1,0 +1,222 @@
+{
+  "claim": "V8 functional and physical cleanup pass, BridgeEOF exit1; named local relay reproduction confirms kill-before-forward mechanism only, not exactV8write timing",
+  "files": {
+    "before-v8/driver-plan-only-v8.json": {
+      "bytes": 795,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/driver-plan-only-v8.json",
+      "sha256": "d8b028b9ff53bfc148ac2a73e9c2be3bb5151da21fa4668349bdfb046e8bd660"
+    },
+    "before-v8/execute-working-set-fixed-ssh-v8.py": {
+      "bytes": 26064,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/execute-working-set-fixed-ssh-v8.py",
+      "sha256": "96c87ba3548989a065954db85ec6ad21bb9d21c70436987c436a7bf7d702a14c"
+    },
+    "before-v8/fixed-ssh-v8-execution.json": {
+      "bytes": 6545,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/fixed-ssh-v8-execution.json",
+      "sha256": "4030a86d74aca0b3ffcf9be97aeede6c8e0f7beffe277bff44023c3ee6dc0c8d"
+    },
+    "before-v8/fixed-ssh-v8-plan.json": {
+      "bytes": 17165,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/fixed-ssh-v8-plan.json",
+      "sha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311"
+    },
+    "before-v8/install-remote-v8.py": {
+      "bytes": 18550,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/install-remote-v8.py",
+      "sha256": "80fff842a8115bb1f553c72f7d95cc41639ad20059923fbb71fb34cfd8b67131"
+    },
+    "before-v8/preparation-validation-v8.json": {
+      "bytes": 4454,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/preparation-validation-v8.json",
+      "sha256": "e2e7cdb585c227780fde349dfa6e5ca6c7abb064b660c7d6349e3a6bd29f2dda"
+    },
+    "before-v8/primary-execution-observed.json": {
+      "bytes": 354,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary-execution-observed.json",
+      "sha256": "21dafc6598f782e97ffcca95562393264fa90fcda9f6964866e906f9b27987a2"
+    },
+    "before-v8/primary-execution-review.json": {
+      "bytes": 505,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary-execution-review.json",
+      "sha256": "6360b7b9e3646c1fdd0837459dbf6bc37dcc2b62da4c6580333ac5867f04532c"
+    },
+    "before-v8/primary-execution.stderr": {
+      "bytes": 0,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary-execution.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "before-v8/primary-execution.stdout": {
+      "bytes": 455,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary-execution.stdout",
+      "sha256": "00161cd14001ff598eab148246ecbc5461c65541288d3d0eafa256adcc929efd"
+    },
+    "before-v8/primary-saved-review.json": {
+      "bytes": 1232,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary-saved-review.json",
+      "sha256": "dff3f897d030dac3744aba8927bcbdae45d020f2835f2850c5160d466841785a"
+    },
+    "before-v8/primary_run_reviewed_v8.py": {
+      "bytes": 1855,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary_run_reviewed_v8.py",
+      "sha256": "ca7e2f06b07ccceba577a42c18352f570c8a8cdd138f9d6574fb7ed0bf6823e1"
+    },
+    "before-v8/primary_verify_saved_v8.py": {
+      "bytes": 3988,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/primary_verify_saved_v8.py",
+      "sha256": "bfdf4c184f043c8bd4cc76cb60aab3b01a671191b2bde382b35cdc420ae45452"
+    },
+    "before-v8/run-working-set-fixed-ssh-v8-reader.py": {
+      "bytes": 43334,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-b176-b9e8488e-plan-v8/run-working-set-fixed-ssh-v8-reader.py",
+      "sha256": "5b58c58edeb09418a8f8fd6e2cb86dcf08e428dd26dfdb4610a8e8fe33fdd5f5"
+    },
+    "before-v8/verify-installed-records-v8.py": {
+      "bytes": 5660,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/verify-installed-records-v8.py",
+      "sha256": "1a7da3733d45acf6a20bd8eb38901f76c887309748fe0e3ffea9dd848bb569e0"
+    },
+    "before-v8/verify-public-surface-v8.py": {
+      "bytes": 6876,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/verify-public-surface-v8.py",
+      "sha256": "4fbdd8c5d37c38d1cb3381805837f7fd257ee29e606e81b0a0591e1b4a8752be"
+    },
+    "before-v8/verify-working-set-close-receipt-v8.py": {
+      "bytes": 10216,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/verify-working-set-close-receipt-v8.py",
+      "sha256": "4898e54d98076de6c16e95bcb6cd7930dee9f5ffb441eada577dd9d33637d5c8"
+    },
+    "before-v8/working-set-fixed-ssh-reader-v8.json": {
+      "bytes": 7737,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-reader-v8.json",
+      "sha256": "3d93a06fc0ded43817c1ed1bf4be989366f0b9db1ef550768ce61d869d471225"
+    },
+    "before-v8/working-set-fixed-ssh-v8-diagnostic.json": {
+      "bytes": 1022,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-diagnostic.json",
+      "sha256": "32d4a383e5196ed5a56ca12b088bfc8e7b69390285376db04a3e4be962a0e28f"
+    },
+    "before-v8/working-set-fixed-ssh-v8-manifest.json": {
+      "bytes": 14170,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-manifest.json",
+      "sha256": "c20056bbc4a9442fd71a61bc6e48d0d97233a70739416a1f718bade983ff288f"
+    },
+    "before-v8/working-set-fixed-ssh-v8-preclose.json": {
+      "bytes": 437,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-fixed-ssh-v8-preclose.json",
+      "sha256": "33d3f2a64d17d08c9e53f55639fe4cb9546a8059a8845f36229a0f13b5dfa50a"
+    },
+    "before-v8/working-set-stdio-fixture-v8.py": {
+      "bytes": 21002,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/fixed-ssh-v8/working-set-stdio-fixture-v8.py",
+      "sha256": "2e2e2e96c1199bf823bf8807537dde3b25c79e8930c532a899bd17a176f296e7"
+    },
+    "local-repro/close_order_repro.py": {
+      "bytes": 19996,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/close_order_repro.py",
+      "sha256": "4072bc553ac9c0ba4385d74b1bb3c945e4d87bbd39f8cf71b3d41191b0d636d3"
+    },
+    "local-repro/controller-report.json": {
+      "bytes": 4834,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/controller-report.json",
+      "sha256": "f7899671f77d64eb445dd8c8c608685dc342a12153097334a83f5eceddd20ffe"
+    },
+    "local-repro/results/py311-defer50ms/bridge-identity.json": {
+      "bytes": 88,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-defer50ms/bridge-identity.json",
+      "sha256": "2853e32feca77f36178cc0e6ad81e3a6a8b822e04c1b34619ab1d0ad570c500c"
+    },
+    "local-repro/results/py311-defer50ms/bridge-started.json": {
+      "bytes": 113,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-defer50ms/bridge-started.json",
+      "sha256": "f0386fe95050837eca732cafe87c605c5b178a37f4a4aad1bd7c83ca48f3ad47"
+    },
+    "local-repro/results/py311-defer50ms/bridge-terminal.json": {
+      "bytes": 172,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-defer50ms/bridge-terminal.json",
+      "sha256": "921fcc040e20bbab8fa018d54f24d4e0cdfb47aecaef86f1ac338c47225053c2"
+    },
+    "local-repro/results/py311-defer50ms/case-report.json": {
+      "bytes": 1233,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-defer50ms/case-report.json",
+      "sha256": "5d57563899cd704e5532f965e226e7548eeef0bf3205b0f3d9c77ec37157e3ba"
+    },
+    "local-repro/results/py311-defer50ms/relay.json": {
+      "bytes": 197,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-defer50ms/relay.json",
+      "sha256": "98ffd580c4630a5899533352f7a06697e3caa65d95a443ef36272cb7d0d17ea2"
+    },
+    "local-repro/results/py311-ordered-control/bridge-identity.json": {
+      "bytes": 88,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-ordered-control/bridge-identity.json",
+      "sha256": "79be9d96b330114ba8d5f49d9310fd4c11b457996e429ba240d281f8429b02aa"
+    },
+    "local-repro/results/py311-ordered-control/bridge-started.json": {
+      "bytes": 113,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-ordered-control/bridge-started.json",
+      "sha256": "4cca011dee788fac10769c719e4ff8f3eac71a18f9aa31c9c4e9898579e28f6f"
+    },
+    "local-repro/results/py311-ordered-control/bridge-terminal.json": {
+      "bytes": 171,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-ordered-control/bridge-terminal.json",
+      "sha256": "ac5fcb8973a57059f91c5c9167321fcc45c6dd77afd11c220a4ae53458dc3bd1"
+    },
+    "local-repro/results/py311-ordered-control/case-report.json": {
+      "bytes": 1242,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-ordered-control/case-report.json",
+      "sha256": "2e0becfc815d542b55c3fe21431b2a87fc5c5b3bd6f61d06018a41978fe938ea"
+    },
+    "local-repro/results/py311-ordered-control/relay.json": {
+      "bytes": 196,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py311-ordered-control/relay.json",
+      "sha256": "c08984b20c9f6022a2e7b3cffec070b08f86370f6f58ebfc2f28d61a8121e479"
+    },
+    "local-repro/results/py314-defer50ms-v2/bridge-identity.json": {
+      "bytes": 88,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-defer50ms-v2/bridge-identity.json",
+      "sha256": "0354018e495183cc4b6ffa5044324005704ebe35b44fe228f5c5db046db57a6a"
+    },
+    "local-repro/results/py314-defer50ms-v2/bridge-started.json": {
+      "bytes": 113,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-defer50ms-v2/bridge-started.json",
+      "sha256": "016de46532fdeb9a35c17f90604a4f7a2e3956a76326ced094cdb7251fc4ea0f"
+    },
+    "local-repro/results/py314-defer50ms-v2/bridge-terminal.json": {
+      "bytes": 172,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-defer50ms-v2/bridge-terminal.json",
+      "sha256": "6d5b4098dbaf46b7ff84f869838828f00586aac92106c7af73a883188f0aa1ae"
+    },
+    "local-repro/results/py314-defer50ms-v2/case-report.json": {
+      "bytes": 1241,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-defer50ms-v2/case-report.json",
+      "sha256": "127d7e0c7885c392c5f33ad186ca2eb21cff334826be9bcea6470bea067b9b55"
+    },
+    "local-repro/results/py314-defer50ms-v2/relay.json": {
+      "bytes": 197,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-defer50ms-v2/relay.json",
+      "sha256": "21fe11cfd68c848ba86057318d37518b9964f0fca7268d19ee04e68a08f2ca3a"
+    },
+    "local-repro/results/py314-immediate/bridge-identity.json": {
+      "bytes": 88,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-immediate/bridge-identity.json",
+      "sha256": "021d270236d9a37f6e14cb69880f850052a5bbf74525ed421c3742bda3537cb6"
+    },
+    "local-repro/results/py314-immediate/bridge-started.json": {
+      "bytes": 113,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-immediate/bridge-started.json",
+      "sha256": "dd9969b2ce06c3d4b56a64163a54c96ce85d362017ecc1132917841e9c976d26"
+    },
+    "local-repro/results/py314-immediate/bridge-terminal.json": {
+      "bytes": 172,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-immediate/bridge-terminal.json",
+      "sha256": "ceda4ec8e70abf016f3583f4e72697498570e9aff962072c4c47fd6cbf12b746"
+    },
+    "local-repro/results/py314-immediate/relay.json": {
+      "bytes": 0,
+      "originalPrivatePath": "/home/bryan/.cache/agent-observer-working-set-20261018/fixed-ssh-close-order-review-v1/results/py314-immediate/relay.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "noOriginalMutation": true,
+  "schema": "working-set-ssh-close-before-artifacts.v1"
+}

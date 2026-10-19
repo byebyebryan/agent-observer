@@ -1,13 +1,18 @@
 # Working-set qualification status
 
-Execution update, 2026-10-18: Bryan approved the Mesh implementation expansion
+Execution update, 2026-10-19: Bryan approved the Mesh implementation expansion
 and resumed the Luna goal loop. The earlier review-only stop below is historical.
 The opt-in support-table representation, additive SDK1 registration and ordinary
 public Reader path are implemented in separate owning worktrees. See the
 [current producer checkpoint](working-set-producer-checkpoint.md). The latest
-source gate passes 1,122 tests with zero skips; installed package parity passes
-on Python 3.14 and 3.11. Multi-generation cost/transport and independent native
-qualification remain open. No normal service or consumer selection changed.
+source gate passes 1,143 tests with zero skips; the latest private b176/bfa pair
+passes installed package parity on Python 3.14 and 3.11 and the fixed Snap SSH
+Reader/proof/normal-close check. Actual four-watch
+delivery, repeated source-cost cadences and finite-run RSS now have measured
+evidence in that checkpoint. A later literal 500-row canonical-to-Reader
+comparison records 80.34–80.86% lower derived combined CPU, with normal GC and
+the same accepted inputs. Starship native parity remains blocked by conflicting
+native list/detail identity metadata. No normal service or consumer selection changed.
 
 ## Earlier review checkpoint
 

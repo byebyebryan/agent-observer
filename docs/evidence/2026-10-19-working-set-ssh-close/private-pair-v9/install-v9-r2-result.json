@@ -1,0 +1,142 @@
+{
+  "interpreters": {
+    "311": {
+      "baseInterpreter": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+      "freshCopyVenv": true,
+      "pythonVersion": "3.11.17",
+      "venv": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311"
+    },
+    "314": {
+      "baseInterpreter": "/home/bryan/code/mesh-plus/.venv/bin/python",
+      "freshCopyVenv": true,
+      "pythonVersion": "3.14.8",
+      "venv": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314"
+    }
+  },
+  "lockPath": "/home/bryan/.cache/agent-active-feed-cpu.lock",
+  "offline": true,
+  "recoveredR1ProgressSha256": "7f9e55a2bc08631908ca80bcf772262a18d74d6d3edca6743ca19dbceaa0adaa",
+  "root": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69",
+  "schema": "agent-observer.working-set-offline-install.v1",
+  "stages": [
+    {
+      "action": "verified prior --copies venv creation; no recreation or inherited site packages",
+      "evidenceSha256": "7f9e55a2bc08631908ca80bcf772262a18d74d6d3edca6743ca19dbceaa0adaa",
+      "exitCode": 0,
+      "pyvenvCfgSha256": "b3be6defa34835a7143183a19967dd513b05eab162a09da6ce1a3d6b2eeb723d",
+      "stage": "guard-fresh-venv-311-from-r1",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--disable-pip-version-check",
+        "--no-cache-dir",
+        "--find-links",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/dependency-wheels-311",
+        "--require-hashes",
+        "-r",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/dependency-requirements-311.txt"
+      ],
+      "elapsedNs": 252144567,
+      "exitCode": 0,
+      "stage": "dependencies-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 1597,
+      "stdoutSha256": "f8f1d4523b2dafc9d1e647c963661bc3a3b5ae8fb7ba1d21db122d9163c8f09e",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-311/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--disable-pip-version-check",
+        "--no-cache-dir",
+        "--no-deps",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/wheels/mesh_plus-0.1.0a23-py3-none-any.whl"
+      ],
+      "elapsedNs": 440068874,
+      "exitCode": 0,
+      "stage": "applications-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 238,
+      "stdoutSha256": "0733a57dd47179731123ee64456dea619895ec9ce4a304b172298c26905fd94c",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/code/mesh-plus/.venv/bin/python",
+        "-m",
+        "venv",
+        "--copies",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314"
+      ],
+      "elapsedNs": 1176133393,
+      "exitCode": 0,
+      "stage": "venv-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--disable-pip-version-check",
+        "--no-cache-dir",
+        "--find-links",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/dependency-wheels-314",
+        "--require-hashes",
+        "-r",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/dependency-requirements-314.txt"
+      ],
+      "elapsedNs": 338644671,
+      "exitCode": 0,
+      "stage": "dependencies-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 1451,
+      "stdoutSha256": "8cd431159328ca51f8c57fbb08099cf29a8a868135950bde8430dd81d10c7235",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/venv-314/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--disable-pip-version-check",
+        "--no-cache-dir",
+        "--no-deps",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-bfa91a69/wheels/mesh_plus-0.1.0a23-py3-none-any.whl"
+      ],
+      "elapsedNs": 465062386,
+      "exitCode": 0,
+      "stage": "applications-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 239,
+      "stdoutSha256": "697432280706f9df2751f86bfa0a708fa13209596b22b2fa91c39e4cc058214a",
+      "timedOut": false
+    }
+  ],
+  "status": "pass",
+  "venvCopyMode": true
+}

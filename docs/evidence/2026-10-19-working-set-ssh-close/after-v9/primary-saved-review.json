@@ -1,0 +1,12 @@
+{
+  "schema": "primary-working-set-fixed-ssh-v9-saved-review.v1",
+  "status": "pass",
+  "readerSha256": "b95a13001cba405fae38a5dd384c57c3e261b4f62518d29fa8e2d4523ccaef08",
+  "executionSha256": "f394754dd22b6d1f600ded8e4b7cb6394952aa9ae11beebd21edbf441f816de7",
+  "privatePackage88ArtifactsStillExact": true,
+  "functionalMembershipFieldsAgeAndFreshProofs": true,
+  "normalBridgeAndSshExitZero": true,
+  "independentOwnedRuntimeProcessAndPathCleanup": true,
+  "nativeProviderInvoked": false,
+  "priorV8NotReattributed": true
+}
