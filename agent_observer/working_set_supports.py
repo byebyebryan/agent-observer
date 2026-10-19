@@ -161,10 +161,11 @@ def _compact_coverage(coverage, reference):
 class SupportTableBuilder:
     """Transactional per-entry interner with a bounded source-owner charge."""
 
-    def __init__(self, *, limit):
+    def __init__(self, *, limit, support_lookup=None):
         if type(limit) is not int or limit < 1:
             raise ContractError("working_set_support_capacity")
         self.limit = limit
+        self._support_lookup = support_lookup
         self._keys = []
         self._table = []
         self._indices = {}
@@ -198,7 +199,16 @@ class SupportTableBuilder:
                 pending[key] = index
                 # Borrow the map in the bounded current-entry plan. The owned
                 # support copy is made only after the full plan fits.
-                pending_values.append((key, support_value))
+                borrowed = (
+                    self._support_lookup(support_value)
+                    if self._support_lookup is not None
+                    else None
+                )
+                if borrowed is not None:
+                    validate_shape(borrowed, FACT_SUPPORT)
+                    if canonical(borrowed) != key:
+                        raise ContractError("working_set_support_reference")
+                pending_values.append((key, support_value, borrowed))
             reference_count += 1
             return index
 
@@ -209,7 +219,7 @@ class SupportTableBuilder:
             + sum(
                 2 * len(key.encode("utf-8")) + _SUPPORT_ENTRY_OVERHEAD + 1
                 + _REMAP_SCRATCH_PER_SUPPORT
-                for key, _ in pending_values
+                for key, _support, _borrowed in pending_values
             )
         )
         if len(self._table) + len(pending_values) > MAX_SUPPORT_TABLE:
@@ -226,18 +236,29 @@ class SupportTableBuilder:
 
         # No retained key/map or table growth occurs before the complete
         # current-entry and incremental table charge has passed.
-        for key, support in pending_values:
+        for key, support, borrowed in pending_values:
             index = len(self._table)
             self._indices[key] = index
             self._keys.append(key)
-            self._table.append(_owned_support(support))
+            self._table.append(borrowed if borrowed is not None else _owned_support(support))
         self.references += reference_count
         self.preflight_charge += delta_preflight
         self.overhead_charge += reference_count * _REFERENCE_OVERHEAD + sum(
             len(key.encode("utf-8")) + _SUPPORT_ENTRY_OVERHEAD
-            for key, _ in pending_values
+            for key, _support, _borrowed in pending_values
         )
         return compact
+
+    def owned_support(self, support):
+        """Return the map already owned by this builder after a successful plan."""
+
+        if not isinstance(support, Mapping):
+            raise ContractError("working_set_support_reference")
+        validate_shape(support, FACT_SUPPORT)
+        index = self._indices.get(canonical(support))
+        if index is None or index < 0 or index >= len(self._table):
+            raise ContractError("working_set_support_reference")
+        return self._table[index]
 
     def member(self, member, *, additional_charge=0, current_charge):
         return self._plan(

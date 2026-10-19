@@ -18,40 +18,20 @@ from .contract import MAX_BYTES, ContractError, _admitted_identity_key, canonica
 from .observation_support import SUPPORT_FIELDS, empty_support, support_matches
 from .working_set_contract import MAX_IDENTITIES, MAX_LEDGER_BYTES, selector
 from .working_set_decisions import WorkingSetDecisions
+from .working_set_ledger import LEDGER_PLAN_SCRATCH_BYTES, WorkingSetLedger
 from .working_set_policy import PolicyResult, combine_membership
 from .working_set_supports import SUPPORT_PLAN_SCRATCH_BYTES, SupportTableBuilder
 
-_LEDGER_ROOT_OVERHEAD = 256
-_LEDGER_ENTRY_OVERHEAD = 64
 
+def _identity_mapping(identity):
+    """Reconstruct one detached API identity from a checked full identity key."""
 
-def _canonical_array_bytes(values):
-    """Measure an array of canonical entries without materializing a second list."""
-    total = 2  # '[' and ']'
-    first = True
-    for value in values:
-        if not first:
-            total += 1
-        total += len(canonical(value).encode("utf-8"))
-        first = False
-    return total
-
-
-def _ledger_bytes(values, count):
-    """Charge serialized ledger entries and their bounded dict ownership."""
-    return (
-        _canonical_array_bytes(values)
-        + _LEDGER_ROOT_OVERHEAD
-        + count * _LEDGER_ENTRY_OVERHEAD
-    )
-
-
-def _copy_live_ledger(ledger, now_ms):
-    """Build a candidate root only after old/new overlap passed preflight."""
     return {
-        identity: entry
-        for identity, entry in ledger.items()
-        if entry["horizonBoottimeMs"] > now_ms
+        "hostScope": identity[0],
+        "provider": identity[1],
+        "namespace": identity[2],
+        "nativeIdKind": identity[3],
+        "nativeId": identity[4],
     }
 
 
@@ -81,7 +61,9 @@ class WorkingSetProjector:
             max_identities=max_identities,
             max_guard_bytes=max(1, max_ledger_bytes - SUPPORT_PLAN_SCRATCH_BYTES),
         )
-        self._context, self._ledger, self._encoded = None, {}, None
+        self._context = None
+        self._ledger = WorkingSetLedger.empty()
+        self._encoded = None
         self._clock_state = None
         self._failed, self._continuity = False, 1
         self._capacity_blocked = False
@@ -115,7 +97,7 @@ class WorkingSetProjector:
         if not self._failed:
             self._continuity += 1
             self._failed = True
-        self._ledger = {}
+        self._ledger = WorkingSetLedger.empty(self._context)
         if first_block or clock_state != self._clock_state:
             self.revision += 1
             self.generations += 1
@@ -142,7 +124,7 @@ class WorkingSetProjector:
         if not self._failed:
             self._continuity += 1
         self._failed = True
-        self._ledger = {}
+        self._ledger = WorkingSetLedger.empty(self._context)
         scope.update(
             continuity=self._continuity,
             supportTable=[],
@@ -173,7 +155,11 @@ class WorkingSetProjector:
         if context != self._context:
             if self._context is not None:
                 self._continuity += 1
-            self._context, self._ledger, self._failed = context, {}, False
+            self._context, self._ledger, self._failed = (
+                context,
+                WorkingSetLedger.empty(context),
+                False,
+            )
             self.decisions.reset_context(*context)
         valid = partial(support_matches, source=source, service_id=self.service_id, now_ms=now_ms)
         rows = {
@@ -216,34 +202,53 @@ class WorkingSetProjector:
                         decision.negative_supports if decision.eligibility is False else ()
                     ),
                 )
-        # Charge both live roots before making the next candidate root. Entries
-        # are immutable after insertion, so unchanged values may be shared by
-        # reference; the charge deliberately counts both whole serialized sets
-        # and both dictionary topologies without relying on that sharing.
-        old_ledger_bytes = _ledger_bytes(self._ledger.values(), len(self._ledger))
-        retained_count = sum(
-            entry["horizonBoottimeMs"] > now_ms for entry in self._ledger.values()
+        old_ledger = self._ledger
+        old_ledger_bytes = old_ledger.charge
+        first_identity = next(iter(rows), None)
+        requested_prefix = first_identity[:4] if first_identity is not None else None
+        prefix_changed = (
+            requested_prefix is not None
+            and old_ledger.prefix is not None
+            and requested_prefix != old_ledger.prefix
         )
-        candidate_ledger_bytes = _ledger_bytes(
-            (
-                entry
-                for entry in self._ledger.values()
-                if entry["horizonBoottimeMs"] > now_ms
-            ),
-            retained_count,
+        candidate_upper = (
+            WorkingSetLedger.empty_upper_charge(context)
+            if prefix_changed
+            else old_ledger.clone_upper_charge()
+        )
+        candidate_scratch = (
+            512 + 12 * (0 if prefix_changed else old_ledger.count)
         )
         tracking_bytes = (
             self.decisions.guard_bytes
             + old_ledger_bytes
-            + candidate_ledger_bytes
+            + candidate_upper
             + SUPPORT_PLAN_SCRATCH_BYTES
+            + LEDGER_PLAN_SCRATCH_BYTES
+            + candidate_scratch
+            + 1024
         )
         tracking_capacity = tracking_bytes > self.max_ledger_bytes
-        # A shallow candidate root avoids an unreserved deepcopy memo and does
-        # not alias mutable state: ledger entries are replaced as whole values,
-        # never mutated in place. Do not allocate it after the preflight refuses.
-        ledger = _copy_live_ledger(self._ledger, now_ms) if not tracking_capacity else {}
-        support_table = SupportTableBuilder(limit=self.max_ledger_bytes)
+        ledger = None
+        if not tracking_capacity:
+            ledger = (
+                WorkingSetLedger.empty(context, fallback=old_ledger)
+                if prefix_changed
+                else old_ledger.clone_live(now_ms)
+            )
+            tracking_bytes = (
+                self.decisions.guard_bytes
+                + old_ledger_bytes
+                + ledger.charge
+                + SUPPORT_PLAN_SCRATCH_BYTES
+                + LEDGER_PLAN_SCRATCH_BYTES
+                + ledger.iteration_scratch_bytes
+                + 1024
+            )
+        support_table = SupportTableBuilder(
+            limit=self.max_ledger_bytes,
+            support_lookup=ledger.support_for if ledger is not None else None,
+        )
         for identity in sorted(rows):
             row, fields = rows[identity], supports.get(identity, empty_support())
             decision = classified[identity]
@@ -298,22 +303,28 @@ class WorkingSetProjector:
             # Informational context retention only, not hSelected. Keeping
             # context beyond Dlo is needed during the Dlo..Dhi uncertainty
             # interval. Positive authority is always the separate A/R proof.
-            entry = {
-                "identity": copy.deepcopy(row["identity"]),
-                "priorSupport": copy.deepcopy(prior),
-                "horizonBoottimeMs": prior["expiresBoottimeMs"],
-            }
-            old = ledger.get(identity)
-            ledger_delta = (
-                len(canonical(entry).encode())
-                + 2
-                - (len(canonical(old).encode()) if old is not None else 0)
-                + (_LEDGER_ENTRY_OVERHEAD if old is None else 0)
-            )
+            if ledger is None:
+                tracking_capacity = True
+                continue
+            if ledger.count >= self.max_identities and ledger.get(identity) is None:
+                tracking_capacity = True
+                continue
+            try:
+                update = ledger.plan_put(
+                    identity,
+                    prior,
+                    current_charge=tracking_bytes,
+                    limit=self.max_ledger_bytes,
+                )
+            except ContractError as exc:
+                if str(exc) != "working_set_ledger_capacity":
+                    raise
+                tracking_capacity = True
+                continue
             try:
                 compact_metadata = support_table.member(
                     metadata,
-                    additional_charge=max(0, ledger_delta),
+                    additional_charge=update.peak_additional_bytes,
                     current_charge=tracking_bytes,
                 )
             except ContractError as exc:
@@ -324,13 +335,22 @@ class WorkingSetProjector:
                     raise
                 tracking_capacity = True
                 continue
-            tracking_bytes += len(canonical(compact_metadata).encode()) + ledger_delta
+            prior_owned = support_table.owned_support(prior)
+            previous_ledger_bytes = ledger.charge
+            previous_iteration_scratch = ledger.iteration_scratch_bytes
+            ledger.put(update, prior_owned)
+            tracking_bytes += (
+                len(canonical(compact_metadata).encode())
+                + ledger.charge
+                - previous_ledger_bytes
+                + ledger.iteration_scratch_bytes
+                - previous_iteration_scratch
+            )
             if tracking_bytes + support_table.preflight_charge > self.max_ledger_bytes:
                 tracking_capacity = True
                 continue
             members.append(compact_metadata)
             bodies.append(clean)
-            ledger[identity] = entry
         native_census = census.get("codex", {})
         census_support = native_census.get("support")
         complete = (
@@ -400,10 +420,10 @@ class WorkingSetProjector:
                 }:
                     raise
                 tracking_capacity = True
-        for identity in sorted(ledger):
+        for identity, prior_support, horizon in ledger.iter_items() if ledger is not None else ():
             if tracking_capacity:
                 break
-            entry, decision = ledger[identity], classified.get(identity)
+            decision = classified.get(identity)
             if decision is not None and decision.selected is True:
                 continue
             if (
@@ -446,12 +466,12 @@ class WorkingSetProjector:
                         else None,
                     }
                 candidate = {
-                    "identity": copy.deepcopy(entry["identity"]),
+                    "identity": _identity_mapping(identity),
                     "reason": reason,
                     "value": row["kind"] if reason == "excluded_kind" else "parked",
                     "supports": list(decision.negative_supports),
                     "recent": negative,
-                    "horizonBoottimeMs": entry["horizonBoottimeMs"],
+                    "horizonBoottimeMs": horizon,
                 }
                 try:
                     compact = support_table.nonmember(
@@ -474,11 +494,11 @@ class WorkingSetProjector:
             elif not complete:
                 fields = supports.get(identity, {})
                 candidate = {
-                    "identity": entry["identity"],
+                    "identity": _identity_mapping(identity),
                     "reason": "membership_unresolved",
-                    "priorSupport": entry["priorSupport"],
+                    "priorSupport": prior_support,
                     "support": fields.get("runtime"),
-                    "horizonBoottimeMs": entry["horizonBoottimeMs"],
+                    "horizonBoottimeMs": horizon,
                 }
                 try:
                     compact = support_table.uncertain(
@@ -502,13 +522,19 @@ class WorkingSetProjector:
             support_table.finalize(scope)
         # Guard state survives prior-positive retirement. Count both, plus all
         # native scope metadata, in the single tracking limit.
-        tracked = set(ledger)
-        tracked.update(rows)
+        tracked_count = len(rows)
+        if ledger is not None:
+            for identity in ledger.identities():
+                if identity not in rows:
+                    tracked_count += 1
         combined = (
             len(canonical([scope]).encode())
             + self.decisions.guard_bytes
-            + _ledger_bytes(ledger.values(), len(ledger))
+            + (ledger.charge if ledger is not None else 0)
             + old_ledger_bytes
+            + SUPPORT_PLAN_SCRATCH_BYTES
+            + LEDGER_PLAN_SCRATCH_BYTES
+            + (ledger.iteration_scratch_bytes if ledger is not None else 512)
             + 1024
             + support_table.overhead_charge
         )
@@ -516,7 +542,7 @@ class WorkingSetProjector:
         encoded = None
         if (
             tracking_capacity
-            or len(tracked) > self.max_identities
+            or tracked_count > self.max_identities
             or combined > self.max_ledger_bytes
         ):
             projection = self._failure(scope, "projection_tracking_capacity")
@@ -533,10 +559,13 @@ class WorkingSetProjector:
             else:
                 if recovering:
                     self._continuity = scope["continuity"]
+                if ledger is None:
+                    raise ContractError("working_set_ledger_missing")
+                ledger.detach_fallback()
                 self._failed, self._ledger = False, ledger
-        for entry in self._ledger.values():
-            if entry["horizonBoottimeMs"] > now_ms:
-                deadlines.append(entry["horizonBoottimeMs"])
+        for _identity, _support, horizon in self._ledger.iter_items():
+            if horizon > now_ms:
+                deadlines.append(horizon)
         if encoded is None:
             encoded = canonical(projection).encode()
         clock_state = self.clocks.ceiling, self.clocks.generation

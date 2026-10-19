@@ -11,6 +11,7 @@ from test_service_contract import fixture
 import agent_observer.working_set_feed as working_set_feed
 from agent_observer.contract import ContractError, canonical
 from agent_observer.service_state import ServiceState
+from agent_observer.working_set_ledger import WorkingSetLedger
 
 WALL = 1700000020000
 
@@ -141,7 +142,7 @@ class WorkingSetCachedEncodingTest(unittest.TestCase):
         failed_continuity = failed_scope["continuity"]
         failed_encoded = canonical(failed).encode()
         self.assertEqual(projector._encoded, failed_encoded)
-        self.assertEqual(projector._ledger, {})
+        self.assertEqual(projector._ledger.count, 0)
         self.assertEqual(projector.revision, revision + 1)
 
         recovered = projector.accept(*args, **kwargs)
@@ -166,7 +167,7 @@ class WorkingSetCachedEncodingTest(unittest.TestCase):
         # failures; the next successful generation would publish 10.
         projector._continuity = 9
         projector._failed = True
-        projector._ledger = {}
+        projector._ledger = WorkingSetLedger.empty(projector._context)
         guard_count = projector.decisions.guard_count
         clock_ceiling = self.state.working_set_clocks.ceiling
         args, kwargs = self.projector_args()
@@ -179,7 +180,7 @@ class WorkingSetCachedEncodingTest(unittest.TestCase):
         self.assertEqual(scope["continuity"], 9)
         self.assertEqual(projector._continuity, 9)
         self.assertTrue(projector._failed)
-        self.assertEqual(projector._ledger, {})
+        self.assertEqual(projector._ledger.count, 0)
         self.assertEqual(projector._encoded, canonical(refused).encode())
         self.assertEqual(projector.decisions.guard_count, guard_count)
         self.assertEqual(self.state.working_set_clocks.ceiling, clock_ceiling)
