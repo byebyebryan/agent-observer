@@ -90,6 +90,16 @@ Delivery loss, terminal disconnect and positive expiry export no member lease.
 This is a read-facade addition: no native frame, Mesh descriptor, schema or wire
 contract changes, and it does not independently qualify installed/native delivery.
 
+`WORKING_SET_SCOPE_LEASE_INTERFACE_VERSION = 1` also exports
+`scope.coverage.expiresAtMs`: a receiving-clock deadline for complete coverage,
+or null for partial/unavailable coverage. It is the minimum of the original
+census dependencies, every selected member's independent A OR R membership
+deadline (including required kind), and every admitted negative's conjunction
+deadline. This applies to a complete empty scope too. Downstream complete totals
+and absence claims must expire by this deadline; individual row claims may have
+separate shorter or longer leases. A positive timeout still downgrades coverage
+and never creates a native negative.
+
 ## Evidence boundary
 
 The [component record](evidence/2026-10-18-working-set/p2-client/README.md)

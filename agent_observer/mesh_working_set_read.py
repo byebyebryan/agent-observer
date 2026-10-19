@@ -34,6 +34,7 @@ from .working_set_supports import (
 
 WORKING_SET_READ_INTERFACE_VERSION = 1
 WORKING_SET_MEMBER_LEASE_INTERFACE_VERSION = 1
+WORKING_SET_SCOPE_LEASE_INTERFACE_VERSION = 1
 
 
 @dataclass(frozen=True)
@@ -200,6 +201,10 @@ class _WorkingSetSelection:
                     for entry in scope["uncertain"]
                 )
                 all_selected = True
+                # Complete absence is also a time-bounded positive claim. Its
+                # exported deadline must cover every fact on which completeness
+                # depends, including negatives and members outside a UI limit.
+                scope_deadlines = [horizon(ref) for ref in coverage["supports"]]
                 for compact_entry in scope["members"]:
                     entry = resolve_member(scope, compact_entry)
                     row = self.rows.get(identity_key(entry["identity"]))
@@ -236,6 +241,7 @@ class _WorkingSetSelection:
                     membership_horizon = max(positive)
                     if row["kind"] != "unknown":
                         membership_horizon = min(membership_horizon, horizon(fields["kind"]))
+                    scope_deadlines.append(membership_horizon)
                     member_leases.append({
                         "identity": copy.deepcopy(entry["identity"]),
                         "activeExpiresAtMs": active if active is not None and active > now_ms else None,
@@ -249,6 +255,7 @@ class _WorkingSetSelection:
                         # This is an already admitted native negative; no new
                         # negative can be inferred from a local positive timeout.
                         nonmembers.append(copy.deepcopy(entry))
+                        scope_deadlines.append(branch(entry["supports"]))
                     else:
                         all_selected = False
                         uncertain.append(self._uncertain(entry, "working_set_negative_expired"))
@@ -259,6 +266,12 @@ class _WorkingSetSelection:
                     or not all_selected
                 ):
                     coverage.update(status="partial", reason="working_set_membership_unresolved")
+                coverage["expiresAtMs"] = (
+                    min(scope_deadlines)
+                    if coverage["status"] == "complete" and scope_deadlines
+                    and all(type(value) is int and value > now_ms for value in scope_deadlines)
+                    else None
+                )
                 scopes.append({
                     "hostScope": host["hostId"], "serviceId": service["serviceId"],
                     **{key: scope[key] for key in (

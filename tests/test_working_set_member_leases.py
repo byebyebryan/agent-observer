@@ -4,10 +4,52 @@ import copy
 import unittest
 
 import test_mesh_working_set_profile as profile_fixture
-from test_mesh_working_set_read import OFFSET, selection
+from test_mesh_working_set_read import OFFSET, context, new_fixture, selection
 
 
 class WorkingSetMemberLeaseTest(unittest.TestCase):
+    def test_complete_empty_scope_exports_original_census_deadline(self):
+        fixture = new_fixture()
+        sample = fixture.sample()
+        sample["sessions"] = []
+        reader, value = selection(fixture.accept(sample))
+        for receipt in value["mesh"]["hosts"][0]["receipts"]:
+            if receipt["expiresAtMs"] is not None:
+                receipt["expiresAtMs"] = OFFSET + 10050
+        first = reader.evaluate(value, OFFSET + 10001)
+        self.assertEqual(first.members, [])
+        self.assertEqual(first.scopes[0]["coverage"]["status"], "complete")
+        self.assertEqual(first.scopes[0]["coverage"]["expiresAtMs"], OFFSET + 10050)
+        self.assertEqual(reader.evaluate(value, OFFSET + 10049).scopes[0]["coverage"]["expiresAtMs"], OFFSET + 10050)
+        expired = reader.evaluate(value, OFFSET + 10050)
+        self.assertEqual(expired.scopes[0]["coverage"]["status"], "partial")
+        self.assertIsNone(expired.scopes[0]["coverage"]["expiresAtMs"])
+
+    def test_complete_scope_cannot_outlive_original_negative_receipt(self):
+        fixture = new_fixture()
+        reader, _ = selection(fixture.accept())
+        fixture.now = 15002
+        value = context(fixture.state.working_set_frame("status", 2))
+        reader.retain(copy.deepcopy(value))
+        for receipt in value["mesh"]["hosts"][0]["receipts"]:
+            if receipt["expiresAtMs"] is not None:
+                receipt["expiresAtMs"] = OFFSET + 16000
+        before = reader.evaluate(value, OFFSET + 15002)
+        self.assertEqual(len(before.nonmembers), 1)
+        self.assertEqual(before.scopes[0]["coverage"]["expiresAtMs"], OFFSET + 16000)
+        self.assertIsNone(reader.evaluate(value, OFFSET + 16000).scopes[0]["coverage"]["expiresAtMs"])
+
+    def test_complete_scope_uses_or_membership_deadline_and_detached_export(self):
+        frame = profile_fixture.MeshWorkingSetProfileTest.frame(runtime="running")
+        reader, value = selection(frame)
+        read = reader.evaluate(value, OFFSET + 10001)
+        deadline = read.scopes[0]["coverage"]["expiresAtMs"]
+        lease, = read.member_leases
+        self.assertGreater(deadline, lease["recentExpiresAtMs"])
+        self.assertLessEqual(deadline, lease["membershipExpiresAtMs"])
+        read.scopes[0]["coverage"]["expiresAtMs"] = 0
+        self.assertEqual(reader.evaluate(value, OFFSET + 10002).scopes[0]["coverage"]["expiresAtMs"], deadline)
+
     def test_recent_lease_uses_attenuated_cutoff_and_disappears_at_equality(self):
         frame = profile_fixture.MeshWorkingSetProfileTest.frame(runtime="parked")
         scope = frame["projection"]["scopes"][0]
