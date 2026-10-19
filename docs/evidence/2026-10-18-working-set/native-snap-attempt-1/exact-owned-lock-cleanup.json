@@ -1,0 +1,1 @@
+{"allExactChildrenRetired": true, "exactLockRecordMatched": true, "exclusiveLockAcquired": true, "ownedLockRemoved": true, "ownedRuntimeDirectoryRemoved": true, "recursiveDelete": false, "schema": "observer.native-owned-cleanup/1", "signalsSent": 0}

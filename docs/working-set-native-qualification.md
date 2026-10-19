@@ -86,6 +86,18 @@ receipt, clock outside the native-before-to-receive envelope, context or scope
 change, missing complete view, or any other prefix failure stays unproved for
 the rest of the read. A later clean frame cannot restore it.
 
+An installed prefix may begin with a neutral context-0 status or heartbeat.
+That frame must be warming, have no projection or clock ceiling, and contain
+both runtime and history receipts in their exact never-accepted state with
+counter zero. It establishes the retained zero baseline. The canonical first
+context-1 projection may carry the first accepted sample in the same frame;
+that transition is accepted only when every component advances from zero to
+at most one with its exact joined clock. A separate unprojected acceptance,
+coalesced first count, missing first clock, later context reset, or source or
+scope rebind leaves the prefix unproved. Direct first-set comparison remains
+strictly bound to context generation 1 and does not use this neutral-prefix
+rule.
+
 For every projected prefix frame, the reported ceiling must equal the maximum
 `W - L + 1` among the currently joined clocks and the previously observed
 ceiling. This preserves a larger earlier `K` when a later component mirrors a

@@ -1,0 +1,33 @@
+{
+  "artifacts": {
+    "ssh-stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ssh-stdout.log": {
+      "bytes": 195,
+      "sha256": "74d02240f51cc4ecf7ef3dfe2261c26b7db8c523e816f3cf01506a9922eb1837"
+    }
+  },
+  "durationSeconds": 2.718902192020323,
+  "localInputHashes": {
+    "qualify-working-set-native": "0ac9e414cc2990491324d2849b760159527210f59bcc091b6fb18576f1831230",
+    "run-native-working-set-snap.py": "fdaebefbc87bd36523bdef6d2740a348509ef8f0c94d38cc3049c8a84d7bf7d9"
+  },
+  "outerTimeout": false,
+  "remoteArgv": [
+    "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-314/bin/python",
+    "-B",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/native-installed-b176-snap-plan/run-native-working-set-snap.py"
+  ],
+  "remoteSummary": {
+    "exitCode": 4,
+    "reasonCode": "owned_cleanup_unresolved",
+    "report": "snap-native-run-8325e4a68c148d86.json",
+    "schema": "agent-observer.working-set-native-orchestrator.v1",
+    "status": "cleanup_unresolved"
+  },
+  "schema": "observer.native-snap-attempt/1",
+  "sshExitCode": 4,
+  "startedUtc": "2026-10-19T06:14:32.490969+00:00"
+}

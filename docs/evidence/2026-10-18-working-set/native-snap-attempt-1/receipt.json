@@ -1,0 +1,41 @@
+{
+  "cleanup": {
+    "allExactChildrenIndependentlyAbsent": true,
+    "followupOwnedPathsRemoved": true,
+    "originalOrchestratorStatus": "cleanup_unresolved",
+    "originalReportPreserved": true,
+    "ownLockRecordVerifiedAndExclusiveLockAcquired": true,
+    "providerActions": false,
+    "signalsToProvider": 0
+  },
+  "comparison": {
+    "censusStable": true,
+    "clockReason": "initial_context_unproved",
+    "membership": "unresolved",
+    "mismatchedIdentities": 0,
+    "nativeAfter": 102,
+    "nativeBefore": 102,
+    "selectedFields": "match"
+  },
+  "files": {
+    "exact-owned-lock-cleanup.json": "997ac84b5e1fda2b44475b0dc04b29e3694088d87db589fe687f03be230c444e",
+    "execution.json": "641b46155f1eb3f95953cc41b935a358b14c1533ea7735254f01e5de6819917d",
+    "postrun-readonly.json": "1b82de96abb747a6cfde1516083a4b26c26d04a749b9ce6b742fc3dcd1bd87ed",
+    "remote-report.json": "be0bdfbeb5e9a6d7a24caad60e58a018004449fe340c117d41dc16896de71534",
+    "ssh-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ssh-stdout.log": "74d02240f51cc4ecf7ef3dfe2261c26b7db8c523e816f3cf01506a9922eb1837"
+  },
+  "installedMeshSource": "c06b33e058339d9d1d89ecf6844044867d816c58",
+  "meshWheelSha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+  "observerWheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+  "qualificationInputs": {
+    "oracleSha256": "0205e8ca00e0b8ba8877c1575aa9b35385412e8b51063f7d43a449709a8056ea",
+    "orchestratorSha256": "fdaebefbc87bd36523bdef6d2740a348509ef8f0c94d38cc3049c8a84d7bf7d9",
+    "qualifierSha256": "0ac9e414cc2990491324d2849b760159527210f59bcc091b6fb18576f1831230"
+  },
+  "qualificationPass": false,
+  "qualifierSource": "b2a4ec5d40eeb5a60caf5d3eb784f3bde1c766c5",
+  "runtimeSource": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+  "schema": "observer.working-set.native-snap-attempt/1",
+  "status": "unresolved"
+}

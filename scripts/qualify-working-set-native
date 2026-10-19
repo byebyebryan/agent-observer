@@ -1043,7 +1043,9 @@ def _observed_prefix_metadata(frame: dict, *, host: str, uid: int, home: Path,
             or source.get("namespace") != namespace):
         return None, None, None, "observed_prefix_source_changed"
     context_generation = source.get("contextGeneration")
-    if type(context_generation) is not int or context_generation != 1:
+    if type(context_generation) is not int or context_generation not in {0, 1}:
+        return None, None, None, "initial_context_unproved"
+    if include_scope and context_generation != 1:
         return None, None, None, "initial_context_unproved"
     metadata = {
         "serviceId": frame.get("serviceId"),
@@ -1058,7 +1060,7 @@ def _observed_prefix_metadata(frame: dict, *, host: str, uid: int, home: Path,
             "configHome": str(home),
             "configHomeKind": "explicit",
             "namespace": namespace,
-            "contextGeneration": 1,
+            "contextGeneration": context_generation,
         },
     }
     scope = None
@@ -1069,7 +1071,7 @@ def _observed_prefix_metadata(frame: dict, *, host: str, uid: int, home: Path,
             return None, source, None, "source_scope_unproved"
         scope = scopes[0]
         scope_context = scope.get("contextGeneration")
-        if type(scope_context) is not int or scope_context != 1:
+        if type(scope_context) is not int or scope_context != context_generation:
             return None, source, None, "initial_context_unproved"
         if type(scope.get("continuity")) is not int or scope["continuity"] != 1:
             return None, source, None, "projection_continuity_unproved"
@@ -1078,7 +1080,7 @@ def _observed_prefix_metadata(frame: dict, *, host: str, uid: int, home: Path,
         metadata["scope"] = {
             "provider": "codex",
             "namespace": namespace,
-            "contextGeneration": 1,
+            "contextGeneration": context_generation,
             "continuity": 1,
         }
     return metadata, source, scope, None
@@ -1126,6 +1128,7 @@ class _ObservedClockPrefix:
         self.states = None
         self.ceiling = None
         self.baseline_counters = None
+        self.context_generation = None
 
     def _fail(self, code: str):
         if self.first_failure is None:
@@ -1141,6 +1144,10 @@ class _ObservedClockPrefix:
             self._fail(reason)
             return None, source, scope
         base = {key: value for key, value in metadata.items() if key != "scope"}
+        base["source"] = {
+            key: value for key, value in base["source"].items()
+            if key != "contextGeneration"
+        }
         if self.fixed_metadata is None:
             self.fixed_metadata = base
         elif self.fixed_metadata != base:
@@ -1181,6 +1188,67 @@ class _ObservedClockPrefix:
         has_projection = frame.get("projection") is not None
         metadata, source, scope = self._metadata(frame, include_scope=has_projection)
         if self.first_failure is not None:
+            return
+        context_generation = source.get("contextGeneration") if isinstance(source, dict) else None
+        context_establishment_frame = self.context_generation == 0 and context_generation == 1
+        if context_generation == 0:
+            if self.context_generation == 1:
+                self._fail("observed_prefix_context_regression")
+                return
+            if (has_projection or "projection" not in frame or frame["projection"] is not None
+                    or frame.get("kind") not in {"status", "heartbeat"}
+                    or frame.get("state") != "warming"
+                    or "clockCeiling" not in frame or frame["clockCeiling"] is not None):
+                self._fail("observed_prefix_neutral_context_unproved")
+                return
+            states, reason = _component_receipt_states(source)
+            if reason is not None:
+                self._fail(reason)
+                return
+            if any(state["accepted"] != 0 for state in states.values()):
+                self._fail("observed_prefix_unprojected_acceptance")
+                return
+            if self.states is None:
+                self.baseline_counters = {
+                    name: state["accepted"] for name, state in states.items()
+                }
+                self.states, self.ceiling = states, None
+            elif states != self.states:
+                self._fail("observed_prefix_unprojected_acceptance")
+                return
+            self.context_generation = 0
+            return
+        if context_generation != 1:
+            self._fail("initial_context_unproved")
+            return
+        if self.context_generation == 0:
+            if not has_projection:
+                if ("projection" not in frame or frame["projection"] is not None
+                        or frame.get("kind") not in {"status", "heartbeat"}
+                        or frame.get("state") != "warming"
+                        or "clockCeiling" not in frame or frame["clockCeiling"] is not None):
+                    self._fail("observed_prefix_context_established_after_activity")
+                    return
+                states, reason = _component_receipt_states(source)
+                if reason is not None:
+                    self._fail(reason)
+                    return
+                if (any(state["accepted"] != 0 for state in states.values())
+                        or states != self.states):
+                    self._fail("observed_prefix_context_established_after_activity")
+                    return
+                self.context_generation = 1
+                self.states, self.ceiling = states, None
+                return
+            # ObservationEngine establishes context 1 immediately before its
+            # first accepted sample. The neutral context-0 frame is the
+            # zero-counter baseline; the transition frame may therefore carry
+            # only those first, fully joined accepted samples.
+            self.context_generation = 1
+        if self.context_generation is None:
+            self.context_generation = 1
+        elif self.context_generation != 1:
+            self._fail("initial_context_unproved")
             return
         if not has_projection:
             states, reason = _component_receipt_states(source)
@@ -1232,6 +1300,12 @@ class _ObservedClockPrefix:
         )
         if reason is not None or states is None:
             self._fail(reason or "observed_prefix_clock_set_unproved")
+            return
+        if context_establishment_frame and (
+            not any(state["accepted"] == 1 for state in states.values())
+            or any(state["accepted"] > 1 for state in states.values())
+        ):
+            self._fail("observed_prefix_context_establishment_unproved")
             return
         if self.states is None:
             if any(state["accepted"] > 1 for state in states.values()):
@@ -1310,6 +1384,7 @@ class _ObservedClockPrefix:
         final_metadata = {key: value for key, value in metadata.items() if key != "scope"}
         final_metadata["scope"] = metadata["scope"]
         fixed = dict(self.fixed_metadata)
+        fixed["source"] = {**fixed["source"], "contextGeneration": 1}
         fixed["scope"] = self.scope_metadata
         if final_metadata != fixed or frame.get("clockCeiling") != self.ceiling:
             summary["reason"] = "observed_prefix_final_metadata_changed"

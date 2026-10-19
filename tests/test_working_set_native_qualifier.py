@@ -20,7 +20,7 @@ from test_active_service_delivery import local_uid
 from test_working_set_contract import compact_scope, expand_scope, fixture, outside
 
 from agent_observer.contract import canonical
-from agent_observer.working_set_contract import validate_frame
+from agent_observer.working_set_contract import StreamGuard, validate_frame
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "qualify-working-set-native"
 LOADER = importlib.machinery.SourceFileLoader("qualify_working_set_native", str(SCRIPT))
@@ -268,6 +268,35 @@ def observed_prefix_frames():
     validate_frame(final, expected_host="fixture", expected_uid=os.getuid(),
                    expected_window_ms=WINDOW_MS)
     return first, final
+
+
+def neutral_context_frame(base, *, context_generation, sequence, kind, emitted_offset=-200):
+    frame = copy.deepcopy(base)
+    frame.update(
+        sequence=sequence,
+        viewRevision=0,
+        observationRevision=0,
+        kind=kind,
+        state="warming",
+        emittedAt=base["emittedAt"] + emitted_offset,
+        emittedBoottimeMs=base["emittedBoottimeMs"] + emitted_offset,
+        projection=None,
+        clockCeiling=None,
+    )
+    source = frame["sources"][0]
+    source["contextGeneration"] = context_generation
+    for receipt in source["components"]:
+        receipt.update(
+            attempts=0,
+            accepted=0,
+            sampledBoottimeMs=None,
+            expiresBoottimeMs=None,
+            health="warming",
+            lastResult="not_observed",
+        )
+    validate_frame(frame, expected_host="fixture", expected_uid=os.getuid(),
+                   expected_window_ms=WINDOW_MS)
+    return frame
 
 
 def observe_prefix(frames, *, start_wall_ms=None, start_boot_ms=9000,
@@ -670,6 +699,123 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
         prefix, _state = observe_prefix([first_too_late, final])
         self.assertEqual(prefix["status"], "unproved")
         self.assertEqual(prefix["reason"], "accepted_counter_not_first")
+
+    def test_observed_clock_prefix_context_zero_then_all_first_clocks_are_observed(self):
+        first, final = observed_prefix_frames()
+        first["sequence"] = 2
+        final["sequence"] = 3
+        warm_zero = neutral_context_frame(
+            first, context_generation=0, sequence=1, kind="status",
+        )
+        start_wall = first["emittedAt"] - 300
+        prefix, _state = observe_prefix(
+            [warm_zero, first, final], start_wall_ms=start_wall,
+        )
+        stream = StreamGuard(expected_host="fixture", expected_uid=os.getuid(),
+                             expected_window_ms=WINDOW_MS)
+        for frame in (warm_zero, first, final):
+            stream.accept(frame)
+        self.assertEqual(prefix["status"], "recomputed")
+        self.assertEqual(prefix["reason"], "observed_clock_prefix_recomputed")
+        self.assertEqual(prefix["baselineCounters"], {"runtime": 0, "history": 0})
+        self.assertEqual(prefix["finalCounters"], {"runtime": 2, "history": 1})
+        self.assertEqual(prefix["acceptedTransitions"], 3)
+        self.assertEqual(prefix["frames"], 3)
+
+        native = native_sample(final, runtime="parked", status="notLoaded", loaded=False)
+        result = compare(
+            final, native, copy.deepcopy(native), first_acceptance_provenance=True,
+            observed_prefix=prefix,
+        )
+        self.assertEqual(result["sourceK"]["status"],
+                         "independently_recomputed_observed_clock_prefix")
+        self.assertEqual(result["membershipStatus"], "match")
+        self.assertEqual(result["status"], "match")
+
+    def test_observed_clock_context_zero_rejects_missing_gap_rebind_and_unprojected_acceptance(self):
+        first, final = observed_prefix_frames()
+        first["sequence"] = 2
+        final["sequence"] = 3
+        warm_zero = neutral_context_frame(
+            first, context_generation=0, sequence=1, kind="status",
+        )
+
+        missing_context = copy.deepcopy(warm_zero)
+        missing_context["sources"][0].pop("contextGeneration")
+        prefix, _state = observe_prefix([missing_context, first, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "initial_context_unproved")
+
+        missing_component = copy.deepcopy(warm_zero)
+        missing_component["sources"][0]["components"].pop()
+        prefix, _state = observe_prefix([missing_component, first, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "component_census_unproved")
+
+        missing_clock = copy.deepcopy(first)
+        missing_clock["projection"]["scopes"][0]["clocks"].clear()
+        prefix, _state = observe_prefix([warm_zero, missing_clock, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "first_sample_receipt_unproved")
+
+        unprojected = copy.deepcopy(warm_zero)
+        runtime = unprojected["sources"][0]["components"][0]
+        runtime.update(accepted=1, attempts=1, sampledBoottimeMs=10000,
+                       expiresBoottimeMs=10000 + WINDOW_MS,
+                       health="current", lastResult="accepted")
+        prefix, _state = observe_prefix([unprojected, first, final])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_unprojected_acceptance")
+
+        coalesced = copy.deepcopy(final)
+        set_runtime_counter(coalesced, 2)
+        prefix, _state = observe_prefix([warm_zero, coalesced])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_context_establishment_unproved")
+
+        skipped_sample = neutral_context_frame(
+            first, context_generation=1, sequence=2, kind="heartbeat", emitted_offset=-100,
+        )
+        final_without_first_sample = copy.deepcopy(final)
+        prefix, _state = observe_prefix([warm_zero, skipped_sample, final_without_first_sample])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_counter_gap_or_regression")
+
+        rebindings = (
+            ("hostScope", "other-host"),
+            ("uid", os.getuid() + 1),
+            ("bootId", "00000000-0000-0000-0000-000000000099"),
+            ("serviceId", "00000000-0000-0000-0000-000000000098"),
+            ("clockDomain", "other-clock"),
+            ("clockGeneration", 1),
+            ("selectorDigest", "0" * 64),
+        )
+        for key, value in rebindings:
+            with self.subTest(rebinding=key):
+                rebound = neutral_context_frame(
+                    first, context_generation=1, sequence=2, kind="heartbeat",
+                    emitted_offset=-100,
+                )
+                rebound[key] = value
+                prefix, _state = observe_prefix([warm_zero, rebound, first, final])
+                self.assertEqual(prefix["status"], "unproved")
+
+        for key, value in (("configHome", "/other/codex"), ("namespace", "e" * 64)):
+            with self.subTest(rebinding=key):
+                rebound = neutral_context_frame(
+                    first, context_generation=1, sequence=2, kind="heartbeat",
+                    emitted_offset=-100,
+                )
+                rebound["sources"][0][key] = value
+                prefix, _state = observe_prefix([warm_zero, rebound, first, final])
+                self.assertEqual(prefix["status"], "unproved")
+
+        regressed = neutral_context_frame(
+            first, context_generation=0, sequence=4, kind="heartbeat", emitted_offset=200,
+        )
+        prefix, _state = observe_prefix([warm_zero, first, final, regressed])
+        self.assertEqual(prefix["status"], "unproved")
+        self.assertEqual(prefix["reason"], "observed_prefix_context_regression")
 
     def test_observed_clock_prefix_enforces_native_before_receive_envelope(self):
         first, final = observed_prefix_frames()
