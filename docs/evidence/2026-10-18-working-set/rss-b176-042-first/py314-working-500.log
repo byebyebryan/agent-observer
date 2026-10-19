@@ -1,0 +1,1 @@
+{"generations": 32, "interpreter": {"executable": "/home/bryan/code/mesh-plus/.venv/bin/python", "version": "3.14.8"}, "output": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/py314-working-500.json", "rows": 500, "rssSamples": 67, "status": "pass", "variant": "working"}

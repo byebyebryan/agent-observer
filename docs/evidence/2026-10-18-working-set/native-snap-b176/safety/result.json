@@ -1,0 +1,23 @@
+{
+  "gcDisabled": true,
+  "inputs": {
+    "evaluate-observation": "0205e8ca00e0b8ba8877c1575aa9b35385412e8b51063f7d43a449709a8056ea",
+    "qualify-working-set-native": "bb35429a9923e17d5d9354bca008ba57f489d1fb41c4bbeb9020f241479b20c8",
+    "run-native-working-set-snap.py": "5e84dbc93ac4794400517960ae950d3a2ecfb0bef87db533c7e23418895729e0",
+    "test-run-native-working-set-snap.py": "1aae397ee7f97ca43b07f911ab37ccf3c814c52bf3d32e75ec4c65d093bf165e"
+  },
+  "reports": [
+    {
+      "exitCode": 0,
+      "logSha256": "84d7f8ff5dd4de2697533dedd879169f753820e159c66dc7733dae96a7d085cc",
+      "python": "/home/bryan/code/mesh-plus/.venv/bin/python"
+    },
+    {
+      "exitCode": 0,
+      "logSha256": "773fdc858555d0e204353e436d1fdca5f4bbeea1ce2c34f3a9fd4918919f03dc",
+      "python": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python"
+    }
+  ],
+  "schema": "observer.native-v2-primary-review/1",
+  "tests": 31
+}

@@ -1,0 +1,113 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1825,
+      "path": "declared-matrix.json",
+      "sha256": "d18f90f2237bf01ffdb34871c2352dd1690c7199a4e5a59457fee951dfb41429"
+    },
+    {
+      "bytes": 9477,
+      "path": "matrix-result.json",
+      "sha256": "b2d44cc6688f5936d8b5643178139b3e08b723fa98c9b2cce4c85448e8acd955"
+    },
+    {
+      "bytes": 1559,
+      "path": "py311-full-500-controller.json",
+      "sha256": "80be284f760d6583c760826ad303b2516e6d3a18521b1eefda2f7f54e22a93ee"
+    },
+    {
+      "bytes": 102727,
+      "path": "py311-full-500.json",
+      "sha256": "2cce47311a83f6aae3fb858b29abadffcd60637fc19ff034301ead8ee6b1777b"
+    },
+    {
+      "bytes": 342,
+      "path": "py311-full-500.log",
+      "sha256": "7e0a528032e9c41a006524dcb48262e59051973fd90e5972a02ff454cecbd472"
+    },
+    {
+      "bytes": 1564,
+      "path": "py311-working-500-controller.json",
+      "sha256": "ac1e0071b61a0b2ce62f113fcd8ddc5d5eb7be4b7b2d1299d2b34fb89656fb79"
+    },
+    {
+      "bytes": 105178,
+      "path": "py311-working-500.json",
+      "sha256": "eb2e55df1b7a8fe84633c03bf4638dc21839b5e60b4c227cf79564e545211174"
+    },
+    {
+      "bytes": 348,
+      "path": "py311-working-500.log",
+      "sha256": "84e3bd0a412c0f0e6a53fbe1f529f5c8fbf05d0dc8097d89534bd98b9c45c5be"
+    },
+    {
+      "bytes": 1720,
+      "path": "py314-full-2000-controller.json",
+      "sha256": "e18150e2168c3c32c688f9d189a467441ad8c15f2efbb88f9008c554f544a3e1"
+    },
+    {
+      "bytes": 103355,
+      "path": "py314-full-2000.json",
+      "sha256": "a4c8c57871e3a7fdbb3f8eacfced8ae26d6b4aa2838f75d0ecee99d5a5bda764"
+    },
+    {
+      "bytes": 305,
+      "path": "py314-full-2000.log",
+      "sha256": "2c3325e7aa725a727ad9f166b4e42172125dbb91aac1a1b6d7539ad6507c6fb1"
+    },
+    {
+      "bytes": 1517,
+      "path": "py314-full-500-controller.json",
+      "sha256": "68a7166ea97f711d2bf0e8a5acbf70fa26177d679723f26d913bcea34bfa3fcb"
+    },
+    {
+      "bytes": 102668,
+      "path": "py314-full-500.json",
+      "sha256": "05c7dda7534b521a32604c51a79b247e726e2566e9b887e1a001d9ed1a3177d3"
+    },
+    {
+      "bytes": 301,
+      "path": "py314-full-500.log",
+      "sha256": "4776647452df07aecf2f3499ac53741c3d4dd9829d56b209ce497ac61fa5ad89"
+    },
+    {
+      "bytes": 1523,
+      "path": "py314-working-500-controller.json",
+      "sha256": "57d1067daaf03eb5f78a6a570ce2b7a6499fc7e98059e2d48d8cec65c4cd6915"
+    },
+    {
+      "bytes": 105136,
+      "path": "py314-working-500.json",
+      "sha256": "2b804380df0bbd4f3ddf91dd8196afdb6d3bd61fac3cbd33d6bc24efd8a97426"
+    },
+    {
+      "bytes": 307,
+      "path": "py314-working-500.log",
+      "sha256": "4258642b6e84cd12837eb6e224b5c4d718355b5aa3bec6a043482ffc532856f4"
+    },
+    {
+      "bytes": 19852,
+      "path": "rss_plateau_probe.py",
+      "sha256": "7c4ec02910e6e51c146b199b97c93814049609308d2e12f2de8e03b780f6fecf"
+    },
+    {
+      "bytes": 107073,
+      "path": "sdk_pipeline_matrix_v3_6_watch_copy.py",
+      "sha256": "8f28c1d30669a42bda37ccde190979edf8c96b4dd95abc455450f60c91a4a825"
+    }
+  ],
+  "limits": [
+    "GC disabled; no explicit collection",
+    "Untimed synthetic IPC/watch and four detached local reads per generation",
+    "Only five of eight predeclared cases executed; remaining cases stopped after retained Bridge failure",
+    "All 32 generations functionally accepted in all completed cases; encoded accounting reconciles",
+    "No automatic RSS plateau, physical heap cap, CPU or total-wire acceptance",
+    "Source manifests and runner paths remain pinned in original reports; no native provider or normal role changes"
+  ],
+  "schema": "agent-observer.working-set-rss-first-matrix.v1",
+  "source": {
+    "mesh": "042fe3a5671fabbedfd36bbef10a8e8abcb25485",
+    "observer": "b176ac06b39daeead4be0a33ff9d781304091fe0"
+  },
+  "status": "stopped_on_failure"
+}

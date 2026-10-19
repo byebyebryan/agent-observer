@@ -1,0 +1,1 @@
+{"generations": 32, "interpreter": {"executable": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python", "version": "3.11.17"}, "output": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/py311-working-500.json", "rows": 500, "rssSamples": 67, "status": "pass", "variant": "working"}

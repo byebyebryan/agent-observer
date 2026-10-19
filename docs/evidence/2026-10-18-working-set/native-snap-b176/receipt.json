@@ -1,0 +1,30 @@
+{
+  "files": {
+    "execution.json": "780c5c23ea765ca983804c4c93929d30f617483d65c44f1c896f1d1e059d03b1",
+    "postrun-readonly.json": "742dedffdc17af312e1392ba394ef16e3819c0236e478392ee8dd2a01978803e",
+    "remote-report.json": "7ce3afa52e7976b899b84ff6d39d89c573ee76e9c14877f599c5f9a9db82db86",
+    "runners/run-native-working-set-snap.py": "5e84dbc93ac4794400517960ae950d3a2ecfb0bef87db533c7e23418895729e0",
+    "runners/test-run-native-working-set-snap.py": "1aae397ee7f97ca43b07f911ab37ccf3c814c52bf3d32e75ec4c65d093bf165e",
+    "safety/result.json": "2b26bcbfa3c2b99e515d0c0c65057831a5f71af7c1abc9b7614f2b8a064bd45e",
+    "safety/tests-311.log": "773fdc858555d0e204353e436d1fdca5f4bbeea1ce2c34f3a9fd4918919f03dc",
+    "safety/tests-314.log": "84d7f8ff5dd4de2697533dedd879169f753820e159c66dc7733dae96a7d085cc",
+    "ssh-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ssh-stdout.log": "913ffe15245ce2aaadb09a85c2e27f7d0e3a790d21d8beba1c787e1ad01fa7d2"
+  },
+  "fullProducerAcceptance": false,
+  "independentlyProvenRecentMemberships": 1,
+  "installedMeshSource": "c06b33e058339d9d1d89ecf6844044867d816c58",
+  "meshWheelSha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+  "nativeLoadedRows": 0,
+  "nativeRows": 102,
+  "normalRoleSelectionChanged": false,
+  "observerWheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+  "originalAttempt1Preserved": true,
+  "providerActions": false,
+  "qualifierSource": "3b2598a",
+  "runtimeSource": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+  "schema": "observer.working-set.native-snap/1",
+  "scope": "private installed core service compared with independent current native Codex census on Snap",
+  "selectedBodies": 1,
+  "status": "bounded-native-match"
+}

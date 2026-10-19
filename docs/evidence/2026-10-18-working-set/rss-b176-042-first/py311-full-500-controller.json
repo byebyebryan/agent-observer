@@ -1,0 +1,62 @@
+{
+  "allEncodedSamplesReconcile": true,
+  "argv": [
+    "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+    "-I",
+    "-B",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/rss_plateau_probe.py",
+    "--variant",
+    "full",
+    "--rows",
+    "500",
+    "--output",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/py311-full-500.json"
+  ],
+  "case": {
+    "detachedLocalReadsPerGeneration": 4,
+    "generations": 32,
+    "python": "311",
+    "rows": 500,
+    "variant": "full"
+  },
+  "durationSeconds": 28.356704426987562,
+  "exitCode": 0,
+  "loadedGitPins": 55,
+  "logSha256": "7e0a528032e9c41a006524dcb48262e59051973fd90e5972a02ff454cecbd472",
+  "reportSha256": "2cce47311a83f6aae3fb858b29abadffcd60637fc19ff034301ead8ee6b1777b",
+  "rssDescription": {
+    "automaticPlateauAcceptance": false,
+    "basis": "post-copy-release process VmRSS; final16 of32 accepted generations",
+    "processHeapCapClaim": false,
+    "samples": 32,
+    "tailFirstBytes": 89260032,
+    "tailLastBytes": 102379520,
+    "tailMaxBytes": 102379520,
+    "tailMinBytes": 89260032,
+    "tailOlsBytesPerGeneration": 855070.1176470588,
+    "tailRangeBytes": 13119488,
+    "tailSamples": 16
+  },
+  "status": "pass",
+  "timeout": false,
+  "weakrefs": {
+    "bridge": [
+      false
+    ],
+    "client": [
+      false
+    ],
+    "reader": [
+      false
+    ],
+    "runtime": [
+      false
+    ],
+    "runtimeThread": [
+      false
+    ],
+    "state": [
+      false
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "allEncodedSamplesReconcile": true,
+  "argv": [
+    "/home/bryan/code/mesh-plus/.venv/bin/python",
+    "-I",
+    "-B",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/rss_plateau_probe.py",
+    "--variant",
+    "working",
+    "--rows",
+    "500",
+    "--output",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/rss-plateau-b176-042fe3a5/py314-working-500.json"
+  ],
+  "case": {
+    "detachedLocalReadsPerGeneration": 4,
+    "generations": 32,
+    "python": "314",
+    "rows": 500,
+    "variant": "working"
+  },
+  "durationSeconds": 8.277470160042867,
+  "exitCode": 0,
+  "loadedGitPins": 60,
+  "logSha256": "4258642b6e84cd12837eb6e224b5c4d718355b5aa3bec6a043482ffc532856f4",
+  "reportSha256": "2b804380df0bbd4f3ddf91dd8196afdb6d3bd61fac3cbd33d6bc24efd8a97426",
+  "rssDescription": {
+    "automaticPlateauAcceptance": false,
+    "basis": "post-copy-release process VmRSS; final16 of32 accepted generations",
+    "processHeapCapClaim": false,
+    "samples": 32,
+    "tailFirstBytes": 49201152,
+    "tailLastBytes": 49643520,
+    "tailMaxBytes": 49643520,
+    "tailMinBytes": 49201152,
+    "tailOlsBytesPerGeneration": 28503.34117647059,
+    "tailRangeBytes": 442368,
+    "tailSamples": 16
+  },
+  "status": "pass",
+  "timeout": false,
+  "weakrefs": {
+    "bridge": [
+      false
+    ],
+    "client": [
+      false
+    ],
+    "reader": [
+      false
+    ],
+    "runtime": [
+      false
+    ],
+    "runtimeThread": [
+      false
+    ],
+    "state": [
+      false
+    ]
+  }
+}
