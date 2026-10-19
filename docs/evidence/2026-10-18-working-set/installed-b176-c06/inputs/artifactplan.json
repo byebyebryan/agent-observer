@@ -1,0 +1,225 @@
+{
+  "bootstrapInterpreter": {
+    "executableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+    "host": "80H1VV3",
+    "lexicalInterpreter": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-196a8e2b-c06b33e0/venv-314/bin/python",
+    "pythonVersion": "3.14.8",
+    "uid": 1000
+  },
+  "coverageLimits": [
+    "manifest and hashes pin private inputs only; no remote transfer or bootstrap execution occurred",
+    "runtime installation and static CLI/schema/descriptor checks are separate from native or installed-pair transport proof",
+    "the plan itself is local private control metadata and is not in the transfer packet"
+  ],
+  "files": [
+    {
+      "bytes": 16547,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/fixture-source/tests/fixtures/service-v4/view.json",
+      "remotePath": "bootstrap/fixtures/tests/fixtures/service-v4/view.json",
+      "sha256": "f657b8847142bbf36084c12527d83d31919a71205b5c5ffc271a424cdf0770a5",
+      "sourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "sourceGitBlobSha1": "63e9b31862a4c54da58ae68bcaa4d7fc4ae582d6",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 6491,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/fixture-source/tests/test_service_contract.py",
+      "remotePath": "bootstrap/fixtures/tests/test_service_contract.py",
+      "sha256": "78c340327e737b7cbe66457604a59b0212bb6dcde3cfaf1416fb97b9e9334d18",
+      "sourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "sourceGitBlobSha1": "da20ab81719a946a680b52f325b254315bb306e0",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 11117,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/fixture-source/tests/test_service_runtime.py",
+      "remotePath": "bootstrap/fixtures/tests/test_service_runtime.py",
+      "sha256": "35275647a577f7220bdc205bfe5e31b2017fd7caf5d8cfa64b139aa5dd4853a1",
+      "sourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "sourceGitBlobSha1": "c905c0b08f3e42ab4a435c30d0e6116e693ef2e1",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 20604,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/fixture-source/tests/test_service_state.py",
+      "remotePath": "bootstrap/fixtures/tests/test_service_state.py",
+      "sha256": "e2538cbafa0718774a034b9e4d92980b32c617d3bca4b38da0f021f805b71742",
+      "sourceCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+      "sourceGitBlobSha1": "e82509b947581056c4290a7c5104aee92d26ca54",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 3592,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-196a8e2b-c06b33e0/working_set_synthetic_fixture.py",
+      "provenance": "unchanged old private synthetic fixture helper, pinned by SHA-256",
+      "remotePath": "bootstrap/fixtures/tests/working_set_synthetic_fixture.py",
+      "sha256": "afa4f4bb4c1a5ac95a7a22f0621046c5954b8aa86d9c8e5ed19109bd621114c6",
+      "sourceCommit": "196a8e2bd114f90aae82c4ee79559db511b9dce7",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 502,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-requirements-314.txt",
+      "remotePath": "dependency-requirements-314.txt",
+      "sha256": "10cf830034f0bffea89eaa113f14a54e3481c8c068284a898f8860a1ff41b310",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 67548,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-wheels-314/attrs-26.1.0-py3-none-any.whl",
+      "remotePath": "dependency-wheels-314/attrs-26.1.0-py3-none-any.whl",
+      "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 90630,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-wheels-314/jsonschema-4.26.0-py3-none-any.whl",
+      "remotePath": "dependency-wheels-314/jsonschema-4.26.0-py3-none-any.whl",
+      "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 18437,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-wheels-314/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "remotePath": "dependency-wheels-314/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+      "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 26766,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-wheels-314/referencing-0.37.0-py3-none-any.whl",
+      "remotePath": "dependency-wheels-314/referencing-0.37.0-py3-none-any.whl",
+      "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 371623,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/dependency-wheels-314/rpds_py-2026.9.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "remotePath": "dependency-wheels-314/rpds_py-2026.9.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "eac2f5dbafd585dfe31f86a23ebf0d3ba480a9d49ebc87947267b5608d4ea0cd",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 467,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/package-wheel-requirements.txt",
+      "remotePath": "package-wheel-requirements.txt",
+      "sha256": "e976f99eefab978d0f01299e26a72f34472f2fa3179e1775fbf4d46616ba8a2b",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 39398,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/run-working-set-fixed-ssh-v5.py",
+      "remotePath": "run-working-set-fixed-ssh-v5.py",
+      "sha256": "5bc1997d21c9f557848b9c89b63c1bb20df28c468b8a0eef493ccb44116dc985",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 9244,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/verify-working-set-close-receipt-v5.py",
+      "remotePath": "verify-working-set-close-receipt-v5.py",
+      "sha256": "71eebca3c799d6c767e1272534a8ac5582dce8ae9d7c4378d8202794dbd70afd",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 353120,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+      "remotePath": "wheels/agent_observer-0.7.0a7-py3-none-any.whl",
+      "sha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+      "sourceMode": "0644",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 268296,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/wheels/mesh_plus-0.1.0a23-py3-none-any.whl",
+      "remotePath": "wheels/mesh_plus-0.1.0a23-py3-none-any.whl",
+      "sha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 19859,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/working-set-stdio-fixture-v5.py",
+      "remotePath": "working-set-stdio-fixture-v5.py",
+      "sha256": "14e3ea24eafaca769cde41ff58bea2d1d1da2d57bb9958927b8324d869cc743c",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    },
+    {
+      "bytes": 44489,
+      "localPath": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-bootstrap-b176/bootstrap-snap-b176.py",
+      "remotePath": "bootstrap/bootstrap-snap-b176.py",
+      "role": "standalone offline bootstrap and installed verifier",
+      "sha256": "2a820b021f222f4fb3de2c9465facd909c12edc605b79be6018d9d6ff693dbb9",
+      "sourceMode": "0600",
+      "targetMode": "0600",
+      "uid": 1000
+    }
+  ],
+  "futureBootstrapCommand": [
+    "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-196a8e2b-c06b33e0/venv-314/bin/python",
+    "-B",
+    "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/bootstrap/bootstrap-snap-b176.py"
+  ],
+  "installPolicy": {
+    "appWheelRequirementPath": "package-wheel-requirements.txt",
+    "createsNewVenvOnlyWhenAbsent": true,
+    "dependenciesRequirementPath": "dependency-requirements-314.txt",
+    "dependencyWheelhousePath": "dependency-wheels-314",
+    "doesNotStartServiceRuntimeProviderOrNativeRPC": true,
+    "networkDisabled": true,
+    "pipNoIndex": true,
+    "pipRequireHashes": true,
+    "venvFlag": "--copies"
+  },
+  "packetBudget": {
+    "fileCountIncludingBootstrap": 18,
+    "filesRemaining": 14,
+    "maximumFileCount": 32,
+    "maximumPacketBytes": 16777216,
+    "maximumSingleFileBytes": 8388608,
+    "rawArtifactBytes": 1368730,
+    "serializedPacketBytesExact": 1827771
+  },
+  "schema": "agent-observer.private-snap-installed-bootstrap-plan.v1",
+  "source": {
+    "b176GitFixtureBlobsChecked": 4,
+    "legacySyntheticFixtureSha256": "afa4f4bb4c1a5ac95a7a22f0621046c5954b8aa86d9c8e5ed19109bd621114c6",
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "meshWheelSha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0",
+    "observerWheelSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e"
+  },
+  "status": "prepared_local_only",
+  "targetRoot": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0"
+}

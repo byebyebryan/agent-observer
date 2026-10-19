@@ -1,0 +1,160 @@
+{
+  "appWheelPins": {
+    "agent-observer": {
+      "sha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+      "version": "0.7.0a7"
+    },
+    "mesh-plus": {
+      "sha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+      "version": "0.1.0a23"
+    }
+  },
+  "baseInterpreter": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11",
+  "dependencyWheelhouseManifestSha256": "c3dc47697bc41205120d33f5dd78081207a2331614e17823d9aa425b5974af61",
+  "dependencyWheelsValidatedAsInstallInputs": {
+    "attrs": {
+      "version": "26.1.0",
+      "wheelSha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+    },
+    "jsonschema": {
+      "version": "4.26.0",
+      "wheelSha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+    },
+    "jsonschema-specifications": {
+      "version": "2025.9.1",
+      "wheelSha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+    },
+    "referencing": {
+      "version": "0.37.0",
+      "wheelSha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+    },
+    "rpds-py": {
+      "version": "2026.9.1",
+      "wheelSha256": "136a1c3fe4402b7008bc81cb62ee538481795b61a7e83df88dff3b3f02b726ff"
+    },
+    "typing-extensions": {
+      "version": "4.16.0",
+      "wheelSha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    }
+  },
+  "distributionCount": 10,
+  "distributions": [
+    {
+      "directURLKind": "archive",
+      "directURLSha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+      "editable": null,
+      "name": "agent-observer",
+      "recordEntryCount": 198,
+      "recordSha256": "e3d896bd3cb71d76c313b87385581a938e2ea3d6ab0631f5e12411c052664a42",
+      "version": "0.7.0a7",
+      "wheelProvenance": "pep610_archive"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "attrs",
+      "recordEntryCount": 56,
+      "recordSha256": "b9981c053e791e648980ee0feba11db1e22c79acfb1dcebe09406be264666d2a",
+      "version": "26.1.0",
+      "wheelInputSha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "jsonschema",
+      "recordEntryCount": 83,
+      "recordSha256": "d82e5505ef5df36cc006f7d5cdf74ac971fe896c2ec774c45009d326781df66f",
+      "version": "4.26.0",
+      "wheelInputSha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "jsonschema-specifications",
+      "recordEntryCount": 34,
+      "recordSha256": "985abefc11c0f8167106178d128aa432ba3c2b9f6e15b555a374f01d09fa7e7b",
+      "version": "2025.9.1",
+      "wheelInputSha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    },
+    {
+      "directURLKind": "archive",
+      "directURLSha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+      "editable": null,
+      "name": "mesh-plus",
+      "recordEntryCount": 176,
+      "recordSha256": "a7d11dc8f53c218c32061e5aa6b753c052b1172a40535f4a32dcbf47af699545",
+      "version": "0.1.0a23",
+      "wheelProvenance": "pep610_archive"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "pip",
+      "recordEntryCount": 1024,
+      "recordSha256": "cadfeb6806a4c7e3c3f603fff1ff8b25990b1b02daaf58ea2bc7d237716dcbce",
+      "version": "24.0"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "referencing",
+      "recordEntryCount": 34,
+      "recordSha256": "f88610399c7b9dc1e4fa6366ddcb4462f918286a33a34d3d3ef639435b857615",
+      "version": "0.37.0",
+      "wheelInputSha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "rpds-py",
+      "recordEntryCount": 12,
+      "recordSha256": "0910ce98452a4d8217cf51581e257c77d69dbb52a11881eaf161a2c2f9e828f4",
+      "version": "2026.9.1",
+      "wheelInputSha256": "136a1c3fe4402b7008bc81cb62ee538481795b61a7e83df88dff3b3f02b726ff",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "setuptools",
+      "recordEntryCount": 873,
+      "recordSha256": "96f9fb80ff93050d980e9f489b3483c7e290aeae8d8e87ec4691380d69e8d642",
+      "version": "79.0.1"
+    },
+    {
+      "directURLKind": "none",
+      "directURLSha256": null,
+      "editable": null,
+      "name": "typing_extensions",
+      "recordEntryCount": 8,
+      "recordSha256": "6451ead96bd907e03ea56d19b0390bc9ba480d17f53cc594e266bfd994ce707a",
+      "version": "4.16.0",
+      "wheelInputSha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+      "wheelProvenance": "hash_required_private_find_links_wheelhouse"
+    }
+  ],
+  "lexicalInterpreter": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-311/bin/python",
+  "purelib": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-311/lib/python3.11/site-packages",
+  "pythonVersion": "3.11.17",
+  "resolvedBaseInterpreter": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11",
+  "resolvedBaseInterpreterSha256": "08ad3f0a96b536082d6020a29830712c55346dca555f81a337c628f00369f57a",
+  "resolvedInterpreter": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11",
+  "resolvedInterpreterSha256": "08ad3f0a96b536082d6020a29830712c55346dca555f81a337c628f00369f57a",
+  "schema": "agent-observer.working-set-private-installed-runtime.v1",
+  "scope": "private installed pair runtime provenance; no native provider or service action",
+  "status": "pass",
+  "sysBasePrefix": "/home/bryan/code/agent-observer/.local/cpu-prepared-20261015/python/cpython-3.11.17-linux-x86_64-gnu",
+  "sysPrefix": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-311",
+  "userSiteDisabled": true
+}

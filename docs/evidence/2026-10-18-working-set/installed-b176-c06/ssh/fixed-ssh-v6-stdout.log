@@ -1,0 +1,2 @@
+{"actualSelectedCount": 2, "bridgeExitClassification": "normal_cli_exit", "bridgeExitCode": 0, "expectedSelectedCount": 2, "proofNonceCount": 2, "remoteClosed": false, "report": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/working-set-fixed-ssh-reader-v6.json", "sshExitCode": 255, "status": "functional_cleanup_pass_transport_terminal"}
+{"reasonCode": "working_set_ssh_reader_failed", "status": "failed"}

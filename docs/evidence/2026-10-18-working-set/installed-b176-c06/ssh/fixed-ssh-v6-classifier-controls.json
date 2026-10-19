@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "scope": "offline exact finite-metadata classification with no remote/native action",
+  "cases": [
+    {
+      "case": "exact_observed_eof",
+      "expectedExit": 0,
+      "observedExit": 0,
+      "result": "pass"
+    },
+    {
+      "case": "unclassified_generic_error",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "result": "failed"
+    },
+    {
+      "case": "false_terminal_flag",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "result": "failed"
+    },
+    {
+      "case": "physical_cleanup_missing",
+      "expectedExit": 1,
+      "observedExit": 1,
+      "result": "failed"
+    }
+  ]
+}

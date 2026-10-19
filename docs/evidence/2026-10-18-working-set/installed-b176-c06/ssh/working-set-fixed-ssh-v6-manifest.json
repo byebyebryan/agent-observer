@@ -1,0 +1,65 @@
+{
+  "artifacts": {
+    "run-working-set-fixed-ssh-v6.py": {
+      "bytes": 39527,
+      "sha256": "84a964a2b812eb9df9eae65efedeb3e177c8fbb0ff06f466c42304e056e944fb"
+    },
+    "verify-working-set-close-receipt-v6.py": {
+      "bytes": 10216,
+      "sha256": "6434251b21c508fc214b8b534fa4cd22c1fbcbe99aba1983c6e74965e579e5e7"
+    },
+    "working-set-stdio-fixture-v6.py": {
+      "bytes": 20951,
+      "sha256": "edad1468600ee142a9b785df91c6aab64e0ad7c23f009e7bb4aadb33dba0e71d"
+    }
+  },
+  "bootstrapPlanSha256": "a56d1c269cf70a4572d3e8a6cc724f455de382aefe607f9487025d1b8d085bcd",
+  "coverageLimits": [
+    "synthetic collect=False only; no provider/native action",
+    "finite exception observer re-raises into unchanged Mesh CLI; transport EOF/nonzero is not normal CLI exit"
+  ],
+  "fixtureSources": {
+    "bootstrap/fixtures/tests/fixtures/service-v4/view.json": "f657b8847142bbf36084c12527d83d31919a71205b5c5ffc271a424cdf0770a5",
+    "bootstrap/fixtures/tests/test_service_contract.py": "78c340327e737b7cbe66457604a59b0212bb6dcde3cfaf1416fb97b9e9334d18",
+    "bootstrap/fixtures/tests/test_service_runtime.py": "35275647a577f7220bdc205bfe5e31b2017fd7caf5d8cfa64b139aa5dd4853a1",
+    "bootstrap/fixtures/tests/test_service_state.py": "e2538cbafa0718774a034b9e4d92980b32c617d3bca4b38da0f021f805b71742",
+    "bootstrap/fixtures/tests/working_set_synthetic_fixture.py": "afa4f4bb4c1a5ac95a7a22f0621046c5954b8aa86d9c8e5ed19109bd621114c6"
+  },
+  "gcDisabledBeforeProjectImports": true,
+  "localInterpreter": {
+    "lexicalEntrypoint": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-314/bin/python",
+    "prefix": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-314",
+    "resolvedExecutableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+    "version": "3.14.8"
+  },
+  "priorFailure": {
+    "path": "working-set-fixed-ssh-reader-v5-failure.json",
+    "reason": "physicalcleanup and functionalchecks passed; signal-only close classifier left actual Bridge terminal exception unclassified",
+    "sha256": "2dc9c5d661fd0a2bf6bfe515543a045969df31fbeb0cf371bc36e0e0def2a4bf"
+  },
+  "schema": "agent-observer.working-set-fixed-ssh-v6-manifest.v1",
+  "source": {
+    "meshCommit": "c06b33e058339d9d1d89ecf6844044867d816c58",
+    "observerCommit": "b176ac06b39daeead4be0a33ff9d781304091fe0"
+  },
+  "sshOptions": [
+    "-T",
+    "-oBatchMode=yes",
+    "-oStrictHostKeyChecking=yes",
+    "-oProxyJump=none",
+    "-oProxyCommand=none",
+    "-oConnectTimeout=5",
+    "-oConnectionAttempts=1",
+    "-oClearAllForwardings=yes",
+    "-oForwardAgent=no",
+    "-oRequestTTY=no",
+    "-oControlMaster=no",
+    "-oControlPath=none"
+  ],
+  "transferPacketSha256": "8331ef88cf9317d16fe960d4c21a8084247c0b05e7ee31431800f5a4be0db6af",
+  "wheels": {
+    "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+    "mesh_plus": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a"
+  },
+  "windowMs": 259200000
+}

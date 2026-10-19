@@ -1,0 +1,84 @@
+{
+  "pathsRemain": {
+    "config": false,
+    "configDirectory": false,
+    "runtimeDirectory": false,
+    "socket": false,
+    "socketParent": false
+  },
+  "receipt": {
+    "bridgeExitCode": 1,
+    "bridgeStatus": "failed",
+    "caughtSignal": null,
+    "exceptionCode": null,
+    "exceptionType": null,
+    "exitCode": 1,
+    "exitPath": "bridge_returned",
+    "expectedSelectedCount": 2,
+    "gcDisabledBeforeProjectImports": true,
+    "loadedModules": {
+      "installedModuleBytesExact": true,
+      "meshModuleCount": 18,
+      "observerModuleCount": 35,
+      "wheelSha256": {
+        "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+        "mesh_plus": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a"
+      }
+    },
+    "loadedModulesFinal": {
+      "installedModuleBytesExact": true,
+      "meshModuleCount": 18,
+      "observerModuleCount": 35,
+      "wheelSha256": {
+        "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+        "mesh_plus": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a"
+      }
+    },
+    "loadedModulesInitial": {
+      "installedModuleBytesExact": true,
+      "meshModuleCount": 2,
+      "observerModuleCount": 30,
+      "wheelSha256": {
+        "agent_observer": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+        "mesh_plus": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a"
+      }
+    },
+    "meshStderrErrorTokens": [
+      "bridge_failed"
+    ],
+    "meshStderrLineCount": 1,
+    "meshStderrTruncated": false,
+    "moduleBytesExactAtInitialAndFinalChecks": true,
+    "privateConfigAbsent": true,
+    "privateConfigPath": "/tmp/ao-ws-bridge-config-9dnk8_pe/sources.toml",
+    "process": {
+      "pid": 684461,
+      "processGroup": 684461,
+      "pythonEntrypoint": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0/venv-314/bin/python",
+      "pythonEntrypointMatchesPrivateVenv": true,
+      "pythonVersion": "3.14.8",
+      "resolvedExecutableSha256": "375532f83be620283ab780c14ca6bcc5907dc379d2b621de0c5d0a112cf5458b",
+      "sessionId": 684461,
+      "startTicks": 47738560,
+      "uid": 1000
+    },
+    "readyEmitted": true,
+    "reasonCode": "bridge_returned_nonzero",
+    "runtimeCollectFalse": true,
+    "runtimePeerCount": 0,
+    "runtimeSelectorClosed": true,
+    "runtimeSocketAbsent": true,
+    "runtimeSocketPath": "/tmp/ao-service-test-ar8bk7yy/private/read.sock",
+    "runtimeThreadStopped": true,
+    "runtimeWorkerCount": 0,
+    "runtimeWorkerStarts": 0,
+    "schema": "agent-observer.working-set-fixed-ssh-close-receipt.v5",
+    "sourceCleanupComplete": true,
+    "sourceRowCount": 4,
+    "status": "cleanup_complete",
+    "windowMs": 259200000
+  },
+  "sameProcessIncarnationAlive": false,
+  "schema": "agent-observer.working-set-fixed-ssh-v5-readonly-close-review.v1",
+  "status": "read_complete"
+}

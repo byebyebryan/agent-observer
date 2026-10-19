@@ -1,0 +1,108 @@
+{
+  "commandSha256": "005444e85ab2de6ab5f9fa5fdfd9a965fd424de671582a24f7550cdb0087db37",
+  "elapsedSeconds": 0.6668605250306427,
+  "result": {
+    "files": {
+      "bootstrap/bootstrap-snap-b176.py": {
+        "bytes": 44489,
+        "sha256": "2a820b021f222f4fb3de2c9465facd909c12edc605b79be6018d9d6ff693dbb9",
+        "state": "created"
+      },
+      "bootstrap/fixtures/tests/fixtures/service-v4/view.json": {
+        "bytes": 16547,
+        "sha256": "f657b8847142bbf36084c12527d83d31919a71205b5c5ffc271a424cdf0770a5",
+        "state": "created"
+      },
+      "bootstrap/fixtures/tests/test_service_contract.py": {
+        "bytes": 6491,
+        "sha256": "78c340327e737b7cbe66457604a59b0212bb6dcde3cfaf1416fb97b9e9334d18",
+        "state": "created"
+      },
+      "bootstrap/fixtures/tests/test_service_runtime.py": {
+        "bytes": 11117,
+        "sha256": "35275647a577f7220bdc205bfe5e31b2017fd7caf5d8cfa64b139aa5dd4853a1",
+        "state": "created"
+      },
+      "bootstrap/fixtures/tests/test_service_state.py": {
+        "bytes": 20604,
+        "sha256": "e2538cbafa0718774a034b9e4d92980b32c617d3bca4b38da0f021f805b71742",
+        "state": "created"
+      },
+      "bootstrap/fixtures/tests/working_set_synthetic_fixture.py": {
+        "bytes": 3592,
+        "sha256": "afa4f4bb4c1a5ac95a7a22f0621046c5954b8aa86d9c8e5ed19109bd621114c6",
+        "state": "created"
+      },
+      "dependency-requirements-314.txt": {
+        "bytes": 502,
+        "sha256": "10cf830034f0bffea89eaa113f14a54e3481c8c068284a898f8860a1ff41b310",
+        "state": "created"
+      },
+      "dependency-wheels-314/attrs-26.1.0-py3-none-any.whl": {
+        "bytes": 67548,
+        "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+        "state": "created"
+      },
+      "dependency-wheels-314/jsonschema-4.26.0-py3-none-any.whl": {
+        "bytes": 90630,
+        "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+        "state": "created"
+      },
+      "dependency-wheels-314/jsonschema_specifications-2025.9.1-py3-none-any.whl": {
+        "bytes": 18437,
+        "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+        "state": "created"
+      },
+      "dependency-wheels-314/referencing-0.37.0-py3-none-any.whl": {
+        "bytes": 26766,
+        "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+        "state": "created"
+      },
+      "dependency-wheels-314/rpds_py-2026.9.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl": {
+        "bytes": 371623,
+        "sha256": "eac2f5dbafd585dfe31f86a23ebf0d3ba480a9d49ebc87947267b5608d4ea0cd",
+        "state": "created"
+      },
+      "package-wheel-requirements.txt": {
+        "bytes": 467,
+        "sha256": "e976f99eefab978d0f01299e26a72f34472f2fa3179e1775fbf4d46616ba8a2b",
+        "state": "created"
+      },
+      "run-working-set-fixed-ssh-v5.py": {
+        "bytes": 39398,
+        "sha256": "5bc1997d21c9f557848b9c89b63c1bb20df28c468b8a0eef493ccb44116dc985",
+        "state": "created"
+      },
+      "verify-working-set-close-receipt-v5.py": {
+        "bytes": 9244,
+        "sha256": "71eebca3c799d6c767e1272534a8ac5582dce8ae9d7c4378d8202794dbd70afd",
+        "state": "created"
+      },
+      "wheels/agent_observer-0.7.0a7-py3-none-any.whl": {
+        "bytes": 353120,
+        "sha256": "30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e",
+        "state": "created"
+      },
+      "wheels/mesh_plus-0.1.0a23-py3-none-any.whl": {
+        "bytes": 268296,
+        "sha256": "287d98c9d16f492a3df43a391b2036f98760c805480a74a7f93b3fcd2d8cf14a",
+        "state": "created"
+      },
+      "working-set-stdio-fixture-v5.py": {
+        "bytes": 19859,
+        "sha256": "14e3ea24eafaca769cde41ff58bea2d1d1da2d57bb9958927b8324d869cc743c",
+        "state": "created"
+      }
+    },
+    "packetSha256": "8331ef88cf9317d16fe960d4c21a8084247c0b05e7ee31431800f5a4be0db6af",
+    "root": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-c06b33e0",
+    "schema": "working-set-private-artifact-transfer.v1",
+    "status": "pass",
+    "uid": 1000
+  },
+  "returncode": 0,
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdoutBytes": 3169,
+  "step": "artifact-transfer"
+}
