@@ -37,6 +37,8 @@ _MAX_FRAME_COUNT = 16
 _MAX_CURSOR_BYTES = 4096
 _MAX_PROC_FDS = 4096
 _MAX_ORACLE_BYTES = 1024 * 1024
+_MAX_SAFE_INTEGER = 2**53 - 1
+_MAX_CLOCK_WALL_MS = 4_000_000_000_000
 _MISSING_ATTRIBUTE = object()
 _NATIVE_REASON_CODES = frozenset({
     "native_file_rejected", "native_file_limit", "native_file_changed", "native_duplicate_key",
@@ -770,6 +772,150 @@ def _clock_for_recent(scope: dict, resolved_member: dict | None, resolved_nonmem
     return support, clock
 
 
+def _first_acceptance_clock_ceiling(
+    frame: dict,
+    source: dict | None,
+    scope: dict | None,
+    *,
+    home: Path,
+    namespace: str,
+    clock_bracket_ok: bool,
+    clock_census_complete: bool,
+) -> tuple[int | None, str]:
+    """Recompute K only for a complete, unreset first accepted source set.
+
+    The installed isolated-run path may opt into this check after it has
+    verified the candidate installation, exact serve invocation and peer.
+    Synthetic/direct comparisons do not get that provenance by default.
+    """
+    if not isinstance(source, dict) or not isinstance(scope, dict):
+        return None, "source_scope_unproved"
+    scope_context_generation = scope.get("contextGeneration")
+    if type(scope_context_generation) is not int:
+        return None, "source_scope_unproved"
+    scope_continuity = scope.get("continuity")
+    if type(scope_continuity) is not int or scope_continuity != 1:
+        return None, "projection_continuity_unproved"
+    if frame.get("kind") != "view" or frame.get("projection") is None:
+        return None, "projection_unavailable"
+    sources = frame.get("sources")
+    if (not isinstance(sources, list) or len(sources) != 1 or sources[0] is not source
+            or source.get("provider") != "codex" or source.get("configHome") != str(home)
+            or source.get("configHomeKind") != "explicit"
+            or source.get("namespace") != namespace
+            or scope.get("provider") != "codex" or scope.get("namespace") != namespace
+            or scope_context_generation != source.get("contextGeneration")):
+        return None, "source_scope_unproved"
+
+    context_generation = source.get("contextGeneration")
+    if type(context_generation) is not int or context_generation != 1:
+        return None, "initial_context_unproved"
+    clock_generation = frame.get("clockGeneration")
+    if type(clock_generation) is not int or clock_generation != 0:
+        return None, "clock_discontinuity_unproved"
+    if not clock_bracket_ok:
+        return None, "clock_bracket_unproved"
+    if not clock_census_complete:
+        return None, "clock_census_incomplete"
+
+    components = source.get("components")
+    clocks = scope.get("clocks")
+    support_table = scope.get("supportTable")
+    if (not isinstance(components, list) or len(components) != 2
+            or not isinstance(clocks, list) or not isinstance(support_table, list)):
+        return None, "component_census_unproved"
+    receipts = {}
+    for receipt in components:
+        if not isinstance(receipt, dict):
+            return None, "component_receipt_unproved"
+        name = receipt.get("name")
+        if name not in {"runtime", "history"} or name in receipts:
+            return None, "component_receipt_unproved"
+        receipts[name] = receipt
+    if set(receipts) != {"runtime", "history"}:
+        return None, "component_receipt_unproved"
+
+    clocks_by_component: dict[str, list[dict]] = {name: [] for name in receipts}
+    sample_signatures = {}
+    for clock in clocks:
+        if not isinstance(clock, dict):
+            return None, "component_clock_unproved"
+        name = clock.get("component")
+        if name not in clocks_by_component:
+            return None, "component_clock_unproved"
+        clocks_by_component[name].append(clock)
+        sample_id = clock.get("sampleId")
+        signature = tuple(clock.get(key) for key in (
+            "originComponent", "sampledBoottimeMs", "wallMs", "acceptedBoottimeMs",
+        ))
+        previous = sample_signatures.get(sample_id)
+        if previous is not None and previous != signature:
+            return None, "mirrored_sample_unproved"
+        sample_signatures[sample_id] = signature
+
+    first_sample_components = set()
+    bracket_keys = []
+    for name, receipt in receipts.items():
+        accepted = receipt.get("accepted")
+        if type(accepted) is not int or accepted not in (0, 1):
+            return None, "accepted_counter_not_first"
+        component_clocks = clocks_by_component[name]
+        if accepted == 0:
+            if (receipt.get("health") != "warming"
+                    or receipt.get("lastResult") != "not_observed"
+                    or receipt.get("sampledBoottimeMs") is not None
+                    or receipt.get("expiresBoottimeMs") is not None
+                    or component_clocks):
+                return None, "never_accepted_receipt_unproved"
+            for support in support_table:
+                if not isinstance(support, dict):
+                    return None, "support_table_unproved"
+                if support.get("component") == name:
+                    return None, "never_accepted_support_present"
+            continue
+
+        if (receipt.get("health") not in {"current", "partial"}
+                or receipt.get("lastResult") != "accepted"
+                or len(component_clocks) != 1):
+            return None, "first_sample_receipt_unproved"
+        sampled = receipt.get("sampledBoottimeMs")
+        expires = receipt.get("expiresBoottimeMs")
+        if (type(sampled) is not int or type(expires) is not int
+                or not 0 <= sampled < expires <= _MAX_SAFE_INTEGER):
+            return None, "first_sample_receipt_unproved"
+        clock = component_clocks[0]
+        clock_sampled = clock.get("sampledBoottimeMs")
+        wall = clock.get("wallMs")
+        accepted_boot = clock.get("acceptedBoottimeMs")
+        if (type(clock.get("accepted")) is not int or clock.get("accepted") != 1
+                or type(clock_sampled) is not int or clock_sampled != sampled
+                or type(wall) is not int or not 0 <= wall <= _MAX_CLOCK_WALL_MS
+                or type(accepted_boot) is not int
+                or not 0 <= clock_sampled <= accepted_boot <= _MAX_SAFE_INTEGER
+                or clock.get("originComponent") not in {"runtime", "history"}
+                or not isinstance(clock.get("sampleId"), str)
+                or _UUID.fullmatch(clock["sampleId"]) is None):
+            return None, "first_sample_clock_unproved"
+        first_sample_components.add(name)
+        k = wall - clock_sampled + 1
+        if not -_MAX_SAFE_INTEGER <= k <= _MAX_SAFE_INTEGER:
+            return None, "recomputed_ceiling_out_of_range"
+        bracket_keys.append(k)
+
+    if (not bracket_keys
+            or any(bool(clocks_by_component[name]) != (name in first_sample_components)
+                   for name in clocks_by_component)
+            or len(clocks) != len(first_sample_components)):
+        return None, "component_census_unproved"
+    recomputed = max(bracket_keys)
+    candidate = frame.get("clockCeiling")
+    if type(candidate) is not int or not -_MAX_SAFE_INTEGER <= candidate <= _MAX_SAFE_INTEGER:
+        return None, "candidate_ceiling_unproved"
+    if candidate != recomputed:
+        return None, "candidate_ceiling_mismatch"
+    return recomputed, "first_acceptance_set_recomputed"
+
+
 def _recent_decision(native: dict, row: dict | None, nonmember: dict | None,
                      support: dict | None, clock: dict | None,
                      frame: dict, window_ms: int, source_k_min: int | None,
@@ -878,7 +1024,8 @@ def _hmac_identity(key: bytes, identity: tuple[str, ...]) -> str:
 
 def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, home: Path,
                   window_ms: int, start_wall_ms: int, end_wall_ms: int,
-                  start_boot_ms: int, end_boot_ms: int, hash_key: bytes | None = None) -> dict:
+                  start_boot_ms: int, end_boot_ms: int, hash_key: bytes | None = None,
+                  _first_acceptance_provenance: bool = False) -> dict:
     """Compare admitted public frame against stable independent native facts.
 
     Raw thread/session values remain in local variables and are never returned.
@@ -949,8 +1096,9 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
             reasons["candidate_coverage_not_complete"] += 1
 
     # Recheck the installed frame's original receipt/component joins after the
-    # strict public parser admitted it. Recency still uses the producer's K;
-    # these checks establish sample scope, not independent K provenance.
+    # strict public parser admitted it. By default these joins establish sample
+    # scope only; the private first-acceptance path below can additionally
+    # recompute K when the entire current set proves its own baseline.
     source_clock_lower_bounds = []
     source_clocks = (scope or {}).get("clocks", ())
     clock_bracket_ok = bool(source_clocks)
@@ -1013,6 +1161,17 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
         clock_bracket_ok = False
     if not source_clocks:
         reasons["source_clock_samples_missing"] += 1
+    first_acceptance_k = None
+    first_acceptance_reason = "not_requested"
+    if _first_acceptance_provenance is True:
+        first_acceptance_k, first_acceptance_reason = _first_acceptance_clock_ceiling(
+            frame, source, scope, home=home, namespace=namespace,
+            clock_bracket_ok=clock_bracket_ok,
+            clock_census_complete=clock_census_complete,
+        )
+    first_acceptance_k_proven = first_acceptance_k is not None
+    if _first_acceptance_provenance is True and not first_acceptance_k_proven:
+        reasons[first_acceptance_reason] += 1
     census_stable = (loaded_before == loaded_after and saved_before == saved_after
                      and set(before) == set(after))
     if not census_stable:
@@ -1026,6 +1185,7 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
     expected_true = expected_false = expected_unknown = selected_match = 0
     candidate_omitted_expected_negative = 0
     conditional_memberships = 0
+    independently_proven_recent_memberships = 0
     for key in all_keys:
         digest = _hmac_identity(hash_key, key)
         left, right = before.get(key), after.get(key)
@@ -1144,15 +1304,17 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
             frame, window_ms, source_k_min, clock_bracket_ok=clock_bracket_ok,
             scope=scope, clock_census_complete=clock_census_complete,
         )
-        if expected is True and membership_reason in {
+        if (expected is True and membership_reason in {
             "recent", "recent_from_scope_clock_census",
-        }:
+        } and not first_acceptance_k_proven):
             expected_true += 1
             conditional_memberships += 1
             member_unresolved.add(digest)
             reasons["membership_conditional_on_producer_clock_ceiling"] += 1
         elif expected is True:
             expected_true += 1
+            if membership_reason in {"recent", "recent_from_scope_clock_census"}:
+                independently_proven_recent_memberships += 1
             if key in candidate_members:
                 selected_match += 1
             elif key in candidate_nonmembers and (scope or {}).get("coverage", {}).get("status") == "complete":
@@ -1210,7 +1372,7 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
                   or not native_complete or not coverage_complete or not candidate_binding_valid)
               else "match")
     identity_hashes = sorted(member_mismatches | member_unresolved | field_mismatches | field_unresolved)
-    return {
+    result = {
         "schema": "agent-observer.working-set-native-qualification.v1",
         "status": status,
         "exitCode": 2 if mismatches else 3 if status != "match" else 0,
@@ -1260,6 +1422,22 @@ def compare_frame(before_raw: dict, frame: dict, after_raw: dict, *, host: str, 
             "no provider payload, prompts, responses, title, cwd or native identifier is emitted",
         ],
     }
+    if _first_acceptance_provenance is True:
+        if first_acceptance_k_proven:
+            result["sourceK"]["status"] = "independently_recomputed_first_acceptance_set"
+        result["sourceK"].update({
+            "firstAcceptanceSet": "recomputed" if first_acceptance_k_proven else "unproved",
+            "firstAcceptanceReason": first_acceptance_reason,
+            "recomputedFirstAcceptanceCeiling": first_acceptance_k,
+        })
+        result["counts"]["independentlyProvenRecentMemberships"] = (
+            independently_proven_recent_memberships
+        )
+        result["coverageLimits"][2:4] = [
+            "first-acceptance clock proof applies only to an installed isolated candidate and its exact first receipt set",
+            "all other recent-only positives remain conditional on the producer clock ceiling",
+        ]
+    return result
 
 
 def _window_hours(value: str) -> int:
@@ -1587,6 +1765,11 @@ def _run(args) -> dict:
             start_wall_ms=before_timing["startWallMs"], end_wall_ms=end_wall,
             start_boot_ms=before_timing["startBoottimeMs"], end_boot_ms=end_boot,
             hash_key=run_key,
+            # This internal mode is deliberately unavailable through CLI
+            # arguments and direct/synthetic compare_frame calls. Reaching this
+            # point means installed artifacts, exact service argv, peer and
+            # socket incarnation have all passed their existing checks.
+            _first_acceptance_provenance=True,
         )
         native_final = _native_process_metadata(
             oracle, native_client, home, expected_endpoint=endpoint,

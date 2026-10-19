@@ -92,7 +92,7 @@ def native_sample(frame, *, runtime="running", kind=None, activity=None, status=
     }
 
 
-def compare(frame, before=None, after=None):
+def compare(frame, before=None, after=None, *, first_acceptance_provenance=False):
     sample = native_sample(frame) if before is None else before
     after = sample if after is None else after
     clocks = frame["projection"]["scopes"][0]["clocks"]
@@ -104,6 +104,7 @@ def compare(frame, before=None, after=None):
         start_wall_ms=min(walls) - 10, end_wall_ms=max(walls) + 10,
         start_boot_ms=min(boots) - 10, end_boot_ms=max(boots) + 10,
         hash_key=b"qualification-test-key",
+        _first_acceptance_provenance=first_acceptance_provenance,
     )
 
 
@@ -167,6 +168,56 @@ def add_history_clock(frame, *, wall_ms=None, accepted_boottime_ms=None, sample_
     validate_frame(frame, expected_host="fixture", expected_uid=os.getuid(),
                    expected_window_ms=WINDOW_MS)
     return clock
+
+
+def set_never_accepted_history(frame):
+    history = next(item for item in frame["sources"][0]["components"]
+                   if item["name"] == "history")
+    history.update(
+        accepted=0, sampledBoottimeMs=None, expiresBoottimeMs=None,
+        health="warming", lastResult="not_observed",
+    )
+    frame["projection"]["scopes"][0]["clocks"] = [
+        clock for clock in frame["projection"]["scopes"][0]["clocks"]
+        if clock["component"] != "history"
+    ]
+    return frame
+
+
+def set_activity_at(frame, activity_at):
+    scope = frame["projection"]["scopes"][0]
+    row = frame["projection"]["sessions"][0]
+    row["activity"]["at"] = activity_at
+    member = scope["members"][0]
+    member["recent"]["activityAt"] = activity_at
+    clock = next(item for item in scope["clocks"]
+                 if item["component"] == member["recent"]["clock"]["component"])
+    member["recent"]["lowerBoottimeMs"] = activity_at + WINDOW_MS - frame["clockCeiling"]
+    member["recent"]["upperBoottimeMs"] = (
+        clock["acceptedBoottimeMs"] + WINDOW_MS - (clock["wallMs"] - activity_at) + 1
+    )
+    return frame
+
+
+def set_runtime_counter(frame, accepted):
+    source = frame["sources"][0]
+    runtime = next(item for item in source["components"] if item["name"] == "runtime")
+    runtime["accepted"] = accepted
+    scope = frame["projection"]["scopes"][0]
+    for support in scope["supportTable"]:
+        if support["component"] == "runtime":
+            support["accepted"] = accepted
+    for clock in scope["clocks"]:
+        if clock["component"] == "runtime":
+            clock["accepted"] = accepted
+    for collection in (scope["members"], scope["nonmembers"], scope["uncertain"]):
+        for entry in collection:
+            for branch_name in ("active", "recent"):
+                branch = entry.get(branch_name)
+                if isinstance(branch, dict) and isinstance(branch.get("clock"), dict):
+                    if branch["clock"].get("component") == "runtime":
+                        branch["clock"]["accepted"] = accepted
+    return frame
 
 
 class FakeConnection:
@@ -296,6 +347,294 @@ class WorkingSetNativeQualifierTest(unittest.TestCase):
         self.assertEqual(result["fieldStatus"], "match")
         self.assertEqual(result["status"], "unresolved")
         self.assertEqual(result["exitCode"], 3)
+
+    def test_installed_first_acceptance_route_recomputes_runtime_only_or_mirrored_k(self):
+        parked_runtime_first = set_never_accepted_history(
+            working_frame(recent=True, active=False),
+        )
+        validate_frame(parked_runtime_first, expected_host="fixture", expected_uid=os.getuid(),
+                       expected_window_ms=WINDOW_MS)
+        native = native_sample(parked_runtime_first, runtime="parked", status="notLoaded",
+                               loaded=False)
+
+        # Direct/synthetic use remains on the historical conditional path.
+        conditional = compare(parked_runtime_first, native)
+        self.assertEqual(conditional["counts"]["conditionalMemberships"], 1)
+        self.assertNotIn("firstAcceptanceSet", conditional["sourceK"])
+        self.assertNotIn("independentlyProvenRecentMemberships", conditional["counts"])
+
+        proven = compare(parked_runtime_first, native,
+                         first_acceptance_provenance=True)
+        self.assertEqual(proven["status"], "match")
+        self.assertEqual(proven["membershipStatus"], "match")
+        self.assertEqual(proven["conditionalMembershipStatus"], "none")
+        self.assertEqual(proven["counts"]["conditionalMemberships"], 0)
+        self.assertEqual(proven["counts"]["independentlyProvenRecentMemberships"], 1)
+        self.assertEqual(proven["sourceK"]["status"],
+                         "independently_recomputed_first_acceptance_set")
+        self.assertEqual(proven["sourceK"]["recomputedFirstAcceptanceCeiling"],
+                         parked_runtime_first["clockCeiling"])
+        encoded = json.dumps(proven, sort_keys=True)
+        for secret in (parked_runtime_first["projection"]["sessions"][0]["identity"]["nativeId"],
+                       "SENSITIVE_NATIVE_TITLE", "SENSITIVE_TURN_ID", "/sensitive/native/cwd"):
+            self.assertNotIn(secret, encoded)
+
+        mirrored = working_frame(recent=True, active=False)
+        runtime_clock = mirrored["projection"]["scopes"][0]["clocks"][0]
+        history_clock = add_history_clock(mirrored)
+        self.assertEqual(history_clock["sampleId"], runtime_clock["sampleId"])
+        self.assertEqual(history_clock["wallMs"] - history_clock["sampledBoottimeMs"] + 1,
+                         runtime_clock["wallMs"] - runtime_clock["sampledBoottimeMs"] + 1)
+        mirrored_native = native_sample(mirrored, runtime="parked", status="notLoaded",
+                                        loaded=False)
+        mirrored_result = compare(mirrored, mirrored_native,
+                                  first_acceptance_provenance=True)
+        self.assertEqual(mirrored_result["status"], "match")
+        self.assertEqual(mirrored_result["sourceK"]["firstAcceptanceSet"], "recomputed")
+        self.assertEqual(mirrored_result["counts"]["independentlyProvenRecentMemberships"], 1)
+
+    def test_first_acceptance_proof_rejects_old_history_or_reset_context(self):
+        old_history = working_frame(recent=True, active=False)
+        add_history_clock(old_history)
+        history = next(item for item in old_history["sources"][0]["components"]
+                       if item["name"] == "history")
+        history["accepted"] = 2
+        history["attempts"] = 2
+        next(item for item in old_history["projection"]["scopes"][0]["clocks"]
+             if item["component"] == "history")["accepted"] = 2
+        native = native_sample(old_history, runtime="parked", status="notLoaded",
+                               loaded=False)
+        old_result = compare(old_history, native, first_acceptance_provenance=True)
+        self.assertEqual(old_result["sourceK"]["firstAcceptanceSet"], "unproved")
+        self.assertEqual(old_result["sourceK"]["firstAcceptanceReason"],
+                         "accepted_counter_not_first")
+        self.assertEqual(old_result["counts"]["conditionalMemberships"], 1)
+        self.assertEqual(old_result["membershipStatus"], "unresolved")
+
+        reset = working_frame(recent=True, active=False)
+        add_history_clock(reset)
+        reset["sources"][0]["contextGeneration"] = 2
+        reset["projection"]["scopes"][0]["contextGeneration"] = 2
+        reset_result = compare(
+            reset, native_sample(reset, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(reset_result["sourceK"]["firstAcceptanceSet"], "unproved")
+        self.assertEqual(reset_result["sourceK"]["firstAcceptanceReason"],
+                         "initial_context_unproved")
+        self.assertEqual(reset_result["counts"]["conditionalMemberships"], 1)
+
+        missing = working_frame(recent=True, active=False)
+        add_history_clock(missing)
+        missing["sources"][0].pop("contextGeneration")
+        missing_result = compare(
+            missing, native_sample(missing, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(missing_result["sourceK"]["firstAcceptanceReason"],
+                         "source_scope_unproved")
+
+        stale = working_frame(recent=True, active=False)
+        add_history_clock(stale)
+        stale["sources"][0]["contextGeneration"] = 2
+        stale_result = compare(
+            stale, native_sample(stale, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(stale_result["sourceK"]["firstAcceptanceReason"],
+                         "source_scope_unproved")
+
+        discontinuity = working_frame(recent=True, active=False)
+        add_history_clock(discontinuity)
+        discontinuity["clockGeneration"] = 1
+        step_result = compare(
+            discontinuity,
+            native_sample(discontinuity, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(step_result["sourceK"]["firstAcceptanceReason"],
+                         "clock_discontinuity_unproved")
+        self.assertEqual(step_result["counts"]["conditionalMemberships"], 1)
+
+        prior_projection_failure = working_frame(recent=True, active=False)
+        prior_projection_failure["projection"]["scopes"][0]["continuity"] = 2
+        failure_result = compare(
+            prior_projection_failure,
+            native_sample(prior_projection_failure, runtime="parked", status="notLoaded",
+                          loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(failure_result["sourceK"]["firstAcceptanceReason"],
+                         "projection_continuity_unproved")
+        self.assertEqual(failure_result["counts"]["conditionalMemberships"], 1)
+
+    def test_first_acceptance_proof_rejects_incomplete_census_and_ceiling_mismatch(self):
+        missing_history = working_frame(recent=True, active=False)
+        missing_native = native_sample(missing_history, runtime="parked", status="notLoaded",
+                                       loaded=False)
+        missing_result = compare(missing_history, missing_native,
+                                 first_acceptance_provenance=True)
+        self.assertEqual(missing_result["sourceK"]["firstAcceptanceSet"], "unproved")
+        self.assertEqual(missing_result["sourceK"]["firstAcceptanceReason"],
+                         "clock_census_incomplete")
+        self.assertEqual(missing_result["counts"]["conditionalMemberships"], 1)
+
+        mismatch = working_frame(recent=True, active=False)
+        add_history_clock(mismatch)
+        mismatch["clockCeiling"] += 1
+        mismatch_result = compare(
+            mismatch, native_sample(mismatch, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(mismatch_result["sourceK"]["firstAcceptanceReason"],
+                         "candidate_ceiling_mismatch")
+        self.assertEqual(mismatch_result["counts"]["conditionalMemberships"], 1)
+
+        no_clock = set_never_accepted_history(working_frame(recent=True, active=False))
+        no_clock["projection"]["scopes"][0]["supportTable"].append(
+            copy.deepcopy(no_clock["projection"]["scopes"][0]["supportTable"][0]),
+        )
+        no_clock["projection"]["scopes"][0]["supportTable"][-1]["component"] = "history"
+        no_support_result = compare(
+            no_clock, native_sample(no_clock, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(no_support_result["sourceK"]["firstAcceptanceReason"],
+                         "never_accepted_support_present")
+
+        failed_never_accepted = set_never_accepted_history(
+            working_frame(recent=True, active=False),
+        )
+        history = next(item for item in failed_never_accepted["sources"][0]["components"]
+                       if item["name"] == "history")
+        history.update(health="unavailable", lastResult="collection_failed")
+        failed_result = compare(
+            failed_never_accepted,
+            native_sample(failed_never_accepted, runtime="parked", status="notLoaded",
+                          loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(failed_result["sourceK"]["firstAcceptanceReason"],
+                         "never_accepted_receipt_unproved")
+
+        source_mismatch = working_frame(recent=True, active=False)
+        source_mismatch["sources"][0]["namespace"] = "sha256:" + "0" * 64
+        mismatch_result = compare(
+            source_mismatch,
+            native_sample(source_mismatch, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(mismatch_result["sourceK"]["firstAcceptanceReason"],
+                         "source_scope_unproved")
+
+        extra_provider = working_frame(recent=True, active=False)
+        extra_provider["sources"].append(copy.deepcopy(extra_provider["sources"][0]))
+        extra_provider["sources"][1]["provider"] = "claude"
+        extra_result = compare(
+            extra_provider,
+            native_sample(extra_provider, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(extra_result["sourceK"]["firstAcceptanceReason"],
+                         "source_scope_unproved")
+
+    def test_first_acceptance_rejects_coerced_counters_and_clock_on_never_accepted_receipt(self):
+        for counter in (True, 1.0, 2):
+            with self.subTest(counter=counter):
+                frame = working_frame(recent=True, active=False)
+                add_history_clock(frame)
+                if type(counter) is int and counter == 2:
+                    set_runtime_counter(frame, counter)
+                else:
+                    runtime = next(item for item in frame["sources"][0]["components"]
+                                   if item["name"] == "runtime")
+                    runtime["accepted"] = counter
+                result = compare(
+                    frame,
+                    native_sample(frame, runtime="parked", status="notLoaded", loaded=False),
+                    first_acceptance_provenance=True,
+                )
+                self.assertEqual(result["sourceK"]["firstAcceptanceSet"], "unproved")
+                self.assertEqual(result["sourceK"]["firstAcceptanceReason"],
+                                 "accepted_counter_not_first")
+                self.assertEqual(result["counts"]["conditionalMemberships"], 1)
+
+        for counter in (True, 1.0):
+            with self.subTest(history_counter=counter):
+                frame = working_frame(recent=True, active=False)
+                add_history_clock(frame)
+                history = next(item for item in frame["sources"][0]["components"]
+                               if item["name"] == "history")
+                history["accepted"] = counter
+                result = compare(
+                    frame,
+                    native_sample(frame, runtime="parked", status="notLoaded", loaded=False),
+                    first_acceptance_provenance=True,
+                )
+                self.assertEqual(result["sourceK"]["firstAcceptanceReason"],
+                                 "accepted_counter_not_first")
+                self.assertEqual(result["counts"]["conditionalMemberships"], 1)
+
+        never_accepted = set_never_accepted_history(working_frame(recent=True, active=False))
+        history_clock = copy.deepcopy(never_accepted["projection"]["scopes"][0]["clocks"][0])
+        history_clock.update(component="history")
+        never_accepted["projection"]["scopes"][0]["clocks"].append(history_clock)
+        result = compare(
+            never_accepted,
+            native_sample(never_accepted, runtime="parked", status="notLoaded", loaded=False),
+            first_acceptance_provenance=True,
+        )
+        self.assertEqual(result["sourceK"]["firstAcceptanceSet"], "unproved")
+        self.assertEqual(result["sourceK"]["firstAcceptanceReason"],
+                         "clock_bracket_unproved")
+        self.assertEqual(result["counts"]["conditionalMemberships"], 0)
+
+    def test_first_acceptance_recent_keeps_native_census_and_one_second_boundary_gates(self):
+        frame = set_never_accepted_history(working_frame(recent=True, active=False))
+        incomplete = native_sample(frame, runtime="parked", status="notLoaded", loaded=False)
+        incomplete["runtimeGaps"] = ["native_census_incomplete"]
+        incomplete_result = compare(
+            frame, incomplete, copy.deepcopy(incomplete), first_acceptance_provenance=True,
+        )
+        self.assertEqual(incomplete_result["sourceK"]["firstAcceptanceSet"], "recomputed")
+        self.assertEqual(incomplete_result["membershipStatus"], "unresolved")
+        self.assertEqual(incomplete_result["status"], "unresolved")
+
+        now = frame["emittedBoottimeMs"]
+        k = frame["clockCeiling"]
+        scope = frame["projection"]["scopes"][0]
+        member = scope["members"][0]
+        resolved_member = importlib.import_module(
+            "agent_observer.working_set_contract",
+        ).resolve_member(scope, member)
+        support, clock = qualifier._clock_for_recent(scope, resolved_member, None)
+        ceiling, reason = qualifier._first_acceptance_clock_ceiling(
+            frame, frame["sources"][0], scope, home=HOME,
+            namespace=qualifier._native_namespace(HOME, os.getuid()),
+            clock_bracket_ok=True, clock_census_complete=True,
+        )
+        self.assertEqual(reason, "first_acceptance_set_recomputed")
+        for offset, expected in ((1000, None), (1001, True), (-1003, None), (-1004, False)):
+            with self.subTest(offset=offset):
+                candidate = copy.deepcopy(frame)
+                activity_at = now + offset - WINDOW_MS + k
+                set_activity_at(candidate, activity_at)
+                native = native_sample(candidate, runtime="parked", status="notLoaded",
+                                       loaded=False)
+                normalized, _loaded, _saved, gaps = qualifier._native_semantics(
+                    native, "fixture", qualifier._native_namespace(HOME, os.getuid()),
+                )
+                self.assertEqual(gaps, [])
+                decision, decision_reason = qualifier._recent_decision(
+                    next(iter(normalized.values())), candidate["projection"]["sessions"][0],
+                    None, support, clock, candidate, WINDOW_MS, ceiling,
+                    clock_bracket_ok=True, scope=scope, clock_census_complete=True,
+                )
+                if expected is None:
+                    self.assertIsNone(decision)
+                    self.assertEqual(decision_reason, "near_recency_boundary")
+                else:
+                    self.assertIs(decision, expected)
 
     def test_native_active_positive_keeps_membership_independent_when_activity_is_unknown(self):
         frame = working_frame(recent=False, active=True)
