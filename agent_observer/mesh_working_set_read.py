@@ -98,11 +98,13 @@ class _WorkingSetSelection:
                 continue
             for scope in owner["metadata"]["scopes"]:
                 key = host["hostId"], scope["provider"]
-                scope_incarnation = host["delivery"]["epoch"], service["serviceId"]
-                binding = (scope_incarnation, scope["namespace"],
-                           scope["contextGeneration"], scope["continuity"])
+                # Transport recovery rebinds current delivery, but cannot reset
+                # watermarks belonging to the same native service/clock.
+                binding = (incarnation, scope["namespace"],
+                           scope["contextGeneration"], scope["continuity"],
+                           host["delivery"]["epoch"])
                 old = bindings.get(key)
-                if old is not None and old[0] == scope_incarnation and old[1] == binding[1]:
+                if old is not None and old[0] == incarnation and old[1] == binding[1]:
                     check(binding[2] >= old[2] and binding[3] >= old[3]
                           and (binding[2] == old[2] or binding[3] > old[3]),
                           "working_set_scope_continuity")
@@ -124,10 +126,12 @@ class _WorkingSetSelection:
 
     def _ready(self, host, owner, scope, source):
         self._policy(host, owner)
+        service = owner["service"]
         return (source is not None and scope["contextGeneration"] == source["contextGeneration"]
                 and self.bindings.get((host["hostId"], scope["provider"])) == (
-                    (host["delivery"]["epoch"], owner["service"]["serviceId"]),
+                    (service["serviceId"], service["bootId"], service["clockDomain"]),
                     scope["namespace"], scope["contextGeneration"], scope["continuity"],
+                    host["delivery"]["epoch"],
                 ))
 
     @staticmethod

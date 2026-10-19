@@ -261,6 +261,80 @@ class WorkingSetGapPolicyTest(unittest.TestCase):
         with self.assertRaisesRegex(ProtocolError, "working_set_scope_continuity"):
             reader.retain(context(older))
 
+    def test_transport_recovery_keeps_native_context_and_continuity_watermarks(self):
+        high, _, _now = self.frames()
+
+        def set_context(value, generation):
+            if isinstance(value, dict):
+                if "contextGeneration" in value:
+                    value["contextGeneration"] = generation
+                for child in value.values():
+                    set_context(child, generation)
+            elif isinstance(value, list):
+                for child in value:
+                    set_context(child, generation)
+
+        set_context(high, 3)
+        validate_frame(high)
+        for transition in ("resync", "gap", "owner_none"):
+            for field in ("continuity", "contextGeneration"):
+                with self.subTest(transition=transition, field=field):
+                    reader, admitted = selection(high)
+                    if transition == "gap":
+                        reader.retain(None)
+                    elif transition == "owner_none":
+                        absent = copy.deepcopy(admitted)
+                        absent["sessions"] = []
+                        absent["mesh"]["hosts"][0]["owner"] = None
+                        reader.retain(absent)
+                    lower = copy.deepcopy(high)
+                    if field == "contextGeneration":
+                        set_context(lower, 2)
+                    else:
+                        lower["projection"]["scopes"][0][field] -= 1
+                    validate_frame(lower)
+                    recovered = context(lower)
+                    recovered["mesh"]["hosts"][0]["delivery"]["epoch"] = "later-epoch"
+                    with self.assertRaisesRegex(ProtocolError, "working_set_scope_continuity"):
+                        reader.retain(recovered)
+
+    def test_transport_recovery_accepts_same_native_scope_and_genuine_new_service(self):
+        high, _, now = self.frames()
+        reader, admitted = selection(high)
+        reader.evaluate(admitted, now)
+        for index in range(12):
+            reader.retain(None)
+            recovered = copy.deepcopy(admitted)
+            recovered["mesh"]["hosts"][0]["delivery"]["epoch"] = f"new-{index}"
+            reader.retain(recovered)
+            current = reader.evaluate(recovered, now + index)
+            self.assertEqual(current.members, [])
+            self.assertEqual(current.scopes[0]["coverage"]["status"], "partial")
+            self.assertEqual(len(reader.bindings), 1)
+            self.assertEqual(len(reader.clocks), 1)
+        native = copy.deepcopy(high)
+        retired_id = native["serviceId"]
+        native["serviceId"] = "00000000-0000-4000-8000-000000008888"
+
+        def replace_service(value):
+            if isinstance(value, dict):
+                if value.get("serviceId") == retired_id:
+                    value["serviceId"] = native["serviceId"]
+                for child in value.values():
+                    replace_service(child)
+            elif isinstance(value, list):
+                for child in value:
+                    replace_service(child)
+
+        replace_service(native)
+        native["projection"]["scopes"][0]["continuity"] = 1
+        validate_frame(native)
+        replacement = context(native)
+        replacement["mesh"]["hosts"][0]["delivery"]["epoch"] = "genuine-new-service"
+        reader.retain(replacement)
+        self.assertEqual(len(reader.bindings), 1)
+        self.assertEqual(len(reader.clocks), 1)
+
     def test_reader_time_cannot_regress_during_or_after_gap(self):
         high, _, now = self.frames()
         for restore in (False, True):

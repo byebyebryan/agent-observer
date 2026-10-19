@@ -204,3 +204,172 @@ class RegisteredWorkingSetTests(unittest.IsolatedAsyncioTestCase):
         for count, window in ((3, 60_000), (0, 60_000), (3, 0)):
             with self.subTest(count=count, window=window):
                 await self.pipeline(remote=True, count=count, window=window)
+
+    async def test_quiet_cutoff_and_fresh_proofs_preserve_independent_active_branch(self):
+        """A real quiet replacement supplies the negative; local expiry cannot."""
+        window = 60_000
+        state, _sample = state_with_rows(window=window, recent_age=58_000)
+        full_rows = state.frame("status", 1)["snapshot"]["sessions"]
+        active, recent = full_rows[:2]
+        recent_key = identity_key(recent["identity"])
+        profile = WorkingSetAgentProfile(window)
+        with Running(state=state) as native, tempfile.TemporaryDirectory() as directory:
+            publisher = make_working_set_publisher("fixture", "working", native.path,
+                                                   window_ms=window)
+            mesh_path = Path(directory) / "mesh.sock"
+            server = await IPCServer(mesh_path, Bridge(publisher).serve).start()
+            codec = profile.bind("fixture", "working")
+
+            async def connect():
+                return await Client.connect(await connect_ipc(mesh_path), host="fixture",
+                                            source="working", profile=profile.descriptor.profile_id,
+                                            codec=codec.validate_bridge)
+
+            revision = "sha256:" + "c" * 64
+
+            async def catalog_check():
+                return revision
+
+            reader = Reader("agent", [Endpoint("fixture", False, revision, connect, codec)],
+                            local_host="reader", profile=profile, catalog_revision=revision,
+                            catalog_check=catalog_check)
+            stream = reader.watch_admitted(request_id="e" * 32, proof_interval=.1)
+            facade = PreparedWorkingSetAgentWatch("e" * 32, profile=profile, window_ms=window)
+            nonces = set()
+            future_now = None
+            initial_revision = None
+            initial_observation = None
+            try:
+                for _ in range(60):
+                    facade.accept(await asyncio.wait_for(anext(stream), 3))
+                    snapshot = facade.snapshot()
+                    if snapshot is None:
+                        continue
+                    host = snapshot["mesh"]["hosts"][0]
+                    if host["delivery"]["status"] != "ready" or host["owner"] is None:
+                        continue
+                    proof = host["delivery"]["proof"]
+                    if proof is not None:
+                        nonces.add(proof["nonce"])
+                    scope = host["owner"]["metadata"]["scopes"][0]
+                    if future_now is None:
+                        initial = facade.read(reader_now(), reader_clock())
+                        if initial.members != [active, recent]:
+                            continue
+                        self.assertEqual(initial.scopes[0]["coverage"]["status"], "complete")
+                        member = next(row for row in scope["members"]
+                                      if identity_key(row["identity"]) == recent_key)
+                        future_now = member["recent"]["lowerBoottimeMs"] + 2
+                        initial_revision = host["owner"]["service"]["viewRevision"]
+                        initial_observation = host["owner"]["service"]["observationRevision"]
+                    result = facade.read(max(reader_now(), future_now), reader_clock())
+                    self.assertEqual(result.members, [active])
+                    if not scope["nonmembers"]:
+                        self.assertEqual(result.nonmembers, [])
+                        self.assertEqual(result.scopes[0]["coverage"]["status"], "partial")
+                        self.assertEqual([identity_key(row["identity"]) for row in result.uncertain],
+                                         [recent_key])
+                        continue
+                    if len(nonces) < 2:
+                        continue
+                    # A quiet source timer, with no accepted replacement input,
+                    # has now emitted an explicit independently admitted negative.
+                    self.assertGreater(host["owner"]["service"]["viewRevision"], initial_revision)
+                    self.assertEqual(host["owner"]["service"]["observationRevision"], initial_observation)
+                    self.assertEqual(result.scopes[0]["coverage"]["status"], "complete")
+                    self.assertEqual([identity_key(row["identity"]) for row in result.nonmembers],
+                                     [recent_key])
+                    self.assertEqual(result.nonmembers[0]["reason"], "outside_window")
+                    self.assertEqual(result.uncertain, [])
+                    break
+                else:
+                    self.fail("quiet_native_negative_not_admitted_after_fresh_proofs")
+            finally:
+                facade.disconnect()
+                await stream.aclose()
+                await server.close()
+            self.assertEqual(reader.inspect()["activeConnections"], 0)
+            self.assertEqual(publisher.native._active, 0)
+            self.assertEqual(publisher.native._pending_reads, 0)
+
+    async def test_public_resync_cannot_reset_native_scope_watermarks(self):
+        """Controlled valid resyncs after an actual ordinary Reader baseline."""
+        state, _sample = state_with_rows(count=1)
+        profile = WorkingSetAgentProfile(60_000)
+        with Running(state=state) as native, tempfile.TemporaryDirectory() as directory:
+            publisher = make_working_set_publisher("fixture", "working", native.path,
+                                                   window_ms=60_000)
+            path = Path(directory) / "mesh.sock"
+            server = await IPCServer(path, Bridge(publisher).serve).start()
+            codec = profile.bind("fixture", "working")
+
+            async def connect():
+                return await Client.connect(await connect_ipc(path), host="fixture",
+                                            source="working", profile=profile.descriptor.profile_id,
+                                            codec=codec.validate_bridge)
+
+            reader = Reader("agent", [Endpoint("fixture", True, None, connect, codec)],
+                            local_host="fixture", profile=profile)
+            stream = reader.watch(request_id="f" * 32)
+            observed = []
+
+            def set_context(value, generation):
+                if isinstance(value, dict):
+                    if "contextGeneration" in value:
+                        value["contextGeneration"] = generation
+                    for child in value.values():
+                        set_context(child, generation)
+                elif isinstance(value, list):
+                    for child in value:
+                        set_context(child, generation)
+
+            try:
+                for _ in range(20):
+                    observed.append(copy.deepcopy(await asyncio.wait_for(anext(stream), 3)))
+                    if observed[-1]["mesh"]["hosts"][0]["delivery"]["status"] == "ready":
+                        break
+                else:
+                    self.fail("ordinary_reader_baseline_missing")
+                baseline = observed[-1]
+                set_context(baseline, 3)
+                baseline["mesh"]["hosts"][0]["owner"]["metadata"]["scopes"][0]["continuity"] = 3
+                validate_response(baseline, profile=profile)
+                for case in ("lower_continuity", "lower_context", "unchanged"):
+                    with self.subTest(case=case):
+                        facade = PreparedWorkingSetAgentWatch("f" * 32, profile=profile,
+                                                              window_ms=60_000)
+                        try:
+                            for frame in observed:
+                                facade.accept(copy.deepcopy(frame))
+                            self.assertEqual(len(facade.read(reader_now(), reader_clock()).members), 1)
+                            resync = copy.deepcopy(baseline)
+                            resync["mesh"]["kind"] = "resync"
+                            resync["mesh"]["reader"]["sequence"] += 1
+                            resync["mesh"]["reader"]["revision"] += 1
+                            resync["mesh"]["reader"]["encodedAtMs"] = reader_now()
+                            host = resync["mesh"]["hosts"][0]
+                            host["delivery"]["epoch"] += 1
+                            scope = host["owner"]["metadata"]["scopes"][0]
+                            if case == "lower_continuity":
+                                scope["continuity"] = 2
+                            elif case == "lower_context":
+                                set_context(resync, 2)
+                                scope["continuity"] = 4
+                            # These are coherent native/response values. The
+                            # watch, rather than static shape, owns the watermark.
+                            validate_response(resync, profile=profile)
+                            if case == "unchanged":
+                                facade.accept(resync)
+                                self.assertEqual(len(facade.read(reader_now(), reader_clock()).members), 1)
+                            else:
+                                with self.assertRaisesRegex(ValueError, "working_set_scope_continuity"):
+                                    facade.accept(resync)
+                                self.assertIsNone(facade.snapshot())
+                        finally:
+                            facade.disconnect()
+            finally:
+                await stream.aclose()
+                await server.close()
+            self.assertEqual(reader.inspect()["activeConnections"], 0)
+            self.assertEqual(publisher.native._active, 0)
+            self.assertEqual(publisher.native._pending_reads, 0)
