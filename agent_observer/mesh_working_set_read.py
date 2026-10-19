@@ -25,6 +25,12 @@ from .mesh_working_set_profile import (
 )
 from .working_set_contract import WORKING_SET_PROTOCOL, selector, selector_digest
 from .working_set_policy import DEFAULT_WINDOW_MS
+from .working_set_supports import (
+    resolve_coverage,
+    resolve_member,
+    resolve_nonmember,
+    resolve_uncertain,
+)
 
 WORKING_SET_READ_INTERFACE_VERSION = 1
 
@@ -179,10 +185,14 @@ class _WorkingSetSelection:
                     values = [horizon(ref) for ref in refs]
                     return min(values) if values and all(v is not None for v in values) else None
 
-                coverage = copy.deepcopy(scope["coverage"])
-                uncertain.extend(copy.deepcopy(scope["uncertain"]))
+                coverage = copy.deepcopy(resolve_coverage(scope, scope["coverage"]))
+                uncertain.extend(
+                    copy.deepcopy(resolve_uncertain(scope, entry))
+                    for entry in scope["uncertain"]
+                )
                 all_selected = True
-                for entry in scope["members"]:
+                for compact_entry in scope["members"]:
+                    entry = resolve_member(scope, compact_entry)
                     row = self.rows.get(identity_key(entry["identity"]))
                     fields = entry["fieldSupports"]
                     eligible = row is not None and (row["kind"] == "unknown" or valid(fields["kind"]))
@@ -214,7 +224,8 @@ class _WorkingSetSelection:
                             "health": "stale", "reason": "working_set_support_expired", "clock": None,
                         }
                     members.append(clean)
-                for entry in scope["nonmembers"]:
+                for compact_entry in scope["nonmembers"]:
+                    entry = resolve_nonmember(scope, compact_entry)
                     if entry["supports"] and all(valid(ref) for ref in entry["supports"]):
                         # This is an already admitted native negative; no new
                         # negative can be inferred from a local positive timeout.

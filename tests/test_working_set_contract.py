@@ -12,6 +12,7 @@ from test_active_contract import support
 from agent_observer.contract import ContractError, canonical, validate_snapshot
 from agent_observer.working_set_contract import (
     MAX_SAFE_INTEGER,
+    MAX_WORKING_SET_NODES,
     StreamGuard,
     interface,
     parse_frame,
@@ -21,6 +22,26 @@ from agent_observer.working_set_contract import (
     validate_frame,
     validate_request,
 )
+from agent_observer.working_set_supports import (
+    compact_scope,
+    resolve_coverage,
+    resolve_member,
+    resolve_nonmember,
+    resolve_uncertain,
+)
+
+
+def expand_scope(scope):
+    result = {
+        key: value
+        for key, value in scope.items()
+        if key != "supportTable"
+    }
+    result["coverage"] = resolve_coverage(scope, scope["coverage"])
+    result["members"] = [resolve_member(scope, entry) for entry in scope["members"]]
+    result["uncertain"] = [resolve_uncertain(scope, entry) for entry in scope["uncertain"]]
+    result["nonmembers"] = [resolve_nonmember(scope, entry) for entry in scope["nonmembers"]]
+    return result
 
 
 def fixture(*, recent=False, active=True, window=10000):
@@ -69,11 +90,13 @@ def fixture(*, recent=False, active=True, window=10000):
             row["phase"] = None
             row["blockedReasons"] = []
             member["fieldSupports"]["phase"] = None
+    scope = value["projection"]["scopes"][0]
+    value["projection"]["scopes"][0] = compact_scope(scope)
     return value
 
 
 def outside(value):
-    scope = value["projection"]["scopes"][0]
+    scope = expand_scope(value["projection"]["scopes"][0])
     member = scope["members"].pop()
     value["projection"]["sessions"].clear()
     proof = member["recent"]
@@ -95,10 +118,14 @@ def outside(value):
             "horizonBoottimeMs": 20000,
         }
     ]
-    return scope["nonmembers"][0]
+    value["projection"]["scopes"][0] = compact_scope(scope)
+    return value["projection"]["scopes"][0]["nonmembers"][0]
 
 
 class WorkingSetContractTest(unittest.TestCase):
+    def test_compact_table_does_not_expand_existing_parser_node_budget(self):
+        self.assertEqual(MAX_WORKING_SET_NODES, 2_004_096)
+
     def test_closed_policy_exact_types_and_bound_request(self):
         for window in (0, 259200000, 2592000000):
             policy = selector(window)
@@ -194,7 +221,9 @@ class WorkingSetContractTest(unittest.TestCase):
             lambda v, e: e.update(value="child"),
             lambda v, e: e.update(supports=[]),
             lambda v, e: e["recent"].update(upperBoottimeMs=19001),
-            lambda v, e: e["recent"].update(support=support(v, "history")),
+                lambda v, e: v["projection"]["scopes"][0]["supportTable"][
+                    e["recent"]["support"]
+                ].update(component="history"),
         ):
             bad = copy.deepcopy(value)
             mutate(bad, bad["projection"]["scopes"][0]["nonmembers"][0])
@@ -260,7 +289,7 @@ class WorkingSetContractTest(unittest.TestCase):
 
     def test_unknown_context_never_proves_complete_and_keeps_prior_horizon(self):
         value = fixture()
-        scope = value["projection"]["scopes"][0]
+        scope = expand_scope(value["projection"]["scopes"][0])
         row = value["projection"]["sessions"].pop()
         scope["members"].clear()
         scope["uncertain"] = [
@@ -272,11 +301,14 @@ class WorkingSetContractTest(unittest.TestCase):
                 "horizonBoottimeMs": 20000,
             }
         ]
+        value["projection"]["scopes"][0] = compact_scope(scope)
         with self.assertRaisesRegex(ContractError, "complete_unresolved"):
             validate_frame(value)
+        scope = expand_scope(value["projection"]["scopes"][0])
         scope["coverage"].update(status="partial", supports=[])
+        value["projection"]["scopes"][0] = compact_scope(scope)
         validate_frame(value)
-        scope["uncertain"][0]["horizonBoottimeMs"] = 20001
+        value["projection"]["scopes"][0]["uncertain"][0]["horizonBoottimeMs"] = 20001
         with self.assertRaisesRegex(ContractError, "uncertain_horizon"):
             validate_frame(value)
 

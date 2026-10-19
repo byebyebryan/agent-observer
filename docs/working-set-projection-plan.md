@@ -1,5 +1,14 @@
 # Generalized active and recent-session projection
 
+Execution resumption, 2026-10-18: Bryan explicitly approved expansion into Mesh
+implementation and requested a new Luna goal loop to finish. Observer receipt
+representation and additive SDK1 registration now proceed in separate owning
+worktrees. The [support-table validation completion](working-set-support-table-completion-r2.md)
+records the exact schema/native-check division. The earlier
+[overall checkpoint](working-set-qualification-status.md) and all failed/open
+gates remain preserved; its review-only scope decision is now superseded.
+Deployment/adoption and normal role selection remain separate.
+
 Execution update, 2026-10-18: Bryan explicitly requested the Luna goal loop to
 execute this plan. P0 cached workload sizing is recorded in the
 [sanitized screen](evidence/2026-10-18-working-set/p0/README.md). Joint P1 public

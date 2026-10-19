@@ -2,14 +2,21 @@
 
 import copy
 import unittest
+from unittest.mock import patch
 from uuid import UUID
 
 from test_active_projection import provider_snapshot
 from test_service_contract import fixture
 
+from agent_observer.contract import _admitted_identity_key
 from agent_observer.service_state import ServiceState
 from agent_observer.working_set_contract import validate_frame
 from agent_observer.working_set_decisions import WorkingSetDecisions
+from agent_observer.working_set_feed import (
+    SUPPORT_PLAN_SCRATCH_BYTES,
+    _copy_live_ledger,
+    _ledger_bytes,
+)
 
 WALL = 1700000020000
 
@@ -244,7 +251,8 @@ class WorkingSetProjectionTest(unittest.TestCase):
         member = self.scope(first)["members"][0]
         self.assertIsNotNone(member["active"])
         self.assertIsNotNone(member["recent"])
-        self.assertEqual(member["recent"]["supports"][0]["expiresBoottimeMs"], 50000)
+        recent_support = self.scope(first)["supportTable"][member["recent"]["supports"][0]]
+        self.assertEqual(recent_support["expiresBoottimeMs"], 50000)
         self.assertEqual(member["recent"]["lowerBoottimeMs"], 14999)
         self.now = 14999
         active = self.state.working_set_frame("status", 1)
@@ -256,6 +264,67 @@ class WorkingSetProjectionTest(unittest.TestCase):
         self.assertEqual(expired["projection"]["sessions"], [])
         self.assertNotEqual(self.scope(expired)["coverage"]["status"], "complete")
         self.assertEqual(self.scope(expired)["nonmembers"], [])
+
+    def test_old_and_candidate_ledger_overlap_is_preflighted_before_copy(self):
+        self.accept()
+        projector = self.state.working_set_projector
+        first_entry = copy.deepcopy(next(iter(projector._ledger.values())))
+        for index in range(2, 40):
+            entry = copy.deepcopy(first_entry)
+            entry["identity"]["nativeId"] = str(UUID(int=10_000 + index))
+            projector._ledger[_admitted_identity_key(entry["identity"])] = entry
+
+        old_charge = _ledger_bytes(projector._ledger.values(), len(projector._ledger))
+        retained_count = sum(
+            entry["horizonBoottimeMs"] > self.now for entry in projector._ledger.values()
+        )
+        candidate_charge = _ledger_bytes(
+            (
+                entry
+                for entry in projector._ledger.values()
+                if entry["horizonBoottimeMs"] > self.now
+            ),
+            retained_count,
+        )
+        without_old = (
+            projector.decisions.guard_bytes
+            + candidate_charge
+            + SUPPORT_PLAN_SCRATCH_BYTES
+        )
+        budget = without_old + old_charge // 2
+        self.assertLess(without_old, budget)
+        self.assertGreater(without_old + old_charge, budget)
+        projector.max_ledger_bytes = budget
+
+        with patch(
+            "agent_observer.working_set_feed._copy_live_ledger", wraps=_copy_live_ledger
+        ) as candidate_copy:
+            frame = self.accept(self.sample(wall=WALL + 1000), lower=10000, upper=10001)
+        candidate_copy.assert_not_called()
+        validate_frame(frame)
+        scope = self.scope(frame)
+        self.assertEqual(scope["coverage"]["status"], "unavailable")
+        self.assertEqual(scope["coverage"]["reason"], "projection_tracking_capacity")
+        self.assertEqual(projector._ledger, {})
+
+    def test_unchanged_ledger_entry_is_shared_by_identity_across_replacement(self):
+        self.accept()
+        projector = self.state.working_set_projector
+        entry = copy.deepcopy(next(iter(projector._ledger.values())))
+        entry["identity"]["nativeId"] = str(UUID(int=10_099))
+        key = _admitted_identity_key(entry["identity"])
+        projector._ledger[key] = entry
+
+        self.now += 1
+        with patch(
+            "agent_observer.working_set_feed._copy_live_ledger", wraps=_copy_live_ledger
+        ) as candidate_copy:
+            frame = self.accept(
+                self.sample(wall=WALL + 1000), lower=self.now - 1, upper=self.now
+            )
+        candidate_copy.assert_called_once()
+        validate_frame(frame)
+        self.assertIs(projector._ledger[key], entry)
 
     def test_guard_capacity_latch_drops_earlier_recency_but_preserves_independent_active(self):
         self.state.working_set_projector.decisions = WorkingSetDecisions(

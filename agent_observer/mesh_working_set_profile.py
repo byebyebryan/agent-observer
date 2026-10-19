@@ -26,6 +26,7 @@ from .active_contract import MAX_FRAME_BYTES, support_matches
 from .contract import ContractError, identity_key
 from .working_set_contract import WORKING_SET_PROTOCOL, selector, validate_frame
 from .working_set_policy import DEFAULT_WINDOW_MS
+from .working_set_supports import resolve_member
 
 WORKING_SET_PROFILE_ID = "agent-observer.mesh-working-set.v1"
 NATIVE_PROTOCOL = "agent-observer.working-set"
@@ -46,7 +47,7 @@ def _identity(record):
 def _members(owner):
     metadata = owner["metadata"]
     return {} if metadata is None else {
-        _identity(member): member
+        _identity(member): (scope, member)
         for scope in metadata["scopes"]
         for member in scope["members"]
     }
@@ -89,7 +90,8 @@ def _prepare_rules(state):
     rules = []
     for row in state.records:
         identity = _identity(row)
-        member = members.get(identity)
+        indexed = members.get(identity)
+        member = None if indexed is None else resolve_member(*indexed)
         rules.append(
             PreparedRule(
                 identity,
@@ -233,7 +235,9 @@ class WorkingSetAgentProfile:
         return _identity(record)
 
     def record_receipts(self, record, state):
-        return _required(_members(state.owner).get(_identity(record)), state.owner["service"])
+        indexed = _members(state.owner).get(_identity(record))
+        member = None if indexed is None else resolve_member(*indexed)
+        return _required(member, state.owner["service"])
 
     def record_eligible(self, record, state):
         return _record_eligible(record, _members(state.owner))

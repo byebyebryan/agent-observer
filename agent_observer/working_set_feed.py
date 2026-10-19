@@ -19,6 +19,40 @@ from .observation_support import SUPPORT_FIELDS, empty_support, support_matches
 from .working_set_contract import MAX_IDENTITIES, MAX_LEDGER_BYTES, selector
 from .working_set_decisions import WorkingSetDecisions
 from .working_set_policy import PolicyResult, combine_membership
+from .working_set_supports import SUPPORT_PLAN_SCRATCH_BYTES, SupportTableBuilder
+
+_LEDGER_ROOT_OVERHEAD = 256
+_LEDGER_ENTRY_OVERHEAD = 64
+
+
+def _canonical_array_bytes(values):
+    """Measure an array of canonical entries without materializing a second list."""
+    total = 2  # '[' and ']'
+    first = True
+    for value in values:
+        if not first:
+            total += 1
+        total += len(canonical(value).encode("utf-8"))
+        first = False
+    return total
+
+
+def _ledger_bytes(values, count):
+    """Charge serialized ledger entries and their bounded dict ownership."""
+    return (
+        _canonical_array_bytes(values)
+        + _LEDGER_ROOT_OVERHEAD
+        + count * _LEDGER_ENTRY_OVERHEAD
+    )
+
+
+def _copy_live_ledger(ledger, now_ms):
+    """Build a candidate root only after old/new overlap passed preflight."""
+    return {
+        identity: entry
+        for identity, entry in ledger.items()
+        if entry["horizonBoottimeMs"] > now_ms
+    }
 
 
 class WorkingSetProjector:
@@ -45,7 +79,7 @@ class WorkingSetProjector:
             service_id,
             window_ms,
             max_identities=max_identities,
-            max_guard_bytes=max(1, max_ledger_bytes - 8192),
+            max_guard_bytes=max(1, max_ledger_bytes - SUPPORT_PLAN_SCRATCH_BYTES),
         )
         self._context, self._ledger, self._encoded = None, {}, None
         self._clock_state = None
@@ -111,6 +145,7 @@ class WorkingSetProjector:
         self._ledger = {}
         scope.update(
             continuity=self._continuity,
+            supportTable=[],
             members=[],
             uncertain=[],
             nonmembers=[],
@@ -145,11 +180,6 @@ class WorkingSetProjector:
             _admitted_identity_key(r["identity"]): r
             for r in snapshot["sessions"]
             if (r["identity"]["provider"], r["identity"]["namespace"]) == context[:2]
-        }
-        ledger = {
-            identity: copy.deepcopy(entry)
-            for identity, entry in self._ledger.items()
-            if entry["horizonBoottimeMs"] > now_ms
         }
         classified, members, bodies, deadlines = {}, [], [], []
         for identity in sorted(rows):
@@ -186,10 +216,34 @@ class WorkingSetProjector:
                         decision.negative_supports if decision.eligibility is False else ()
                     ),
                 )
+        # Charge both live roots before making the next candidate root. Entries
+        # are immutable after insertion, so unchanged values may be shared by
+        # reference; the charge deliberately counts both whole serialized sets
+        # and both dictionary topologies without relying on that sharing.
+        old_ledger_bytes = _ledger_bytes(self._ledger.values(), len(self._ledger))
+        retained_count = sum(
+            entry["horizonBoottimeMs"] > now_ms for entry in self._ledger.values()
+        )
+        candidate_ledger_bytes = _ledger_bytes(
+            (
+                entry
+                for entry in self._ledger.values()
+                if entry["horizonBoottimeMs"] > now_ms
+            ),
+            retained_count,
+        )
         tracking_bytes = (
-            self.decisions.guard_bytes + len(canonical(list(ledger.values())).encode()) + 8192
+            self.decisions.guard_bytes
+            + old_ledger_bytes
+            + candidate_ledger_bytes
+            + SUPPORT_PLAN_SCRATCH_BYTES
         )
         tracking_capacity = tracking_bytes > self.max_ledger_bytes
+        # A shallow candidate root avoids an unreserved deepcopy memo and does
+        # not alias mutable state: ledger entries are replaced as whole values,
+        # never mutated in place. Do not allocate it after the preflight refuses.
+        ledger = _copy_live_ledger(self._ledger, now_ms) if not tracking_capacity else {}
+        support_table = SupportTableBuilder(limit=self.max_ledger_bytes)
         for identity in sorted(rows):
             row, fields = rows[identity], supports.get(identity, empty_support())
             decision = classified[identity]
@@ -225,14 +279,14 @@ class WorkingSetProjector:
                     "clock": None,
                 }
             clean_fields = {
-                name: copy.deepcopy(fields.get(name)) if valid(fields.get(name)) else None
+                name: fields.get(name) if valid(fields.get(name)) else None
                 for name in SUPPORT_FIELDS
             }
             metadata = {
                 "identity": copy.deepcopy(row["identity"]),
                 "fieldSupports": clean_fields,
-                "active": copy.deepcopy(active),
-                "recent": copy.deepcopy(recent_branch),
+                "active": active,
+                "recent": recent_branch,
             }
             required = _unique_supports(
                 (
@@ -250,16 +304,31 @@ class WorkingSetProjector:
                 "horizonBoottimeMs": prior["expiresBoottimeMs"],
             }
             old = ledger.get(identity)
-            tracking_bytes += (
-                len(canonical(metadata).encode())
-                + len(canonical(entry).encode())
+            ledger_delta = (
+                len(canonical(entry).encode())
                 + 2
                 - (len(canonical(old).encode()) if old is not None else 0)
+                + (_LEDGER_ENTRY_OVERHEAD if old is None else 0)
             )
-            if tracking_bytes > self.max_ledger_bytes:
+            try:
+                compact_metadata = support_table.member(
+                    metadata,
+                    additional_charge=max(0, ledger_delta),
+                    current_charge=tracking_bytes,
+                )
+            except ContractError as exc:
+                if str(exc) not in {
+                    "working_set_support_capacity",
+                    "working_set_support_table_limit",
+                }:
+                    raise
                 tracking_capacity = True
                 continue
-            members.append(metadata)
+            tracking_bytes += len(canonical(compact_metadata).encode()) + ledger_delta
+            if tracking_bytes + support_table.preflight_charge > self.max_ledger_bytes:
+                tracking_capacity = True
+                continue
+            members.append(compact_metadata)
             bodies.append(clean)
             ledger[identity] = entry
         native_census = census.get("codex", {})
@@ -271,7 +340,7 @@ class WorkingSetProjector:
             and not self.decisions.latched
         )
         coverage_supports = [census_support] if complete else []
-        if complete:
+        if complete and not tracking_capacity:
             for identity in native_census.get("identities", ()):
                 identity = tuple(identity)
                 decision = classified.get(identity)
@@ -298,6 +367,7 @@ class WorkingSetProjector:
             "namespace": context[1],
             "contextGeneration": context[2],
             "continuity": self._continuity,
+            "supportTable": [],
             "clocks": self.clocks.export(source),
             "coverage": {
                 "status": status,
@@ -306,13 +376,33 @@ class WorkingSetProjector:
                 else "recency_tracking_capacity"
                 if self.decisions.latched
                 else "membership_incomplete",
-                "supports": _unique_supports(coverage_supports) if complete else [],
+                "supports": [],
             },
             "members": members,
             "uncertain": [],
             "nonmembers": [],
         }
+        if complete and not tracking_capacity:
+            coverage = {
+                **scope["coverage"],
+                "supports": _unique_supports(coverage_supports),
+            }
+            try:
+                scope["coverage"] = support_table.coverage(
+                    coverage,
+                    current_charge=tracking_bytes,
+                )
+                tracking_bytes += len(canonical(scope["coverage"]).encode())
+            except ContractError as exc:
+                if str(exc) not in {
+                    "working_set_support_capacity",
+                    "working_set_support_table_limit",
+                }:
+                    raise
+                tracking_capacity = True
         for identity in sorted(ledger):
+            if tracking_capacity:
+                break
             entry, decision = ledger[identity], classified.get(identity)
             if decision is not None and decision.selected is True:
                 continue
@@ -340,7 +430,7 @@ class WorkingSetProjector:
                         else "no_activity"
                         if no_activity
                         else "outside_window",
-                        "support": copy.deepcopy(ref),
+                        "support": ref,
                         "clock": None
                         if disabled
                         else {"component": ref["component"], "accepted": ref["accepted"]},
@@ -355,25 +445,61 @@ class WorkingSetProjector:
                         if no_activity
                         else None,
                     }
-                scope["nonmembers"].append(
-                    {
-                        "identity": copy.deepcopy(entry["identity"]),
-                        "reason": reason,
-                        "value": row["kind"] if reason == "excluded_kind" else "parked",
-                        "supports": copy.deepcopy(list(decision.negative_supports)),
-                        "recent": negative,
-                        "horizonBoottimeMs": entry["horizonBoottimeMs"],
-                    }
-                )
+                candidate = {
+                    "identity": copy.deepcopy(entry["identity"]),
+                    "reason": reason,
+                    "value": row["kind"] if reason == "excluded_kind" else "parked",
+                    "supports": list(decision.negative_supports),
+                    "recent": negative,
+                    "horizonBoottimeMs": entry["horizonBoottimeMs"],
+                }
+                try:
+                    compact = support_table.nonmember(
+                        candidate,
+                        current_charge=tracking_bytes,
+                    )
+                except ContractError as exc:
+                    if str(exc) not in {
+                        "working_set_support_capacity",
+                        "working_set_support_table_limit",
+                    }:
+                        raise
+                    tracking_capacity = True
+                    continue
+                tracking_bytes += len(canonical(compact).encode())
+                if tracking_bytes + support_table.preflight_charge > self.max_ledger_bytes:
+                    tracking_capacity = True
+                    continue
+                scope["nonmembers"].append(compact)
             elif not complete:
                 fields = supports.get(identity, {})
-                scope["uncertain"].append(
-                    {
-                        **copy.deepcopy(entry),
-                        "reason": "membership_unresolved",
-                        "support": copy.deepcopy(fields.get("runtime")),
-                    }
-                )
+                candidate = {
+                    "identity": entry["identity"],
+                    "reason": "membership_unresolved",
+                    "priorSupport": entry["priorSupport"],
+                    "support": fields.get("runtime"),
+                    "horizonBoottimeMs": entry["horizonBoottimeMs"],
+                }
+                try:
+                    compact = support_table.uncertain(
+                        candidate,
+                        current_charge=tracking_bytes,
+                    )
+                except ContractError as exc:
+                    if str(exc) not in {
+                        "working_set_support_capacity",
+                        "working_set_support_table_limit",
+                    }:
+                        raise
+                    tracking_capacity = True
+                    continue
+                tracking_bytes += len(canonical(compact).encode())
+                if tracking_bytes + support_table.preflight_charge > self.max_ledger_bytes:
+                    tracking_capacity = True
+                    continue
+                scope["uncertain"].append(compact)
+        if not tracking_capacity:
+            support_table.finalize(scope)
         # Guard state survives prior-positive retirement. Count both, plus all
         # native scope metadata, in the single tracking limit.
         tracked = set(ledger)
@@ -381,8 +507,10 @@ class WorkingSetProjector:
         combined = (
             len(canonical([scope]).encode())
             + self.decisions.guard_bytes
-            + len(canonical(list(ledger.values())).encode())
+            + _ledger_bytes(ledger.values(), len(ledger))
+            + old_ledger_bytes
             + 1024
+            + support_table.overhead_charge
         )
         projection = {"scopes": [scope], "sessions": bodies}
         encoded = None

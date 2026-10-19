@@ -213,17 +213,38 @@ class MeshWorkingSetProfileTest(unittest.TestCase):
         with self.assertRaises((AttributeError, TypeError)):
             self.codec.window_ms = 0
 
-    def test_sdk_profile_registration_refusal_uses_only_public_descriptor(self):
-        with self.assertRaises(ValueError):
-            mesh_descriptor("agent", profile_id=WORKING_SET_PROFILE_ID)
-        with self.assertRaises(ValueError):
-            WorkingSetAgentProfile()
-        with self.assertRaises(ValueError):
-            WorkingSetAgentPreparation()
-        with patch("agent_observer.mesh_working_set_source.CachedWorkingSetAgentSource") as source:
+    def test_sdk_profile_registration_is_checked_only_through_public_descriptor(self):
+        try:
+            descriptor = mesh_descriptor("agent", profile_id=WORKING_SET_PROFILE_ID)
+        except ValueError:
             with self.assertRaises(ValueError):
-                make_working_set_publisher("fixture", "local", "/unused", window_ms=10000)
-            source.assert_not_called()
+                WorkingSetAgentProfile()
+            with self.assertRaises(ValueError):
+                WorkingSetAgentPreparation()
+            with patch(
+                "agent_observer.mesh_working_set_source.CachedWorkingSetAgentSource"
+            ) as source:
+                with self.assertRaises(ValueError):
+                    make_working_set_publisher("fixture", "local", "/unused", window_ms=10000)
+                source.assert_not_called()
+        else:
+            self.assertEqual(descriptor.profile_id, WORKING_SET_PROFILE_ID)
+            profile = WorkingSetAgentProfile()
+            preparation = WorkingSetAgentPreparation(profile)
+            self.assertEqual(profile.descriptor, descriptor)
+            self.assertEqual(preparation.descriptor.profile, descriptor)
+            with (
+                patch(
+                    "agent_observer.mesh_working_set_source.CachedWorkingSetAgentSource"
+                ) as source,
+                patch("mesh_plus.api.CachedPublisher") as publisher,
+            ):
+                result = make_working_set_publisher(
+                    "fixture", "local", "/unused", window_ms=10000
+                )
+                source.assert_called_once_with("fixture", "/unused", window_ms=10000)
+                publisher.assert_called_once()
+                self.assertIs(result, publisher.return_value)
         with self.assertRaises(ContractError):
             WorkingSetAgentProfile(window_ms=True)
 

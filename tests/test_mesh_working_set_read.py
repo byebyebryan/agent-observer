@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 import test_mesh_working_set_profile as profile_fixture
 import test_working_set_projection as projection_fixture
+from mesh_plus.api import descriptor as mesh_descriptor
 from mesh_plus.protocol import ProtocolError
 
 from agent_observer.mesh_working_set_profile import WORKING_SET_PROFILE_ID, WorkingSetAgentCodec
@@ -190,7 +191,8 @@ class WorkingSetReadPolicyTest(unittest.TestCase):
     def test_translated_recent_cutoff_is_exclusive_under_receipt_attenuation(self):
         frame = profile_fixture.MeshWorkingSetProfileTest.frame(runtime="parked")
         entry = frame["projection"]["scopes"][0]["members"][0]
-        ref = entry["fieldSupports"]["activity"]
+        scope = frame["projection"]["scopes"][0]
+        ref = scope["supportTable"][entry["fieldSupports"]["activity"]]
         for margin in (0, 1, 200, 4998):
             reader, value = selection(frame)
             for receipt in value["mesh"]["hosts"][0]["receipts"]:
@@ -206,8 +208,14 @@ class WorkingSetReadPolicyTest(unittest.TestCase):
 
     def test_live_facade_setup_remains_gated_by_real_sdk_descriptor(self):
         # No private guard injection or fabricated registered descriptor.
-        with self.assertRaises(ValueError):
-            PreparedWorkingSetAgentWatch("candidate-request")
+        try:
+            mesh_descriptor("agent", profile_id=WORKING_SET_PROFILE_ID)
+        except ValueError:
+            with self.assertRaises(ValueError):
+                PreparedWorkingSetAgentWatch("candidate-request")
+        else:
+            watch = PreparedWorkingSetAgentWatch("candidate-request")
+            watch.disconnect()
 
 
 class WorkingSetGapPolicyTest(unittest.TestCase):

@@ -11,15 +11,12 @@ import hashlib
 
 from .active_contract import (
     FACT_SUPPORT,
-    FIELD_SUPPORTS,
     MAX_FRAME_BYTES,
     MAX_IDENTITIES,
     MAX_LEDGER_BYTES,
     MAX_OVERHEAD_BYTES,
     MAX_REQUEST_BYTES,
-    NULL_SUPPORT,
     POSITIVE_INTEGER,
-    UNCERTAIN,
     _current_support,
     _identity,
     _sources,
@@ -50,9 +47,23 @@ from .contract import (
 from .service_contract import FRAME as SERVICE_FRAME
 from .service_contract import SOURCE
 from .working_set_policy import DEFAULT_WINDOW_MS, MAX_WINDOW_MS
+from .working_set_supports import (
+    MAX_SUPPORT_TABLE,
+    NULL_SUPPORT_INDEX,
+    SUPPORT_INDEX,
+    resolve_coverage,
+    resolve_member,
+    resolve_nonmember,
+    resolve_uncertain,
+    validate_support_table,
+)
 
 WORKING_SET_PROTOCOL = 1
 OPERATIONS = ("status", "snapshot", "watch")
+# Preserve the accepted active-feed decode ceiling. The compact table does not
+# grant a larger parser budget; its own structural and tracking bounds apply
+# independently.
+MAX_WORKING_SET_NODES = MAX_NODES + 4096
 MAX_SAFE_INTEGER = 2**53 - 1
 SIGNED = {"type": "integer", "minimum": -MAX_SAFE_INTEGER, "maximum": MAX_SAFE_INTEGER}
 OPTIONAL_SIGNED = {"anyOf": [SIGNED, {"type": "null"}]}
@@ -82,19 +93,40 @@ SELECTOR_SCHEMA = obj(
         unknown={"const": "unresolved"},
     ),
 )
-ACTIVE_BRANCH = obj(supports=array(FACT_SUPPORT, 2))
+ACTIVE_BRANCH = obj(supports=array(SUPPORT_INDEX, 2))
 RECENT_BRANCH = obj(
-    supports=array(FACT_SUPPORT, 2),
+    supports=array(SUPPORT_INDEX, 2),
     activityAt={**INTEGER, "maximum": 4_000_000_000_000},
     clock=CLOCK_REF,
     lowerBoottimeMs=SIGNED,
     upperBoottimeMs=SIGNED,
 )
+WORKING_SET_FIELD_SUPPORTS = obj(**{
+    name: NULL_SUPPORT_INDEX
+    for name in (
+        "runtime",
+        "phase",
+        "kind",
+        "savedIdentity",
+        "activity",
+        "outcome",
+        "workspace",
+        "lastUpdated",
+        "latestTurn",
+    )
+})
 MEMBER = obj(
     identity=IDENTITY,
-    fieldSupports=FIELD_SUPPORTS,
+    fieldSupports=WORKING_SET_FIELD_SUPPORTS,
     active={"anyOf": [ACTIVE_BRANCH, {"type": "null"}]},
     recent={"anyOf": [RECENT_BRANCH, {"type": "null"}]},
+)
+WORKING_SET_UNCERTAIN = obj(
+    identity=IDENTITY,
+    reason=text(128, pattern=CODE),
+    priorSupport=NULL_SUPPORT_INDEX,
+    support=NULL_SUPPORT_INDEX,
+    horizonBoottimeMs=INTEGER,
 )
 NO_ACTIVITY = obj(
     field={"const": "latestTurn"},
@@ -108,7 +140,7 @@ NO_ACTIVITY = obj(
 )
 NEGATIVE_RECENT = obj(
     kind=choice("window_disabled", "outside_window", "no_activity"),
-    support=NULL_SUPPORT,
+    support=NULL_SUPPORT_INDEX,
     clock=OPTIONAL_CLOCK,
     activityAt=TIME,
     lowerBoottimeMs=OPTIONAL_SIGNED,
@@ -119,7 +151,7 @@ NONMEMBER = obj(
     identity=IDENTITY,
     reason=choice("excluded_kind", "outside_window", "no_activity"),
     value=choice("child", "system", "parked"),
-    supports=array(FACT_SUPPORT, 2),
+    supports=array(SUPPORT_INDEX, 2),
     recent={"anyOf": [NEGATIVE_RECENT, {"type": "null"}]},
     horizonBoottimeMs=INTEGER,
 )
@@ -128,14 +160,15 @@ SCOPE = obj(
     namespace=text(71, pattern=DIGEST),
     contextGeneration=INTEGER,
     continuity=POSITIVE_INTEGER,
+    supportTable=array(FACT_SUPPORT, MAX_SUPPORT_TABLE),
     clocks=array(CLOCK_SAMPLE, 2),
     coverage=obj(
         status=choice("complete", "partial", "warming", "stale", "unavailable", "unsupported"),
         reason=text(128, pattern=CODE),
-        supports=array(FACT_SUPPORT, 2),
+        supports=array(SUPPORT_INDEX, 2),
     ),
     members=array(MEMBER, MAX_IDENTITIES),
-    uncertain=array(UNCERTAIN, MAX_IDENTITIES),
+    uncertain=array(WORKING_SET_UNCERTAIN, MAX_IDENTITIES),
     nonmembers=array(NONMEMBER, MAX_IDENTITIES),
 )
 PROJECTION = obj(scopes=array(SCOPE, 1), sessions=array(SESSION, MAX_IDENTITIES))
@@ -489,8 +522,14 @@ def validate_frame(value, *, expected_host=None, expected_uid=None, expected_win
             clocks = _clocks(scope, source, value)
             scopes[key] = scope, source, clocks
             coverage = scope["coverage"]
+            validate_support_table(scope)
+            resolved_coverage = resolve_coverage(scope, coverage)
             _support_set(
-                coverage["supports"], source, scope, value, runtime=coverage["status"] == "complete"
+                resolved_coverage["supports"],
+                source,
+                scope,
+                value,
+                runtime=coverage["status"] == "complete",
             )
             runtime = next(r for r in source["components"] if r["name"] == "runtime")
             if coverage["status"] == "complete" and (
@@ -507,17 +546,18 @@ def validate_frame(value, *, expected_host=None, expected_uid=None, expected_win
                     if name == "members":
                         members[identity] = entry
                     elif name == "uncertain":
+                        resolved = resolve_uncertain(scope, entry)
                         for field in ("priorSupport", "support"):
-                            if entry[field] is not None:
-                                _support_scope(entry[field], scope, value)
-                        if (
-                            entry["priorSupport"] is not None
-                            and entry["horizonBoottimeMs"]
-                            > entry["priorSupport"]["expiresBoottimeMs"]
-                        ):
+                            if resolved[field] is not None:
+                                _support_scope(resolved[field], scope, value)
+                        if (resolved["priorSupport"] is not None
+                                and entry["horizonBoottimeMs"]
+                                > resolved["priorSupport"]["expiresBoottimeMs"]):
                             raise ContractError("working_set_uncertain_horizon")
                     else:
-                        _nonmember(entry, source, scope, value, clocks, window)
+                        _nonmember(
+                            resolve_nonmember(scope, entry), source, scope, value, clocks, window
+                        )
             if len(seen) > MAX_IDENTITIES:
                 raise ContractError("working_set_identity_limit")
         if set(scopes) != {(s["provider"], s["namespace"]) for s in sources.values()}:
@@ -537,7 +577,15 @@ def validate_frame(value, *, expected_host=None, expected_uid=None, expected_win
             # The projected frame intentionally carries receipt metadata, not
             # full-inventory capabilities. Field support is validated below.
             _validate_record_semantics(row, value["hostScope"], scopes, check_capabilities=False)
-            _member(row, members[identity], source, scope, value, clocks, window)
+            _member(
+                row,
+                resolve_member(scope, members[identity]),
+                source,
+                scope,
+                value,
+                clocks,
+                window,
+            )
         if rows != members.keys():
             raise ContractError("working_set_member_body")
     if len(canonical({**value, "projection": None}).encode()) + 1 > MAX_OVERHEAD_BYTES:
@@ -571,7 +619,7 @@ def parse_frame(data, **expected):
         decode_document(
             data,
             max_bytes=MAX_FRAME_BYTES,
-            max_nodes=MAX_NODES + 4096,
+            max_nodes=MAX_WORKING_SET_NODES,
             max_depth=36,
             line_framed=True,
         ),
@@ -601,7 +649,7 @@ class StreamGuard:
             decode_document(
                 data,
                 max_bytes=MAX_FRAME_BYTES,
-                max_nodes=MAX_NODES + 4096,
+                max_nodes=MAX_WORKING_SET_NODES,
                 max_depth=36,
                 line_framed=True,
             )

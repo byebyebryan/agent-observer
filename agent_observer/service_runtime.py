@@ -293,8 +293,11 @@ class Runtime:
 
     def _drop(self, peer):
         self._release_sync_pins(peer)
-        if peer.sync_view is not None:
-            peer.parts = ()
+        # The caller or an eviction inventory may retain this Peer after it
+        # leaves accounting. Retire its actual raw references first, including
+        # ordinary full/active/working-set output, before credit can be reused.
+        peer.parts = ()
+        peer.body_revision = None
         if peer not in self.peers:
             return
         self.peers.remove(peer)
@@ -629,6 +632,11 @@ class Runtime:
                 size = peer.sock.send(data)
             except BlockingIOError:
                 return
+            finally:
+                # A completed control can immediately queue a replacement.
+                # Its memoryview must not pin the retired bytes across that
+                # replacement's encoded preflight.
+                data.release()
             if not size:
                 self._drop(peer)
                 return
