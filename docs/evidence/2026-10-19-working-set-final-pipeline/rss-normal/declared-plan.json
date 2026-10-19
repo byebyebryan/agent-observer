@@ -1,0 +1,41 @@
+{
+  "auditWitnessRule": "nonempty matching observations exactly as underlying original runner; record actual count, zero still rejects",
+  "cases": [
+    {
+      "generations": 32,
+      "historyRows": 2000,
+      "localReadsPerGeneration": 4,
+      "python": "314",
+      "variant": "full"
+    },
+    {
+      "generations": 32,
+      "historyRows": 2000,
+      "localReadsPerGeneration": 4,
+      "python": "314",
+      "variant": "working"
+    },
+    {
+      "generations": 32,
+      "historyRows": 2000,
+      "localReadsPerGeneration": 4,
+      "python": "311",
+      "variant": "full"
+    },
+    {
+      "generations": 32,
+      "historyRows": 2000,
+      "localReadsPerGeneration": 4,
+      "python": "311",
+      "variant": "working"
+    }
+  ],
+  "files": {
+    "rss_normal_gc_probe.py": "4f8603354d8097014f05a86725bf1ace6e785fa60eca320833155a91ba897f4a",
+    "sdk_pipeline_matrix_v3_6_watch_copy_audit_retirement_v1.py": "e67e52a94ba903f8721f1e9200bcc43049eb2ffafb906c2281ff2092fffe036e"
+  },
+  "originalReaderProofAndIntakeDeadlinesUnchanged": true,
+  "perCaseWallLimitSeconds": 300,
+  "scope": "normal production-like automatic cyclic-GC mode, original no-GC results preserved separately; no manual collection and no automatic plateau acceptance",
+  "source": "b176ac06+b9e8488e"
+}

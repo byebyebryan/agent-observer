@@ -1,0 +1,209 @@
+{
+  "driverSha256": "9b7bfb78ae4810da26be8a60889225359ae3525893531c864beed03984cd8c0b",
+  "lockAcquired": true,
+  "lockPath": "/home/bryan/.cache/agent-active-feed-cpu.lock",
+  "lockReleased": true,
+  "lockWaitNs": 33100,
+  "root": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e",
+  "schema": "agent-observer.mesh-installed-pair-qualification-driver.v1",
+  "scope": "offline installed wheels, pinned private venvs, focused synthetic SDK/IPC tests only",
+  "stages": [
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/verify-static-parity.py"
+      ],
+      "elapsedNs": 383211070,
+      "exitCode": 0,
+      "name": "static-parity-both",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 378,
+      "stdoutSha256": "b5823a33d65c4f564fa11876d48fc4afc70afd5bbba24b4679b83cbe8ace8390",
+      "stdoutTail": "{\"cliHelpAllPassed\": true, \"interpreters\": [\"3.11\", \"3.14\"], \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/static-parity.json\", \"status\": \"pass\", \"wheels\": {\"agent-observer\": \"30a4e30b2fdc1f2bb7c6ee8b6cbf2fe16fdf32fbb7b95932b0d8e5c68eef9e5e\", \"mesh-plus\": \"1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802\"}}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/verify-working-set-public-surface-b176.py"
+      ],
+      "elapsedNs": 314026450,
+      "exitCode": 0,
+      "name": "public-surface-both",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 280,
+      "stdoutSha256": "17dc4f18159681b41e74bfaed443704fe8393bf9a9a4e79cc74ee48a103e4da4",
+      "stdoutTail": "{\"descriptorExact\": true, \"interpreters\": [\"3.11\", \"3.14\"], \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/working-set-public-surface.json\", \"schemaCanonicalMatches\": true, \"serviceWindowParseOnlyExact\": true, \"status\": \"pass\"}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsedNs": 165703351,
+      "exitCode": 0,
+      "name": "pip-check-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 30,
+      "stdoutSha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "stdoutTail": "No broken requirements found.\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/verify-installed-records.py"
+      ],
+      "elapsedNs": 50967366,
+      "exitCode": 0,
+      "name": "installed-records-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 192,
+      "stdoutSha256": "ffdabb755382abc4e71a4e8fd3e21fa22477773b80b3596852a0550321287ca1",
+      "stdoutTail": "{\"packages\": [\"agent_observer\", \"mesh_plus\"], \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-records-311.json\", \"status\": \"pass\"}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-working-set-tests.py"
+      ],
+      "elapsedNs": 2977626409,
+      "exitCode": 0,
+      "name": "observer-tests-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 266,
+      "stdoutSha256": "8b837fb526beeb508a8078f6a9706ec67976d9b98b09a398d8ef5ff71088f43b",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"gcDisabledForTestExecution\": true, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-working-set-tests-311.json\", \"skipCount\": 0, \"status\": \"pass\", \"testMethodsRun\": 8}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-mesh-terminal-tests.py"
+      ],
+      "elapsedNs": 317999956,
+      "exitCode": 0,
+      "name": "mesh-terminal-tests-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 217,
+      "stdoutSha256": "9a2dedf136665f7787dec28b8920dc76235f7c4371aa3e72e1c168bd7aed04d7",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-terminal-tests-311.json\", \"status\": \"pass\", \"testMethodsRun\": 27}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-mesh-registration-tests.py"
+      ],
+      "elapsedNs": 74494382,
+      "exitCode": 0,
+      "name": "mesh-registration-tests-311",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 220,
+      "stdoutSha256": "f28de94d3787bfc181ba019ef318c81049521e998e96ee718fb3489265510b27",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-registration-tests-311.json\", \"status\": \"pass\", \"testMethodsRun\": 3}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "elapsedNs": 114072772,
+      "exitCode": 0,
+      "name": "pip-check-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 30,
+      "stdoutSha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "stdoutTail": "No broken requirements found.\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/verify-installed-records.py"
+      ],
+      "elapsedNs": 56173107,
+      "exitCode": 0,
+      "name": "installed-records-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 192,
+      "stdoutSha256": "418149705d29495463c88f44d2e886bb2c50e75cb5747717fbbfa7224464a447",
+      "stdoutTail": "{\"packages\": [\"agent_observer\", \"mesh_plus\"], \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-records-314.json\", \"status\": \"pass\"}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-working-set-tests.py"
+      ],
+      "elapsedNs": 2978289911,
+      "exitCode": 0,
+      "name": "observer-tests-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 266,
+      "stdoutSha256": "2e3ff57c36ee8a1673820ff8385322227e5de31f0c3ab8a86dcd4ecd943e58b6",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"gcDisabledForTestExecution\": true, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-working-set-tests-314.json\", \"skipCount\": 0, \"status\": \"pass\", \"testMethodsRun\": 8}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-mesh-terminal-tests.py"
+      ],
+      "elapsedNs": 316018268,
+      "exitCode": 0,
+      "name": "mesh-terminal-tests-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 217,
+      "stdoutSha256": "611fcd9e8c0aac36059df62da8906e5eb81b225870f3d0be010bb1116cfeea28",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-terminal-tests-314.json\", \"status\": \"pass\", \"testMethodsRun\": 27}\n",
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+        "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/run-installed-mesh-registration-tests.py"
+      ],
+      "elapsedNs": 85182964,
+      "exitCode": 0,
+      "name": "mesh-registration-tests-314",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrTail": "",
+      "stdoutBytes": 220,
+      "stdoutSha256": "7b81dfa4837ba3abc0d695cd97243f3d0db0b612822da5f9a78366672893dd55",
+      "stdoutTail": "{\"errorCount\": 0, \"failureCount\": 0, \"report\": \"/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-registration-tests-314.json\", \"status\": \"pass\", \"testMethodsRun\": 3}\n",
+      "timedOut": false
+    }
+  ],
+  "status": "pass"
+}

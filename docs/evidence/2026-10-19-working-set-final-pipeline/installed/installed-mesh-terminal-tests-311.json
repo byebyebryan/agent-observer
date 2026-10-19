@@ -1,0 +1,18 @@
+{
+  "errorCount": 0,
+  "failureCount": 0,
+  "gcDisabledForTestExecution": true,
+  "lexicalInterpreter": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-311/bin/python",
+  "loadedMeshModuleCount": 13,
+  "loadedMeshModulesUnderPrivateVenvAndWheelExact": true,
+  "meshWheelSha256": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802",
+  "privateVenvPrefixExact": true,
+  "pythonVersion": "3.11.17",
+  "schema": "mesh-plus.installed-terminal-lifetime-tests.v1",
+  "scope": "installed Mesh terminal-lifetime tests only; no native provider, SSH, or installed Observer validation",
+  "skipCount": 0,
+  "status": "pass",
+  "testMethodsExpected": 27,
+  "testMethodsRun": 27,
+  "testModule": "test_terminal_lifetime"
+}

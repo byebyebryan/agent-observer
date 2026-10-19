@@ -1,0 +1,142 @@
+{
+  "comparisonEligible": true,
+  "completedCells": [
+    {
+      "abbaOrder": [
+        "full",
+        "working",
+        "working",
+        "full"
+      ],
+      "comparisonEligible": true,
+      "fullMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "7698853388",
+        "numeratorNs": 7698853388
+      },
+      "fullTrialAdjustedProcessCpuNs": [
+        7732126152,
+        7665580624
+      ],
+      "interpreter": "py314",
+      "medianBasis": "two complete trial totals per variant within this ABBA cell",
+      "pythonVersion": "Python 3.14.8",
+      "quarterBodyPrerequisitePassed": true,
+      "rows": 500,
+      "status": "pass",
+      "workingMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 2,
+        "exact": "1246837519/2",
+        "numeratorNs": 1246837519
+      },
+      "workingTrialAdjustedProcessCpuNs": [
+        625424900,
+        621412619
+      ]
+    },
+    {
+      "abbaOrder": [
+        "full",
+        "working",
+        "working",
+        "full"
+      ],
+      "comparisonEligible": true,
+      "fullMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "30195743050",
+        "numeratorNs": 30195743050
+      },
+      "fullTrialAdjustedProcessCpuNs": [
+        30205618910,
+        30185867190
+      ],
+      "interpreter": "py314",
+      "medianBasis": "two complete trial totals per variant within this ABBA cell",
+      "pythonVersion": "Python 3.14.8",
+      "quarterBodyPrerequisitePassed": true,
+      "rows": 2000,
+      "status": "pass",
+      "workingMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "2043763779",
+        "numeratorNs": 2043763779
+      },
+      "workingTrialAdjustedProcessCpuNs": [
+        2051444829,
+        2036082729
+      ]
+    },
+    {
+      "abbaOrder": [
+        "full",
+        "working",
+        "working",
+        "full"
+      ],
+      "comparisonEligible": true,
+      "fullMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "7973975073",
+        "numeratorNs": 7973975073
+      },
+      "fullTrialAdjustedProcessCpuNs": [
+        7990075784,
+        7957874362
+      ],
+      "interpreter": "py311",
+      "medianBasis": "two complete trial totals per variant within this ABBA cell",
+      "pythonVersion": "Python 3.11.17",
+      "quarterBodyPrerequisitePassed": true,
+      "rows": 500,
+      "status": "pass",
+      "workingMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "661495544",
+        "numeratorNs": 661495544
+      },
+      "workingTrialAdjustedProcessCpuNs": [
+        663359199,
+        659631889
+      ]
+    },
+    {
+      "abbaOrder": [
+        "full",
+        "working",
+        "working",
+        "full"
+      ],
+      "comparisonEligible": true,
+      "fullMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "32295501182",
+        "numeratorNs": 32295501182
+      },
+      "fullTrialAdjustedProcessCpuNs": [
+        32354130497,
+        32236871867
+      ],
+      "interpreter": "py311",
+      "medianBasis": "two complete trial totals per variant within this ABBA cell",
+      "pythonVersion": "Python 3.11.17",
+      "quarterBodyPrerequisitePassed": true,
+      "rows": 2000,
+      "status": "pass",
+      "workingMedianWholeTrialAdjustedProcessCpuNs": {
+        "denominator": 1,
+        "exact": "2242031627",
+        "numeratorNs": 2242031627
+      },
+      "workingTrialAdjustedProcessCpuNs": [
+        2258831067,
+        2225232187
+      ]
+    }
+  ],
+  "format": "private.sdk-pipeline.serial-watch4.v3.8.cpu-matrix.v1",
+  "pipelineExecutionStopped": false,
+  "scope": "serial public watch acquisitions with local facade copies; whole-trial Python process CPU after named main-thread harness exclusions; no RSS or wire claim",
+  "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+  "status": "pass"
+}

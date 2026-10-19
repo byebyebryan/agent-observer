@@ -1,0 +1,16 @@
+{
+  "buildInputFiles": 101,
+  "buildInputManifestSha256": "cc651bcace18a6b18f495c084d75dbce46870320d18b5ab1a415a14ca90e1705",
+  "buildIsolation": false,
+  "buildPython": "/home/bryan/code/agent-observer/.local/active-feed-20261016/installed311/bin/python",
+  "networkUsed": false,
+  "pythonVersion": "3.11.17",
+  "schema": "mesh-plus.private-wheel-build.v1",
+  "setuptoolsVersion": "79.0.1",
+  "sourceArchiveSha256": "4010bee06a40619fad5f8b0ceebdf971c544df6ce4d0f57f98018cede11a39de",
+  "sourceCommit": "b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+  "status": "pass",
+  "wheel": "mesh_plus-0.1.0a23-py3-none-any.whl",
+  "wheelBytes": 270508,
+  "wheelSha256": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802"
+}

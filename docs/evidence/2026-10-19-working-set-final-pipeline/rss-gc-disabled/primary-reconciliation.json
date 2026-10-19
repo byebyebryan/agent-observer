@@ -1,0 +1,21 @@
+{
+  "allSixApplicationOwnerWeakrefsRetired": true,
+  "functionalTargetsFreshProofsAndDTOsPassed": true,
+  "gcDisabledTailRangeBytes": 13160448,
+  "originalReportSha256": "b9ce12b897923f07dc2be9d5435ac86f30758cbed2633c740b2d1d1084278ca4",
+  "originalReportedStatus": "failed",
+  "overStrictExactOneAssertionFalseGenerations": [
+    7,
+    9,
+    15,
+    19,
+    21,
+    23,
+    25,
+    29
+  ],
+  "rawNativeAuditListsRetainedInCompactReport": false,
+  "reconciliationBasis": "Original runner rejects empty matched_native before appending any generation; all32 generations returned normally. False exact-one summary therefore means multiple already-matching audit observations, not an empty witness. No report rewritten and no runtime rerun.",
+  "rssPlateauAccepted": false,
+  "sourceRunnerSha256": "e67e52a94ba903f8721f1e9200bcc43049eb2ffafb906c2281ff2092fffe036e"
+}

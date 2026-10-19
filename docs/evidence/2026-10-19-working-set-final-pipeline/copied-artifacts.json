@@ -1,0 +1,533 @@
+{
+  "copies": [
+    {
+      "bytes": 3963,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/result.json",
+      "path": "cpu/result.json",
+      "sha256": "bbaf06b6d1b22bfefda892f72291094b8c5acfb898e9fdc1654f18ae084ae734"
+    },
+    {
+      "bytes": 7574,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/primary-derived-review.json",
+      "path": "cpu/primary-derived-review.json",
+      "sha256": "c358b826c6ce0020485fc4ba8165846189d5380fe67a874b79ba92ad03cb9eab"
+    },
+    {
+      "bytes": 1022,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/run-pins.json",
+      "path": "cpu/run-pins.json",
+      "sha256": "808ea18844fecf64046c444906e7314a119cd8f765ba27dddb4062f6ba032b97"
+    },
+    {
+      "bytes": 2305,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-500-abba/01-full-trial-00/case-result.json",
+      "path": "cpu/py314-500-abba/01-full-trial-00/case-result.json",
+      "sha256": "6172275fe0db88f624affa7bdcae6b54f0b4fc372ca296982018938cd0833b26"
+    },
+    {
+      "bytes": 2311,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-500-abba/02-working-trial-01/case-result.json",
+      "path": "cpu/py314-500-abba/02-working-trial-01/case-result.json",
+      "sha256": "a8aac66393f23b806b9344f363a4f1c08c68d2ebfd7754addd1e6beeacdc4042"
+    },
+    {
+      "bytes": 2312,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-500-abba/03-working-trial-02/case-result.json",
+      "path": "cpu/py314-500-abba/03-working-trial-02/case-result.json",
+      "sha256": "c2ee086cc5eafc125158b1587a6204e01166d1a12bd199188e10d111a8c0c54e"
+    },
+    {
+      "bytes": 2305,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-500-abba/04-full-trial-03/case-result.json",
+      "path": "cpu/py314-500-abba/04-full-trial-03/case-result.json",
+      "sha256": "5cdcb1338de95a46fbef68ed88ddc1cd209e24358e07e3e1930f1b3ffccf7227"
+    },
+    {
+      "bytes": 2320,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-2000-abba/01-full-trial-04/case-result.json",
+      "path": "cpu/py314-2000-abba/01-full-trial-04/case-result.json",
+      "sha256": "0d5a4aa332d12e8477efa68c79780201c9c258c8fad7aba6c51d513e513288fd"
+    },
+    {
+      "bytes": 2328,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-2000-abba/02-working-trial-05/case-result.json",
+      "path": "cpu/py314-2000-abba/02-working-trial-05/case-result.json",
+      "sha256": "6b368372e30f0f0f4168a21ef029cb8f822dc3f46ca545c078d2dc4ca19007f2"
+    },
+    {
+      "bytes": 2328,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-2000-abba/03-working-trial-06/case-result.json",
+      "path": "cpu/py314-2000-abba/03-working-trial-06/case-result.json",
+      "sha256": "815cf0eaeb6fd2fd1314d1202f5aefe86677c5323a598b599435e9404ef62cfc"
+    },
+    {
+      "bytes": 2320,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py314-2000-abba/04-full-trial-07/case-result.json",
+      "path": "cpu/py314-2000-abba/04-full-trial-07/case-result.json",
+      "sha256": "560f9952eab5159a6626db59ecd03269cf1d0de5f9a4968d50d805f6898a785b"
+    },
+    {
+      "bytes": 2306,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/01-full-trial-08/case-result.json",
+      "path": "cpu/py311-500-abba/01-full-trial-08/case-result.json",
+      "sha256": "2c797fec32fd72d45e4144ab5e5b65bdb50fb24cd834c2590a3577cceb79c600"
+    },
+    {
+      "bytes": 2312,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/02-working-trial-09/case-result.json",
+      "path": "cpu/py311-500-abba/02-working-trial-09/case-result.json",
+      "sha256": "46b0cfe92ba93573bc28d4c96b93b1b5774c7ac49c83ec0bcd7d3130bc229bd2"
+    },
+    {
+      "bytes": 2313,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/03-working-trial-10/case-result.json",
+      "path": "cpu/py311-500-abba/03-working-trial-10/case-result.json",
+      "sha256": "9cacb01d8323ecaa937255004431e59cdc83bd350235ecb99052d5c9fcb847d8"
+    },
+    {
+      "bytes": 2307,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/04-full-trial-11/case-result.json",
+      "path": "cpu/py311-500-abba/04-full-trial-11/case-result.json",
+      "sha256": "e185d501a6c53c76eb74a3f52d7482d94b6ce9863251c1b89ebc564d457590c6"
+    },
+    {
+      "bytes": 2321,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/01-full-trial-12/case-result.json",
+      "path": "cpu/py311-2000-abba/01-full-trial-12/case-result.json",
+      "sha256": "0f901f7c48e0c198f2765161ea353511fe4eef86069b7db53bb0f815c5b16f87"
+    },
+    {
+      "bytes": 2329,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/02-working-trial-13/case-result.json",
+      "path": "cpu/py311-2000-abba/02-working-trial-13/case-result.json",
+      "sha256": "7837a0baead15d492068d42dd23f5b89ac878f73edc47dcc1cfe30673ab13469"
+    },
+    {
+      "bytes": 2329,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/03-working-trial-14/case-result.json",
+      "path": "cpu/py311-2000-abba/03-working-trial-14/case-result.json",
+      "sha256": "d67efaea9e36ab06b4ca282db80523fa0f1ddae562de83464b1545c199356a55"
+    },
+    {
+      "bytes": 2321,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/04-full-trial-15/case-result.json",
+      "path": "cpu/py311-2000-abba/04-full-trial-15/case-result.json",
+      "sha256": "8d97b1f92586dfdf637c2172077264cbdc7d5fd3378a18a8791e14fa8f804b34"
+    },
+    {
+      "bytes": 40386,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/run_v3_8_serial_watch4_cpu.py",
+      "path": "runners/cpu/run_v3_8_serial_watch4_cpu.py",
+      "sha256": "dc7b547b37c2790ad6af4ae60b5635adf710e91fe462a413bf6bdd758974feb3"
+    },
+    {
+      "bytes": 109381,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/sdk_pipeline_matrix_v3_8_serial_watch4.py",
+      "path": "runners/cpu/sdk_pipeline_matrix_v3_8_serial_watch4.py",
+      "sha256": "786d050b4220f068ef661f71d5a96955dc4cd5499f6c0080610925ae00d7f63e"
+    },
+    {
+      "bytes": 4811,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/cpu_exclusions_v3_8.py",
+      "path": "runners/cpu/cpu_exclusions_v3_8.py",
+      "sha256": "aa1d63a8d67e3e0ebd90069a55aa5330194efeb95d907cdc074a810a10baf3bb"
+    },
+    {
+      "bytes": 1819,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/approved-source-pair.json",
+      "path": "runners/cpu/approved-source-pair.json",
+      "sha256": "7f021382f317c630c12051c55d436e5868d586dee5428286dd761c5370d2ce5d"
+    },
+    {
+      "bytes": 84254,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/result.json",
+      "path": "wire/result.json",
+      "sha256": "27df543464ccbfe5cdc9d15e66f1b18f84d024899fbdfbd8fde4ec603a9633ef"
+    },
+    {
+      "bytes": 1642,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/primary-derived-review.json",
+      "path": "wire/primary-derived-review.json",
+      "sha256": "ef84e6c9efa613f968599a603c77f7780e9ab45e3023f4d621d3010174f4fd7a"
+    },
+    {
+      "bytes": 2126,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/run-pins.json",
+      "path": "wire/run-pins.json",
+      "sha256": "c154144f50e8fcde8c3f2c504f44cd59cca9817b339a1c36b0860e39974ee035"
+    },
+    {
+      "bytes": 6564,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-01-py314-500-full/validated-case.json",
+      "path": "wire/case-01-py314-500-full/validated-case.json",
+      "sha256": "344a714b2ee431e9a133430cb8528c120575cc834ad0a3b1342ddace4e6c633d"
+    },
+    {
+      "bytes": 6564,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-02-py314-500-working/validated-case.json",
+      "path": "wire/case-02-py314-500-working/validated-case.json",
+      "sha256": "2a13a6e2ccaadd768e2be357fa56959ce00cd8de36bd2a8224cd7f3d1f7cbbba"
+    },
+    {
+      "bytes": 6567,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-03-py314-2000-full/validated-case.json",
+      "path": "wire/case-03-py314-2000-full/validated-case.json",
+      "sha256": "3628202b85f02fbc214fbb31db73c9cb67c2e3a462cd8c40be0793dc2aeef563"
+    },
+    {
+      "bytes": 6567,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-04-py314-2000-working/validated-case.json",
+      "path": "wire/case-04-py314-2000-working/validated-case.json",
+      "sha256": "24c30548986f5c1bb00f74eae18bd5de8d2f723e5644ff6e5ae3008cd179b944"
+    },
+    {
+      "bytes": 6565,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-05-py311-500-full/validated-case.json",
+      "path": "wire/case-05-py311-500-full/validated-case.json",
+      "sha256": "0bdeff45ec40b67fcd0e6ae9fb91aa6a350d991aea0ba91c489211a28369d4ce"
+    },
+    {
+      "bytes": 6565,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-06-py311-500-working/validated-case.json",
+      "path": "wire/case-06-py311-500-working/validated-case.json",
+      "sha256": "883d586602ee7ac3da2c008ff320874673190ddbe867cc520647e50ab9677cc2"
+    },
+    {
+      "bytes": 6568,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-07-py311-2000-full/validated-case.json",
+      "path": "wire/case-07-py311-2000-full/validated-case.json",
+      "sha256": "25e38a0b74e425c23fffb10a52f7522b1ab05e0bebf4973358eb0b4bd0782cb5"
+    },
+    {
+      "bytes": 6568,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/runs/20261019T074939774434Z/case-08-py311-2000-working/validated-case.json",
+      "path": "wire/case-08-py311-2000-working/validated-case.json",
+      "sha256": "62712252dd011b26fc95424e86228223c6763c58127e7e37a5b7f370e5958a55"
+    },
+    {
+      "bytes": 40479,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/run_wire_v3_serial_watch4.py",
+      "path": "runners/wire/run_wire_v3_serial_watch4.py",
+      "sha256": "2415c0ce9a689861a645136fbdb3b955f9f5f836d76186ed86be902e8e31256a"
+    },
+    {
+      "bytes": 115127,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/sdk_pipeline_wire_serial_watch4_v3.py",
+      "path": "runners/wire/sdk_pipeline_wire_serial_watch4_v3.py",
+      "sha256": "bbc0466b2821e39dc54c271917a243bebbd51d0b194ae4f88fee546a39b85f9f"
+    },
+    {
+      "bytes": 38283,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/socket_meter_v2.py",
+      "path": "runners/wire/socket_meter_v2.py",
+      "sha256": "8d2bd32980d54d96d2b82c5c9821ba1ba5dbd095676114c6d3a97154dc15f80b"
+    },
+    {
+      "bytes": 3238,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/wire-v3_1-b9e8488e/approved-source-pair.json",
+      "path": "runners/wire/approved-source-pair.json",
+      "sha256": "f1699652d88446457de96448df6dcd6194e80960e7bf759a98160e69eaf7d8f0"
+    },
+    {
+      "bytes": 7971,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/matrix-result.json",
+      "path": "rss-normal/matrix-result.json",
+      "sha256": "f46da67c8eb7f6218ff95e6434afbbc07eca46d762877b4cb2ef2fbb21a5b56a"
+    },
+    {
+      "bytes": 2798,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/primary-derived-review.json",
+      "path": "rss-normal/primary-derived-review.json",
+      "sha256": "d6a1c7bbce179d6e6f6b89937b7cf9dac31bf6cd174e370137e4ad58f47cd693"
+    },
+    {
+      "bytes": 1292,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/declared-plan.json",
+      "path": "rss-normal/declared-plan.json",
+      "sha256": "846d9ee45200ac59f3d907b6b493110f86b4e3553f730b1e3a7a8cce74b0a31f"
+    },
+    {
+      "bytes": 20266,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/rss_normal_gc_probe.py",
+      "path": "rss-normal/rss_normal_gc_probe.py",
+      "sha256": "4f8603354d8097014f05a86725bf1ace6e785fa60eca320833155a91ba897f4a"
+    },
+    {
+      "bytes": 108980,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/sdk_pipeline_matrix_v3_6_watch_copy_audit_retirement_v1.py",
+      "path": "rss-normal/sdk_pipeline_matrix_v3_6_watch_copy_audit_retirement_v1.py",
+      "sha256": "e67e52a94ba903f8721f1e9200bcc43049eb2ffafb906c2281ff2092fffe036e"
+    },
+    {
+      "bytes": 105642,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/py314-full-2000.json",
+      "path": "rss-normal/py314-full-2000.json",
+      "sha256": "90450f5521a1e139338439efc7380500891717a1f641e6e9646c75dbac19f2be"
+    },
+    {
+      "bytes": 107940,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/py314-working-2000.json",
+      "path": "rss-normal/py314-working-2000.json",
+      "sha256": "71ac19d51b162a224c4456547c3c9dc598cdc2d451ba86cd953ff3f1dd5cd862"
+    },
+    {
+      "bytes": 105664,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/py311-full-2000.json",
+      "path": "rss-normal/py311-full-2000.json",
+      "sha256": "070c8e6506bd0eefa1433377beb00269c4b45eaed992d482296501f7271c75ea"
+    },
+    {
+      "bytes": 107983,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-b9e8488e/py311-working-2000.json",
+      "path": "rss-normal/py311-working-2000.json",
+      "sha256": "827e948d71433f9d509592d91d9990dbbcf89ed9bebff1306090821b59b1cb5b"
+    },
+    {
+      "bytes": 1121,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-audit-retirement-b9e8488e/result.json",
+      "path": "rss-gc-disabled/result.json",
+      "sha256": "69bd1f4b8717cc88bc222c30f8adc48e6ad9cf12d6baa001692c3083c44a2447"
+    },
+    {
+      "bytes": 865,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-audit-retirement-b9e8488e/primary-reconciliation.json",
+      "path": "rss-gc-disabled/primary-reconciliation.json",
+      "sha256": "a51ae76eeb0e00829978d25432aa5d314b12ae810c688acacb3267d95e91a2d5"
+    },
+    {
+      "bytes": 541,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-audit-retirement-b9e8488e/declared-plan.json",
+      "path": "rss-gc-disabled/declared-plan.json",
+      "sha256": "be9d01005deba557bcb87b331f006b232f65aed1c5d07db8ddac9f8105d53007"
+    },
+    {
+      "bytes": 103487,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-audit-retirement-b9e8488e/py314-full-2000-g32.json",
+      "path": "rss-gc-disabled/py314-full-2000-g32.json",
+      "sha256": "b9ce12b897923f07dc2be9d5435ac86f30758cbed2633c740b2d1d1084278ca4"
+    },
+    {
+      "bytes": 23794,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/package-artifact-manifest.json",
+      "path": "installed/package-artifact-manifest.json",
+      "sha256": "ca2e05091cac27746cf072271179d62bfb268e3cd4ce1070e819baa888fdf4e8"
+    },
+    {
+      "bytes": 1229,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/source-input-verification.json",
+      "path": "installed/source-input-verification.json",
+      "sha256": "8b9b8e59b32907a9f7564d5009aa5ebb0a01cc0cdcd58050e30ac905cc83cdc6"
+    },
+    {
+      "bytes": 703,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/source-provenance.json",
+      "path": "installed/source-provenance.json",
+      "sha256": "a932d8ebea02a39cce7d61980ee0f9129ef1d7c3fcdb052ecb4e51e7578985bd"
+    },
+    {
+      "bytes": 727,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/mesh-wheel-build.json",
+      "path": "installed/mesh-wheel-build.json",
+      "sha256": "dcc0a3d2093853366bcdacf0ace267c342fe2ac26012132504a3a99e4d8666c8"
+    },
+    {
+      "bytes": 9959,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/static-parity.json",
+      "path": "installed/static-parity.json",
+      "sha256": "85ff578fea236d0463030c1c472da25fbfb89318614826169bf1df0b3a898f22"
+    },
+    {
+      "bytes": 2826,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/working-set-public-surface.json",
+      "path": "installed/working-set-public-surface.json",
+      "sha256": "49be7dba9379f5640404075e9c8406d97553897e8eb8f9002da761b7facaa776"
+    },
+    {
+      "bytes": 17624,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/preflight-diagnostics.json",
+      "path": "installed/preflight-diagnostics.json",
+      "sha256": "b4f90d0db07c779a2654072f6e692e7c218d2a84bc73727b3808c1d1c2d454f3"
+    },
+    {
+      "bytes": 1308,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-records-311.json",
+      "path": "installed/installed-records-311.json",
+      "sha256": "d2dd87cc3b53ba5aac2728ab5d44606ecc5d09711bde0745b7b3533a50c46951"
+    },
+    {
+      "bytes": 1034,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-working-set-tests-311.json",
+      "path": "installed/installed-working-set-tests-311.json",
+      "sha256": "3656ea3407c283d75bfa7a7fa632666dcbde9313affcc4642a536ac27d6979f5"
+    },
+    {
+      "bytes": 770,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-terminal-tests-311.json",
+      "path": "installed/installed-mesh-terminal-tests-311.json",
+      "sha256": "9c4dec4bbaaa827257ac7d8a7dbccf03fe01656ed8162266bf7d0969cd046692"
+    },
+    {
+      "bytes": 849,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-registration-tests-311.json",
+      "path": "installed/installed-mesh-registration-tests-311.json",
+      "sha256": "49accb5526737b536469dcf571507d05b5e5e455a31614ff9da7df7528fd6a60"
+    },
+    {
+      "bytes": 1307,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-records-314.json",
+      "path": "installed/installed-records-314.json",
+      "sha256": "b42cdad2c7c02e68a5087142ff082c8936f8980827b23d52bcc11bd436b4c856"
+    },
+    {
+      "bytes": 1033,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-working-set-tests-314.json",
+      "path": "installed/installed-working-set-tests-314.json",
+      "sha256": "d5644238e3e87ff3d0d63971b76e1fbe54a26fa16f00cdc61cdeacec5223bbca"
+    },
+    {
+      "bytes": 769,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-terminal-tests-314.json",
+      "path": "installed/installed-mesh-terminal-tests-314.json",
+      "sha256": "5006b99d1679d5fe0df4389c78aa7d3af8912c03b3fa9fe7bd7bebe6aaedcaf1"
+    },
+    {
+      "bytes": 848,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/installed-mesh-registration-tests-314.json",
+      "path": "installed/installed-mesh-registration-tests-314.json",
+      "sha256": "62cc24b134a8e287cc7d87293609b2c240727baf0f0354756ae3698594eb2e9b"
+    },
+    {
+      "bytes": 11212,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/qualification-driver-1792396141312416859.json",
+      "path": "installed/qualification-driver-1792396141312416859.json",
+      "sha256": "fedbea755a2f069652a1667cacd2ee9e053582612a62c4618b03d5b119ce5529"
+    },
+    {
+      "bytes": 729,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/final-integration-gate/stored-stream-errors/focused-result.json",
+      "path": "mesh-retirement/focused-result.json",
+      "sha256": "e9cd6fa7299dbefa43a9f71f365993ef75c370eb594c4deb4d79fcd5b0a9c1d5"
+    },
+    {
+      "bytes": 6566,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/final-integration-gate/stored-stream-errors/after-314.log",
+      "path": "mesh-retirement/after-314.log",
+      "sha256": "c1b0d4b560664546ccf47395336be9db1137742cdbfffee6b3522b5b543c53f7"
+    },
+    {
+      "bytes": 6566,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/final-integration-gate/stored-stream-errors/after-311.log",
+      "path": "mesh-retirement/after-311.log",
+      "sha256": "cc72412b7f9528a4765cca2579c97eaf70aff7a5b7cad9408319ece8be06bc6a"
+    },
+    {
+      "bytes": 912,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/native-installed-starship-b5b8d52-attempt1/invocation.json",
+      "path": "starship/invocation.json",
+      "sha256": "6529fec6e57fe82ec44bf00c5aa375ae5e49a234d5b14a5dab28c3d746bd4481"
+    },
+    {
+      "bytes": 3076,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/native-installed-starship-b5b8d52-attempt1/report.json",
+      "path": "starship/report.json",
+      "sha256": "c6fbcf08b6dc91d3454899ee2e381fccd8984775384ac1f0b4aa9dc677fd5f49"
+    },
+    {
+      "bytes": 585,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/native-installed-starship-b5b8d52-attempt1/execution.json",
+      "path": "starship/execution.json",
+      "sha256": "40572aa9a0e9cd8acf8228e849e7fd3dd348d412b0bff8a720dab473045bb3f6"
+    },
+    {
+      "bytes": 327,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/native-installed-starship-b5b8d52-attempt1/postrun-readonly.json",
+      "path": "starship/postrun-readonly.json",
+      "sha256": "7c5f5c31329ec5eed5a5e2fccbe2b43e81a380fedd1a8b981cbc0206ac3b0ed6"
+    },
+    {
+      "bytes": 108980,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/sdk_pipeline_matrix_v3_6_watch_copy_audit_retirement_v1.py",
+      "path": "rss-normal-128/sdk_pipeline_matrix_v3_6_watch_copy_audit_retirement_v1.py",
+      "sha256": "e67e52a94ba903f8721f1e9200bcc43049eb2ffafb906c2281ff2092fffe036e"
+    },
+    {
+      "bytes": 20270,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/rss_normal_gc_128_probe.py",
+      "path": "rss-normal-128/rss_normal_gc_128_probe.py",
+      "sha256": "77289a7dc237ff0dce52a2623aaf76c2e1cff4edd63da107ea8cb4e0814b463e"
+    },
+    {
+      "bytes": 875,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/declared-plan.json",
+      "path": "rss-normal-128/declared-plan.json",
+      "sha256": "e465ea0620515218b00befd4df0eb8556e51a8a8285936da40e1bdc63482495b"
+    },
+    {
+      "bytes": 1405,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/run_matrix.py",
+      "path": "rss-normal-128/run_matrix.py",
+      "sha256": "fcd7463e89704d02bbabdac7aa8c1662094394f0ff7884db0cb1af614bf40aef"
+    },
+    {
+      "bytes": 371629,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py314-working-2000.json",
+      "path": "rss-normal-128/py314-working-2000.json",
+      "sha256": "912c36ed5ba619980520970a28d686ad1fc4421c6bc69822fe0afe7e5c05ead0"
+    },
+    {
+      "bytes": 312,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py314.stdout",
+      "path": "rss-normal-128/py314.stdout",
+      "sha256": "4545c3d09ade2cadb6e120d973af58f33fb5dae91fa8136dde09f5f5a4da6a60"
+    },
+    {
+      "bytes": 0,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py314.stderr",
+      "path": "rss-normal-128/py314.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3537,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/matrix-result.json",
+      "path": "rss-normal-128/matrix-result.json",
+      "sha256": "68de52c6765cba9e1cbc0123f1bee9746154f69198f19fc0ad5871cd44633470"
+    },
+    {
+      "bytes": 371698,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py311-working-2000.json",
+      "path": "rss-normal-128/py311-working-2000.json",
+      "sha256": "c8c8b6e0fec5b177f2887e3a4afe846940d2b40f451dd5ed9d205da52ff39385"
+    },
+    {
+      "bytes": 353,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py311.stdout",
+      "path": "rss-normal-128/py311.stdout",
+      "sha256": "9bce9c27561188138092551f4707ed4d223a19e64f8099c97828f0b9f3b12304"
+    },
+    {
+      "bytes": 0,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py311.stderr",
+      "path": "rss-normal-128/py311.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3924,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/primary-derived-review.json",
+      "path": "rss-normal-128/primary-derived-review.json",
+      "sha256": "9b993513f8629a4e08efed7ae20f0926a14db73abb58c1cd47223ebe9f46c16e"
+    },
+    {
+      "bytes": 444,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/final-integration-gate/final-pipeline-checkpoint/result.json",
+      "path": "repository-gate/result.json",
+      "sha256": "6e75f466bb7966db31cc0dd11afccc530408abe85401b1ce0314bf02d0886cd0"
+    },
+    {
+      "bytes": 210727,
+      "from": "/home/bryan/.cache/agent-observer-working-set-20261018/final-integration-gate/final-pipeline-checkpoint/check.log",
+      "path": "repository-gate/check.log",
+      "sha256": "5f54e5a9fe207128baa1518e5df3fe91ac3f5ee0a1e49631d73538fcc9b70e77"
+    }
+  ],
+  "schema": "working-set.final-pipeline-copied-artifacts.v1"
+}

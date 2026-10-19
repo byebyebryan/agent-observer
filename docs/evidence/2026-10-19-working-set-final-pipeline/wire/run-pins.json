@@ -1,0 +1,50 @@
+{
+  "caseTimeoutSeconds": 300,
+  "configSha256": "f1699652d88446457de96448df6dcd6194e80960e7bf759a98160e69eaf7d8f0",
+  "controllerSha256": "2415c0ce9a689861a645136fbdb3b955f9f5f836d76186ed86be902e8e31256a",
+  "dispatchAudit": {
+    "modules": {
+      "mesh_transport": {
+        "expectedDispatch": "self.writer.write",
+        "expectedDispatchCalls": 1,
+        "path": "transport.py",
+        "regularRuntimeLockWrites": 0,
+        "sha256": "85233efe4c67c0ab5545e9606d636191a83114e5418fb0056c5251f7c71444df"
+      },
+      "observer_mesh_source": {
+        "expectedDispatch": "loop.sock_sendall",
+        "expectedDispatchCalls": 1,
+        "path": "mesh_source.py",
+        "regularRuntimeLockWrites": 0,
+        "sha256": "bcbbba27b0296c2ff9792697b31c1b89410c407f15df71b522262313ba987fae"
+      },
+      "observer_runtime": {
+        "expectedDispatch": "peer.sock.send",
+        "expectedDispatchCalls": 1,
+        "path": "service_runtime.py",
+        "regularRuntimeLockWrites": 1,
+        "sha256": "faeb5f753a9c8d275acdd66d491d96da4e50b75c8c98772cd7ff9d82a6c61d39"
+      }
+    },
+    "result": "static_target_paths_clear",
+    "selectorTransport": {
+      "methodSourcesSha256": {
+        "_write_send": "418c1d1ebe64d4d6031e4850cc512e8b4b276a7871e6581eafd3ae3132a1d4f2",
+        "_write_sendmsg": "5445718cabccce1420f06be0e335d45d46f6203df46d61cef6cd2bf28b2e8f84"
+      },
+      "pythonVersion": "3.14.8"
+    },
+    "supportedKernelPaths": [
+      "socket.send",
+      "socket.sendmsg"
+    ],
+    "unsupportedBypassCalls": []
+  },
+  "maximumCases": 8,
+  "meshArchiveSha256": "4010bee06a40619fad5f8b0ceebdf971c544df6ce4d0f57f98018cede11a39de",
+  "meshManifestSha256": "48794aa52c889a480bde024bd8c68f2dc82cf49955fdcbee12d21b377072ae53",
+  "meterSha256": "8d2bd32980d54d96d2b82c5c9821ba1ba5dbd095676114c6d3a97154dc15f80b",
+  "observerArchiveSha256": "a1785e81f1f998a134cf23f283eb638f398b681395ab71a4c69948f26e78c47e",
+  "observerManifestSha256": "c6128a1090e0d36c761e6442dcac3ec3312c07969afc5d4b641f87ca4e94b877",
+  "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+b9e8488e0f0fa438119e36848ac7c9887038ea1c"
+}

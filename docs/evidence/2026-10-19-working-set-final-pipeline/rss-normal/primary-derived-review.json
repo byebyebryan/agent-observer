@@ -1,0 +1,68 @@
+{
+  "cases": [
+    {
+      "allProcessHeapCapClaim": false,
+      "allSixApplicationOwnersDead": true,
+      "formalPlateauAcceptance": false,
+      "generationCount": 32,
+      "generationProofDtoCoverageChecks": "pass",
+      "python": "314",
+      "reportSha256": "90450f5521a1e139338439efc7380500891717a1f641e6e9646c75dbac19f2be",
+      "tailFirstBytes": 153452544,
+      "tailLastBytes": 158306304,
+      "tailRangeBytes": 9531392,
+      "variant": "full"
+    },
+    {
+      "allProcessHeapCapClaim": false,
+      "allSixApplicationOwnersDead": true,
+      "formalPlateauAcceptance": false,
+      "generationCount": 32,
+      "generationProofDtoCoverageChecks": "pass",
+      "python": "314",
+      "reportSha256": "71ac19d51b162a224c4456547c3c9dc598cdc2d451ba86cd953ff3f1dd5cd862",
+      "tailFirstBytes": 74076160,
+      "tailLastBytes": 75395072,
+      "tailRangeBytes": 1318912,
+      "variant": "working"
+    },
+    {
+      "allProcessHeapCapClaim": false,
+      "allSixApplicationOwnersDead": true,
+      "formalPlateauAcceptance": false,
+      "generationCount": 32,
+      "generationProofDtoCoverageChecks": "pass",
+      "python": "311",
+      "reportSha256": "070c8e6506bd0eefa1433377beb00269c4b45eaed992d482296501f7271c75ea",
+      "tailFirstBytes": 166522880,
+      "tailLastBytes": 183877632,
+      "tailRangeBytes": 17354752,
+      "variant": "full"
+    },
+    {
+      "allProcessHeapCapClaim": false,
+      "allSixApplicationOwnersDead": true,
+      "formalPlateauAcceptance": false,
+      "generationCount": 32,
+      "generationProofDtoCoverageChecks": "pass",
+      "python": "311",
+      "reportSha256": "827e948d71433f9d509592d91d9990dbbcf89ed9bebff1306090821b59b1cb5b",
+      "tailFirstBytes": 73662464,
+      "tailLastBytes": 75788288,
+      "tailRangeBytes": 2125824,
+      "variant": "working"
+    }
+  ],
+  "limits": [
+    "Normal automatic collection remains enabled at original interpreter defaults; zero explicit collections.",
+    "RSS includes the Python interpreter, fixtures/oracle, report/audit metadata and product owners. It is not a pure product heap reading.",
+    "The 64 MiB Runtime limit is encoded ownership, not a whole-process RSS cap. No 64 MiB process memory acceptance is asserted.",
+    "Prior GC-disabled/application lifetime failures, named harness summary mismatch and source fixes retain original provenance. Full-feed RSS still trends upward in this finite run.",
+    "128-generation normal-GC working-set follow-up is separately queued; no result inferred."
+  ],
+  "loadedModuleHashesRechecked": 230,
+  "matrixSha256": "f46da67c8eb7f6218ff95e6434afbbc07eca46d762877b4cb2ef2fbb21a5b56a",
+  "schema": "working-set.primary-normal-gc-rss-review.v1",
+  "sourcePair": "b176ac06+b9e8488e",
+  "status": "bounded_observation_pass_no_plateau_claim"
+}

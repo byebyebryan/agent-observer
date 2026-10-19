@@ -1,0 +1,10 @@
+{
+  "durationSeconds": 42.63348462502472,
+  "exitCode": 0,
+  "interpreter": "/home/bryan/code/mesh-plus/.venv/bin/python",
+  "lock": "/home/bryan/.cache/agent-active-feed-cpu.lock",
+  "logSha256": "5f54e5a9fe207128baa1518e5df3fe91ac3f5ee0a1e49631d73538fcc9b70e77",
+  "meshSource": "/home/bryan/.cache/agent-observer-working-set-20261018/final-mesh-b9e8488e/src",
+  "observerBranchHeadBeforeDocumentationCommit": "b5b8d52",
+  "status": "pass"
+}

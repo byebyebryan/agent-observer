@@ -1,0 +1,61 @@
+{
+  "adjustedProcessCpuNs": 7990075784,
+  "caseDir": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/01-full-trial-08",
+  "excludedMainThreadCpuNs": 395810709,
+  "excludedMainThreadCpuNsByLabel": {
+    "fixture_sample_copy": 18300000,
+    "full_oracle_construction": 64712470,
+    "native_reconstruction_crosschecks": 193537770,
+    "post_read_hash_checks": 1077550,
+    "report_only_records": 118182919
+  },
+  "exitCode": 0,
+  "fullCanonicalBodyBytes": [
+    616411,
+    616411,
+    616411
+  ],
+  "functionalAndCleanupPass": true,
+  "interpreter": "py311",
+  "invocationSha256": "d457e7a7371fa86ad7f46b0b07261b66fc3b276f190704e5b92f4a64c4365435",
+  "loadedProjectModuleCounts": {
+    "agent_observer": 38,
+    "mesh_plus": 17
+  },
+  "quarterBodyGate": true,
+  "rawProcessCpuNs": 8385886493,
+  "reportPath": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/01-full-trial-08/report.json",
+  "reportSha256": "19c07c47d2fbca89b80017b55841bba557c8c1530bc644cbf2b50785af769193",
+  "rows": 500,
+  "runnerSha256": "786d050b4220f068ef661f71d5a96955dc4cd5499f6c0080610925ae00d7f63e",
+  "selectedCanonicalBodyBytes": [
+    5203,
+    5203,
+    5203
+  ],
+  "sourceModuleMapSha256": "0cdd9b472a6067a5cf12ca2da11faad0e614ddf1fb036489650c96d60d292aa8",
+  "status": "pass",
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "summary": null
+    },
+    "stdout": {
+      "bytes": 1762,
+      "sha256": "845cb1f0dbb8db557039ab3d91e77d7bfc6bf4067e37356d6b35a01e33eb3040",
+      "summary": {
+        "casesCount": 1,
+        "code": null,
+        "error": null,
+        "moduleMapSha256": "0cdd9b472a6067a5cf12ca2da11faad0e614ddf1fb036489650c96d60d292aa8",
+        "output": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-500-abba/01-full-trial-08/report.json",
+        "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+        "status": "pass",
+        "timed": true
+      }
+    }
+  },
+  "trialIndex": 8,
+  "variant": "full"
+}

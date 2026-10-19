@@ -1,0 +1,1 @@
+{"generations": 128, "interpreter": {"executable": "/home/bryan/code/mesh-plus/.venv/bin/python", "version": "3.14.8"}, "output": "/home/bryan/.cache/agent-observer-working-set-20261018/rss-normal-gc-128-b9e8488e/py314-working-2000.json", "rows": 2000, "rssSamples": 259, "status": "pass", "variant": "working"}

@@ -1,0 +1,22 @@
+{
+  "coverage": [
+    "packaged-schema duplicate support-table rejection",
+    "explicit descriptor exact binding and unchanged defaults",
+    "trusted configured-factory binding"
+  ],
+  "errorCount": 0,
+  "failureCount": 0,
+  "gcDisabledForTestExecution": true,
+  "lexicalInterpreter": "/home/bryan/.cache/agent-observer-working-set-20261018/installed-pair-b176ac06-b9e8488e/venv-314/bin/python",
+  "loadedMeshModuleCount": 18,
+  "loadedMeshModulesUnderPrivateVenvAndWheelExact": true,
+  "meshWheelSha256": "1476da94402168b41e8c296044e1579aa3f9584c011d4eca4cddd0106c6cf802",
+  "privateVenvPrefixExact": true,
+  "pythonVersion": "3.14.8",
+  "schema": "mesh-plus.installed-working-set-registration-tests.v1",
+  "skipCount": 0,
+  "status": "pass",
+  "testMethodsExpected": 3,
+  "testMethodsRun": 3,
+  "testModule": "test_agent_working_set_profile"
+}

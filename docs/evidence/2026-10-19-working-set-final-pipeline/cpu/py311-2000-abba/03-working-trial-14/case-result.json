@@ -1,0 +1,61 @@
+{
+  "adjustedProcessCpuNs": 2225232187,
+  "caseDir": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/03-working-trial-14",
+  "excludedMainThreadCpuNs": 540390640,
+  "excludedMainThreadCpuNsByLabel": {
+    "fixture_sample_copy": 69223790,
+    "full_oracle_construction": 268658230,
+    "native_reconstruction_crosschecks": 14056350,
+    "post_read_hash_checks": 3618130,
+    "report_only_records": 184834140
+  },
+  "exitCode": 0,
+  "fullCanonicalBodyBytes": [
+    2465507,
+    2465507,
+    2465507
+  ],
+  "functionalAndCleanupPass": true,
+  "interpreter": "py311",
+  "invocationSha256": "9fad64d27777379d4f66fe9e492ab6fc09a2d5dee50f8a08264642fd1c218b90",
+  "loadedProjectModuleCounts": {
+    "agent_observer": 43,
+    "mesh_plus": 17
+  },
+  "quarterBodyGate": true,
+  "rawProcessCpuNs": 2765622827,
+  "reportPath": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/03-working-trial-14/report.json",
+  "reportSha256": "2e96d50903fee06ba9b21278053a120bf895235f89815e6476ed57cc54e320b0",
+  "rows": 2000,
+  "runnerSha256": "786d050b4220f068ef661f71d5a96955dc4cd5499f6c0080610925ae00d7f63e",
+  "selectedCanonicalBodyBytes": [
+    26011,
+    26011,
+    26011
+  ],
+  "sourceModuleMapSha256": "4cf638a031c41034dc30a0bbeffc3aa0f398e28f5f69466a53d7f895acdb0462",
+  "status": "pass",
+  "streams": {
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "summary": null
+    },
+    "stdout": {
+      "bytes": 1768,
+      "sha256": "682990389a2efcd446e480f8e026a5613ec6d5184bcaa3c0283b9a967e02aeb7",
+      "summary": {
+        "casesCount": 1,
+        "code": null,
+        "error": null,
+        "moduleMapSha256": "4cf638a031c41034dc30a0bbeffc3aa0f398e28f5f69466a53d7f895acdb0462",
+        "output": "/home/bryan/.cache/agent-observer-working-set-20261018/sdk-pipeline-matrix/v3/v3.8.1-b9e8488e/runs/20261019T073658929405Z/py311-2000-abba/03-working-trial-14/report.json",
+        "sourcePair": "b176ac06b39daeead4be0a33ff9d781304091fe0+b9e8488e0f0fa438119e36848ac7c9887038ea1c",
+        "status": "pass",
+        "timed": true
+      }
+    }
+  },
+  "trialIndex": 14,
+  "variant": "working"
+}

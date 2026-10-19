@@ -1,0 +1,26 @@
+[
+  {
+    "case": "before-314",
+    "durationSeconds": 0.11370265705045313,
+    "exitCode": 1,
+    "logSha256": "89c4c32e0cbd5ff37e4d3f3ce8db54c8ed6973c3c32d04043d972aab2c0f7e09"
+  },
+  {
+    "case": "before-311",
+    "durationSeconds": 0.11381955695105717,
+    "exitCode": 1,
+    "logSha256": "f7f0fd8f5503172fb441075fd448524c721575bebec0bf77200bd01642a6aa4b"
+  },
+  {
+    "case": "after-314",
+    "durationSeconds": 0.46425045700743794,
+    "exitCode": 0,
+    "logSha256": "c1b0d4b560664546ccf47395336be9db1137742cdbfffee6b3522b5b543c53f7"
+  },
+  {
+    "case": "after-311",
+    "durationSeconds": 0.46453066798858345,
+    "exitCode": 0,
+    "logSha256": "cc72412b7f9528a4765cca2579c97eaf70aff7a5b7cad9408319ece8be06bc6a"
+  }
+]

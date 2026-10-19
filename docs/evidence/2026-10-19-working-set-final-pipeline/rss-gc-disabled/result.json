@@ -1,0 +1,55 @@
+{
+  "durationSeconds": 115.27649545599706,
+  "exitCode": 1,
+  "logSha256": "cb816beb066a56851a477f34fcf788bf9f111bf533657d360f9c4c968c881adf",
+  "reportSha256": "b9ce12b897923f07dc2be9d5435ac86f30758cbed2633c740b2d1d1084278ca4",
+  "rssDescription": {
+    "automaticPlateauAcceptance": false,
+    "basis": "post-copy-release process VmRSS; final16 of32 accepted generations",
+    "processHeapCapClaim": false,
+    "samples": 32,
+    "tailFirstBytes": 153976832,
+    "tailLastBytes": 165232640,
+    "tailMaxBytes": 166940672,
+    "tailMinBytes": 153780224,
+    "tailOlsBytesPerGeneration": 586758.0235294118,
+    "tailRangeBytes": 13160448,
+    "tailSamples": 16
+  },
+  "status": "failed",
+  "weakrefs": {
+    "bridge": [
+      false
+    ],
+    "client": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "reader": [
+      false
+    ],
+    "runtime": [
+      false
+    ],
+    "runtimeThread": [
+      false
+    ],
+    "state": [
+      false
+    ]
+  }
+}

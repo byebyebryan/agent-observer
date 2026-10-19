@@ -1,0 +1,395 @@
+{
+  "cause": "94 generated Python bytecode files existed alongside the unchanged 2223 manifest-bound Observer source files. New package copy now includes only exact manifest members; upstream export and archive preserved.",
+  "excludedGeneratedFiles": [
+    {
+      "path": "tests/__pycache__/test_service_runtime.cpython-314.pyc",
+      "sha256": "23808726af2d700d9562a314c9fca4590952d11ee45134fa58cc57d7c8c269b8"
+    },
+    {
+      "path": "tests/__pycache__/test_service_state.cpython-314.pyc",
+      "sha256": "d87964e6fd47d3502298a13657c8b03fdc911e478dc087e949a0a8dacd5a649a"
+    },
+    {
+      "path": "tests/__pycache__/test_service_contract.cpython-314.pyc",
+      "sha256": "552f3a111836bae369f718ff5fa53c873f7226d03e37ab1d4b2e9b093dafb9f6"
+    },
+    {
+      "path": "tests/__pycache__/test_service_runtime.cpython-311.pyc",
+      "sha256": "d0c8264065e6d99ebdf720b423768b7c289705778ff2d3a1f62c3959a5759259"
+    },
+    {
+      "path": "tests/__pycache__/test_service_state.cpython-311.pyc",
+      "sha256": "a011eff7e0b8d34704463f9c17728ea80357cb06318b759377d04bfe059d7b14"
+    },
+    {
+      "path": "tests/__pycache__/test_service_contract.cpython-311.pyc",
+      "sha256": "e39b3466d619f3883572d2a378d2cde7a076a5090cc2da7ba0e8aab7114b6107"
+    },
+    {
+      "path": "docs/evidence/2026-10-18-working-set/performance-source/__pycache__/read_matched.cpython-314.pyc",
+      "sha256": "63718aedd2c5bf4590821df01c8d679e1513f687f3fcb111490fa52830645848"
+    },
+    {
+      "path": "docs/evidence/2026-10-18-working-set/performance-source/__pycache__/read_matched.cpython-311.pyc",
+      "sha256": "b593ceb7497285fd09da5d8f2e528204c209110e7be974f05b6c743d520cead6"
+    },
+    {
+      "path": "agent_observer/__pycache__/__init__.cpython-314.pyc",
+      "sha256": "bb160f16ae2295d04badc3edd2d817cff19e9ab62e2212928fb5507893804eb4"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_contract.cpython-314.pyc",
+      "sha256": "bdbede198a1d1237090c3f22c47539a48a054ff7b1b7020be4c685b669fe2cd2"
+    },
+    {
+      "path": "agent_observer/__pycache__/active_contract.cpython-314.pyc",
+      "sha256": "401fa94002f3288bf9c95e1916f31500d90a5b2f8f6187ff759ae5fc66f9dc78"
+    },
+    {
+      "path": "agent_observer/__pycache__/bounded_json.cpython-314.pyc",
+      "sha256": "767ec7fed0e37953151d32b8ae86ddcb9c45c787a3c29a1d51195b796703098c"
+    },
+    {
+      "path": "agent_observer/__pycache__/contract.cpython-314.pyc",
+      "sha256": "fdf9c5dec3c7a7a249ad1b213690aa0554724c4d34cff861b44548fd081c553f"
+    },
+    {
+      "path": "agent_observer/__pycache__/contract_shape.cpython-314.pyc",
+      "sha256": "18198f5bd08fead5c28d525f52e603182a0f18c154814f1b470122f5bb88c4c0"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_support.cpython-314.pyc",
+      "sha256": "a53ef893fc5c951dd833f24f6ae3c09163b4ee486c0893d3437d4e4d0370beee"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_contract.cpython-314.pyc",
+      "sha256": "169c65d366850c17419b4110384058b5874aadbe65a77630b2e0ac14da25bb26"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_policy.cpython-314.pyc",
+      "sha256": "b12e9b359e0deefaba5ce125a6d07ce04c117ee8bd70b9f6dc879c77a34a8572"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_supports.cpython-314.pyc",
+      "sha256": "be1f8ab2812b0aca58fc2cfeb4fedfcfec2214cebcd532cb043f255cc758a5cb"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_profile.cpython-314.pyc",
+      "sha256": "d2e8f46fa8ecd589680b50a7803b907e897394fde5db00c0c11f44a5cc3c7f1b"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_runtime.cpython-314.pyc",
+      "sha256": "a418e6535217d2465e2d45e22a65cd553b259f5fbcbaa633e85e8a32d8034cc2"
+    },
+    {
+      "path": "agent_observer/__pycache__/_image_memo.cpython-314.pyc",
+      "sha256": "b1a541e90598e232e4df208bcafeaad9e66f40903537b527af03f19135741317"
+    },
+    {
+      "path": "agent_observer/__pycache__/native_artifacts.cpython-314.pyc",
+      "sha256": "49fc1f6399df8782ef4b5ceed5f2077370be12fb57cdb6d140b77ed1e76a012f"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_scheduler.cpython-314.pyc",
+      "sha256": "b91a15821912ebfe9000479e76dd24f2ac62e0b4e3dce4353315f58d6fa6cb37"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_contract.cpython-314.pyc",
+      "sha256": "2bbf3b5a76295233f7e0d251dceb7e365c028d6669fd07d2a75b5042af7a923c"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_native.cpython-314.pyc",
+      "sha256": "37618e3c23fa778bed91df7475b30eca56ba0c7031efd9e71805460cc2c67188"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_commitment.cpython-314.pyc",
+      "sha256": "69ddacacef795c18fcc9c719d2b33c2c1f4c1cf5f08232990ebd42fe3a4dedf1"
+    },
+    {
+      "path": "agent_observer/__pycache__/workspace.cpython-314.pyc",
+      "sha256": "420660d0b48a8f9d3eafcc738808c225ff543d1582483a88c1018e7b0f9b7e08"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_state.cpython-314.pyc",
+      "sha256": "5c84ded681efc22ea52b7dd7647ec816cf1126461fee9468f47ff67d0e35d90d"
+    },
+    {
+      "path": "agent_observer/__pycache__/active_feed.cpython-314.pyc",
+      "sha256": "4d8e2615b9647d2dfe1a734a88cf4582c1b1be9801adcb63864d4ced003f3dda"
+    },
+    {
+      "path": "agent_observer/__pycache__/timing.cpython-314.pyc",
+      "sha256": "c374b7f1acf36d478930f16dba4c51a145d53b9a8322ed9196026d779dd99c58"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_engine.cpython-314.pyc",
+      "sha256": "dbb1759e0f2502b3106c3f64f7dec271f88370697a04b7c0532c04a05049e8de"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_evidence.cpython-314.pyc",
+      "sha256": "dd9c54205ad9faa26ebd00711a7007d738090493756bd9bd44320a8cf77009bb"
+    },
+    {
+      "path": "agent_observer/__pycache__/provider.cpython-314.pyc",
+      "sha256": "309d97379881fa48f9f9a117ca325e978c1cb67e14d9a06a05889d6fc73f49c5"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_profile.cpython-314.pyc",
+      "sha256": "1769b9ee566608cdd8c6dbab18ba3cc52991a034052866bed2b63c740fe44a19"
+    },
+    {
+      "path": "agent_observer/__pycache__/public.cpython-314.pyc",
+      "sha256": "f733ea10ee2b46c396c2825330d60e0f52c21dd0d89c8b1af4a5f9e973dd4d31"
+    },
+    {
+      "path": "agent_observer/__pycache__/read_client.cpython-314.pyc",
+      "sha256": "864308748aac1ca55af3094965d3c1ecdd22953175a9879114feb348c1a19115"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_public.cpython-314.pyc",
+      "sha256": "44e0b04e5c58850325b2b26acbd52830cb783e784b7f207cd023ab63c7cfcf3c"
+    },
+    {
+      "path": "agent_observer/__pycache__/read_cache.cpython-314.pyc",
+      "sha256": "7f3fa7c39201eeae3b50ed9f8350ec3863f965459f33ecf26bf0c08e4e5ba9ef"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_read.cpython-314.pyc",
+      "sha256": "b0c41e39f8102c13b12ceb5e4f2983342f8a7659fb41fbbe4e9709e7a2025d05"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_preparation.cpython-314.pyc",
+      "sha256": "374eea97d48273422a4cfbb5eb8b40cc50d20902e31d6704e1bf9084fb604590"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_selection.cpython-314.pyc",
+      "sha256": "9a2a27401b289191f5279d5021886741a5dde72591a928c5e39c94903bf72534"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_read.cpython-314.pyc",
+      "sha256": "2cff7db1b2f69abf292ec18693854027e464b9badf9717d73bad4bcd8f7396fa"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_publisher.cpython-314.pyc",
+      "sha256": "034965b7e042e0a1bd102f92194a477341ad59e4dcd1d807cd286b3ce7e5c5be"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_publisher.cpython-314.pyc",
+      "sha256": "5eae4144673908dc50daa4345ed967a260ba1187c6dcb61a40b268d19c215667"
+    },
+    {
+      "path": "agent_observer/__pycache__/activity.cpython-314.pyc",
+      "sha256": "99ec8ebf63c03b6c6572595cb0da1b7d9c84302169988823a4afab0e9bd06bae"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_source.cpython-314.pyc",
+      "sha256": "0c54925d34ede0805effff24da8b2fc84c088e089cf3055bbc3d671104d3dee1"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_clocks.cpython-314.pyc",
+      "sha256": "089d4a397ea10882751775118eb54d1a4785fc79dc7f680f16363f4fe6afb700"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_feed.cpython-314.pyc",
+      "sha256": "c0d04b01279d9febc969be07006267e6d515309b47e125cb4328ae05437bd9cc"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_decisions.cpython-314.pyc",
+      "sha256": "bfe9148f8da040512f0bc0ee1031b878b1b2430a0dbcdd1572db90ce92f530e6"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_ledger.cpython-314.pyc",
+      "sha256": "5a442b81d320a755f2c8654180e79757bddfb328366e5581e60252fab06d0edd"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_source.cpython-314.pyc",
+      "sha256": "bce409e6a01d65ba99cc506b0edaf8a02c02e99fbb0b430cf0599134e5865d92"
+    },
+    {
+      "path": "agent_observer/__pycache__/__init__.cpython-311.pyc",
+      "sha256": "b2eeb966fc651b9fe62ee0f09658d7d1ec4f77a5c5d4344395fdba711bbfbcb7"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_contract.cpython-311.pyc",
+      "sha256": "263c52ef8c0be3fe1e3971e088428987b5447958888d7d50acc2da6ffede7c20"
+    },
+    {
+      "path": "agent_observer/__pycache__/active_contract.cpython-311.pyc",
+      "sha256": "c06d8423c1100a1fb863cacd19854288827de25440fa89f35a1372463e48eb24"
+    },
+    {
+      "path": "agent_observer/__pycache__/bounded_json.cpython-311.pyc",
+      "sha256": "4b47b81c4b5586f4332c9c37b92c7070cdbe30ae8fc7268473474755f472c354"
+    },
+    {
+      "path": "agent_observer/__pycache__/contract.cpython-311.pyc",
+      "sha256": "ccdcdad7740a50c3341c436d1ca1725222576079c14b8f07e297c86ff3a6199a"
+    },
+    {
+      "path": "agent_observer/__pycache__/contract_shape.cpython-311.pyc",
+      "sha256": "5c15d6b36d3da72f558020cffd3d3a88f018ebecaf150225ba7b368630e1d348"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_support.cpython-311.pyc",
+      "sha256": "916ec7bd11dd537b709f982a071ad6ac4ca84a1f0e55bba4871985ba045d8bc9"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_contract.cpython-311.pyc",
+      "sha256": "624bff6d829a97e00dfb1e342ebc3496956ca8cc0ea811a8449d4632feb4b670"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_policy.cpython-311.pyc",
+      "sha256": "1558aab6e1ab57eadda8e11d64847b82464c655cd07a74c0380441d0b8a9888a"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_supports.cpython-311.pyc",
+      "sha256": "e9651bacd9e8d60c9178c49fc369438dfc134bc6c976185b21c39a3da33ebd20"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_profile.cpython-311.pyc",
+      "sha256": "9acfd4603f03c2f34792f46fd04c7a48de422d625b0a084fff012c90479d66b2"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_runtime.cpython-311.pyc",
+      "sha256": "155ef15779cc8f2ae10707a2b4f3d66cf359112964ba005db959ebad49de0882"
+    },
+    {
+      "path": "agent_observer/__pycache__/_image_memo.cpython-311.pyc",
+      "sha256": "dfab958e3a26791045a94788d3a0752783f846fd5cf8b315b1c10b199d9bf536"
+    },
+    {
+      "path": "agent_observer/__pycache__/native_artifacts.cpython-311.pyc",
+      "sha256": "76dc08c3a7e318ce10552e6338f8e3d9972583c14f909275073dd9b7b36a7b26"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_scheduler.cpython-311.pyc",
+      "sha256": "4a78c5d069efde0904204c7297e5eb4c43364172089eaf57faf3d579981174b5"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_contract.cpython-311.pyc",
+      "sha256": "06cc98c778f1e0dffe5d5a36e4a406c964eff73805c14d4e538c625025c4f055"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_native.cpython-311.pyc",
+      "sha256": "553fb2d814f835cc11e8166a187a1c16cd29b8dfb42614268544a6c8f0e08d7a"
+    },
+    {
+      "path": "agent_observer/__pycache__/sync_commitment.cpython-311.pyc",
+      "sha256": "9e53970a134b6881620f4963c41d0194bc3bab7140f9dbbb419f83822a55f124"
+    },
+    {
+      "path": "agent_observer/__pycache__/workspace.cpython-311.pyc",
+      "sha256": "fd5bce0a837c86024a64c11cae88907c551ffbce273363b2319614210e092ecc"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_state.cpython-311.pyc",
+      "sha256": "a28f0d90099b894ff613c75f9738e832ed3ed2b898c7e92a1efe607905a57669"
+    },
+    {
+      "path": "agent_observer/__pycache__/active_feed.cpython-311.pyc",
+      "sha256": "213230d9a234bc1c29761386dffd0b5d8a0ed8054eb0114e5b796565a8f7b12e"
+    },
+    {
+      "path": "agent_observer/__pycache__/timing.cpython-311.pyc",
+      "sha256": "e2beee0474cd842e669b1f52c9e8e0b7a03c6300deb98bc5c9318b6892dbdd21"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_engine.cpython-311.pyc",
+      "sha256": "f1961c929b2d7c9691963c3fb9242da760af77214eb88c098e1e1a79d175876a"
+    },
+    {
+      "path": "agent_observer/__pycache__/observation_evidence.cpython-311.pyc",
+      "sha256": "b9b588d7c1689b5b7b4faaf3d2d3adf1b34cfa98fe160a5c04f12056ef3858bc"
+    },
+    {
+      "path": "agent_observer/__pycache__/provider.cpython-311.pyc",
+      "sha256": "d35e473ee07ad73843bf0c921eb762fed1309eee7b8b51ecd782366cd8655af6"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_profile.cpython-311.pyc",
+      "sha256": "74d6409cdcc3df24715b11fe6c50781d682e7c25db0a054af007f8c793a00053"
+    },
+    {
+      "path": "agent_observer/__pycache__/public.cpython-311.pyc",
+      "sha256": "df8e25c2a95e9fb316874c8fb90d38b4d2ee42072db9e07030454da13b9ccfb7"
+    },
+    {
+      "path": "agent_observer/__pycache__/read_client.cpython-311.pyc",
+      "sha256": "294c967f6076ada6ed6015c4102924bbf09b59878f4d2c5216a58f0ef92c4309"
+    },
+    {
+      "path": "agent_observer/__pycache__/service_public.cpython-311.pyc",
+      "sha256": "d796e7f15f3d62548acc29305b95a09f0474f3a7e64a6d1fd7e02e0d2802d065"
+    },
+    {
+      "path": "agent_observer/__pycache__/read_cache.cpython-311.pyc",
+      "sha256": "465143eee1cd89c598246f95acad7c382abe1ee01f8c64a8a80b0742ff5677b3"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_read.cpython-311.pyc",
+      "sha256": "9fee3130091b29881340245e3dee5d9be112af3fcc16f912d9cfb82c0dd5e620"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_preparation.cpython-311.pyc",
+      "sha256": "9b748608c6c971433a8ab04ddfe400e4764715da5ff549091752d2c798bbd242"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_selection.cpython-311.pyc",
+      "sha256": "a8cdc1e164a4d0f88609bb88ee69d222fa7ab4853235db752089dd9290de75e1"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_read.cpython-311.pyc",
+      "sha256": "ab1c81b4585e663bfdd0c14fd4d10aafc9e2f1e009ddb774f81cb08c01b8613c"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_publisher.cpython-311.pyc",
+      "sha256": "390a0e299963911e477886f399bd4a55454454f261a201af273797d01af22db3"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_publisher.cpython-311.pyc",
+      "sha256": "2d3641c54c3b9161472df81f4ead9d80078df7a2f0b010f6674b2d07dde6f563"
+    },
+    {
+      "path": "agent_observer/__pycache__/activity.cpython-311.pyc",
+      "sha256": "bb31e9608c04927b72529e358b60cfde70e8112a70044d4a2a0ac4b90965ab3d"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_source.cpython-311.pyc",
+      "sha256": "d84169964bc2714c23016f8c014ea12c1d1ef8bf90760ce3b91a80f5fb5d5c6a"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_clocks.cpython-311.pyc",
+      "sha256": "9c54494a1c9eed96ab83889655bcb85d8ebc55da90a954d513f2eecff0010e56"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_feed.cpython-311.pyc",
+      "sha256": "600fc85c116475380f1514bfc5b2c21d6a70abecc54a3b08da05004e555840d0"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_decisions.cpython-311.pyc",
+      "sha256": "bc2078939daafac51ca10c841aa774e164187e5ad1acdc736058d7d8c44e1a67"
+    },
+    {
+      "path": "agent_observer/__pycache__/working_set_ledger.cpython-311.pyc",
+      "sha256": "69641df820aff23418b16caff1e642a3a1e12a746aff9ef4d335ea2b5b3ad91a"
+    },
+    {
+      "path": "agent_observer/__pycache__/mesh_working_set_source.cpython-311.pyc",
+      "sha256": "5b51da2fa34b506c06365fc7e47febae79329317bf74387beec3402c6b607ad9"
+    }
+  ],
+  "initialPackageManifest": "Finalizer captured the still-running parent driver progress file before its final entry was appended. Initial manifest preserved separately; terminal progress now frozen and manifest regenerated without repeating checks.",
+  "secondSourceVerification": {
+    "cause": "Setuptools generated six egg-info output files under src after the 101 build inputs were hashed. Outputs preserved separately before rechecking the original exact input set.",
+    "error": "mesh_build_inputs_mismatch",
+    "generatedOutputHashes": {
+      "PKG-INFO": "6c27c16f3c3fa6da62700a5c8a8f781ffb32dec7589afdf8ab5390b3e19fb474",
+      "SOURCES.txt": "ff2b061d2a35aeb5f06d7eba444c86fd0dff99fc83bee2b1e41711983dc8e277",
+      "dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "entry_points.txt": "122ec43e62f254fd36b244717282ca52d762dbb06ca7f854dcbf0e3f23339da2",
+      "requires.txt": "b776cac0b79d98f37efcd343ae425f8cd999879051adbc03358de0b8ab4a126e",
+      "top_level.txt": "a54a5ae525b7f4b1dd38991cec3090f3dfdb64edb1f4d9f9c7b73ed70a855a54"
+    }
+  },
+  "sourceVerificationFirstAttempt": "observer_export_manifest_mismatch"
+}
