@@ -54,6 +54,9 @@ async def exercise(args):
     from agent_observer.mesh_publisher import make_publisher
 
     prefix = args.prefix.resolve(strict=True)
+    launcher = args.publisher_launcher or prefix / "bin/mesh-plus"
+    if not launcher.is_absolute() or launcher.parent != prefix / "bin" or not launcher.is_file():
+        raise ValueError("installed_publisher_launcher_required")
     import agent_observer.mesh_publisher as owner
     if not Path(owner.__file__).is_relative_to(prefix) or not Path(sys.executable).is_relative_to(prefix):
         raise ValueError("installed_owner_required")
@@ -127,7 +130,7 @@ fixed=['mesh-plus','bridge','--source','agent','--stdio']
 assert len(argv)==10 and argv[:2]==['sh','-c']
 assert argv[3]=='mesh-plus-reached' and argv[4]=='b'*32 and argv[5:]==fixed
 env={{**os.environ,'XDG_CONFIG_HOME':{str(root / 'config')!r}}}
-os.execve({str(prefix / 'bin/mesh-plus')!r},fixed,env)
+os.execve({str(launcher)!r},fixed,env)
 ''')
                 dispatcher.chmod(0o700)
                 async with ssh_server(ssh_root, [str(dispatcher)], "agent") as channel:
@@ -157,7 +160,8 @@ os.execve({str(prefix / 'bin/mesh-plus')!r},fixed,env)
                                   "agent_observer.write_client", "tmux_observer") if name in sys.modules]
     assert not forbidden
     return {"status": "passed", "hostScope": args.host_scope, "ownerModule": owner.__file__,
-            "prefix": str(prefix), "carriers": reports, "nativeChannelsAfterClose": 0,
+            "prefix": str(prefix), "publisherLauncher": str(launcher),
+            "carriers": reports, "nativeChannelsAfterClose": 0,
             "publicCliAssessment": assessment, "forbiddenImports": forbidden,
             "limits": ["cached native source only", "ordinary daemon comparison is separate",
                        "owned localhost SSH fixture; operational remote selection is separate",
@@ -169,6 +173,8 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--host-scope", required=True)
     parser.add_argument("--service-socket", type=Path, required=True)
+    parser.add_argument("--publisher-launcher", type=Path,
+                        help="explicit owner launcher in PREFIX/bin; defaults to the historical mesh-plus shim")
     parser.add_argument("--ssh", action="store_true")
     args = parser.parse_args()
     if not args.prefix.is_absolute() or not args.service_socket.is_absolute():

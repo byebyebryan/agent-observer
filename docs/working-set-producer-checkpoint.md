@@ -1,5 +1,10 @@
 # Working-set producer checkpoint
 
+The current [Mesh a24 dependency checkpoint](mesh-a24-complete-view-upgrade.md)
+uses the public released working-set registration and ordinary complete views.
+It supersedes private-counterpart setup for current compatibility checks while
+preserving every historical result below at its original package/source tuple.
+
 Latest recorded delivery, 2026-10-19: the
 [home-profile checkpoint](evidence/2026-10-19-home-profiles/REPORT.md) selects
 Default and Work working-set feeds on Snap and Default on Starship. It records

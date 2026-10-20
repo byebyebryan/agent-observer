@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+"""Verify a released installed Mesh wheel and ordinary owner factory wiring.
+
+Run with the isolated prefix's Python and -I. No collection, socket I/O, selected
+links or package entrypoints are changed. Historical archive verification stays
+in verify-mesh-artifact; this gate accepts the published release manifest.
+"""
+
+import argparse
+import hashlib
+import importlib.metadata
+import json
+import sys
+import sysconfig
+import zipfile
+from pathlib import Path, PurePosixPath
+
+
+def require(condition, reason):
+    if not condition:
+        raise ValueError(reason)
+
+
+def verify(prefix, manifest_path, wheel):
+    prefix = prefix.resolve(strict=True)
+    require(Path(sys.prefix).resolve() == prefix and sys.flags.isolated, "isolated_prefix_required")
+    require(manifest_path.is_file() and manifest_path.stat().st_size <= 8192, "release_manifest")
+    manifest = json.loads(manifest_path.read_text())
+    require(manifest["package"] == "mesh-plus" and manifest["experimental"] is True, "release_package")
+    require(wheel.name == manifest["wheel"], "release_wheel_name")
+    wheel_digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
+    require(wheel_digest == manifest["wheelSha256"], "release_wheel_digest")
+
+    distribution = importlib.metadata.distribution("mesh-plus")
+    site = Path(sysconfig.get_path("purelib")).resolve(strict=True)
+    require(site.is_relative_to(prefix), "installed_prefix")
+    require(distribution.version == manifest["version"], "installed_version")
+    direct = json.loads(distribution.read_text("direct_url.json") or "{}")
+    require("archive_info" in direct and "dir_info" not in direct, "nonarchive_mesh")
+    hashes = direct.get("archive_info", {}).get("hashes", {})
+    # Installers may omit PEP 610's optional archive hashes for local wheels.
+    # Every immutable wheel file is independently compared below either way.
+    require("sha256" not in hashes or hashes["sha256"] == wheel_digest, "installed_archive_digest")
+
+    installed_files = 0
+    with zipfile.ZipFile(wheel) as archive:
+        names = archive.namelist()
+        require(len(names) == len(set(names)) and len(names) <= 4096, "wheel_entries")
+        package_files = set()
+        for name in names:
+            path = PurePosixPath(name)
+            require(not path.is_absolute() and ".." not in path.parts, "wheel_path")
+            if name.endswith("/") or name.endswith(".dist-info/RECORD"):
+                continue
+            target = site / name
+            require(target.is_file() and not target.is_symlink(), "installed_file")
+            require(target.read_bytes() == archive.read(name), "installed_wheel_bytes")
+            installed_files += 1
+            if name.startswith("mesh_plus/"):
+                package_files.add(name)
+        actual = {path.relative_to(site).as_posix() for path in (site / "mesh_plus").rglob("*")
+                  if path.is_file() and "__pycache__" not in path.parts}
+        require(actual == package_files, "installed_package_inventory")
+
+    from mesh_plus.api import Bridge, CachedPublisher, Reader, configured_reader
+
+    from agent_observer.mesh_active_profile import ACTIVE_PROFILE_ID
+    from agent_observer.mesh_publisher import make_publisher
+    from agent_observer.mesh_working_set_publisher import make_working_set_publisher
+
+    wiring = {}
+    for name, factory in (
+        ("full", lambda: make_publisher("fixture", "agent", "/nonexistent/agent.sock")),
+        ("active", lambda: make_publisher("fixture", "agent", "/nonexistent/agent.sock",
+                                         profile_id=ACTIVE_PROFILE_ID)),
+        ("working-set", lambda: make_working_set_publisher("fixture", "agent", "/nonexistent/agent.sock")),
+    ):
+        publisher = factory()
+        require(type(publisher) is CachedPublisher, "ordinary_publisher")
+        require(publisher.capabilities == ("snapshot", "proof", "subscribe"), "ordinary_capabilities")
+        require(publisher.native._active == 0, "factory_opened_source")
+        bridge = Bridge(publisher)
+        require(type(bridge) is Bridge and Bridge.__module__ == "mesh_plus.bridge", "ordinary_bridge")
+        wiring[name] = {"profile": publisher.profile, "publisher": type(publisher).__module__}
+    require(Reader.__module__ == "mesh_plus.reader"
+            and configured_reader.__module__ == "mesh_plus.configured_read", "ordinary_reader")
+    for name, module in tuple(sys.modules.items()):
+        if name == "mesh_plus" or name.startswith("mesh_plus."):
+            origin = getattr(module, "__file__", None)
+            require(origin is not None and Path(origin).resolve().is_relative_to(site / "mesh_plus"),
+                    "runtime_module_origin")
+    require(Path(sys.modules["agent_observer.mesh_publisher"].__file__).resolve().is_relative_to(
+        site / "agent_observer"), "installed_owner_origin")
+    forbidden = [name for name in sys.modules
+                 if name == "mesh_plus.view_feed" or name.startswith("mesh_plus.view_feed.")
+                 or name == "mesh_plus.sync" or name.startswith("mesh_plus.sync.")]
+    require(not forbidden, "delta_route_imported")
+    return {
+        "status": "passed", "meshVersion": distribution.version, "meshWheelSha256": wheel_digest,
+        "sourceRevision": manifest["sourceRevision"], "prefix": str(prefix),
+        "installedWheelFilesVerified": installed_files, "noneditableReleasedWheel": True,
+        "ownerModule": str(sys.modules["agent_observer.mesh_publisher"].__file__),
+        "factories": wiring, "reader": Reader.__module__, "deltaImports": forbidden,
+        "limits": ["no provider or socket I/O", "construction/parity gate; delivery has separate tests",
+                   "no normal service selection or deployment"],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--wheel", type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(verify(args.prefix, args.manifest, args.wheel), indent=2))
+
+
+if __name__ == "__main__":
+    main()

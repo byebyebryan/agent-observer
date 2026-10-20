@@ -1,5 +1,11 @@
 # Agent Observer architecture boundaries
 
+Source dependency checkpoint, 2026-10-20: optional networking now targets
+[released Mesh a24](mesh-a24-complete-view-upgrade.md), including its additive
+working-set registration. Ordinary complete-view APIs remain selected; semantic
+delta and view-feed entrypoints are unselected. This source/installed-candidate
+upgrade does not change normal services or the selected tuples below.
+
 Latest recorded selection, 2026-10-19: the
 [home-profile delivery checkpoint](evidence/2026-10-19-home-profiles/REPORT.md)
 selects independent Default and Work working-set feeds on Snap and Default on

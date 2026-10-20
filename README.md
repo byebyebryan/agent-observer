@@ -20,6 +20,11 @@ Starship device gates.
 
 ## Current status
 
+The current source [targets released Mesh 0.1.0a24](docs/mesh-a24-complete-view-upgrade.md)
+for optional networking, retaining ordinary complete selected-view delivery.
+Both the older semantic delta engine and the new view-feed protocol remain
+disabled/unselected. This dependency checkpoint does not change live selections.
+
 The opt-in [active + recent projection](docs/working-set-producer-checkpoint.md)
 is implemented with a 3-day history window and additive Mesh SDK1 support.
 The latest [home-profile delivery checkpoint](docs/evidence/2026-10-19-home-profiles/REPORT.md)
@@ -411,14 +416,16 @@ The development extra includes JSON Schema validation and Ruff; neither is a
 core runtime dependency. Mesh remains optional. Tests that require Mesh skip
 when it is absent; working-set integration tests also skip when the SDK does not
 register that additive profile. Unexpected SDK/schema failures remain errors.
-CI separately tests core-only and the hash-pinned released a23 SDK.
+CI separately tests core-only, released a23 compatibility and the hash-pinned
+released a24 working-set pair on Python 3.11 and 3.14.
 
 For a supported working-set pair, install the exact reviewed counterpart and run
 `./scripts/check --require-working-set-mesh`. This mode fails before discovery
 if the working-set profile is unavailable, so a paired check cannot pass by
-skipping that integration. The manual CI workflow accepts a full published Mesh
-commit SHA for the same required check. Unpublished local counterparts must be
-checked locally; a local pass does not imply a hosted CI run.
+skipping that integration. CI now runs this required check against released a24;
+the former manual private-counterpart revision input is retired. The separate
+`scripts/check-mesh-release` gate verifies noneditable installed wheel bytes and
+ordinary factory wiring; see the [upgrade guide](docs/mesh-a24-complete-view-upgrade.md).
 
 The checks require Python 3.11 or newer, Git and chezmoi for the isolated managed
 operations fixture. CI provisions a checksummed chezmoi tool; the fixture targets

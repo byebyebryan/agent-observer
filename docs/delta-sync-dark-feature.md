@@ -1,5 +1,10 @@
 # Deferred snapshot/delta-sync feature
 
+The 2026-10-20 [Mesh a24 dependency upgrade](mesh-a24-complete-view-upgrade.md)
+keeps this engine dark and also leaves a24's separate view-feed protocol
+unselected. Observer uses ordinary complete selected-view delivery; installing
+a package containing opt-in delta modules does not enable either route.
+
 Disposition, 2026-10-17: Bryan directed wrapping this work as a gated, dark
 feature and releasing its development hold on repository cleanup. Active G1
 optimization and qualification stop at the preserved checkpoints below. Resume

@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+The [Mesh a24 dependency upgrade](mesh-a24-complete-view-upgrade.md) targets the
+public wheel and keeps ordinary complete-view delivery. Both semantic delta
+sync and view-feed delivery stay unselected. Source/installed-candidate checks
+do not change the normal service selections below.
+
 [Codex home profiles](codex-home-profiles-plan.md) now collect explicit Default
 and Work scopes on Snap, retain Default on Starship and combine independent
 feeds in the dashboards. The [bounded delivery checkpoint](evidence/2026-10-19-home-profiles/REPORT.md)
