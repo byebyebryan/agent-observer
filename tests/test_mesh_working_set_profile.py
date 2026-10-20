@@ -10,23 +10,27 @@ from unittest.mock import patch
 
 import test_service_contract as service_contract_fixture
 import test_working_set_projection as projection_fixture
-from mesh_plus.api import NativeState, PreparationState, PreparedRule
-from mesh_plus.api import descriptor as mesh_descriptor
+from mesh_test_support import require_working_set_sdk
 
 from agent_observer.contract import ContractError, identity_key
-from agent_observer.mesh_working_set_profile import (
-    NATIVE_PROTOCOL,
-    WORKING_SET_PROFILE_ID,
-    WorkingSetAgentCodec,
-    WorkingSetAgentPreparation,
-    WorkingSetAgentProfile,
-    _members,
-    _prepare_rules,
-    _record_eligible,
-    restore_working_set_native,
-)
-from agent_observer.mesh_working_set_publisher import make_working_set_publisher
 from agent_observer.working_set_policy import DEFAULT_WINDOW_MS, MAX_WINDOW_MS
+
+if require_working_set_sdk():
+    from mesh_plus.api import NativeState, PreparationState, PreparedRule
+    from mesh_plus.api import descriptor as mesh_descriptor
+
+    from agent_observer.mesh_working_set_profile import (
+        NATIVE_PROTOCOL,
+        WORKING_SET_PROFILE_ID,
+        WorkingSetAgentCodec,
+        WorkingSetAgentPreparation,
+        WorkingSetAgentProfile,
+        _members,
+        _prepare_rules,
+        _record_eligible,
+        restore_working_set_native,
+    )
+    from agent_observer.mesh_working_set_publisher import make_working_set_publisher
 
 
 def _freeze(value):

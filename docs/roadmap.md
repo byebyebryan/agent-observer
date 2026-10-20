@@ -8,9 +8,10 @@ records native comparisons, filters, lifecycle isolation, device readback and co
 A [generalized active + recent projection](working-set-producer-checkpoint.md) is
 implemented as an opt-in source with a 3-day window and additive Mesh SDK1
 registration. Controlled public Reader IPC, private installed pairs and fixed
-SSH pass; independent native qualification and the stated cost/resource limits
-still gate producer acceptance. No normal role or consumer is selected. This work
-uses complete replacements and does not reopen delta synchronization.
+SSH pass. The later home-profile checkpoint above records selected working-set
+feeds and bounded native/client/device evidence; whole-producer qualification
+and the stated cost/resource limits remain separate. This work uses complete
+replacements and does not reopen delta synchronization.
 
 Snapshot/delta synchronization is [deferred behind a default-off gate](delta-sync-dark-feature.md)
 as of 2026-10-17. Implementation and evidence are retained for a future explicit
@@ -21,7 +22,9 @@ The hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/re
 publishes the qualified wheel unchanged, paired with Mesh 0.1.0a23. The
 [RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
 closes software integration, configured fleet, collector/active publisher/client
-selection and paired rollback. Physical ACK/panel/reboot checks remain deferred.
+selection and paired rollback for that dated tuple. Physical ACK/panel/reboot
+checks were deferred there; the later home-profile delivery has its own bounded
+device readback and manual visual/reboot limits.
 Full diagnostics/read CLI, Tmux and the historical writer keep independent tuples.
 
 The agreed [active-feed design](active-feed-proposal.md) is now implemented for

@@ -1,5 +1,13 @@
 name: Independent Observer checks
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mesh_revision:
+        description: 'Published, reviewed Mesh source commit for the required working-set integration check (full SHA)'
+        required: false
+        type: string
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -17,7 +25,7 @@ jobs:
           echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
       - run: python -m pip install '.[dev]'
       - run: ./scripts/check
-      - run: ruff check scripts/candidate-artifact tests/test_candidate_artifact.py
+      - run: ruff check agent_observer tests scripts/check scripts/candidate-artifact
   mesh-reader:
     runs-on: ubuntu-latest
     steps:
@@ -53,4 +61,32 @@ jobs:
       - name: Install reviewed active-feed SDK wheel
         run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a23/mesh_plus-0.1.0a23-py3-none-any.whl#sha256=73455186e187198c8e44b6ae6c381926809931a176f17614864141c62ff850c2'
       - run: ./scripts/check
+      - run: ./scripts/check-mesh-owner --installed
+  working-set-pair:
+    if: github.event_name == 'workflow_dispatch' && inputs.mesh_revision != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require an exact counterpart revision
+        env:
+          MESH_REVISION: ${{ inputs.mesh_revision }}
+        run: |
+          [[ "$MESH_REVISION" =~ ^[0-9a-f]{40}$ ]] || { echo 'A full reviewed Mesh commit SHA is required'; exit 1; }
+      - uses: actions/checkout@v4
+        with:
+          repository: byebyebryan/mesh-plus
+          ref: ${{ inputs.mesh_revision }}
+          path: .ci-mesh-working-set
+      - name: Install operational fixture tool
+        run: |
+          curl -fsSL --retry 3 https://github.com/twpayne/chezmoi/releases/download/v2.73.0/chezmoi_2.73.0_linux_amd64.tar.gz -o "$RUNNER_TEMP/chezmoi.tar.gz"
+          printf '%s  %s\n' b597729b687af4488a848240134cb633de8ca0f04e0d26d48f400ee2ac338ffa "$RUNNER_TEMP/chezmoi.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/observer-tools"
+          tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
+          echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
+      - run: python -m pip install '.[dev]' ./.ci-mesh-working-set
+      - run: ./scripts/check --require-working-set-mesh
       - run: ./scripts/check-mesh-owner --installed

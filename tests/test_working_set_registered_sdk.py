@@ -14,15 +14,19 @@ from pathlib import Path
 from uuid import UUID
 
 from jsonschema import ValidationError
-from mesh_plus.api import Bridge, Client, Endpoint, Reader, reconstructed, validate_response
-from mesh_plus.transport import IPCServer, connect_ipc
+from mesh_test_support import require_working_set_sdk
 from test_service_runtime import Running, scoped_snapshot
 
 from agent_observer.contract import ContractError, canonical, identity_key
-from agent_observer.mesh_working_set_profile import WorkingSetAgentProfile
-from agent_observer.mesh_working_set_publisher import make_working_set_publisher
-from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch
 from agent_observer.service_state import ServiceState
+
+if require_working_set_sdk():
+    from mesh_plus.api import Bridge, Client, Endpoint, Reader, reconstructed, validate_response
+    from mesh_plus.transport import IPCServer, connect_ipc
+
+    from agent_observer.mesh_working_set_profile import WorkingSetAgentProfile
+    from agent_observer.mesh_working_set_publisher import make_working_set_publisher
+    from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch
 
 
 class RecordingSource:

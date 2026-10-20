@@ -1,9 +1,9 @@
 """Passive initialized native peer; finite metadata signals, no action RPCs."""
 
-from collections import OrderedDict
 import hashlib
 import select
 import time
+from collections import OrderedDict
 
 from .codex_endpoint import inspect_managed_endpoint, validate_incarnation
 from .codex_transport import PassiveClient

@@ -21,8 +21,8 @@ def main():
         raise SystemExit(2)
     signal.signal(signal.SIGALRM, deadline)
     signal.setitimer(signal.ITIMER_REAL, 1)
-    from agent_observer.bounded_json import decode_document
     from agent_observer.adapters import adapter_for
+    from agent_observer.bounded_json import decode_document
     from agent_observer.collection import compose_snapshot
     from agent_observer.contract import canonical
     from agent_observer.workspace import MAX_CONFIG_BYTES, enrich, validate_config

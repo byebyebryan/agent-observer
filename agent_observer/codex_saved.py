@@ -18,6 +18,7 @@ from pathlib import Path
 from .activity import codex_activity, ordering
 from .bounded_json import decode_document
 from .codex_metadata import saved_thread_metadata
+
 PROJECTIONS = {
     "state_5.sqlite": ("threads", {
         "id": "TEXT", "rollout_path": "TEXT", "source": "TEXT",

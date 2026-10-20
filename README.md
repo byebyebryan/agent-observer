@@ -22,16 +22,20 @@ Starship device gates.
 
 The opt-in [active + recent projection](docs/working-set-producer-checkpoint.md)
 is implemented with a 3-day history window and additive Mesh SDK1 support.
-Controlled IPC, private installed pairs and fixed SSH pass. Producer qualification
-remains gated on independent native evidence and the stated cost/resource limits;
-normal roles are unchanged.
+The latest [home-profile delivery checkpoint](docs/evidence/2026-10-19-home-profiles/REPORT.md)
+records Default and Work feeds selected on Snap and Default on Starship, with
+the dashboards combining those independent namespaces. The underlying source
+uses the 72-hour working set; the dashboard keeps its loaded-user display policy.
+Controlled IPC, private installed pairs, fixed SSH and bounded native comparisons
+pass within their recorded scopes. Complete producer qualification and the stated
+cost/resource limits remain separate from that selected delivery checkpoint.
 
 Snapshot/delta-sync is an unreleased, [deferred dark feature](docs/delta-sync-dark-feature.md).
 The local runtime denies sync requests by default; controlled library experiments
 must opt in explicitly. CPU and 2,000-row capacity gates still fail, and ordinary
 services, artifacts and role selections remain on the accepted paths below.
 
-[Observer `0.7.0a7`](artifacts/observer-0.7.0a7.json) preserves
+The earlier 2026-10-16 [Observer `0.7.0a7`](artifacts/observer-0.7.0a7.json) checkpoint preserves
 [API 4 / snapshot-watch 6 / Service 4](docs/api-v4.md) and adds the separate
 active-feed 1 interface. The
 [RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
@@ -39,8 +43,10 @@ records a7 collectors and separate a7/Mesh a23 active publishers selected on Sna
 and Starship, plus the Starship RLCD client. Full diagnostics and the read CLI
 retain their independent a5/Mesh a20 tuple; Tmux and the historical `0.4.0a16`
 writer retain their selections. Paired rollback/reselection and software feed
-checks passed. Physical RLCD ACK/panel/reboot checks remain deferred because
-the device was absent. Package publication does not perform deployment.
+checks passed. At that checkpoint physical RLCD ACK/panel/reboot checks were
+deferred because the device was absent. Later profile delivery records its own
+device ACK/readback evidence and retains manual visual/reboot limits. Package
+publication does not perform deployment.
 
 Both hosts separately select the read CLI from
 [Observer `0.7.0a5`](artifacts/observer-0.7.0a5.json) /
@@ -53,7 +59,7 @@ saves about 36% total consumer CPU and
 separately records acquisition-ordering correction, installed/native and paired
 Tmux checks, staged role rollback, and mixed cost results. It establishes no
 universal a20 CPU saving. That checkpoint's prepared a5/a20 RLCD bundle is
-retained as historical acceptance; the current active-feed selection is above.
+retained as historical acceptance; later selections are recorded above.
 
 The [remaining CPU study](docs/evidence/2026-10-15-cpu/REPORT.md) traces most read
 cost to repeated full-roster validation. Source corrections remove duplicate
@@ -396,10 +402,25 @@ before a separate frontend pass; fresh feeds alone do not prove completeness.
 From a clone, run:
 
 ```sh
+python -m pip install '.[dev]'
 ./scripts/check
+ruff check agent_observer tests scripts/check scripts/candidate-artifact
 ```
 
-The check requires Python 3.11 or newer, Git and chezmoi for the isolated managed
+The development extra includes JSON Schema validation and Ruff; neither is a
+core runtime dependency. Mesh remains optional. Tests that require Mesh skip
+when it is absent; working-set integration tests also skip when the SDK does not
+register that additive profile. Unexpected SDK/schema failures remain errors.
+CI separately tests core-only and the hash-pinned released a23 SDK.
+
+For a supported working-set pair, install the exact reviewed counterpart and run
+`./scripts/check --require-working-set-mesh`. This mode fails before discovery
+if the working-set profile is unavailable, so a paired check cannot pass by
+skipping that integration. The manual CI workflow accepts a full published Mesh
+commit SHA for the same required check. Unpublished local counterparts must be
+checked locally; a local pass does not imply a hosted CI run.
+
+The checks require Python 3.11 or newer, Git and chezmoi for the isolated managed
 operations fixture. CI provisions a checksummed chezmoi tool; the fixture targets
 only disposable directories and owned processes. It checks repository Markdown
 links, whitespace, code fences and Git whitespace errors. It does not invoke

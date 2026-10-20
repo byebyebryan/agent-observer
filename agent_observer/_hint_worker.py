@@ -2,10 +2,10 @@
 
 import ctypes
 import os
-from pathlib import Path
 import signal
 import sys
 import time
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,8 +41,8 @@ class Emitter:
 
 
 def main():
-    from agent_observer.bounded_json import decode_document
     from agent_observer.adapters import adapter_for
+    from agent_observer.bounded_json import decode_document
     signal.signal(signal.SIGALRM, lambda *_args: os._exit(2))
     signal.setitimer(signal.ITIMER_REAL, 2)
     request = decode_document(sys.stdin.buffer.read(4097), max_bytes=4096)

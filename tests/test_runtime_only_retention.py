@@ -3,11 +3,12 @@
 import copy
 import unittest
 
+from test_service_contract import fixture
+from test_service_state import provider_snapshot
+
 from agent_observer.contract import ContractError, identity_key, store_namespace, validate_snapshot
 from agent_observer.service_state import ServiceState
 from agent_observer.watch import RUNTIME_ONLY_RETENTION_MS, SampledWatch
-from test_service_contract import fixture
-from test_service_state import provider_snapshot
 
 
 def unsaved(provider="claude"):

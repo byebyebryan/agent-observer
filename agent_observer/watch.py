@@ -7,11 +7,15 @@ import time
 import uuid
 
 from .contract import (
-    SCHEMA_VERSION, ContractError, canonical, identity_key,
-    validate_snapshot, validate_watch,
+    SCHEMA_VERSION,
+    ContractError,
+    canonical,
+    identity_key,
+    validate_snapshot,
+    validate_watch,
 )
-from .read_client import listing
 from .observation_evidence import RuntimeOnlyRetention, retain_missing
+from .read_client import listing
 
 MIN_INTERVAL = 1.0
 RUNTIME_ONLY_RETENTION_MS = 60000

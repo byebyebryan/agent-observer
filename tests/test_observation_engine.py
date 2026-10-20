@@ -3,10 +3,11 @@
 import copy
 import unittest
 
-from agent_observer.observation_engine import ObservationEngine
-from agent_observer.provider import profile_for
 from test_service_contract import fixture
 from test_service_state import provider_snapshot
+
+from agent_observer.observation_engine import ObservationEngine
+from agent_observer.provider import profile_for
 
 
 class EngineTest(unittest.TestCase):

@@ -9,10 +9,11 @@ from types import SimpleNamespace
 from test_mesh_sync_profile import HAS_MESH_SYNC
 
 if HAS_MESH_SYNC:
-    from agent_observer import mesh_sync_profile as patch_module
-    from agent_observer.observation_support import SUPPORT_FIELDS
     from mesh_plus.sync.canonical import canonical
     from mesh_plus.sync.commitment import ABSENT
+
+    from agent_observer import mesh_sync_profile as patch_module
+    from agent_observer.observation_support import SUPPORT_FIELDS
 
     _Patch = patch_module._Patch
     # The before source's private byte markers remain part of its evidence.
@@ -142,7 +143,7 @@ class PatchStorageTest(unittest.TestCase):
             with self.subTest(rows=rows):
                 self.budget = Meter()
                 empty = SimpleNamespace(get=lambda _key: ABSENT)
-                self.patch = _Patch(SimpleNamespace(budget=self.budget, index=lambda _name: empty))
+                self.patch = _Patch(SimpleNamespace(budget=self.budget, index=lambda _name, empty=empty: empty))
                 for number in range(rows):
                     ref = [["fixture", "codex", "default", "thread", str(number)], ["owner", 1]]
                     marker = _marker(ref)

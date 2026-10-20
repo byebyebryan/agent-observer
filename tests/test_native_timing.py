@@ -4,11 +4,12 @@ import copy
 import unittest
 
 from test_service_state import provider_snapshot
+
 from agent_observer import timing
 from agent_observer.contract import ContractError, validate_snapshot
+from agent_observer.read_cache import ReadCache
 from agent_observer.service_contract import validate_frame
 from agent_observer.service_state import ServiceState
-from agent_observer.read_cache import ReadCache
 
 
 def turn(*, identifier="native-turn", status="inProgress", start=10, end=None, duration=None):
@@ -39,7 +40,9 @@ class NativeTimingTest(unittest.TestCase):
         cases = [turn(start=True), turn(start=-1), turn(end=9), turn(end=11),
                  turn(duration=123), turn(identifier="bad\n"), turn(status="completed", duration=True),
                  turn(status="completed", duration=-1), turn(start=4_000_000_001)]
-        content = turn(); content["data"][0]["items"] = [{"private": "secret"}]; cases.append(content)
+        content = turn()
+        content["data"][0]["items"] = [{"private": "secret"}]
+        cases.append(content)
         for value in cases:
             with self.subTest(value=value):
                 record = timing.codex_turn(value, observed_at=12000)
@@ -172,7 +175,8 @@ class TimingLeaseTest(unittest.TestCase):
         self.sample("runtime")
         original = copy.deepcopy(self.state.snapshot["sessions"][0]["latestTurn"])
         self.now += 100
-        value = copy.deepcopy(self.value); value["sessions"] = []
+        value = copy.deepcopy(self.value)
+        value["sessions"] = []
         value["sources"][0]["coverage"]["runtime"].update(status="partial", reason="bounded_census")
         self.state.attempt("codex", "runtime")
         self.state.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
@@ -188,8 +192,10 @@ class TimingLeaseTest(unittest.TestCase):
                      lambda r: r["receipt"].update(contextGeneration=99),
                      lambda r: r["receipt"].update(observedBoottimeMs=self.now + 1)]
         for mutate in mutations:
-            value = copy.deepcopy(good); mutate(value["snapshot"]["sessions"][0]["latestTurn"])
-            with self.assertRaises(ContractError): validate_frame(value)
+            value = copy.deepcopy(good)
+            mutate(value["snapshot"]["sessions"][0]["latestTurn"])
+            with self.assertRaises(ContractError):
+                validate_frame(value)
 
     def test_bad_worker_binding_leaves_accepted_state_unchanged(self):
         self.sample("runtime")
@@ -198,7 +204,8 @@ class TimingLeaseTest(unittest.TestCase):
         value["sessions"][0]["latestTurn"]["receipt"] = {"component": "history", "sampledBoottimeMs": self.now,
                                                        "observedBoottimeMs": self.now, "contextGeneration": 0}
         value["sessions"][0]["latestTurn"]["observedAt"] = 20000
-        with self.assertRaises(ContractError): self.state.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
+        with self.assertRaises(ContractError):
+            self.state.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
         self.assertEqual(self.state.snapshot, before)
 
     def test_equal_observation_conflict_is_ambiguous(self):
@@ -218,5 +225,7 @@ class TimingLeaseTest(unittest.TestCase):
                      lambda r: r["latestTurn"]["value"].update(completedAt=20000),
                      lambda r: r["latestTurn"]["value"].update(items=[])]
         for mutate in mutations:
-            value = copy.deepcopy(good); mutate(value["sessions"][0])
-            with self.assertRaises(ContractError): validate_snapshot(value)
+            value = copy.deepcopy(good)
+            mutate(value["sessions"][0])
+            with self.assertRaises(ContractError):
+                validate_snapshot(value)

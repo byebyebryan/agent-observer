@@ -106,9 +106,12 @@ codex_home = "/home/bryan/.codex-work"
 The loader requires version 1 and the `default` profile, accepts at most two
 profiles, and reads an owner-private, non-symlink regular file up to 64 KiB.
 Profile IDs are safe lowercase identifiers; labels are 1–32 printable,
-nonblank characters. Configured home strings must be absolute and cannot
-contain `..`. The string is preserved for the existing namespace calculation;
-physical resolution is used only to reject aliases/duplicate homes. A missing
+nonblank characters. Configured home strings must be absolute, contain no `..`,
+and already use the lexical spelling preserved by `Path` (no redundant separators,
+`.` segments or trailing separator except the root). Accepted strings are
+preserved for the existing namespace calculation, including symlink spelling;
+physical resolution is used only to reject aliases/duplicate homes. This keeps
+the route namespace equal to the service CLI's captured home namespace. A missing
 home remains independently unavailable and is never created. UID and runtime
 root are explicit inputs to the loader.
 

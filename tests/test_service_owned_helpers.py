@@ -10,10 +10,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from test_service_runtime import Running
-
 from agent_observer.service_runtime import Runtime, Worker
-from agent_observer.observation_scheduler import Scheduler
 
 
 def alive(pid):

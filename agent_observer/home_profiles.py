@@ -113,10 +113,12 @@ def _runtime_root(value: str | os.PathLike[str]) -> Path:
 
 def _home(value) -> tuple[str, Path]:
     _fail(type(value) is str and 0 < len(value) <= 4096, "profile_home")
-    _fail(value.startswith("/") and ".." not in Path(value).parts, "profile_home")
+    configured = Path(value)
+    _fail(str(configured) == value, "profile_home")
+    _fail(configured.is_absolute() and ".." not in configured.parts, "profile_home")
     _fail(not any(unicodedata.category(char).startswith("C") for char in value), "profile_home")
     try:
-        physical = Path(value).resolve(strict=False)
+        physical = configured.resolve(strict=False)
     except (OSError, RuntimeError):
         raise HomeProfileConfigError("profile_home_resolution") from None
     # Keep `value` unchanged for the existing store_namespace calculation.

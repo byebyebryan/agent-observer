@@ -5,15 +5,15 @@ import contextlib
 import io
 import json
 import os
+import unittest
 from pathlib import Path
 from types import SimpleNamespace
-import unittest
 from unittest.mock import patch
 
 from agent_observer import _hint_worker, _service_worker, cli, collection
 from agent_observer.adapters import adapter_for, select_adapters
-from agent_observer.service_runtime import Runtime
 from agent_observer.service_hints import Hints
+from agent_observer.service_runtime import Runtime
 from agent_observer.service_state import ServiceState
 
 ROOT = Path(__file__).resolve().parent.parent

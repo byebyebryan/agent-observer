@@ -1,16 +1,8 @@
 """Controlled native metadata shapes and actual disposable inotify trees."""
 
-import copy
-import json
-import os
-from pathlib import Path
-import select
-import struct
-import tempfile
-import time
 import unittest
 
-from agent_observer.codex_hints import Changes, MAX_CONTEXTS
+from agent_observer.codex_hints import MAX_CONTEXTS, Changes
 
 
 class CodexHintsTest(unittest.TestCase):

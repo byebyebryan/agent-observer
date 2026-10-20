@@ -1,15 +1,37 @@
 #!/usr/bin/env python3
 """Check documentation and synthetic spike tests without invoking providers."""
 
-from pathlib import Path
+import argparse
 import re
 import subprocess
 import sys
+from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--require-working-set-mesh", action="store_true",
+        help="fail before tests unless the paired working-set SDK is installed",
+    )
+    args = parser.parse_args(argv)
     root = Path(__file__).resolve().parent.parent
+    if args.require_working_set_mesh:
+        # The script directory is sys.path[0] for the documented ./scripts/check
+        # invocation. Prefer this checkout over any installed Observer package.
+        sys.path.insert(0, str(root))
+        try:
+            from agent_observer.mesh_working_set_profile import WorkingSetAgentProfile
+
+            WorkingSetAgentProfile()
+        except (ImportError, ValueError):
+            print(
+                "FAIL: --require-working-set-mesh needs a compatible SDK with "
+                "agent-observer.mesh-working-set.v1 registered",
+                file=sys.stderr,
+            )
+            return 1
     files = [root / "README.md", root / "AGENTS.md"]
     files.extend(sorted((root / "docs").rglob("*.md")))
     errors = []

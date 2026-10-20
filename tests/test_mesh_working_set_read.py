@@ -10,12 +10,20 @@ from unittest.mock import patch
 
 import test_mesh_working_set_profile as profile_fixture
 import test_working_set_projection as projection_fixture
-from mesh_plus.api import descriptor as mesh_descriptor
-from mesh_plus.protocol import ProtocolError
+from mesh_test_support import require_working_set_sdk
 
-from agent_observer.mesh_working_set_profile import WORKING_SET_PROFILE_ID, WorkingSetAgentCodec
-from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch, _WorkingSetSelection
 from agent_observer.working_set_contract import validate_frame
+
+if require_working_set_sdk():
+    from mesh_plus.api import descriptor as mesh_descriptor
+    from mesh_plus.protocol import ProtocolError
+
+    from agent_observer.mesh_working_set_profile import WORKING_SET_PROFILE_ID, WorkingSetAgentCodec
+    from agent_observer.mesh_working_set_read import (
+        PreparedWorkingSetAgentWatch,
+        _WorkingSetSelection,
+    )
+
 
 WALL = projection_fixture.WALL
 OFFSET = 100000

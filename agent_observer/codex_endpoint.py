@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-
 class EndpointError(ValueError):
     """Bounded ownership/availability reason; never includes inspected text."""
 

@@ -14,9 +14,9 @@ from test_service_runtime import scoped_snapshot
 
 from agent_observer import _service_worker
 from agent_observer.contract import canonical, parse_snapshot
+from agent_observer.observation_scheduler import Job
 from agent_observer.service_cli import serve
 from agent_observer.service_runtime import Runtime
-from agent_observer.observation_scheduler import Job
 from agent_observer.service_state import ServiceState
 from agent_observer.workspace import MAX_CONFIG_BYTES, enrich, load_config
 
@@ -107,7 +107,8 @@ class ServiceWorkspaceTest(unittest.TestCase):
                 self.assertIsNone(json.loads(process.stdin.write.call_args.args[0])["workspaceConfig"])
                 runtime._close_memo_channel(process)
             finally:
-                for memo in runtime.image_memos.values(): memo.close()
+                for memo in runtime.image_memos.values():
+                    memo.close()
                 runtime.selector.close()
 
     def test_invalid_configuration_fails_before_endpoint_or_provider_collection(self):

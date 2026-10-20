@@ -10,13 +10,13 @@ import uuid
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_observer.collection import _coverage, project_session, project_source
+from agent_observer.collection import _coverage, project_session
 from agent_observer.contract import (
-    ContractError,
-    canonical,
     MAX_BYTES,
     MAX_SESSIONS,
     MAX_SNAPSHOT_BYTES,
+    ContractError,
+    canonical,
     parse_snapshot,
     parse_watch,
     schema_document,

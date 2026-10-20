@@ -24,7 +24,9 @@ from .codex_endpoint import (
 )
 from .codex_metadata import MetadataError, live_thread_metadata
 from .codex_transport import SOURCE_KINDS, PassiveClient, TransportError
-from .timing import codex_turn, stale as timing_stale, unknown as timing_unknown
+from .timing import codex_turn
+from .timing import stale as timing_stale
+from .timing import unknown as timing_unknown
 
 # Native 0.160.0 managed-runtime proof: 33 RPC observations overlapped a
 # verified running disposable tool; all were active with an empty flags list.

@@ -1,11 +1,19 @@
 # Agent Observer architecture boundaries
 
-Current publication, 2026-10-16: Observer 0.7.0a7 and paired Mesh 0.1.0a23
+Latest recorded selection, 2026-10-19: the
+[home-profile delivery checkpoint](evidence/2026-10-19-home-profiles/REPORT.md)
+selects independent Default and Work working-set feeds on Snap and Default on
+Starship. The dashboards combine namespace-bound feeds with their loaded-user
+display policy. This additive delivery does not change full diagnostics, Tmux,
+the historical writer or the observation boundaries below.
+
+Published artifact checkpoint, 2026-10-16: Observer 0.7.0a7 and paired Mesh 0.1.0a23
 publish the exact qualified active-feed artifacts. The
 [RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
 records a7 collectors and separate a7/a23 active publishers on both hosts.
 The full read/publisher a5/a20 tuple, Tmux and historical writer are independent.
-Software deployment and paired rollback passed; physical RLCD checks remain deferred.
+Software deployment and paired rollback passed; physical RLCD checks were
+deferred at that checkpoint. Later device evidence has its own delivery receipt.
 
 Current implementation, 2026-10-14: [a18 retirement](evidence/2026-10-11-claude-retirement/REPORT.md)
 leaves Codex as the sole native adapter on Snap and Starship. Core/read/Mesh

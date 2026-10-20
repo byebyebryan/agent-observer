@@ -740,6 +740,7 @@ class Runtime:
         del self.workers[provider]
 
     def run(self, stop):
+        owned_hint_stop_process = None
         if hasattr(self.state, "sync_reserver"):
             self.state.sync_reserver = self._sync_reserver
         if hasattr(self.state, "working_set_reserver"):
@@ -749,8 +750,11 @@ class Runtime:
                 self.selector.register(listener, selectors.EVENT_READ, ("listener", None))
                 if self.native_hints:
                     from .service_hints import Hints
+                    def owned_hint_stop_process(process):
+                        self._stop_worker(Worker(None, process))
+
                     self.hints = Hints(self.state.configs, self.selector, self.scheduler,
-                                       lambda process: self._stop_worker(Worker(None, process)),
+                                       owned_hint_stop_process,
                                        factory=self.hint_factory, diagnostics=self.hint_diagnostics)
                 while not stop.is_set():
                     now = self.state.clock()
@@ -849,7 +853,15 @@ class Runtime:
                 if getattr(self.state, "sync_reserver", None) is self._sync_reserver:
                     self.state.sync_reserver = None
                 if self.hints:
-                    self.hints.close()
+                    hints = self.hints
+                    try:
+                        hints.close()
+                    finally:
+                        # Detach only this Runtime-owned closure after the
+                        # shutdown attempt. A replacement callback belongs to
+                        # its current owner.
+                        if hints.stop_process is owned_hint_stop_process:
+                            hints.stop_process = None
                 for peer in list(self.peers):
                     self._drop(peer)
                 for worker in list(self.workers.values()):

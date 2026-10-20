@@ -9,6 +9,7 @@ import threading
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import agent_observer.home_profiles as home_profiles
@@ -151,26 +152,81 @@ class HomeProfilesTest(unittest.TestCase):
         self.assertFalse(missing.parent.exists())
 
     def test_configured_path_identity_is_preserved_and_labels_do_not_change_routes(self):
-        configured_home = f"{self.root}/home//."
+        physical_home = self.root / "physical-home"
+        configured_home = self.root / "home-alias"
+        configured_home.symlink_to(physical_home, target_is_directory=True)
+        configured_home_text = str(configured_home)
         original = self.load(
-            toml_document([("default", ("Default", configured_home))])
+            toml_document([("default", ("Default", configured_home_text))])
         ).routes[0]
         relabeled = self.load(
-            toml_document([("default", ("Renamed", configured_home))])
+            toml_document([("default", ("Renamed", configured_home_text))])
         ).routes[0]
-        self.assertEqual(original.codex_home, configured_home)
+        self.assertEqual(original.codex_home, configured_home_text)
         self.assertEqual(
             original.namespace,
-            store_namespace("codex", configured_home, "explicit", self.uid),
+            store_namespace("codex", configured_home_text, "explicit", self.uid),
+        )
+        self.assertNotEqual(
+            original.namespace,
+            store_namespace("codex", str(physical_home), "explicit", self.uid),
         )
         self.assertEqual(original.label, "Default")
         self.assertEqual(relabeled.label, "Renamed")
         self.assertEqual(replace(original, label=relabeled.label), relabeled)
-        self.assertNotEqual(
-            original.namespace,
-            store_namespace("codex", str(Path(configured_home).resolve()), "explicit", self.uid),
+        self.assertFalse(physical_home.exists())
+
+    def test_lexically_noncanonical_home_is_rejected_without_creating_it(self):
+        configured_home = f"{self.root}/home//."
+        with self.assertRaisesRegex(HomeProfileConfigError, "profile_home"):
+            self.load(toml_document([("default", ("Default", configured_home))]))
+        self.assertFalse((self.root / "home").exists())
+
+    def test_route_namespace_matches_service_cli_captured_config(self):
+        from agent_observer import service_cli
+
+        home = str(self.root / "service-cli-home")
+        route = self.load(toml_document([("default", ("Default", home))])).routes[0]
+        captured = {}
+
+        class CapturingRuntime:
+            def __init__(self, state, *_args, **_kwargs):
+                captured["config"] = state.configs["codex"]
+
+            def run(self, _stop):
+                return None
+
+        with (
+            patch(
+                "agent_observer.adapters.select_adapters",
+                return_value=[SimpleNamespace(provider="codex")],
+            ),
+            patch("agent_observer.service_runtime.Runtime", CapturingRuntime),
+            patch.object(service_cli.signal, "getsignal", return_value=None),
+            patch.object(service_cli.signal, "signal"),
+        ):
+            self.assertEqual(
+                service_cli.serve(
+                    [
+                        "serve",
+                        "--host-scope",
+                        "snap",
+                        "--socket",
+                        str(self.runtime / "service.sock"),
+                        "--provider",
+                        "codex",
+                        "--codex-home",
+                        route.codex_home,
+                    ]
+                ),
+                0,
+            )
+
+        self.assertEqual(captured["config"], (route.codex_home, "explicit"))
+        self.assertEqual(
+            route.namespace,
+            store_namespace("codex", captured["config"][0], "explicit", self.uid),
         )
-        self.assertFalse(Path(configured_home).exists())
 
     def test_duplicate_physical_homes_include_symlink_aliases(self):
         home = self.root / "homes" / "codex"

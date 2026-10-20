@@ -1,7 +1,7 @@
 """Selection preserves exact identity and uncertainty; it adds no native facts."""
 
-import copy
 import asyncio
+import copy
 import importlib.util
 import json
 import tempfile

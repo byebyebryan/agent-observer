@@ -1,5 +1,17 @@
 # Working-set producer checkpoint
 
+Latest recorded delivery, 2026-10-19: the
+[home-profile checkpoint](evidence/2026-10-19-home-profiles/REPORT.md) selects
+Default and Work working-set feeds on Snap and Default on Starship. It records
+bounded native comparisons, namespace isolation, managed selection and device
+readback. The source retains its 72-hour union; dashboard presentation remains
+loaded-user only. Full diagnostics, Tmux and the historical writer stay independent.
+This selection does not promote the earlier controlled resource/cost evidence
+to whole-producer acceptance. The source closeout and evidence below retain
+their original tuples and exclusions.
+
+## Earlier source qualification checkpoint
+
 The opt-in active-plus-recent implementation now has an ordinary public Mesh
 Reader path. It preserves the default 72-hour union, the independent active
 branch, and explicit rare full-history reads. The producer qualification is
@@ -28,7 +40,7 @@ The latest private package and fixed-SSH tuple uses Mesh
 preserves the failed b9 graceful-close result and the new source correction;
 the earlier results are not reassigned to it. The wheel versions retain private candidate labels;
 their exact hashes distinguish them from released artifacts. No package was
-published or installed into a normal role.
+published or installed into a normal role at that earlier checkpoint.
 
 | Area | Evidence and boundary |
 | --- | --- |
@@ -75,7 +87,7 @@ cleanup. Its first failed attempt remains separate. The
 preserves the new failure and the matrix's stopped cases. Neither packet closes
 the remaining whole-producer gates.
 
-Deferred qualification follows P3 in the [execution plan](working-set-projection-plan.md):
+Deferred qualification at the source closeout followed P3 in the [execution plan](working-set-projection-plan.md):
 finish independent installed native comparisons on both hosts. Starship's
 recorded list/detail session-tree identity conflict stops qualification before
 candidate startup; it cannot be normalized into a selected row or a passing
@@ -109,4 +121,5 @@ at every cadence or turn sixteen local reads into sixteen simultaneous Readers.
 
 The [native qualification guide](working-set-native-qualification.md) documents
 isolation and unresolved outcomes. Ordinary Codex workflows, daemons and session
-actions are preserved. Deployment and P4 consumer/device adoption remain separate.
+actions are preserved. Deployment and P4 consumer/device adoption have separate
+evidence; the later home-profile checkpoint above records its selected delivery.

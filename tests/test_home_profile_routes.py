@@ -13,17 +13,21 @@ import time
 import unittest
 from pathlib import Path
 
-from mesh_plus.api import Bridge, Client, Endpoint, Reader
-from mesh_plus.transport import IPCServer, connect_ipc
+from mesh_test_support import require_working_set_sdk
 from test_service_runtime import scoped_snapshot
 
 from agent_observer.contract import ContractError, identity_key, store_namespace
 from agent_observer.home_profiles import load_home_profiles
-from agent_observer.mesh_working_set_profile import WorkingSetAgentProfile
-from agent_observer.mesh_working_set_publisher import make_working_set_publisher
-from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch
 from agent_observer.service_runtime import Runtime
 from agent_observer.service_state import ServiceState
+
+if require_working_set_sdk():
+    from mesh_plus.api import Bridge, Client, Endpoint, Reader
+    from mesh_plus.transport import IPCServer, connect_ipc
+
+    from agent_observer.mesh_working_set_profile import WorkingSetAgentProfile
+    from agent_observer.mesh_working_set_publisher import make_working_set_publisher
+    from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch
 
 
 HOST = "snap"

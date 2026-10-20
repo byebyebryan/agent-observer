@@ -9,8 +9,8 @@ import time
 import uuid
 from pathlib import Path
 
-from .activity import unavailable
 from . import timing
+from .activity import unavailable
 from .contract import (
     SCHEMA_VERSION,
     SOURCE,

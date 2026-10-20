@@ -5,10 +5,10 @@ from __future__ import annotations
 import copy
 import re
 
+from . import timing
 from .contract import ContractError
 from .observation_evidence import stale_row
 from .service_contract import StreamGuard
-from . import timing
 
 
 class ReadCache:

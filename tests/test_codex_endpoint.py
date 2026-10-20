@@ -9,12 +9,12 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from agent_observer._image_memo import ImageMemo
 from agent_observer.codex_endpoint import (
     EndpointError,
     inspect_managed_endpoint,
     validate_incarnation,
 )
-from agent_observer._image_memo import ImageMemo
 
 
 class EndpointInspectionTest(unittest.TestCase):
