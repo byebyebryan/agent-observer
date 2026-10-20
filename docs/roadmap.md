@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+[Codex home profiles](codex-home-profiles-plan.md) now collect explicit Default
+and Work scopes on Snap, retain Default on Starship and combine independent
+feeds in the dashboards. The [bounded delivery checkpoint](evidence/2026-10-19-home-profiles/REPORT.md)
+records native comparisons, filters, lifecycle isolation, device readback and cost.
+
 A [generalized active + recent projection](working-set-producer-checkpoint.md) is
 implemented as an opt-in source with a 3-day window and additive Mesh SDK1
 registration. Controlled public Reader IPC, private installed pairs and fixed
