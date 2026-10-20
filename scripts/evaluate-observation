@@ -354,7 +354,7 @@ def cli_call(cli, argv, snapshot=None):
     return process.stdout
 
 
-def identity_scope(snapshot, host, providers):
+def identity_scope(snapshot, host, providers, codex_home=None):
     sources = {source["provider"]: source for source in snapshot["sources"]}
     expected = {}
     checks = [len(sources) == len(snapshot["sources"])]
@@ -365,7 +365,11 @@ def identity_scope(snapshot, host, providers):
         if provider not in {"codex", "claude"}:
             checks.append(False)
             continue
-        home = str(Path.home() / (".codex" if provider == "codex" else ".claude"))
+        home = str(
+            (Path.home() / ".codex" if codex_home is None else codex_home)
+            if provider == "codex"
+            else Path.home() / ".claude"
+        )
         selector = "explicit"
         namespace = "sha256:" + hashlib.sha256(json.dumps([provider, home, selector, os.getuid()], separators=(",", ":")).encode()).hexdigest()
         expected[provider] = namespace
@@ -438,6 +442,7 @@ def read_client_checks(cli, payload):
     snapshot = json.loads(payload)
     listed = json.loads(cli_call(cli, ["list", "--input", "-", "--json"], payload))
     with_children = json.loads(cli_call(cli, ["list", "--input", "-", "--include-children", "--json"], payload))
+    with_system = json.loads(cli_call(cli, ["list", "--input", "-", "--include-children", "--include-system", "--json"], payload))
     expected = [r for r in snapshot["sessions"] if r["kind"] not in {"child", "system"}]
     def identity(row):
         return json.dumps(row["identity"], sort_keys=True)
@@ -468,25 +473,32 @@ def read_client_checks(cli, payload):
             raise ValueError("installed_show_mismatch")
         shown += 1
     doctor = json.loads(cli_call(cli, ["doctor", "--input", "-", "--json"], payload))
-    return {"defaultChildFiltering": {identity(r) for r in listed["sessions"]} == {identity(r) for r in expected}, "includeChildrenInventory": {identity(r) for r in with_children["sessions"]} == {identity(r) for r in snapshot["sessions"]}, "attentionActivityOrdering": listed["sessions"] == sorted(expected, key=order), "humanAgeRendering": age_ok and len(human) == len(listed["sessions"]) + 1, "exactReferenceShowRows": shown, "doctorSessionCount": doctor["sessionCount"] == len(snapshot["sessions"]), "cliRows": len(listed["sessions"]), "filteredChildren": len(snapshot["sessions"]) - len(listed["sessions"])}
+    return {"defaultChildFiltering": {identity(r) for r in listed["sessions"]} == {identity(r) for r in expected}, "includeChildrenInventory": {identity(r) for r in with_children["sessions"]} == {identity(r) for r in snapshot["sessions"] if r["kind"] != "system"}, "includeSystemInventory": {identity(r) for r in with_system["sessions"]} == {identity(r) for r in snapshot["sessions"]}, "attentionActivityOrdering": listed["sessions"] == sorted(expected, key=order), "humanAgeRendering": age_ok and len(human) == len(listed["sessions"]) + 1, "exactReferenceShowRows": shown, "doctorSessionCount": doctor["sessionCount"] == len(snapshot["sessions"]), "cliRows": len(listed["sessions"]), "filteredChildren": len(snapshot["sessions"]) - len(listed["sessions"])}
 
 
-def main():
+def build_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host-scope", required=True)
     parser.add_argument("--cli", type=Path, default=Path.home() / ".local/bin/agent-observer")
     parser.add_argument("--provider", choices=("codex",), action="append", required=True)
+    parser.add_argument(
+        "--codex-home",
+        type=Path,
+        default=Path.home() / ".codex",
+        help="Codex store selected for the native reference and expected in Observer data",
+    )
     parser.add_argument("--rounds", type=int, choices=range(1, 5), default=2)
     parser.add_argument("--service-socket", type=Path, help="compare explicit cached service output; no autostart")
     parser.add_argument("--codex-reference-sha256", help="optional operator guard for the inspected daemon hash; compatibility is contract based")
-    args = parser.parse_args()
-    for variable, suffix in (("CODEX_HOME", ".codex"),):
-        if variable in os.environ and Path(os.environ[variable]) != Path.home() / suffix:
-            raise ValueError("reference_default_home_required")
+    return parser
+
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
     samples = []
     if args.codex_reference_sha256 is not None and re.fullmatch("[0-9a-f]{64}", args.codex_reference_sha256) is None:
         raise ValueError("reference_digest_invalid")
-    client = NativeRPC(Path.home() / ".codex", args.codex_reference_sha256) if "codex" in args.provider else None
+    client = NativeRPC(args.codex_home, args.codex_reference_sha256) if "codex" in args.provider else None
     def native():
         result = {}
         if client is not None:
@@ -499,6 +511,7 @@ def main():
             if args.service_socket is None:
                 for provider in args.provider:
                     argv += ["--provider", provider]
+                argv += ["--codex-home", str(args.codex_home)]
             payload = cli_call(args.cli, argv)
             snapshot = json.loads(payload)
             service = None
@@ -509,7 +522,7 @@ def main():
                 snapshot = snapshot["snapshot"]
                 payload = json.dumps(snapshot, separators=(",", ":")).encode()
             after = native()
-            samples.append({**({"service": service} if service else {}), "nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned", "runtimeGaps") if k in v} for p, v in after.items()}})
+            samples.append({**({"service": service} if service else {}), "nativeBeforeAt": {p: v["sampleAt"] for p, v in before.items()}, "cliCollectedAt": snapshot["collectedAt"], "nativeAfterAt": {p: v["sampleAt"] for p, v in after.items()}, "sourceHealth": snapshot["sourceHealth"], "errors": snapshot["errors"], "sources": [{k: source[k] for k in ("provider", "sourceHealth", "coverage", "limitations", "errors")} for source in snapshot["sources"]], "identityScope": identity_scope(snapshot, args.host_scope, args.provider, codex_home=args.codex_home), "providers": {p: compare(before[p], snapshot, after[p], p) for p in args.provider}, "readClient": read_client_checks(args.cli, payload), "nativeRuntime": after.get("codex", {}).get("runtime"), "nativeReferenceLimits": {p: {k: v[k] for k in ("historyGaps", "historyBytesScanned", "runtimeGaps") if k in v} for p, v in after.items()}})
     finally:
         if client is not None:
             client.close()

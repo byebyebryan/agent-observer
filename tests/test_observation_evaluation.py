@@ -3,6 +3,7 @@
 import copy
 import importlib.machinery
 import importlib.util
+import io
 import json
 import os
 import tempfile
@@ -110,10 +111,13 @@ class ObservationEvaluationTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "native_detail_identity_conflict"):
                 evaluation.codex_reference(client)
 
-    def scoped_snapshot(self):
+    def scoped_snapshot(self, codex_home=None):
         sources, sessions = [], []
         for provider, suffix, native_kind in (("codex", ".codex", "thread"), ("claude", ".claude", "session")):
-            home = str(Path.home() / suffix)
+            home = str(
+                codex_home if provider == "codex" and codex_home is not None
+                else Path.home() / suffix
+            )
             selector = "explicit"
             namespace = "sha256:" + evaluation.hashlib.sha256(json.dumps(
                 [provider, home, selector, os.getuid()], separators=(",", ":")
@@ -136,6 +140,78 @@ class ObservationEvaluationTest(unittest.TestCase):
                 self.assertEqual(result["rowsChecked"], 2)
                 self.assertEqual(result["providersChecked"], ["claude", "codex"])
                 self.assertEqual(result["nativeReferenceProviders"], [provider])
+
+    def test_codex_home_override_is_the_exact_identity_scope(self):
+        selected_home = Path("/fixture/codex-work")
+        snapshot = self.scoped_snapshot(codex_home=selected_home)
+        self.assertTrue(
+            evaluation.identity_scope(
+                snapshot, "fixture", ["codex"], codex_home=selected_home
+            )["storeScopes"]
+        )
+        self.assertFalse(
+            evaluation.identity_scope(snapshot, "fixture", ["codex"])["storeScopes"]
+        )
+
+    def test_evaluator_parser_keeps_default_and_accepts_explicit_codex_home(self):
+        parser = evaluation.build_parser()
+        base = ["--host-scope", "fixture", "--provider", "codex"]
+        self.assertEqual(
+            parser.parse_args(base).codex_home,
+            Path.home() / ".codex",
+        )
+        selected_home = Path("/fixture/codex-work")
+        self.assertEqual(
+            parser.parse_args([*base, "--codex-home", str(selected_home)]).codex_home,
+            selected_home,
+        )
+
+    def test_main_uses_selected_home_for_native_rpc_and_direct_cli_scope(self):
+        selected_home = Path("/fixture/codex-work")
+        constructed = []
+        invocations = []
+        sample = {
+            "collectedAt": 1,
+            "sourceHealth": "current",
+            "errors": [],
+            "sources": [],
+            "sessions": [],
+        }
+
+        class Native:
+            def __init__(self, home, reference_sha256=None):
+                constructed.append((home, reference_sha256))
+
+            def close(self):
+                pass
+
+        def cli_call(_cli, argv, _input=None):
+            invocations.append(list(argv))
+            return b"agent-observer fixture\n" if argv == ["--version"] else json.dumps(sample).encode()
+
+        native_result = {
+            "sampleAt": 1,
+            "rows": {},
+            "runtime": {},
+        }
+        stdout = io.StringIO()
+        with patch.object(evaluation, "NativeRPC", Native), \
+             patch.object(evaluation, "cli_call", side_effect=cli_call), \
+             patch.object(evaluation, "codex_reference", return_value=native_result), \
+             patch.object(evaluation, "compare", return_value={}), \
+             patch.object(evaluation, "identity_scope", return_value={}), \
+             patch.object(evaluation, "read_client_checks", return_value={}), \
+             patch.dict(os.environ, {"CODEX_HOME": "/fixture/ambient-home"}), \
+             patch("sys.stdout", stdout):
+            evaluation.main([
+                "--host-scope", "fixture", "--provider", "codex",
+                "--codex-home", str(selected_home), "--rounds", "1",
+            ])
+
+        self.assertEqual(constructed, [(selected_home, None)])
+        snapshot_call = next(argv for argv in invocations if argv and argv[0] == "snapshot")
+        self.assertEqual(snapshot_call[-2:], ["--codex-home", str(selected_home)])
+        self.assertEqual(invocations[-1], ["--version"])
 
     def test_uncompared_provider_scope_is_not_implicitly_trusted(self):
         baseline = self.scoped_snapshot()

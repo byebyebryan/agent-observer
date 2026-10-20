@@ -53,6 +53,25 @@ def _scope(parser):
     parser.add_argument("--workspace-config", type=Path, help="local root/project mapping JSON")
 
 
+def _profile_routes_text(value):
+    lines = [f"{value['host']} (uid={value['uid']}; runtime={value['runtimeDir']})"]
+    for profile in value["profiles"]:
+        collector = profile["collector"]
+        mesh = profile["mesh"]
+        lines.append(
+            f"{profile['id']} ({profile['label']}): home={profile['codexHome']} "
+            f"namespace={profile['namespace']} window={profile['windowMs']}ms"
+        )
+        lines.append(
+            f"  collector: {collector['unit']} socket={collector['socket']}"
+        )
+        lines.append(
+            f"  mesh: source={mesh['source']} unit={mesh['publisherUnit']} "
+            f"socket={mesh['socket']}"
+        )
+    return "\n".join(lines)
+
+
 def _snapshot(args):
     if args.input is not None:
         value = parse_snapshot(_input(args.input))
@@ -114,6 +133,16 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("service", help="explicit cached service read client (service --help)")
     commands.add_parser("mesh", help="optional Mesh Plus cached state client (mesh --help)")
+    profiles = commands.add_parser("profiles", help="list explicit Codex home profile routes")
+    profiles.add_argument("--config", type=Path, required=True)
+    profiles.add_argument(
+        "--runtime-dir",
+        type=Path,
+        default=Path(os.environ.get("XDG_RUNTIME_DIR") or f"/run/user/{os.getuid()}"),
+        help="runtime root for derived sockets (default: XDG_RUNTIME_DIR or /run/user/<uid>)",
+    )
+    profiles.add_argument("--profile", help="list one exact configured profile ID")
+    profiles.add_argument("--json", action="store_true")
     commands.add_parser("api", help="describe the versioned public interface")
     schemas = commands.add_parser("schema", help="emit a bundled public JSON schema")
     schemas.add_argument("--kind", choices=("snapshot", "watch"), required=True)
@@ -142,6 +171,18 @@ def main(argv=None):
             return 0
         if args.command == "schema":
             print(canonical(schema_document(args.kind)))
+            return 0
+        if args.command == "profiles":
+            from .home_profiles import load_home_profiles, routes_document
+
+            manifest = load_home_profiles(
+                args.config,
+                uid=os.geteuid(),
+                runtime_dir=args.runtime_dir,
+            )
+            selected = None if args.profile is None else [args.profile]
+            routes = routes_document(manifest, selected)
+            print(canonical(routes) if args.json else _profile_routes_text(routes))
             return 0
         if args.command == "watch":
             if (
