@@ -1,0 +1,53 @@
+{
+  "manifestVersion": 5,
+  "package": "agent-observer",
+  "version": "0.7.0a8",
+  "wheel": "agent_observer-0.7.0a8-py3-none-any.whl",
+  "wheelSha256": "d960872074f8586d2bb56ea97678096a25525ff34796dbf390c94627fd949928",
+  "sourceRevision": "aade4826c785af6dc98842dfb662a090828dda17",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "write": {
+    "schema": 2
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-write",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "activeFeed": {
+    "protocol": 1,
+    "schemas": {
+      "request": 1,
+      "frame": 1
+    },
+    "schemaSha256": {
+      "request": "ada83b6a33fced2d9c1c62bf541b609ce887425a379ad49003802ee4a71f497c",
+      "frame": "0db6cfe16880467ff4c62b180ca2ae94db9e580543f43f9dcf9258c8a64d0b05"
+    },
+    "selectorDigest": "sha256:73d08f0217e03cea283820e18abed0b06cd5e4c52428e431bab5da1d760ff9d6"
+  },
+  "notes": [
+    "Complete selected-view delivery for full, active and working-set profiles through ordinary Mesh SDK1; paired with exact released Mesh 0.1.0a24.",
+    "Working-set1 defaults to active OR recent within 72 hours, with independent source receipts, currentness, expiry, scope/member leases and explicit full-history reads.",
+    "Codex home profiles remain explicit and namespace-bound. API4/read6/Service4/write2 and existing native schema meanings are unchanged.",
+    "Both retained semantic delta and new Mesh view-feed delivery remain disabled/unselected. No delta or performance adoption claim.",
+    "Prerelease artifact; managed service, consumer, native and device acceptance retain separately recorded scopes."
+  ]
+}
