@@ -2,8 +2,9 @@
 
 The [Mesh a24 dependency upgrade](mesh-a24-complete-view-upgrade.md) targets the
 public wheel and keeps ordinary complete-view delivery. Both semantic delta
-sync and view-feed delivery stay unselected. Source/installed-candidate checks
-do not change the normal service selections below.
+sync and view-feed delivery stay unselected. The [a8 publication/deployment](evidence/2026-10-21-a8-deployment/REPORT.md)
+selects released a8/a24 collectors and working-set publishers on both hosts,
+while dashboard/full-reader/Tmux/writer tuples retain their own selections.
 
 [Codex home profiles](codex-home-profiles-plan.md) now collect explicit Default
 and Work scopes on Snap, retain Default on Starship and combine independent
@@ -23,7 +24,7 @@ as of 2026-10-17. Implementation and evidence are retained for a future explicit
 resume request. CPU, 2,000-row capacity/recovery and remaining producer gates are
 not accepted; active optimization/qualification and automatic continuation end.
 
-The hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7)
+The earlier hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7)
 publishes the qualified wheel unchanged, paired with Mesh 0.1.0a23. The
 [RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
 closes software integration, configured fleet, collector/active publisher/client

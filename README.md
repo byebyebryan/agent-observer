@@ -1,11 +1,11 @@
 # Agent Observer
 
-Latest hosted prerelease: [**0.7.0a7**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7),
-published from the exact [qualified artifact](artifacts/observer-0.7.0a7.json).
-The [publication receipt](docs/evidence/2026-10-16-active-feed-publication/acceptance.json)
-verifies public downloads, signed assets/tags and fresh installed owner gates.
-Python 3.11+ is required; optional active-feed networking pairs it with Mesh
-0.1.0a23. Core and local service remain independent of Mesh imports.
+Latest hosted prerelease: [**0.7.0a8**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a8),
+published from the exact [qualified artifact](artifacts/observer-0.7.0a8.json).
+The [publication and deployment receipt](docs/evidence/2026-10-21-a8-deployment/REPORT.md)
+records verified public downloads, installed pairing and scoped chezmoi delivery
+of a8/Mesh a24 collectors and working-set publishers on Snap and Starship.
+Python 3.11+ is required. Core and local service remain independent of Mesh imports.
 
 Shared host-side discovery and monitoring for coding agents. Codex is the only
 implemented native provider; [Claude support is retired](docs/claude-retirement-plan.md).
@@ -23,7 +23,9 @@ Starship device gates.
 The current source [targets released Mesh 0.1.0a24](docs/mesh-a24-complete-view-upgrade.md)
 for optional networking, retaining ordinary complete selected-view delivery.
 Both the older semantic delta engine and the new view-feed protocol remain
-disabled/unselected. This dependency checkpoint does not change live selections.
+disabled/unselected. The [a8 deployment](docs/evidence/2026-10-21-a8-deployment/REPORT.md)
+selects that pair for collectors and working-set publishers; independent
+dashboard/full-reader/Tmux/writer tuples remain unchanged.
 
 The opt-in [active + recent projection](docs/working-set-producer-checkpoint.md)
 is implemented with a 3-day history window and additive Mesh SDK1 support.
