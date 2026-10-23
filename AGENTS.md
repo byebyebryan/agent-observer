@@ -4,6 +4,11 @@
 
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
+- Current consumers are read-only dashboards, diagnostics and agent utilities.
+  Use `docs/utility-read-guide.md` for their public interface. Current Agent Plus
+  independently opens native provider managers and has no Observer/Tmux runtime
+  dependency. Native managers own conversation control. Claude native entry in
+  Agent Plus does not imply Claude observation support here.
 - `docs/observation-boundaries.md` defines the implemented observation boundary:
   model/passive adapters/reusable observation engine in core, service hosting
   and local read delivery, external meshing and attachment/action/alert clients.
@@ -19,7 +24,9 @@
   are retained as a coordinated rollback tuple. The optional network component
   owns cached Service 4 acquisition and the lazy Agent factory; core/local
   service stay Mesh-free. Mesh owns copied envelopes/proofs/delivery. Preserve
-  Tmux's independently selected a7/profile v1 factory, owner and controls.
+  Tmux's independently selected factory, owner and controls. The later released
+  a8/Mesh a24 working-set cohort and independent read/full/active/writer roles
+  have their own receipts; effective host manifests determine current selection.
   Shared-launcher changes require both domain cached/proof/watch and paired
   collector/read/publisher rollback gates. Native timing does not provide exact
   phase entry or a receiving-device clock bridge.
@@ -43,9 +50,11 @@
   fallback or terminal/job field scaffolding merely for the old contract.
   `docs/contract-and-clients-plan.md` records the preceding track. Keep
   observation/core/read-client passes separate from frontend work.
-  The proposed first-party New/Resume write client and optional networking
-  component may share this repository, but are separate from passive core and
-  have independent implementation/native gates. Design documentation alone
+  The historical first-party New/Resume write client remains independent of
+  passive core and the current native-entry product. Retained writer selection,
+  source retirement and native-action support require separate consumer/contract
+  review. Optional networking has its own implementation/native gates.
+  Design documentation alone
   does not accept proposed states/fields/commands or authorize deployment.
 - D0-D6 in `docs/codex-daemon-authority-plan.md` record the preceding correction
   sequence. Its D4 gate independently accepts the Codex read/service artifact;
@@ -63,17 +72,17 @@
   registration; changed contract semantics, topologies or new capabilities need
   focused independent proof. Existing pilot evidence retains its historical
   exact-artifact bounds. The API 4/schema-v6/Service 4 command remains a prerelease contract.
-- Continue preflight and spike work on Snap in `~/code/agent-observer` and
-  independently validate Codex on Starship. Claude native use is external after
-  retirement. Starship
+- Validate native changes independently on affected hosts, using owned fixtures
+  and the accepted observation-validation workflow. Claude native use remains
+  external after retirement. Starship
   evidence does not establish Snap versions or runtime behavior.
-- RLCD and Agent Plus drive the initial requirements. WSNav is historical
-  evidence and a possible future consumer; its integration is not a gate.
-- Agent Plus meshes sessions across providers and hosts. Codex leads delivery;
-  the prior required-second-provider condition is superseded by Claude retirement.
-  Preserve provider-independent contracts and separate usage context from
-  provider/host identity. See `docs/native-runtime-migration-plan.md` for the
-  delivery boundaries and `docs/design-review.md` for pending proof decisions.
+- RLCD and reusable read utilities drive current requirements. The former
+  Agent Plus consumer and WSNav are historical integration context, not gates.
+- Codex is the only native observation adapter. The former required-second-
+  provider condition is superseded by Claude retirement. Preserve pure
+  provider-neutral contracts and separate usage context from host/home/session
+  identity. Older native-runtime migration plans retain their dated boundary;
+  they do not schedule a new Agent Plus migration or Claude adapter.
 - OpenCode integration is deprecated and removed from Agent Plus at migration
   cutover. Do not add an OpenCode adapter or compatibility fallback to this work.
 - Inspect actual installed versions and runtime topology. Existing projects,

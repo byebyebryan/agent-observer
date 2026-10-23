@@ -1,5 +1,13 @@
 # Agent Observer architecture boundaries
 
+Current product role: Codex read-only observation for dashboards and other agent
+utilities. Agent Plus independently opens native provider managers through Host
+Mesh; it consumes neither Observer reads/writes nor Tmux. Claude native entry
+there is separate from retired Claude observation here. The
+[public utility-read guide](utility-read-guide.md) and
+[ownership specification](observation-boundaries.md) describe the current client
+boundary. Earlier migration-pilot sections retain their dated support scope.
+
 Source dependency checkpoint, 2026-10-20: optional networking now targets
 [released Mesh a24](mesh-a24-complete-view-upgrade.md), including its additive
 working-set registration. Ordinary complete-view APIs remain selected; semantic
@@ -101,9 +109,10 @@ The [API 4 handoff](api-v4.md) and
 [Mesh/operational receipt](evidence/2026-10-13-system-classification/REPORT.md)
 record current commands, clock limits, selectors and acceptance boundaries.
 
-Agent Plus and attachment are parked. The read CLI and physical dashboards are
-immediate consumers, with separate presentation/device gates. Native provider
-UI management remains external. IPC/SSH are selected; WSS and the private a21
+The former Observer-backed Agent Plus controller is retired; current Agent Plus
+opens native managers independently. Observer attachment/actions remain separate.
+The read CLI, physical dashboards and other read utilities have independent
+presentation/device gates. IPC/SSH are selected; WSS and the private a21
 allocation candidate are not promoted. See the [roadmap](roadmap.md).
 
 The [a20 owner adoption](evidence/2026-10-14-mesh-a20/REPORT.md) corrects
@@ -255,7 +264,11 @@ release stability and ordinary runtime/consumer acceptance remain pending.
 The [migration plan](native-runtime-migration-plan.md) defines delivery and
 acceptance; the [roadmap](roadmap.md) records current status.
 
-## Purpose and product boundaries
+## Historical product boundaries (2026-10-02)
+
+The original migration direction was as follows; current Codex-only utility
+ownership is described above and in the roadmap. This historical second-provider
+requirement and external Agent Plus controller are superseded.
 
 Agent Observer provides reusable host-side provider discovery and observation
 for Agent Plus and RLCD. Agent Plus meshes sessions across providers and hosts;

@@ -1,10 +1,19 @@
 # Agent Observer roadmap
 
+Current direction: reusable Codex read-only observation for dashboards and agent
+utilities. Native provider managers own session control. Agent Plus independently
+opens those managers and is no longer a consumer migration prerequisite. See
+the [utility-read guide](utility-read-guide.md) for new consumers and
+[architecture](architecture.md) for the producer/network boundary. Claude
+monitoring remains retired; Claude native entry in Agent Plus is independent.
+
 The [Mesh a24 dependency upgrade](mesh-a24-complete-view-upgrade.md) targets the
 public wheel and keeps ordinary complete-view delivery. Both semantic delta
 sync and view-feed delivery stay unselected. The [a8 publication/deployment](evidence/2026-10-21-a8-deployment/REPORT.md)
 selects released a8/a24 collectors and working-set publishers on both hosts,
-while dashboard/full-reader/Tmux/writer tuples retain their own selections.
+while preserving dashboard/full-reader/Tmux/writer tuples at that checkpoint.
+Later consumer selection must be read from its effective immutable bundle and
+owner deployment record; producer rollout does not establish consumer acceptance.
 
 [Codex home profiles](codex-home-profiles-plan.md) now collect explicit Default
 and Work scopes on Snap, retain Default on Starship and combine independent
@@ -109,8 +118,10 @@ acceptance. Normal role selections remain a5/a20.
 - Physical-suspend and post-TUI-closure proof for the accepted Codex limits.
 - A new provider only after runtime/identity/activity/capability review.
 
-Agent Plus and attachment/actions remain parked; its temporary native-manager
-entry is retired. Private a21 allocation work is not merged/promoted. Producer
+The former Observer-backed Agent Plus controller and temporary Observer launcher
+are retired proposals. Current Agent Plus is an independent native-entry
+client; Observer attachment/actions remain separate/deferred. Private a21
+allocation work is not merged/promoted. Producer
 acceptance does not imply a frontend or device gate.
 
 The [a20 owner adoption](evidence/2026-10-14-mesh-a20/REPORT.md) corrects
@@ -437,22 +448,22 @@ next track or make networking a prerequisite for the host-local contract.
 
 ## Product and provider priorities
 
-Agent Plus meshes sessions across providers and hosts. Agent Observer owns its
-provider discovery/monitoring boundary; Agent Plus retains UI, host composition,
-viewer association and validated actions. Providers own work; tmux carries
-individual native TUI clients.
+Agent Observer serves read-only utilities through public local and optional Mesh
+reads. Codex is the sole implemented native provider. Provider-neutral contracts
+remain useful, but a new adapter needs independent native identity, runtime,
+activity, coverage and failure predicates. Claude observation is retired.
 
-Codex is primary and leads the first complete integration and validation across
-machines. Claude Code is secondary, with strong support on the user's single
-work machine. Priority changes delivery order, not support quality or the
-provider-neutral architecture. Check Claude's native model before stabilizing
-the shared contract; the completed migration includes both providers.
+Agent Plus provides environment/window entry and focus for native Codex/Claude
+managers. Those managers own conversation control; no Observer/Tmux dependency
+or shared conversation-control migration is required. Tmux remains independent
+generic tooling. Consumer presentation and actions stay outside passive core.
 
-The user's work/general distinction is consumer presentation policy, separate
-from provider and host identity. Context views/tags and a persistent session
-rail are optional later UI work. OpenCode support in Agent Plus is deprecated
-and removed at migration cutover. Temporary Agent Plus breakage is acceptable;
-a parallel legacy discovery implementation is not a migration requirement.
+Prioritize utility-read usability, correct field/coverage expiry and compatible
+diagnostics against concrete consumers. Additional helper APIs need demonstrated
+reuse; richer events/actions and new native adapters have separate gates.
+Work/general labels remain consumer context, distinct from host/provider/home
+identity. Earlier two-provider/Agent Plus migration milestones below are dated
+history and do not re-enable retired work.
 
 ## Observation proof status
 

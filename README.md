@@ -1,5 +1,20 @@
 # Agent Observer
 
+Reusable read-only Codex observation for hardware dashboards, status utilities
+and diagnostic clients. Native provider managers own conversations and work;
+Observer supplies exact identities, independently qualified runtime/activity
+facts, coverage and freshness. Core/local service remain independent of Mesh.
+Optional Mesh supplies cross-host delivery through supported pure profiles.
+
+Agent Plus is a separate convenience entry/focus tool for native Codex/Claude
+managers. It has no Observer or Tmux dependency. Claude native entry there does
+not imply Claude monitoring here. Start a new utility with the
+[public-read guide](docs/utility-read-guide.md).
+
+The historical `agent-observer-write` command remains independently selected
+compatibility tooling. It is outside the read-only observation and utility
+interfaces and grants them no action authority.
+
 Latest hosted prerelease: [**0.7.0a8**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a8),
 published from the exact [qualified artifact](artifacts/observer-0.7.0a8.json).
 The [publication and deployment receipt](docs/evidence/2026-10-21-a8-deployment/REPORT.md)
@@ -24,8 +39,10 @@ The current source [targets released Mesh 0.1.0a24](docs/mesh-a24-complete-view-
 for optional networking, retaining ordinary complete selected-view delivery.
 Both the older semantic delta engine and the new view-feed protocol remain
 disabled/unselected. The [a8 deployment](docs/evidence/2026-10-21-a8-deployment/REPORT.md)
-selects that pair for collectors and working-set publishers; independent
-dashboard/full-reader/Tmux/writer tuples remain unchanged.
+selected that pair for collectors and working-set publishers while preserving
+the independent dashboard/full-reader/Tmux/writer tuples at that checkpoint.
+Later dashboard selection has its own immutable consumer bundle and receipts;
+effective deployment overrides and installed entries determine current roles.
 
 The opt-in [active + recent projection](docs/working-set-producer-checkpoint.md)
 is implemented with a 3-day history window and additive Mesh SDK1 support.
@@ -135,10 +152,12 @@ contracts/capabilities, not daily version allowlists.
 Accepted limits include bounded/partial native inventories, older historical
 unknown kinds, creation/sampling races, and deferred physical-suspend and
 post-TUI-closure lifetime checks. Current-state push does not promise all native
-transitions or notification replay. Agent Plus, its temporary launcher proposal,
-attachment/actions and richer notification events are parked/deferred; the
-managed desktop keybind is removed. Physical dashboards and the read CLI are
-the immediate consumers, with independent UI/feed/device acceptance.
+transitions or notification replay. Observer-backed Agent Plus conversation
+control and the temporary Observer launcher are retired proposals. Current
+Agent Plus independently opens native managers; its keybinding and installation
+belong to that project. Observer attachment/actions and richer notification
+events remain separate/deferred. Physical dashboards and other read utilities
+have independent UI/feed/device acceptance.
 
 ## Previous checkpoints
 
@@ -335,7 +354,9 @@ Agent Observer owns provider discovery, bounded metadata, runtime observations,
 source/version capability handling, and reconciliation of stale or conflicting
 evidence. Its interface should work across consumer languages.
 
-Agent Plus uses these observations to mesh sessions across providers and hosts.
+Read-only utilities consume these observations locally or through Mesh. Current
+Agent Plus instead enters native provider managers through Host Mesh and does
+not consume Observer state.
 Provider independence remains an architectural requirement. Codex is the current
 native implementation; another provider requires its own reviewed runtime,
 identity, activity, classification and failure predicates.
@@ -346,7 +367,8 @@ from live work state; observation health is separate from both. Unsupported
 or ambiguous evidence remains explicit.
 
 Consumers own their presentation and actions. RLCD owns dashboard selection
-and device transport; Agent Plus owns picker, host routing and terminal actions.
+and device transport; Agent Plus owns its environment/window picker and native
+entry/focus intent. Shared host identity and route policy belong to Mesh/SSH.
 WSNav's current private-tmux and workstream model does not constrain this
 component. Resume, launch, focus, approval, interruption and session deletion
 are outside the initial observation API.
