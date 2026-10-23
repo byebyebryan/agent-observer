@@ -76,6 +76,18 @@ def document(path):
     ):
         raise ValueError("manifest_invalid")
     active_feed_manifest(value)
+    if "pairedMesh" in value:
+        mesh = value["pairedMesh"]
+        if (value["manifestVersion"] != 6 or not isinstance(mesh, dict)
+                or set(mesh) != {"version", "wheel", "wheelSha256", "sourceRevision"}
+                or not isinstance(mesh["version"], str)
+                or not re.fullmatch(r"[0-9][0-9A-Za-z.]*", mesh["version"])
+                or mesh["wheel"] != "mesh_plus-" + mesh["version"] + "-py3-none-any.whl"
+                or not isinstance(mesh["wheelSha256"], str)
+                or not isinstance(mesh["sourceRevision"], str)
+                or not re.fullmatch(r"[0-9a-f]{64}", mesh["wheelSha256"])
+                or not re.fullmatch(r"[0-9a-f]{40}", mesh["sourceRevision"])):
+            raise ValueError("paired_mesh_manifest_invalid")
     return value
 
 
@@ -230,6 +242,28 @@ print(json.dumps({'modules':[name for name in names if importlib.util.find_spec(
         if (retired["modules"] or retired["entrypoints"] != ["agent-observer", "agent-observer-service"]
                 or (prefix / "bin/agent-observer-write").exists()):
             raise ValueError("retired_capability_installed")
+    if "pairedMesh" in manifest:
+        mesh = manifest["pairedMesh"]
+        mesh_wheel = wheel.parent / mesh["wheel"]
+        wheel_check(mesh_wheel, mesh)
+        mesh_metadata = json.loads(run([str(prefix / "bin/python"), "-I", "-B", "-c", """import importlib.metadata,json
+from mesh_plus.api import descriptor
+from mesh_plus.protocol import ProtocolError
+try: descriptor('agent',profile_id='agent-observer.mesh-active.v1')
+except ProtocolError: retired=True
+else: retired=False
+profiles=[descriptor(domain,profile_id=profile).profile_id for domain,profile in [('agent','agent-observer.mesh-candidate.v3'),('agent','agent-observer.mesh-working-set.v1'),('tmux','tmux-observer.mesh-candidate.v1')]]
+print(json.dumps({'version':importlib.metadata.version('mesh-plus'),'retired':retired,'profiles':profiles}))"""]))
+        if mesh_metadata["version"] != mesh["version"] or not mesh_metadata["retired"]:
+            raise ValueError("paired_mesh_capability_mismatch")
+        with zipfile.ZipFile(mesh_wheel) as archive:
+            for entry in archive.infolist():
+                if entry.is_dir() or entry.filename.endswith(".dist-info/RECORD"):
+                    continue
+                target = site / entry.filename
+                if (not target.is_file() or target.is_symlink()
+                        or target.read_bytes() != archive.read(entry)):
+                    raise ValueError("paired_mesh_installed_bytes_mismatch")
     return {
         "status": "accepted",
         "prefix": str(prefix),
@@ -242,6 +276,8 @@ print(json.dumps({'modules':[name for name in names if importlib.util.find_spec(
         "schemaVersionsVerified": True,
         **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4, 5, 6} else {}),
         **({"retiredCapabilitiesVerified": True} if manifest["manifestVersion"] == 6 else {}),
+        **({"pairedMeshVerified": True, "meshWheelSha256": manifest["pairedMesh"]["wheelSha256"]}
+           if "pairedMesh" in manifest else {}),
         **({"activeFeedVerified": True} if active is not None else {}),
         "providerInvocations": 0,
         "selectedLinksChanged": False,

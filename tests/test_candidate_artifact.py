@@ -44,6 +44,19 @@ class CandidateArtifactTest(unittest.TestCase):
         }
         return manifest
 
+    def test_read_only_pair_metadata_rejects_malformed_provenance(self):
+        good = json.loads((ROOT / 'artifacts/observer-0.7.0a9.json').read_text())
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'manifest.json'
+            path.write_text(json.dumps(good))
+            self.assertEqual(HELPER['document'](path)['pairedMesh'], good['pairedMesh'])
+            for change in ({'wheelSha256': True}, {'sourceRevision': None},
+                           {'wheel': '../outside.whl'}, {'version': 'unbound'}):
+                changed = {**good, 'pairedMesh': {**good['pairedMesh'], **change}}
+                path.write_text(json.dumps(changed))
+                with self.subTest(change=change), self.assertRaises(ValueError):
+                    HELPER['document'](path)
+
     def fake_installation(self, directory, *, active=True):
         """Exact-byte in-process verification fixture; never installs or spawns."""
         prefix = Path(directory).resolve() / "candidate"
