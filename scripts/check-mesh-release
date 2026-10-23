@@ -64,15 +64,12 @@ def verify(prefix, manifest_path, wheel):
 
     from mesh_plus.api import Bridge, CachedPublisher, Reader, configured_reader
 
-    from agent_observer.mesh_active_profile import ACTIVE_PROFILE_ID
     from agent_observer.mesh_publisher import make_publisher
     from agent_observer.mesh_working_set_publisher import make_working_set_publisher
 
     wiring = {}
     for name, factory in (
         ("full", lambda: make_publisher("fixture", "agent", "/nonexistent/agent.sock")),
-        ("active", lambda: make_publisher("fixture", "agent", "/nonexistent/agent.sock",
-                                         profile_id=ACTIVE_PROFILE_ID)),
         ("working-set", lambda: make_working_set_publisher("fixture", "agent", "/nonexistent/agent.sock")),
     ):
         publisher = factory()
@@ -82,6 +79,13 @@ def verify(prefix, manifest_path, wheel):
         bridge = Bridge(publisher)
         require(type(bridge) is Bridge and Bridge.__module__ == "mesh_plus.bridge", "ordinary_bridge")
         wiring[name] = {"profile": publisher.profile, "publisher": type(publisher).__module__}
+    retired_profile = "agent-observer.mesh-active.v1"
+    try:
+        make_publisher("fixture", "agent", "/nonexistent/agent.sock", profile_id=retired_profile)
+    except ValueError as error:
+        require(str(error) == "profile_descriptor", "retired_profile_rejection")
+    else:
+        raise ValueError("retired_profile_admitted")
     require(Reader.__module__ == "mesh_plus.reader"
             and configured_reader.__module__ == "mesh_plus.configured_read", "ordinary_reader")
     for name, module in tuple(sys.modules.items()):
@@ -100,7 +104,8 @@ def verify(prefix, manifest_path, wheel):
         "sourceRevision": manifest["sourceRevision"], "prefix": str(prefix),
         "installedWheelFilesVerified": installed_files, "noneditableReleasedWheel": True,
         "ownerModule": str(sys.modules["agent_observer.mesh_publisher"].__file__),
-        "factories": wiring, "reader": Reader.__module__, "deltaImports": forbidden,
+        "factories": wiring, "retiredProfilesRejected": [retired_profile],
+        "reader": Reader.__module__, "deltaImports": forbidden,
         "limits": ["no provider or socket I/O", "construction/parity gate; delivery has separate tests",
                    "no normal service selection or deployment"],
     }
