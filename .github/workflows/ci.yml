@@ -45,6 +45,11 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.11', '3.14']
+        mesh:
+          - version: 0.1.0a24
+            sha256: 9bca5b554babfa59ba56b1a4ac5e8e5c66a85e63709731ee1fe7d4f0ed6a18a6
+          - version: 0.1.0a25
+            sha256: 0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -57,11 +62,11 @@ jobs:
           mkdir -p "$RUNNER_TEMP/observer-tools"
           tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
           echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
-      - name: Download exact published Mesh a24 wheel
-        run: python -m pip download --no-deps --dest "$RUNNER_TEMP" 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a24/mesh_plus-0.1.0a24-py3-none-any.whl#sha256=9bca5b554babfa59ba56b1a4ac5e8e5c66a85e63709731ee1fe7d4f0ed6a18a6'
+      - name: Download exact published Mesh wheel
+        run: python -m pip download --no-deps --dest "$RUNNER_TEMP" 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v${{ matrix.mesh.version }}/mesh_plus-${{ matrix.mesh.version }}-py3-none-any.whl#sha256=${{ matrix.mesh.sha256 }}'
       - name: Install Observer development tools and the downloaded wheel
-        run: python -m pip install '.[dev]' "$RUNNER_TEMP/mesh_plus-0.1.0a24-py3-none-any.whl"
+        run: python -m pip install '.[dev]' "$RUNNER_TEMP/mesh_plus-${{ matrix.mesh.version }}-py3-none-any.whl"
       - name: Verify installed Mesh against its release manifest
-        run: python -I -B scripts/check-mesh-release --prefix "$(python -c 'import sys; print(sys.prefix)')" --manifest artifacts/mesh-0.1.0a24.json --wheel "$RUNNER_TEMP/mesh_plus-0.1.0a24-py3-none-any.whl"
+        run: python -I -B scripts/check-mesh-release --prefix "$(python -c 'import sys; print(sys.prefix)')" --manifest artifacts/mesh-${{ matrix.mesh.version }}.json --wheel "$RUNNER_TEMP/mesh_plus-${{ matrix.mesh.version }}-py3-none-any.whl"
       - run: ./scripts/check --require-working-set-mesh
       - run: ./scripts/check-mesh-owner --installed

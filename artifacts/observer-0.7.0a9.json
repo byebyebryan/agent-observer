@@ -28,7 +28,7 @@
     "codex_client_system_classification_v1"
   ],
   "notes": [
-    "Private qualified-candidate staging; no public publication claim.",
+    "Qualified immutable read-only artifact; publication status is established by the release receipt.",
     "Read-only API4/snapshot6/Service4 with ordinary working-set1 and full reads; paired Mesh 0.1.0a25.",
     "Writer and standalone active-only dispatch retired; shared projection helpers and independent active/recent working-set membership preserved.",
     "Delta and view-feed remain unselected; immutable old role pins and recovery inputs remain independent."
