@@ -11,9 +11,11 @@ managers. It has no Observer or Tmux dependency. Claude native entry there does
 not imply Claude monitoring here. Start a new utility with the
 [public-read guide](docs/utility-read-guide.md).
 
-The historical `agent-observer-write` command remains independently selected
-compatibility tooling. It is outside the read-only observation and utility
-interfaces and grants them no action authority.
+Current source candidate **0.7.0a9** retires Observer writes and the standalone
+active-only feed, retaining full diagnostics and working-set reads. It adds
+`agent-observer working-set list/watch` for bounded cached inspection. See the
+[retirement and CLI guide](docs/read-only-retirement.md). Publication and managed
+selection have separate receipts; the hosted release below remains historical.
 
 Latest hosted prerelease: [**0.7.0a8**](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a8),
 published from the exact [qualified artifact](artifacts/observer-0.7.0a8.json).

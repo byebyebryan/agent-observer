@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from test_service_runtime import Running, scoped_snapshot
 
-from agent_observer.active_contract import SELECTOR, SELECTOR_DIGEST
+from agent_observer.sync_projection_schema import SELECTOR, SELECTOR_DIGEST
 from agent_observer.contract import canonical
 from agent_observer.service_contract import parse_frame
 from agent_observer.service_runtime import MAX_SYNC_ENCODED_BYTES, Peer, Runtime
@@ -24,8 +24,9 @@ def request(operation, view="full", **fields):
             "version": 1, "operation": operation, "hostScope": "fixture", **fields}
 
 
-def seeded():
-    state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")})
+def seeded(*, working_set_window_ms=None):
+    state = ServiceState(host_scope="fixture", configs={"codex": ("/fixture/codex", "explicit")},
+                         working_set_window_ms=working_set_window_ms)
     state.attempt("codex", "history")
     state.accept("codex", "history", scoped_snapshot(), sampled_ms=state.clock(),
                  ttl_ms=60000, runtime_ttl_ms=60000)
@@ -125,8 +126,10 @@ class SyncServiceDeliveryTest(unittest.TestCase):
                 with server.connect((canonical(query) + "\n").encode()) as peer:
                     with peer.makefile("rb") as reader:
                         reply = json.loads(reader.readline())
-                key = "projection" if "activeFeedProtocol" in query else "snapshot"
-                self.assertIsNotNone(reply[key])
+                if "activeFeedProtocol" in query:
+                    self.assertEqual((reply["kind"], reply["reason"]), ("error", "active_feed_retired"))
+                else:
+                    self.assertIsNotNone(reply["snapshot"])
             self.assertIsNone(state._sync_cache)
             self.assertEqual(server.runtime.counts["workerStarts"], 0)
 
@@ -158,9 +161,7 @@ class SyncServiceDeliveryTest(unittest.TestCase):
     def test_head_and_uninitialized_head_never_enter_legacy_or_publication(self):
         runtime = self.runtime()
         peer, _receiver = self.peer(runtime)
-        with patch.object(runtime.state, "frame", side_effect=AssertionError("legacy frame")), patch.object(
-            runtime.state, "active_frame", side_effect=AssertionError("active frame"),
-        ), patch.object(runtime.state, "expire", side_effect=AssertionError("expiry")), patch.object(
+        with patch.object(runtime.state, "frame", side_effect=AssertionError("legacy frame")), patch.object(runtime.state, "expire", side_effect=AssertionError("expiry")), patch.object(
             runtime.state, "publish", side_effect=AssertionError("publication"),
         ):
             runtime._sync_request(peer, request("head", challenge={"nonce": "a" * 32}))
@@ -171,9 +172,7 @@ class SyncServiceDeliveryTest(unittest.TestCase):
         baseline = runtime.state.sync_baseline("full")
         peer, _receiver = self.peer(runtime)
         counts = copy.deepcopy(runtime.state._sync_cache.counts)
-        with patch.object(runtime.state, "frame", side_effect=AssertionError("legacy frame")), patch.object(
-            runtime.state, "active_frame", side_effect=AssertionError("active frame"),
-        ), patch.object(runtime.state, "expire", side_effect=AssertionError("expiry")), patch.object(
+        with patch.object(runtime.state, "frame", side_effect=AssertionError("legacy frame")), patch.object(runtime.state, "expire", side_effect=AssertionError("expiry")), patch.object(
             runtime.state, "publish", side_effect=AssertionError("publication"),
         ):
             runtime._sync_request(peer, request("head", challenge={"nonce": "b" * 32}))
@@ -507,13 +506,15 @@ class SyncServiceDeliveryTest(unittest.TestCase):
         self.assertIsNone(state.sync_reserver)
 
     def test_total_sixteen_peers_are_shared_across_all_four_families(self):
-        state = seeded()
+        from agent_observer.working_set_contract import selector, selector_digest
+
+        state = seeded(working_set_window_ms=0)
         state.sync_baseline("full")
         state.sync_baseline("active")
         queries = [
             {"serviceProtocol": 4, "operation": "watch", "hostScope": "fixture"},
-            {"activeFeedProtocol": 1, "operation": "watch", "hostScope": "fixture",
-             "selector": SELECTOR, "selectorDigest": SELECTOR_DIGEST},
+            {"workingSetProtocol": 1, "operation": "watch", "hostScope": "fixture",
+             "selector": selector(0), "selectorDigest": selector_digest(selector(0))},
             request("watch", cursor=list(state.sync_cursor("full"))),
             request("watch", "active", cursor=list(state.sync_cursor("active"))),
         ]

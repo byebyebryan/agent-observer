@@ -15,7 +15,6 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from itertools import chain
 
-from .active_contract import SELECTOR
 from .contract import ContractError, identity_key, validate_shape
 from .observation_support import SUPPORT_FIELDS, empty_support, fact_support
 from .sync_commitment import (
@@ -34,6 +33,7 @@ from .sync_commitment import (
     value_hash,
 )
 from .sync_contract import MOVED_PATHS, _field_values, join_record
+from .sync_projection_schema import SELECTOR
 
 SPACES = ("records", "bodies", "observations", "memberships", "receipts",
           "cohorts", "scopes", "metadata")
@@ -765,7 +765,7 @@ class OwnerSyncCache:
             raise ContractError("sync_generation_exhausted")
         seed = slot.seed if seed is None else seed
         if seed is not None and not diagnostics_only:
-            projection = self.state.active_projection if slot.name == "active" else None
+            projection = self.state.sync_active_projection if slot.name == "active" else None
             if not _same(seed.binding, self._binding(slot.name, projection)):
                 seed.close()
                 slot.seed = seed = None
@@ -773,7 +773,7 @@ class OwnerSyncCache:
             if slot.name == "full":
                 rows = [] if self.state.snapshot is None else self.state.snapshot["sessions"]
             else:
-                projection = self.state.active_projection
+                projection = self.state.sync_active_projection
                 rows = [] if projection is None else projection["sessions"]
             seed.prune(rows)
         stage = _Stage(self)
@@ -793,7 +793,7 @@ class OwnerSyncCache:
 
         prior = slot.current
         diagnostics_only = diagnostics_only and prior is not None
-        projection = (self.state.active_projection if slot.name == "active" and not diagnostics_only else None)
+        projection = (self.state.sync_active_projection if slot.name == "active" and not diagnostics_only else None)
         binding = prior.binding if diagnostics_only else self._binding(slot.name, projection)
         if seed is not None and not _same(seed.binding, binding):
             seed.close()

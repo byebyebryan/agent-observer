@@ -15,8 +15,8 @@ import weakref
 from pathlib import Path
 from unittest.mock import patch
 
-from test_active_contract import support as support_ref
-from test_active_service_delivery import local_uid
+from projection_fixture import support as support_ref
+from projection_fixture import local_uid
 from test_working_set_contract import compact_scope, expand_scope, fixture, outside
 
 from agent_observer.contract import canonical

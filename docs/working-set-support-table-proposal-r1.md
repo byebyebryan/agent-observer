@@ -205,7 +205,7 @@ option. It does not change the current source contract or make pooled support
 references an agreed wire feature.
 
 Source basis at the unchanged `7e5757c` review checkpoint:
-[original support semantics](../agent_observer/active_contract.py),
+[original support semantics](https://github.com/byebyebryan/agent-observer/blob/aade4826c785af6dc98842dfb662a090828dda17/agent_observer/active_contract.py),
 [working-set contract](../agent_observer/working_set_contract.py),
 [projector and tracking](../agent_observer/working_set_feed.py),
 [SDK1 profile candidate](../agent_observer/mesh_working_set_profile.py), and

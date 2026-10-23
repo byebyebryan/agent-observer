@@ -145,7 +145,7 @@ class MeshSyncCodecTest(unittest.TestCase):
             # challenge setup in confirm(); runtime codec/profile uses none.
             with patch("agent_observer.mesh_sync_codec._load_value_schema", side_effect=AssertionError("head opened body schema")):
                 confirmed = self.confirm(parts, owner, candidate)
-            expected = owner.snapshot if view == "full" else owner.active_projection
+            expected = owner.snapshot if view == "full" else owner.sync_active_projection
             self.assertEqual(confirmed.export_committed(), expected)
             self.assertEqual(confirmed.tag.native.wire(), original["tag"])
 

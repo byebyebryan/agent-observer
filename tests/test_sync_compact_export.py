@@ -327,7 +327,7 @@ class CompactExportReaderTest(unittest.TestCase):
             reader = parts[0]
             candidate = reader.admit_baseline(owner.sync_baseline(view))
             self.assertEqual(self.confirm(parts, owner, candidate).export_committed(),
-                             owner.snapshot if view == "full" else owner.active_projection)
+                             owner.snapshot if view == "full" else owner.sync_active_projection)
             for count in (3, 1, 4):
                 base = owner.sync_current_tag(view)
                 value = self.fixture(count)
@@ -339,7 +339,7 @@ class CompactExportReaderTest(unittest.TestCase):
                 candidate = reader.stage(frames[0])
                 self.assertEqual(candidate.tag.native.wire(), list(target))
                 self.assertEqual(self.confirm(parts, owner, candidate).export_committed(),
-                                 owner.snapshot if view == "full" else owner.active_projection)
+                                 owner.snapshot if view == "full" else owner.sync_active_projection)
 
     def test_compact_raw_expected_old_and_root_rejection_leave_earlier_material_intact(self):
         from mesh_plus.protocol import ProtocolError

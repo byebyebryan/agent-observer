@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import copy
 import os
 import socket
 import time
 import uuid
 from pathlib import Path
 
-from .active_feed import ActiveFeedProjector
 from .observation_engine import ObservationEngine
 from .provider import profile_for
 from .service_contract import validate_frame
@@ -38,7 +36,7 @@ class ServiceState(ObservationEngine):
         self.working_set_reserver = None
         self._working_set_blocked_sample = None
         self.service_id = str(uuid.uuid4())
-        self.active_projector = ActiveFeedProjector(service_id=self.service_id)
+        self._sync_projector = None
         # Sync is opt-in. A cold baseline can initialize its shared cache;
         # proofs/heads never trigger a roster normalization or provider read.
         self._sync_cache = None
@@ -66,11 +64,8 @@ class ServiceState(ObservationEngine):
 
     def publish(self):
         super().publish()
-        self.active_projector._accept_owned(
-            self.snapshot, self.projection_support, self.projection_census,
-            [self.source_meta(provider) for provider in self.configs],
-            revision=self.revision, now_ms=self.clock(),
-        )
+        if self._sync_projector is not None:
+            self._update_sync_projection()
         if self._sync_cache is not None:
             self._sync_cache.publish()
         if self.working_set_projector is not None and not self._sync_accepting:
@@ -158,7 +153,7 @@ class ServiceState(ObservationEngine):
         if self.working_set_projector is None:
             return ()
         return tuple(value for value in (
-            self.active_projector._encoded, self.working_set_projector._encoded,
+            self.working_set_projector._encoded,
         ) if value is not None)
 
     def working_set_frame(self, kind, sequence, *, reason="observed_view", include_projection=None):
@@ -271,32 +266,26 @@ class ServiceState(ObservationEngine):
     def sync_retained_bytes(self):
         return sum(map(len, self.sync_retained_buffers()))
 
+
+
+    def _update_sync_projection(self):
+        if self.snapshot is None:
+            return
+        self._sync_projector._accept_owned(
+            self.snapshot, self.projection_support, self.projection_census,
+            [self.source_meta(provider) for provider in self.configs],
+            revision=self.revision, now_ms=self.clock(),
+        )
+
     @property
-    def active_projection(self):
-        return self.active_projector.snapshot()
+    def sync_active_projection(self):
+        """Private opt-in sync state; ordinary publication allocates no cache."""
+        if self._sync_projector is None:
+            from .sync_projection import _SyncProjection
 
-    def active_frame(self, kind, sequence, *, reason="observed_view", include_projection=None):
-        from .active_contract import SELECTOR, SELECTOR_DIGEST
-        from .active_contract import validate_frame as validate_active_frame
-
-        now = self.clock()
-        self.expire(now)
-        sources = [self.source_meta("codex")] if "codex" in self.configs else []
-        if not sources:
-            kind, reason = "error", "active_source_unsupported"
-        include = (include_projection if include_projection is not None
-                   else kind in {"view", "resync", "status"})
-        projection = self.active_projector.snapshot() if include and sources else None
-        return validate_active_frame({
-            "activeFeedProtocol": 1, "selector": copy.deepcopy(SELECTOR),
-            "selectorDigest": SELECTOR_DIGEST, "serviceId": self.service_id,
-            "bootId": self.boot_id, "uid": self.uid, "hostScope": self.host_scope,
-            "sequence": sequence, "viewRevision": self.revision, "kind": kind,
-            "state": "ready" if self.snapshot is not None else "warming",
-            "emittedAt": time.time_ns() // 1_000_000, "emittedBoottimeMs": now,
-            "clock": "boottime", "clockDomain": self.clock_domain,
-            "reason": reason, "sources": sources, "projection": projection,
-        })
+            self._sync_projector = _SyncProjection(service_id=self.service_id)
+            self._update_sync_projection()
+        return self._sync_projector.snapshot()
 
     def frame(self, kind, sequence, *, reason="observed_view", include_snapshot=None):
         now = self.clock()

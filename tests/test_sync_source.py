@@ -40,7 +40,7 @@ def message_fixture(kind="baseline", *, view="full", generation=1, epoch=None):
                "clockDomain": os.readlink("/proc/self/ns/time"), "uid": os.geteuid(), "hostScope": "fixture",
                "selector": None, "sourceContexts": [context], "scopeContinuity": []}
     if view == "active":
-        from agent_observer.active_contract import SELECTOR
+        from agent_observer.sync_projection_schema import SELECTOR
 
         binding.update(selector=copy.deepcopy(SELECTOR), scopeContinuity=[["codex", namespace, 1]])
     digest = native_binding_digest(binding)
@@ -344,9 +344,7 @@ class SyncSourceAcquisitionTest(unittest.IsolatedAsyncioTestCase):
         self.directory.cleanup()
 
     async def test_all_four_operations_preserve_exact_bytes_and_own_cleanup(self):
-        with patch("agent_observer.service_contract.parse_frame", side_effect=AssertionError("legacy parse")), patch(
-            "agent_observer.active_contract.parse_frame", side_effect=AssertionError("legacy active parse"),
-        ):
+        with patch("agent_observer.service_contract.parse_frame", side_effect=AssertionError("legacy parse")):
             ticket = await self.source.baseline()
             self.assertIsInstance(ticket, BaselineTicket)
             self.assertEqual(ticket.data, wire(self.baseline))

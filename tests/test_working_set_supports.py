@@ -7,7 +7,7 @@ import unittest
 from types import MappingProxyType
 from unittest.mock import patch
 
-from test_active_contract import support
+from projection_fixture import support
 from test_working_set_contract import expand_scope, fixture
 
 from agent_observer.contract import ContractError, canonical

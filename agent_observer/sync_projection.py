@@ -1,4 +1,4 @@
-"""Owner-generation active projection and bounded recent-member context.
+"""Private projection retained only for the default-off sync experiment.
 
 No I/O, Mesh, provider reads or presentation-context timeout.  Only the owning
 engine publishes generations; status/proof/timer reads never mutate this ledger.
@@ -10,11 +10,11 @@ import copy
 from dataclasses import dataclass, field
 from functools import partial
 
-from .active_contract import MAX_IDENTITIES, MAX_LEDGER_BYTES
 from .contract import MAX_BYTES, ContractError, _admitted_identity_key, canonical, validate_snapshot
 from .observation_support import SUPPORT_FIELDS, empty_support, support_matches
 from .projection_fields import _unique_supports as _unique_supports
 from .projection_fields import mask_fields as mask_fields
+from .projection_support import MAX_IDENTITIES, MAX_LEDGER_BYTES
 
 
 @dataclass
@@ -25,7 +25,7 @@ class _Scope:
     failed: bool = False
 
 
-class ActiveFeedProjector:
+class _SyncProjection:
     """Single fixed-selector cache, with exact original evidence support.
 
     Public ``accept`` validates arbitrary full input. ServiceState uses the

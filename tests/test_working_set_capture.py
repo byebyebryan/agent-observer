@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 from uuid import UUID
 
-from test_active_projection import provider_snapshot
+from projection_fixture import provider_snapshot
 from test_service_contract import fixture
 
 from agent_observer.contract import ContractError, canonical
@@ -76,7 +76,7 @@ class WorkingSetCaptureTest(unittest.TestCase):
                 self.state.working_set_clocks.get(ref, source, sample_id=str(UUID(int=12)))
             )
         self.assertEqual(self.state.revision, 1)
-        self.assertEqual(self.state.active_projector.generations, 1)
+        self.assertIsNone(self.state._sync_projector)
 
     def test_stale_rejected_input_does_not_change_clock_or_fail_new_receipt(self):
         self.assertTrue(self.accept())

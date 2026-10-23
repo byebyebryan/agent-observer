@@ -22,11 +22,10 @@ from types import MethodType
 from ._image_memo import ImageMemo
 from ._image_memo import receive as receive_memo
 from ._image_memo import send as send_memo
-from .active_contract import MAX_REQUEST_BYTES as MAX_ACTIVE_REQUEST_BYTES
-from .active_contract import validate_request as validate_active_request
 from .bounded_json import decode_document
 from .contract import MAX_SNAPSHOT_BYTES, ContractError, canonical, parse_snapshot
 from .observation_scheduler import Scheduler
+from .projection_support import MAX_REQUEST_BYTES as MAX_PROJECTION_REQUEST_BYTES
 from .service_contract import MAX_OVERHEAD_BYTES, MAX_REQUEST_BYTES, validate_request
 from .sync_contract import (
     MAX_REQUEST_BYTES as MAX_SYNC_REQUEST_BYTES,
@@ -405,9 +404,8 @@ class Runtime:
 
     def _queue(self, peer, kind, reason="observed_view"):
         peer.sequence += 1
-        make_frame = (self.state.working_set_frame if peer.family == "working_set" else
-                      self.state.active_frame if peer.family == "active" else self.state.frame)
-        payload_key = "projection" if peer.family in {"active", "working_set"} else "snapshot"
+        make_frame = (self.state.working_set_frame if peer.family == "working_set" else self.state.frame)
+        payload_key = "projection" if peer.family == "working_set" else "snapshot"
         frame = make_frame(kind, peer.sequence, reason=reason)
         if kind == "heartbeat" and frame["viewRevision"] != peer.sent_revision:
             frame = make_frame("view", peer.sequence, reason="lease_expired")
@@ -420,7 +418,7 @@ class Runtime:
                 # Frame construction can expire leases and advance the revision.
                 # Resolve the key only after constructing the authoritative frame.
                 revision = ((peer.family, frame["viewRevision"])
-                            if peer.family in {"active", "working_set"} else frame["viewRevision"])
+                            if peer.family == "working_set" else frame["viewRevision"])
                 prefix = (canonical(frame)[:-1] + ',"' + payload_key + '":').encode()
                 self._body(revision, snapshot, overhead=len(prefix) + 2)
                 if peer not in self.peers:
@@ -584,19 +582,24 @@ class Runtime:
             self._drop(peer)
             return
         peer.incoming.extend(data)
-        if len(peer.incoming) > max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES):
+        if len(peer.incoming) > max(MAX_REQUEST_BYTES, MAX_PROJECTION_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES):
             self._drop(peer)
             return
         if b"\n" not in peer.incoming:
             return
         request = decode_document(bytes(peer.incoming),
-                                  max_bytes=max(MAX_REQUEST_BYTES, MAX_ACTIVE_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES),
+                                  max_bytes=max(MAX_REQUEST_BYTES, MAX_PROJECTION_REQUEST_BYTES, MAX_SYNC_REQUEST_BYTES),
                                   max_nodes=MAX_SYNC_REQUEST_NODES, max_depth=MAX_SYNC_REQUEST_DEPTH,
                                   line_framed=True)
         if not isinstance(request, dict) or sum(key in request for key in (
             "serviceProtocol", "activeFeedProtocol", "syncProtocol", "workingSetProtocol",
         )) != 1:
             raise ValueError("service_request_family")
+        if "activeFeedProtocol" in request:
+            peer.incoming.clear()
+            peer.operation = "error"
+            self._queue(peer, "error", "active_feed_retired")
+            return
         if "syncProtocol" in request:
             peer.incoming.clear()
             self._sync_request(peer, request)
@@ -608,9 +611,6 @@ class Runtime:
                 raise ValueError("working_set_disabled")
             validate_working_set_request(request, expected_window_ms=self.state.working_set_window_ms)
             peer.family = "working_set"
-        elif "activeFeedProtocol" in request:
-            validate_active_request(request)
-            peer.family = "active"
         else:
             validate_request(request)
         peer.incoming.clear()
@@ -618,7 +618,7 @@ class Runtime:
         if request["hostScope"] != self.state.host_scope:
             peer.operation = "error"
             reason = ("working_set_host_mismatch" if peer.family == "working_set" else
-                      "active_host_mismatch" if peer.family == "active" else "service_host_mismatch")
+                      "service_host_mismatch")
             self._queue(peer, "error", reason)
             return
         kind = "status" if peer.operation == "status" or self.state.snapshot is None else "view"

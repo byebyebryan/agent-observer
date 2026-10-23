@@ -71,13 +71,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("api")
-    commands.add_parser("active-api")
     working_api = commands.add_parser("working-set-api")
     working_api.add_argument("--window-hours", type=_window_hours, default=72)
     schema = commands.add_parser("schema")
     schema.add_argument("--kind", choices=("request", "frame"), required=True)
-    active_schema = commands.add_parser("active-schema")
-    active_schema.add_argument("--kind", choices=("request", "frame"), required=True)
     working_schema = commands.add_parser("working-set-schema")
     working_schema.add_argument("--kind", choices=("request", "frame"), required=True)
     for name in ("status", "snapshot", "list", "watch"):
@@ -105,13 +102,7 @@ def main(argv=None):
             print(canonical(working_interface(args.window_hours * 3600000)
                             if args.command == "working-set-api" else working_schema_document(args.kind)))
             return 0
-        if args.command in {"active-api", "active-schema"}:
-            from .active_contract import interface as active_interface
-            from .active_contract import schema_document as active_schema_document
 
-            print(canonical(active_interface() if args.command == "active-api"
-                            else active_schema_document(args.kind)))
-            return 0
         if args.command in {"api", "schema"}:
             print(canonical(interface() if args.command == "api" else schema_document(args.kind)))
             return 0

@@ -19,14 +19,14 @@ from mesh_plus.sync.canonical import canonical
 from mesh_plus.sync.commitment import ABSENT, binding_digest
 from mesh_plus.sync.model import SourceTag
 
-from .active_contract import SELECTOR
-from .active_feed import mask_fields
 from .contract import IDENTITY, identity_key, validate_shape
 from .mesh_sync_profile import AgentSyncProfile
 from .observation_support import SUPPORT_FIELDS
+from .projection_fields import mask_fields
 from .sync_commitment import native_binding_digest, value_hash
 from .sync_contract import join_record
 from .sync_native import descriptor
+from .sync_projection_schema import SELECTOR
 
 AgentIdentity = tuple[str, str, str, str, str]
 

@@ -9,13 +9,13 @@ from __future__ import annotations
 
 import copy
 
-from .active_contract import FACT_SUPPORT, NONMEMBER, UNCERTAIN
-from .active_contract import FRAME as ACTIVE_FRAME
-from .active_contract import SCOPE as ACTIVE_SCOPE
 from .contract import HEALTH, IDENTITY, INTEGER, SNAPSHOT, SOURCE, TIME, TIMING_RECEIPT, obj
+from .projection_support import FACT_SUPPORT, NONMEMBER, UNCERTAIN
+from .projection_support import SCOPE as ACTIVE_SCOPE
 from .service_contract import SOURCE as SERVICE_SOURCE
 from .sync_contract import CONTENT, CURSOR, GENERATION, HEX, NATIVE_TAG
 from .sync_native import COHORT, FRAME, NATIVE_BINDING, RECEIPT, RECEIPT_KEY, TABLES, descriptor
+from .sync_projection_schema import FRAME as ACTIVE_FRAME
 
 CANDIDATE_ENCODING_ID = "agent-observer.compact/1"
 BODY_FIELDS = (

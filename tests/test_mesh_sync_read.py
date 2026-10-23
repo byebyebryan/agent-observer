@@ -491,7 +491,7 @@ class MeshSyncReadTest(unittest.TestCase):
         owner = self.owner()
         facade, parts, _ = self.prepared(owner, "active")
         self.assertEqual(len(facade.current(parts[1][0], parts[2]).sessions), 1)
-        self.assertEqual(facade.snapshot(), owner.active_projection)
+        self.assertEqual(facade.snapshot(), owner.sync_active_projection)
 
     def test_whole_scope_index_finds_exclusions_beyond_first_32_rows(self):
         value = self.fixture(40)
@@ -505,4 +505,4 @@ class MeshSyncReadTest(unittest.TestCase):
         result = facade.current(parts[1][0], parts[2])
         self.assertEqual(len(result.sessions), 39)
         self.assertEqual([identity_key(fact["identity"]) for fact in result.nonmembers], [excluded])
-        self.assertEqual(facade.snapshot(), owner.active_projection)
+        self.assertEqual(facade.snapshot(), owner.sync_active_projection)

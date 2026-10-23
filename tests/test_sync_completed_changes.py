@@ -152,7 +152,7 @@ class CompletedChangesTest(unittest.IsolatedAsyncioTestCase):
                         # Existing test-owned challenge setup, then ordinary
                         # independent Mesh proof/root/lease confirmation.
                         confirmed = helper.confirm(parts, owner, candidate)
-                        expected = owner.snapshot if view == "full" else owner.active_projection
+                        expected = owner.snapshot if view == "full" else owner.sync_active_projection
                         self.assertEqual(confirmed.export_committed(), expected)
                         batch.close()
                         self.assertEqual(cache.acquire().tag, confirmed.tag)

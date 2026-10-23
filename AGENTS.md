@@ -2,6 +2,11 @@
 
 ## Scope and authority
 
+- Current 0.7.0a9 source withdraws Observer writes and standalone active-only
+  delivery; see docs/read-only-retirement.md. Shared projection semantics and
+  working-set active membership remain. Earlier dated writer/active receipts
+  below are historical, not current support requirements.
+
 - The current user request sets scope. Read `README.md`, `docs/architecture.md`
   and `docs/roadmap.md` before implementation.
 - Current consumers are read-only dashboards, diagnostics and agent utilities.

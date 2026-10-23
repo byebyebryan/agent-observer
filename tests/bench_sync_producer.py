@@ -134,7 +134,7 @@ def main():
         state.attempt("codex", "history")
         state.accept("codex", "history", value, sampled_ms=now[0], ttl_ms=60000, runtime_ttl_ms=60000)
         oracle_started = time.process_time_ns()
-        signature = {"snapshot": state.snapshot, "projection": state.active_projection,
+        signature = {"snapshot": state.snapshot, "projection": state.sync_active_projection,
                      "supports": [[list(k), v] for k, v in sorted(state.projection_support.items())],
                      "census": state.projection_census}
         signatures.append(hashlib.sha256(canonical(signature).encode()).hexdigest())

@@ -135,7 +135,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
                         ticket.close()
                         confirmed = await self.confirm(parts, session, candidate)
                         self.assertEqual(confirmed.export_committed(),
-                                         owner.snapshot if view == "full" else owner.active_projection)
+                                         owner.snapshot if view == "full" else owner.sync_active_projection)
                         if count == 1:
                             owner.attempt("codex", "history")
                         elif count == 4:
@@ -175,7 +175,7 @@ class CompactSourceIpcTest(unittest.IsolatedAsyncioTestCase):
                         self.assertEqual(candidate.tag.native.wire(), list(target))
                         confirmed = await self.confirm(parts, session, candidate)
                         self.assertEqual(confirmed.export_committed(),
-                                         owner.snapshot if view == "full" else owner.active_projection)
+                                         owner.snapshot if view == "full" else owner.sync_active_projection)
                         batch.close()
                     finally:
                         await source.aclose()

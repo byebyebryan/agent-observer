@@ -161,7 +161,7 @@ class SyncStateTest(unittest.TestCase):
                 for raw in messages[:-1]:
                     replay.apply(parse_message(raw, view, "fixture"))
                 replay.check(self)
-                expected = self.state.snapshot if view == "full" else self.state.active_projection
+                expected = self.state.snapshot if view == "full" else self.state.sync_active_projection
                 self.assertEqual(self.state._sync_cache.export_committed(view), expected)
                 terminal = parse_message(messages[-1], view, "fixture")
                 self.assertEqual(terminal["tag"], list(target))

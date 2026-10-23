@@ -1,5 +1,10 @@
 # Agent Observer roadmap
 
+The [read-only retirement checkpoint](read-only-retirement.md) defines the
+0.7.0a9 source candidate: working-set inspection, full diagnostics and withdrawal
+of Observer writes and the standalone active-only feed. Implementation, artifact
+qualification and managed adoption are reported separately.
+
 Current direction: reusable Codex read-only observation for dashboards and agent
 utilities. Native provider managers own session control. Agent Plus independently
 opens those managers and is no longer a consumer migration prerequisite. See

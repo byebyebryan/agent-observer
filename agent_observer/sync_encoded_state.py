@@ -12,8 +12,8 @@ import hashlib
 import json
 import sys
 
-from .active_contract import FACT_SUPPORT, MEMBER, NONMEMBER, UNCERTAIN
 from .contract import SESSION, ContractError
+from .projection_support import FACT_SUPPORT, MEMBER, NONMEMBER, UNCERTAIN
 from .sync_commitment import ABSENT, ANY, canonical, frame
 from .sync_contract import MOVED_PATHS
 from .sync_encoded import EncodedMap, decode_bound

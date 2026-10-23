@@ -46,16 +46,24 @@ def document(path):
         raise ValueError("manifest_limit")
     value = json.loads(path.read_text())
     if (
-        value.get("manifestVersion") not in {1, 2, 3, 4, 5}
+        value.get("manifestVersion") not in {1, 2, 3, 4, 5, 6}
         or value.get("package") != "agent-observer"
         or not re.fullmatch(r"[0-9a-f]{64}", value.get("wheelSha256", ""))
         or not re.fullmatch(r"[0-9a-f]{40}", value.get("sourceRevision", ""))
-        or value.get("entrypoints") != (["agent-observer", "agent-observer-write"] if value.get("manifestVersion") == 1 else ["agent-observer", "agent-observer-write", "agent-observer-service"])
+        or value.get("entrypoints") != (
+            ["agent-observer", "agent-observer-service"] if value.get("manifestVersion") == 6
+            else ["agent-observer", "agent-observer-write"] if value.get("manifestVersion") == 1
+            else ["agent-observer", "agent-observer-write", "agent-observer-service"])
         or value.get("manifestVersion") == 2 and value.get("service") != {"protocol": 1, "schemas": {"request": 1, "frame": 1}}
         or value.get("manifestVersion") == 2 and value.get("schemas") != {"snapshot": 3, "watch": 3, "write": 1}
         or value.get("manifestVersion") == 3 and (value.get("service") != {"protocol": 2, "schemas": {"request": 2, "frame": 2}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 2 or value.get("schemas") != {"snapshot": 4, "watch": 4})
         or value.get("manifestVersion") == 4 and (value.get("service") != {"protocol": 3, "schemas": {"request": 3, "frame": 3}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 3 or value.get("schemas") != {"snapshot": 5, "watch": 5})
         or value.get("manifestVersion") == 5 and (value.get("service") != {"protocol": 4, "schemas": {"request": 4, "frame": 4}} or value.get("write") != {"schema": 2} or value.get("apiVersion") != 4 or value.get("schemas") != {"snapshot": 6, "watch": 6})
+        or value.get("manifestVersion") == 6 and (
+            value.get("service") != {"protocol": 4, "schemas": {"request": 4, "frame": 4}}
+            or value.get("apiVersion") != 4 or value.get("schemas") != {"snapshot": 6, "watch": 6}
+            or value.get("retiredCapabilities") != ["write", "active-feed"]
+            or "write" in value or "activeFeed" in value)
         or value.get("manifestVersion") == 1 and ("service" in value or "write" in value or value.get("schemas", {}).get("snapshot") in {4, 5, 6})
         or value.get("schemas") not in (
             {"snapshot": 2, "watch": 2, "write": 1},
@@ -195,13 +203,13 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         interface = json.loads(run([str(prefix / "bin/agent-observer"), "api"]))
         if interface.get("apiVersion") != manifest["apiVersion"] or interface.get("schemas") != manifest["schemas"]:
             raise ValueError("api_mismatch")
-    for name in ("request", "plan", "result"):
+    for name in (() if manifest["manifestVersion"] == 6 else ("request", "plan", "result")):
         schema = json.loads(
             run([str(prefix / "bin/agent-observer-write"), "schema", "--kind", name])
         )
         if schema["properties"]["schemaVersion"] != {"const": (manifest["write"]["schema"] if manifest["manifestVersion"] in {3, 4, 5} else manifest["schemas"]["write"])}:
             raise ValueError("schema_mismatch")
-    if manifest["manifestVersion"] in {2, 3, 4, 5}:
+    if manifest["manifestVersion"] in {2, 3, 4, 5, 6}:
         service = json.loads(run([str(prefix / "bin/agent-observer"), "service", "api"]))
         if service.get("serviceProtocol") != manifest["service"]["protocol"] or service.get("observationApiVersion") != manifest["apiVersion"] or service.get("embeddedSnapshotVersion") != manifest["schemas"]["snapshot"]:
             raise ValueError("service_api_mismatch")
@@ -214,6 +222,14 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
                 raise ValueError("service_schema_mismatch")
     if active is not None:
         verify_active_feed(prefix, site, active, manifest["apiVersion"])
+    if manifest["manifestVersion"] == 6:
+        retired = json.loads(run([str(prefix / "bin/python"), "-I", "-B", "-c", """import importlib.util,importlib.metadata,json
+names=('write_client','write_contract','codex_exact','active_contract','active_feed','mesh_active_source','mesh_active_profile','mesh_active_read')
+print(json.dumps({'modules':[name for name in names if importlib.util.find_spec('agent_observer.'+name) is not None],
+'entrypoints':sorted(e.name for e in importlib.metadata.distribution('agent-observer').entry_points if e.group=='console_scripts')}))"""]))
+        if (retired["modules"] or retired["entrypoints"] != ["agent-observer", "agent-observer-service"]
+                or (prefix / "bin/agent-observer-write").exists()):
+            raise ValueError("retired_capability_installed")
     return {
         "status": "accepted",
         "prefix": str(prefix),
@@ -224,7 +240,8 @@ print(json.dumps({'version':importlib.metadata.version('agent-observer'),'site':
         "installedWheelBytesVerified": True,
         "entrypointsVerified": True,
         "schemaVersionsVerified": True,
-        **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4, 5} else {}),
+        **({"serviceProtocolVerified": True} if manifest["manifestVersion"] in {2, 3, 4, 5, 6} else {}),
+        **({"retiredCapabilitiesVerified": True} if manifest["manifestVersion"] == 6 else {}),
         **({"activeFeedVerified": True} if active is not None else {}),
         "providerInvocations": 0,
         "selectedLinksChanged": False,

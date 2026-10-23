@@ -1,5 +1,11 @@
 # Agent Observer architecture boundaries
 
+Current source candidate 0.7.0a9 withdraws Observer writes and the standalone
+active-only feed. Shared pure projection helpers and working-set's active
+membership branch remain. The [retirement guide](read-only-retirement.md) governs
+current support; the dated artifact and deployment sections below retain their
+original evidence scope.
+
 Current product role: Codex read-only observation for dashboards and other agent
 utilities. Agent Plus independently opens native provider managers through Host
 Mesh; it consumes neither Observer reads/writes nor Tmux. Claude native entry

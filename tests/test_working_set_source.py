@@ -10,7 +10,7 @@ import time
 import unittest
 from pathlib import Path
 
-from test_active_service_delivery import local_uid
+from projection_fixture import local_uid
 from test_working_set_contract import fixture
 
 from agent_observer.contract import ContractError, canonical

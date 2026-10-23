@@ -1,5 +1,9 @@
 # Opt-in active Agent feed interface 1
 
+Historical interface: withdrawn in source candidate 0.7.0a9. See the
+[current retirement guide](read-only-retirement.md). Frozen definitions and
+prior release receipts retain their original scope.
+
 This G1 implementation follows the [agreed active-feed plan](active-feed-proposal.md).
 The [a7/a23 producer receipt](evidence/2026-10-16-active-feed/REPORT.md) accepts
 the exact immutable package with bounded installed/native, fixed-SSH and

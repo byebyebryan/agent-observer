@@ -355,7 +355,7 @@ class MeshSyncProfileTest(unittest.TestCase):
             store = ReconstructionStore(Probe(profile_schema_digest="a" * 64, view=view), host="fixture")
             self.stores.append(store)
             baseline = self.baseline(owner, view)
-            rows = (owner.snapshot if view == "full" else owner.active_projection)["sessions"]
+            rows = (owner.snapshot if view == "full" else owner.sync_active_projection)["sessions"]
             expected[view] = [[int(row["runtime"]["value"] != "running") if view == "full" else 0,
                                list(identity_key(row["identity"]))] for row in rows]
             stage(store, baseline)
@@ -370,7 +370,7 @@ class MeshSyncProfileTest(unittest.TestCase):
             stage(store, message)
             store.advance_material()
             self.assertEqual(captured[view].pop(), expected[view])
-            rows = (owner.snapshot if view == "full" else owner.active_projection)["sessions"]
+            rows = (owner.snapshot if view == "full" else owner.sync_active_projection)["sessions"]
             expected[view] = [[int(row["runtime"]["value"] != "running") if view == "full" else 0,
                                list(identity_key(row["identity"]))] for row in rows]
             tags[view] = message["resultTag"]
@@ -595,7 +595,7 @@ class MeshSyncProfileTest(unittest.TestCase):
         for _ in range(8):
             self.now += 1
             owner.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
-        before_bytes = len(canonical(owner.active_projection["scopes"]))
+        before_bytes = len(canonical(owner.sync_active_projection["scopes"]))
         baseline = self.baseline(owner, "active")
         store = self.store("active")
         with patch("agent_observer.mesh_sync_profile.MAX_LEDGER_BYTES", before_bytes):
@@ -603,7 +603,7 @@ class MeshSyncProfileTest(unittest.TestCase):
         store.advance_material()
         self.now += 1
         owner.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
-        after_bytes = len(canonical(owner.active_projection["scopes"]))
+        after_bytes = len(canonical(owner.sync_active_projection["scopes"]))
         self.assertGreater(after_bytes, before_bytes)
         messages = self.changes(owner, "active", baseline["tag"])
         self.assertEqual(len(messages), 1)
@@ -656,14 +656,14 @@ class MeshSyncProfileTest(unittest.TestCase):
         for message in negative:
             stage(store, message)
         store.advance_material()
-        self.assertEqual(len(owner.active_projection["scopes"][0]["nonmembers"]), 1)
+        self.assertEqual(len(owner.sync_active_projection["scopes"][0]["nonmembers"]), 1)
         value["sessions"] = []
         value["sources"][0]["coverage"]["runtime"].update(status="partial", reason="bounded_census")
         self.now += 1
         owner.accept("codex", "runtime", value, sampled_ms=self.now, ttl_ms=10000)
         for message in self.changes(owner, "active", negative[-1]["resultTag"]):
             stage(store, message)
-        scope = owner.active_projection["scopes"][0]
+        scope = owner.sync_active_projection["scopes"][0]
         self.assertEqual(scope["nonmembers"], [])
         self.assertEqual(len(scope["uncertain"]), 1)
 
@@ -911,7 +911,7 @@ class MeshSyncProfileTest(unittest.TestCase):
         candidate = cache.admit_baseline(owner.sync_baseline("active"))
         view = self.confirm(cache, reader_time, clock,
                             self.proof(cache, candidate, owner, "active", binding, request), candidate)
-        self.assertEqual(view.export_committed(), owner.active_projection)
+        self.assertEqual(view.export_committed(), owner.sync_active_projection)
 
 
 if __name__ == "__main__":

@@ -60,8 +60,8 @@ class WorkingSetEncodingRefusalTest(unittest.TestCase):
         self.assertTrue(projector._capacity_blocked)
         self.assertIsNone(projector.snapshot())
         self.assertLessEqual(runtime.encoded_bytes(), runtime.encoded_limit)
-        self.assertTrue(any(value is self.state.active_projector._encoded
-                            for value in self.state.working_set_retained_buffers()))
+        self.assertEqual(self.state.working_set_retained_buffers(), ())
+        self.assertIsNone(self.state._sync_projector)
         self.assertEqual(self.state.receipts["codex"]["runtime"].health, "current")
         self.assertEqual(self.state.receipts["codex"]["runtime"].accepted, 1)
 
@@ -73,9 +73,7 @@ class WorkingSetEncodingRefusalTest(unittest.TestCase):
         full = self.state.frame("status", 1)
         self.assertEqual(full["kind"], "status")
         self.assertEqual(len(full["snapshot"]["sessions"]), 1)
-        active = self.state.active_frame("status", 1)
-        self.assertEqual(active["kind"], "status")
-        self.assertIsNotNone(active["projection"])
+        self.assertFalse(hasattr(self.state, "active_frame"))
 
     def test_refused_first_stage_cannot_increase_saturated_encoded_counter(self):
         runtime = self._runtime()

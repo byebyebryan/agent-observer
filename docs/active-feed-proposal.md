@@ -1,5 +1,9 @@
 # Observer active-feed proposal
 
+Historical interface: withdrawn in source candidate 0.7.0a9. See the
+[current retirement guide](read-only-retirement.md). Frozen definitions and
+prior release receipts retain their original scope.
+
 Status: Observer G0 planning confirmation, 2026-10-15 local / 2026-10-16 UTC.
 This records the reconciled planning choices with RLCD and Mesh. It accepts no new contract,
 reserves no package version, and authorizes no implementation, installation,

@@ -1,0 +1,123 @@
+{
+  "sourceRevision": "488100e665c6ab64887d18e1306b94472bfe3f3b",
+  "scope": "same synthetic canonical input; pre-retirement active membership oracle",
+  "cases": [
+    {
+      "activityAt": null,
+      "phase": "working",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": null,
+      "phase": "waiting",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": null,
+      "phase": "unknown",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1699999920000,
+      "phase": "working",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1699999920000,
+      "phase": "waiting",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1699999920000,
+      "phase": "unknown",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1700000015000,
+      "phase": "working",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1700000015000,
+      "phase": "waiting",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    },
+    {
+      "activityAt": 1700000015000,
+      "phase": "unknown",
+      "activeIds": [
+        {
+          "hostScope": "fixture",
+          "namespace": "sha256:3c8163925e07b2dda5954b37a6fec2e3a24888768884aff30939f2bf48f2eb9d",
+          "nativeId": "00000000-0000-0000-0000-000000000002",
+          "nativeIdKind": "thread",
+          "provider": "codex"
+        }
+      ]
+    }
+  ]
+}

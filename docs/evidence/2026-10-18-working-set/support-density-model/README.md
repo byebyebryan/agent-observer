@@ -6,7 +6,7 @@ shape, native schema or Mesh. The candidate encoding is hypothetical and is
 not admitted by the current working-set contract.
 
 The source defines `FactSupport` as the complete eight-field object in
-[`active_contract.py`](../../../../agent_observer/active_contract.py#L56-L65).
+[`active_contract.py`](https://github.com/byebyebryan/agent-observer/blob/aade4826c785af6dc98842dfb662a090828dda17/agent_observer/active_contract.py).
 The model builds one table per scope, sorted by each full map's canonical JSON
 bytes. At the existing typed support positions only, it replaces a non-null map
 with an exact integer table index. Those positions are `fieldSupports`, active

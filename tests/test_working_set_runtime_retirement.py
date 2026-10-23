@@ -139,7 +139,8 @@ class WorkingSetRuntimeRetirementTests(unittest.TestCase):
 
             buffer_ids = tuple(id(buffer) for buffer in state.working_set_retained_buffers())
             buffer_lengths = tuple(len(buffer) for buffer in state.working_set_retained_buffers())
-            self.assertEqual(len(buffer_lengths), 2)
+            self.assertEqual(len(buffer_lengths), 1)
+            self.assertIsNone(state._sync_projector)
             self.assertEqual(runtime.encoded_bytes(), sum(buffer_lengths))
             runtime_ref, state_ref = weakref.ref(runtime), weakref.ref(state)
 

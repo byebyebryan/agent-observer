@@ -27,8 +27,6 @@ from mesh_plus.sync.model import (
     SyncDescriptor,
 )
 
-from .active_contract import FACT_SUPPORT, MAX_LEDGER_BYTES, NONMEMBER, UNCERTAIN
-from .active_contract import SCOPE as ACTIVE_SCOPE
 from .contract import (
     IDENTITY,
     SNAPSHOT,
@@ -36,6 +34,8 @@ from .contract import (
     validate_shape,
 )
 from .observation_support import SUPPORT_FIELDS, support_matches
+from .projection_support import FACT_SUPPORT, MAX_LEDGER_BYTES, NONMEMBER, UNCERTAIN
+from .projection_support import SCOPE as ACTIVE_SCOPE
 from .service_contract import SOURCE as SERVICE_SOURCE
 from .sync_commitment import field_token, native_binding_digest, value_hash
 from .sync_contract import OBSERVATIONS, admit_record, join_record

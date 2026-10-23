@@ -29,7 +29,6 @@ class SelectedFullViewDeliveryTests(unittest.IsolatedAsyncioTestCase):
         from test_service_runtime import Running
         from test_working_set_registered_sdk import RecordingSource, reader_now, state_with_rows
 
-        from agent_observer.mesh_active_profile import ACTIVE_PROFILE_ID
         from agent_observer.mesh_publisher import FULL_PROFILE_ID, make_publisher
         from agent_observer.mesh_working_set_publisher import make_working_set_publisher
         from agent_observer.mesh_working_set_read import PreparedWorkingSetAgentWatch
@@ -50,16 +49,16 @@ class SelectedFullViewDeliveryTests(unittest.IsolatedAsyncioTestCase):
                 self.assertFalse(native.runtime.experimental_sync)
                 unused = str(Path(directory) / "unused.sock")
                 full = make_publisher("fixture", "agent", unused)
-                active = make_publisher("fixture", "agent", unused, profile_id=ACTIVE_PROFILE_ID)
+                with self.assertRaisesRegex(ValueError, "profile_descriptor"):
+                    make_publisher("fixture", "agent", unused, profile_id="agent-observer.mesh-active.v1")
                 working = make_working_set_publisher(
                     "fixture", "working", native.path, window_ms=window
                 )
 
-                for publisher in (full, active, working):
+                for publisher in (full, working):
                     self.assertIs(type(publisher), api.CachedPublisher)
                     self.assertIs(type(api.Bridge(publisher)), api.Bridge)
                 self.assertEqual(full.profile, FULL_PROFILE_ID)
-                self.assertEqual(active.profile, ACTIVE_PROFILE_ID)
 
                 profile = working.state_profile
                 capture = RecordingSource(working.native)

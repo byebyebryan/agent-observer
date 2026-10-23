@@ -12,12 +12,11 @@ license = { file = "LICENSE" }
 dependencies = []
 
 [project.optional-dependencies]
-mesh = ["mesh-plus>=0.1.0a24,<0.2"]
+mesh = ["mesh-plus>=0.1.0a25,<0.2"]
 dev = ["ruff==0.16.3", "jsonschema==4.26.0"]
 
 [project.scripts]
 agent-observer = "agent_observer.cli:main"
-agent-observer-write = "agent_observer.write_client:main"
 agent-observer-service = "agent_observer.service_cli:serve"
 
 [tool.setuptools.packages.find]

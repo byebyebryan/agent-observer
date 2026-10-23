@@ -6,8 +6,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from test_active_contract import fixture as active_fixture
-from test_active_contract import support
+from projection_fixture import fixture as active_fixture
+from projection_fixture import support
 
 from agent_observer.contract import ContractError, canonical, validate_snapshot
 from agent_observer.working_set_contract import (

@@ -14,6 +14,23 @@ HELPER = runpy.run_path(str(ROOT / "scripts/candidate-artifact"))
 
 
 class CandidateArtifactTest(unittest.TestCase):
+    def test_read_only_manifest_requires_exact_entrypoints_and_withdrawal(self):
+        good = json.loads((ROOT / "artifacts/observer-0.7.0a8.json").read_text())
+        good.update(manifestVersion=6, retiredCapabilities=["write", "active-feed"],
+                    entrypoints=["agent-observer", "agent-observer-service"])
+        good.pop("write")
+        good.pop("activeFeed")
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.json"
+            path.write_text(json.dumps(good))
+            self.assertEqual(HELPER["document"](path), good)
+            for extra in ({"write": {"schema": 2}}, {"activeFeed": {}},
+                          {"retiredCapabilities": ["write"]},
+                          {"entrypoints": ["agent-observer", "agent-observer-write", "agent-observer-service"]}):
+                with self.subTest(extra=extra), self.assertRaises(ValueError):
+                    path.write_text(json.dumps({**good, **extra}))
+                    HELPER["document"](path)
+
     def active_manifest(self):
         manifest = HELPER["document"](ROOT / "artifacts/observer-0.7.0a6.json")
         schemas = {name: ROOT / f"agent_observer/contracts/active-{name}.schema.json"

@@ -67,7 +67,7 @@ Source pointers:
   [scheduler](../agent_observer/observation_scheduler.py) and
   [runtime](../agent_observer/service_runtime.py).
 - [Native evaluation](../scripts/evaluate-observation),
-  [write client](../agent_observer/write_client.py) and
+  [write client](https://github.com/byebyebryan/agent-observer/blob/aade4826c785af6dc98842dfb662a090828dda17/agent_observer/write_client.py) and
   [notification source](../agent_observer/notification_source.py).
 
 R1/R2 are demonstrated by current ordinary saved-state reads. R3/R8/R9 have

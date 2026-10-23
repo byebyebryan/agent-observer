@@ -13,7 +13,6 @@ from functools import lru_cache
 from importlib.resources import files
 from pathlib import PurePosixPath
 
-from .active_contract import SELECTOR, SELECTOR_DIGEST
 from .bounded_json import decode_document
 from .contract import (
     CODE,
@@ -45,6 +44,7 @@ from .sync_contract import (
     _challenge,
     _tuple,
 )
+from .sync_projection_schema import SELECTOR, SELECTOR_DIGEST
 
 TABLES = ("records", "bodies", "observations", "memberships", "receipts", "cohorts", "scopes", "metadata")
 COMMITMENT = "mesh.patricia-sha256/1"
