@@ -280,15 +280,15 @@ The initial regular contract/client execution loop independently accepted
 strict schemas, list/show/doctor, local Git/workspace enrichment and sampled
 watch. The [execution record](docs/contract-clients-execution-status.md) separates
 source checks from [independent packaged/native acceptance](docs/evidence/2026-10-04-contract-clients/REPORT.md).
-The separate [write client](docs/write-client-contract.md) supports validated
+The retired [write client](docs/write-client-contract.md) supported validated
 New/Resume and native TTY entry. That v2 provisional pilot was selected on
 Snap and Starship after independent operational acceptance and real Tmux/SSH
 consumer proofs; see the [operational record](docs/operational-execution-status.md).
 Agent Plus subsequently passed its own bounded public-contract/native-entry
-consumer gate against that unchanged Observer artifact. The [current handoff](docs/contract-clients-handoff.md)
+consumer gate against that unchanged Observer artifact. The [historical handoff](docs/contract-clients-handoff.md)
 records the selected producer, compatible consumer and remaining acceptance gates.
 
-The [contract and first-party clients track](docs/contract-and-clients-plan.md) provides
+The earlier [contract and first-party clients track](docs/contract-and-clients-plan.md) provided
 a passive host-local core, read and New/Resume write clients, and an optional
 separate networking component in this repository. Contract/core work and
 frontend migrations have independent gates. The [design review](docs/contract-and-clients-review.md)

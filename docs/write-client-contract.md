@@ -1,5 +1,9 @@
 # First-party New/Resume write client
 
+Historical contract: the current package and managed commands withdraw this
+writer. Native tools own New/Resume. See [read-only retirement](read-only-retirement.md).
+The examples below describe old immutable artifacts and are not current commands.
+
 Candidate: `agent-observer-write`, request/plan/result schema version 1. This is
 a separate client of the [public observation contract](public-contract-v2.md).
 Passive collection/read commands never import this module or perform actions.

@@ -257,10 +257,10 @@ selection with passive native hints and periodic reconciliation. Consumer
 migration retains a separate delivery gate.
 
 The [contract and clients plan](contract-and-clients-plan.md), captured
-2026-10-03, defines the next development track: a passive host-local core,
+2026-10-03, defined the next development track at that date: a passive host-local core,
 first-party read/write clients and optional networking in the same repository.
-It takes precedence for future extraction/ownership; the sections below record
-the current migration-pilot boundary. No proposed terminology changes schema v1.
+The current read-only retirement supersedes its writer ownership; the sections
+below record the historical migration-pilot boundary. No proposed terminology changes schema v1.
 See the [new review](contract-and-clients-review.md) for source gaps and gates.
 
 Date: 2026-10-02. Status: accepted ownership and product direction; source,

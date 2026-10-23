@@ -55,10 +55,10 @@
   fallback or terminal/job field scaffolding merely for the old contract.
   `docs/contract-and-clients-plan.md` records the preceding track. Keep
   observation/core/read-client passes separate from frontend work.
-  The historical first-party New/Resume write client remains independent of
-  passive core and the current native-entry product. Retained writer selection,
-  source retirement and native-action support require separate consumer/contract
-  review. Optional networking has its own implementation/native gates.
+  The first-party New/Resume writer is retired in current source; native tools
+  own entry and conversation control. Old writer artifacts and dated action
+  proofs remain recovery/history inputs, with no current support obligation.
+  Optional networking has its own implementation/native gates.
   Design documentation alone
   does not accept proposed states/fields/commands or authorize deployment.
 - D0-D6 in `docs/codex-daemon-authority-plan.md` record the preceding correction
