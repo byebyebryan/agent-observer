@@ -9,20 +9,6 @@ from __future__ import annotations
 import copy
 import hashlib
 
-from .projection_support import (
-    FACT_SUPPORT,
-    MAX_FRAME_BYTES,
-    MAX_IDENTITIES,
-    MAX_LEDGER_BYTES,
-    MAX_OVERHEAD_BYTES,
-    MAX_REQUEST_BYTES,
-    POSITIVE_INTEGER,
-    _current_support,
-    _identity,
-    _sources,
-    _support_scope,
-    _support_set,
-)
 from .bounded_json import decode_document
 from .contract import (
     CODE,
@@ -43,6 +29,20 @@ from .contract import (
     obj,
     text,
     validate_shape,
+)
+from .projection_support import (
+    FACT_SUPPORT,
+    MAX_FRAME_BYTES,
+    MAX_IDENTITIES,
+    MAX_LEDGER_BYTES,
+    MAX_OVERHEAD_BYTES,
+    MAX_REQUEST_BYTES,
+    POSITIVE_INTEGER,
+    _current_support,
+    _identity,
+    _sources,
+    _support_scope,
+    _support_set,
 )
 from .service_contract import FRAME as SERVICE_FRAME
 from .service_contract import SOURCE

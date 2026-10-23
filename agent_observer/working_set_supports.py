@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from .projection_support import FACT_SUPPORT, MAX_IDENTITIES
 from .contract import ContractError, canonical, validate_shape
+from .projection_support import FACT_SUPPORT, MAX_IDENTITIES
 
 MAX_SUPPORT_TABLE = MAX_IDENTITIES * 2 + 2
 MAX_SUPPORT_INDEX = MAX_SUPPORT_TABLE - 1

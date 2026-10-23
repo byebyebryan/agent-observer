@@ -9,7 +9,6 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_observer.sync_projection_schema import SELECTOR
 from agent_observer.contract import ContractError
 from agent_observer.sync_commitment import canonical, native_binding_digest
 from agent_observer.sync_native import (
@@ -22,6 +21,7 @@ from agent_observer.sync_native import (
     schema_document,
     validate_message,
 )
+from agent_observer.sync_projection_schema import SELECTOR
 
 ROOT = Path(__file__).resolve().parents[1]
 EPOCH = "00000000-0000-4000-8000-000000000001"

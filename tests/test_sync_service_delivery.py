@@ -10,13 +10,13 @@ from unittest.mock import patch
 
 from test_service_runtime import Running, scoped_snapshot
 
-from agent_observer.sync_projection_schema import SELECTOR, SELECTOR_DIGEST
 from agent_observer.contract import canonical
 from agent_observer.service_contract import parse_frame
 from agent_observer.service_runtime import MAX_SYNC_ENCODED_BYTES, Peer, Runtime
 from agent_observer.service_state import ServiceState
 from agent_observer.sync_commitment import canonical as sync_canonical
 from agent_observer.sync_native import parse_message
+from agent_observer.sync_projection_schema import SELECTOR, SELECTOR_DIGEST
 
 
 def request(operation, view="full", **fields):

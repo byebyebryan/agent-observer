@@ -12,10 +12,10 @@ import copy
 from dataclasses import replace
 from functools import partial
 
-from .projection_fields import _unique_supports, mask_fields
 from .bounded_json import decode_document
 from .contract import MAX_BYTES, ContractError, _admitted_identity_key, canonical, validate_snapshot
 from .observation_support import SUPPORT_FIELDS, empty_support, support_matches
+from .projection_fields import _unique_supports, mask_fields
 from .working_set_contract import MAX_IDENTITIES, MAX_LEDGER_BYTES, selector
 from .working_set_decisions import WorkingSetDecisions
 from .working_set_ledger import LEDGER_PLAN_SCRATCH_BYTES, WorkingSetLedger

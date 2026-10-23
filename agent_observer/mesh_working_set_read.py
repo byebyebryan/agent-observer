@@ -14,8 +14,6 @@ from mesh_plus import api as mesh_api
 from mesh_plus.api import PreparedReadGuard
 from mesh_plus.protocol import check
 
-from .projection_support import support_matches
-from .projection_fields import mask_fields
 from .contract import canonical, identity_key
 from .mesh_working_set_profile import (
     NATIVE_PROTOCOL,
@@ -23,6 +21,8 @@ from .mesh_working_set_profile import (
     WorkingSetAgentPreparation,
     WorkingSetAgentProfile,
 )
+from .projection_fields import mask_fields
+from .projection_support import support_matches
 from .working_set_contract import WORKING_SET_PROTOCOL, selector, selector_digest
 from .working_set_policy import DEFAULT_WINDOW_MS
 from .working_set_supports import (

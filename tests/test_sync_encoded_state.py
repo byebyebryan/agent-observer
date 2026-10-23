@@ -8,9 +8,9 @@ from unittest.mock import patch
 
 import test_sync_state as reference
 
-from agent_observer.projection_support import FACT_SUPPORT
 from agent_observer.contract import SESSION, ContractError, validate_shape
 from agent_observer.observation_support import SUPPORT_FIELDS
+from agent_observer.projection_support import FACT_SUPPORT
 from agent_observer.sync_commitment import BudgetExceeded, canonical
 from agent_observer.sync_contract import split_record
 from agent_observer.sync_encoded_state import (
