@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from .active_contract import FACT_SUPPORT, MAX_IDENTITIES
+from .projection_support import FACT_SUPPORT, MAX_IDENTITIES
 from .contract import ContractError, canonical, validate_shape
 
 MAX_SUPPORT_TABLE = MAX_IDENTITIES * 2 + 2

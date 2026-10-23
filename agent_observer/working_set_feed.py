@@ -12,7 +12,7 @@ import copy
 from dataclasses import replace
 from functools import partial
 
-from .active_feed import _unique_supports, mask_fields
+from .projection_fields import _unique_supports, mask_fields
 from .bounded_json import decode_document
 from .contract import MAX_BYTES, ContractError, _admitted_identity_key, canonical, validate_snapshot
 from .observation_support import SUPPORT_FIELDS, empty_support, support_matches

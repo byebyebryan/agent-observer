@@ -22,7 +22,7 @@ from mesh_plus.api import (
     descriptor as mesh_descriptor,
 )
 
-from .active_contract import MAX_FRAME_BYTES, support_matches
+from .projection_support import MAX_FRAME_BYTES, support_matches
 from .contract import ContractError, identity_key
 from .working_set_contract import WORKING_SET_PROTOCOL, selector, validate_frame
 from .working_set_policy import DEFAULT_WINDOW_MS

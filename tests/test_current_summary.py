@@ -13,7 +13,7 @@ from test_service_runtime import Running, scoped_snapshot
 
 from agent_observer.service_public import ContractError, ReadCache
 from agent_observer.service_state import ServiceState
-from examples.current_summary import (
+from agent_observer.utility_read import (
     local_failure_code,
     local_summary,
     parser,
@@ -142,12 +142,12 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             "timeNamespace": frame["clockDomain"].replace("[", "").replace("]", ""),
         }
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
             patch(
-                "examples.current_summary.boottime_ms",
+                "agent_observer.utility_read.boottime_ms",
                 side_effect=[15000, 15000, 19999, 20000, 25000, 25000],
             ),
-            patch("examples.current_summary.frames", side_effect=quiet_frames),
+            patch("agent_observer.utility_read.frames", side_effect=quiet_frames),
         ):
             code = run_local(
                 host="fixture",
@@ -225,9 +225,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             "timeNamespace": frame["clockDomain"].replace("[", "").replace("]", ""),
         }
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
-            patch("examples.current_summary.boottime_ms", side_effect=[15000, 15100, 15110]),
-            patch("examples.current_summary.frames", side_effect=setup_stream),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15100, 15110]),
+            patch("agent_observer.utility_read.frames", side_effect=setup_stream),
         ):
             code = run_local(
                 host="fixture",
@@ -257,12 +257,12 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             raise ContractError("service_transport_timeout")
 
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
             patch(
-                "examples.current_summary.boottime_ms",
+                "agent_observer.utility_read.boottime_ms",
                 side_effect=[15000, 15000, *range(15100, 16200, 100), 16200, 16200],
             ),
-            patch("examples.current_summary.frames", side_effect=quiet_then_timeout),
+            patch("agent_observer.utility_read.frames", side_effect=quiet_then_timeout),
         ):
             code = run_local(
                 host="fixture",
@@ -294,9 +294,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             raise OSError("read continued beyond the presentation deadline")
 
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
-            patch("examples.current_summary.boottime_ms", side_effect=[15000, 15100, 15200, 15200]),
-            patch("examples.current_summary.frames", side_effect=delayed_frame),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15100, 15200, 15200]),
+            patch("agent_observer.utility_read.frames", side_effect=delayed_frame),
         ):
             code = run_local(
                 host="fixture",
@@ -322,9 +322,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             yield frame
 
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
-            patch("examples.current_summary.boottime_ms", side_effect=[15000, 15201, 15201]),
-            patch("examples.current_summary.frames", side_effect=late_frame),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15201, 15201]),
+            patch("agent_observer.utility_read.frames", side_effect=late_frame),
         ):
             code = run_local(
                 host="fixture",
@@ -361,9 +361,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
             "timeNamespace": frame["clockDomain"].replace("[", "").replace("]", ""),
         }
         with (
-            patch("examples.current_summary.local_clock", return_value=clock),
-            patch("examples.current_summary.boottime_ms", side_effect=[15000, 15000, 15100, 15200]),
-            patch("examples.current_summary.frames", return_value=CloseFailure()),
+            patch("agent_observer.utility_read.local_clock", return_value=clock),
+            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15000, 15100, 15200]),
+            patch("agent_observer.utility_read.frames", return_value=CloseFailure()),
         ):
             code = run_local(
                 host="fixture",
@@ -563,7 +563,7 @@ class CurrentSummaryMeshTests(unittest.IsolatedAsyncioTestCase):
                 with (
                     patch("mesh_plus.api.configured_reader", side_effect=track_reader),
                     patch.object(PreparedWorkingSetAgentWatch, "read", observe_read),
-                    patch("examples.current_summary.OUTPUT_SECONDS", 0.1),
+                    patch("agent_observer.utility_read.OUTPUT_SECONDS", 0.1),
                 ):
                     code = await run_mesh(
                         host="fixture",

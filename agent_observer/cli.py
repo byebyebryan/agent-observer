@@ -128,11 +128,15 @@ def main(argv=None):
     if arguments and arguments[0] == "mesh":
         from .mesh_cli import main as mesh_main
         return mesh_main(arguments[1:])
+    if arguments and arguments[0] == "working-set":
+        from .working_set_cli import main as working_set_main
+        return working_set_main(arguments[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("service", help="explicit cached service read client (service --help)")
     commands.add_parser("mesh", help="optional Mesh Plus cached state client (mesh --help)")
+    commands.add_parser("working-set", help="cached working-set list or bounded watch")
     profiles = commands.add_parser("profiles", help="list explicit Codex home profile routes")
     profiles.add_argument("--config", type=Path, required=True)
     profiles.add_argument(

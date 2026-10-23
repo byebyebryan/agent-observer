@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 import hashlib
 
-from .active_contract import (
+from .projection_support import (
     FACT_SUPPORT,
     MAX_FRAME_BYTES,
     MAX_IDENTITIES,

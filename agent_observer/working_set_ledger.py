@@ -17,7 +17,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
-from .active_contract import FACT_SUPPORT, MAX_IDENTITIES
+from .projection_support import FACT_SUPPORT, MAX_IDENTITIES
 from .contract import DIGEST, SCOPE, UUID, ContractError, validate_shape
 
 SUPPORT_KEY_FIELDS = (
