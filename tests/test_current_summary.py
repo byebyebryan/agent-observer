@@ -2,12 +2,14 @@
 
 import asyncio
 import copy
+import os
 import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from projection_fixture import local_uid
 from test_read_cache import fixture as service_fixture
 from test_service_runtime import Running, scoped_snapshot
 
@@ -36,10 +38,10 @@ def assert_content_free(test_case, value):
 
 class CurrentSummaryLocalTests(unittest.TestCase):
     def make_cache(self):
-        frame = service_fixture()
+        frame = local_uid(service_fixture())
         return ReadCache(
             host_scope=frame["hostScope"],
-            uid=frame["uid"],
+            uid=os.geteuid(),
             boot_id=frame["bootId"],
             clock_domain=frame["clockDomain"],
         ), frame
@@ -295,7 +297,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
 
         with (
             patch("agent_observer.utility_read.local_clock", return_value=clock),
-            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15100, 15200, 15200]),
+            patch(
+                "agent_observer.utility_read.boottime_ms", side_effect=[15000, 15100, 15200, 15200]
+            ),
             patch("agent_observer.utility_read.frames", side_effect=delayed_frame),
         ):
             code = run_local(
@@ -362,7 +366,9 @@ class CurrentSummaryLocalTests(unittest.TestCase):
         }
         with (
             patch("agent_observer.utility_read.local_clock", return_value=clock),
-            patch("agent_observer.utility_read.boottime_ms", side_effect=[15000, 15000, 15100, 15200]),
+            patch(
+                "agent_observer.utility_read.boottime_ms", side_effect=[15000, 15000, 15100, 15200]
+            ),
             patch("agent_observer.utility_read.frames", return_value=CloseFailure()),
         ):
             code = run_local(
