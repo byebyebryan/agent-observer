@@ -5,7 +5,7 @@ Keep native Codex in charge of conversations; consume identities, runtime/activi
 facts, coverage and independently expiring evidence through public read interfaces.
 
 [Explore Agent Observer](https://dev.byebyebryan.com/fleet-plus/projects/agent-observer/) ·
-[Documentation](docs/README.md) · [Build a utility](docs/utility-read-guide.md)
+[First local read](docs/getting-started.md) · [Documentation](docs/README.md) · [Build a utility](docs/utility-read-guide.md)
 
 ## What you can build
 
@@ -30,8 +30,7 @@ The collector/working-set pair uses Observer a9 / Mesh a25. Dashboards, full
 publishers, Tmux and SSH authority retain independently reviewed selections.
 The [deployment owner](https://github.com/byebyebryan/dotfiles/blob/main/deployments/agent-observer.json)
 records managed pins; a source or documentation update does not upgrade them.
-Carbon's last delivery check reported partial working-set membership, not a
-complete empty roster. Its cause remains unresolved in that closeout.
+Host-specific coverage limits remain recorded in the dated delivery closeout.
 
 ## Choose a read path
 
@@ -67,7 +66,9 @@ agent-observer snapshot --host-scope workstation --provider codex
 Replace `workstation` with your configured logical host identity. Observation
 never starts a missing native daemon. Cached reads require an explicitly hosted
 service; fleet/working-set reads also require the matching optional Mesh package,
-publisher and configured directional routes. Follow the [read guides](docs/README.md).
+publisher and configured directional routes. The [first local read guide](docs/getting-started.md)
+provides a complete published-package recipe and output explanation; the
+[Service 4 guide](docs/local-service.md) covers explicit cached hosting/reads.
 
 ## Develop and extend
 

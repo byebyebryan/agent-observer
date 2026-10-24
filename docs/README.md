@@ -5,10 +5,11 @@ Codex read-only observation is current; native tools own conversation control.
 
 | Guide | Use it for |
 | --- | --- |
+| [First local read](getting-started.md) | Install the published core, inspect one selected home and understand the output |
 | [API 4](api-v4.md) | Current identity, runtime/activity, coverage and freshness contract |
 | [Read-only CLI](read-only-retirement.md) | Working-set list/watch and retired write/active-only boundaries |
 | [Utility example](utility-read-guide.md) | Developer-only bounded local/Mesh summary using public interfaces |
-| [Cached local service](shared-observation-service-client.md) | Service ownership and explicit cached clients |
+| [Current cached local service](local-service.md) | Codex-only Service 4 setup, explicit endpoints, cached reads and watch lifecycle |
 | [Working-set checkpoint](working-set-producer-checkpoint.md) | Active + recent projection and independent membership/scope leases |
 | [Architecture](architecture.md) / [boundaries](observation-boundaries.md) | Core, passive adapters, local hosting, networking and consumer responsibilities |
 | [Validation](observation-validation-workflow.md) | Source, synthetic, native and consumer acceptance boundaries |
@@ -31,3 +32,5 @@ and unresolved in that receipt. A complete-empty conclusion is not supported.
 their original provider, artifact and endpoint scope. Earlier API handoffs, Claude
 monitoring, Observer writes and standalone active feeds are historical; their
 future-tense instructions are not current support requirements.
+The [protocol-1 local service guide](shared-observation-service-client.md) is a
+historical workflow; use the Service 4 guide above for current installation.

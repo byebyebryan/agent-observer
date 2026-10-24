@@ -1,5 +1,9 @@
 # Explicit local service client
 
+**Historical protocol-1 guide.** For current Codex-only Service 4 installation,
+hosting and cached reads, use the [current local service guide](local-service.md).
+The migration note and commands below retain their original artifact scope.
+
 This guide records the historical protocol-1/a16 workflow. New source and the
 selected a6 read/service artifact use [API 2 client commands](api-v2-client-handoff.md)
 and [service protocol 2](service-protocol-v2.md), with Codex as the sole native

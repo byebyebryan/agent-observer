@@ -1,6 +1,6 @@
 # Agent Observer architecture boundaries
 
-Current source candidate 0.7.0a9 withdraws Observer writes and the standalone
+Published 0.7.0a9 withdraws Observer writes and the standalone
 active-only feed. Shared pure projection helpers and working-set's active
 membership branch remain. The [retirement guide](read-only-retirement.md) governs
 current support; the dated artifact and deployment sections below retain their
@@ -13,6 +13,10 @@ there is separate from retired Claude observation here. The
 [public utility-read guide](utility-read-guide.md) and
 [ownership specification](observation-boundaries.md) describe the current client
 boundary. Earlier migration-pilot sections retain their dated support scope.
+
+For current local setup use [Service 4](local-service.md); the published
+collector/working-set pair is a9/Mesh a25. The source dependency and deployment
+paragraphs below are dated checkpoints rather than current installation guidance.
 
 Source dependency checkpoint, 2026-10-20: optional networking now targets
 [released Mesh a24](mesh-a24-complete-view-upgrade.md), including its additive
