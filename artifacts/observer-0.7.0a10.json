@@ -1,0 +1,46 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a10",
+  "wheel": "agent_observer-0.7.0a10-py3-none-any.whl",
+  "wheelSha256": "17e8ac2b1d1672fb5ecf52da13940f01790abb7636187017d8dcc8dc2caadd31",
+  "sourceRevision": "463dd5fbeb186f4a364bf94551813991e7453cec",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified immutable read-only artifact; publication status is established by the release receipt.",
+    "Read-only API4/snapshot6/Service4 and working-set1; compatible reason-only coverage diagnostics with unchanged membership, leases and schemas.",
+    "Partial coverage reports its primary native census, support or membership blocker; clock-discontinuity and cutoff guards retain conservative behavior.",
+    "Paired Mesh0.1.0a25; independent full publishers, dashboards and Tmux selections are unchanged."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}
