@@ -2,7 +2,7 @@
 
 These tools belong to Observer, using Mesh's accepted optional preparation
 interface rather than a new transport/cache implementation. See the
-[execution plan](../../docs/prepared-read-client-plan.md) and
+[execution plan](../../docs/history/performance/prepared-read-client-plan.md) and
 [acceptance ledger](../../docs/evidence/2026-10-14-prepared-reads/REPORT.md).
 
 `cadence.py` observes a bounded installed cached two-host watch. It records only

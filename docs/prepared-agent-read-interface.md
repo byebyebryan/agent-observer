@@ -1,6 +1,6 @@
 # Optional prepared Agent read interface 2
 
-Observer 0.7.0a6 adds explicit selection and owned Mesh admission, requiring
+Introduced in Observer 0.7.0a6 and retained by the read-only a9 release, this adds explicit selection and owned Mesh admission, requiring
 Mesh 0.1.0a22 or newer with admission 1, selection 1 and preparation 1.
 `agent_observer.mesh_read.READ_INTERFACE_VERSION` is 2. API 4, read wire 6,
 Service 4, Agent profile v3 and SDK 1 retain their meanings. Independent producer
@@ -88,7 +88,7 @@ Failures revoke context and the whole helper, with no fallback.
 Accepted local interface, 2026-10-14 UTC. Observer 0.7.0a2/Mesh a18 passes
 source, immutable package, native read and reader-only selection gates in the
 [acceptance ledger](evidence/2026-10-14-prepared-reads/REPORT.md). The
-[RLCD handoff](rlcd-prepared-read-handoff.md) retains independent client adoption.
+[RLCD handoff](history/performance/rlcd-prepared-read-handoff.md) retains independent client adoption.
 This additive local Python interface preserves API 4, Service 4, Agent profile
 v3 and Mesh SDK 1. It is not a wire response, collector or transport owner.
 

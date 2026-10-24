@@ -1,0 +1,572 @@
+# Agent Observer roadmap
+
+> Historical record. This document preserves its original checkpoint and may describe retired providers, interfaces or plans. Use the [current documentation](../../README.md) for supported setup and behavior.
+
+Current direction: reusable Codex read-only observation for dashboards, diagnostics
+and agent utilities. Native provider managers own conversations; Agent Plus opens
+those managers independently. Claude observation is retired.
+
+## Current publication and next work
+
+[Observer 0.7.0a9](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
+is published and paired with Mesh a25 for collectors/working-set delivery. Observer
+writes and standalone active-only hosting are fully retired. Working-set retains
+active membership and recent context; full diagnostics remain supported.
+The [public closeout](https://github.com/byebyebryan/mesh-plus/blob/b306d44c329c6289781cc4db14f939ed2a4d20c2/docs/evidence/2026-10-23-public-delivery/README.md)
+records publication, independent role pins and bounded fleet acceptance. Carbon's
+partial membership remains unresolved; no universal complete-fleet claim follows.
+
+Near-term work is clearer [public read guidance](../../README.md), concrete read-only
+utilities using [supported facades](../../utility-read-guide.md), and focused investigation
+of unresolved coverage/membership where needed. Consumer UI/device acceptance and
+producer/native qualification keep separate owners. The shared [Fleet Plus site](https://dev.byebyebryan.com/fleet-plus/)
+explains project relationships; it does not select a runtime tuple.
+
+The earlier [Mesh a24 upgrade](mesh-a24-complete-view-upgrade.md),
+[a8 publication/deployment](../../evidence/2026-10-21-a8-deployment/REPORT.md) and
+[home-profile checkpoint](../../evidence/2026-10-19-home-profiles/REPORT.md) retain their
+dated artifact and host scope. Effective owner manifests determine later roles.
+
+Snapshot/delta synchronization is [deferred behind a default-off gate](../experiments/delta-sync-dark-feature.md)
+as of 2026-10-17. Implementation and evidence are retained for a future explicit
+resume request. CPU, 2,000-row capacity/recovery and remaining producer gates are
+not accepted; active optimization/qualification and automatic continuation end.
+
+## Earlier checkpoints
+
+The following passages preserve their original artifact and selection scope.
+
+The earlier hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7)
+publishes the qualified wheel unchanged, paired with Mesh 0.1.0a23. The
+[RLCD acceptance receipt](https://github.com/byebyebryan/esp32-rlcd/blob/21277453293007635fbc251f7e4f524f23262e7c/docs/evidence/2026-10-16-active-feed/REPORT.md)
+closes software integration, configured fleet, collector/active publisher/client
+selection and paired rollback for that dated tuple. Physical ACK/panel/reboot
+checks were deferred there; the later home-profile delivery has its own bounded
+device readback and manual visual/reboot limits.
+Full diagnostics/read CLI, Tmux and the historical writer keep independent tuples.
+
+The agreed [active-feed design](../experiments/active-feed-proposal.md) is now implemented for
+the accepted [a7/a23 producer checkpoint](../../evidence/2026-10-16-active-feed/REPORT.md)
+through a [separate opt-in interface](../experiments/active-feed-interface.md). The checkpoint
+covers actual-value/census provenance, the ServiceState cache, strict native
+wire and optional source/profile/read facade, with bounded installed/native,
+transport and controlled scaling evidence. Generation overhead and remaining
+native field/capacity limits are explicit.
+The later RLCD receipt above owns consumer and coordinated service adoption;
+source acceptance alone does not select normal services.
+
+The earlier [native title-helper correction](../../evidence/2026-10-14-title-helper/REPORT.md)
+selected core-only Observer 0.7.0a3 collectors on both hosts. Read CLI and full Agent
+publishers separately selected a5/Mesh a20.
+Tmux and the historical writer keep their independent selections. The dated
+a1 collector acceptance below remains historical.
+
+Preceding producer checkpoint, 2026-10-14: Codex-only
+[Observer 0.7.0a3](../../../artifacts/observer-0.7.0a3.json) supplies API 4/read 6/Service 4
+and selects core-only collectors on Snap and Starship. Agent publication separately selects
+a5/Mesh a20/profile v3 after the [CPU delivery checkpoint](../../evidence/2026-10-15-cpu-delivery/REPORT.md).
+Known system classification is preserved and ordinary rosters exclude it. Native turn/update
+metadata preserves activity/order and original independently expiring receipts.
+The [API 4 handoff](../../api-v4.md) and
+[operational receipt](../../evidence/2026-10-13-system-classification/REPORT.md) cover
+local/native, installed IPC/SSH, two-host fleet and coordinated rollback gates.
+SDK 1 and Read/Delivery 1 remain unchanged. Tmux's a7/profile v1 factory and the
+historical writer retain independent ownership. Claude native use stays external
+following retirement; the previous 0.6.0a2/Mesh a16 tuple remains a rollback artifact.
+
+The a2/a18 helper accepted in the
+[prepared-read ledger](../../evidence/2026-10-14-prepared-reads/REPORT.md) is retained
+in the a5/a20 read CLI on both hosts. API and
+profile meanings stay unchanged. Static Agent preparation and owned current-row
+reads meet the consumer cost targets at observed cadence, with legacy defaults,
+installed/native equality and reader-only rollback. The
+[RLCD handoff](../performance/rlcd-prepared-read-handoff.md) records independent adoption.
+
+The read-client handoff is ready for downstream work. The RLCD title-first
+roster, system exclusion, feed loss/recovery and physical readability pass is
+accepted separately in the device repository. Remaining work has separate scope.
+
+The [CPU delivery plan](../performance/cpu-reduction-execution-plan.md) sequences the measured
+Observer corrections, independent RLCD prepared adoption, Starship source sync /
+hardware flash and whole-application acceptance before residual Mesh/read spikes.
+Its C0–C5 gates are accepted with a5/a20 roles selected on both hosts and the
+prepared RLCD bundle selected on Starship. Verified flash/readback, live feed,
+expiry/recovery and actual old-pair rollback pass. The separate warmed service
+windows use 20.99% before and 12.76% after, with essentially flat memory. The
+controlled combined pipeline improves 38.96%; ordinary workloads remain
+descriptive. C6 starts from this new baseline.
+
+The independent [C6 Observer checkpoint](../../evidence/2026-10-15-prepared-selection/REPORT.md)
+accepts a6/a22 immutable producer artifacts, combined native admission and
+read interface 2 with explicit selection and all-current identity summaries.
+Fixed 500-row CPU improves 21.60% with matching semantics. Snap's current daemon
+and baseline/candidate readers are empty, so populated native state proof is
+Starship-bound. RLCD owns subsequent pinned adoption, live CPU and device/feed
+acceptance. Normal role selections remain a5/a20.
+
+- 349 roster/feed adoption and any further RLCD product changes.
+- Residual repeated native-body acquisition/admission and proof/carrier composition
+  in a focused Mesh study. The controlled second prepared reader adds about
+  8.54 points of one core for the same publisher pair. Presentation-only
+  revalidation has its separate owner path. Preserve original receipts,
+  per-acquisition proof, ordering, mutation and paired Tmux gates; no slower
+  monitoring or discovery truncation is implied. Collection, extra SSH sources
+  and RLCD application costs remain separately measured.
+- Public-download verification of each future package release, preserving exact
+  accepted bytes, paired dependencies and independent deployment receipts.
+- Continuously advancing remote age policy, if needed beyond source-sampled age;
+  no exact blocked/current-phase clock is promised.
+- Native occurrence events/notification enrichment, if a concrete client needs it.
+- Optional Mesh transport/WSS adoption with its own capacity/credential gates.
+- Physical-suspend and post-TUI-closure proof for the accepted Codex limits.
+- A new provider only after runtime/identity/activity/capability review.
+
+The former Observer-backed Agent Plus controller and temporary Observer launcher
+are retired proposals. Current Agent Plus is an independent native-entry
+client; Observer attachment/actions remain separate/deferred. Private a21
+allocation work is not merged/promoted. Producer
+acceptance does not imply a frontend or device gate.
+
+The [a20 owner adoption](../../evidence/2026-10-14-mesh-a20/REPORT.md) corrects
+independent acquisition ordering and qualifies the optional roles separately.
+SDK 1/preparation 1 and API 4 meanings remain unchanged; complete local cost
+results are mixed, with further fleet/application costs reported separately.
+
+## Historical execution checkpoints
+
+Earlier plans and acceptance below preserve their original scope and selections.
+The old required-second-provider condition is superseded by Claude retirement.
+
+The [Mesh SDK v1 owner integration](mesh-sdk-v1-integration-plan.md) is
+[complete](../../evidence/2026-10-11-mesh-sdk-integration/REPORT.md) through M0–M5 within
+its declared bounds: pure profile/read wiring, immutable conformance, independent
+native pull/push, bounded cost and reader-only selection/rollback on both hosts.
+At that checkpoint, managed source selected a17/Mesh a11 readers and retained a16/Mesh a10
+bridge prefixes independently of a15 collection and the 0.4.0a16 writer. Hosted
+CI/release publication is a following receipt. Publisher extraction and Mesh's
+generic conformance/diagnostic/performance maintenance are separate future work.
+Earlier selections below are dated checkpoints.
+
+The [read-delivery follow-up](read-delivery-follow-up-plan.md) publishes exact
+artifacts, measures sustained read costs and adds a13 pure read-cache/timer
+conformance and human-watch ergonomics. Its
+[acceptance report](../../evidence/2026-10-09-read-delivery/REPORT.md) records independent
+package/native/reader selection. The [collector cost follow-up](../performance/collector-cost-follow-up.md)
+repairs repeated retention scans in a14, independently of reader selection.
+Its [acceptance report](../../evidence/2026-10-09-retention-cpu-repair/REPORT.md) records
+old/new behavioral parity, installed/native proofs and sustained cost reduction.
+The [a15 Claude collection repair](../../evidence/2026-10-10-claude-collection-repair/REPORT.md)
+shares bounded decoding and adds current-file-authenticated normalized metadata
+reuse, with separate source/artifact/native/cost/operational gates.
+Reader acceptance and selection stay separate from collection, networking and downstream development.
+
+The [state-only Mesh integration](mesh-integration-plan.md) is
+[complete](../../evidence/2026-10-09-mesh-integration/REPORT.md): compatible adapter SDK
+fixes, a12 read CLI, immutable package/native comparison, and scoped a12/a4
+client/bridge selection on both hosts. Collection now selects a15, writer a16;
+the read CLI separately selects a13.
+The [CLI guide](../../mesh-read-client.md) describes raw and human read modes.
+Core/local service, provider policy and downstream UI development stay separate.
+
+Date: 2026-10-10. This document records status and delivery dependencies.
+The [architecture](../../architecture.md),
+[migration plan](native-runtime-migration-plan.md),
+[spike procedures](../providers/agent-session-spike-plan.md) and
+[design review](design-review.md) define the associated scope and acceptance.
+
+## Historical contract and first-party client track
+
+The active [state-push refinement](state-push-design.md) is complete:
+[source/client review](state-push-design-review.md) and
+[synthetic/controlled/installed-native evidence](../../evidence/2026-10-09-state-push-refinement/REPORT.md)
+support the existing complete-view contract without production changes.
+[P0–P2](../delivery/state-push-execution-plan.md) records this checkpoint and optional following
+read-cache/timer conformance and CLI ergonomics. API 2/wire 4/Service 2 remain
+accepted. Current-state push does not promise every native transition or alert.
+
+The preceding [native event research](state-and-events-research-plan.md) is
+retained, but its [E0–E5 implementation](../delivery/state-and-events-execution-plan.md) is
+deferred: native occurrence normalization, callback emitters, event replay and
+Kitty/D-Bus integration are outside the active track. The 349 handoff supplies
+one client's requirements; device projections, alerts and frontend work stay
+separate. Networking is in the user's separate mesh-plus repository/thread.
+
+The [observation boundary hardening](../../observation-boundaries.md) is implemented.
+The authorized [Codex completion loop](codex-observation-completion-plan.md)
+accepts the a5 source, installed artifact and native observation on both hosts.
+The following [gap-closure pass](codex-observation-gap-closure-plan.md) accepts
+a6's atomic publication and retirement-probe repair. Normal read CLI/services
+selected a6 after its independent artifact/native and scoped operational gates.
+The [Claude execution pass](../providers/claude-observation-execution.md) independently accepts
+[a8 discovery/monitoring](../../evidence/2026-10-08-claude-observation/REPORT.md) on Snap,
+preserving Codex on both hosts and the same read/service contracts. Normal
+collection/service selection now uses [a15 Claude collection repair](../../evidence/2026-10-10-claude-collection-repair/REPORT.md),
+which preserves [a14 retention CPU repair](../../evidence/2026-10-09-retention-cpu-repair/REPORT.md),
+which preserves [a11 finite runtime-only retention](../../evidence/2026-10-09-runtime-only-retention/REPORT.md)
+through a separate operational gate. The preceding
+[a9 interactive successor](../../evidence/2026-10-08-claude-interactive-observer/REPORT.md)
+retains its lifecycle/on-off proof bounds.
+The writer retains a16 independently. Core/model/adapter/engine, service hosting,
+mesh and read-client ownership are enforced; provider wakeups/read push remain
+separate from alert policy. `ObservationEngine` owns common reconciliation and
+`observation_evidence` supplies shared direct-watch retention. Codex and Claude
+are accepted passive adapters within their documented native scopes. Public event API, attachment/client and
+frontend implementation retain their own gates. API 2 stays unchanged unless
+a separately reviewed semantic change requires otherwise.
+
+The [Claude interactive reconciliation](../providers/claude-interactive-observation-plan.md)
+accepts I0–I4: native source/scope proof, independent oracle/private sample and
+shared contract review, interactive adapter/model cleanup, immutable direct/cache/
+push native acceptance and scoped Observer read/service selection. A9 preserves
+API 2/wire 4/service 2. I5 provider-policy rollout stays separate and deferred;
+ordinary settings and sessions remain unchanged. The client handoff is current.
+
+Claude uses the accepted native-registration assumption: positively saved UUIDs
+with a healthy bounded scan and no live matching incarnation or relevant
+unresolved conflict can be parked. Normal exit, forced kill, exact Resume,
+same-process UUID switches, duplicate live contexts and Observer cold start
+have independent native proof with Agent View on/off. Missing live registration
+can cause false parked after source recovery; runtime coverage remains partial.
+Background lifecycle/attachment and client inventories are excluded. A minimal
+native background guard prevents known unsupported work from becoming parked.
+Old background histories are outside the user's forward interactive workflow;
+legacy background compatibility is not a completion requirement. The metadata-only
+cwd omission and other accepted scope limits stay explicit.
+The [Claude wrap-up](../providers/claude-observation-wrap-up.md) closes the provider pass;
+read-client work can proceed independently against the settled contract.
+The [shared-core retention follow-up](runtime-only-retention-follow-up.md) is
+complete at a11: disappeared unsaved rows retire by the original runtime lease,
+without sliding on partial samples. Current rows and positive saved history are
+protected, and conversation age is unchanged. Direct watch uses a fixed 60-second
+bound at the next sample. Native forced-exit proof exposed a dead-unsaved Claude
+admission gap in rejected a10; the focused a11 adapter repair and independent
+native acceptance close it without a new public field or lifecycle claim.
+
+The preceding checkpoint is the
+[Codex daemon authority reconciliation](codex-daemon-authority-plan.md) and its
+[deep review](codex-daemon-authority-review.md). D0 captures the reviewed design
+and [ordinary/synthetic evidence](../../evidence/2026-10-08-codex-authority-review/REPORT.md).
+D1 corrects the independent native oracle and freezes a breaking API 2/read
+wire 4/service 2; D2 repairs Codex collection/projection; D3 reconciles the service
+and read CLI; D4 independently accepts the packaged Codex producer on both hosts;
+D5 separately gates delivery/write identity; D6 restores Claude. TUI/tmux
+ownership remains client-side, and post-TUI-closure proof is deferred. No legacy
+reader/converter or provider fallback is required. D1–D4 and the supported exact
+writer subset are [accepted against a3](../../evidence/2026-10-08-codex-authority-acceptance/REPORT.md)
+on both hosts. [API 2](../contracts/api-v2.md), [service protocol 2](../contracts/service-protocol-v2.md) and
+the [client handoff](../contracts/api-v2-client-handoff.md) describe the current read contract.
+The completion loop supplied the following managed read/service gate; D6 Claude
+observation followed at a8 and the interactive a9 checkpoint. Claude write/attachment and
+frontend delivery remain separate checkpoints.
+The [saved-evidence repair](codex-evidence-repair-plan.md) closes catalog-abort
+and unproved exact-Resume gaps against the
+[a4 successor](../../evidence/2026-10-08-codex-evidence-repair/REPORT.md), with the same
+API/wires and fresh both-host read/write/native proof. It precedes the a5 core
+completion. Future terminal integration belongs to tmux-observer and clients;
+Claude followed through its own passive observation gate; write support remains separate.
+
+The preceding [daily-use gap execution](../delivery/daily-use-gap-execution-plan.md)
+selected a16. Its [ordinary baseline](../../evidence/2026-10-07-daily-use-gap/REPORT.md)
+prioritizes cached Claude retention, current saved-session evidence and first-party
+CLI diagnostics before separate native-entry and Observer operational gates.
+Tmux Plus is under active development; Agent Plus work remains deferred.
+
+The reviewed design/research checkpoint is the
+[shared observation service](shared-observation-service-plan.md): warm local
+reads and bounded push for Plus/dashboard clients, with one collection loop.
+The [review](shared-observation-service-review.md) records current cost,
+source freshness, fan-out/recovery and consumer timing findings. The
+[execution plan](../delivery/shared-observation-service-execution-plan.md) sequences S0–S5
+producer work before managed selection or separate client passes. The
+[implementation status](../delivery/shared-observation-service-status.md) now records the
+shared service candidate and its [explicit client](shared-observation-service-client.md).
+The [producer handoff](../delivery/shared-observation-service-handoff.md) records the exact
+installed tuple, measured cadence and independent consumer/rollout gates.
+Hook selection and downstream migration remain outside this producer checkpoint.
+The [implementation-loop runbook](shared-observation-service-batch-plan.md) targets
+a feature-complete installed producer candidate, both-provider native comparisons
+and sustained recovery/resource proof, with physical wake and normal selection
+remaining independent follow-ups at B8. The [operational baseline](../delivery/observer-operations-execution.md)
+added startup workspace mappings, selected a7 and enabled its user unit on both
+hosts after installed/native/managed acceptance. Normal-unit restart/crash and
+rollback/reselection pass; physical wake and downstream clients remain separate.
+
+The [next-delivery plan](observer-next-delivery-plan.md) sequences P0–P7:
+fresh native baseline, guarded managed upgrade, passive runtime/history hints,
+independent artifact/native/cost acceptance, operational rollout and client
+handoff. The [delivery report](../../evidence/2026-10-07-native-delivery/REPORT.md)
+preserves the a8 baseline and failed a9–a14 gates, then records a15 selection on
+both hosts. A15 retains API 1 and accepts supported native state, activity,
+questions, rename, feed recovery and listener retirement. Its descriptor-anchored
+image memo preserves fresh process/endpoint guards without caching session state.
+
+Matched combined-provider Snap and Codex-only Starship CPU overhead meets the
+one-point target at +0.946/+0.153 percentage points. The user relaxed the original
+64 MiB aggregate RSS target to a review threshold without choosing a new cap.
+The [managed rollout receipt](../../evidence/2026-10-07-native-delivery/a15-managed-rollout.json)
+records RSS/PSS by collection phase, longer stability/reader checks, exact artifact
+selection and restart/crash/rollback/reselection. Snap uses 30/120-second
+runtime/history reconciliation and Starship 20/60 seconds, with native hints on
+both. Provider policy, ordinary sessions and frontend selection are outside this
+rollout. Physical wake, notifications and downstream migrations stay separate.
+Bounded native workflow investigations retain explicit unsupported outcomes;
+arbitrary foreground attach, generic dialogs and general Codex parked inference
+are not inferred from process absence.
+
+The [API v1 contract](../contracts/api-v1.md) is accepted within the independent
+[a2 producer gate](../../evidence/2026-10-06-stable-api/REPORT.md): read snapshot/watch
+wire 3 and write wire 1, strict pure consumer conformance and native Snap/Starship
+cases. Required native contracts replace provider release/hash allowlists while
+retaining executable/endpoint/birth and changed-action-context guards. Watch
+age/classification/bounds, row isolation, write-result semantics and independent
+reference coverage from the [review](discovery-monitoring-contract-review.md)
+are repaired with explicit unsupported capabilities.
+
+The [daily-use repair pass](../../evidence/2026-10-07-daily-use-gap/REPORT.md) selected a16
+after separate producer and Observer-only operational gates. It fixes indefinite
+Claude runtime-only retention, passive saved Codex classification, display-time
+CLI age and specific missing-context rejection. Current recent/active roots are
+classified; 21 older Starship kinds and all-topology saved lifecycle stay unproved.
+Common-root mappings already load in the service; direct reads select them
+explicitly. Tmux Plus work blocks Agent Plus implementation, not Observer delivery.
+
+The [API v1 client handoff](../contracts/api-v1-client-handoff.md) retains its historical bounds.
+A2 remains a separately installed historical acceptance tuple. That pass selected
+a16/wire 3; current collection/service links use a15/API 2 and the read CLI uses a13. Plus retains its old frozen
+reader. Client/cache migration has its own gate. The separate notification
+source/client checkpoint follows stable read/write
+acceptance; it cannot turn sampled watch into lossless native events. Older
+exact-image records below remain historical proof.
+
+The [contract/client plan](contract-and-clients-plan.md) and its
+[review](contract-and-clients-review.md) govern the next development work. The
+user has separated Observer work from frontend work: establish the host-local
+model and public conformance boundary, then a local read CLI, a first-party
+New/Resume write CLI and optional networking extraction. These can live in one
+repository with independent interfaces, dependencies and validation gates.
+
+The [implementation/execution plan](../delivery/contract-and-clients-execution-plan.md)
+maps this direction into E0-E8 packages and G1-G3 acceptance gates. Observer's
+local public read/watch/write candidate must pass G2 independently, including
+fresh-wheel/reference-client and enabled native routes, before Agent Plus E8
+implementation begins. Networking and new push source proof have separate gates.
+The [current execution record](../delivery/contract-clients-execution-status.md) tracks the
+regular goal loop independently from the earlier migration pilot.
+
+The [operational resilience checkpoint](../delivery/operational-resilience-execution-plan.md)
+accepts `0.2.0a8` independently through G2 and selects it on Snap and Starship.
+Fresh saved discovery through live failures, exact current/surviving Claude
+image support, metadata companions, CLI age/diagnostics and native routes pass
+within the [producer report](../../evidence/2026-10-05-operational-resilience/REPORT.md)'s
+artifact/topology bounds. It builds on the prior
+[discovery repair](../../evidence/2026-10-04-discovery-repair/REPORT.md).
+Plus remains `0.14.0a1` with its frozen `0.2.0a3` reader. Wrapper association,
+silent Resume, age presentation and graphical acceptance form its next separate
+consumer checkpoint; networking remains deferred.
+
+Routine Observer development follows the
+[CLI/native comparison workflow](../../observation-validation-workflow.md), using
+ordinary active sessions for inventory and isolated sessions for controlled
+transitions. The 2026-10-05 check leaves Claude idle/background phase semantics,
+transient Claude child classification and an older Codex TUI's runtime coverage
+unresolved. These are separate producer investigations; the accepted artifact's
+bounded capabilities are unchanged.
+
+The subsequent [independent evaluation](../../evidence/2026-10-05-cli-native-evaluation/REPORT.md)
+reopens Observer work: both managed Codex peers now use the `0.160.1` release
+image and the selected collector returns zero Codex rows. Current daemon
+capability acceptance, discovery resilience and diagnostics lead the next
+producer checkpoint, followed by held Claude phase/child and completion-only
+clock cases. The report records context, topology and artifact-bookkeeping gaps
+separately. No adapter or selection change was made during evaluation.
+
+The subsequent [repair checkpoint](../delivery/evaluation-repair-execution.md) accepts and
+selects `0.2.0a9` on both hosts. Exact current-daemon capability proof, independent
+saved discovery, actual-image diagnostics, completion-only clocks and Claude
+conversation classification close the proved subset. Recorded context and older
+TUI limits are settled explicitly. Installed CLI/native comparison, read/write,
+concurrent watch, isolated recovery and frozen-reader compatibility precede
+selection. The [report](../../evidence/2026-10-05-evaluation-repair/REPORT.md) records
+all nine resolutions and remaining capabilities. No frontend implementation,
+ordinary provider configuration/restart or public release accompanies it.
+
+The [monitoring checkpoint](../delivery/monitoring-execution.md) independently accepts the
+`0.2.0a10` candidate on both hosts. Exact current-image Codex questions/outcomes,
+Claude foreground readiness and typed background questions, and bounded history
+diagnostics pass the [packaged/native gate](../../evidence/2026-10-05-monitoring/REPORT.md).
+The strict v2 contract and frozen consumer reader remain compatible. Normal
+entrypoints remained on a9 at that gate; candidate selection and frontend acceptance are separate.
+Foreground Claude questions, older worker semantics, blank background readiness
+and event-source installation remain explicit limits.
+
+The subsequent [stopped-runtime checkpoint](../delivery/stopped-runtime-execution.md)
+independently accepts and selects `0.2.0a11` on Snap and Starship. Exact current
+Claude retained done/stopped idle jobs with complete stable inventories and no
+live bound worker report parked. Native detach/stop/attach/saved-Resume, ordinary
+CLI/native comparisons and frozen-reader compatibility pass the
+[producer gate](../../evidence/2026-10-05-stopped-runtime/REPORT.md) before the two
+managed Observer entrypoints change. The two recap jobs now report parked with
+their ages preserved; other ordinary workers remain running. Saved-only runtime
+absence, failed/unsupported contexts and Codex parked inference retain their
+limits. No frontend implementation or ordinary provider restart is included.
+
+The initial G1/G2 pass accepted the independent `0.2.0a3` Observer candidate: public v2
+read/watch, Git/workspace enrichment and separate New/Resume client. After that
+closure, Plus `0.14.0a1` passed its own bounded source/package/native E8 gate
+against the frozen producer artifact. G3 networking remains deferred. Both
+candidates were selected as the provisional pilot on Snap and Starship; see the
+[operational record](../delivery/operational-execution-status.md) for independent installation,
+bounded watch/recovery and real Tmux/SSH entry acceptance. The
+[operational plan](../delivery/overnight-operational-acceptance-plan.md) closed its unattended
+O0-O5 work with all five managed entrypoints and private rollback snapshots.
+Desktop/release/coordinator acceptance remains separate. The
+[handoff](../delivery/contract-clients-handoff.md) records the immutable package tuple and
+remaining monitoring/networking work.
+
+Checkpoint order is C0 capture/review, C1 model/source decisions, C2 schema and
+fixtures, C3 read client, C4 write client, C5 optional networking, followed by
+separate consumer migrations. C4 requires C2 and operation-specific proof;
+read-only C5 does not require C4. A read-only/device consumer does not depend on
+write-client delivery. The accepted candidate's exact fields and semantics are
+in the [public v2 contract](../contracts/public-contract-v2.md) and [write contract](../contracts/write-client-contract.md).
+
+C2 defines snapshots and a local watch stream together. C3 may initially push
+sampled changes from polling; native notifications and passive hook wakeups have
+separate source/passivity gates. Push to consumers does not imply lossless native
+events or introduce cross-host networking into the core.
+
+Working/blocked/waiting phases and Git/workspace context are accepted within the
+candidate's source-specific bounds. Parked is accepted only for the bounded
+exact-image Claude terminal-job predicate; other absence remains unknown.
+Last-conversation activity is accepted for bounded native metadata; missing
+older Codex clocks and unpersisted copied Claude histories stay explicitly
+unknown. Creation is a separately labeled ordering option.
+Multi-profile UX remains deferred. The reviewed managed cutover selects v2 on
+Snap and Starship and retains the old artifacts for rollback. The gaps and acceptance cases are in the public contract and
+execution record.
+
+The M/R records below describe the existing migration pilot and its remaining
+acceptance gates. They do not authorize combined core/frontend work in this
+next track or make networking a prerequisite for the host-local contract.
+
+## Product and provider priorities
+
+Agent Observer serves read-only utilities through public local and optional Mesh
+reads. Codex is the sole implemented native provider. Provider-neutral contracts
+remain useful, but a new adapter needs independent native identity, runtime,
+activity, coverage and failure predicates. Claude observation is retired.
+
+Agent Plus provides environment/window entry and focus for native Codex/Claude
+managers. Those managers own conversation control; no Observer/Tmux dependency
+or shared conversation-control migration is required. Tmux remains independent
+generic tooling. Consumer presentation and actions stay outside passive core.
+
+Prioritize utility-read usability, correct field/coverage expiry and compatible
+diagnostics against concrete consumers. Additional helper APIs need demonstrated
+reuse; richer events/actions and new native adapters have separate gates.
+Work/general labels remain consumer context, distinct from host/provider/home
+identity. Earlier two-provider/Agent Plus migration milestones below are dated
+history and do not re-enable retired work.
+
+## Observation proof status
+
+P1-P5 are evaluated per provider, version, namespace and topology. A completed
+Codex checkpoint does not assert Claude support. Source decisions and a
+provisional Codex interface can precede completion of Claude proof; shared
+contract stabilization requires both models' native evidence and consumer fit.
+
+| Checkpoint | Status | Exit |
+| --- | --- | --- |
+| B0: bootstrap | Complete | Separate repository, migrated study/plan, ownership boundaries and documentation check |
+| P1: capability/topology preflight | Exact installed artifacts and native runtime subsets proved on Snap and Starship | Exact target versions/topologies, isolation/passivity procedure and capability coverage with gaps explicit |
+| P2: minimal source comparison | Native Codex endpoint and passive Claude files selected; mutable Claude roster CLI rejected | Bounded study adapters compared with populated native work on the intended topology |
+| P3: transition proof | Working, settled and approval subset accepted for both; other transitions unsupported | Working/settled, approvals/denials, blocking input, cancellation and observation failure outcomes |
+| P4: identity/recovery proof | Codex exact resume/new/lifetime/recovery accepted; Claude worker/client lifetime accepted; current-client binding unsupported | Native switches, concurrent sessions, gaps/restarts, job/worker/client lifetime and exact mappings |
+| P5: source/interface decision | Python/JSON candidate selected and consumer fit reviewed; release gates pending | Per-provider source choices and explicit gaps; schema/ordering/lifetime/overhead proposal reviewed against both consumers |
+
+The [Snap report](../../evidence/2026-10-02-p1-snap/REPORT.md) and
+[capabilities](../../evidence/2026-10-02-p1-snap/capabilities.json) establish installed
+Codex 0.160.0 and Claude 2.1.287, selected settings/static interfaces, controlled
+Codex empty reads and isolated Claude empty-roster/opt-out behavior. The
+[runtime UX study](../providers/provider-runtime-ux-study.md) adds installed entry/navigation
+interfaces and Agent Plus source implications. Later [native runtime evidence](../../evidence/2026-10-03-native-runtime/REPORT.md)
+supersedes those empty-state limits for the accepted subset. Client binding and
+additional transition semantics remain unsupported rather than inferred.
+
+The [Starship preflight](../../evidence/2026-10-02-p1-starship/REPORT.md) is dated
+Starship evidence; it does not establish Snap or current fleet behavior. A
+custom App Server is not managed-daemon proof. Foreground comparisons remain
+useful, but full standalone parity is not required for the migration target.
+
+## Delivery checkpoints
+
+The unattended execution loop has installed Observer and Agent Plus candidates
+on Snap and Starship and accepted bounded native action routes; see
+[execution status](../delivery/execution-status.md). This is a prerelease pilot. Desktop
+acceptance, full recovery/batch coverage and published release closure remain
+separate gates. Detailed exits, implementation areas and acceptance cases remain in the
+migration plan.
+
+| Checkpoint | Dependencies | Exit focus |
+| --- | --- | --- |
+| M0: native workflow proof | Relevant P1 gates | Codex managed entry, owning runtime, exact IDs and client binding; early Claude model comparison |
+| M1: Codex Observer | Codex P2-P4/source decision | Passive saved/live discovery, provisional JSON, recovery, coverage, limits and measured cost |
+| M2: runtime/package pilot | M0/M1 | Scoped Snap managed Codex configuration, native individual entry, installed Observer and hooks/plugins acceptance |
+| M3: Codex Agent Plus | M1; M2 for ordinary runtime trials | Observer-backed discovery/UI and validated single actions; OpenCode removed at cutover |
+| M4: Codex across machines | M3; preflight each target | Correct host routing/identity, reconnect/sleep/restart, jobs without wrappers and accepted batch attachment |
+| M5: Claude mesh completion | Early M0 model review, Claude P1-P5 and M1/M3 boundary | Single-machine supervised UX/actions, Claude-only host case and both-provider contract validation |
+| M6: Agent Plus release closure | M4/M5 | Both-provider migration acceptance, schema/artifact bookkeeping, legacy removal and maintenance procedure |
+| R1: RLCD host bridge | Proved M1 observations and common contract review; M5 for stable schema | Live roster/health/waiting consumed through Observer; bridge recovery and device transport accepted in RLCD |
+
+The primary path is M0 → M1 → M2 → M3 → M4. M5 can proceed alongside M4,
+and M6 closes the Agent Plus migration after both are accepted. R1 can develop
+against the provisional boundary from M1 with explicit version/coverage limits;
+its stable integration follows contract stabilization. RLCD firmware/physical
+acceptance is a separate track and does not block an Agent Plus milestone.
+
+Observer installation is required on each selected target host. Existing Host
+Mesh transport supplies cross-host composition; Observer multi-host aggregation
+and a new network control plane are outside this program. Re-establish the
+target host list at rollout; Snap/Starship references are not an exhaustive
+fleet inventory. Claude's initial target is its one work machine. WSNav remains
+an optional future consumer.
+
+The migration plan records the [selected configuration changes](native-runtime-migration-plan.md#runtime-policy-and-individual-tui-entry)
+and [execution continuity procedure](native-runtime-migration-plan.md#execution-continuity-and-handoff).
+Keep the executing Codex session available while building and testing separate
+clients. A final move of that conversation may require a deliberate reopen;
+prepare its exact identity, validated route and handoff before any such exit.
+
+## Remaining acceptance and release work
+
+Use a graphical desktop to check the managed picker, individual TUI launches,
+selection preservation and focus behavior. The unattended coordinator has no
+display connection; disposable attached clients prove native entry routes but
+do not establish those visual outcomes. The exact coordinator reopen procedure
+is recorded in the [execution handoff](../delivery/execution-handoff.md) and remains last.
+
+Keep current-client conversation binding unsupported. Native rows cannot gain
+focus, session-specific close or batch authority from historical Tmux options.
+Cross-host sleep/wake and transport-loss recovery still need their native cases;
+controlled failure tests do not establish physical suspend behavior.
+
+The same candidate wheels and scoped managed links are installed on both hosts.
+The old owned extension archive and published external pins remain available;
+the independent candidate override is not a published release tuple. Review and
+publish source/artifact bookkeeping after desktop acceptance and contract
+stabilization. Hook capture remains unproved: preserved historical trusted
+references do not establish live callback execution.
+
+The RLCD bridge candidate consumes public schema 1 and has synthetic and
+installed-native-input projection evidence. Firmware transport, bridge recovery
+and physical display acceptance remain in the separate RLCD track. Preserve
+the existing user changes in that repository.
+
+## Planning review outcome
+
+The [review](design-review.md) separates documentation/source validation from
+runtime acceptance and records the resolved design gaps. The migration plan
+guided the bounded execution pilot. Existing-only Codex endpoint discovery,
+explicit native ID mapping, passive Claude metadata and supervised empty Claude
+creation now have native evidence for the pinned versions. Current viewer
+binding and additional transition/recovery cases remain unsupported or pending.

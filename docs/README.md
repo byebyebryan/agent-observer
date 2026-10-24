@@ -1,36 +1,43 @@
 # Agent Observer documentation
 
-Start with the [product overview](../README.md) or [browser walkthrough](https://dev.byebyebryan.com/fleet-plus/projects/agent-observer/).
-Codex read-only observation is current; native tools own conversation control.
+For a first installation, follow [your first local read](getting-started.md).
+For the product walkthrough and project relationships, visit
+[Fleet Plus](https://dev.byebyebryan.com/fleet-plus/projects/agent-observer/).
 
-| Guide | Use it for |
+## Use Observer
+
+| Guide | Purpose |
 | --- | --- |
-| [First local read](getting-started.md) | Install the published core, inspect one selected home and understand the output |
-| [API 4](api-v4.md) | Current identity, runtime/activity, coverage and freshness contract |
-| [Read-only CLI](read-only-retirement.md) | Working-set list/watch and retired write/active-only boundaries |
-| [Utility example](utility-read-guide.md) | Developer-only bounded local/Mesh summary using public interfaces |
-| [Current cached local service](local-service.md) | Codex-only Service 4 setup, explicit endpoints, cached reads and watch lifecycle |
-| [Working-set checkpoint](working-set-producer-checkpoint.md) | Active + recent projection and independent membership/scope leases |
-| [Architecture](architecture.md) / [boundaries](observation-boundaries.md) | Core, passive adapters, local hosting, networking and consumer responsibilities |
-| [Validation](observation-validation-workflow.md) | Source, synthetic, native and consumer acceptance boundaries |
-| [Provider compatibility](provider-contract-compatibility-plan.md) | Required capabilities and version diagnostics |
-| [Roadmap](roadmap.md) | Current direction and explicitly historical checkpoints |
-| [Source orientation](source-orientation.md) | Maintained main versus retained research worktrees |
-| [RLCD handoff](rlcd-prepared-read-handoff.md) | Independent consumer selection and acceptance |
+| [First local read](getting-started.md) | Install, select a home and understand output |
+| [Local Service 4](local-service.md) | Explicit collector hosting, cached reads and watch lifecycle |
+| [Working-set](working-set.md) | Active membership plus recent context; bounded local/fleet reads |
+| [Full Mesh reads](mesh-read-client.md) | Fuller diagnostic reads through configured publishers |
+| [Operations](operations.md) | Release provenance, independent role selection and deployment ownership |
 
-## Published and managed evidence
+## Build and contribute
 
-The [a9 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
-and [public delivery closeout](https://github.com/byebyebryan/mesh-plus/blob/b306d44c329c6289781cc4db14f939ed2a4d20c2/docs/evidence/2026-10-23-public-delivery/README.md)
-record exact public assets and a9/a25 collector/working-set delivery. Owner manifests
-record independent full/dashboard/Tmux/SSH pins. Carbon membership remains partial
-and unresolved in that receipt. A complete-empty conclusion is not supported.
+| Reference | Purpose |
+| --- | --- |
+| [API 4](api-v4.md) | Identity, classification and versioned contract entry point |
+| [Architecture](architecture.md) / [observation boundaries](observation-boundaries.md) | Runtime components, evidence semantics and authority |
+| [Utility example](utility-read-guide.md) | Complete bounded consumer using public interfaces |
+| [Local read cache](read-cache-client.md) | Service-frame admission, expiry and disconnect |
+| [Prepared full reads](prepared-agent-read-interface.md) | Optional full-profile preparation interface 2 |
+| [Provider compatibility policy](provider-contract-compatibility-plan.md) | Capabilities and diagnostics rather than version allowlists |
+| [Development](development.md) / [native validation](observation-validation-workflow.md) | Source checks versus independent runtime proof |
+| [Roadmap](roadmap.md) | Current priorities, deferred work and reopen conditions |
 
-## History
+## Historical material
 
-[Historical README checkpoints](readme-history.md) and dated evidence/plans preserve
-their original provider, artifact and endpoint scope. Earlier API handoffs, Claude
-monitoring, Observer writes and standalone active feeds are historical; their
-future-tense instructions are not current support requirements.
-The [protocol-1 local service guide](shared-observation-service-client.md) is a
-historical workflow; use the Service 4 guide above for current installation.
+The [history index](history/README.md) groups earlier designs, provider studies,
+contracts, delivery checkpoints, performance work and experiments. Earlier API
+handoffs, Claude monitoring, writers and active-only feeds are historical.
+Their future-tense steps are not current requirements.
+
+[`evidence/`](evidence/) retains dated receipts without rewriting their hashes,
+host scope or failures. Short forwarding pages preserve old links needed by
+those receipts and external consumers. They are not parallel current guides.
+
+Keep current behavior in the guides above. Put a completed plan or dated
+investigation in history; add immutable acceptance inputs under evidence and
+link them from [operations](operations.md). See [documentation maintenance](development.md#documentation-maintenance).

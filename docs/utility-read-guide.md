@@ -144,8 +144,8 @@ including the ordinary `agent-observer service list --host-scope HOST` and
 Current ownership and freshness rules live in
 [architecture boundaries](architecture.md),
 [observation boundaries](observation-boundaries.md),
-[active-feed interface](active-feed-interface.md), and the
-[Mesh a24 complete-view upgrade](mesh-a24-complete-view-upgrade.md). Earlier
+[working-set guide](working-set.md), and
+[operations](operations.md). Earlier
 candidate status and rollout statements in dated checkpoints are historical
 evidence; consult each receipt's date and selected tuple before treating it as
 current runtime evidence.

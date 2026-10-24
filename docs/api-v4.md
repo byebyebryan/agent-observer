@@ -1,11 +1,22 @@
-# Observation API 4 system classification
+# Observation API 4
 
-The accepted dashboard refinement tuple is Observer 0.7.0a1, API 4,
-snapshot/watch 6 and Service 4. Explicit Mesh Agent profile v3 through SDK 1
-carries these records with Mesh 0.1.0a17. Snap and Starship select this tuple after
-independent artifact, native, delivery and paired rollback/reselection gates.
-The [acceptance receipt](evidence/2026-10-13-system-classification/REPORT.md)
-records the exact installed artifacts. Source publication remains separate.
+The current full-read tuple is API 4, snapshot/watch 6 and Service 4. Optional
+Mesh delivery binds the explicit Agent profile v3 through SDK 1. Working-set
+has separate version-1 interfaces. Codex is the only native adapter and all
+interfaces remain prerelease. See [architecture](architecture.md) for semantics
+and [operations](operations.md) for release/role selection.
+
+Current schemas are packaged under [`agent_observer/contracts/`](../agent_observer/contracts/).
+Public pure reads are exposed by [`public.py`](../agent_observer/public.py)
+and [`service_public.py`](../agent_observer/service_public.py). Use
+`agent-observer api`, `agent-observer schema --help` and
+`agent-observer service api` to inspect the installed contract independently
+of source documentation. CLI examples begin in [getting started](getting-started.md).
+
+API 4 introduced system classification without changing the inherited identity,
+runtime, activity, component freshness or clock rules. Its original
+[a1 acceptance](evidence/2026-10-13-system-classification/REPORT.md) retains its
+exact historical package and host scope.
 
 ## Classification and selection
 
@@ -36,19 +47,18 @@ entry timestamps, alter activity/order or certify a device integration.
 
 Classification never determines runtime, phase, history presence or activity.
 Daemon idle remains running/waiting, and parked still requires its reviewed
-positive native predicate. All [API 3 timing semantics](api-v3.md) remain.
+positive native predicate. All [API 3 timing semantics](history/contracts/api-v3.md) remain.
 
 ## Compatibility
 
 This is a breaking prerelease enum extension. API 3/wire 5/Service 3 and Agent
 profile v2 do not accept the new tuple. No converter or automatic downgrade is
-provided. Mesh SDK 1, Read 1, Delivery 1, Tmux v1 and the selected historical
-writer remain independent. Immutable producer/read/publisher packages, native
+provided. Mesh SDK 1, Read 1, Delivery 1, Tmux v1 remain independent. Observer writes are retired. Immutable producer/read/publisher packages, native
 metadata comparisons and both-host cached IPC/SSH proofs gate adoption.
 
 ## Read-client handoff
 
-The [API 3 handoff](api-v3-client-handoff.md) retains the timing, identity,
+The [API 3 handoff](history/contracts/api-v3-client-handoff.md) retains the timing, identity,
 component freshness and ownership rules. Select API 4/read 6/Service 4 and the
 explicit Agent v3 profile together; old clients must reject the new tuple.
 

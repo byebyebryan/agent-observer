@@ -6,7 +6,7 @@ frontend checkpoint. Ordinary active sessions establish operational inventory;
 isolated test sessions establish controlled transitions and failure behavior.
 Both forms of evidence are useful, but their coverage differs.
 
-[API 2](api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
+[API 2](history/contracts/api-v2.md), snapshot/watch wire 4 and service protocol 2 are the current
 prerelease read contracts. The [a9 Claude report](evidence/2026-10-08-claude-interactive-observer/REPORT.md)
 records independent artifact/native and scoped operational acceptance on Snap,
 with Codex preserved on Snap/Starship. The
@@ -14,7 +14,7 @@ with Codex preserved on Snap/Starship. The
 records finite runtime-only retirement and focused installed/native/operational
 acceptance. Read/service commands select a11; the writer retains a16 independently.
 A later receipt must record the selected artifact anew.
-The [interactive Claude plan](claude-interactive-observation-plan.md) accepts
+The [interactive Claude plan](history/providers/claude-interactive-observation-plan.md) accepts
 I0–I4 and retains an independent native oracle. Existing a8 receipts keep their
 historical bounds; a9 adds Observer-native on/off and lifecycle proof.
 The [native-source proof](evidence/2026-10-08-claude-interactive-source/REPORT.md)
@@ -139,8 +139,8 @@ appropriate affected native cases, then commit the accepted checkpoint. Freeze
 and independently validate a new installed artifact when production bytes
 change. Installation and consumer migration retain their own gates. A
 documentation-only clarification does not require provider actions or rebuilding
-the unchanged artifact. See [artifact operations](artifact-operations.md) and
-the [execution gates](contract-and-clients-execution-plan.md).
+the unchanged artifact. See [artifact operations](history/design/artifact-operations.md) and
+the [execution gates](history/delivery/contract-and-clients-execution-plan.md).
 
 ## Historical observations from the 2026-10-05 ordinary check
 

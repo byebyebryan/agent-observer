@@ -1,8 +1,8 @@
 # Read-only Observer retirement checkpoint
 
-Source candidate: Observer 0.7.0a9 with Mesh 0.1.0a25, 2026-10-23. Publication and
-installed host acceptance require their own receipts; this source note does not
-claim either. Native provider managers own New/Resume and conversation control.
+Introduced in published Observer 0.7.0a9 with Mesh 0.1.0a25, 2026-10-23.
+[Operations](operations.md) links publication and scoped installed receipts;
+this implementation note does not expand their acceptance. Native provider managers own New/Resume and conversation control.
 
 The current package removes agent-observer-write and its write implementation,
 and withdraws the standalone active-feed native API, producer cache, Mesh
@@ -45,7 +45,7 @@ diagnostic list/watch commands retain their separate behavior.
 ## Historical compatibility
 
 Published wheels, frozen schema definitions and dated acceptance remain intact.
-Those records do not advertise support in this source candidate. Historical
+Those records do not advertise support in the current implementation. Historical
 artifact verification still understands old manifests; manifest version 6
 requires the read-only entrypoints and independently verifies retired modules
 and the writer command are absent from a new installation. Managed cleanup must
