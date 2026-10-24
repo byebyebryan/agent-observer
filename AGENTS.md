@@ -1,6 +1,6 @@
 # Agent Observer development instructions
 
-Read `README.md`, `docs/README.md`, `docs/architecture.md` and `docs/roadmap.md`.
+Read `README.md`, `docs/README.md`, `docs/reference/architecture.md` and `docs/maintenance/roadmap.md`.
 The user request sets scope. Current main is Codex-only, read-only observation:
 API 4, snapshot/watch 6, Service 4 and independent working-set v1 interfaces.
 Observer writes, Claude observation and standalone active-only hosting are retired.
@@ -8,7 +8,7 @@ Working-set retains active membership and recent context; full diagnostics remai
 
 ## Authority and invariants
 
-- Follow `docs/observation-boundaries.md`. Keep pure reads, passive adapters,
+- Follow `docs/reference/observation.md`. Keep pure reads, passive adapters,
   reusable engine, service hosting, optional Mesh delivery and consumer policy
   distinct. Core/local service import no Mesh or action/alert implementation.
 - Native Codex daemon queries own runtime classification. Idle is running/waiting;
@@ -29,7 +29,7 @@ Working-set retains active membership and recent context; full diagnostics remai
 ## Compatibility and ownership
 
 Provider compatibility follows capabilities/contracts, not version allowlists;
-see `docs/provider-contract-compatibility-plan.md`. Claude wire vocabulary and
+see `docs/reference/provider-compatibility.md`. Claude wire vocabulary and
 synthetic fixtures do not enable an adapter. New providers need independent
 native/contract review. OpenCode integration remains removed.
 
@@ -47,15 +47,16 @@ paths or infer new capabilities from historical plans.
 
 Use the workspace RTK wrapper. Run `./scripts/check` before committing docs;
 paired work requires `--require-working-set-mesh` with the reviewed SDK, not a
-skipped optional check. See `docs/development.md` and the independent native
-workflow in `docs/observation-validation-workflow.md`.
+skipped optional check. See `docs/maintenance/development.md` and the independent native
+workflow in `docs/maintenance/validation.md`.
 
 Preserve unrelated work, research branches, immutable release assets, frozen
-schemas and `docs/evidence/` bytes. Source, package, installed role, native,
+schemas and contract inputs. Source, package, installed role, native,
 consumer and physical acceptance are separate. Managed selections belong to
 owner manifests, not source HEAD. Do not deploy as a side effect of docs work.
 
-Current guidance belongs in the indexed guides; completed plans and studies
-belong under `docs/history/`. Old forwarding pages preserve links only. Do not
-append fresh rollout ledgers to README, architecture or roadmap. Historical
-future-tense instructions do not schedule work or override current scope.
+Only README/getting-started belong at the docs root. Use lowercase kebab-case
+names and shallow guides/reference/maintenance folders. Keep one maintained
+page per topic; cut obsolete plans, status notes and receipts instead of adding
+archives or forwarding pages. Git retains previous records. Fixture inputs
+belong beside tests. Run `scripts/check-docs` and the source gate before commit.

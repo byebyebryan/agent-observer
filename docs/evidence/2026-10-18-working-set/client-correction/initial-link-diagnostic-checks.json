@@ -1,8 +1,0 @@
-{
-  "canonical314": {
-    "bytes": 131,
-    "returncode": 1,
-    "sha256": "f424e662f5989a20561d3627d9963673ea2a8032c602d37ab77c175cae26b602"
-  },
-  "focusedBothPython": "15 after passes; before plus finaltest overlay2expected failures/13passes each"
-}

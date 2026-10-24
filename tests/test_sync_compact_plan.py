@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class SyncCompactPlanTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.fixture = json.loads((ROOT / "docs/evidence/2026-10-16-delta-sync-source/compact-raw-vectors.json").read_text())
+        cls.fixture = json.loads((ROOT / "tests/fixtures/delta-sync/compact-raw-vectors.json").read_text())
         # Fixed test validator configuration is outside isolated fixture credit.
         cls.validators = {(space, operation): Draft202012Validator(value_schema(space, operation=operation))
                           for space in TABLES for operation in (False, True)}

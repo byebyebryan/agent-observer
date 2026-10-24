@@ -29,10 +29,10 @@ published-package installation, home selection and output explanation.
 | Need | Documentation |
 | --- | --- |
 | Inspect the local runtime | [First local read](docs/getting-started.md) |
-| Share one collector's cached state | [Local Service 4](docs/local-service.md) |
-| Read active sessions and recent context across configured hosts | [Working-set](docs/working-set.md) |
-| Inspect a fuller cached inventory | [Full Mesh reads](docs/mesh-read-client.md) |
-| Build a read-only utility | [Utility example](docs/utility-read-guide.md) and [API reference](docs/api-v4.md) |
+| Share one collector's cached state | [Local Service 4](docs/guides/local-service.md) |
+| Read active sessions and recent context across configured hosts | [Working-set](docs/guides/working-set.md) |
+| Inspect a fuller cached inventory | [Full Mesh reads](docs/guides/full-mesh-reads.md) |
+| Build a read-only utility | [Utility example](docs/guides/read-utilities.md) and [API reference](docs/reference/read-api.md) |
 
 Core and local service have no Mesh dependency. Optional Mesh carries published
 facts over explicitly configured directional routes. A heartbeat or cached copy
@@ -50,19 +50,16 @@ python -m pip install '.[dev]'
 ./scripts/check
 ```
 
-See [development](docs/development.md) for the paired Mesh gate, repository map
+See [development](docs/maintenance/development.md) for the paired Mesh gate, repository map
 and independent native/package checks. Current architecture and future work are
-in [architecture](docs/architecture.md) and [roadmap](docs/roadmap.md).
+in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance/roadmap.md).
 
 ## Releases and operation
 
 [0.7.0a9](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
 is the published read-only prerelease: API 4, snapshot/watch 6 and Service 4.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
-Use [operations](docs/operations.md) for release provenance and managed selections.
+Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
 Installing source does not change deployed pins or accept a dashboard/device.
 
-The [history index](docs/history/README.md) contains earlier contracts, migration
-plans and experiments. Those records describe their own checkpoint, not current
-setup or scheduled work. Shared product presentation lives at
-[Fleet Plus](https://dev.byebyebryan.com/fleet-plus/).
+Current guides are organized in the [documentation index](docs/README.md).

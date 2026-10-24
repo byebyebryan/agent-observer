@@ -75,13 +75,13 @@ inventory. Keep the original independently expiring evidence when building a uti
 
 If the expected conversations are missing, first check the selected home and its
 existing native daemon. Do not use terminal/window presence as a substitute for
-native runtime evidence. [API 4](api-v4.md) and [provider compatibility](provider-contract-compatibility-plan.md)
+native runtime evidence. [API 4](reference/read-api.md) and [provider compatibility](reference/provider-compatibility.md)
 explain the supported meanings and capability checks.
 
 ## 4. Reuse cached local observations
 
 Multiple clients can read an explicitly hosted Service 4 cache instead of each
-performing direct collection. Follow the [current local service guide](local-service.md)
+performing direct collection. Follow the [current local service guide](guides/local-service.md)
 to use an existing endpoint or start your own foreground publisher on a private
 socket. Client reads and watches do not start the service or a provider daemon.
 
@@ -90,9 +90,9 @@ socket. Client reads and watches do not start the service or a provider daemon.
 Mesh is optional. A working-set reader needs the paired Mesh a25 installation,
 a configured source publisher and directional Host Mesh routes. Its active/recent
 window must match the publisher's policy; the reviewed default is 72 hours.
-Use the [working-set CLI guide](read-only-retirement.md#cached-inspection) after
+Use the [working-set CLI guide](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/read-only-retirement.md#cached-inspection) after
 those endpoints exist, and the [compatibility overview](https://dev.byebyebryan.com/fleet-plus/compatibility/)
 for independently selected roles. Adding `--host` to a read never provisions a peer.
 
-Start a new utility with the [bounded public-read example](utility-read-guide.md).
+Start a new utility with the [bounded public-read example](guides/read-utilities.md).
 Native providers continue to own conversation control throughout these read paths.

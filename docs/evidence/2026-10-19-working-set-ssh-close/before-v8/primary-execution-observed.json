@@ -1,8 +1,0 @@
-{
-  "elapsedSeconds": 5.475869068002794,
-  "exitCode": 0,
-  "lockHeldDuringQualification": true,
-  "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
-  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "stdoutSha256": "00161cd14001ff598eab148246ecbc5461c65541288d3d0eafa256adcc929efd"
-}

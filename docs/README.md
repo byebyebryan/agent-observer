@@ -1,43 +1,37 @@
 # Agent Observer documentation
 
-For a first installation, follow [your first local read](getting-started.md).
-For the product walkthrough and project relationships, visit
-[Fleet Plus](https://dev.byebyebryan.com/fleet-plus/projects/agent-observer/).
+Start with [getting started](getting-started.md). The [repository README](../README.md)
+is the short project entry point; [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/)
+carries the shared showcase and project relationships.
 
-## Use Observer
+## Guides
 
-| Guide | Purpose |
+| Read | Purpose |
 | --- | --- |
-| [First local read](getting-started.md) | Install, select a home and understand output |
-| [Local Service 4](local-service.md) | Explicit collector hosting, cached reads and watch lifecycle |
-| [Working-set](working-set.md) | Active membership plus recent context; bounded local/fleet reads |
-| [Full Mesh reads](mesh-read-client.md) | Fuller diagnostic reads through configured publishers |
-| [Operations](operations.md) | Release provenance, independent role selection and deployment ownership |
+| [Local cached service](guides/local-service.md) | Host Service 4 explicitly and consume its cache |
+| [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |
+| [Full Mesh reads](guides/full-mesh-reads.md) | Full cached diagnostic inventories |
+| [Read utilities](guides/read-utilities.md) | A complete bounded consumer example |
 
-## Build and contribute
+## Reference
 
-| Reference | Purpose |
+| Read | Purpose |
 | --- | --- |
-| [API 4](api-v4.md) | Identity, classification and versioned contract entry point |
-| [Architecture](architecture.md) / [observation boundaries](observation-boundaries.md) | Runtime components, evidence semantics and authority |
-| [Utility example](utility-read-guide.md) | Complete bounded consumer using public interfaces |
-| [Local read cache](read-cache-client.md) | Service-frame admission, expiry and disconnect |
-| [Prepared full reads](prepared-agent-read-interface.md) | Optional full-profile preparation interface 2 |
-| [Provider compatibility policy](provider-contract-compatibility-plan.md) | Capabilities and diagnostics rather than version allowlists |
-| [Development](development.md) / [native validation](observation-validation-workflow.md) | Source checks versus independent runtime proof |
-| [Roadmap](roadmap.md) | Current priorities, deferred work and reopen conditions |
+| [Read API](reference/read-api.md) | Current versions, classification and schemas |
+| [Observation semantics](reference/observation.md) | Exact identity, authority, clocks and coverage |
+| [Architecture](reference/architecture.md) | Core, service, Mesh and consumer ownership |
+| [Prepared reads](reference/prepared-reads.md) | Optional full-read interface 2 |
+| [Service cache](reference/service-cache.md) | Pure local frame admission and expiry |
+| [Provider compatibility](reference/provider-compatibility.md) | Native capability requirements |
 
-## Historical material
+## Maintenance
 
-The [history index](history/README.md) groups earlier designs, provider studies,
-contracts, delivery checkpoints, performance work and experiments. Earlier API
-handoffs, Claude monitoring, writers and active-only feeds are historical.
-Their future-tense steps are not current requirements.
+| Read | Purpose |
+| --- | --- |
+| [Development](maintenance/development.md) | Source setup, checks and repository layout |
+| [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
+| [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
+| [Direction](maintenance/roadmap.md) | Priorities and reopen conditions |
 
-[`evidence/`](evidence/) retains dated receipts without rewriting their hashes,
-host scope or failures. Short forwarding pages preserve old links needed by
-those receipts and external consumers. They are not parallel current guides.
-
-Keep current behavior in the guides above. Put a completed plan or dated
-investigation in history; add immutable acceptance inputs under evidence and
-link them from [operations](operations.md). See [documentation maintenance](development.md#documentation-maintenance).
+These pages describe maintained behavior. Superseded plans, status notes and
+old receipts are kept in Git rather than in this documentation tree.

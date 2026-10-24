@@ -1,7 +1,0 @@
-{
-  "planSha256": "f73cbc6959c30414056e9629656c5ff75e3aeb7aab88640163881d2c0d07d311",
-  "priorPackageManifestSha256": "ca2e05091cac27746cf072271179d62bfb268e3cd4ce1070e819baa888fdf4e8",
-  "scope": "One exclusive new private Snap install then synthetic collect=False fixed SSH ordinary Reader proof and owned cleanup; no provider/native/normal service or adoption.",
-  "sharedLock": "/home/bryan/.cache/agent-active-feed-cpu.lock",
-  "status": "reviewed_by_primary_under_existing_producer_authorization"
-}

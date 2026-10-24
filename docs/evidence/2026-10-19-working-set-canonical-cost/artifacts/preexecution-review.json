@@ -1,7 +1,0 @@
-{
-  "runnerSha256": "e2ca768a31085cdae261d10095d6db7dca7cbfbf0368c7d70b2869d548f92a01",
-  "correction": "Fiveexactconnections=parentendpointinspection1+twoworkerseachendpointinspection1+RPC1. Priorplan incorrectlycounted3. AllJSONRPCmethodcountsand500joinsunchanged.",
-  "priorFailurePreserved": "/home/bryan/.cache/agent-observer-working-set-20261018/canonical-worker-cost-measure-v5/py311-a7-r1.json",
-  "priorOwnersRetired": true,
-  "noNewNativeProviders": true
-}

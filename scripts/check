@@ -17,6 +17,9 @@ def main(argv=None) -> int:
     )
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parent.parent
+    docs = subprocess.run([sys.executable, "scripts/check-docs"], cwd=root, check=False)
+    if docs.returncode:
+        return docs.returncode
     if args.require_working_set_mesh:
         # The script directory is sys.path[0] for the documented ./scripts/check
         # invocation. Prefer this checkout over any installed Observer package.

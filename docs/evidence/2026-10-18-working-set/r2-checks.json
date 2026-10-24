@@ -1,8 +1,0 @@
-{
-  "log": {
-    "bytes": 175059,
-    "sha256": "fa78af4ff235b7325824c76d011a56816cccb1345cfea777d64d9a36294fb25b"
-  },
-  "returncode": 0,
-  "scope": "P1 supplemental contract; actual native/clock cache integration remains gated"
-}

@@ -48,7 +48,7 @@ class MeshSyncCodecTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.vectors = json.loads((ROOT / "docs/evidence/2026-10-16-delta-sync-source/compact-raw-vectors.json").read_text())
+        cls.vectors = json.loads((ROOT / "tests/fixtures/delta-sync/compact-raw-vectors.json").read_text())
         cls.cases = {case["name"]: case for case in cls.vectors["baselines"] + cls.vectors["transactions"]}
 
     def setUp(self):

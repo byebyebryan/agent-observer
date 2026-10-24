@@ -1,9 +1,0 @@
-{
-  "canonical314": {
-    "bytes": 175561,
-    "returncode": 0,
-    "sha256": "6f5e19246260182a9c3910fafc977c90e08d9cb3c1b8ff48b0dd5ba4f6617433"
-  },
-  "focusedBothPython": "15 after passes; before plus final test overlay2expected failures/13passes each",
-  "initialDiagnostic": "README relative link had one extra parent; no runtime tests ran on that setup failure, preserved separately; corrected before final gate"
-}

@@ -1,5 +1,0 @@
-{
-  "classification": "primary evidence-copy path assumption; no producer or SSH execution failure",
-  "reason": "Independent remote close-check is nested in the saved Reader report; no separate local raw close-receipt file is promised. Initial offline copier stopped after copying15 exact artifacts. Existing files are verified unchanged and reused; no SSH/test rerun.",
-  "readerReportSha256": "b95a13001cba405fae38a5dd384c57c3e261b4f62518d29fa8e2d4523ccaef08"
-}

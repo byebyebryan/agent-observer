@@ -2,8 +2,8 @@
 
 These tools belong to Observer, using Mesh's accepted optional preparation
 interface rather than a new transport/cache implementation. See the
-[execution plan](../../docs/history/performance/prepared-read-client-plan.md) and
-[acceptance ledger](../../docs/evidence/2026-10-14-prepared-reads/REPORT.md).
+[execution plan](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/history/performance/prepared-read-client-plan.md) and
+[acceptance ledger](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/evidence/2026-10-14-prepared-reads/REPORT.md).
 
 `cadence.py` observes a bounded installed cached two-host watch. It records only
 frame/native revision counts, inventory sizes and dependency provenance; no raw

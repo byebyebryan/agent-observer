@@ -36,7 +36,7 @@ def codec(view="full", *, host="fixture"):
 class SyncCompactTransportTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.fixture = json.loads((ROOT / "docs/evidence/2026-10-16-delta-sync-source/compact-raw-vectors.json").read_text())
+        cls.fixture = json.loads((ROOT / "tests/fixtures/delta-sync/compact-raw-vectors.json").read_text())
 
     def baseline(self, view="full"):
         return copy.deepcopy(next(case["raw"] for case in self.fixture["baselines"]

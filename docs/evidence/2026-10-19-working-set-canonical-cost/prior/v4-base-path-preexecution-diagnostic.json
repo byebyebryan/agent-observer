@@ -1,9 +1,0 @@
-{
-  "status": "not_run",
-  "reason": "copied runner BASE pointed to V3; existing-receipt guard stopped before lock/endpoint/worker",
-  "oldArtifactsModified": false,
-  "originalStdoutPreserved": "base-path-preexecution-py311-a7-r1.stdout",
-  "newRunner": "measure_common_cost_v4_1.py",
-  "newRunnerSha256": "592afedb8a0248d3f6c9d706e41ca830dce77eda7aff451581f712bee352d95b",
-  "correction": "BASE now derives from frozen runner ownparent; no old artifacts overwritten"
-}

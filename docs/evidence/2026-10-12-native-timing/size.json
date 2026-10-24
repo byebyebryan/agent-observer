@@ -1,8 +1,0 @@
-{
-  "rows": 97,
-  "wire5Bytes": 155822,
-  "sameObservationWithoutTimingBytes": 113381,
-  "timingBytes": 42441,
-  "method": "same bounded observation with added timing fields removed for byte attribution only; no runtime converter",
-  "savedKnownEmptyTurns": 37
-}

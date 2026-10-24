@@ -9,7 +9,7 @@ from test_sync_source import message_fixture
 
 from agent_observer.contract import ContractError
 
-_PATH = Path(__file__).resolve().parents[1] / "docs/evidence/2026-10-16-delta-sync-source/test_source_ref_revocation.py"
+_PATH = Path(__file__).resolve().parents[1] / "tests/fixtures/delta-sync/source-ref-revocation.py"
 _SPEC = importlib.util.spec_from_file_location("owned_ref_regression", _PATH)
 overlay = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(overlay)

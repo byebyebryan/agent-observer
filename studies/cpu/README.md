@@ -57,7 +57,7 @@ uncontrolled in live windows; synthetic savings do not establish fleet or
 application savings, immutable artifact acceptance or managed rollout.
 
 Results and follow-up ownership are in the
-[CPU report](../../docs/evidence/2026-10-15-cpu/REPORT.md).
+[CPU report](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/evidence/2026-10-15-cpu/REPORT.md).
 
 ## Owned admission and explicit selection
 
@@ -92,5 +92,5 @@ Reader-side generic bridge admissions over 250 synthetic records. It compares
 the legacy two-owner-validation operation with the optional combined codec
 operation; strict ordinary Client admission remains separate. Setup/warm-up is
 excluded and full returned records share a signature. The
-[a6/a22 receipt](../../docs/evidence/2026-10-15-prepared-selection/REPORT.md) retains
+[a6/a22 receipt](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/evidence/2026-10-15-prepared-selection/REPORT.md) retains
 serial installed-wheel trials and a separate diagnostic profile.

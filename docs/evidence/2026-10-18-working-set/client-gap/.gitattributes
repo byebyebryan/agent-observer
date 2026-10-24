@@ -1,3 +1,0 @@
-# Preserve the original unittest subTest line endings in these two raw logs.
-before-311.log whitespace=-blank-at-eol
-before-314.log whitespace=-blank-at-eol
