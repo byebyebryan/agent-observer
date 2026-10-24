@@ -71,4 +71,4 @@ adoption does not select an experimental transport automatically.
 
 Source, public package, installed role, native runtime, consumer and physical
 device acceptance are separate. [Operations](../maintenance/operations.md) points to exact
-receipts and owner manifests; [validation](../maintenance/validation.md)+explains independent native proof.
+receipts and owner manifests; [validation](../maintenance/validation.md) explains independent native proof.

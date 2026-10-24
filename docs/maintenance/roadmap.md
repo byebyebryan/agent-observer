@@ -7,7 +7,7 @@ this repository owns native semantics, public interfaces and acceptance evidence
 
 ## Current baseline
 
-The [a9 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
+The [a10 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a10)
 supports full API 4/snapshot 6/Service 4 and working-set reads. Collector and
 working-set roles have a reviewed Mesh a25 pair; other roles and consumers
 retain independent selections. [Operations](operations.md) links exact receipts.
@@ -26,8 +26,11 @@ plans for restoring those retired paths are superseded.
 | Consumer integration | Adopt an accepted producer interface where useful | Consumer-specific package, UI/device and recovery proof |
 
 These are priorities, not scheduled implementation or deployment approvals.
-Carbon's working-set membership was partial in the dated public-delivery receipt;
-that remains an unresolved limit, not a complete-fleet claim or a fresh diagnosis.
+Working-set coverage now reports a primary census, support or membership blocker.
+Clock discontinuities and other legitimate uncertainty remain explicit; complete
+native source coverage does not imply complete working-set membership. Reopen
+membership semantics only for a reproducible discrepancy with independent native
+evidence. Historical unexplained partial samples do not establish a producer bug.
 
 ## Deferred work and reopen conditions
 

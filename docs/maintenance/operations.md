@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a9 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
+The [0.7.0a10 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a10)
 publishes Codex-only read-only API 4 / snapshot 6 / Service 4 and working-set v1
 interfaces. The collector/working-set cohort uses Mesh a25. Full publishers,
 dashboards, Tmux and SSH authority retain independent reviewed selections.
@@ -17,10 +17,20 @@ separate steps. No optional transport is selected by installing a package.
 
 Observer writes and standalone active-only hosting are retired. Working-set
 retains active membership plus recent context; full diagnostics remain available.
-The public-delivery receipt recorded Carbon membership as partial and unresolved,
-not complete-empty or complete-fleet. This is a dated limit, not a fresh probe.
+Earlier delivery receipts recorded Carbon membership as partial without a primary
+cause. Current working-set reads expose a primary census, support or membership
+blocker through `coverage.reason`; see [working-set reads](../guides/working-set.md).
+Complete native inventory and complete working-set membership remain separate
+claims. Clock-discontinuity guards can legitimately leave membership unresolved.
 
 ## Provenance
+
+The [a10 artifact manifest](../../artifacts/observer-0.7.0a10.json) binds its
+runtime source and exact Observer/Mesh wheel hashes. The release's
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a10/provenance.json)
+separates source, package and older-reader compatibility checks from installed
+native and consumer acceptance. The change refines reasons without changing
+membership, leases or frozen schemas.
 
 The [public-delivery closeout](https://github.com/byebyebryan/mesh-plus/blob/b306d44c329c6289781cc4db14f939ed2a4d20c2/docs/evidence/2026-10-23-public-delivery/README.md)
 binds exact public assets, hashes and scoped installed delivery. Release build
