@@ -1,42 +1,38 @@
 # Agent Observer roadmap
 
-The [read-only retirement checkpoint](read-only-retirement.md) defines the
-0.7.0a9 source candidate: working-set inspection, full diagnostics and withdrawal
-of Observer writes and the standalone active-only feed. Implementation, artifact
-qualification and managed adoption are reported separately.
+Current direction: reusable Codex read-only observation for dashboards, diagnostics
+and agent utilities. Native provider managers own conversations; Agent Plus opens
+those managers independently. Claude observation is retired.
 
-Current direction: reusable Codex read-only observation for dashboards and agent
-utilities. Native provider managers own session control. Agent Plus independently
-opens those managers and is no longer a consumer migration prerequisite. See
-the [utility-read guide](utility-read-guide.md) for new consumers and
-[architecture](architecture.md) for the producer/network boundary. Claude
-monitoring remains retired; Claude native entry in Agent Plus is independent.
+## Current publication and next work
 
-The [Mesh a24 dependency upgrade](mesh-a24-complete-view-upgrade.md) targets the
-public wheel and keeps ordinary complete-view delivery. Both semantic delta
-sync and view-feed delivery stay unselected. The [a8 publication/deployment](evidence/2026-10-21-a8-deployment/REPORT.md)
-selects released a8/a24 collectors and working-set publishers on both hosts,
-while preserving dashboard/full-reader/Tmux/writer tuples at that checkpoint.
-Later consumer selection must be read from its effective immutable bundle and
-owner deployment record; producer rollout does not establish consumer acceptance.
+[Observer 0.7.0a9](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a9)
+is published and paired with Mesh a25 for collectors/working-set delivery. Observer
+writes and standalone active-only hosting are fully retired. Working-set retains
+active membership and recent context; full diagnostics remain supported.
+The [public closeout](https://github.com/byebyebryan/mesh-plus/blob/b306d44c329c6289781cc4db14f939ed2a4d20c2/docs/evidence/2026-10-23-public-delivery/README.md)
+records publication, independent role pins and bounded fleet acceptance. Carbon's
+partial membership remains unresolved; no universal complete-fleet claim follows.
 
-[Codex home profiles](codex-home-profiles-plan.md) now collect explicit Default
-and Work scopes on Snap, retain Default on Starship and combine independent
-feeds in the dashboards. The [bounded delivery checkpoint](evidence/2026-10-19-home-profiles/REPORT.md)
-records native comparisons, filters, lifecycle isolation, device readback and cost.
+Near-term work is clearer [public read guidance](README.md), concrete read-only
+utilities using [supported facades](utility-read-guide.md), and focused investigation
+of unresolved coverage/membership where needed. Consumer UI/device acceptance and
+producer/native qualification keep separate owners. The shared [Fleet Plus site](https://dev.byebyebryan.com/fleet-plus/)
+explains project relationships; it does not select a runtime tuple.
 
-A [generalized active + recent projection](working-set-producer-checkpoint.md) is
-implemented as an opt-in source with a 3-day window and additive Mesh SDK1
-registration. Controlled public Reader IPC, private installed pairs and fixed
-SSH pass. The later home-profile checkpoint above records selected working-set
-feeds and bounded native/client/device evidence; whole-producer qualification
-and the stated cost/resource limits remain separate. This work uses complete
-replacements and does not reopen delta synchronization.
+The earlier [Mesh a24 upgrade](mesh-a24-complete-view-upgrade.md),
+[a8 publication/deployment](evidence/2026-10-21-a8-deployment/REPORT.md) and
+[home-profile checkpoint](evidence/2026-10-19-home-profiles/REPORT.md) retain their
+dated artifact and host scope. Effective owner manifests determine later roles.
 
 Snapshot/delta synchronization is [deferred behind a default-off gate](delta-sync-dark-feature.md)
 as of 2026-10-17. Implementation and evidence are retained for a future explicit
 resume request. CPU, 2,000-row capacity/recovery and remaining producer gates are
 not accepted; active optimization/qualification and automatic continuation end.
+
+## Earlier checkpoints
+
+The following passages preserve their original artifact and selection scope.
 
 The earlier hosted [0.7.0a7 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a7)
 publishes the qualified wheel unchanged, paired with Mesh 0.1.0a23. The
