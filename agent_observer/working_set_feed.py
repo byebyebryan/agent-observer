@@ -35,6 +35,58 @@ def _identity_mapping(identity):
     }
 
 
+def _unresolved_decision_reason(decision):
+    """Return the first unresolved predicate for one unresolved census row."""
+
+    if decision.eligibility is None:
+        return "eligibility_support_unproved"
+    if decision.active is None:
+        return "active_support_unproved"
+    if decision.active is False and decision.recent.decision is None:
+        return decision.recent.reason
+    return "membership_unresolved"
+
+
+def _primary_unresolved_reason(native_census, classified):
+    """Choose the unresolved reason for the lexicographically first identity."""
+
+    primary_identity = None
+    primary_reason = None
+    for raw_identity in native_census.get("identities", ()):
+        identity = raw_identity if isinstance(raw_identity, tuple) else tuple(raw_identity)
+        decision = classified.get(identity)
+        if decision is None:
+            reason = "census_identity_unprojected"
+        elif decision.selected is None:
+            reason = _unresolved_decision_reason(decision)
+        else:
+            continue
+        if primary_identity is None or identity < primary_identity:
+            primary_identity, primary_reason = identity, reason
+    return primary_reason
+
+
+def _incomplete_coverage_reason(
+    *, native_census, census_support_valid, runtime_coverage, runtime_health,
+    unresolved_reason,
+):
+    """Select one bounded primary cause without changing coverage authority."""
+
+    if runtime_health not in {"current", "partial"}:
+        return (
+            runtime_coverage.get("reason")
+            or native_census.get("reason")
+            or "runtime_coverage_unavailable"
+        )
+    if native_census.get("status") != "complete":
+        return native_census.get("reason") or "native_census_incomplete"
+    if runtime_coverage.get("status") != "complete":
+        return runtime_coverage.get("reason") or "runtime_coverage_incomplete"
+    if not census_support_valid:
+        return "census_support_unproved"
+    return unresolved_reason or "membership_incomplete"
+
+
 class WorkingSetProjector:
     def __init__(
         self,
@@ -353,19 +405,24 @@ class WorkingSetProjector:
             bodies.append(clean)
         native_census = census.get("codex", {})
         census_support = native_census.get("support")
+        runtime_coverage = original["coverage"]["runtime"]
+        census_support_valid = valid(census_support)
         complete = (
             native_census.get("status") == "complete"
-            and valid(census_support)
-            and original["coverage"]["runtime"]["status"] == "complete"
+            and census_support_valid
+            and runtime_coverage["status"] == "complete"
             and not self.decisions.latched
         )
         coverage_supports = [census_support] if complete else []
+        unresolved_reason = None
+        row_membership_unresolved = False
         if complete and not tracking_capacity:
             for identity in native_census.get("identities", ()):
                 identity = tuple(identity)
                 decision = classified.get(identity)
                 if decision is None or decision.selected is None:
                     complete = False
+                    row_membership_unresolved = True
                     break
                 coverage_supports.extend(
                     decision.active_supports if decision.active is True else ()
@@ -376,11 +433,28 @@ class WorkingSetProjector:
                 coverage_supports.extend(
                     decision.negative_supports if decision.selected is False else ()
                 )
+        if row_membership_unresolved:
+            # Diagnose separately so the existing census traversal and its
+            # support accumulation order stay unchanged.
+            unresolved_reason = _primary_unresolved_reason(native_census, classified)
         runtime = next(r for r in source["components"] if r["name"] == "runtime")
         status = (
             "complete"
             if complete
             else ("partial" if runtime["health"] in {"current", "partial"} else runtime["health"])
+        )
+        coverage_reason = (
+            "complete_native_census"
+            if complete
+            else "recency_tracking_capacity"
+            if self.decisions.latched
+            else _incomplete_coverage_reason(
+                native_census=native_census,
+                census_support_valid=census_support_valid,
+                runtime_coverage=runtime_coverage,
+                runtime_health=runtime["health"],
+                unresolved_reason=unresolved_reason,
+            )
         )
         scope = {
             "provider": context[0],
@@ -391,11 +465,7 @@ class WorkingSetProjector:
             "clocks": self.clocks.export(source),
             "coverage": {
                 "status": status,
-                "reason": "complete_native_census"
-                if complete
-                else "recency_tracking_capacity"
-                if self.decisions.latched
-                else "membership_incomplete",
+                "reason": coverage_reason,
                 "supports": [],
             },
             "members": members,

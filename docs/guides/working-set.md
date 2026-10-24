@@ -16,6 +16,26 @@ members array does not establish complete-empty coverage. Partial, stale,
 unavailable, uncertain and admitted nonmember outcomes remain explicit. A
 retained runtime label is not current active membership.
 
+`coverage.reason` names one primary blocker. Source, census and support
+blockers take precedence over row-level membership reasons. If several census
+identities are unresolved, the reason comes from the lexicographically first
+full identity; it does not enumerate every blocker. Reasons include
+`census_support_unproved`, `census_identity_unprojected`,
+`eligibility_support_unproved`, `active_support_unproved`, and native recency
+reasons such as `clock_discontinuity` and `clock_bracket_overlap`.
+`census_support_unproved` means the census support does not join a current
+receipt; `census_identity_unprojected` means the census identity has no row for
+the membership decision. For one row, unproved eligibility precedes unproved
+active membership, which precedes a recent-branch reason when active membership
+is known false. `membership_incomplete` is the fallback when no more specific
+blocker is available.
+`clock_discontinuity` means the same activity event remains unresolved across a
+clock epoch until a newer native activity timestamp is observed.
+
+Zero current members can mean no identity qualifies while scope coverage is
+still partial. Complete-empty requires complete current coverage and no
+members, uncertain identities or known nonmembers.
+
 ## Bounded inspection
 
 Requires the compatible optional Mesh pair, a running cached working-set

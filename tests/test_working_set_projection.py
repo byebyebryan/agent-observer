@@ -10,8 +10,10 @@ from test_service_contract import fixture
 
 from agent_observer.service_state import ServiceState
 from agent_observer.working_set_contract import validate_frame
-from agent_observer.working_set_decisions import WorkingSetDecisions
+from agent_observer.working_set_decisions import WorkingSetDecision, WorkingSetDecisions
+from agent_observer.working_set_feed import _primary_unresolved_reason
 from agent_observer.working_set_ledger import WorkingSetLedger
+from agent_observer.working_set_policy import PolicyResult
 
 WALL = 1700000020000
 
@@ -80,6 +82,27 @@ class WorkingSetProjectionTest(unittest.TestCase):
     def scope(frame):
         return frame["projection"]["scopes"][0]
 
+    @staticmethod
+    def key():
+        identity = provider_snapshot("codex")["sessions"][0]["identity"]
+        return tuple(
+            identity[name]
+            for name in ("hostScope", "provider", "namespace", "nativeIdKind", "nativeId")
+        )
+
+    @staticmethod
+    def semantics(frame):
+        scope = WorkingSetProjectionTest.scope(frame)
+        return {
+            "coverage": {
+                key: value for key, value in scope["coverage"].items() if key != "reason"
+            },
+            "sessionIds": [row["identity"]["nativeId"] for row in frame["projection"]["sessions"]],
+            "memberCount": len(scope["members"]),
+            "uncertainCount": len(scope["uncertain"]),
+            "nonmemberCount": len(scope["nonmembers"]),
+        }
+
     def test_recent_parked_and_runtime_unknown_are_selected_with_original_bodies(self):
         for runtime in ("parked", "unknown"):
             value = self.sample(runtime=runtime)
@@ -99,9 +122,140 @@ class WorkingSetProjectionTest(unittest.TestCase):
             frame = self.accept(self.sample(runtime="running", at=at))
             self.assertEqual(len(frame["projection"]["sessions"]), 1)
             self.assertEqual(self.scope(frame)["coverage"]["status"], "complete")
+            self.assertEqual(self.scope(frame)["coverage"]["reason"], "complete_native_census")
             member = self.scope(frame)["members"][0]
             self.assertIsNotNone(member["active"])
             self.assertEqual(member["recent"] is not None, at == WALL - 5000)
+
+    def test_complete_empty_census_is_not_inferred_from_zero_members_alone(self):
+        value = self.sample()
+        value["sessions"] = []
+        frame = self.accept(value)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "complete")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "complete_native_census")
+        self.assertEqual(self.semantics(frame), {
+            "coverage": {"status": "complete", "supports": [0]},
+            "sessionIds": [], "memberCount": 0, "uncertainCount": 0, "nonmemberCount": 0,
+        })
+
+    def test_clock_discontinuity_names_primary_cause_without_changing_projection(self):
+        self.state.working_set_clocks._generation = 1
+        frame = self.accept()
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "clock_discontinuity")
+        self.assertEqual(self.semantics(frame), {
+            "coverage": {"status": "partial", "supports": []},
+            "sessionIds": [], "memberCount": 0, "uncertainCount": 0, "nonmemberCount": 0,
+        })
+
+    def test_primary_census_decision_reason_preserves_other_positive_members(self):
+        self.state.working_set_clocks._generation = 1
+        value = self.sample(runtime="running", at=None)
+        parked = copy.deepcopy(value["sessions"][0])
+        identifier = str(UUID(int=999))
+        parked["identity"]["nativeId"] = identifier
+        parked["nativeIds"].update(threadId=identifier, sessionTreeRootId=identifier)
+        parked["runtime"].update(value="parked")
+        parked["phase"] = None
+        parked["blockedReasons"] = []
+        parked["activity"].update(
+            at=WALL - 5000, health="current", source="codex_rpc", reason="native_timestamp"
+        )
+        value["sessions"].append(parked)
+
+        frame = self.accept(value)
+        scope = self.scope(frame)
+        self.assertEqual(scope["coverage"]["status"], "partial")
+        self.assertEqual(scope["coverage"]["reason"], "clock_discontinuity")
+        self.assertEqual(self.semantics(frame), {
+            "coverage": {"status": "partial", "supports": []},
+            "sessionIds": [self.sample(runtime="running", at=None)["sessions"][0]["identity"]["nativeId"]],
+            "memberCount": 1, "uncertainCount": 0, "nonmemberCount": 0,
+        })
+
+    def test_partial_native_census_reason_keeps_positive_member(self):
+        value = self.sample(runtime="running", at=None)
+        value["sources"][0]["coverage"]["runtime"].update(
+            status="partial", reason="native_scan_partial"
+        )
+        frame = self.accept(value)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "native_scan_partial")
+        self.assertEqual(self.semantics(frame)["memberCount"], 1)
+
+    def test_unprojected_census_identity_reports_that_blocker(self):
+        frame = self.accept()
+        self.state.projection_census["codex"]["identities"] = (
+            (*self.key()[:4], str(UUID(int=999))),
+        )
+        self.state._refresh_working_set(self.now)
+        frame = self.state.working_set_frame("status", 1)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "census_identity_unprojected")
+        self.assertEqual(self.semantics(frame)["memberCount"], 1)
+
+    def test_unproved_census_support_reports_that_blocker(self):
+        self.accept()
+        census = self.state.projection_census["codex"]
+        census["support"] = {**census["support"], "accepted": census["support"]["accepted"] + 1}
+        self.state._refresh_working_set(self.now)
+        frame = self.state.working_set_frame("status", 1)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "census_support_unproved")
+        self.assertEqual(self.semantics(frame)["memberCount"], 1)
+
+    def test_unproved_eligibility_support_reports_that_blocker(self):
+        self.accept(self.sample(runtime="running", at=None))
+        self.state.projection_support[self.key()]["kind"] = None
+        self.state._refresh_working_set(self.now)
+        frame = self.state.working_set_frame("status", 1)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(
+            self.scope(frame)["coverage"]["reason"], "eligibility_support_unproved"
+        )
+        self.assertEqual(self.semantics(frame)["memberCount"], 0)
+
+    def test_unproved_active_support_reports_that_blocker(self):
+        self.accept()
+        self.now = 20000
+        self.state.projection_support[self.key()]["runtime"] = None
+        self.state._refresh_working_set(self.now)
+        frame = self.state.working_set_frame("status", 1)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "active_support_unproved")
+        self.assertEqual(self.semantics(frame)["memberCount"], 0)
+
+    def test_primary_unresolved_reason_uses_smallest_identity_not_input_order(self):
+        def unresolved(reason):
+            return WorkingSetDecision(
+                eligibility=True,
+                active=False,
+                recent=PolicyResult(None, reason),
+                selected=None,
+                active_supports=(),
+                recent_supports=(),
+                negative_kind=None,
+                negative_supports=(),
+            )
+
+        low = ("fixture", "codex", "scope-a", "thread", str(UUID(int=1)))
+        high = ("fixture", "codex", "scope-a", "thread", str(UUID(int=2)))
+        census = {"identities": (high, low)}
+        classified = {
+            high: unresolved("clock_discontinuity"),
+            low: unresolved("activity_support_unproved"),
+        }
+        self.assertEqual(
+            _primary_unresolved_reason(census, classified), "activity_support_unproved"
+        )
+
+    def test_expired_runtime_source_reports_stale_reason(self):
+        self.accept()
+        self.now = 110000
+        frame = self.state.working_set_frame("status", 1)
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "stale")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "service_source_expired")
+        self.assertEqual(self.semantics(frame)["memberCount"], 0)
 
     def test_quiet_lower_then_upper_cutoff_without_new_observation_or_collection(self):
         first = self.accept()
@@ -114,6 +268,7 @@ class WorkingSetProjectionTest(unittest.TestCase):
         uncertain = self.state.working_set_frame("status", 1)
         self.assertEqual(uncertain["projection"]["sessions"], [])
         self.assertEqual(self.scope(uncertain)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(uncertain)["coverage"]["reason"], "clock_bracket_overlap")
         self.assertEqual(len(self.scope(uncertain)["uncertain"]), 1)
         self.assertEqual(self.scope(uncertain)["nonmembers"], [])
         self.assertGreater(uncertain["viewRevision"], first["viewRevision"])
@@ -121,6 +276,7 @@ class WorkingSetProjectionTest(unittest.TestCase):
         self.now = upper
         negative = self.state.working_set_frame("status", 1)
         self.assertEqual(self.scope(negative)["coverage"]["status"], "complete")
+        self.assertEqual(self.scope(negative)["coverage"]["reason"], "complete_native_census")
         self.assertEqual(self.scope(negative)["nonmembers"][0]["reason"], "outside_window")
         self.assertEqual(negative["observationRevision"], observation_revision)
         self.assertEqual(self.state.receipts["codex"]["runtime"].accepted, accepted)
@@ -148,6 +304,7 @@ class WorkingSetProjectionTest(unittest.TestCase):
         older = self.accept(self.sample(wall=WALL + 10000, at=WALL - 5001), lower=20000)
         self.assertEqual(older["projection"]["sessions"], [])
         self.assertEqual(self.scope(older)["coverage"]["status"], "partial")
+        self.assertEqual(self.scope(older)["coverage"]["reason"], "activity_timestamp_regression")
         self.assertEqual(self.scope(older)["nonmembers"], [])
         self.assertEqual(len(self.scope(older)["uncertain"]), 1)
 
