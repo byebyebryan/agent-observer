@@ -29,8 +29,25 @@ the membership decision. For one row, unproved eligibility precedes unproved
 active membership, which precedes a recent-branch reason when active membership
 is known false. `membership_incomplete` is the fallback when no more specific
 blocker is available.
-`clock_discontinuity` means the same activity event remains unresolved across a
-clock epoch until a newer native activity timestamp is observed.
+The owner advances `clockGeneration` when adjacent distinct accepted clock
+brackets `I=[W-U-1, W-L+1]` do not overlap (all values are milliseconds; `W`
+is the wall timestamp; `L` and `U` are the BOOTTIME sample and acceptance bounds).
+`clock_discontinuity` means
+an event guard remains unresolved across that epoch until a newer native
+activity timestamp is observed. The exported component clocks show current
+bindings, not incident history.
+
+Later overlapping brackets or a complete
+current native census do not clear an event guard for unchanged `activity.at`:
+a quiet parked row can remain unresolved. This affects the recent branch; a row
+with proved eligibility and current active support can still qualify through
+the active branch. Polling and lease renewal do not advance native activity,
+and restarting or manufacturing activity is not a recovery procedure.
+
+For diagnosis before changing owner incarnation, preserve frame `serviceId`,
+`bootId`, `clockDomain`, `sequence`, `viewRevision`, `observationRevision`,
+`clockGeneration`, `clockCeiling`, and the current `projection.scopes[].clocks[]`
+samples.
 
 Zero current members can mean no identity qualifies while scope coverage is
 still partial. Complete-empty requires complete current coverage and no
