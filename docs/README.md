@@ -31,7 +31,7 @@ carries the shared showcase and project relationships.
 | [Development](maintenance/development.md) | Source setup, checks and repository layout |
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
-| [Direction](maintenance/roadmap.md) | Priorities and reopen conditions |
+| [Roadmap](maintenance/roadmap.md) | CLI/dashboard milestone, acceptance and deferred work |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.
