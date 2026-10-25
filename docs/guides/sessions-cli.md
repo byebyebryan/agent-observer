@@ -4,7 +4,8 @@ This guide describes the new source CLI; the published `0.7.0a10` release does
 not contain these commands. Source/package qualification does not update an
 installed managed reader.
 
-The `sessions` commands read configured working-set caches for quick overview,
+Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
+commands read the same configured working-set caches for overview,
 listing and exact-session investigation. They never start a provider, control
 a session, change host routes or fall back to a full inventory. Existing direct,
 Service 4 and Mesh diagnostics remain available separately.
@@ -37,7 +38,7 @@ agent-observer-cli sources
 ```
 
 This local alias uses an isolated reader environment and the same configuration
-below. The packaged command remains `agent-observer sessions`; collector,
+below. The packaged commands are bare `agent-observer` and `agent-observer sessions`; collector,
 publisher and managed client package selections have independent ownership.
 
 The default file is `$XDG_CONFIG_HOME/agent-observer/terminal.toml`, or
@@ -92,6 +93,7 @@ agent-observer sessions sources --configured
 ## Quick checks and investigation
 
 ```sh
+agent-observer
 agent-observer sessions
 agent-observer sessions list
 agent-observer sessions list --host workstation --home default
@@ -101,7 +103,15 @@ agent-observer sessions sources
 agent-observer sessions show FULL_THREAD_ID --host workstation --home default
 ```
 
-The default overview has at most ten displayed rows. `list` shows all matching
+Bare `agent-observer`, `agent-observer sessions` and `sessions overview` show
+the same overview. It has at most ten displayed rows, with a compact coverage
+summary and separate membership/runtime/phase columns. Ordinary rows fit an
+80-column terminal; narrower views use labeled session blocks. Long labels
+wrap without losing text. Approximate activity ages use `~`; unknown or stale
+facts retain their qualifications. Optional context appears in wider overviews.
+Full IDs and context are available with `list` and `show`.
+
+`list` shows all matching
 rows; counts and source health always describe the unfiltered selection as
 well. Confirmed child/system kinds are hidden by default, unknown kinds remain
 visible, and `--include-children`/`--include-system` enable diagnostic inclusion.

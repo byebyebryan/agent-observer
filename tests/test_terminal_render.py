@@ -35,7 +35,7 @@ class TerminalRenderTests(unittest.TestCase):
             ]
         )
         for width in (40, 60, 80, 120, 180):
-            for mode in ("list", "show", "sources"):
+            for mode in ("overview", "list", "show", "sources"):
                 for color in (False, True):
                     with self.subTest(width=width, mode=mode, color=color):
                         text = render(document, mode=mode, color=color, width=width)
@@ -48,6 +48,71 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertIn(title, piped)
         self.assertIn(native_id, piped)
         self.assertNotIn("\x1b", piped)
+
+    def test_overview_keeps_ordinary_rows_on_one_line_and_full_identity_in_list(self):
+        members = [row(f"full-native-id-{index}", title=f"Session {index}") for index in range(12)]
+        states = [
+            state(
+                current_read=read(
+                    rows=members,
+                    leases=[lease(member["identity"]["nativeId"]) for member in members],
+                )
+            )
+        ]
+        document = report(states, mode="overview")
+        text = render(document, width=80)
+        self.assertIn("12 sessions", text)
+        self.assertIn("1/1 sources complete", text)
+        self.assertIn("Showing 10 of 12 matches.", text)
+        for member in document["sessions"]:
+            matching = [
+                line for line in text.splitlines() if line.startswith(member["label"] + " ")
+            ]
+            self.assertEqual(len(matching), 1)
+            self.assertIn("fixture/Default", matching[0])
+            self.assertIn("active", matching[0])
+            self.assertIn("running", matching[0])
+            self.assertIn("working", matching[0])
+            self.assertNotIn(member["identity"]["nativeId"], text)
+        self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
+        full = render(report(states), mode="list")
+        for member in members:
+            self.assertIn(member["identity"]["nativeId"], full)
+        self.assertIn("fixture-project", full)
+
+    def test_filtered_overview_keeps_failed_source_and_unfiltered_counts_visible(self):
+        states = [
+            state(current_read=read(rows=[row("healthy-id")], leases=[lease("healthy-id")])),
+            state(
+                source("offline-work", host="offline", home="work"),
+                lifecycle="failed",
+                baseline=False,
+                reason="transport_failure",
+            ),
+        ]
+        document = report(states, mode="overview", filters={"query": ("no-match",)})
+        text = render(document, width=80)
+        self.assertIn("1 session", text)
+        self.assertIn("1/2 sources complete", text)
+        self.assertIn("offline/Work: unavailable", text)
+        self.assertIn("host transport is unavailable", text)
+        self.assertIn("0 matches", text)
+        self.assertNotIn("complete current coverage", text)
+
+        stale_member = row("stale-id", title="Stale session")
+        stale_member["runtime"].update(value="unknown", health="stale", lastKnownValue="running")
+        stale_member["phase"].update(value="unknown", health="unavailable")
+        stale_member["activity"].update(at=None, health="stale", lastKnownAt=950)
+        stale = report(
+            [state(current_read=read(rows=[stale_member], leases=[lease("stale-id")]))],
+            mode="overview",
+        )
+        for width in (40, 80, 120):
+            text = render(stale, width=width)
+            self.assertIn("unknown (stale)", text)
+            self.assertIn("unknown (unavailable)", text)
+            self.assertNotIn("running", text)
+            self.assertNotIn("working", text)
 
     def test_grouping_is_contiguous_in_json_model_and_human_output(self):
         states = []

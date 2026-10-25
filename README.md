@@ -26,6 +26,11 @@ published-package installation, home selection and output explanation.
 
 ## Choose an interface
 
+With working-set sources configured, run `agent-observer` for the quick fleet
+overview. Use `agent-observer sessions list` for all matching sessions and full
+IDs. The [sessions guide](docs/guides/sessions-cli.md) describes source setup;
+these commands are in source and are not in the published `0.7.0a10` release.
+
 | Need | Documentation |
 | --- | --- |
 | Inspect the local runtime | [First local read](docs/getting-started.md) |

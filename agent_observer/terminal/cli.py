@@ -419,7 +419,9 @@ async def _live_report(args, config, selected, filters, mode: str, target):
     return status, report
 
 
-def _emit(report: dict, args, mode: str, *, configured=False) -> int:
+def _emit(
+    report: dict, args, mode: str, *, configured=False, command="agent-observer sessions"
+) -> int:
     try:
         if args.format == "json":
             document = json_document(report)
@@ -431,7 +433,7 @@ def _emit(report: dict, args, mode: str, *, configured=False) -> int:
             width = (
                 shutil.get_terminal_size(fallback=(80, 24)).columns if sys.stdout.isatty() else None
             )
-            document = render(report, mode=mode, color=enabled, width=width)
+            document = render(report, mode=mode, color=enabled, width=width, command=command)
         write_stdout(document)
     except OutputError as error:
         if str(error) == "broken_pipe":
@@ -473,9 +475,9 @@ def main(argv=None, *, prog: str = "agent-observer sessions") -> int:
     if mode == "sources" and args.configured:
         report = _configured_report(config, selected, filters)
         if args.format == "json":
-            return _emit(report, args, mode)
+            return _emit(report, args, mode, command=prog)
         report["_text"] = _configured_text(config, selected)
-        return _emit(report, args, mode, configured=True)
+        return _emit(report, args, mode, configured=True, command=prog)
 
     try:
         status, report = asyncio.run(_live_report(args, config, selected, filters, mode, target))
@@ -486,7 +488,7 @@ def main(argv=None, *, prog: str = "agent-observer sessions") -> int:
         return 130
     if report is None:
         return status
-    output_status = _emit(report, args, mode)
+    output_status = _emit(report, args, mode, command=prog)
     return status if output_status == 0 else output_status
 
 

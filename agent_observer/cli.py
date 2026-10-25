@@ -131,11 +131,14 @@ def main(argv=None):
     if arguments and arguments[0] == "working-set":
         from .working_set_cli import main as working_set_main
         return working_set_main(arguments[1:])
-    if arguments and arguments[0] == "sessions":
+    if not arguments or arguments[0] == "sessions":
         from .terminal.cli import main as sessions_main
 
         return sessions_main(arguments[1:])
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Read-only Codex observation. Run without arguments for the configured cached session overview.",
+        epilog="For cached session filters and source selection: agent-observer sessions --help",
+    )
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("service", help="explicit cached service read client (service --help)")

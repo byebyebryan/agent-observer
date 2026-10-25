@@ -50,6 +50,7 @@ metadata, not freshly sampled native state. Never inspect remote paths/Git.
 
 | Proposed command | Outcome |
 | --- | --- |
+| `agent-observer` | The usual quick check; opens the configured cached sessions overview. |
 | `agent-observer sessions` | Default quick overview; equivalent to `sessions overview`: source health, unfiltered counts and at most ten readable rows, with remaining count. |
 | `agent-observer sessions list` | All selected current members and uncertain identity stubs, with search/filters/order; no silent row limit. |
 | `agent-observer sessions show ID --host HOST --home HOME` | Full native thread ID in exactly one configured host/home; no prefix/title matching. Host/home may be omitted only when one source is selected. |
@@ -59,15 +60,17 @@ metadata, not freshly sampled native state. Never inspect remote paths/Git.
 | `agent-observer sessions schema` | Packaged terminal JSON output schema without configuration or optional imports. |
 | `agent-observer dashboard` | Standalone persistent TUI until quit/terminal shutdown; no default duration limit. |
 
-Keep bare `agent-observer`, all existing direct/service/mesh/profile commands
-and diagnostic `working-set watch` behavior. Product reads always use explicit
+Bare `agent-observer` now opens the overview; all existing explicit
+direct/service/mesh/profile commands and diagnostic `working-set watch` retain
+their behavior. Product reads always use explicit
 working-set caches. First milestone product reads require the optional Mesh
 dependency, even for a local bridge. Core and local Service 4 diagnostics stay
 usable without Mesh/Textual. Do not invent a Mesh-free working-set reader by
 filtering a full inventory; a separate pure local facade is not a prerequisite.
 
-Human columns: `SESSION`, `HOST/HOME`, `MEMBERSHIP`, `RUNTIME`, `PHASE`,
-`ACTIVITY`, display ID. Title is primary; optional admitted project key or
+Overview columns: `SESSION`, optional `CONTEXT` in wider terminals, `HOST/HOME`,
+`MEMBER`, `RUNTIME`, `PHASE` and `ACTIVITY`. Full IDs remain in list/details.
+Title is primary; optional admitted project key or
 workspace/cwd basename is labeled context, never identity. Use `Codex <ID>`
 when no useful name exists. Details expose full identity/name, optional path,
 metadata issues, exact activity timestamp, independent fact health/reasons,
@@ -77,13 +80,17 @@ markup controls in metadata; never interpret it as commands or terminal links.
 For example, using invented labels:
 
 ```text
-3 sources: 1 complete, 1 partial, 1 reconnecting | 7 members, 2 uncertain | 4 shown
-SESSION              HOST/HOME        MEMBERSHIP  RUNTIME  PHASE     ACTIVITY
-CLI planning         laptop/Default   active      running  working   2m ago
-Renderer review      server/Work      active      running  waiting   8m ago
-Release notes        laptop/Default   recent      parked   -         1h ago
-Codex <display ID>   server/Work      uncertain   unknown  unknown   unknown
-server/Default: reconnecting; current facts revoked
+Agent Observer   7 sessions · 2 uncertain
+Coverage: 1/3 sources complete; 1 partial/stale/warming; 1 unavailable/blocked
+Sources: laptop/Default
+server/Work: partial; coverage is incomplete; see sessions sources
+server/Default: unavailable; connection lost; current facts revoked
+
+SESSION              HOST/HOME        MEMBER     RUNTIME  PHASE    ACTIVITY
+CLI planning         laptop/Default   active     running  working  ~2m
+Renderer review      server/Work      active     running  waiting  ~8m
+Release notes        laptop/Default   recent     parked   -        ~1h
+Codex <native ID>    server/Work      uncertain  unknown  unknown  unknown
 ```
 
 Source health precedes rows and survives filtering. Counts distinguish selected

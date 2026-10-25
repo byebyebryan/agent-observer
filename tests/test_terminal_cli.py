@@ -151,6 +151,23 @@ def fake_state(*, empty=False):
 
 
 class TerminalCliTests(unittest.TestCase):
+    def test_bare_command_dispatches_to_cached_overview_without_direct_collection(self):
+        from agent_observer import cli as root
+        from agent_observer.terminal import cli
+
+        with (
+            patch.object(cli, "main", return_value=3) as cached,
+            patch.object(root, "_snapshot", side_effect=AssertionError("direct collection")),
+        ):
+            self.assertEqual(root.main([]), 3)
+            cached.assert_called_once_with([])
+        with (
+            patch.object(cli, "main", return_value=0) as cached,
+            patch.object(sys, "argv", ["agent-observer"]),
+        ):
+            self.assertEqual(root.main(), 0)
+            cached.assert_called_once_with([])
+
     def test_help_identifies_the_cached_command_and_local_alias(self):
         from agent_observer.terminal import cli
 
