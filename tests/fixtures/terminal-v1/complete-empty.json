@@ -1,0 +1,96 @@
+{
+  "interface": "agent-observer.terminal",
+  "version": 1,
+  "generatedAt": "2026-10-25T12:00:00.000Z",
+  "selection": {
+    "sources": [
+      {
+        "id": "fixture-default",
+        "host": "fixture",
+        "home": "default",
+        "label": "Default",
+        "meshSource": "agent_working_set",
+        "namespace": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "config": "/synthetic/terminal.toml"
+  },
+  "filters": {
+    "source": [],
+    "host": [],
+    "home": [],
+    "membership": [],
+    "runtime": [],
+    "phase": [],
+    "query": [],
+    "includeChildren": false,
+    "includeSystem": false,
+    "sort": "activity",
+    "group": "none"
+  },
+  "clock": {
+    "kind": "CLOCK_BOOTTIME",
+    "bootId": "00000000-0000-0000-0000-000000000001",
+    "timeNamespace": "time:7",
+    "clockDomain": "time:[7]",
+    "nowBoottimeMs": 1000
+  },
+  "totals": {
+    "selectedSources": 1,
+    "completeSources": 1,
+    "partialSources": 0,
+    "failedSources": 0,
+    "members": 0,
+    "uncertain": 0,
+    "nonmembers": 0,
+    "hiddenKinds": 0,
+    "displayedMatches": 0,
+    "shown": 0,
+    "state": "complete-empty"
+  },
+  "sources": [
+    {
+      "id": "fixture-default",
+      "host": "fixture",
+      "home": "default",
+      "label": "Default",
+      "meshSource": "agent_working_set",
+      "scope": "local",
+      "expectedNamespace": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "observedNamespace": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "baseline": true,
+      "delivery": "ready",
+      "health": "complete",
+      "reason": null,
+      "reasons": [],
+      "lastFrameBoottimeMs": 900,
+      "captureBoottimeMs": 1000,
+      "scopes": [
+        {
+          "host": "fixture",
+          "provider": "codex",
+          "namespace": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "serviceId": "fixture-service",
+          "contextGeneration": 1,
+          "continuity": 1,
+          "coverage": {
+            "status": "complete",
+            "reason": null,
+            "expiresAtBoottimeMs": 2000
+          }
+        }
+      ],
+      "clock": {
+        "kind": "CLOCK_BOOTTIME",
+        "bootId": "00000000-0000-0000-0000-000000000001",
+        "timeNamespace": "time:7",
+        "clockDomain": "time:[7]"
+      }
+    }
+  ],
+  "sessions": [],
+  "uncertain": [],
+  "nonmembers": [],
+  "result": "complete",
+  "error": null
+}

@@ -31,6 +31,7 @@ published-package installation, home selection and output explanation.
 | Inspect the local runtime | [First local read](docs/getting-started.md) |
 | Share one collector's cached state | [Local Service 4](docs/guides/local-service.md) |
 | Read active sessions and recent context across configured hosts | [Working-set](docs/guides/working-set.md) |
+| Check configured hosts/homes with readable CLI output | [Sessions CLI](docs/guides/sessions-cli.md) |
 | Inspect a fuller cached inventory | [Full Mesh reads](docs/guides/full-mesh-reads.md) |
 | Build a read-only utility | [Utility example](docs/guides/read-utilities.md) and [API reference](docs/reference/read-api.md) |
 

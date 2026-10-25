@@ -23,6 +23,11 @@ Existing direct, service and Mesh commands support diagnostic inspection.
 the current watch is bounded to 60 seconds. The terminal product builds on
 these capabilities. The dashboard described below is planned, not shipped.
 
+The new source [sessions CLI](../guides/sessions-cli.md) provides configured
+overview/list/show/source inspection and versioned JSON output. It has source,
+clean-package and cached-consumer checks; published `0.7.0a10` does not include
+it. The standalone dashboard and managed delivery remain later stages.
+
 ## Next milestone: CLI and dashboard
 
 The terminal product should be useful in ordinary terminals without dedicated
@@ -122,6 +127,11 @@ diagnostic JSON is not a stable scripting API. Extend the product experience
 without treating its current renderer or 60-second budget as the final design.
 
 ## Priorities and acceptance
+
+The [detailed terminal product plan](terminal-product.md) records the inspected
+baseline, CLI contract, proposed dashboard interaction and measurable gates.
+The user selected the CLI-first implementation slice; dashboard layout,
+dependencies, persistent reconnect and sustained budgets remain proposed.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |

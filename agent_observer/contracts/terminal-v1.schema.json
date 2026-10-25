@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-observer.invalid/contracts/terminal-v1.schema.json",
+  "title": "Agent Observer terminal report version 1",
+  "type": "object",
+  "required": [
+    "interface", "version", "generatedAt", "selection", "filters", "clock",
+    "totals", "sources", "sessions", "uncertain", "nonmembers", "result", "error"
+  ],
+  "properties": {
+    "interface": {"const": "agent-observer.terminal"},
+    "version": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "selection": {
+      "type": "object",
+      "required": ["sources", "config"],
+      "properties": {
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/selectionSource"}},
+        "config": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "filters": {
+      "type": "object",
+      "required": ["source", "host", "home", "membership", "runtime", "phase", "query", "includeChildren", "includeSystem", "sort", "group"],
+      "properties": {
+        "source": {"type": "array", "items": {"type": "string"}},
+        "host": {"type": "array", "items": {"type": "string"}},
+        "home": {"type": "array", "items": {"type": "string"}},
+        "membership": {"type": "array", "items": {"enum": ["active", "recent", "uncertain", "nonmember"]}},
+        "runtime": {"type": "array", "items": {"enum": ["running", "parked", "unknown"]}},
+        "phase": {"type": "array", "items": {"enum": ["working", "blocked", "waiting", "unknown"]}},
+        "query": {"type": "array", "items": {"type": "string", "maxLength": 256}},
+        "includeChildren": {"type": "boolean"},
+        "includeSystem": {"type": "boolean"},
+        "sort": {"enum": ["activity", "label", "host"]},
+        "group": {"enum": ["none", "host-home"]}
+      },
+      "additionalProperties": true
+    },
+    "clock": {"anyOf": [{"$ref": "#/$defs/clock"}, {"type": "null"}]},
+    "totals": {
+      "type": "object",
+      "required": ["selectedSources", "completeSources", "partialSources", "failedSources", "members", "uncertain", "nonmembers", "hiddenKinds", "displayedMatches", "shown", "state"],
+      "properties": {
+        "selectedSources": {"type": "integer", "minimum": 0},
+        "completeSources": {"type": "integer", "minimum": 0},
+        "partialSources": {"type": "integer", "minimum": 0},
+        "failedSources": {"type": "integer", "minimum": 0},
+        "members": {"type": "integer", "minimum": 0},
+        "uncertain": {"type": "integer", "minimum": 0},
+        "nonmembers": {"type": "integer", "minimum": 0},
+        "hiddenKinds": {"type": "integer", "minimum": 0},
+        "displayedMatches": {"type": "integer", "minimum": 0},
+        "shown": {"type": "integer", "minimum": 0},
+        "state": {"enum": ["complete-empty", "complete", "degraded", "not_found", "configured"]}
+      },
+      "additionalProperties": true
+    },
+    "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}},
+    "sessions": {"type": "array", "items": {"$ref": "#/$defs/session"}},
+    "uncertain": {"type": "array", "items": {"$ref": "#/$defs/outcome"}},
+    "nonmembers": {"type": "array", "items": {"$ref": "#/$defs/outcome"}},
+    "result": {"enum": ["complete", "degraded", "not_found", "configured"]},
+    "error": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["code", "message"],
+          "properties": {
+            "code": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+            "message": {"type": "string", "maxLength": 512}
+          },
+          "additionalProperties": true
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "identity": {
+      "type": "object",
+      "required": ["hostScope", "provider", "namespace", "nativeIdKind", "nativeId"],
+      "properties": {
+        "hostScope": {"type": "string", "minLength": 1, "maxLength": 256},
+        "provider": {"const": "codex"},
+        "namespace": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "nativeIdKind": {"type": "string", "minLength": 1, "maxLength": 32},
+        "nativeId": {"type": "string", "minLength": 1, "maxLength": 128}
+      },
+      "additionalProperties": false
+    },
+    "selectionSource": {
+      "type": "object",
+      "required": ["id", "host", "home", "label", "meshSource", "namespace"],
+      "properties": {
+        "id": {"type": "string"}, "host": {"type": "string"}, "home": {"type": "string"},
+        "label": {"type": "string"}, "meshSource": {"type": "string"},
+        "namespace": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "clock": {
+      "type": "object",
+      "required": ["kind", "bootId", "timeNamespace", "clockDomain", "nowBoottimeMs"],
+      "properties": {
+        "kind": {"const": "CLOCK_BOOTTIME"}, "bootId": {"type": "string"},
+        "timeNamespace": {"type": "string"}, "clockDomain": {"type": "string"},
+        "nowBoottimeMs": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "required": ["id", "host", "home", "label", "meshSource", "scope", "expectedNamespace", "observedNamespace", "baseline", "delivery", "health", "reason", "reasons", "lastFrameBoottimeMs", "captureBoottimeMs", "scopes", "clock"],
+      "properties": {
+        "id": {"type": "string"}, "host": {"type": "string"}, "home": {"type": "string"},
+        "label": {"type": "string"}, "meshSource": {"type": "string"},
+        "scope": {"enum": ["local", "hosts"]},
+        "expectedNamespace": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "observedNamespace": {"type": ["string", "null"]},
+        "baseline": {"type": "boolean"}, "delivery": {"type": "string"},
+        "health": {"enum": ["complete", "partial", "stale", "warming", "unavailable", "blocked", "configured"]},
+        "reason": {"type": ["string", "null"]},
+        "deliveryError": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "lastFrameBoottimeMs": {"type": ["integer", "null"], "minimum": 0},
+        "captureBoottimeMs": {"type": ["integer", "null"], "minimum": 0},
+        "scopes": {"type": "array", "items": {"$ref": "#/$defs/scope"}},
+        "clock": {"anyOf": [{"$ref": "#/$defs/clockBinding"}, {"type": "null"}]}
+      },
+      "additionalProperties": true
+    },
+    "clockBinding": {
+      "type": "object",
+      "required": ["kind", "bootId", "timeNamespace", "clockDomain"],
+      "properties": {
+        "kind": {"const": "CLOCK_BOOTTIME"}, "bootId": {"type": "string"},
+        "timeNamespace": {"type": "string"}, "clockDomain": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "scope": {
+      "type": "object",
+      "required": ["host", "provider", "namespace", "serviceId", "contextGeneration", "continuity", "coverage"],
+      "properties": {
+        "host": {"type": ["string", "null"]}, "provider": {"type": ["string", "null"]},
+        "namespace": {"type": ["string", "null"]}, "serviceId": {"type": ["string", "null"]},
+        "contextGeneration": {"type": ["integer", "null"]}, "continuity": {"type": ["integer", "null"]},
+        "coverage": {
+          "type": "object", "required": ["status", "reason", "expiresAtBoottimeMs"],
+          "properties": {
+            "status": {"enum": ["complete", "partial", "stale", "warming", "unavailable", "unsupported"]},
+            "reason": {"type": ["string", "null"]},
+            "expiresAtBoottimeMs": {"type": ["integer", "null"], "minimum": 0}
+          }, "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "fact": {
+      "type": "object",
+      "required": ["value", "health", "reason", "observedAt"],
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "health": {"enum": ["current", "stale", "unavailable", "unsupported", "ambiguous", "not_applicable"]},
+        "reason": {"type": ["string", "null"]}, "observedAt": {"type": ["integer", "null"]},
+        "lastKnownValue": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["id", "host", "home", "label", "meshSource"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "maxLength": 64},
+        "host": {"type": "string", "minLength": 1, "maxLength": 128},
+        "home": {"type": "string", "minLength": 1, "maxLength": 32},
+        "label": {"type": "string", "minLength": 1, "maxLength": 64},
+        "meshSource": {"type": "string", "minLength": 1, "maxLength": 128}
+      },
+      "additionalProperties": true
+    },
+    "activity": {
+      "type": "object",
+      "required": ["at", "health", "reason", "lastKnownAt"],
+      "properties": {
+        "at": {"type": ["integer", "null"]},
+        "health": {"enum": ["current", "stale", "unavailable", "unsupported", "ambiguous"]},
+        "reason": {"type": ["string", "null"]}, "lastKnownAt": {"type": ["integer", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "session": {
+      "type": "object",
+      "required": ["identity", "source", "label", "context", "kind", "membership", "membershipBranches", "runtime", "phase", "activity", "details"],
+      "properties": {
+        "identity": {"$ref": "#/$defs/identity"},
+        "source": {"$ref": "#/$defs/provenance"},
+        "label": {"type": "string"}, "context": {"type": ["string", "null"]},
+        "kind": {"enum": ["user", "child", "system", "unknown"]},
+        "membership": {"enum": ["active", "recent"]},
+        "membershipBranches": {
+          "type": "object",
+          "required": ["activeExpiresAtBoottimeMs", "recentExpiresAtBoottimeMs", "membershipExpiresAtBoottimeMs"],
+          "properties": {
+            "activeExpiresAtBoottimeMs": {"type": ["integer", "null"], "minimum": 0},
+            "recentExpiresAtBoottimeMs": {"type": ["integer", "null"], "minimum": 0},
+            "membershipExpiresAtBoottimeMs": {"type": ["integer", "null"], "minimum": 0}
+          },
+          "additionalProperties": true
+        },
+        "runtime": {"$ref": "#/$defs/fact"}, "phase": {"$ref": "#/$defs/fact"},
+        "activity": {"$ref": "#/$defs/activity"},
+        "details": {
+          "type": "object",
+          "required": ["title", "cwd", "projectKey", "workspaceHealth", "workspaceReason", "fieldExpiresAtBoottimeMs", "metadataIssues", "blockedReasons"],
+          "properties": {
+            "title": {"type": "string"},
+            "cwd": {"type": ["string", "null"]},
+            "projectKey": {"type": ["string", "null"]},
+            "workspaceHealth": {"type": ["string", "null"]},
+            "workspaceReason": {"type": ["string", "null"]},
+            "fieldExpiresAtBoottimeMs": {
+              "type": "object",
+              "properties": {
+                "runtime": {"type": ["integer", "null"], "minimum": 0},
+                "phase": {"type": ["integer", "null"], "minimum": 0},
+                "kind": {"type": ["integer", "null"], "minimum": 0},
+                "savedIdentity": {"type": ["integer", "null"], "minimum": 0},
+                "activity": {"type": ["integer", "null"], "minimum": 0},
+                "outcome": {"type": ["integer", "null"], "minimum": 0},
+                "workspace": {"type": ["integer", "null"], "minimum": 0},
+                "lastUpdated": {"type": ["integer", "null"], "minimum": 0},
+                "latestTurn": {"type": ["integer", "null"], "minimum": 0}
+              },
+              "additionalProperties": true
+            },
+            "metadataIssues": {"type": "array", "items": {"type": "string"}},
+            "blockedReasons": {"type": "array", "items": {"enum": ["approval", "question"]}}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["identity", "source", "membership", "reason"],
+      "properties": {
+        "identity": {"$ref": "#/$defs/identity"}, "source": {"$ref": "#/$defs/provenance"},
+        "membership": {"enum": ["uncertain", "nonmember"]}, "reason": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
