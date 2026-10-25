@@ -146,8 +146,8 @@ def _add_common(parser: argparse.ArgumentParser, *, suppress: bool = False) -> N
     add("--group", choices=("none", "host-home"), default=argparse.SUPPRESS if suppress else "none")
 
 
-def parser() -> argparse.ArgumentParser:
-    root = _SessionParser(description=__doc__)
+def parser(*, prog: str = "agent-observer sessions") -> argparse.ArgumentParser:
+    root = _SessionParser(prog=prog, description=__doc__)
     _add_common(root)
     commands = root.add_subparsers(dest="command", parser_class=argparse.ArgumentParser)
     for name, description in (
@@ -441,9 +441,9 @@ def _emit(report: dict, args, mode: str, *, configured=False) -> int:
     return 0
 
 
-def main(argv=None) -> int:
+def main(argv=None, *, prog: str = "agent-observer sessions") -> int:
     arguments = sys.argv[1:] if argv is None else argv
-    args = parser().parse_args(arguments)
+    args = parser(prog=prog).parse_args(arguments)
     mode = args.command or "overview"
     if mode == "schema":
         try:

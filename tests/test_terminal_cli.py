@@ -151,6 +151,16 @@ def fake_state(*, empty=False):
 
 
 class TerminalCliTests(unittest.TestCase):
+    def test_help_identifies_the_cached_command_and_local_alias(self):
+        from agent_observer.terminal import cli
+
+        self.assertTrue(cli.parser().format_usage().startswith("usage: agent-observer sessions "))
+        self.assertTrue(
+            cli.parser(prog="agent-observer-cli")
+            .format_usage()
+            .startswith("usage: agent-observer-cli ")
+        )
+
     def test_repeatable_selectors_merge_across_subcommand_boundary(self):
         from agent_observer.terminal import cli
 
