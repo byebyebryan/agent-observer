@@ -10,6 +10,8 @@ from datetime import UTC, datetime
 from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
+_PHASE_ICONS = {"working": "●", "waiting": "○", "blocked": "!", "unknown": "?"}
+_PHASE_COLORS = {"working": "32", "waiting": "36", "blocked": "33", "unknown": "33"}
 
 
 def _cells(value: str) -> int:
@@ -79,8 +81,65 @@ def color_enabled(mode: str, *, environ=None, isatty: bool = False) -> bool:
     return environ.get("TERM", "") != "dumb"
 
 
+def icons_enabled(
+    mode: str, *, environ=None, isatty: bool = False, encoding: str | None = "utf-8"
+) -> bool:
+    environ = os.environ if environ is None else environ
+    if not isatty or mode == "never" or (mode == "auto" and environ.get("TERM") == "dumb"):
+        return False
+    if encoding is None:
+        return False
+    try:
+        "◈✓×●○›─".encode(encoding)
+    except (UnicodeError, LookupError):
+        return False
+    return True
+
+
 def _style(value: str, code: str, enabled: bool) -> str:
     return f"\x1b[{code}m{value}\x1b[0m" if enabled else value
+
+
+def _phase_key(value: str) -> str | None:
+    value = value.strip()
+    return next(
+        (
+            key
+            for key in _PHASE_ICONS
+            if value == key or value.startswith(key + " (") or value.endswith(" " + key)
+        ),
+        None,
+    )
+
+
+def _phase_label(value: str, icons: bool) -> str:
+    key = _phase_key(value)
+    return f"{_PHASE_ICONS[key]} {value}" if icons and key else value
+
+
+def _cell_style(value: str, field: str, enabled: bool) -> str:
+    code = {
+        "session": "1",
+        "context": "2",
+        "host": "36",
+        "activity": "2",
+        "id": "2",
+    }.get(field)
+    if field == "phase":
+        code = _PHASE_COLORS.get(_phase_key(value), "2")
+    elif field in {"membership", "runtime"}:
+        plain = value.strip()
+        code = (
+            "33"
+            if plain.startswith("unknown") or plain == "uncertain"
+            else "2"
+            if plain in {"recent", "nonmember", "parked"}
+            else None
+        )
+    if not code or not enabled:
+        return value
+    text = value.rstrip()
+    return _style(text, code, True) + value[len(text) :] if text else value
 
 
 def _health_counts(report: dict) -> str:
@@ -92,7 +151,12 @@ def _health_counts(report: dict) -> str:
 
 
 def _source_line(
-    source: dict, enabled: bool, *, verbose: bool = False, compact: bool = False
+    source: dict,
+    enabled: bool,
+    *,
+    verbose: bool = False,
+    compact: bool = False,
+    icons: bool = False,
 ) -> str:
     state = source["health"]
     color = (
@@ -104,7 +168,16 @@ def _source_line(
         if state in {"partial", "stale", "warming"}
         else "31"
     )
-    label = _style(state, color, enabled)
+    glyph = (
+        "✓"
+        if state == "complete"
+        else "○"
+        if state == "configured"
+        else "!"
+        if color == "33"
+        else "×"
+    )
+    label = _style(f"{glyph} {state}" if icons else state, color, enabled)
     route = f"{source['host']}/{source['label']}"
     text = f"{route}: {label}" if compact else f"{route} [{source['id']}]: {label}"
     if not verbose:
@@ -225,30 +298,39 @@ def _rows(report: dict) -> list[dict]:
     return sort_rows(rows, report["filters"]["sort"], report["filters"]["group"])
 
 
-def _overview_header(report: dict, enabled: bool) -> list[str]:
+def _overview_header(report: dict, enabled: bool, icons: bool) -> list[str]:
     totals = report["totals"]
     count = totals["members"]
-    counts = [f"{count} session{'s' if count != 1 else ''}"]
+    counts = [_style(f"{count} session{'s' if count != 1 else ''}", "1", enabled)]
     if totals["uncertain"]:
-        counts.append(f"{totals['uncertain']} uncertain")
+        counts.append(_style(f"{totals['uncertain']} uncertain", "33", enabled))
     if totals["nonmembers"]:
-        counts.append(f"{totals['nonmembers']} known nonmembers")
-    lines = [_style("Agent Observer", "1", enabled) + "   " + " · ".join(counts)]
+        counts.append(_style(f"{totals['nonmembers']} known nonmembers", "2", enabled))
+    brand = "◈ Agent Observer" if icons else "Agent Observer"
+    lines = [_style(brand, "1;36", enabled) + "   " + " · ".join(counts)]
     coverage = [f"{totals['completeSources']}/{totals['selectedSources']} sources complete"]
     if totals["partialSources"]:
         coverage.append(f"{totals['partialSources']} partial/stale/warming")
     if totals["failedSources"]:
         coverage.append(f"{totals['failedSources']} unavailable/blocked")
-    lines.append("Coverage: " + "; ".join(coverage))
+    code = "31" if totals["failedSources"] else "33" if totals["partialSources"] else "32"
+    glyph = "×" if totals["failedSources"] else "!" if totals["partialSources"] else "✓"
+    lines.append(
+        (_style(glyph + " ", code, enabled) if icons else "")
+        + _style("Coverage: ", "2", enabled)
+        + _style("; ".join(coverage), code, enabled)
+    )
     complete = [
         f"{source['host']}/{source['label']}"
         for source in report["sources"]
         if source["health"] == "complete"
     ]
     if complete:
-        lines.append("Sources: " + ", ".join(complete))
+        lines.append(
+            _style("Sources: ", "2", enabled) + _style(" · ".join(complete), "36", enabled)
+        )
     lines.extend(
-        _source_line(source, enabled, compact=True)
+        _source_line(source, enabled, compact=True, icons=icons)
         for source in report["sources"]
         if source["health"] != "complete"
     )
@@ -257,13 +339,15 @@ def _overview_header(report: dict, enabled: bool) -> list[str]:
         if report["filters"][name]:
             selectors.append(f"{name}=" + ", ".join(report["filters"][name]))
     if selectors:
-        lines.append("Filters: " + "; ".join(selectors))
+        lines.append(_style("Filters: ", "2", enabled) + "; ".join(selectors))
     if totals["hiddenKinds"]:
-        lines.append(f"Hidden: {totals['hiddenKinds']} child/system sessions")
+        lines.append(_style(f"Hidden: {totals['hiddenKinds']} child/system sessions", "2", enabled))
     return lines
 
 
-def _overview_values(row: dict, now_ms: int, context: bool) -> tuple[list[str], list[str]]:
+def _overview_values(
+    row: dict, now_ms: int, context: bool, icons: bool
+) -> tuple[list[str], list[str]]:
     member = row["membership"] in {"active", "recent"}
     runtime = _runtime_text(row) if member else "unknown"
     phase = _phase_text(row) if member else "unknown"
@@ -280,7 +364,7 @@ def _overview_values(row: dict, now_ms: int, context: bool) -> tuple[list[str], 
             f"{row['source']['host']}/{row['source']['label']}",
             row["membership"],
             "unknown" if runtime.startswith("unknown (") else runtime,
-            "unknown" if phase.startswith("unknown (") else phase,
+            _phase_label("unknown" if phase.startswith("unknown (") else phase, icons),
             "unknown"
             if activity.startswith("unknown (")
             else activity.replace("approx. ", "~").removesuffix(" ago"),
@@ -292,21 +376,30 @@ def _overview_values(row: dict, now_ms: int, context: bool) -> tuple[list[str], 
 
 
 def _overview_table(
-    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None
+    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool
 ) -> list[str]:
     if not rows:
         return []
     context = any(row.get("context") for row in rows) and (width is None or width >= 110)
     headers = [
-        "SESSION",
-        *(["CONTEXT"] if context else []),
-        "HOST/HOME",
-        "MEMBER",
-        "RUNTIME",
-        "PHASE",
-        "ACTIVITY",
+        "Session",
+        *(["Context"] if context else []),
+        "Host/home",
+        "Member",
+        "Runtime",
+        "Phase",
+        "Activity",
     ]
-    prepared = [_overview_values(row, now_ms, context) for row in rows]
+    fields = [
+        "session",
+        *(["context"] if context else []),
+        "host",
+        "membership",
+        "runtime",
+        "phase",
+        "activity",
+    ]
+    prepared = [_overview_values(row, now_ms, context, icons) for row in rows]
     widths = [
         max(_cells(header), *(_cells(values[index]) for values, _ in prepared))
         for index, header in enumerate(headers)
@@ -327,20 +420,31 @@ def _overview_table(
         heading = "  ".join(
             value.ljust(size) for value, size in zip(headers, widths, strict=True)
         ).rstrip()
-        output.extend((_style(heading, "2", enabled), "  ".join("-" * size for size in widths)))
+        rule = (
+            "─" * (sum(widths) + 2 * (len(headers) - 1))
+            if icons
+            else "  ".join("-" * size for size in widths)
+        )
+        output.extend((_style(heading, "1;2", enabled), _style(rule, "2", enabled)))
     previous_group = None
     for row, (values, notes) in zip(rows, prepared, strict=True):
         source = row["source"]
         if group == "host-home":
             selected_group = (source["host"], source["home"], source["label"])
             if selected_group != previous_group:
-                output.append(f"[{selected_group[0]}/{selected_group[2]}]")
+                output.append(_style(f"[{selected_group[0]}/{selected_group[2]}]", "1;36", enabled))
                 previous_group = selected_group
         if compact:
             if output:
                 output.append("")
             output.append(_style(values[0], "1", enabled))
-            output.append("  " + " · ".join(values[1:]))
+            output.append(
+                "  "
+                + " · ".join(
+                    _cell_style(value, field, enabled)
+                    for value, field in zip(values[1:], fields[1:], strict=True)
+                )
+            )
         else:
             cells = [
                 _finish([value], size).splitlines()
@@ -351,24 +455,15 @@ def _overview_table(
                 for index, (cell, size) in enumerate(zip(cells, widths, strict=True)):
                     value = cell[line_index] if line_index < len(cell) else ""
                     padded = value + " " * (size - _cells(value))
-                    if index == len(headers) - 2:
-                        code = {
-                            "working": "32",
-                            "blocked": "33",
-                            "waiting": "36",
-                            "unknown": "33",
-                        }.get(value)
-                        if code:
-                            padded = _style(padded, code, enabled)
-                    parts.append(padded)
+                    parts.append(_cell_style(padded, fields[index], enabled))
                 output.append("  ".join(parts).rstrip())
         if notes:
-            output.append("  " + "; ".join(notes))
+            output.append("  " + _style("; ".join(notes), "33", enabled))
     return output
 
 
 def _session_table(
-    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None
+    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool
 ) -> list[str]:
     if not rows:
         return []
@@ -378,7 +473,9 @@ def _session_table(
             f"{row['source']['host']}/{row['source']['label']}",
             row["membership"],
             _runtime_text(row) if row["membership"] in {"active", "recent"} else "unknown",
-            _phase_text(row) if row["membership"] in {"active", "recent"} else "unknown",
+            _phase_label(
+                _phase_text(row) if row["membership"] in {"active", "recent"} else "unknown", icons
+            ),
             _activity_text(row, now_ms) if row["membership"] in {"active", "recent"} else "unknown",
             row["identity"]["nativeId"],
         )
@@ -405,19 +502,32 @@ def _session_table(
             activity = (
                 _activity_text(row, now_ms) if membership in {"active", "recent"} else "unknown"
             )
-            color = "32" if membership == "active" else "36" if membership == "recent" else "33"
             output.append(
-                f"- {_style(membership, color, enabled)} / {runtime} / {phase} / {activity}"
+                f"- {_cell_style(membership, 'membership', enabled)} / "
+                f"{_cell_style(runtime, 'runtime', enabled)} / "
+                f"{_cell_style(_phase_label(phase, icons), 'phase', enabled)} / "
+                f"{_style(activity, '2', enabled)}"
             )
             label = row.get("label") or f"Codex {row['identity']['nativeId']}"
-            output.append("  " + label)
-            output.append(f"  host/home: {source['host']}/{source['label']}")
+            output.append("  " + _style(label, "1", enabled))
+            output.append(_style(f"  host/home: {source['host']}/{source['label']}", "36", enabled))
             if row.get("context"):
-                output.append("  context: " + row["context"])
-            output.append("  id: " + row["identity"]["nativeId"])
+                output.append(_style("  context: " + row["context"], "2", enabled))
+            output.append(_style("  id: " + row["identity"]["nativeId"], "2", enabled))
         return output
-    output = ["  ".join(headers[index].ljust(widths[index]) for index in range(len(headers)))]
-    output.append("  ".join("-" * width for width in widths))
+    output = [
+        _style(
+            "  ".join(headers[index].ljust(widths[index]) for index in range(len(headers))),
+            "1;2",
+            enabled,
+        )
+    ]
+    rule = (
+        "─" * (sum(widths) + 2 * (len(headers) - 1))
+        if icons
+        else "  ".join("-" * size for size in widths)
+    )
+    output.append(_style(rule, "2", enabled))
     previous_group = None
     for row, value in zip(rows, values, strict=True):
         if group == "host-home":
@@ -430,14 +540,15 @@ def _session_table(
             colored[index] + " " * (widths[index] - _cells(colored[index]))
             for index in range(len(colored))
         ]
-        padded[2] = _style(
-            padded[2],
-            "32" if colored[2] == "active" else "36" if colored[2] == "recent" else "33",
-            enabled,
+        fields = ("session", "host", "membership", "runtime", "phase", "activity", "id")
+        output.append(
+            "  ".join(
+                _cell_style(value, field, enabled)
+                for value, field in zip(padded, fields, strict=True)
+            )
         )
-        output.append("  ".join(padded))
         if row.get("context"):
-            output.append("  context: " + row["context"])
+            output.append(_style("  context: " + row["context"], "2", enabled))
     return output
 
 
@@ -535,6 +646,7 @@ def render(
     *,
     mode: str = "overview",
     color: bool = False,
+    icons: bool = False,
     width: int | None = None,
     command: str = "agent-observer sessions",
 ) -> str:
@@ -543,11 +655,24 @@ def render(
     totals = report["totals"]
     if report.get("error"):
         lines.append(
-            f"Report {report['result']}: {report['error']['code']} - {report['error']['message']}"
+            _style(
+                ("! " if icons else "")
+                + f"Report {report['result']}: {report['error']['code']} - {report['error']['message']}",
+                "33",
+                color,
+            )
         )
     if mode == "sources":
-        lines.append(f"Sources: {totals['selectedSources']} selected; {_health_counts(report)}")
-        lines.extend(_source_line(source, color, verbose=True) for source in report["sources"])
+        lines.append(
+            _style(
+                f"Sources: {totals['selectedSources']} selected; {_health_counts(report)}",
+                "1;36",
+                color,
+            )
+        )
+        lines.extend(
+            _source_line(source, color, verbose=True, icons=icons) for source in report["sources"]
+        )
         return _finish(lines, width)
 
     if mode == "show":
@@ -556,7 +681,9 @@ def render(
         elif report["error"] and report["error"].get("code") == "target_unresolved":
             lines.append("Exact identity membership is unresolved; selected coverage is degraded.")
         rows = _rows(report)
-        lines.extend(_source_line(source, color, verbose=True) for source in report["sources"])
+        lines.extend(
+            _source_line(source, color, verbose=True, icons=icons) for source in report["sources"]
+        )
         if rows:
             row = rows[0]
             if row.get("membership") in {"uncertain", "nonmember"}:
@@ -582,10 +709,12 @@ def render(
                     )
                 )
             else:
-                lines.extend(_details(row, report))
+                details = _details(row, report)
+                details[0] = _style(details[0], "1;36", color)
+                lines.extend(details)
         return _finish(lines, width)
 
-    lines.extend(_overview_header(report, color))
+    lines.extend(_overview_header(report, color, icons))
     if mode == "list":
         lines.append(f"Matches: {totals['displayedMatches']}")
     lines.append("")
@@ -597,14 +726,24 @@ def render(
         lines.append("0 matches; source health and unfiltered counts are shown above.")
     rows = _rows(report)
     table = _overview_table if mode == "overview" else _session_table
-    lines.extend(table(rows, _wall_now_ms(report), color, report["filters"]["group"], width))
+    lines.extend(table(rows, _wall_now_ms(report), color, report["filters"]["group"], width, icons))
     if mode == "overview":
         lines.append("")
         if totals["displayedMatches"] > totals["shown"]:
-            lines.append(f"Showing {totals['shown']} of {totals['displayedMatches']} matches.")
+            lines.append(
+                _style(
+                    f"Showing {totals['shown']} of {totals['displayedMatches']} matches.",
+                    "2",
+                    color,
+                )
+            )
         elif rows and totals["displayedMatches"] != totals["members"] + totals["uncertain"]:
             lines.append(f"{totals['displayedMatches']} matches in the selected sources.")
-        lines.append(f"All rows, context and full IDs: {command} list")
+        lines.append(
+            (_style("› ", "36", color) if icons else "")
+            + _style("All rows, context and full IDs: ", "2", color)
+            + _style(f"{command} list", "36", color)
+        )
         if rows:
-            lines.append("~ approximate activity age; membership, runtime and phase are separate.")
+            lines.append(_style("~ approximate activity age", "2", color))
     return _finish(lines, width)

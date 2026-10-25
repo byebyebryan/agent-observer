@@ -76,6 +76,11 @@ when no useful name exists. Details expose full identity/name, optional path,
 metadata issues, exact activity timestamp, independent fact health/reasons,
 scope coverage and relevant clock/lease information. Escape terminal, bidi and
 markup controls in metadata; never interpret it as commands or terminal links.
+Interactive styling uses standard Unicode status glyphs, a thin header rule,
+cyan navigation, green current work/complete coverage, amber uncertainty and
+red unavailable sources. State words remain visible. `--icons auto|always|never`
+controls ornaments separately from color, with plain pipe/basic-terminal fallbacks
+and no special font or new runtime dependency.
 
 For example, using invented labels:
 

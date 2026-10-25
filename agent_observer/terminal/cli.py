@@ -18,7 +18,7 @@ from ..bounded_json import WireError, decode_document
 from .config import TerminalConfigError, load_config, select_sources
 from .model import build_report, generated_at_now, identity_tuple, safe_metadata
 from .output import OutputError, json_document, schema_document, write_stderr, write_stdout
-from .render import color_enabled, render
+from .render import color_enabled, icons_enabled, render
 from .sources import TerminalDependencyError, read_sources
 
 
@@ -111,6 +111,12 @@ def _add_common(parser: argparse.ArgumentParser, *, suppress: bool = False) -> N
         "--color",
         choices=("auto", "always", "never"),
         default=argparse.SUPPRESS if suppress else "auto",
+    )
+    add(
+        "--icons",
+        choices=("auto", "always", "never"),
+        default=argparse.SUPPRESS if suppress else "auto",
+        help="status glyphs in supported terminals (default auto; never for plain symbols)",
     )
     add("--include-children", action="store_true", default=argparse.SUPPRESS if suppress else False)
     add("--include-system", action="store_true", default=argparse.SUPPRESS if suppress else False)
@@ -430,10 +436,15 @@ def _emit(
             document = report["_text"]
         else:
             enabled = color_enabled(args.color, isatty=sys.stdout.isatty())
+            glyphs = icons_enabled(
+                args.icons, isatty=sys.stdout.isatty(), encoding=sys.stdout.encoding
+            )
             width = (
                 shutil.get_terminal_size(fallback=(80, 24)).columns if sys.stdout.isatty() else None
             )
-            document = render(report, mode=mode, color=enabled, width=width, command=command)
+            document = render(
+                report, mode=mode, color=enabled, icons=glyphs, width=width, command=command
+            )
         write_stdout(document)
     except OutputError as error:
         if str(error) == "broken_pipe":

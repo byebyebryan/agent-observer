@@ -111,6 +111,12 @@ wrap without losing text. Approximate activity ages use `~`; unknown or stale
 facts retain their qualifications. Optional context appears in wider overviews.
 Full IDs and context are available with `list` and `show`.
 
+Interactive terminals use a cyan heading/navigation accent, bold session names,
+quiet secondary metadata and colored state labels. Standard Unicode glyphs
+mark `● working`, `○ waiting`, `! blocked` and `? unknown`; source coverage uses
+`✓`, `!` or `×` alongside its text. No special font is required. Thin rules
+separate headings from rows, with the same narrow-terminal layout.
+
 `list` shows all matching
 rows; counts and source health always describe the unfiltered selection as
 well. Confirmed child/system kinds are hidden by default, unknown kinds remain
@@ -170,11 +176,17 @@ not event replay and is not an atomic cross-host snapshot.
 agent-observer sessions list --format json
 agent-observer sessions schema
 agent-observer sessions list --color never
+agent-observer sessions --color never --icons never
 agent-observer sessions sources --timeout 5
 ```
 
 Human output is not a parser contract. Piped text has no terminal control/color,
 pager or width truncation. Nonempty `NO_COLOR` overrides color settings.
+`--icons auto|always|never` controls decorative glyphs independently of color.
+Auto enables them only on an interactive terminal whose output encoding
+supports them; `TERM=dumb` uses the plain fallback. Pipes omit decorative glyphs
+even with `--icons always`. `--icons never` uses plain status words and separators.
+Every colored/icon state retains its text label; color alone conveys no state.
 The finite read budget is ten seconds by default (`--timeout` 1-60), including
 setup. Reads recheck expiry while waiting for slower feeds. Invocation/output
 errors go to stderr; source failures and degraded results are in the report.

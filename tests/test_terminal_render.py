@@ -6,7 +6,7 @@ import unittest
 
 from test_terminal_model import lease, read, report, row, source, state
 
-from agent_observer.terminal.render import color_enabled, render
+from agent_observer.terminal.render import color_enabled, icons_enabled, render
 
 SGR = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -36,9 +36,9 @@ class TerminalRenderTests(unittest.TestCase):
         )
         for width in (40, 60, 80, 120, 180):
             for mode in ("overview", "list", "show", "sources"):
-                for color in (False, True):
-                    with self.subTest(width=width, mode=mode, color=color):
-                        text = render(document, mode=mode, color=color, width=width)
+                for color, icons in ((False, False), (True, True), (False, True)):
+                    with self.subTest(width=width, mode=mode, color=color, icons=icons):
+                        text = render(document, mode=mode, color=color, icons=icons, width=width)
                         self.assertTrue(
                             all(screen_width(line) <= width for line in text.splitlines())
                         )
@@ -146,3 +146,30 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertFalse(color_enabled("always", environ={}, isatty=False))
         self.assertFalse(color_enabled("auto", environ={"TERM": "dumb"}, isatty=True))
         self.assertTrue(color_enabled("auto", environ={"TERM": "xterm"}, isatty=True))
+
+    def test_icons_fall_back_for_pipes_basic_terminals_and_unsupported_encodings(self):
+        self.assertTrue(icons_enabled("auto", environ={"TERM": "xterm"}, isatty=True))
+        self.assertFalse(icons_enabled("always", environ={}, isatty=False))
+        self.assertFalse(icons_enabled("auto", environ={"TERM": "dumb"}, isatty=True))
+        self.assertFalse(icons_enabled("never", environ={}, isatty=True))
+        for encoding in (None, "ascii", "invalid-encoding"):
+            self.assertFalse(icons_enabled("auto", isatty=True, encoding=encoding))
+        self.assertTrue(icons_enabled("auto", environ={"NO_COLOR": "1"}, isatty=True))
+
+    def test_status_glyphs_keep_independent_unknown_facts_and_readable_no_color_labels(self):
+        member = row("exact-id", title="Session")
+        member["runtime"].update(value="unknown", health="stale", lastKnownValue="running")
+        member["phase"].update(value="unknown", health="stale", lastKnownValue="working")
+        document = report(
+            [state(current_read=read(rows=[member], leases=[lease("exact-id")]))],
+            mode="overview",
+        )
+        plain = render(document, icons=True, width=80)
+        self.assertIn("? unknown", plain)
+        self.assertIn("unknown (stale)", plain)
+        self.assertNotIn("● working", plain)
+        self.assertNotIn("running", plain)
+        self.assertNotIn("\x1b", plain)
+        styled = render(document, color=True, icons=True, width=80)
+        self.assertIn("? unknown", styled)
+        self.assertEqual(SGR.sub("", styled), plain)
