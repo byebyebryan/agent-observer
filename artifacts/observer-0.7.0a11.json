@@ -1,0 +1,47 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a11",
+  "wheel": "agent_observer-0.7.0a11-py3-none-any.whl",
+  "wheelSha256": "f8956346ce169062b88940475a17b5f3e5b70e8ba5c2396c5c1844aab3bfe755",
+  "sourceRevision": "6d6652c3db2e00a2d75a8ccdfc6e0758267d2b39",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified local candidate; no public release or managed selection is implied.",
+    "Read-only API4/snapshot6/Service4 and unchanged working-set1 wire schemas, selector and exact exported bounds.",
+    "Incarnation-wide accepted clock envelope replaces permanent epoch rejection; quiet proof-boundary recovery preserves nonrenewing positive expiry and exact support joins.",
+    "Regressed activity needs a changed, exactly joined native latest-turn ID; bounded incident metadata retains actual detector sample brackets and order.",
+    "Paired Mesh0.1.0a25; independent full publishers, dashboards, Tmux and SSH authority selections are unchanged."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

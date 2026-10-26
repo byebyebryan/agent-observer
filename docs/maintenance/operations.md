@@ -29,6 +29,15 @@ a10 collectors; qualification and scoped delivery remain separate gates.
 
 ## Provenance
 
+The [a11 candidate manifest](../../artifacts/observer-0.7.0a11.json) binds the
+clock-recovery runtime source, exact Observer wheel and existing Mesh a25 pair.
+The candidate preserves API 4, snapshot/watch 6, Service 4 and working-set v1
+schemas. Qualification covers the boot-step-shaped regression, quiet recovery,
+native-turn identity joins and installed older-reader admission. These are
+synthetic/package checks; no live clock was changed and no collector was
+restarted as proof. The a11 candidate is not a published release or a managed
+selection. The published/selected baseline remains a10 below.
+
 The [a10 artifact manifest](../../artifacts/observer-0.7.0a10.json) binds its
 runtime source and exact Observer/Mesh wheel hashes. The release's
 [provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a10/provenance.json)
