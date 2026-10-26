@@ -25,8 +25,9 @@ these capabilities. The dashboard described below is planned, not shipped.
 
 The new source [sessions CLI](../guides/sessions-cli.md) provides configured
 overview/list/show/source inspection and versioned JSON output. It has source,
-clean-package and cached-consumer checks; published `0.7.0a10` does not include
-it. The standalone dashboard and managed delivery remain later stages.
+clean-package and cached-consumer checks; the `0.7.0a12` candidate adds it to
+the a11 clock-recovery source. Published `0.7.0a11` does not include it. The
+standalone dashboard and managed delivery remain separate stages.
 
 ## Next milestone: CLI and dashboard
 

@@ -1,8 +1,8 @@
 # Sessions CLI
 
-This guide describes the new source CLI; the published `0.7.0a10` release does
-not contain these commands. Source/package qualification does not update an
-installed managed reader.
+The `0.7.0a12` candidate adds the sessions CLI described here; published
+`0.7.0a11` does not contain these commands. Source/package qualification does
+not update an installed managed reader.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
 commands read the same configured working-set caches for overview,
