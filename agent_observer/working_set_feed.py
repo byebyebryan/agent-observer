@@ -233,6 +233,7 @@ class WorkingSetProjector:
                 source,
                 clock=clock,
                 clock_generation=self.clocks.generation,
+                clock_floor=self.clocks.floor,
                 clock_ceiling=self.clocks.ceiling,
                 now_ms=now_ms,
                 expected_sample_id=sample_id,
@@ -305,9 +306,9 @@ class WorkingSetProjector:
             row, fields = rows[identity], supports.get(identity, empty_support())
             decision = classified[identity]
             recent = decision.recent
-            for deadline in (recent.deadline_lower_boottime_ms, recent.deadline_upper_boottime_ms):
-                if deadline is not None and deadline > now_ms:
-                    deadlines.append(deadline)
+            recheck = recent.reevaluate_boottime_ms
+            if recheck is not None and recheck > now_ms:
+                deadlines.append(recheck)
             if decision.selected is not True:
                 continue
             if tracking_capacity:

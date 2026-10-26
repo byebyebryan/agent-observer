@@ -21,7 +21,11 @@ Earlier delivery receipts recorded Carbon membership as partial without a primar
 cause. Current working-set reads expose a primary census, support or membership
 blocker through `coverage.reason`; see [working-set reads](../guides/working-set.md).
 Complete native inventory and complete working-set membership remain separate
-claims. Clock-discontinuity guards can legitimately leave membership unresolved.
+claims. The published a10 policy can leave quiet rows unresolved indefinitely
+after a clock change, even when later source coverage is complete. The source
+recovery policy uses [bounded clock uncertainty](../guides/working-set.md#clock-changes-and-recovery)
+instead of that permanent veto. Source acceptance does not update the selected
+a10 collectors; qualification and scoped delivery remain separate gates.
 
 ## Provenance
 

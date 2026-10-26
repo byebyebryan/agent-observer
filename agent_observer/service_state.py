@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import logging
 import os
 import socket
 import time
@@ -11,6 +13,8 @@ from pathlib import Path
 from .observation_engine import ObservationEngine
 from .provider import profile_for
 from .service_contract import validate_frame
+
+_LOG = logging.getLogger(__name__)
 
 
 def boottime_ms():
@@ -212,11 +216,23 @@ class ServiceState(ObservationEngine):
                     or receipt.sampledBoottimeMs != sampled_ms):
                 continue
             try:
+                generation_before = self.working_set_clocks.generation
                 self.working_set_clocks.accept(clock, component=component, accepted=receipt.accepted)
             except ValueError:
                 # The old binding cannot join this receipt's accepted counter,
                 # so classification is unknown; K is never reset as recovery.
                 continue
+            if self.working_set_clocks.generation > generation_before:
+                incident = self.working_set_clocks.last_discontinuity
+                if incident is not None:
+                    _LOG.warning(
+                        "working_set_clock_discontinuity %s",
+                        json.dumps(incident, separators=(",", ":"), sort_keys=True),
+                        extra={
+                            "event_name": "working_set_clock_discontinuity",
+                            "clock_discontinuity": incident,
+                        },
+                    )
 
     def _sync_owner(self):
         if self._sync_cache is None:
