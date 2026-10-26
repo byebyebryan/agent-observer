@@ -27,6 +27,43 @@ class _Binding:
     clock: SampleClock
 
 
+@dataclass(frozen=True, slots=True)
+class _Discontinuity:
+    generation: int
+    old_acceptance_order: int
+    new_acceptance_order: int
+    old_clock: SampleClock
+    old_interval: tuple[int, int]
+    new_clock: SampleClock
+    new_interval: tuple[int, int]
+
+    @staticmethod
+    def _sample(clock: SampleClock, interval: tuple[int, int]) -> dict[str, object]:
+        return {
+            "sampleId": clock.sample_id,
+            "originComponent": clock.origin_component,
+            "provider": clock.provider,
+            "namespace": clock.namespace,
+            "contextGeneration": clock.context_generation,
+            "lowerBoottimeMs": clock.lower_boottime_ms,
+            "wallMs": clock.wall_ms,
+            "upperBoottimeMs": clock.upper_boottime_ms,
+            "offsetIntervalMs": [interval[0], interval[1]],
+        }
+
+    def export(self) -> dict[str, object]:
+        return {
+            "generation": self.generation,
+            "serviceId": self.old_clock.service_id,
+            "bootId": self.old_clock.boot_id,
+            "clockDomain": self.old_clock.clock_domain,
+            "oldAcceptanceOrder": self.old_acceptance_order,
+            "newAcceptanceOrder": self.new_acceptance_order,
+            "old": self._sample(self.old_clock, self.old_interval),
+            "new": self._sample(self.new_clock, self.new_interval),
+        }
+
+
 def _uuid(value: object) -> bool:
     return isinstance(value, str) and _UUID.fullmatch(value) is not None
 
@@ -173,9 +210,10 @@ class WorkingSetClocks:
     """Store current component clocks and monotonic clock-incarnation state.
 
     At most the runtime/history bindings for one source context are retained.
-    The ceiling, last outward interval, last sample and discontinuity generation
-    are global to this instance's service/boot/clock-domain incarnation and
-    survive source-context retirement.
+    The floor and ceiling, last outward interval, last sample, acceptance order
+    and discontinuity generation are global to this instance's service/boot/
+    clock-domain incarnation and survive source-context retirement. The last
+    discontinuity is retained as one bounded incident record.
     """
 
     def __init__(self, service_id: str, boot_id: str, clock_domain: str):
@@ -190,10 +228,19 @@ class WorkingSetClocks:
         self._clock_domain = clock_domain
         self._context: tuple[str, str, int] | None = None
         self._bindings: dict[str, _Binding] = {}
+        self._floor: int | None = None
         self._ceiling: int | None = None
         self._last_interval: tuple[int, int] | None = None
         self._last_clock: SampleClock | None = None
         self._generation = 0
+        self._acceptance_order = 0
+        self._last_discontinuity: _Discontinuity | None = None
+
+    @property
+    def floor(self) -> int | None:
+        """Minimum accepted ``W-U-1`` for this clock incarnation."""
+
+        return self._floor
 
     @property
     def ceiling(self) -> int | None:
@@ -206,6 +253,12 @@ class WorkingSetClocks:
         """Detected wall/BOOTTIME discontinuity epoch for this incarnation."""
 
         return self._generation
+
+    @property
+    def last_discontinuity(self) -> dict[str, object] | None:
+        """Detached details of the latest detected transition, if any."""
+
+        return None if self._last_discontinuity is None else self._last_discontinuity.export()
 
     def accept(self, clock: SampleClock, *, component: str, accepted: int) -> None:
         """Install a clock for one actually accepted source component receipt.
@@ -251,10 +304,16 @@ class WorkingSetClocks:
             known_sample = True
 
         next_generation = self._generation
+        next_floor = self._floor
         next_ceiling = self._ceiling
         next_interval = self._last_interval
         next_clock = self._last_clock
+        next_acceptance_order = self._acceptance_order
+        next_discontinuity = self._last_discontinuity
         if not known_sample:
+            if next_acceptance_order >= _MAX_SAFE_INTEGER:
+                raise ValueError("working_set_clock_invalid")
+            next_acceptance_order += 1
             if self._last_interval is not None:
                 old_lower, old_upper = self._last_interval
                 new_lower, new_upper = interval
@@ -262,6 +321,20 @@ class WorkingSetClocks:
                     next_generation += 1
                     if next_generation > _MAX_SAFE_INTEGER:
                         raise ValueError("working_set_clock_invalid")
+                    if self._last_clock is None:
+                        raise ValueError("working_set_clock_invalid")
+                    next_discontinuity = _Discontinuity(
+                        generation=next_generation,
+                        old_acceptance_order=self._acceptance_order,
+                        new_acceptance_order=next_acceptance_order,
+                        old_clock=self._last_clock,
+                        old_interval=self._last_interval,
+                        new_clock=owned,
+                        new_interval=interval,
+                    )
+            next_floor = (
+                interval[0] if next_floor is None else min(next_floor, interval[0])
+            )
             next_ceiling = (
                 ceiling_candidate
                 if next_ceiling is None
@@ -276,10 +349,13 @@ class WorkingSetClocks:
         # Commit only after every validation, regression and arithmetic check.
         self._context = context
         self._bindings = next_bindings
+        self._floor = next_floor
         self._ceiling = next_ceiling
         self._last_interval = next_interval
         self._last_clock = next_clock
         self._generation = next_generation
+        self._acceptance_order = next_acceptance_order
+        self._last_discontinuity = next_discontinuity
 
     def get(
         self,

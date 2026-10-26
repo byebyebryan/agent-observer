@@ -9,7 +9,7 @@ this repository owns native semantics, public interfaces and acceptance evidence
 
 ## Current baseline
 
-The [a10 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a10)
+The [a11 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
 supports full API 4/snapshot 6/Service 4 and working-set reads. Collector and
 working-set roles have a reviewed Mesh a25 pair; other roles and consumers
 retain independent selections. [Operations](operations.md) links exact receipts.
@@ -144,10 +144,13 @@ The terminal product is the agreed next direction; detailed planning precedes
 implementation. Other rows are follow-ups driven by demonstrated need.
 Deployment and unrelated infrastructure changes need their own scope.
 Working-set coverage now reports a primary census, support or membership blocker.
-Clock discontinuities and other legitimate uncertainty remain explicit; complete
-native source coverage does not imply complete working-set membership. Reopen
-membership semantics only for a reproducible discrepancy with independent native
-evidence. Historical unexplained partial samples do not establish a producer bug.
+Clock changes use bounded recency uncertainty and retain a detector incident
+record; complete native source coverage does not imply complete working-set
+membership. See [clock recovery](../guides/working-set.md#clock-changes-and-recovery)
+for the producer policy and its limits. Source/package qualification does not
+advance managed collector or consumer pins. Reopen membership semantics for a
+reproducible discrepancy with independent native evidence; historical unexplained
+partial samples do not establish a producer bug.
 
 ## Deferred work and reopen conditions
 

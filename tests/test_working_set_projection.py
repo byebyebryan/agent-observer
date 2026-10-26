@@ -138,17 +138,15 @@ class WorkingSetProjectionTest(unittest.TestCase):
             "sessionIds": [], "memberCount": 0, "uncertainCount": 0, "nonmemberCount": 0,
         })
 
-    def test_clock_discontinuity_names_primary_cause_without_changing_projection(self):
+    def test_clock_generation_does_not_veto_first_seen_activity(self):
         self.state.working_set_clocks._generation = 1
         frame = self.accept()
-        self.assertEqual(self.scope(frame)["coverage"]["status"], "partial")
-        self.assertEqual(self.scope(frame)["coverage"]["reason"], "clock_discontinuity")
-        self.assertEqual(self.semantics(frame), {
-            "coverage": {"status": "partial", "supports": []},
-            "sessionIds": [], "memberCount": 0, "uncertainCount": 0, "nonmemberCount": 0,
-        })
+        self.assertEqual(self.scope(frame)["coverage"]["status"], "complete")
+        self.assertEqual(self.scope(frame)["coverage"]["reason"], "complete_native_census")
+        self.assertEqual(self.semantics(frame)["memberCount"], 1)
+        self.assertEqual(self.semantics(frame)["sessionIds"], [self.sample()["sessions"][0]["identity"]["nativeId"]])
 
-    def test_primary_census_decision_reason_preserves_other_positive_members(self):
+    def test_first_seen_after_clock_generation_preserves_other_positive_members(self):
         self.state.working_set_clocks._generation = 1
         value = self.sample(runtime="running", at=None)
         parked = copy.deepcopy(value["sessions"][0])
@@ -165,13 +163,13 @@ class WorkingSetProjectionTest(unittest.TestCase):
 
         frame = self.accept(value)
         scope = self.scope(frame)
-        self.assertEqual(scope["coverage"]["status"], "partial")
-        self.assertEqual(scope["coverage"]["reason"], "clock_discontinuity")
-        self.assertEqual(self.semantics(frame), {
-            "coverage": {"status": "partial", "supports": []},
-            "sessionIds": [self.sample(runtime="running", at=None)["sessions"][0]["identity"]["nativeId"]],
-            "memberCount": 1, "uncertainCount": 0, "nonmemberCount": 0,
-        })
+        self.assertEqual(scope["coverage"]["status"], "complete")
+        self.assertEqual(scope["coverage"]["reason"], "complete_native_census")
+        semantics = self.semantics(frame)
+        self.assertEqual(semantics["memberCount"], 2)
+        self.assertEqual(semantics["uncertainCount"], 0)
+        self.assertEqual(semantics["nonmemberCount"], 0)
+        self.assertEqual(len(semantics["sessionIds"]), 2)
 
     def test_partial_native_census_reason_keeps_positive_member(self):
         value = self.sample(runtime="running", at=None)

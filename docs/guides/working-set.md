@@ -29,25 +29,53 @@ the membership decision. For one row, unproved eligibility precedes unproved
 active membership, which precedes a recent-branch reason when active membership
 is known false. `membership_incomplete` is the fallback when no more specific
 blocker is available.
+## Clock changes and recovery
+
 The owner advances `clockGeneration` when adjacent distinct accepted clock
 brackets `I=[W-U-1, W-L+1]` do not overlap (all values are milliseconds; `W`
 is the wall timestamp; `L` and `U` are the BOOTTIME sample and acceptance bounds).
-`clock_discontinuity` means
-an event guard remains unresolved across that epoch until a newer native
-activity timestamp is observed. The exported component clocks show current
-bindings, not incident history.
+The owner retains the lowest accepted interval endpoint internally and the
+highest endpoint as `clockCeiling`. Both survive source-context changes within
+the same collector incarnation. Mirrored samples and rejected inputs do not
+advance them. The exported component clocks remain current bindings.
 
-Later overlapping brackets or a complete
-current native census do not clear an event guard for unchanged `activity.at`:
-a quiet parked row can remain unresolved. This affects the recent branch; a row
-with proved eligibility and current active support can still qualify through
-the active branch. Polling and lease renewal do not advance native activity,
-and restarting or manufacturing activity is not a recovery procedure.
+For activity timestamp `T`, recent window `H` and retained offset range
+`[Omin, Omax]`, the possible expiry range is
+`[T+H-Omax, T+H-Omin]`. Recent membership is proved only before the earliest
+expiry and after every mapping places the event in the past. Outside-window
+is proved only at or after the latest expiry. Crossing that range remains
+unknown; `clock_discontinuity` can explain ambiguity spanning clock changes.
+Quiet rows, including identities first seen after a change, can recover
+without generating new activity. Quiet ticks reconsider the proof boundaries,
+but expired source supports still require a new accepted native sample.
+
+The positive cutoff for an unchanged timestamp cannot move later when clocks
+move backward or polling refreshes support. A lower timestamp remains
+`activity_timestamp_regression` unless a changed native latest-turn ID proves
+a different turn: its current receipt must join the same accepted activity
+sample, and its selected native start/completion time must equal `activity.at`.
+Missing, stale or mismatched turn metadata grants no such exception. Active
+membership remains independent of uncertain recency.
+
+This policy uses the published integer `activity.at`, preserving its existing
+timestamp semantics. The offset range covers accepted mappings during this
+collector incarnation; it does not reconstruct unobserved clock excursions or
+authenticate the physical age of timestamps saved before collection began.
+Large corrections can leave a correspondingly large uncertainty interval.
+Stable samples do not erase that evidence. Restarting the collector is not
+proof of recovery from the incident.
+
+Working-set v1 exports its existing exact current-sample bounds. Internal
+negative decisions wait for the stronger retained-range proof; no reader
+validation, wire schema or lease is weakened by this recovery policy.
 
 For diagnosis before changing owner incarnation, preserve frame `serviceId`,
 `bootId`, `clockDomain`, `sequence`, `viewRevision`, `observationRevision`,
 `clockGeneration`, `clockCeiling`, and the current `projection.scopes[].clocks[]`
-samples.
+samples. The collector also retains the latest actual discontinuity and logs
+its old/new accepted sample brackets, intervals, generation and acceptance
+order as bounded metadata. These records establish a detector transition;
+independent host evidence is needed to attribute it to NTP or another cause.
 
 Zero current members can mean no identity qualifies while scope coverage is
 still partial. Complete-empty requires complete current coverage and no

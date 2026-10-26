@@ -62,7 +62,7 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a10](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a10)
+[0.7.0a11](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
 is the published read-only prerelease: API 4, snapshot/watch 6 and Service 4.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.

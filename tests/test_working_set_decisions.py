@@ -124,6 +124,36 @@ def fixture(
     return row, fields, source, clock, now_ms
 
 
+def attach_turn(values, identifier, *, selected_at=None):
+    row, fields, _source, clock, _now = values
+    activity_at = row["activity"]["at"]
+    if selected_at is None:
+        selected_at = activity_at
+    support = fields["activity"]
+    fields["latestTurn"] = support
+    row["latestTurn"] = {
+        "value": {
+            "id": identifier,
+            "status": "completed",
+            "startedAt": selected_at,
+            "completedAt": selected_at,
+            "durationMs": 0,
+            "timestampPrecisionMs": 1_000,
+        },
+        "observedAt": clock.wall_ms,
+        "source": "codex_turn_metadata",
+        "health": "current",
+        "reason": "native_latest_turn",
+        "receipt": {
+            "component": support["component"],
+            "sampledBoottimeMs": support["sampledBoottimeMs"],
+            "observedBoottimeMs": clock.upper_boottime_ms,
+            "contextGeneration": support["contextGeneration"],
+        },
+    }
+    return values
+
+
 def owner(*, window_ms=DEFAULT_WINDOW_MS, max_identities=4096, max_guard_bytes=1024 * 1024):
     value = WorkingSetDecisions(
         SERVICE_ID,
@@ -141,12 +171,15 @@ def classify(
     *,
     now_ms=None,
     clock_generation=0,
+    clock_floor=None,
     clock_ceiling=None,
     expected_sample_id=None,
 ):
     row, fields, source, clock, fixture_now = values
     if clock_ceiling is None:
         clock_ceiling = clock.wall_ms - clock.lower_boottime_ms + 1
+    if clock_floor is None:
+        clock_floor = clock.wall_ms - clock.upper_boottime_ms - 1
     if expected_sample_id is None:
         expected_sample_id = clock.sample_id
     return decision_owner.classify(
@@ -155,6 +188,7 @@ def classify(
         source,
         clock=clock,
         clock_generation=clock_generation,
+        clock_floor=clock_floor,
         clock_ceiling=clock_ceiling,
         now_ms=fixture_now if now_ms is None else now_ms,
         expected_sample_id=expected_sample_id,
@@ -334,7 +368,221 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         self.assertIsNone(result.recent.deadline_upper_boottime_ms)
         self.assertIsNone(result.negative_kind)
 
-    def test_equal_timestamp_after_clock_step_stays_unknown_until_newer_event(self):
+    def test_changed_current_turn_id_authorizes_a_regressed_timestamp(self):
+        decision_owner = owner()
+        first = attach_turn(fixture(runtime_value="parked"), "native-turn-a")
+        self.assertTrue(classify(decision_owner, first).recent.decision)
+
+        regressed = attach_turn(
+            fixture(
+                sample_number=21,
+                runtime_value="parked",
+                event_at=ACTIVITY_AT - 50,
+                lower_ms=2_000,
+                upper_ms=2_000,
+                now_ms=4_000,
+            ),
+            "native-turn-b",
+        )
+        result = classify(
+            decision_owner,
+            regressed,
+            now_ms=4_000,
+            clock_generation=1,
+            clock_floor=WALL_MS - 2_001,
+            clock_ceiling=WALL_MS - 999,
+        )
+        self.assertTrue(result.recent.decision)
+        self.assertEqual(
+            next(iter(decision_owner._guards.values())),
+            (ACTIVITY_AT - 50, "native-turn-b"),
+        )
+
+    def test_regressed_timestamp_needs_an_exact_current_turn_join(self):
+        decision_owner = owner()
+        first = attach_turn(fixture(runtime_value="parked"), "native-turn-a")
+        self.assertTrue(classify(decision_owner, first).recent.decision)
+
+        missing = fixture(
+            sample_number=21,
+            runtime_value="parked",
+            event_at=ACTIVITY_AT - 50,
+            lower_ms=2_000,
+            upper_ms=2_000,
+            now_ms=4_000,
+        )
+        result = classify(decision_owner, missing, now_ms=4_000, clock_generation=1)
+        self.assertIsNone(result.recent.decision)
+        self.assertEqual(result.recent.reason, "activity_timestamp_regression")
+
+        for mismatch in ("activity_support", "turn_receipt", "selected_time"):
+            decision_owner = owner()
+            self.assertTrue(classify(decision_owner, first).recent.decision)
+            candidate = attach_turn(
+                fixture(
+                    sample_number=21,
+                    runtime_value="parked",
+                    event_at=ACTIVITY_AT - 50,
+                    lower_ms=2_000,
+                    upper_ms=2_000,
+                    now_ms=4_000,
+                ),
+                "native-turn-b",
+                selected_at=ACTIVITY_AT - 50 if mismatch != "selected_time" else ACTIVITY_AT,
+            )
+            if mismatch == "activity_support":
+                candidate[1]["latestTurn"] = {
+                    **candidate[1]["latestTurn"],
+                    "accepted": candidate[1]["latestTurn"]["accepted"] + 1,
+                }
+            elif mismatch == "turn_receipt":
+                candidate[0]["latestTurn"]["receipt"]["observedBoottimeMs"] += 1
+            result = classify(
+                decision_owner,
+                candidate,
+                now_ms=4_000,
+                clock_generation=1,
+                clock_floor=WALL_MS - 2_001,
+                clock_ceiling=WALL_MS - 999,
+            )
+            self.assertIsNone(result.recent.decision, mismatch)
+            self.assertEqual(result.recent.reason, "activity_timestamp_regression")
+
+    def test_regressed_timestamp_rejects_unchanged_or_stale_turn_ids(self):
+        for current_state in ("unchanged_id", "stale_turn"):
+            with self.subTest(current_state=current_state):
+                decision_owner = owner()
+                first = attach_turn(fixture(runtime_value="parked"), "native-turn-a")
+                self.assertTrue(classify(decision_owner, first).recent.decision)
+                candidate = attach_turn(
+                    fixture(
+                        sample_number=21,
+                        runtime_value="parked",
+                        event_at=ACTIVITY_AT - 50,
+                        lower_ms=2_000,
+                        upper_ms=2_000,
+                        now_ms=4_000,
+                    ),
+                    "native-turn-a" if current_state == "unchanged_id" else "native-turn-b",
+                )
+                if current_state == "stale_turn":
+                    candidate[0]["latestTurn"].update(health="stale", reason="read_gap")
+                result = classify(
+                    decision_owner,
+                    candidate,
+                    now_ms=4_000,
+                    clock_generation=1,
+                    clock_floor=WALL_MS - 2_001,
+                    clock_ceiling=WALL_MS - 999,
+                )
+                self.assertIsNone(result.recent.decision)
+                self.assertEqual(result.recent.reason, "activity_timestamp_regression")
+
+    def test_changed_turn_id_cannot_authorize_without_prior_joined_id(self):
+        decision_owner = owner()
+        first = fixture(runtime_value="parked")
+        self.assertTrue(classify(decision_owner, first).recent.decision)
+        self.assertEqual(next(iter(decision_owner._guards.values()))[1], None)
+
+        current = attach_turn(
+            fixture(
+                sample_number=21,
+                runtime_value="parked",
+                event_at=ACTIVITY_AT - 50,
+                lower_ms=2_000,
+                upper_ms=2_000,
+                now_ms=4_000,
+            ),
+            "native-turn-b",
+        )
+        result = classify(
+            decision_owner,
+            current,
+            now_ms=4_000,
+            clock_generation=1,
+            clock_floor=WALL_MS - 2_001,
+            clock_ceiling=WALL_MS - 999,
+        )
+        self.assertIsNone(result.recent.decision)
+        self.assertEqual(result.recent.reason, "activity_timestamp_regression")
+
+    def test_colliding_timestamp_with_new_turn_id_does_not_extend_expiry(self):
+        decision_owner = owner(window_ms=100)
+        first = attach_turn(
+            fixture(
+                wall_ms=10_000,
+                lower_ms=5_000,
+                upper_ms=5_000,
+                event_at=9_990,
+                now_ms=5_000,
+            ),
+            "native-turn-a",
+        )
+        initial = classify(decision_owner, first, now_ms=5_000).recent
+        self.assertTrue(initial.decision)
+        self.assertEqual(initial.deadline_lower_boottime_ms, 5_089)
+
+        colliding = attach_turn(
+            fixture(
+                sample_number=21,
+                wall_ms=11_000,
+                lower_ms=6_000,
+                upper_ms=6_000,
+                event_at=9_990,
+                now_ms=6_000,
+            ),
+            "native-turn-b",
+        )
+        result = classify(decision_owner, colliding, now_ms=6_000).recent
+        self.assertFalse(result.decision)
+        self.assertEqual(result.reason, "outside_window")
+        self.assertEqual(result.deadline_lower_boottime_ms, initial.deadline_lower_boottime_ms)
+        self.assertEqual(next(iter(decision_owner._guards.values())), (9_990, "native-turn-b"))
+
+    def test_long_unicode_turn_id_is_bounded_and_preflighted(self):
+        long_id = "\U00010000" * 512
+        decision_owner = owner()
+        first = attach_turn(fixture(runtime_value="parked"), long_id)
+        self.assertTrue(classify(decision_owner, first).recent.decision)
+        stored_id = next(iter(decision_owner._guards.values()))[1]
+        self.assertEqual(stored_id, long_id)
+        self.assertIsNot(stored_id, long_id)
+        self.assertEqual(len(stored_id.encode("utf-8")), 2_048)
+
+        retained = {id(decision_owner._guards): decision_owner._guards}
+
+        def include(value):
+            retained[id(value)] = value
+
+        include(decision_owner._identity_prefix)
+        for value in decision_owner._identity_prefix:
+            include(value)
+        for key, event in decision_owner._guards.items():
+            include(key)
+            include(event)
+            include(event[0])
+            include(event[1])
+        self.assertLessEqual(
+            sum(sys.getsizeof(value) for value in retained.values()), decision_owner.guard_bytes
+        )
+
+        decision_owner.max_guard_bytes = decision_owner.guard_bytes + 1
+        newer = attach_turn(
+            fixture(identity_number=10, sample_number=21, event_at=ACTIVITY_AT + 1),
+            "\U00010000" * 512,
+        )
+        with patch.object(
+            WorkingSetDecisions,
+            "_owned_event_id",
+            side_effect=AssertionError("quota refusal copied a native turn ID"),
+        ) as owned_copy:
+            result = classify(decision_owner, newer)
+        owned_copy.assert_not_called()
+        self.assertIsNone(result.recent.decision)
+        self.assertEqual(result.recent.reason, "recent_tracking_capacity")
+        self.assertTrue(decision_owner.latched)
+
+    def test_equal_timestamp_after_clock_step_uses_the_retained_offset_envelope(self):
         decision_owner = owner()
         first = fixture(runtime_value="parked", event_at=WALL_MS - 200)
         self.assertTrue(classify(decision_owner, first, now_ms=2_000).recent.decision)
@@ -348,8 +596,8 @@ class WorkingSetDecisionsTest(unittest.TestCase):
             now_ms=3_000,
         )
         same = classify(decision_owner, stepped, now_ms=3_000, clock_generation=1)
-        self.assertIsNone(same.recent.decision)
-        self.assertEqual(same.recent.reason, "clock_discontinuity")
+        self.assertTrue(same.recent.decision)
+        self.assertEqual(same.recent.reason, "recent")
 
         newer = fixture(
             sample_number=22,
@@ -364,16 +612,124 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "clock_generation_regression"):
             classify(decision_owner, newer, now_ms=4_000, clock_generation=0)
 
-    def test_new_identity_after_clock_step_latches_first_timestamp(self):
+    def test_envelope_rechecks_keep_internal_negative_cutoff_separate_from_v1(self):
+        decision_owner = owner(window_ms=100)
+        baseline = fixture(
+            wall_ms=10_000,
+            lower_ms=5_000,
+            upper_ms=5_000,
+            event_at=9_990,
+            now_ms=5_000,
+        )
+        self.assertTrue(classify(decision_owner, baseline).recent.decision)
+
+        after_backstep = fixture(
+            sample_number=21,
+            wall_ms=10_000,
+            lower_ms=10_000,
+            upper_ms=10_000,
+            event_at=9_990,
+            now_ms=10_000,
+        )
+        ambiguous = classify(
+            decision_owner,
+            after_backstep,
+            now_ms=10_000,
+            clock_generation=1,
+            clock_floor=-1,
+            clock_ceiling=5_001,
+        ).recent
+        self.assertIsNone(ambiguous.decision)
+        self.assertEqual(ambiguous.reason, "clock_discontinuity")
+        self.assertEqual(ambiguous.reevaluate_boottime_ms, 10_091)
+
+        current = fixture(
+            sample_number=22,
+            wall_ms=12_000,
+            lower_ms=11_000,
+            upper_ms=11_000,
+            event_at=11_990,
+            now_ms=12_000,
+        )
+        deferred_negative = classify(
+            decision_owner,
+            current,
+            now_ms=12_000,
+            clock_generation=2,
+            clock_floor=-1,
+            clock_ceiling=5_001,
+        ).recent
+        self.assertIsNone(deferred_negative.decision)
+        self.assertEqual(deferred_negative.reason, "clock_discontinuity")
+        self.assertEqual(deferred_negative.deadline_upper_boottime_ms, 11_091)
+        self.assertEqual(deferred_negative.reevaluate_boottime_ms, 12_091)
+
+        expired = classify(
+            decision_owner,
+            current,
+            now_ms=12_091,
+            clock_generation=2,
+            clock_floor=-1,
+            clock_ceiling=5_001,
+        ).recent
+        self.assertFalse(expired.decision)
+        self.assertEqual(expired.reason, "outside_window")
+        self.assertIsNone(expired.reevaluate_boottime_ms)
+
+    def test_future_event_waits_for_the_envelope_past_bound(self):
+        values = fixture(
+            wall_ms=10_000,
+            lower_ms=5_000,
+            upper_ms=5_000,
+            event_at=10_020,
+            now_ms=5_000,
+        )
+        result = classify(owner(window_ms=100), values).recent
+        self.assertIsNone(result.decision)
+        self.assertEqual(result.reason, "activity_in_future")
+        self.assertEqual(result.reevaluate_boottime_ms, 5_021)
+
+        still_unadmitted = classify(owner(window_ms=100), values, now_ms=5_021).recent
+        self.assertIsNone(still_unadmitted.decision)
+        self.assertEqual(still_unadmitted.reason, "activity_in_future")
+        self.assertIsNone(still_unadmitted.reevaluate_boottime_ms)
+
+    def test_missing_or_non_encompassing_clock_envelope_fails_closed(self):
+        decision_owner = owner()
+        values = fixture(runtime_value="parked")
+        row, fields, source, clock, now = values
+        bad_inputs = (
+            (None, clock.wall_ms - clock.lower_boottime_ms + 1),
+            (clock.wall_ms - clock.upper_boottime_ms, clock.wall_ms - clock.lower_boottime_ms + 1),
+            (clock.wall_ms - clock.upper_boottime_ms - 1, clock.wall_ms - clock.lower_boottime_ms),
+            (True, clock.wall_ms - clock.lower_boottime_ms + 1),
+        )
+        for floor, ceiling in bad_inputs:
+            with self.subTest(floor=floor, ceiling=ceiling):
+                result = decision_owner.classify(
+                    row,
+                    fields,
+                    source,
+                    clock=clock,
+                    clock_generation=0,
+                    clock_floor=floor,
+                    clock_ceiling=ceiling,
+                    now_ms=now,
+                    expected_sample_id=clock.sample_id,
+                )
+                self.assertIsNone(result.recent.decision)
+                self.assertEqual(result.recent.reason, "clock_envelope_unproved")
+
+    def test_new_identity_after_clock_step_uses_retained_offset_envelope(self):
         decision_owner = owner()
         values = fixture(identity_number=10, runtime_value="parked")
         result = classify(decision_owner, values, now_ms=2_000, clock_generation=1)
-        self.assertIsNone(result.recent.decision)
-        self.assertEqual(result.recent.reason, "clock_discontinuity")
+        self.assertTrue(result.recent.decision)
+        self.assertEqual(result.recent.reason, "recent")
 
         same = fixture(identity_number=10, sample_number=21, runtime_value="parked")
         result = classify(decision_owner, same, now_ms=2_000, clock_generation=1)
-        self.assertIsNone(result.recent.decision)
+        self.assertTrue(result.recent.decision)
 
         newer = fixture(
             identity_number=10, sample_number=22, runtime_value="parked", event_at=ACTIVITY_AT + 1
@@ -444,6 +800,7 @@ class WorkingSetDecisionsTest(unittest.TestCase):
                 *fixture()[:3],
                 clock=fixture()[3],
                 clock_generation=True,
+                clock_floor=fixture()[3].wall_ms - fixture()[3].upper_boottime_ms - 1,
                 clock_ceiling=fixture()[3].wall_ms - fixture()[3].lower_boottime_ms + 1,
                 now_ms=2_000,
                 expected_sample_id=fixture()[3].sample_id,
@@ -624,7 +981,7 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         self.assertEqual(decision_owner.guard_count, 1)
         stored_key, stored_event = next(iter(decision_owner._guards.items()))
         self.assertEqual(stored_key, first[0]["identity"]["nativeId"])
-        self.assertEqual(stored_event, (ACTIVITY_AT, 0))
+        self.assertEqual(stored_event, (ACTIVITY_AT, None))
 
         foreign_kind = copy.deepcopy(first)
         foreign_kind[0]["identity"]["nativeIdKind"] = "session"
@@ -660,7 +1017,7 @@ class WorkingSetDecisionsTest(unittest.TestCase):
         new_key, new_event = next(iter(decision_owner._guards.items()))
         self.assertIs(new_key, old_key)
         self.assertIsNot(new_event, old_event)
-        self.assertEqual(new_event, (ACTIVITY_AT + 1, 0))
+        self.assertEqual(new_event, (ACTIVITY_AT + 1, None))
         self.assertLessEqual(decision_owner.guard_bytes, decision_owner.max_guard_bytes)
 
     def test_context_generation_cannot_regress_within_provider_namespace(self):
@@ -821,6 +1178,7 @@ class WorkingSetDecisionsTest(unittest.TestCase):
             source,
             clock=clock,
             clock_generation=0,
+            clock_floor=wall_ms - clock.upper_boottime_ms - 1,
             clock_ceiling=wall_ms - now + 1,
             now_ms=now + 1,
             expected_sample_id=original_sample_id,

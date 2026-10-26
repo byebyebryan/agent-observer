@@ -2,6 +2,7 @@
 
 import copy
 import unittest
+from uuid import UUID
 
 from test_service_contract import fixture
 
@@ -269,6 +270,71 @@ class ServiceStateTest(unittest.TestCase):
                 row = self.state.frame("view", 1)["snapshot"]["sessions"][0]
                 self.assertEqual(row["outcome"]["value"], "completed")
                 self.assertEqual(row["outcome"]["observedAt"], 4000)
+
+
+class WorkingSetClockLoggingTest(unittest.TestCase):
+    def test_logs_each_real_discontinuity_once_with_detached_incident_fields(self):
+        now = 15_000
+        original = fixture()
+        state = ServiceState(
+            host_scope="fixture",
+            configs={
+                source["provider"]: (source["configHome"], source["configHomeKind"])
+                for source in original["sources"]
+            },
+            uid=1000,
+            clock=lambda: now,
+            boot_id=original["bootId"],
+            clock_domain=original["clockDomain"],
+            working_set_window_ms=10_000,
+        )
+        first = provider_snapshot("codex")
+        state.attempt("codex", "runtime")
+        self.assertTrue(
+            state.accept(
+                "codex",
+                "runtime",
+                first,
+                sampled_ms=now,
+                ttl_ms=10_000,
+                accepted_boottime_ms=now,
+            )
+        )
+        self.assertEqual(state.working_set_clocks.generation, 0)
+
+        now += 1
+        second = provider_snapshot("codex")
+        second["collectionId"] = str(UUID(int=1_000_001))
+        second["collectedAt"] += 1_000
+        state.attempt("codex", "runtime")
+        with self.assertLogs("agent_observer.service_state", level="WARNING") as captured:
+            self.assertTrue(
+                state.accept(
+                    "codex",
+                    "runtime",
+                    second,
+                    sampled_ms=now,
+                    ttl_ms=10_000,
+                    accepted_boottime_ms=now,
+                )
+            )
+        self.assertEqual(state.working_set_clocks.generation, 1)
+        self.assertEqual(len(captured.records), 1)
+        record = captured.records[0]
+        self.assertEqual(record.event_name, "working_set_clock_discontinuity")
+        self.assertEqual(record.clock_discontinuity["generation"], 1)
+        self.assertEqual(record.clock_discontinuity["old"]["sampleId"], first["collectionId"])
+        self.assertEqual(record.clock_discontinuity["new"]["sampleId"], second["collectionId"])
+
+        with self.assertNoLogs("agent_observer.service_state", level="WARNING"):
+            state._capture_working_clock(
+                "codex",
+                "runtime",
+                second,
+                sampled_ms=now,
+                accepted_ms=now,
+            )
+        self.assertEqual(state.working_set_clocks.generation, 1)
 
 
 class SchedulerTest(unittest.TestCase):

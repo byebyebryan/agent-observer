@@ -3,15 +3,17 @@
 The caller supplies an admitted row, its borrowed FactSupport references, the
 current source metadata, and the private accepted-sample clock. This module
 does not read providers, retain rows/support/clocks, or publish a projection.
-Only full identity strings and the last accepted activity timestamp/clock epoch
-are retained. A real source-context change must be applied with
-``reset_context`` before rows from that context can receive recency authority.
+Only full identity strings, the last accepted activity timestamp, and its
+optionally joined exact native turn ID are retained. A real source-context
+change must be applied with ``reset_context`` before rows from that context can
+receive recency authority.
 """
 
 from __future__ import annotations
 
 import re
 import sys
+import unicodedata
 from collections.abc import Mapping
 from dataclasses import dataclass
 
@@ -307,15 +309,104 @@ def _no_turn_absence(
     return True, support, None
 
 
+def _joined_native_turn_id(
+    row: object,
+    fields: object,
+    source: object,
+    clock: object,
+    *,
+    service_id: str,
+    now_ms: int,
+    expected_sample_id: object,
+    activity_at: object,
+) -> str | None:
+    """Return a turn ID only when it names this exact supported activity.
+
+    The current Codex adapter derives both fields from one metadata-only
+    ``thread/turns/list`` result. The projected rows retain independent support
+    references, so this join re-establishes that same-sample relationship
+    before a changed ID can authorize a regressed timestamp.
+    """
+
+    if not isinstance(row, Mapping) or not isinstance(fields, Mapping):
+        return None
+    if not isinstance(source, Mapping) or source.get("provider") != "codex":
+        return None
+    activity, latest_turn = row.get("activity"), row.get("latestTurn")
+    if not isinstance(activity, Mapping) or not isinstance(latest_turn, Mapping):
+        return None
+    if (
+        activity.get("health") != "current"
+        or activity.get("source") != "codex_turn_metadata"
+        or latest_turn.get("health") != "current"
+        or latest_turn.get("source") != "codex_turn_metadata"
+        or not _safe_nonnegative(latest_turn.get("observedAt"))
+    ):
+        return None
+    value = latest_turn.get("value")
+    if not isinstance(value, Mapping):
+        return None
+    identifier = value.get("id")
+    if (
+        not isinstance(identifier, str)
+        or not 1 <= len(identifier) <= 512
+        or any(unicodedata.category(char).startswith("C") for char in identifier)
+    ):
+        return None
+    selected_at = value.get("completedAt")
+    if selected_at is None:
+        selected_at = value.get("startedAt")
+    if type(selected_at) is not int or selected_at != activity_at:
+        return None
+
+    activity_support, turn_support = fields.get("activity"), fields.get("latestTurn")
+    if not isinstance(activity_support, Mapping) or not isinstance(turn_support, Mapping):
+        return None
+    try:
+        if activity_support != turn_support:
+            return None
+    except (AttributeError, TypeError, ValueError):
+        return None
+    if _sample_join_reason(
+        turn_support,
+        clock,
+        source,
+        service_id=service_id,
+        now_ms=now_ms,
+        expected_sample_id=expected_sample_id,
+    ) is not None:
+        return None
+
+    receipt = latest_turn.get("receipt")
+    if not isinstance(receipt, Mapping) or not isinstance(clock, SampleClock):
+        return None
+    try:
+        if (
+            receipt.get("component") != turn_support.get("component")
+            or receipt.get("sampledBoottimeMs") != turn_support.get("sampledBoottimeMs")
+            or receipt.get("contextGeneration") != turn_support.get("contextGeneration")
+            or not _safe_nonnegative(receipt.get("observedBoottimeMs"))
+            or not clock.lower_boottime_ms
+            <= receipt["observedBoottimeMs"]
+            <= clock.upper_boottime_ms
+            or receipt["observedBoottimeMs"] >= turn_support["expiresBoottimeMs"]
+        ):
+            return None
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return None
+    return identifier
+
+
 class WorkingSetDecisions:
-    """Classify one current source context with a bounded last-T guard.
+    """Classify one current source context with a bounded last-event guard.
 
     Call ``reset_context`` on initial binding and only after an actual
     provider/namespace/context-generation change. A new context clears the
     event guard and capacity latch, but never resets the global monotonic clock
-    generation observed by this instance. New identities first seen after a
-    detected clock discontinuity stay recency-unknown until their activity
-    timestamp strictly advances.
+    generation observed by this instance. Recency uses the incarnation-wide
+    accepted clock envelope; a discontinuity alone does not veto unchanged or
+    first-seen activity timestamps. A regressed timestamp needs a changed,
+    exactly joined native latest-turn ID.
     """
 
     def __init__(
@@ -342,9 +433,9 @@ class WorkingSetDecisions:
         self.max_guard_bytes = max_guard_bytes
         self._context: tuple[str, str, int] | None = None
         # ``_identity_prefix`` is the exact shared host/provider/namespace/kind
-        # boundary for this context. The dictionary retains only an owned
-        # native-ID string per guard, after each row has matched that prefix.
-        self._guards: dict[str, tuple[int, int]] = {}
+        # boundary for this context. The dictionary retains an owned native ID
+        # and the last timestamp plus an optionally joined native turn ID.
+        self._guards: dict[str, tuple[int, str | None]] = {}
         self._identity_prefix: tuple[str, str, str, str] | None = None
         self._prefix_bytes = 0
         self._guard_entries_bytes = 0
@@ -360,7 +451,7 @@ class WorkingSetDecisions:
 
     @property
     def guard_count(self) -> int:
-        """Number of retained full-identity timestamp guards."""
+        """Number of retained full-identity activity/event-key guards."""
 
         return len(self._guards)
 
@@ -412,6 +503,7 @@ class WorkingSetDecisions:
         *,
         clock: SampleClock | None,
         clock_generation: int,
+        clock_floor: int | None,
         clock_ceiling: int | None,
         now_ms: int,
         expected_sample_id: str | None,
@@ -420,11 +512,12 @@ class WorkingSetDecisions:
 
         ``clock`` and ``expected_sample_id`` are canonical worker-private
         inputs supplied by the accepted-sample clock store. No public DTO can
-        create them. ``clock_ceiling`` is the shared K for this service clock
-        incarnation; it may shorten R-positive authority but never changes
-        the current sample's upper/negative deadline. R1's older-event guard
-        and R2's global K are separate: this instance retains one last T and
-        epoch per full identity, but no event history or clock/support bank.
+        create them. ``clock_floor`` and ``clock_ceiling`` bound the accepted
+        offset envelope for this service clock incarnation. The v1 deadlines
+        remain tied to the current sample; a separate recheck deadline lets
+        the owner revisit the envelope's later proof boundary. The event guard
+        retains one timestamp and optional joined native turn ID per full
+        identity, not event history.
         """
 
         if not _safe_nonnegative(clock_generation):
@@ -474,6 +567,7 @@ class WorkingSetDecisions:
                 source,
                 clock,
                 clock_generation=clock_generation,
+                clock_floor=clock_floor,
                 clock_ceiling=clock_ceiling,
                 now_ms=now_ms,
                 expected_sample_id=expected_sample_id,
@@ -599,6 +693,7 @@ class WorkingSetDecisions:
         clock: SampleClock | None,
         *,
         clock_generation: int,
+        clock_floor: int | None,
         clock_ceiling: int | None,
         now_ms: int,
         expected_sample_id: str | None,
@@ -636,38 +731,97 @@ class WorkingSetDecisions:
         )
         lower = candidate.deadline_lower_boottime_ms
         upper = candidate.deadline_upper_boottime_ms
-        if lower is None or upper is None:
-            return candidate, ()
-        if (
-            not _safe_signed(clock_ceiling)
-            or not isinstance(clock, SampleClock)
-            or clock_ceiling < clock.wall_ms - clock.lower_boottime_ms + 1
-        ):
-            return _unknown("clock_ceiling_unproved"), ()
-
         event_at = activity.get("at") if isinstance(activity, Mapping) else None
-        effective_lower = event_at + self.window_ms - clock_ceiling
-        if not _safe_signed(effective_lower):
-            return _unknown("cutoff_out_of_range"), ()
+        if lower is None or upper is None:
+            if candidate.reason != "activity_in_future":
+                return candidate, ()
+            if not self._clock_envelope_valid(clock, clock_floor, clock_ceiling):
+                return _unknown("clock_envelope_unproved"), ()
+            if type(event_at) is not int:
+                return candidate, ()
+            future_deadline = event_at - clock_floor
+            if not _safe_signed(future_deadline):
+                return _unknown("cutoff_out_of_range"), ()
+            return PolicyResult(
+                None,
+                candidate.reason,
+                reevaluate_boottime_ms=(
+                    future_deadline if now_ms < future_deadline else None
+                ),
+            ), ()
 
-        guard_reason = self._guard_event(identity_prefix, native_id, event_at, clock_generation)
+        if not self._clock_envelope_valid(clock, clock_floor, clock_ceiling):
+            return _unknown("clock_envelope_unproved"), ()
+
+        effective_lower = event_at + self.window_ms - clock_ceiling
+        effective_upper = event_at + self.window_ms - clock_floor
+        not_future = event_at - clock_floor
+        if not all(
+            _safe_signed(value)
+            for value in (effective_lower, effective_upper, not_future)
+        ):
+            return _unknown("cutoff_out_of_range"), ()
+        if effective_lower > effective_upper:
+            return _unknown("clock_envelope_unproved"), ()
+        if effective_lower > lower or effective_upper < upper:
+            return _unknown("clock_envelope_unproved"), ()
+
+        event_id = _joined_native_turn_id(
+            row,
+            fields,
+            source,
+            clock,
+            service_id=self.service_id,
+            now_ms=now_ms,
+            expected_sample_id=expected_sample_id,
+            activity_at=event_at,
+        )
+
+        guard_reason = self._guard_event(
+            identity_prefix, native_id, event_at, event_id
+        )
         if guard_reason is not None:
             return _unknown(guard_reason), ()
 
-        if now_ms < effective_lower:
-            decision, reason = True, "recent"
-        elif now_ms >= upper:
+        if now_ms < not_future:
+            decision, reason, recheck = None, "activity_in_future", not_future
+        elif now_ms < effective_lower:
+            decision, reason, recheck = True, "recent", effective_lower
+        elif now_ms >= effective_upper:
             decision, reason = False, "outside_window"
+            recheck = None
         else:
-            decision, reason = None, "clock_bracket_overlap"
-        result = PolicyResult(decision, reason, effective_lower, upper)
+            decision = None
+            reason = "clock_discontinuity" if clock_generation > 0 else "clock_bracket_overlap"
+            recheck = effective_upper
+        result = PolicyResult(decision, reason, effective_lower, upper, recheck)
         if decision is None:
             return result, ()
         return result, _unique_supports((activity_support,))
 
     @staticmethod
+    def _clock_envelope_valid(
+        clock: SampleClock | None,
+        clock_floor: int | None,
+        clock_ceiling: int | None,
+    ) -> bool:
+        if (
+            not isinstance(clock, SampleClock)
+            or not _safe_signed(clock_floor)
+            or not _safe_signed(clock_ceiling)
+        ):
+            return False
+        sample_floor = clock.wall_ms - clock.upper_boottime_ms - 1
+        sample_ceiling = clock.wall_ms - clock.lower_boottime_ms + 1
+        return clock_floor <= sample_floor <= sample_ceiling <= clock_ceiling
+
+    @staticmethod
     def _owned_ascii(value: str) -> str:
         return value.encode("ascii").decode("ascii")
+
+    @staticmethod
+    def _owned_event_id(value: str | None) -> str | None:
+        return None if value is None else value.encode("utf-8").decode("utf-8")
 
     @classmethod
     def _owned_prefix(cls, identity_prefix: tuple[str, str, str, str]) -> tuple[str, str, str, str]:
@@ -684,17 +838,22 @@ class WorkingSetDecisions:
         )
 
     @staticmethod
-    def _guard_entry_charge(native_id: str, event_at: int, epoch: int) -> int:
-        # The exact identity prefix is owned once per context. Each entry owns
-        # only its native-ID string plus timestamp/epoch value and event pair.
-        # Dictionary capacity is prepaid separately before growth.
-        event = (event_at, epoch)
+    def _guard_entry_charge(
+        native_id: str, event_at: int, event_id: str | None
+    ) -> int:
+        # Charge the retained exact turn ID plus its bounded UTF-8 copy buffer.
+        # The latter is transient during preflight/copy, so this intentionally
+        # overstates the steady graph while ensuring replacement peak stays
+        # below the same hard quota.
+        event = (event_at, event_id)
+        event_id_bytes = None if event_id is None else event_id.encode("utf-8")
         return (
-            len(native_id.encode("ascii"))
+            sys.getsizeof(native_id.encode("ascii"))
             + sys.getsizeof(native_id)
             + sys.getsizeof(event)
             + sys.getsizeof(event_at)
-            + sys.getsizeof(epoch)
+            + sys.getsizeof(event_id)
+            + (0 if event_id_bytes is None else sys.getsizeof(event_id_bytes))
         )
 
     @staticmethod
@@ -725,7 +884,7 @@ class WorkingSetDecisions:
         identity_prefix: tuple[str, str, str, str],
         native_id: str,
         event_at: object,
-        clock_generation: int,
+        event_id: str | None,
     ) -> str | None:
         if type(event_at) is not int or not 0 <= event_at <= _MAX_SAFE_INTEGER:
             return "activity_unavailable"
@@ -740,25 +899,24 @@ class WorkingSetDecisions:
         # The fixed table-base reserve includes lookup/encoding scratch.
         previous = self._guards.get(native_id)
         if previous is not None:
-            previous_at, confirmed_generation = previous
-            if event_at < previous_at:
+            previous_at, previous_event_id = previous
+            if event_at < previous_at and not (
+                previous_event_id is not None
+                and event_id is not None
+                and event_id != previous_event_id
+            ):
                 return "activity_timestamp_regression"
-            if event_at == previous_at:
-                if clock_generation > confirmed_generation:
-                    return "clock_discontinuity"
+            if event_at == previous_at and event_id == previous_event_id:
                 return None
             old_charge = self._guard_entry_charge(
-                native_id, previous_at, confirmed_generation
+                native_id, previous_at, previous_event_id
             )
         else:
             if len(self._guards) >= self.max_identities:
                 return self._latch_capacity()
             old_charge = 0
 
-        # A first event after a clock discontinuity is retained as a key but
-        # remains unconfirmed; only a strictly newer supported T can reopen R.
-        epoch = clock_generation if previous is not None or clock_generation == 0 else -1
-        new_charge = self._guard_entry_charge(native_id, event_at, epoch)
+        new_charge = self._guard_entry_charge(native_id, event_at, event_id)
         prefix_bytes = (
             self._prefix_bytes
             if self._identity_prefix is not None
@@ -777,10 +935,11 @@ class WorkingSetDecisions:
         if owned_prefix is None:
             owned_prefix = self._owned_prefix(identity_prefix)
         # Existing-key assignment replaces only its event value; CPython keeps
-        # the stored owned key object. New keys are copied only after quota
-        # preflight succeeds.
+        # the stored owned key object. New identity/turn strings are copied only
+        # after quota preflight succeeds.
         guard_key = native_id if previous is not None else self._owned_ascii(native_id)
-        self._guards[guard_key] = event_at, epoch
+        owned_event_id = self._owned_event_id(event_id)
+        self._guards[guard_key] = event_at, owned_event_id
         if self._identity_prefix is None:
             self._identity_prefix = owned_prefix
             self._prefix_bytes = prefix_bytes
@@ -789,8 +948,6 @@ class WorkingSetDecisions:
             # The preflight bound is tested on each supported interpreter. Keep
             # this fail-closed check if a future mapping topology changes.
             return self._latch_capacity()
-        if previous is None and clock_generation > 0:
-            return "clock_discontinuity"
         return None
 
 

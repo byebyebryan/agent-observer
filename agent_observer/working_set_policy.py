@@ -52,6 +52,7 @@ class PolicyResult:
     reason: str
     deadline_lower_boottime_ms: int | None = None
     deadline_upper_boottime_ms: int | None = None
+    reevaluate_boottime_ms: int | None = None
 
 
 def _exact_nonnegative_int(value: object) -> bool:

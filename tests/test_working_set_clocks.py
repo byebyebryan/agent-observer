@@ -105,11 +105,13 @@ class WorkingSetClocksTest(unittest.TestCase):
         store = owner()
         sample = clock(number=3, origin_component="history")
         store.accept(sample, component="history", accepted=2)
-        before = store.ceiling, store.generation
+        before = store.floor, store.ceiling, store.generation, store._acceptance_order
 
         store.accept(sample, component="runtime", accepted=5)
 
-        self.assertEqual((store.ceiling, store.generation), before)
+        self.assertEqual(
+            (store.floor, store.ceiling, store.generation, store._acceptance_order), before
+        )
         current = source(
             sample,
             receipt("runtime", 5, sample),
@@ -197,7 +199,14 @@ class WorkingSetClocksTest(unittest.TestCase):
         baseline = clock(number=6, origin_component="runtime")
         store.accept(baseline, component="runtime", accepted=5)
         current = source(baseline, receipt("runtime", 5, baseline))
-        before = store.ceiling, store.generation, store.export(current)
+        before = (
+            store.floor,
+            store.ceiling,
+            store.generation,
+            store._acceptance_order,
+            store.last_discontinuity,
+            store.export(current),
+        )
 
         invalid_inputs = (
             (baseline, "runtime", True),
@@ -232,7 +241,15 @@ class WorkingSetClocksTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     store.accept(candidate, component=component, accepted=accepted)
                 self.assertEqual(
-                    (store.ceiling, store.generation, store.export(current)), before
+                    (
+                        store.floor,
+                        store.ceiling,
+                        store.generation,
+                        store._acceptance_order,
+                        store.last_discontinuity,
+                        store.export(current),
+                    ),
+                    before,
                 )
 
     def test_global_ceiling_survives_context_retirement_and_wide_brackets(self):
@@ -240,6 +257,8 @@ class WorkingSetClocksTest(unittest.TestCase):
         first = clock(number=10, lower=100, wall=10_000, upper=100)
         store.accept(first, component="runtime", accepted=1)
         first_ceiling = first.wall_ms - first.lower_boottime_ms + 1
+        first_floor = first.wall_ms - first.upper_boottime_ms - 1
+        self.assertEqual(store.floor, first_floor)
         self.assertEqual(store.ceiling, first_ceiling)
 
         second = clock(
@@ -250,6 +269,7 @@ class WorkingSetClocksTest(unittest.TestCase):
             upper=9_990,
         )
         store.accept(second, component="runtime", accepted=1)
+        self.assertEqual(store.floor, 9)
         self.assertEqual(store.ceiling, first_ceiling)
         self.assertEqual(store.generation, 1)
         self.assertEqual(store.export(source(first, receipt("runtime", 1, first))), [])
@@ -263,27 +283,74 @@ class WorkingSetClocksTest(unittest.TestCase):
             upper=9_990,
         )
         store.accept(third, component="runtime", accepted=2)
+        self.assertEqual(store.floor, 9)
         self.assertEqual(store.ceiling, 10_001)
         self.assertGreaterEqual(store.ceiling, first_ceiling)
         self.assertEqual(store.generation, 1)
+
+        incident = store.last_discontinuity
+        fourth = clock(
+            number=13,
+            namespace="scope-c",
+            lower=0,
+            wall=10_000,
+            upper=9_990,
+        )
+        store.accept(fourth, component="runtime", accepted=1)
+        self.assertEqual(store.last_discontinuity, incident)
 
     def test_discontinuity_epoch_advances_once_per_distinct_sample(self):
         store = owner()
         first = clock(number=20, lower=100, wall=10_000, upper=100)
         store.accept(first, component="runtime", accepted=1)
         self.assertEqual(store.generation, 0)
+        self.assertEqual(store._acceptance_order, 1)
+        self.assertIsNone(store.last_discontinuity)
 
         second = clock(number=21, lower=100, wall=20_000, upper=100)
         store.accept(second, component="runtime", accepted=2)
         self.assertEqual(store.generation, 1)
+        self.assertEqual(store._acceptance_order, 2)
+        incident = store.last_discontinuity
+        self.assertEqual(incident["generation"], 1)
+        self.assertEqual(incident["oldAcceptanceOrder"], 1)
+        self.assertEqual(incident["newAcceptanceOrder"], 2)
+        self.assertEqual(incident["serviceId"], SERVICE_ID)
+        self.assertEqual(incident["bootId"], BOOT_ID)
+        self.assertEqual(incident["clockDomain"], CLOCK_DOMAIN)
+        self.assertEqual(incident["old"]["sampleId"], first.sample_id)
+        self.assertEqual(incident["new"]["sampleId"], second.sample_id)
+        self.assertEqual(incident["old"]["offsetIntervalMs"], [9_899, 9_901])
+        self.assertEqual(incident["new"]["offsetIntervalMs"], [19_899, 19_901])
 
         store.accept(second, component="history", accepted=1)
         store.accept(second, component="history", accepted=1)
         self.assertEqual(store.generation, 1)
+        self.assertEqual(store._acceptance_order, 2)
+        self.assertEqual(store.last_discontinuity, incident)
 
         third = clock(number=22, lower=100, wall=30_000, upper=100)
         store.accept(third, component="runtime", accepted=3)
         self.assertEqual(store.generation, 2)
+        self.assertEqual(store._acceptance_order, 3)
+        self.assertEqual(store.last_discontinuity["oldAcceptanceOrder"], 2)
+        self.assertEqual(store.last_discontinuity["newAcceptanceOrder"], 3)
+
+    def test_floor_is_conservative_and_last_incident_read_is_detached(self):
+        store = owner()
+        baseline = clock(number=25, lower=100, wall=10_000, upper=100)
+        store.accept(baseline, component="runtime", accepted=1)
+        baseline_floor, baseline_ceiling = store.floor, store.ceiling
+
+        backstep = clock(number=26, lower=5_000, wall=10_000, upper=5_000)
+        store.accept(backstep, component="runtime", accepted=2)
+        self.assertLess(store.floor, baseline_floor)
+        self.assertEqual(store.ceiling, baseline_ceiling)
+        incident = store.last_discontinuity
+        incident["new"]["offsetIntervalMs"][0] = 1
+        incident["old"]["sampleId"] = sample_id(99)
+        self.assertEqual(store.last_discontinuity["old"]["sampleId"], baseline.sample_id)
+        self.assertNotEqual(store.last_discontinuity["new"]["offsetIntervalMs"][0], 1)
 
     def test_reads_and_exports_are_detached_and_do_not_mutate_state(self):
         store = owner()
@@ -292,7 +359,13 @@ class WorkingSetClocksTest(unittest.TestCase):
         store.accept(input_clock, component="runtime", accepted=1)
         current = source(input_clock, receipt("runtime", 1, input_clock))
         exact = support("runtime", 1, input_clock)
-        before = store.ceiling, store.generation
+        before = (
+            store.floor,
+            store.ceiling,
+            store.generation,
+            store._acceptance_order,
+            store.last_discontinuity,
+        )
 
         object.__setattr__(input_clock, "wall_ms", 1)
         self.assertEqual(store.get(exact, current, sample_id=expected_clock.sample_id), expected_clock)
@@ -314,7 +387,16 @@ class WorkingSetClocksTest(unittest.TestCase):
                 "acceptedBoottimeMs": expected_clock.upper_boottime_ms,
             }
         ])
-        self.assertEqual((store.ceiling, store.generation), before)
+        self.assertEqual(
+            (
+                store.floor,
+                store.ceiling,
+                store.generation,
+                store._acceptance_order,
+                store.last_discontinuity,
+            ),
+            before,
+        )
 
     def test_repeated_accepts_keep_only_current_bounded_bindings(self):
         store = owner()
@@ -334,7 +416,9 @@ class WorkingSetClocksTest(unittest.TestCase):
         self.assertEqual(len(store.export(current)), 1)
         self.assertEqual(store.export(current)[0]["sampleId"], latest.sample_id)
         self.assertEqual(store.ceiling, 9_901)
+        self.assertEqual(store.floor, 9_899)
         self.assertEqual(store.generation, 0)
+        self.assertEqual(store._acceptance_order, 100)
 
 
 if __name__ == "__main__":
