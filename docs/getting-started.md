@@ -12,7 +12,7 @@ Create a dedicated environment in a directory you choose:
 ```sh
 python3 -m venv observer-venv
 . observer-venv/bin/activate
-python -m pip install 'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a10/agent_observer-0.7.0a10-py3-none-any.whl#sha256=17e8ac2b1d1672fb5ecf52da13940f01790abb7636187017d8dcc8dc2caadd31'
+python -m pip install 'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a11/agent_observer-0.7.0a11-py3-none-any.whl#sha256=f8956346ce169062b88940475a17b5f3e5b70e8ba5c2396c5c1844aab3bfe755'
 agent-observer api
 ```
 

@@ -9,7 +9,7 @@ this repository owns native semantics, public interfaces and acceptance evidence
 
 ## Current baseline
 
-The [a10 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a10)
+The [a11 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
 supports full API 4/snapshot 6/Service 4 and working-set reads. Collector and
 working-set roles have a reviewed Mesh a25 pair; other roles and consumers
 retain independent selections. [Operations](operations.md) links exact receipts.
