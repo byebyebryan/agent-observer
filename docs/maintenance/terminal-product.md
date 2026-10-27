@@ -1,14 +1,15 @@
 # CLI and dashboard product plan
 
 Status: **CLI released in 0.7.0a12; TUI source preview implemented, qualification in progress**. The
-[roadmap](roadmap.md#next-milestone-cli-and-dashboard) establishes the product
+[roadmap](roadmap.md#current-milestone-cli-and-dashboard-qualification) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
 setup. Managed reader selection is separate from collector/publisher selection.
-The user authorized implementation of the reviewed dashboard plan under
-luna-goal-loop. The dashboard sections below are the implementation contract,
-not a claim of shipped behavior. Textual remains conditional on its T1 gates;
-source implementation does not select a deployment or establish user acceptance.
+The reviewed dashboard plan is implemented as an unreleased source preview.
+Textual 8.2.8 passes the current source and installed test boundaries, while
+long-run and capacity qualification remain open. Focused native evidence is
+bounded to the selected cases; human acceptance, publication and deployment
+remain separate. The preview does not select a deployment.
 
 ## Inspected baseline
 
@@ -56,7 +57,7 @@ metadata, not freshly sampled native state. Never inspect remote paths/Git.
 | `agent-observer sessions sources` | Source delivery, coverage, reasons and expected/observed home binding, even with no sessions. |
 | `agent-observer sessions sources --configured` | Pure configuration inspection without Mesh imports, connections or provider queries. |
 | `agent-observer sessions schema` | Packaged terminal JSON output schema without configuration or optional imports. |
-| `agent-observer dashboard` (planned) | Standalone persistent TUI until quit/terminal shutdown; no default duration limit. |
+| `agent-observer dashboard` | Standalone persistent source-preview TUI until quit/terminal shutdown; no default duration limit. |
 
 Bare `agent-observer` now opens the overview; all existing explicit
 direct/service/mesh/profile commands and diagnostic `working-set watch` retain
@@ -484,8 +485,8 @@ and exit status; it does not justify abandoning a still-live owned handle.
 The stock Textual Linux output path is not sufficient proof of bounded output:
 its 30-item writer queue blocks producers when full, and its close joins the
 writer. Capping cosmetic repaints does not keep the event loop responsive to a
-terminal that stops draining. T1 must qualify a pinned Linux output adapter
-through the documented `App(driver_class=...)`/Driver lifecycle boundary:
+terminal that stops draining. The source preview uses a pinned Linux output
+adapter through the documented `App(driver_class=...)`/Driver lifecycle boundary:
 
 - Bound encoded pending output and each accepted write to 512 KiB. Preserve
   byte order; coalesce model updates before encoding, never discard arbitrary
@@ -497,8 +498,8 @@ through the documented `App(driver_class=...)`/Driver lifecycle boundary:
   independently, revoke readers and join owned cleanup. No blocked queue put,
   unbounded writer join or unpublished private-field monkeypatch is acceptable.
 - Verify Linux input, resize, color, signals and restoration through this
-  adapter on the pinned framework. If the public extension boundary cannot
-  satisfy the gate, revisit the framework choice before the main UI build.
+  adapter on the pinned framework. If a future change makes the public
+  extension boundary fail the gate, revisit the framework before proceeding.
 
 Visible-paint latency is measured on a draining terminal. A stopped output sink
 cannot receive a revocation or alternate-screen reset: report the output failure
@@ -732,12 +733,66 @@ siblings. Resource receipts explicitly exclude interaction/paint latency claims;
 those need their own draining-terminal evidence. See the
 [source-preview guide](../guides/dashboard.md) for setup and use.
 
+## Current qualification checkpoint (T9)
+
+This checkpoint records progress, not final acceptance. The frozen product
+candidate is source commit `d57233313f01983361b75fb0953662afa212c513`; its
+wheel SHA256 is
+`fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`. The
+unreleased wheel retains a12 distribution metadata and is distinct from the
+published a12 artifact. Strict Mesh/dashboard source checks passed 1,298 tests
+on Python 3.11.17 and 3.14.8. Eight installed variants passed with 112 package-file
+parity checks; paired dashboard installs passed 98 tests per runtime with zero
+skips.
+
+The fixed normal profile ran the installed `agent-observer dashboard` on a
+draining 120x40 terminal with an external sampler: three sources x100 identities,
+120 seconds of warmup and 1,800 measured seconds. CPU was 4.87764% and 4.73657% of
+one core, peak RSS was 65.17 and 66.60 MiB, and there were no measurement
+coverage misses. The external sampler was reported separately. The older T6
+Python 3.11 result of 5.1597% remains failed; the candidate and measurement
+windows differ, so the two results do not prove a speedup.
+
+Other bounded installed checks passed on this candidate: ten quiet-expiry
+trials per runtime had maxima of 84 and 189 ms against the 250 ms limit; 100
+metadata updates had first-public-frame-to-screen p95 of 106 and 117 ms after
+`guard.accept`, excluding SDK admission, while fixture-acceptance-to-screen
+p95 was 631.268 and 569.446 ms including producer delivery. Five stuck-socket
+startup trials per runtime displayed source health and quit/help in 165–196 ms,
+including Python startup. Key p95 was 33.23/22.21 ms, resize was 20–54 ms across four
+sizes, and 100 installed wire-churn cycles passed per runtime. The 27.5-second
+job-control stop exceeded 25-second fixture leases: all facts were current at
+stop and expired before continue, degraded state appeared in 33.634/33.452 ms
+before fresh writes, then all 300 outcomes and complete baselines recovered.
+This tests process job control, not physical machine sleep.
+
+The latest T9 receipt shows the 8-hour soak still running, with no terminal
+outcome available. The original T5 task-minimum failure remains failed.
+Practical eight-source/8192-outcome capacity is unmet:
+both baseline and traced 8x1024 reader-only runs timed out before reaching
+eight complete sources. Each had a sampled maximum of four complete sources/4,096
+members and ended with three/3,072. Consumer CPU was 45.60–47.38 seconds per minute and
+maximum event-loop lateness was 1.43–1.48 seconds. The consumer had no Textual
+UI; traces show substantial cached source/publication work but do not prove the
+exact timeout cause or establish dashboard capacity. Read-path optimization
+remains deferred, with no SDK tuning, guard bypass, dark prepared branch or
+hidden fallback.
+
+The real cached fleet showed three complete sources and 15 members. Installed
+public-CLI readings matched independent metadata-only native RPC samples taken
+before and after them for three selected local working/waiting/parked cases.
+All five identity fields and activity timestamps matched, and each cached
+observation timestamp fell inside its native sample interval. Agreement at the
+interval endpoints does not prove uninterrupted state, full remote coverage or
+human acceptance. The preview is unreleased; no managed TUI selection or
+deployment is claimed.
+
 ## Review findings and validation
 
 The preimplementation review used the a12 source and exact Mesh a25 pair on
-Linux/x86-64, with isolated Textual environments. The main layout, read-only
-scope, source configuration and identity model remain proposed as above. The
-review changed the lifecycle/output design before product implementation:
+Linux/x86-64, with isolated Textual environments. Its findings below explain
+the lifecycle/output design adopted by the source preview; they are historical
+feasibility evidence, not a substitute for the current T9 qualification above.
 
 | Finding | Evidence and resulting requirement |
 | --- | --- |
@@ -749,30 +804,23 @@ review changed the lifecycle/output design before product implementation:
 
 Headless input/literal-label/resize probes passed on Python 3.11.17 and 3.14.8
 at 120x40, 80x24, 60x16 and 40x10. Ten real PTY cases distinguished the default
-behavior from the required no-color and cleanup ownership paths. Existing
-controlled source tests (9) and working-set expiry/continuity tests (18) passed
-with the reviewed SDK. These checks validate assumptions in the plan; they do
-not qualify the unimplemented dashboard, its output adapter, reconnect
-supervisor, CPU/RSS targets, native behavior or installed TUI package.
-
-T1 must turn the corrected policies into reproducible product tests and measure
-the combined lifecycle/proof/output path. Bounded output and cleanup must pass
-before the main UI build. After those foundations passed, the user authorized
-continuing the UI with a provisional 5% CPU target and read-path optimization
-deferred. Sustained resource qualification remains required at T3; this change
-does not promote the short reader measurements into completed TUI acceptance.
+behavior from the required no-color and cleanup ownership paths. These
+preimplementation checks validated assumptions; later source, installed and
+resource evidence is recorded in the T9 checkpoint above. The eight-source
+capacity and eight-hour stability gates remain open.
 
 ## Implementation structure and dependencies
 
-Recommend the optional extra `dashboard = ["textual>=8.2.8,<9"]`, with an exact
-8.2.8 qualification lock initially. [Published metadata](https://pypi.org/project/textual/8.2.8/)
-includes Python 3.11/3.14. This is a candidate, not verified package compatibility.
-Textual fits the existing asyncio reads and supplies resize/input/layout plus
+The source preview uses the optional extra `dashboard = ["textual>=8.2.8,<9"]`
+and the exact Textual 8.2.8 qualification lock. [Published metadata](https://pypi.org/project/textual/8.2.8/)
+includes Python 3.11/3.14; the current paired installed matrix is recorded in
+the T9 checkpoint. Textual fits the existing asyncio reads and supplies resize/input/layout plus
 [headless Pilot tests](https://textual.textualize.io/guide/testing/).
-Framework smoke probes passed on Python 3.11.17/3.14.8 with Textual 8.2.8 and
-Rich 15.0.0: input owns q/j/k, literal metadata remains literal, and headless
-resize works at the four planned sizes. This is not a full application/package
-qualification. Keep the transitive resolution in the eventual qualification lock.
+Earlier framework smoke probes passed on Python 3.11.17/3.14.8 with Textual
+8.2.8 and Rich 15.0.0: input owns q/j/k, literal metadata remains literal, and
+headless resize works at the four planned sizes. The source-preview package
+matrix is qualified at the installed test boundary; release acceptance remains
+separate.
 
 Use the public [App ANSI-color option](https://textual.textualize.io/api/app/#textual.app.App)
 with normalized NO_COLOR at construction for strict no-color output. On the
@@ -787,36 +835,35 @@ but no foreground/background colors. Framework
 does not replace explicit guard/SDK cleanup or source-specific error handling.
 
 Curses would reduce third-party dependencies but require custom layout, focus
-and terminal-test plumbing. Textual remains the candidate pending T1's bounded
-output and lifecycle gates; a normal-terminal smoke pass cannot waive them.
+and terminal-test plumbing. Textual is the selected source-preview framework;
+the capacity gate and release acceptance still apply.
 Rich remains a
 transitive dashboard dependency, never a core/finite-CLI requirement. Install
 `.[mesh,dashboard]`; lazy imports keep core-only and mesh-only behavior intact.
 No syntax, dev-console, web-serving or remote UI feature is needed.
 
-| Proposed ownership | Change and acceptance boundary |
+| Implemented ownership | Responsibility and acceptance boundary |
 | --- | --- |
 | `terminal/config.py`, `terminal/model.py` | Reuse bounded configuration and pure semantics; factor shared projection/filter functions only where needed. Finite CLI and JSON v1 regression proof remains required. |
-| `terminal/sources.py` and a new `terminal/watch.py` | Extract the genuinely shared one-attempt admission/cleanup primitives; keep finite fan-in/deadlines and persistent retry policy separate. New supervisor owns epochs, source state, expiry and bounded UI handoff. |
-| New `terminal/selection.py` | Pure exact-identity selection, hidden/unavailable placeholder, grouping and page behavior. No I/O or native classifier. |
-| New `terminal/dashboard.py` and packaged stylesheet | Lazy Textual app, view/focus/key handling, safe literal labels and bounded rendering. Views do not own or restart subscriptions. |
-| New dashboard output adapter/runner | Bound Linux terminal writes through the framework driver extension, retain native terminal/input behavior and keep source cleanup outside the widget worker lifetime. Feasibility must pass before committing to the frontend. |
-| `cli.py`, `pyproject.toml`, checks/CI | Add the dashboard dispatch, optional extra and stylesheet packaging; add an explicit required-dashboard gate so skipped optional tests cannot qualify it. Keep diagnostics and wire schemas unchanged. |
+| `terminal/sources.py` and `terminal/watch.py` | Share one-attempt admission/cleanup primitives while keeping finite fan-in/deadlines and persistent retry policy separate. The supervisor owns epochs, source state, expiry and bounded UI handoff. |
+| `terminal/dashboard.py` and packaged stylesheet | Lazy Textual app, exact-identity selection, hidden/unavailable placeholders, grouping/pages, view/focus/keys, safe literal labels and bounded rendering. Views do not own or restart subscriptions and add no native classifier. |
+| Dashboard output adapter/runner | Bound Linux terminal writes through the framework driver extension, retain native terminal/input behavior and keep source cleanup outside the widget worker lifetime. Bounded output and cleanup foundations are implemented; later resource gates remain. |
+| `cli.py`, `pyproject.toml`, checks/CI | The dashboard dispatch, optional extra and stylesheet packaging use an explicit required-dashboard gate so skipped optional tests cannot qualify it. Diagnostics and wire schemas remain unchanged. |
 | Tests, sessions guide and this plan | Controlled lifecycle/clock/selection cases, installed UI/package proof and public setup/use instructions. Update existing maintained topics rather than adding dated status pages. |
 
 ## Implementation sequence and review gates
 
-Implementation of this reviewed plan is authorized. Failing feasibility or
-acceptance measurements return to this contract rather than changing scope
-implicitly. Publication and managed deployment remain separate later steps.
+This reviewed plan is implemented as a source preview. Failing qualification
+measurements return to this contract rather than changing scope implicitly.
+Publication and managed deployment remain separate later steps.
 
 | Stage | Work and concrete exit |
 | --- | --- |
-| T0: design review | Review default layout, detail behavior, source/view distinction, keys, Textual candidate and budgets. The current proposal favors full list with on-demand details. |
-| T1: feasibility and lifecycle foundation | Qualify bounded terminal output/outer cleanup ownership and deadline-driven facade evaluation before the main UI. Then prove deterministic quiet expiry, old-epoch rejection, failure isolation, fresh-baseline reconnect and cancellation; measure quiet and capacity cost, including proof/admission work. CLI remains unchanged. |
-| T2: usable TUI preview | List, health, details, search/filters, source view, stable selection, help, resize and no-color. Shared representative states pass headless tests; inspect actual 80/120-column PTYs with invented fixture labels. Ready for user layout feedback, not release acceptance. |
-| T3: resilience and budgets | Capacity limits, narrow/guidance layouts, backpressure, blocked render, suspend/clock cases, 100 reconnect cycles, quiet measurement and eight-hour soak. Investigate any budget miss before declaring acceptance. |
-| T4: package and consumer qualification | Source/Ruff/docs/strict Mesh and dashboard gates; Python 3.11/3.14 installed-wheel matrix, public local/two-host/second-home recipe, real cached reads and focused independent native comparison. User terminal acceptance remains explicit. |
+| T0: design review | Complete; the selected full-list layout with on-demand details, source/view distinction, keys, Textual and budgets are specified above. |
+| T1: feasibility and lifecycle foundation | Implemented and covered by source/installed checks. Current normal, quiet-expiry and cleanup evidence is summarized in T9; practical capacity remains unmet. |
+| T2: usable TUI preview | Implemented as a source preview with list, health, details, search/filters, source view, stable selection, help, resize and guidance. Actual PTY and installed checks pass at their stated boundaries; user acceptance is pending. |
+| T3: resilience and budgets | Partial: expiry, startup, interaction, job-control recovery and churn checks pass. The eight-hour soak is pending and eight-source/8192-outcome capacity is unmet. |
+| T4: package and consumer qualification | Source and paired installed-wheel matrices pass. The public local/two-host recipe is documented; real cached-fleet and the focused independent native comparison pass at their recorded scope. No full remote/native coverage or human acceptance is inferred. |
 | Later delivery | New immutable release and package/dependency provenance, retaining terminal JSON v1; independently reviewed TUI pin, managed rollout/recovery and Fleet presentation. No collector/publisher/hardware/Agent Plus/Tmux migration is inferred. |
 
 Use unittest conventions and deterministic receiving clocks, controlled cached

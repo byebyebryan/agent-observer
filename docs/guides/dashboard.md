@@ -127,9 +127,14 @@ screen reset are separate outcomes when a terminal has stopped draining.
 
 The [terminal product plan](../maintenance/terminal-product.md) tracks source,
 installed-wheel, controlled-failure, resource and native comparisons separately.
-The current provisional resource target is 5% of one core and 192 MiB for three
-sources x100 identities after warmup. Read-path optimization is deferred. Short
-reader measurements are not complete-dashboard or eight-hour acceptance.
+The frozen source-preview candidate passed its 30-minute normal dashboard
+profile at 4.88% and 4.74% of one core, with peak RSS of 65.17 and 66.60 MiB
+on Python 3.11.17 and 3.14.8. This ran the installed `agent-observer dashboard`
+with three sources x100 identities and an external sampler on a draining
+120x40 terminal. The eight-hour soak is still running, and the original
+eight-source/8192-outcome capacity gate remains unmet. Reader-only capacity
+diagnostics timed out before reaching eight complete sources; they do not
+measure dashboard capacity. Read-path optimization remains deferred.
 Neither synthetic fixtures nor agreement with another Observer command prove
 native classification. Human terminal acceptance and managed rollout remain
 separate from this preview.

@@ -206,6 +206,8 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard remains a later stage in the
-[terminal product plan](../maintenance/terminal-product.md). Managed reader
-installation, native acceptance and hardware/Fleet presentation are separate.
+The persistent dashboard is an unreleased source preview under qualification;
+see the [dashboard guide](dashboard.md) for setup and use and the
+[terminal product plan](../maintenance/terminal-product.md) for its acceptance
+gates. Managed reader installation, native acceptance and hardware/Fleet
+presentation are separate.

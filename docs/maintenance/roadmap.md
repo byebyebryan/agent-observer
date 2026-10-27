@@ -1,9 +1,9 @@
 # Agent Observer roadmap
 
 Agent Observer provides reusable Codex read-only observation for dashboards,
-diagnostics and agent utilities. The next product milestone is a user-friendly
-CLI and standalone, always-on terminal dashboard for agents across configured
-hosts and homes. Native managers continue to own conversation control.
+diagnostics and agent utilities. The CLI/dashboard milestone is in qualification:
+the CLI is released and the persistent terminal dashboard is implemented as an
+unreleased source preview. Native managers continue to own conversation control.
 [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase;
 this repository owns native semantics, public interfaces and acceptance evidence.
 
@@ -21,16 +21,18 @@ plans for restoring those retired paths are superseded.
 Existing direct, service and Mesh commands support diagnostic inspection.
 `working-set list` and `working-set watch` already read qualified cached state;
 the current watch is bounded to 60 seconds. The terminal product builds on
-these capabilities. The dashboard described below is planned, not shipped.
+these capabilities. The dashboard is a source preview under qualification; it
+is not part of the published a12 package or a managed selection.
 
 The [a12 sessions CLI](../guides/sessions-cli.md) provides configured
 overview/list/show/source inspection and versioned JSON output. It has source,
 clean-package and cached-consumer checks and includes the a11 clock-recovery
 source. CLI reader selection/configuration is independent of the a11
-collectors/publishers and other consumers. The standalone dashboard remains a
-separate stage.
+collectors/publishers and other consumers. The dashboard is a separate,
+unreleased source preview and keeps its own package, native, resource and user
+acceptance gates.
 
-## Next milestone: CLI and dashboard
+## Current milestone: CLI and dashboard qualification
 
 The terminal product should be useful in ordinary terminals without dedicated
 display hardware. The CLI supports quick checks and session investigation;
@@ -75,8 +77,8 @@ the user must respond. Full inventories remain an explicit diagnostic path.
 
 ### Implementation boundary
 
-The expected implementation lives in `agent-observer`: commands, dashboard,
-consumer configuration, presentation, read lifecycle, tests and documentation.
+Implementation lives in `agent-observer`: commands, dashboard, consumer
+configuration, presentation, read lifecycle, tests and documentation.
 Use public cached service/working-set facades and existing Mesh routes for
 cross-host delivery. Keep core/local use independent of optional Mesh and
 dashboard dependencies. Verify available metadata and read capabilities before
@@ -93,32 +95,33 @@ implicitly advance collector, publisher or hardware-dashboard pins.
 
 | Stage | Scope and exit |
 | --- | --- |
-| Detailed planning | Review current commands and available metadata; settle command/output shapes, dashboard screen and keys, configuration/defaults, dependencies, and reconnect/resource policy using representative states |
-| Usable CLI | Implement quick overview, readable listing and selected-session details with shared state interpretation; define pipe/output and exit behavior and retain explicit diagnostics |
-| Standalone dashboard | Implement the persistent list, source health, search/filters and details; validate selection, resizing, quiet expiry, reconnect and clean shutdown |
-| Release and delivery | Qualify the installed package and documented local/two-host setup, then separately review managed installation and showcase updates |
+| Detailed planning | Reviewed; command/output shapes, configuration, dashboard screen/keys, dependencies and lifecycle/resource policy are recorded in the terminal product plan |
+| Usable CLI | Released in 0.7.0a12; its finite CLI and JSON v1 remain the published interface |
+| Standalone dashboard | Implemented as an unreleased source preview; source/installed checks and a focused native comparison pass. Long-run and practical capacity gates remain open; human acceptance and release are separate later steps |
+| Release and delivery | Pending qualification and independent review; no package pin, managed installation or showcase update is selected |
 
-These stages describe dependency order within one product milestone. Exact
-command names, default filters/order, key bindings, framework, optional extras
-and machine-readable output contract are detailed-planning decisions, not
-settled interfaces. A new wire API, daemon or native lifecycle controller is
-not a prerequisite.
+The terminal product plan records the selected command names, filters/order,
+key bindings, optional extras and machine-readable output contract. The preview
+does not change the finite CLI/JSON v1 contract and needs no new wire API, daemon
+or native lifecycle controller.
 
 ### Acceptance
 
-Review both CLI output and dashboard behavior with busy, quiet, empty, partial,
-stale, unavailable and reconnecting sources. Include multiple hosts/homes and
-one failed source alongside healthy ones. Prove that zero displayed rows,
-filtering or loss of a source cannot produce a false complete-empty verdict;
-silence and disconnect cannot leave current positives alive past their leases.
+Review both CLI output and source-preview behavior with busy, quiet, empty,
+partial, stale, unavailable and reconnecting sources. Include multiple
+hosts/homes and one failed source alongside healthy ones. Prove that zero
+displayed rows, filtering or loss of a source cannot produce a false
+complete-empty verdict; silence and disconnect cannot leave current positives
+alive past their leases.
 
-Exercise a normal terminal at multiple sizes and without color, predictable
-selection through updates, filtering/details, interrupted reads and shutdown.
-Measure a sustained quiet run and recovery under bounded state/queue budgets;
-the detailed plan must choose durations and acceptance thresholds. Verify the
-actual installed package and a reproducible public local/two-host recipe,
-independent of private chezmoi configuration. Automated/synthetic, package,
-native, user-facing and managed-deployment evidence remain separate gates.
+The plan defines the resource durations and thresholds. The fixed
+3-source/300-identity normal installed-dashboard profile and paired package
+matrix pass on this candidate. The eight-hour run and original
+eight-source/8192-outcome capacity gate
+remain open. Verify the documented public local/two-host recipe independently
+of private chezmoi configuration.
+Automated/synthetic, package, native, user-facing and managed-deployment
+evidence remain separate gates.
 
 Detailed planning starts with [`working_set_cli.py`](../../agent_observer/working_set_cli.py),
 [`utility_read.py`](../../agent_observer/utility_read.py),
@@ -130,38 +133,49 @@ without treating its current renderer or 60-second budget as the final design.
 
 ## Priorities and acceptance
 
-The [detailed terminal product plan](terminal-product.md) records the inspected
-baseline, CLI contract, proposed dashboard interaction and measurable gates.
-The CLI-first slice is released. The reviewed TUI implementation uses a
-full session list with on-demand details, a persistent source-health strip,
-shared configuration/semantics and a separately supervised read lifecycle.
-Layout, keys, optional dependencies, reconnect and measurable resource gates
-are documented in that plan. The user authorized implementation under
-luna-goal-loop, starting with the feasibility and lifecycle checkpoint.
-Preimplementation probes found fixed-rate facade CPU cost and stock terminal
-output/cleanup limitations. The first implementation checkpoint must qualify
-deadline-driven evaluation, bounded output and explicit cleanup ownership
-before the main UI build; normal-terminal framework smoke tests are insufficient.
-The branch now contains the persistent reader and bounded output foundations.
-The user relaxed the original CPU target to a provisional 5% of one core and
-deferred read-path optimization. Main UI implementation can proceed; the early
-three-source/300-identity reader measurements straddle that revised target.
-Sustained complete-dashboard resource qualification remains outstanding, and
-the roadmap does not claim a released dashboard or resource acceptance.
-The branch now has a usable source preview with list/details, source health,
-search/filters, keyboard navigation and bounded outer cleanup. Early actual-PTY
-interaction/no-color checks passed after review corrections; sustained resource,
-capacity, installed-wheel and native comparisons remain separate pending gates.
+The [detailed terminal product plan](terminal-product.md) records the CLI
+contract, implemented dashboard interaction and measurable gates. The current
+unreleased candidate is product source commit
+`d57233313f01983361b75fb0953662afa212c513`; its frozen wheel has SHA256
+`fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0` and keeps
+a12 distribution metadata, distinct from published a12.
+
+The candidate passed 1,298 strict Mesh/dashboard source tests on each of Python
+3.11.17 and 3.14.8. Eight installed variants passed with 112 package-file
+parity checks and 98 paired dashboard tests per runtime with zero skips. The
+installed `agent-observer dashboard` ran the fixed normal profile for three
+sources x100 identities on a draining 120x40 terminal, with an external sampler.
+It measured 4.88% and 4.74% of one core, with peak RSS of 65.17 and 66.60 MiB
+and no measurement coverage misses. This does not establish capacity.
+Earlier T6 Python 3.11 evidence at 5.1597% remains a failure; the candidates and
+measurement windows differ, so these results do not prove a speedup.
+
+The latest T9 receipt shows the 8-hour soak still running, with no terminal
+outcome available. Practical 8-source/8192-outcome capacity remains unmet: baseline
+and traced reader-only runs never reached eight complete sources. Their sampled
+maximum was four complete sources/4,096 members; they ended with three/3,072
+after timeouts.
+Consumer CPU was 45.60–47.38 seconds per minute and maximum event-loop lateness
+was 1.43–1.48 seconds. The trace localizes work but does not prove the exact
+timeout cause, measure the dashboard, or establish capacity. The original T5
+task-minimum failure remains failed. No optimization, SDK tuning or validation
+bypass has been adopted.
+
+The detailed plan retains the earlier T5/T6 failures and current measurement
+boundaries. Selected local native comparisons and public CLI checks are bounded
+evidence; they do not establish full native, remote, human or physical-device
+acceptance. No dashboard release, new package pin, managed deployment or human
+acceptance is claimed.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
-| Terminal product | Deliver the CLI/dashboard milestone above | Everyday usability, qualified state, recovery and installed-package proof |
+| Terminal product | Complete the source-preview qualification gates in the plan | Long-run/outage and eight-source/8192-outcome capacity proof; human acceptance and delivery remain separate |
 | Native coverage | Investigate a reproducible identity or membership discrepancy | Independent native comparison on the affected host/home |
 | Efficiency | Measure the owning collector/read path against an exact baseline | Matched CPU, memory and unchanged freshness/coverage |
 | Consumer integration | Adopt an accepted producer interface where useful | Consumer-specific package, UI/device and recovery proof |
 
-The terminal product is the agreed next direction; detailed planning precedes
-implementation. Other rows are follow-ups driven by demonstrated need.
+The terminal product remains the current direction; its source preview is under
+qualification. Other rows are follow-ups driven by demonstrated need.
 Deployment and unrelated infrastructure changes need their own scope.
 Working-set coverage now reports a primary census, support or membership blocker.
 Clock changes use bounded recency uncertainty and retain a detector incident
