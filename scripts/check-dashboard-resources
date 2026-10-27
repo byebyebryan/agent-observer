@@ -49,6 +49,7 @@ MAX_BASELINE_SECONDS = 5.0
 MAX_RETRY_SECONDS = 30.0
 MAX_SAMPLE_GAP_SECONDS = 1.0
 RSS_GROWTH_MIB = 16
+READ_WAIT_TASK_TYPES = ("async_generator_asend", "Subscription.__anext__")
 
 
 class QualificationSetupError(ValueError):
@@ -638,6 +639,25 @@ def resources():
     }
 
 
+def phase_adjusted_counts(sample: dict, source_count: int) -> tuple[dict, dict, set[str]]:
+    """Compare persistent tasks while separately bounding in-flight read phases.
+
+    A completed anext is excluded by asyncio.all_tasks before its owner rearms
+    the next read. Sampling different phases must not look like a leaked task.
+    Both known read layers remain bounded to one live waiter per selected source.
+    """
+    census = sample["taskCensus"]
+    waits = {name: census.get(name, 0) for name in READ_WAIT_TASK_TYPES}
+    failures = set()
+    if sum(census.values()) != sample["tasks"]:
+        failures.add("task_census_inconsistent")
+    if any(count > source_count for count in waits.values()):
+        failures.add("pending_read_task_bound")
+    counts = {key: sample[key] for key in ("tasks", "fds", "children")}
+    counts["tasks"] -= sum(waits.values())
+    return counts, waits, failures
+
+
 def _source_snapshots(watch, report) -> dict:
     reports = {source["id"]: source for source in report["sources"]}
     statuses = {source["id"]: source for source in watch.status()}
@@ -733,6 +753,8 @@ async def measure(args):
     lost_coverage = recovered_coverage = 0
     minimum_healthy_during_outage = len(watch.slots)
     first_window_minima = {}
+    first_phase_minima = {}
+    pending_read_peaks = dict.fromkeys(READ_WAIT_TASK_TYPES, 0)
     first_minimum_task_census = {}
     trailing_counts = deque(maxlen=241)
     last = None
@@ -930,12 +952,20 @@ async def measure(args):
                     failure_codes.add("coverage_incomplete")
                 elapsed = max(0.001, now - baseline["at"])
                 counts = {key: sample[key] for key in ("tasks", "fds", "children")}
+                phase_counts, read_waits, task_failures = phase_adjusted_counts(sample, len(selected))
+                failure_codes.update(task_failures)
+                for name, count in read_waits.items():
+                    pending_read_peaks[name] = max(pending_read_peaks[name], count)
                 if elapsed < 60:
                     if counts["tasks"] <= first_window_minima.get("tasks", float("inf")):
                         first_minimum_task_census = sample["taskCensus"]
                     for key, value in counts.items():
                         first_window_minima[key] = min(first_window_minima.get(key, value), value)
-                trailing_counts.append((now, {**counts, "taskCensus": sample["taskCensus"]}))
+                    for key, value in phase_counts.items():
+                        first_phase_minima[key] = min(first_phase_minima.get(key, value), value)
+                trailing_counts.append(
+                    (now, {**counts, "taskCensus": sample["taskCensus"], "phaseAdjusted": phase_counts})
+                )
                 while trailing_counts and trailing_counts[0][0] < now - 60:
                     trailing_counts.popleft()
                 receipt.update(
@@ -950,6 +980,8 @@ async def measure(args):
                     peakTasks=peak_tasks,
                     peakFds=peak_fds,
                     peakChildren=peak_children,
+                    pendingReadTaskPeaks=dict(pending_read_peaks),
+                    pendingReadTaskLimitPerType=len(selected),
                     allSelectedCoverageComplete=all_complete,
                     metrics=dict(watch.metrics),
                     members=last["totals"]["members"],
@@ -1024,15 +1056,24 @@ async def measure(args):
         final_minima = {
             key: min(counts[key] for _, counts in trailing_counts) for key in first_window_minima
         }
+        final_phase_minima = {
+            key: min(counts["phaseAdjusted"][key] for _, counts in trailing_counts)
+            for key in first_phase_minima
+        }
         receipt["steadyCounts"] = {
             "initial60SecondMinima": first_window_minima,
             "final60SecondMinima": final_minima,
+            "phaseAdjustedInitial60SecondMinima": first_phase_minima,
+            "phaseAdjustedFinal60SecondMinima": final_phase_minima,
+            "separatelyBoundedReadTaskTypes": list(READ_WAIT_TASK_TYPES),
+            "pendingReadTaskPeaks": pending_read_peaks,
+            "pendingReadTaskLimitPerType": len(selected),
             "initialMinimumTaskCensus": first_minimum_task_census,
             "finalMinimumTaskCensus": min(
                 (counts for _, counts in trailing_counts), key=lambda counts: counts["tasks"]
             )["taskCensus"],
         }
-        if any(final_minima[key] > value for key, value in first_window_minima.items()):
+        if any(final_phase_minima[key] > value for key, value in first_phase_minima.items()):
             failures.add("resource_counts_growth")
     if watch.cleanup_error or receipt["cleanupSeconds"] > 5:
         failures.add("cleanup")

@@ -92,6 +92,37 @@ def complete_snapshot(*, epoch=1, attempts=1, total=100):
 
 
 class ResourceProfileTests(unittest.TestCase):
+    def test_read_completion_phase_does_not_look_like_persistent_task_growth(self):
+        def sample(asends, subscriptions, persistent):
+            return {
+                "tasks": asends + subscriptions + persistent,
+                "taskCensus": {"async_generator_asend": asends,
+                               "Subscription.__anext__": subscriptions,
+                               "persistent": persistent},
+                "fds": 13, "children": 0,
+            }
+
+        first, _, errors = resource_check.phase_adjusted_counts(sample(2, 3, 70), 3)
+        final, _, final_errors = resource_check.phase_adjusted_counts(sample(3, 3, 70), 3)
+        self.assertEqual(first, final)
+        self.assertEqual(errors | final_errors, set())
+        increased, _, _ = resource_check.phase_adjusted_counts(sample(3, 3, 71), 3)
+        self.assertGreater(increased["tasks"], first["tasks"])
+
+    def test_extra_read_task_is_a_failure_even_when_phase_adjusted(self):
+        sample = {
+            "tasks": 77,
+            "taskCensus": {"async_generator_asend": 4, "Subscription.__anext__": 3,
+                           "persistent": 70},
+            "fds": 13, "children": 0,
+        }
+        _, waits, errors = resource_check.phase_adjusted_counts(sample, 3)
+        self.assertEqual(waits["async_generator_asend"], 4)
+        self.assertEqual(errors, {"pending_read_task_bound"})
+        sample["tasks"] += 1
+        _, _, errors = resource_check.phase_adjusted_counts(sample, 3)
+        self.assertIn("task_census_inconsistent", errors)
+
     def test_qualification_geometry_cannot_substitute_tiny_guidance_for_full_ui(self):
         normal = resource_check.resolve_profile(arguments(profile="normal", ui=True))
         resource_check.validate_terminal_geometry(normal, (120, 40))

@@ -616,21 +616,43 @@ Metadata-only independent native RPC comparisons matched three selected local
 identities and their runtime/phase/activity evidence. These are bounded consumer
 and selected native comparisons, not remote classification or user acceptance.
 
-Thirty-minute full-app baseline runs after the two-minute warmup measured 5.34%
-CPU on Python 3.11 and 4.98% on 3.14, with peak RSS about 63-66 MiB. Both retained
-all 300 outcomes and restored the terminal. The 3.14 run's final task-count minimum
-was one higher than its initial minimum; cleanup returned to one task. Neither
-baseline qualifies the resource gate. Subsequent corrections have new exact
-wheel bytes; superseded long runs remain baselines. Corrected-candidate runs need
-task-type census evidence. Keep the provisional 5% limit and deferred read-path
-optimization explicit; eight-hour acceptance remains outstanding.
+The frozen T5 wheel completed the fixed 30-minute profile after two minutes of
+warmup. Python 3.14 passed at 4.79% CPU and about 66 MiB peak RSS; Python 3.11
+missed the provisional limit at 5.14% and about 63 MiB. Both retained all 300
+outcomes, stable task/FD/child counts and restored the terminal. These measurements
+include the resource sampler and receipt generation in the consumer process.
+An external sampler is needed to distinguish that cost from the actual public
+CLI before attributing the small 3.11 miss to the application. The limit remains
+5%; read-path optimization remains deferred.
+
+T5 also completed eight measured hours on Python 3.14: 4.93% CPU, about 70 MiB
+peak RSS and 3.28 MiB growth. The ten-minute outage had one loss and one fresh
+recovery, with both siblings continuously complete. Recovery occurred about
+24 seconds after the listener returned, within the configured retry bound.
+Terminal restoration and all owned cleanup passed. The original checker failed
+the run because task minima changed from 75 to 76; the only census difference
+was `async_generator_asend` changing from two to three. That failed receipt is
+retained and is not retroactively accepted.
+
+A separate controlled diagnostic reproduced a live pending-read count of
+three, then two while a completed read awaited its owner's rearm, then three
+again, with no unowned read tasks. The checker now retains raw counts and
+compares persistent task counts separately from these read phases. It enforces
+one live waiter of each known read layer per selected source at every sample;
+extra waiters still fail. This correction and the frontend priority fix below
+require fresh qualification of the corrected candidate.
 
 The 8,192-outcome diagnostic did not retain complete coverage: sources timed out
 or reported gaps. A reader-only probe reproduced the failures; one source with
 1,024 outcomes established and retained a baseline. Independent fixture publisher
 processes did not establish complete aggregate coverage either. These results do
 not qualify capacity, even though the observed consumer RSS stayed below 768 MiB.
-The capacity/read-path boundary needs investigation before acceptance; this
+The literal Mesh `timeout`/`gap` reasons do not identify a single failing layer.
+They are distinct from Observer's `baseline_timeout`, and observed frame sizes
+were below the reserved limits. The configured consumer facade exposes no
+setting for Mesh's internal I/O/handshake deadlines or queue policy. Raising the
+dashboard connect timeout is not a demonstrated fix. The owning read/producer
+boundary needs source-specific investigation before capacity acceptance; this
 preview does not select a different SDK, transport or inventory fallback.
 
 Process suspend/resume review found that the inherited suspend path closed the
@@ -659,6 +681,15 @@ fresh fixture writes; fresh evidence then restored all 300 outcomes and complete
 baselines. Both exited normally with terminal flags restored and owned fixture
 processes removed. Raw stop bypasses pre-stop drain and does not pause the active
 output watchdog; it is separate from the supported job-control queue proof.
+
+A subsequent 25-trial UI-only PTY probe revoked a source immediately after a
+fresh cosmetic projection. T5 queued that revocation: p95 was 240 ms and the
+maximum was 262 ms. That leaves insufficient margin for quiet-lease detection
+under the explicit expiry bound. The corrected reader marks crossed receiving
+deadlines independently of ordinary revisions; the UI cancels cosmetic timers
+and paints revoked generations or due leases immediately. The deadline marker
+remains latched if a not-yet-painted frame shortened a lease and the next read
+has already replaced that deadline. Ordinary metadata changes remain throttled.
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted
