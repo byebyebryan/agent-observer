@@ -608,8 +608,8 @@ retains a12 metadata and is distinct from the immutable published a12 artifact.
 
 Actual installed-CLI PTY probes used three invented sources x100 identities,
 100 navigation inputs paced over about 25 seconds, details/source/search, and
-120x40/80x24/60x16/40x10 resize transitions. Key-to-visible p95 was about 13 ms;
-resize responses were 21-52 ms. The no-color probe emitted no foreground/background
+120x40/80x24/60x16/40x10 resize transitions. Key-to-visible p95 was 13-33 ms;
+resize responses were 21-60 ms. The no-color probe emitted no foreground/background
 SGR, printable q/j/k stayed in search, and explicit quit restored terminal flags.
 Real cached-fleet checks displayed all three configured host/home sources.
 Metadata-only independent native RPC comparisons matched three selected local
@@ -645,6 +645,20 @@ PTY checks cover repeated job-control and raw stops, queued output, continued
 rendering, signal-handler restoration and final terminal/thread/FD cleanup.
 Process-pause evidence does not establish an actual machine sleep/wake cycle;
 controlled receiving-clock tests cover the separate expiry-clock behavior.
+
+On the corrected installed wheel, each interpreter passed 100 serialized
+metadata-update samples at the three-source/300-outcome workload. First admitted
+frame to visible PTY text p95 was 119 ms on Python 3.11 and 170 ms on 3.14.
+This boundary starts after SDK and domain-guard admission and includes domain
+read/model/render work; fixture acceptance to visible text p95 was 659-711 ms,
+including publisher and delivery work. Both are retained rather than treating
+the UI measurement as an end-to-end native-state latency guarantee.
+Each process was stopped through job control for 27.5 seconds against 25-second
+fixture leases. Degraded state was visible within 35 ms of continue, before any
+fresh fixture writes; fresh evidence then restored all 300 outcomes and complete
+baselines. Both exited normally with terminal flags restored and owned fixture
+processes removed. Raw stop bypasses pre-stop drain and does not pause the active
+output watchdog; it is separate from the supported job-control queue proof.
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted
