@@ -84,6 +84,11 @@ _CHILD = textwrap.dedent(
         def on_mount(self):
             if case == "ui":
                 self.set_timer(30, self.exit)
+            elif case in {"resume", "resume_pending"}:
+                if case == "resume_pending":
+                    self.output_driver.write("P" * 100_000)
+                self.set_interval(0.05, self.tick)
+                self.set_timer(30, self.exit)
             elif case == "stall":
                 self.output_driver.write("X" * 100_000)
                 self.set_interval(0.25, self.tick)
@@ -131,6 +136,9 @@ _CHILD = textwrap.dedent(
         return True
 
     async def main():
+        original_job_handlers = {
+            signum: signal.getsignal(signum) for signum in (signal.SIGTSTP, signal.SIGCONT)
+        }
         app = Probe()
         await app.run_async()
         driver = app.output_driver
@@ -152,6 +160,10 @@ _CHILD = textwrap.dedent(
             "screen_reset_delivered": driver.screen_reset_delivered,
             "terminal_flags_restored": driver.terminal_flags_restored,
             "terminal_restore_seconds": driver.terminal_restore_seconds,
+            "job_handlers_restored": all(
+                signal.getsignal(signum) == handler
+                for signum, handler in original_job_handlers.items()
+            ),
             "tick_count": app.tick_count,
             "last_size": app.last_size,
             "scheduled_quit": app.scheduled_quit,
@@ -343,6 +355,93 @@ class _PTYProbe:
     sys.platform.startswith("linux") and TEXTUAL_AVAILABLE, "Linux Textual is optional"
 )
 class DashboardOutputPTYTests(unittest.TestCase):
+    def test_job_control_and_raw_stop_resume_keep_output_and_restore_terminal(self):
+        for stop_signal, case in (
+            (signal.SIGTSTP, "resume"),
+            (signal.SIGSTOP, "resume"),
+            (signal.SIGTSTP, "resume_pending"),
+        ):
+            with self.subTest(stop_signal=stop_signal, case=case):
+                probe = _PTYProbe(case)
+                try:
+                    self.assertTrue(probe.wait_for_raw_mode(drain_output=case != "resume_pending"))
+                    if case == "resume_pending":
+                        time.sleep(0.2)
+                    else:
+                        self.assertTrue(probe.wait_for_output(b"ticks"))
+                    for _ in range(2):
+                        probe.process.send_signal(stop_signal)
+                        deadline = time.monotonic() + 2
+                        while time.monotonic() < deadline:
+                            state = Path(f"/proc/{probe.process.pid}/stat").read_text().rsplit(") ", 1)[1].split()[0]
+                            if state == "T":
+                                break
+                            probe.poll()
+                            time.sleep(0.01)
+                        self.assertEqual(state, "T", "owned probe did not stop")
+                        if stop_signal == signal.SIGTSTP:
+                            probe.poll()
+                            self.assertEqual(probe.current_termios(), probe.original_termios)
+                            self.assertGreater(
+                                probe.output.rfind(b"\x1b[?1049l"),
+                                probe.output.rfind(b"\x1b[?1049h"),
+                                "alt screen reset must drain before the kernel stop",
+                            )
+                        # Exceed the active-output watchdog while the process
+                        # has no opportunity to drain its owned queue.
+                        end = time.monotonic() + 2.2
+                        while time.monotonic() < end:
+                            probe.poll()
+                            time.sleep(0.02)
+                        previous_bytes = len(probe.output)
+                        probe.process.send_signal(signal.SIGCONT)
+                        deadline = time.monotonic() + 2
+                        while time.monotonic() < deadline:
+                            probe.poll()
+                            if len(probe.output) > previous_bytes + 50:
+                                break
+                            self.assertIsNone(probe.process.poll(), "resume ended the dashboard")
+                            time.sleep(0.02)
+                        self.assertGreater(len(probe.output), previous_bytes + 50)
+                        self.assertTrue(probe.wait_for_raw_mode())
+                    os.write(probe.master_fd, b"q")
+                    status = probe.wait_for_exit()
+                    self.assertEqual(status["process_code"], 0)
+                    self.assertTrue(status["quit_by_key"])
+                    self.assertIsNone(status["failure"])
+                    self.assertTrue(status["terminal_flags_restored"])
+                    self.assertTrue(status["job_handlers_restored"])
+                    self.assertTrue(status["screen_reset_delivered"])
+                    self.assertTrue(status["owned_fds_closed"])
+                    self.assertFalse(status["worker_alive"])
+                    self.assertEqual(status["textual_threads_alive"], [])
+                    self.assertEqual(probe.current_termios(), probe.original_termios)
+                finally:
+                    if probe.process.poll() is None:
+                        probe.process.send_signal(signal.SIGCONT)
+                    probe.close()
+
+    def test_job_control_with_undrained_output_fails_without_stopping_process(self):
+        probe = _PTYProbe("resume_pending")
+        try:
+            self.assertTrue(probe.wait_for_raw_mode(drain_output=False))
+            time.sleep(0.2)
+            probe.process.send_signal(signal.SIGTSTP)
+            status = probe.wait_for_exit(timeout=6, drain_output=False)
+            self.assertEqual(status["process_code"], 3)
+            self.assertIn(status["failure"]["code"], {"output_suspend", "output_stalled"})
+            self.assertTrue(status["terminal_flags_restored"])
+            self.assertFalse(status["screen_reset_delivered"])
+            self.assertTrue(status["job_handlers_restored"])
+            self.assertTrue(status["owned_fds_closed"])
+            self.assertFalse(status["worker_alive"])
+            self.assertEqual(status["textual_threads_alive"], [])
+            self.assertEqual(probe.current_termios(), probe.original_termios)
+        finally:
+            if probe.process.poll() is None:
+                probe.process.send_signal(signal.SIGCONT)
+            probe.close()
+
     def test_pty_input_resize_color_and_no_color_restore_terminal(self):
         for no_color in (False, True):
             with self.subTest(no_color=no_color):

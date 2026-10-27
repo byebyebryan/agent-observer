@@ -599,10 +599,10 @@ whose display values stay unchanged. List rows retain their widgets, and
 selection changes repaint only the affected rows. Long identity/evidence
 fields wrap in details rather than losing their suffixes to list ellipses.
 
-Source checks passed 1,283 tests on each of Python 3.11.17 and 3.14.8, with
+Source checks passed 1,285 tests on each of Python 3.11.17 and 3.14.8, with
 strict paired Mesh and dashboard checks enabled. The source-preview wheel passed
 all eight core/Mesh/dashboard/paired installation variants; the paired installs
-each passed 83 dashboard tests without skips. Inherited clipboard and URL-opening
+each passed 85 dashboard tests without skips. Inherited clipboard and URL-opening
 hooks are disabled, including search-input cut shortcuts. This unreleased wheel
 retains a12 metadata and is distinct from the immutable published a12 artifact.
 
@@ -620,8 +620,8 @@ Thirty-minute full-app baseline runs after the two-minute warmup measured 5.34%
 CPU on Python 3.11 and 4.98% on 3.14, with peak RSS about 63-66 MiB. Both retained
 all 300 outcomes and restored the terminal. The 3.14 run's final task-count minimum
 was one higher than its initial minimum; cleanup returned to one task. Neither
-baseline qualifies the resource gate. The subsequent input-hook correction has
-new exact wheel bytes, and final-candidate normal/soak runs are in progress with
+baseline qualifies the resource gate. Subsequent corrections have new exact
+wheel bytes; superseded long runs remain baselines. Corrected-candidate runs need
 task-type census evidence. Keep the provisional 5% limit and deferred read-path
 optimization explicit; eight-hour acceptance remains outstanding.
 
@@ -632,6 +632,19 @@ processes did not establish complete aggregate coverage either. These results do
 not qualify capacity, even though the observed consumer RSS stayed below 768 MiB.
 The capacity/read-path boundary needs investigation before acceptance; this
 preview does not select a different SDK, transport or inventory fallback.
+
+Process suspend/resume review found that the inherited suspend path closed the
+owned output pump permanently, while raw stop/continue recaptured already-raw
+terminal flags. The driver correction retains one bounded FIFO across job-control
+suspension, preserves the original flags and input/writer ownership, and handles
+job-control callbacks on the event loop. The drain watchdog excludes intentional
+job-control suspension; ordinary stalls still fail within the configured bound.
+The driver drains the terminal reset before a job-control stop; a two-second
+pre-stop drain failure exits with error 3 while leaving the process runnable.
+PTY checks cover repeated job-control and raw stops, queued output, continued
+rendering, signal-handler restoration and final terminal/thread/FD cleanup.
+Process-pause evidence does not establish an actual machine sleep/wake cycle;
+controlled receiving-clock tests cover the separate expiry-clock behavior.
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted

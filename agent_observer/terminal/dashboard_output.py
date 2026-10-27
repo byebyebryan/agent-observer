@@ -11,6 +11,7 @@ import asyncio
 import math
 import os
 import select
+import signal
 import sys
 import termios
 import threading
@@ -87,6 +88,7 @@ class BoundedOutputPump:
         self._closing = False
         self._close_deadline: float | None = None
         self._last_progress_at: float | None = None
+        self._watchdog_suspended = False
         self._failure: OutputFailure | None = None
         self._failure_no_progress_seconds: float | None = None
         self._closed = threading.Event()
@@ -140,7 +142,7 @@ class BoundedOutputPump:
 
         with self._lock:
             if self._started:
-                return self._failure is None
+                return self._failure is None and not self._closing and not self._closed.is_set()
             if self._closing:
                 return False
             self._started = True
@@ -298,6 +300,20 @@ class BoundedOutputPump:
                 self._screen_reset_pending_bytes = None
                 self._screen_reset_delivered = True
 
+    def suspend_progress_clock(self) -> None:
+        """Keep draining, without counting an intentional process suspension."""
+        with self._lock:
+            self._watchdog_suspended = True
+        self._wake()
+
+    def resume_progress_clock(self) -> None:
+        """Resume the drain watchdog after the process could not make progress."""
+        with self._lock:
+            self._watchdog_suspended = False
+            if self._failure is None and not self._closing and self._pending_bytes:
+                self._last_progress_at = time.monotonic()
+        self._wake()
+
     def close(self) -> None:
         """Request a bounded drain and return without joining the worker."""
 
@@ -410,7 +426,11 @@ class BoundedOutputPump:
         with self._lock:
             now = time.monotonic()
             deadlines: list[float] = []
-            if self._pending_bytes and self._last_progress_at is not None:
+            if (
+                self._pending_bytes
+                and self._last_progress_at is not None
+                and not self._watchdog_suspended
+            ):
                 deadlines.append(self._last_progress_at + self._stall_timeout)
             if self._closing and self._close_deadline is not None:
                 deadlines.append(self._close_deadline)
@@ -447,6 +467,7 @@ class BoundedOutputPump:
                         now = time.monotonic()
                         if (
                             self._last_progress_at is not None
+                            and not self._watchdog_suspended
                             and now - self._last_progress_at >= self._stall_timeout
                         ):
                             no_progress_seconds = now - self._last_progress_at
@@ -587,10 +608,18 @@ class BoundedLinuxDriver(LinuxDriver):
         mouse: bool = True,
         size: tuple[int, int] | None = None,
     ) -> None:
+        self._original_job_handlers = {
+            signum: signal.getsignal(signum) for signum in (signal.SIGTSTP, signal.SIGCONT)
+        }
         super().__init__(app, debug=debug, mouse=mouse, size=size)
         self._owner_app = app
         self._owner_loop: asyncio.AbstractEventLoop | None = None
         self._initial_termios: list[object] | None = None
+        self._termios_captured = False
+        self._application_mode_active = False
+        self._job_handlers_installed = False
+        self._suspend_poll_handle: asyncio.TimerHandle | None = None
+        self._suspend_deadline: float | None = None
         self.terminal_flags_restored: bool | None = None
         self.terminal_restore_seconds: float | None = None
         self.terminal_stop_started_at: float | None = None
@@ -638,10 +667,18 @@ class BoundedLinuxDriver(LinuxDriver):
 
     def start_application_mode(self) -> None:
         self._owner_loop = asyncio.get_running_loop()
-        try:
-            self._initial_termios = termios.tcgetattr(self.fileno)
-        except termios.error:
-            self._initial_termios = None
+        if not self._job_handlers_installed:
+            # Python's synchronous signal handlers may interrupt a pump write
+            # while its lock is held. Run all mode/queue work on the event loop.
+            self._job_handlers_installed = True
+            self._owner_loop.add_signal_handler(signal.SIGTSTP, self._suspend_process)
+            self._owner_loop.add_signal_handler(signal.SIGCONT, self.resume_application_mode)
+        if not self._termios_captured:
+            self._termios_captured = True
+            try:
+                self._initial_termios = termios.tcgetattr(self.fileno)
+            except termios.error:
+                self._initial_termios = None
         if not self.output.start():
             self._output_failed(
                 self.output_failure or OutputFailure("output_setup", "terminal output setup failed")
@@ -650,8 +687,66 @@ class BoundedLinuxDriver(LinuxDriver):
         # LinuxDriver retains its keyboard parser/thread, resize signal and
         # terminal mode behavior. Its calls to self.write dispatch below.
         super().start_application_mode()
+        self._application_mode_active = True
+
+    def _suspend_process(self) -> None:
+        if self._driver_close_requested or self._suspend_deadline is not None:
+            return
+        started = time.monotonic()
+        self.suspend_application_mode()
+        self._suspend_deadline = started + 2.0
+        self._finish_process_suspend()
+
+    def _finish_process_suspend(self) -> None:
+        self._suspend_poll_handle = None
+        if self._driver_close_requested or self._suspend_deadline is None:
+            return
+        if self.output_failure is not None:
+            self._cancel_process_suspend()
+            return
+        if self.output.pending_bytes == 0 and self.screen_reset_delivered is True:
+            self._cancel_process_suspend()
+            self.output.suspend_progress_clock()
+            os.kill(os.getpid(), signal.SIGSTOP)
+        elif time.monotonic() >= self._suspend_deadline:
+            self._cancel_process_suspend()
+            self.output._fail(
+                "output_suspend", "terminal reset did not drain before the suspension deadline"
+            )
+        else:
+            self._suspend_poll_handle = self._owner_loop.call_later(
+                0.01, self._finish_process_suspend
+            )
+
+    def _cancel_process_suspend(self) -> None:
+        if self._suspend_poll_handle is not None:
+            self._suspend_poll_handle.cancel()
+            self._suspend_poll_handle = None
+        self._suspend_deadline = None
+
+    def suspend_application_mode(self) -> None:
+        if self._application_mode_active:
+            self.stop_application_mode()
+            # The inherited writer is idle; the owned FIFO stays open across
+            # suspension, including its ordered terminal reset/start sequences.
+            super().close()
+
+    def resume_application_mode(self) -> None:
+        if self._driver_close_requested:
+            return
+        self._cancel_process_suspend()
+        if not self._application_mode_active:
+            self.output.resume_progress_clock()
+            self.start_application_mode()
+        # A raw SIGSTOP skips suspend_application_mode. Retain the original
+        # input/writer threads and saved terminal flags in that case.
+        self._owner_app.post_message(self.SignalResume())
 
     def write(self, data: str) -> None:
+        if self._suspend_deadline is not None:
+            # The terminal reset is already queued. The latest model is fully
+            # repainted on resume; cosmetic frames must not follow that reset.
+            return
         self.output.write(data, screen_reset="\x1b[?1049l" in data)
 
     def flush(self) -> None:
@@ -660,29 +755,38 @@ class BoundedLinuxDriver(LinuxDriver):
         return
 
     def stop_application_mode(self) -> None:
+        self._cancel_process_suspend()
         self.terminal_stop_started_at = time.monotonic()
         try:
             super().stop_application_mode()
         finally:
-            self.terminal_restore_seconds = time.monotonic() - self.terminal_stop_started_at
+            self._application_mode_active = False
             if self._initial_termios is not None:
                 try:
+                    termios.tcsetattr(self.fileno, termios.TCSANOW, self._initial_termios)
                     self.terminal_flags_restored = (
                         termios.tcgetattr(self.fileno) == self._initial_termios
                     )
                 except termios.error:
                     self.terminal_flags_restored = False
+            self.terminal_restore_seconds = time.monotonic() - self.terminal_stop_started_at
 
     def close(self) -> None:
         if self._driver_close_requested:
             return
         self._driver_close_requested = True
+        self._cancel_process_suspend()
         try:
             # The inherited writer is idle because this class overrides write;
             # stopping it releases Textual's own startup resource.
             super().close()
         finally:
             self.output.close()
+            if self._job_handlers_installed and self._owner_loop is not None:
+                for signum, handler in self._original_job_handlers.items():
+                    self._owner_loop.remove_signal_handler(signum)
+                    signal.signal(signum, handler)
+                self._job_handlers_installed = False
 
     def wait_closed(self, timeout: float | None = None) -> bool:
         return self.output.wait_closed(timeout)
