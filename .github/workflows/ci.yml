@@ -39,6 +39,27 @@ jobs:
         run: python -m pip install '.[dev]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a23/mesh_plus-0.1.0a23-py3-none-any.whl#sha256=73455186e187198c8e44b6ae6c381926809931a176f17614864141c62ff850c2'
       - run: ./scripts/check
       - run: ./scripts/check-mesh-owner --installed
+  dashboard-pair:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install operational fixture tool
+        run: |
+          curl -fsSL --retry 3 https://github.com/twpayne/chezmoi/releases/download/v2.73.0/chezmoi_2.73.0_linux_amd64.tar.gz -o "$RUNNER_TEMP/chezmoi.tar.gz"
+          printf '%s  %s\n' b597729b687af4488a848240134cb633de8ca0f04e0d26d48f400ee2ac338ffa "$RUNNER_TEMP/chezmoi.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/observer-tools"
+          tar -xzf "$RUNNER_TEMP/chezmoi.tar.gz" -C "$RUNNER_TEMP/observer-tools" chezmoi
+          echo "$RUNNER_TEMP/observer-tools" >> "$GITHUB_PATH"
+      - name: Install qualified optional stacks
+        run: python -m pip install -c tests/fixtures/dashboard-requirements.txt '.[dev,dashboard]' 'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a25/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+      - run: ./scripts/check --require-working-set-mesh --require-dashboard
   working-set-pair:
     runs-on: ubuntu-latest
     strategy:

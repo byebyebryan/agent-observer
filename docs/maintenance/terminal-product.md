@@ -1,6 +1,6 @@
 # CLI and dashboard product plan
 
-Status: **CLI released in 0.7.0a12; reviewed TUI implementation authorized**. The
+Status: **CLI released in 0.7.0a12; TUI foundations implemented, T1 CPU gate pending**. The
 [roadmap](roadmap.md#next-milestone-cli-and-dashboard) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
@@ -534,6 +534,49 @@ Record host/CPU/interpreter, terminal dimensions and exact package/dependency
 bytes. A deterministic fixture quiet run establishes a reproducible CPU/RSS
 baseline; a separate real cached-fleet run proves delivery behavior. Neither
 is independent native classification evidence.
+
+## T1 implementation checkpoint
+
+The feature branch now has a persistent consumer in
+[`terminal/watch.py`](../../agent_observer/terminal/watch.py) and the bounded
+Linux driver in
+[`terminal/dashboard_output.py`](../../agent_observer/terminal/dashboard_output.py).
+The dashboard command and main UI are not implemented yet. These foundations
+are not a shipped TUI or an accepted installed/deployment selection.
+
+The reader uses the existing public admitted facade, a single lightweight clock
+wake, exported receiving deadlines and fresh guards per recovered attempt.
+Tests cover wrong namespace/capacity, quiet expiry, receiver clock changes,
+identity conflicts, healthy siblings, no reproject on unchanged heartbeat,
+and repeated cancellation during owned cleanup. Controlled wire-loss churn
+closes only the owned fixture channels, then reconnects to a fresh baseline.
+The normal source suite uses three cycles; qualification explicitly sets
+`AO_DASHBOARD_CHURN_CYCLES=100`. This is a test-fixture control, not product policy.
+
+The driver uses a fixed FIFO byte ring and a separate nonblocking file
+description, retaining Textual's normal input/resize/termios implementation.
+Nine focused PTY tests passed on Python 3.11/3.14, including inherited descriptor
+flags, stalled/broken output, UTF-8 order, real two-second stall expiry and a
+controlled wake-fd close/reuse race. Non-TTY or mismatched stderr is rejected
+before raw mode. Future command preflight must diagnose this requirement too.
+
+The first separate-process producer/consumer measurements failed the CPU gate
+with three sources x100 identities: 5.38% of one core on Python 3.11.17 and
+4.95% on Python 3.14.8, over 60 measured seconds after short warmup. Both kept
+all 300 members complete, used about 46.4 MiB RSS and closed in about 6 ms.
+These are early failure checkpoints, not the required 30-minute or soak passes.
+Profiling attributes most remaining work to existing schema/native admission
+validation; the consumer is no longer projecting every clock tick. Do not skip
+validation, change proof cadence, select a dark research path or silently raise
+the 2% gate. The main UI stays behind this feasibility decision.
+
+Use `scripts/check --require-working-set-mesh --require-dashboard` to require
+both optional stacks; the dashboard gate locks the qualification framework to
+Textual 8.2.8. The optional `dashboard` extra does not import Textual into the
+finite CLI or core. `scripts/check-dashboard-resources` measures an explicit
+cached consumer; `tests/dashboard_fixtures.py` supplies separate-process
+invented sources without native provider calls. Record source/package bytes
+and keep fixture producer CPU separate from consumer/owned-child CPU.
 
 ## Review findings and validation
 

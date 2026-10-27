@@ -1,0 +1,188 @@
+#!/usr/bin/env python3
+"""Measure an owned persistent consumer against explicit cached source fixtures.
+
+This process performs no provider queries. Run synthetic publishers separately
+with tests/dashboard_fixtures.py so their CPU/RSS is not charged to the client.
+Only aggregate metadata and resource measurements are written to the receipt.
+"""
+
+import argparse
+import asyncio
+import hashlib
+import importlib.metadata
+import json
+import os
+import resource
+import signal
+import sys
+import time
+from pathlib import Path
+
+from agent_observer.terminal import watch as watch_module
+from agent_observer.terminal.config import load_config, select_sources
+from agent_observer.terminal.watch import PersistentSources
+
+FILTERS = {
+    "membership": (),
+    "runtime": (),
+    "phase": (),
+    "query": (),
+    "includeChildren": False,
+    "includeSystem": False,
+    "sort": "activity",
+    "group": "none",
+}
+
+
+def resources():
+    own = resource.getrusage(resource.RUSAGE_SELF)
+    retired = resource.getrusage(resource.RUSAGE_CHILDREN)
+    pages = os.sysconf("SC_PAGE_SIZE")
+    rss = int(Path("/proc/self/statm").read_text().split()[1]) * pages
+    pending = list(Path(f"/proc/self/task/{os.getpid()}/children").read_text().split())
+    children = 0
+    live_cpu = 0.0
+    seen = set()
+    while pending:
+        pid = pending.pop()
+        if pid in seen:
+            continue
+        seen.add(pid)
+        try:
+            parts = Path(f"/proc/{pid}/stat").read_text().rsplit(") ", 1)[1].split()
+            live_cpu += (int(parts[11]) + int(parts[12])) / os.sysconf("SC_CLK_TCK")
+            rss += int(Path(f"/proc/{pid}/statm").read_text().split()[1]) * pages
+            pending.extend(Path(f"/proc/{pid}/task/{pid}/children").read_text().split())
+            children += 1
+        except (OSError, ValueError, IndexError):
+            pass
+    return {
+        "cpuSeconds": own.ru_utime + own.ru_stime + retired.ru_utime + retired.ru_stime + live_cpu,
+        "rssBytes": rss,
+        "fds": len(list(Path("/proc/self/fd").iterdir())),
+        "tasks": len(asyncio.all_tasks()),
+        "children": children,
+    }
+
+
+async def measure(args):
+    config = load_config(args.config)
+    watch = PersistentSources(select_sources(config))
+    stopping = asyncio.Event()
+    loop = asyncio.get_running_loop()
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(signum, stopping.set)
+    started = time.monotonic()
+    deadline = started + args.warmup + args.duration
+    baseline = final = None
+    peak_rss = peak_tasks = peak_fds = peak_children = 0
+    samples = 0
+    all_complete = True
+    last = None
+    receipt = {
+        "status": "running",
+        "pid": os.getpid(),
+        "config": str(args.config),
+        "python": sys.version.split()[0],
+        "warmupSeconds": args.warmup,
+        "measurementSeconds": args.duration,
+        "nativeProviderCalls": 0,
+        "boundary": "reader/projection only; UI and output adapter are separately qualified",
+        "consumerModuleSha256": hashlib.sha256(
+            Path(watch_module.__file__).read_bytes()
+        ).hexdigest(),
+        "packages": {
+            name: importlib.metadata.version(name)
+            for name in ("agent-observer", "mesh-plus", "jsonschema")
+        },
+    }
+
+    def save():
+        staging = args.output.with_suffix(".tmp")
+        staging.write_text(json.dumps(receipt, indent=2) + "\n")
+        staging.chmod(0o600)
+        staging.replace(args.output)
+
+    args.output.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    save()
+    await watch.start()
+    try:
+        while not stopping.is_set() and time.monotonic() < deadline:
+            if watch.changed.is_set() or last is None:
+                watch.changed.clear()
+                last = watch.report(FILTERS)
+            now = time.monotonic()
+            if now - started >= args.warmup:
+                sample = resources()
+                if baseline is None:
+                    baseline = {**sample, "at": now}
+                final = {**sample, "at": now}
+                samples += 1
+                peak_rss = max(peak_rss, sample["rssBytes"])
+                peak_tasks = max(peak_tasks, sample["tasks"])
+                peak_fds = max(peak_fds, sample["fds"])
+                peak_children = max(peak_children, sample["children"])
+                all_complete = all_complete and last["result"] == "complete"
+                elapsed = max(0.001, now - baseline["at"])
+                receipt.update(
+                    elapsedMeasurementSeconds=elapsed,
+                    samples=samples,
+                    meanCpuPercent=max(0.0, sample["cpuSeconds"] - baseline["cpuSeconds"])
+                    / elapsed
+                    * 100,
+                    peakCombinedRssBytes=peak_rss,
+                    rssGrowthBytes=sample["rssBytes"] - baseline["rssBytes"],
+                    counts=sample,
+                    peakTasks=peak_tasks,
+                    peakFds=peak_fds,
+                    peakChildren=peak_children,
+                    allSelectedCoverageComplete=all_complete,
+                    metrics=dict(watch.metrics),
+                    members=last["totals"]["members"],
+                )
+                save()
+            await asyncio.sleep(0.25)
+    finally:
+        before_close = time.monotonic()
+        watch.request_close()
+        await watch.close()
+        receipt["cleanupSeconds"] = time.monotonic() - before_close
+        receipt["cleanupError"] = watch.cleanup_error
+        receipt["afterCleanup"] = resources()
+    elapsed = 0 if baseline is None else final["at"] - baseline["at"]
+    complete_duration = elapsed >= args.duration - 1
+    failures = []
+    if not complete_duration:
+        failures.append("duration_incomplete")
+    if receipt.get("meanCpuPercent", float("inf")) > args.cpu_percent:
+        failures.append("cpu_budget")
+    if receipt.get("peakCombinedRssBytes", float("inf")) > args.rss_mib * 1024 * 1024:
+        failures.append("rss_budget")
+    if receipt.get("rssGrowthBytes", 0) > 16 * 1024 * 1024:
+        failures.append("rss_growth")
+    if not all_complete:
+        failures.append("coverage_incomplete")
+    if watch.cleanup_error or receipt["cleanupSeconds"] > 5:
+        failures.append("cleanup")
+    receipt.update(
+        status="accepted" if not failures else "failed",
+        failures=failures,
+        completedMeasurementSeconds=elapsed,
+    )
+    save()
+    print(json.dumps(receipt), flush=True)
+    return 0 if not failures else 1
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--warmup", type=float, default=120)
+    parser.add_argument("--duration", type=float, default=1800)
+    parser.add_argument("--cpu-percent", type=float, default=2)
+    parser.add_argument("--rss-mib", type=float, default=192)
+    args = parser.parse_args()
+    if args.warmup < 0 or args.duration < 1 or args.output.exists():
+        parser.error("use positive duration, nonnegative warmup and a fresh receipt path")
+    raise SystemExit(asyncio.run(measure(args)))

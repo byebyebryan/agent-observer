@@ -15,6 +15,10 @@ def main(argv=None) -> int:
         "--require-working-set-mesh", action="store_true",
         help="fail before tests unless the paired working-set SDK is installed",
     )
+    parser.add_argument(
+        "--require-dashboard", action="store_true",
+        help="fail before tests unless the qualified optional dashboard framework is installed",
+    )
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parent.parent
     docs = subprocess.run([sys.executable, "scripts/check-docs"], cwd=root, check=False)
@@ -32,6 +36,23 @@ def main(argv=None) -> int:
             print(
                 "FAIL: --require-working-set-mesh needs a compatible SDK with "
                 "agent-observer.mesh-working-set.v1 registered",
+                file=sys.stderr,
+            )
+            return 1
+    if args.require_dashboard:
+        try:
+            from importlib.metadata import version
+
+            if version("textual") != "8.2.8":
+                raise ImportError("dashboard qualification locks Textual 8.2.8")
+            sys.path.insert(0, str(root))
+            from agent_observer.terminal.dashboard_output import BoundedLinuxDriver
+
+            if not callable(BoundedLinuxDriver.wait_closed_async):
+                raise ImportError("dashboard output lifecycle unavailable")
+        except (ImportError, AttributeError):
+            print(
+                "FAIL: --require-dashboard needs qualified Textual 8.2.8; install .[dashboard]",
                 file=sys.stderr,
             )
             return 1

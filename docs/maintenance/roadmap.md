@@ -142,6 +142,10 @@ Preimplementation probes found fixed-rate facade CPU cost and stock terminal
 output/cleanup limitations. The first implementation checkpoint must qualify
 deadline-driven evaluation, bounded output and explicit cleanup ownership
 before the main UI build; normal-terminal framework smoke tests are insufficient.
+The branch now contains the persistent reader and bounded output foundations.
+An early three-source/300-identity consumer measurement still exceeds the
+reviewed 2% CPU target. The main UI remains behind this feasibility checkpoint;
+the roadmap does not claim a completed dashboard or resource acceptance.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
