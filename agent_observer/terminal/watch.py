@@ -274,6 +274,7 @@ class PersistentSources:
             self.clock_binding = binding
             self._last_manual = None
             for slot in self.slots:
+                slot.last_manual = None
                 if slot.guard is not None or (
                     slot.attempts and slot.stage in {"connecting", "warming"}
                 ):

@@ -620,6 +620,13 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn("Complete 1", summary)
             await pilot.press("?")
             self.assertEqual(app._overlay, "help")
+            await pilot.pause()
+            content = app.query_one("#content")
+            help_text = "\n".join(str(widget.content) for widget in content.children)
+            self.assertTrue(content.display)
+            self.assertIn("Keyboard help", help_text)
+            self.assertIn("q quit", help_text)
+            self.assertIn("Ctrl+C", help_text)
             await pilot.press("q")
             self.assertEqual(app.return_code, 0)
 

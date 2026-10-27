@@ -488,6 +488,65 @@ class PersistentWatchTest(unittest.IsolatedAsyncioTestCase):
         await until(lambda: watch.report(FILTERS)["result"] == "complete")
         self.assertEqual(watch.states[0]["clock"]["timeNamespace"], "time:8")
 
+    async def test_clock_regression_resets_blocked_retry_and_requires_fresh_baselines(self):
+        harness = Harness()
+        sources = (
+            terminal_source("live", mesh_source="working"),
+            terminal_source("blocked", mesh_source="sibling", home="second"),
+        )
+        watch = await self.make_watch(harness, sources)
+        await until(lambda: len(harness.queues) == 2)
+        await harness.queues["working"][-1].put(Frame())
+        wrong_namespace = "sha256:" + "b" * 64
+        await harness.queues["sibling"][-1].put(Frame(namespace=wrong_namespace))
+        await until(
+            lambda: watch.slots[0].state["read"] is not None
+            and watch.slots[1].stage == "blocked"
+            and watch.slots[1].guard is None
+        )
+        self.assertEqual(watch.report(FILTERS)["totals"]["members"], 1)
+
+        old_manual_time = harness.now
+        self.assertTrue(watch.retry("blocked"))
+        await until(lambda: len(harness.queues["sibling"]) == 2)
+        await harness.queues["sibling"][-1].put(Frame(namespace=wrong_namespace))
+        await until(
+            lambda: watch.slots[1].attempts == 2
+            and watch.slots[1].stage == "blocked"
+            and watch.slots[1].guard is None
+        )
+        self.assertEqual(watch.slots[1].last_manual, old_manual_time)
+
+        live_guard = watch.slots[0].guard
+        harness.now = old_manual_time - 9000
+        harness.clock = {"bootId": "fixture-boot", "timeNamespace": "time:8"}
+        watch.refresh_due()
+        await until(
+            lambda: watch.slots[0].stage == "blocked" and watch.slots[0].guard is None
+        )
+        self.assertTrue(live_guard.closed)
+        self.assertIsNone(watch.slots[1].last_manual)
+        revoked = watch.report(FILTERS)
+        self.assertEqual(revoked["totals"]["members"], 0)
+        self.assertNotEqual(revoked["totals"]["state"], "complete-empty")
+
+        self.assertTrue(watch.retry("blocked"))
+        self.assertFalse(watch.retry("blocked"))
+        await until(lambda: len(harness.queues["sibling"]) == 3)
+        self.assertEqual(watch.report(FILTERS)["totals"]["members"], 0)
+        harness.now += 1000
+        self.assertTrue(watch.retry("live"))
+        await until(lambda: len(harness.queues["working"]) == 2)
+        pending = watch.report(FILTERS)
+        self.assertEqual(pending["totals"]["members"], 0)
+        self.assertNotEqual(pending["result"], "complete")
+
+        await harness.queues["working"][-1].put(Frame())
+        await harness.queues["sibling"][-1].put(Frame())
+        await until(lambda: watch.report(FILTERS)["result"] == "complete")
+        self.assertEqual(watch.report(FILTERS)["totals"]["members"], 2)
+        self.assertTrue(all(s["clock"]["timeNamespace"] == "time:8" for s in watch.states))
+
     async def test_capacity_failure_is_visible_and_never_silently_truncated(self):
         harness = Harness()
         watch = await self.make_watch(

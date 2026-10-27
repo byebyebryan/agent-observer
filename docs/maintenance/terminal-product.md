@@ -739,9 +739,9 @@ siblings. Resource receipts explicitly exclude interaction/paint latency claims;
 those need their own draining-terminal evidence. See the
 [source-preview guide](../guides/dashboard.md) for setup and use.
 
-## Current qualification checkpoint (T9)
+## Resource and installed qualification baseline (T9)
 
-This checkpoint records progress, not final acceptance. The frozen product
+This checkpoint records the measured baseline and its limits. The frozen product
 candidate is source commit `d57233313f01983361b75fb0953662afa212c513`; its
 wheel SHA256 is
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`. The
@@ -798,6 +798,15 @@ Only aggregate metadata was retained. Existing installed update, key/resize,
 expiry and 100-cycle source-loss/recovery checks supplement this snapshot;
 those transitions were not reproduced in the real-fleet run. The stress failure
 is retained as a limit, not a preview blocker or a successful capacity result.
+
+Pre-push review also corrected tiny-terminal help: the `?` panel now replaces
+resize guidance with a short keyboard summary and a matching footer. The
+regression checks mounted help text rather than only the internal overlay flag,
+and passes on source and a rebuilt, separately installed wheel. Review also
+corrected manual-retry cooldowns after a receiving-clock change: timestamps from
+the old clock no longer prevent retry, while facts remain revoked until a fresh
+baseline is admitted. These corrections are checked separately from the frozen
+resource/native measurements above.
 
 The real cached fleet showed three complete sources and 15 members. Installed
 public-CLI readings matched independent metadata-only native RPC samples taken

@@ -143,11 +143,15 @@ without treating its current renderer or 60-second budget as the final design.
 ## Priorities and acceptance
 
 The [detailed terminal product plan](terminal-product.md) records the CLI
-contract, implemented dashboard interaction and measurable gates. The current
-unreleased candidate is product source commit
+contract, implemented dashboard interaction and measurable gates. The resource
+and installed qualification baseline is product source commit
 `d57233313f01983361b75fb0953662afa212c513`; its frozen wheel has SHA256
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0` and keeps
-a12 distribution metadata, distinct from published a12.
+a12 distribution metadata, distinct from published a12. The later source preview
+also corrects tiny-terminal help rendering and clears manual-retry cooldowns
+when the receiving clock changes. Focused regressions check visible help and
+retry with revoked facts/fresh baselines. The resource/native measurements below
+retain their original baseline; these corrections do not claim a new sustained run.
 
 The candidate passed 1,298 strict Mesh/dashboard source tests on each of Python
 3.11.17 and 3.14.8. Eight installed variants passed with 112 package-file

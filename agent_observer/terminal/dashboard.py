@@ -674,7 +674,9 @@ class DashboardApp(App[None]):
         self._age_cells = {}
         self._line_widgets = {}
         self._source_age_cells = {}
-        if self._layout_mode() == "tiny":
+        if self._overlay == "help":
+            children = self._overlay_widgets()
+        elif self._layout_mode() == "tiny":
             children = self._plain_lines(
                 [
                     "Resize to at least 60×16 to view sessions.",
@@ -864,6 +866,14 @@ class DashboardApp(App[None]):
 
     def _overlay_widgets(self) -> list[Static]:
         if self._overlay == "help":
+            if self._layout_mode() == "tiny":
+                return self._plain_lines(
+                    [
+                        "Keyboard help",
+                        "Esc or ? back · q quit · Ctrl+C exit",
+                        "Resize to 60×16 for session controls.",
+                    ]
+                )
             return self._plain_lines(
                 [
                     "Keyboard help",
@@ -2084,6 +2094,10 @@ class DashboardApp(App[None]):
             if self.size.width < 60:
                 return "Esc cancel · Ctrl+C interrupt"
             return "Type search · Enter apply · Esc restore · Ctrl+C interrupt"
+        if self._overlay == "help":
+            if self._layout_mode() == "tiny":
+                return "Esc or ? back · q quit · Ctrl+C exit"
+            return "? or Esc close help · q quit · Ctrl+C interrupt"
         if self._layout_mode() == "tiny":
             return "? help · q quit · Ctrl+C interrupt"
         if self._overlay == "filters":
@@ -2092,8 +2106,6 @@ class DashboardApp(App[None]):
             return "←→ field · ↑↓ option · Space toggle · r reset · Esc back · q quit"
         if self._overlay == "sort" or self._overlay == "group":
             return "↑/↓ choose · Enter apply · Esc back · q quit"
-        if self._overlay == "help":
-            return "? or Esc close help · q quit · Ctrl+C interrupt"
         if self._view == "sources":
             if self._focus == "source-details":
                 if self.size.width < 80:
