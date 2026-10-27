@@ -622,11 +622,18 @@ def resources():
             children += 1
         except (OSError, ValueError, IndexError):
             pass
+    tasks = asyncio.all_tasks()
+    task_census = {}
+    for task in tasks:
+        coroutine = task.get_coro()
+        name = getattr(coroutine, "__qualname__", type(coroutine).__qualname__)
+        task_census[name] = task_census.get(name, 0) + 1
     return {
         "cpuSeconds": own.ru_utime + own.ru_stime + retired.ru_utime + retired.ru_stime + live_cpu,
         "rssBytes": rss,
         "fds": len(list(Path("/proc/self/fd").iterdir())),
-        "tasks": len(asyncio.all_tasks()),
+        "tasks": len(tasks),
+        "taskCensus": task_census,
         "children": children,
     }
 
@@ -726,6 +733,7 @@ async def measure(args):
     lost_coverage = recovered_coverage = 0
     minimum_healthy_during_outage = len(watch.slots)
     first_window_minima = {}
+    first_minimum_task_census = {}
     trailing_counts = deque(maxlen=241)
     last = None
     failure_codes: set[str] = set()
@@ -923,9 +931,11 @@ async def measure(args):
                 elapsed = max(0.001, now - baseline["at"])
                 counts = {key: sample[key] for key in ("tasks", "fds", "children")}
                 if elapsed < 60:
+                    if counts["tasks"] <= first_window_minima.get("tasks", float("inf")):
+                        first_minimum_task_census = sample["taskCensus"]
                     for key, value in counts.items():
                         first_window_minima[key] = min(first_window_minima.get(key, value), value)
-                trailing_counts.append((now, counts))
+                trailing_counts.append((now, {**counts, "taskCensus": sample["taskCensus"]}))
                 while trailing_counts and trailing_counts[0][0] < now - 60:
                     trailing_counts.popleft()
                 receipt.update(
@@ -1017,6 +1027,10 @@ async def measure(args):
         receipt["steadyCounts"] = {
             "initial60SecondMinima": first_window_minima,
             "final60SecondMinima": final_minima,
+            "initialMinimumTaskCensus": first_minimum_task_census,
+            "finalMinimumTaskCensus": min(
+                (counts for _, counts in trailing_counts), key=lambda counts: counts["tasks"]
+            )["taskCensus"],
         }
         if any(final_minima[key] > value for key, value in first_window_minima.items()):
             failures.add("resource_counts_growth")

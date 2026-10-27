@@ -599,19 +599,39 @@ whose display values stay unchanged. List rows retain their widgets, and
 selection changes repaint only the affected rows. Long identity/evidence
 fields wrap in details rather than losing their suffixes to list ellipses.
 
-Early actual-CLI PTY probes used three invented sources x100 identities, 100
-navigation inputs, details/source/search, and 120x40/80x24/60x16/40x10 resize
-transitions. After correcting row invalidation and widget overhead, key-to-visible
-p95 was about 12 ms; measured resize responses were 20-62 ms. The no-color probe
-emitted no foreground/background SGR, printable q/j/k stayed in search, and
-explicit quit restored terminal flags. These are candidate observations, not
-complete installed-wheel, update-to-screen, sustained-resource or native proof.
+Source checks passed 1,283 tests on each of Python 3.11.17 and 3.14.8, with
+strict paired Mesh and dashboard checks enabled. The source-preview wheel passed
+all eight core/Mesh/dashboard/paired installation variants; the paired installs
+each passed 83 dashboard tests without skips. Inherited clipboard and URL-opening
+hooks are disabled, including search-input cut shortcuts. This unreleased wheel
+retains a12 metadata and is distinct from the immutable published a12 artifact.
 
-Before the final row-widget changes, short full-app runs after the two-minute
-warmup measured 5.55% CPU on Python 3.11 and 5.16% on 3.14, roughly 77-79 MiB RSS.
-Those observations still miss the user's provisional 5% target. Keep that miss
-visible with read-path optimization deferred; the required 30-minute and
-eight-hour complete-app runs remain outstanding.
+Actual installed-CLI PTY probes used three invented sources x100 identities,
+100 navigation inputs paced over about 25 seconds, details/source/search, and
+120x40/80x24/60x16/40x10 resize transitions. Key-to-visible p95 was about 13 ms;
+resize responses were 21-52 ms. The no-color probe emitted no foreground/background
+SGR, printable q/j/k stayed in search, and explicit quit restored terminal flags.
+Real cached-fleet checks displayed all three configured host/home sources.
+Metadata-only independent native RPC comparisons matched three selected local
+identities and their runtime/phase/activity evidence. These are bounded consumer
+and selected native comparisons, not remote classification or user acceptance.
+
+Thirty-minute full-app baseline runs after the two-minute warmup measured 5.34%
+CPU on Python 3.11 and 4.98% on 3.14, with peak RSS about 63-66 MiB. Both retained
+all 300 outcomes and restored the terminal. The 3.14 run's final task-count minimum
+was one higher than its initial minimum; cleanup returned to one task. Neither
+baseline qualifies the resource gate. The subsequent input-hook correction has
+new exact wheel bytes, and final-candidate normal/soak runs are in progress with
+task-type census evidence. Keep the provisional 5% limit and deferred read-path
+optimization explicit; eight-hour acceptance remains outstanding.
+
+The 8,192-outcome diagnostic did not retain complete coverage: sources timed out
+or reported gaps. A reader-only probe reproduced the failures; one source with
+1,024 outcomes established and retained a baseline. Independent fixture publisher
+processes did not establish complete aggregate coverage either. These results do
+not qualify capacity, even though the observed consumer RSS stayed below 768 MiB.
+The capacity/read-path boundary needs investigation before acceptance; this
+preview does not select a different SDK, transport or inventory fallback.
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted
