@@ -212,7 +212,15 @@ class DashboardApp(App[None]):
         while True:
             await changed.wait()
             changed.clear()
-            self._queue_projection()
+            if self.reader.requires_priority_refresh(self._projection):
+                if self._projection_timer is not None:
+                    self._projection_timer.stop()
+                    self._projection_timer = None
+                self._projection_requested = False
+                self._refresh_projection()
+                self._request_render(immediate=True)
+            else:
+                self._queue_projection()
 
     async def _age_updates(self) -> None:
         while True:

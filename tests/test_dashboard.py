@@ -54,6 +54,10 @@ class FakeReader:
             for item in self.states
         ]
 
+    def requires_priority_refresh(self, projection):
+        # This stand-in advances its source generation on every replacement.
+        return projection is None or not self.is_current(projection)
+
     def refresh_due(self):
         return None
 
@@ -84,6 +88,23 @@ def _session_state(source_config=None, *, rows=(), ids=(), lifecycle="observing"
 
 @unittest.skipUnless(TEXTUAL_AVAILABLE, "optional dashboard dependencies required")
 class DashboardTests(unittest.IsolatedAsyncioTestCase):
+    async def test_revoked_generation_bypasses_an_existing_cosmetic_timer(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            app._projection_timer = app.set_timer(60, app._run_queued_projection)
+            app._projection_requested = True
+            reader.replace([_session_state(lifecycle="failed", baseline=False)])
+            for _ in range(100):
+                if not app._all_rows and app._projection_timer is None:
+                    break
+                await asyncio.sleep(0.01)
+            self.assertEqual(app._all_rows, [])
+            self.assertFalse(app._selection_available)
+            self.assertIsNone(app._projection_timer)
+            self.assertTrue(reader.is_current(app._projection))
+
     async def test_input_cut_does_not_write_clipboard_and_ctrl_c_remains_global(self):
         app = DashboardApp(FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {})
         async with app.run_test(size=(80, 24)) as pilot:

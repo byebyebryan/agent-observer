@@ -77,6 +77,7 @@ class Harness:
         self.setup_barrier = None
         self.setup_cancelled = asyncio.Event()
         self.setup_calls = []
+        self.field_deadline = None
 
     def dependencies(self):
         harness = self
@@ -106,6 +107,8 @@ class Harness:
                 value.scopes[0]["namespace"] = self.frame.namespace
                 if now >= 1700:
                     value.scopes[0]["coverage"].update(status="partial", expiresAtMs=None)
+                if harness.field_deadline is not None and value.member_leases:
+                    value.member_leases[0]["fieldExpiresAtMs"] = {"runtime": harness.field_deadline}
                 return value
 
             def disconnect(self):
@@ -172,6 +175,48 @@ class Harness:
 
 
 class PersistentWatchTest(unittest.IsolatedAsyncioTestCase):
+    async def test_priority_latches_a_shorter_deadline_not_yet_seen_by_the_ui(self):
+        harness = Harness()
+        watch = await self.make_watch(harness)
+        await harness.baseline(watch)
+        old_projection = watch.projection(FILTERS)
+        self.assertEqual(old_projection.next_deadline_boottime_ms, 1500)
+        harness.field_deadline = 1005
+        revision = watch.revision
+        await harness.queues["working"][-1].put(Frame())
+        await until(lambda: watch.revision > revision)
+        self.assertEqual(watch.slots[0].deadline, 1005)
+        self.assertFalse(watch.requires_priority_refresh(old_projection))
+        harness.now = 1006
+        watch.refresh_due()
+        self.assertEqual(watch.slots[0].deadline, 1500)
+        self.assertTrue(watch.requires_priority_refresh(old_projection))
+        current = watch.projection(FILTERS)
+        self.assertFalse(watch.requires_priority_refresh(current))
+
+    async def test_only_revocation_and_due_deadlines_require_priority_refresh(self):
+        harness = Harness()
+        watch = await self.make_watch(harness)
+        await harness.baseline(watch)
+        projection = watch.projection(FILTERS)
+        self.assertEqual(projection.next_deadline_boottime_ms, 1500)
+        self.assertFalse(watch.requires_priority_refresh(projection))
+        revision = watch.revision
+        await harness.queues["working"][-1].put(Frame())
+        await until(lambda: watch.revision > revision)
+        self.assertFalse(watch.is_current(projection))
+        self.assertFalse(watch.requires_priority_refresh(projection))
+        projection = watch.projection(FILTERS)
+        harness.now = 1500
+        self.assertTrue(watch.requires_priority_refresh(projection))
+        projection = watch.projection(FILTERS)
+        self.assertEqual(projection.next_deadline_boottime_ms, 1700)
+        self.assertFalse(watch.requires_priority_refresh(projection))
+        epoch = watch.status()[0]["epoch"]
+        await harness.queues["working"][-1].put(Frame(kind="gap"))
+        await until(lambda: watch.status()[0]["epoch"] > epoch)
+        self.assertTrue(watch.requires_priority_refresh(projection))
+
     async def make_watch(self, harness, sources=None):
         sources = sources or (terminal_source("default", mesh_source="working"),)
         watch = PersistentSources(

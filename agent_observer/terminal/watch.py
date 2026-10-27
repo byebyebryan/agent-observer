@@ -108,6 +108,8 @@ class WatchProjection:
     revision: int
     epochs: tuple[tuple[str, int], ...]
     report: dict = field(repr=False)
+    next_deadline_boottime_ms: int | None = None
+    priority_revision: int = 0
 
 
 class PersistentSources:
@@ -156,6 +158,7 @@ class PersistentSources:
         self._closed = False
         self._last_now = self.now()
         self.revision = 0
+        self._priority_revision = 0
         self.cleanup_error: str | None = None
         self.metrics = {
             "frames": 0,
@@ -217,6 +220,10 @@ class PersistentSources:
         self._dirty()
 
     def _evaluate(self, slot: _Slot, now: int):
+        if slot.deadline is not None and slot.deadline <= now:
+            # Latch a crossed deadline even if the UI has not yet received the
+            # frame that introduced it, or read() replaces it with a future one.
+            self._priority_revision += 1
         started = time.process_time()
         try:
             read = slot.guard.read(now, slot.clock)
@@ -594,11 +601,30 @@ class PersistentSources:
 
     def projection(self, filters: dict, *, mode="list", target=None) -> WatchProjection:
         report = self.report(filters, mode=mode, target=target)
+        deadlines = [slot.deadline for slot in self.slots if slot.deadline is not None]
         return WatchProjection(
             self._projection_owner,
             self.revision,
             tuple((s.source.id, s.epoch) for s in self.slots),
             report,
+            min(deadlines) if deadlines else None,
+            self._priority_revision,
+        )
+
+    def requires_priority_refresh(self, projection: WatchProjection | None) -> bool:
+        """Revoked generations and crossed leases bypass cosmetic UI throttling."""
+        self.refresh_due()
+        if (
+            projection is None
+            or not isinstance(projection, WatchProjection)
+            or projection.owner is not self._projection_owner
+        ):
+            return True
+        return (
+            projection.epochs != tuple((slot.source.id, slot.epoch) for slot in self.slots)
+            or projection.priority_revision != self._priority_revision
+            or projection.next_deadline_boottime_ms is not None
+            and projection.next_deadline_boottime_ms <= self.now()
         )
 
     def is_current(self, projection: WatchProjection) -> bool:
