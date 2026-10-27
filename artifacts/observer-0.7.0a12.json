@@ -1,0 +1,47 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a12",
+  "wheel": "agent_observer-0.7.0a12-py3-none-any.whl",
+  "wheelSha256": "1cfc8896950240448dc0485d0e12e05157855dc54b84713f9da5a916fcafef1d",
+  "sourceRevision": "44f977403d88cc49e5c85cf7527f4f9ab4a41d44",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified CLI candidate; publication and independent managed reader selection require their own receipts.",
+    "Adds configured cached sessions overview/list/show/source health, safe text and terminal JSON interface1.",
+    "Bare agent-observer opens the configured overview; explicit diagnostics and core-only lazy help/schema remain available.",
+    "Preserves a11 clock recovery and unchanged API4/snapshot6/Service4/working-set1 producer schemas and leases.",
+    "Paired Mesh0.1.0a25; deployment selects the CLI reader only and preserves collector/publisher/full/Tmux/dashboard pins."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}
