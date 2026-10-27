@@ -307,7 +307,16 @@ class PersistentSources:
         try:
             while not self._stop.is_set():
                 self.refresh_due()
-                await asyncio.sleep(0.1)
+                now = self.now()
+                delay = min(
+                    (
+                        max(0.001, (slot.deadline - now) / 1000)
+                        for slot in self.slots
+                        if slot.deadline is not None
+                    ),
+                    default=0.1,
+                )
+                await asyncio.sleep(min(0.1, delay))
         except asyncio.CancelledError:
             raise
         except Exception:

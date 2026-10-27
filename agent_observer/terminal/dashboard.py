@@ -183,6 +183,8 @@ class DashboardApp(App[None]):
         search.can_focus = False
         search.cursor_blink = False
         self.set_focus(None)
+        if self._updates_stopped:
+            return
         self.app_resume_signal.subscribe(self, self._resume_refresh)
         self._refresh_projection(initial=True)
         self._update_tasks = [
@@ -192,32 +194,48 @@ class DashboardApp(App[None]):
         self._request_render(immediate=True)
 
     async def on_unmount(self) -> None:
+        self._mounted = False
         await self.stop_updates()
 
-    async def stop_updates(self) -> None:
-        """Stop only the app-owned reader notification and age tasks."""
+    def request_stop_updates(self) -> None:
+        """Synchronously prevent new app updates before reader revocation."""
         if self._updates_stopped:
             return
         self._updates_stopped = True
+        for attribute in ("_search_timer", "_projection_timer", "_render_timer"):
+            timer = getattr(self, attribute)
+            if timer is not None:
+                timer.stop()
+                setattr(self, attribute, None)
+        self._projection_requested = False
+
+    async def stop_updates(self) -> None:
+        """Stop only the app-owned reader notification and age tasks."""
+        self.request_stop_updates()
         tasks = tuple(self._update_tasks)
-        self._update_tasks.clear()
         for task in tasks:
             if not task.done():
                 task.cancel()
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
+        self._update_tasks = [task for task in self._update_tasks if not task.done()]
 
     async def _reader_updates(self) -> None:
         changed = self.reader.changed
         while True:
             await changed.wait()
+            if self._updates_stopped:
+                return
             changed.clear()
             if self.reader.requires_priority_refresh(self._projection):
+                self._withdraw_visible_projection()
                 if self._projection_timer is not None:
                     self._projection_timer.stop()
                     self._projection_timer = None
                 self._projection_requested = False
                 self._refresh_projection()
+                if self._projection is not None and self.reader.is_current(self._projection):
+                    self._paint_chrome()
                 self._request_render(immediate=True)
             else:
                 self._queue_projection()
@@ -225,6 +243,8 @@ class DashboardApp(App[None]):
     async def _age_updates(self) -> None:
         while True:
             await asyncio.sleep(1.0)
+            if self._updates_stopped:
+                return
             self.reader.refresh_due()
             if not self._ensure_current_projection():
                 continue
@@ -235,8 +255,13 @@ class DashboardApp(App[None]):
         projection = self._projection
         if projection is not None and self.reader.is_current(projection):
             return True
+        priority = self.reader.requires_priority_refresh(projection)
+        if priority:
+            self._withdraw_visible_projection()
         self._refresh_projection()
         if self._projection is not None and self.reader.is_current(self._projection):
+            if priority:
+                self._paint_chrome()
             self._rebind_age_cells()
             self._request_render(immediate=True)
             return True
@@ -376,6 +401,15 @@ class DashboardApp(App[None]):
         self._content_signature_value = None
         self._source_age_cells = {}
         self._message = "Refreshing current source state."
+
+    def _withdraw_visible_projection(self) -> None:
+        """Withdraw authority without waiting for framework widget teardown."""
+        self._discard_projection()
+        if not self._mounted or self._updates_stopped:
+            return
+        container = self._content or self.query_one("#content", VerticalScroll)
+        container.display = False
+        self._paint_chrome()
 
     @staticmethod
     def _rows_from_report(report: dict) -> list[dict]:
@@ -522,6 +556,8 @@ class DashboardApp(App[None]):
         container = self._content or self.query_one("#content", VerticalScroll)
         if content_changed:
             await container.remove_children()
+            if not self._mounted or self._updates_stopped:
+                return
             if render_projection is not None and not self.reader.is_current(render_projection):
                 if not self._ensure_current_projection():
                     await self._paint_pending()
@@ -542,18 +578,12 @@ class DashboardApp(App[None]):
             self._discard_projection()
             await self._paint_pending()
             return
-        self._update_static("header", self._header_text())
-        self._update_static("sources", self._source_ribbon())
-        self._update_static("toolbar", self._toolbar_text())
-        self._update_static("status", self._status_text())
-        self._update_static("footer", self._footer_text())
+        self._paint_chrome()
         if content_changed:
             if children:
                 await container.mount(*children)
-            if render_projection is not None and not self.reader.is_current(render_projection):
-                await self._paint_pending()
-                self._queue_projection()
-                return
+                if not self._mounted or self._updates_stopped:
+                    return
             self._content_signature_value = signature
             self._rebind_age_cells()
         else:
@@ -563,24 +593,51 @@ class DashboardApp(App[None]):
                     self._line_widgets[key].select_row(key == self._selected_key)
             self._refresh_age_cells()
             self._refresh_source_countdowns()
+        if render_projection is not None and not self.reader.is_current(render_projection):
+            await self._paint_pending()
+            self._queue_projection()
+            return
+        container.display = True
         self._painted_selection = self._selected_key
         self._last_paint_at = time.monotonic()
 
     async def _paint_pending(self) -> None:
         """Clear invalid cached facts and paint an explicit no-current-state view."""
-        self._discard_projection()
+        self._withdraw_visible_projection()
+        if not self._mounted or self._updates_stopped:
+            return
         container = self._content or self.query_one("#content", VerticalScroll)
         await container.remove_children()
-        children = self._content_widgets()
+        if not self._mounted or self._updates_stopped:
+            return
+        # Reader updates may replace the report while framework operations
+        # yield. This fallback must never pick up facts from that mutable state.
+        if self._overlay == "help":
+            children = self._overlay_widgets()
+        elif self._layout_mode() == "tiny":
+            children = self._plain_lines(
+                ["Resize to at least 60×16 to view sessions.", "Use ? for keys · q quits."]
+            )
+        else:
+            children = self._plain_lines(
+                ["Waiting for a current projection; coverage is not yet known."]
+            )
+        if children:
+            await container.mount(*children)
+            if not self._mounted or self._updates_stopped:
+                return
+        container.display = True
+        self._content_signature_value = None
+        self._last_paint_at = time.monotonic()
+
+    def _paint_chrome(self) -> None:
+        if not self._mounted or self._updates_stopped:
+            return
         self._update_static("header", self._header_text())
         self._update_static("sources", self._source_ribbon())
         self._update_static("toolbar", self._toolbar_text())
         self._update_static("status", self._status_text())
         self._update_static("footer", self._footer_text())
-        if children:
-            await container.mount(*children)
-        self._content_signature_value = self._content_signature()
-        self._last_paint_at = time.monotonic()
 
     def _update_static(self, widget_id: str, value: str) -> None:
         if self._render_values.get(widget_id) == value:
@@ -1657,6 +1714,8 @@ class DashboardApp(App[None]):
         self._queue_projection()
 
     async def _commit_search_draft(self) -> None:
+        if self._updates_stopped:
+            return
         if self._search_timer is not None:
             self._search_timer.stop()
         self._search_timer = None
@@ -1670,13 +1729,15 @@ class DashboardApp(App[None]):
 
     async def _debounced_search_update(self) -> None:
         self._search_timer = None
-        if not self._search_open:
+        if self._updates_stopped or not self._search_open:
             return
         widget = self.query_one("#search", Input)
         self._apply_search_value(widget.value)
         self._request_render()
 
     async def _cancel_search(self) -> None:
+        if self._updates_stopped:
+            return
         if self._search_timer is not None:
             self._search_timer.stop()
             self._search_timer = None
@@ -1710,6 +1771,9 @@ class DashboardApp(App[None]):
             event.stop()
             event.prevent_default()
             self.exit(return_code=130)
+            return
+
+        if self._updates_stopped:
             return
 
         focused = self.focused
@@ -1902,14 +1966,14 @@ class DashboardApp(App[None]):
         self._handle_key(event)
 
     async def on_input_changed(self, event: Input.Changed) -> None:
-        if event.input.id == "search":
+        if not self._updates_stopped and event.input.id == "search":
             self._on_search_changed(event.value)
 
     def on_resize(self, _event: events.Resize) -> None:
-        if self._mounted:
+        if self._mounted and not self._updates_stopped:
             self.reader.refresh_due()
             self._ensure_current_projection()
-        self._sync_page_rows()
+            self._sync_page_rows()
         self._request_render(immediate=True)
 
     def _resume_refresh(self, _app) -> None:

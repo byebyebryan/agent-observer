@@ -599,8 +599,8 @@ whose display values stay unchanged. List rows retain their widgets, and
 selection changes repaint only the affected rows. Long identity/evidence
 fields wrap in details rather than losing their suffixes to list ellipses.
 
-Source checks passed 1,285 tests on each of Python 3.11.17 and 3.14.8, with
-strict paired Mesh and dashboard checks enabled. The source-preview wheel passed
+The frozen T5 checkpoint passed 1,285 source tests on each of Python 3.11.17
+and 3.14.8, with strict paired Mesh and dashboard checks enabled. The source-preview wheel passed
 all eight core/Mesh/dashboard/paired installation variants; the paired installs
 each passed 85 dashboard tests without skips. Inherited clipboard and URL-opening
 hooks are disabled, including search-input cut shortcuts. This unreleased wheel
@@ -616,14 +616,23 @@ Metadata-only independent native RPC comparisons matched three selected local
 identities and their runtime/phase/activity evidence. These are bounded consumer
 and selected native comparisons, not remote classification or user acceptance.
 
-The frozen T5 wheel completed the fixed 30-minute profile after two minutes of
-warmup. Python 3.14 passed at 4.79% CPU and about 66 MiB peak RSS; Python 3.11
-missed the provisional limit at 5.14% and about 63 MiB. Both retained all 300
-outcomes, stable task/FD/child counts and restored the terminal. These measurements
-include the resource sampler and receipt generation in the consumer process.
-An external sampler is needed to distinguish that cost from the actual public
-CLI before attributing the small 3.11 miss to the application. The limit remains
-5%; read-path optimization remains deferred.
+Fixed 30-minute measurements after two minutes of warmup retained all 300
+outcomes and restored the terminal. The two frozen candidates have different
+measurement boundaries:
+
+| Candidate and measured boundary | Python 3.11 CPU | Python 3.14 CPU | Peak RSS |
+| --- | --- | --- | --- |
+| T5 dashboard with sampler/receipt work in the consumer | 5.14%, failed | 4.79%, passed | 63-66 MiB |
+| T6 public CLI with an external sampler and no in-process probe | 5.16%, failed | 4.93%, passed | 64-67 MiB |
+
+The T6 public CLI had no observed owned child births, kept every visible
+coverage check complete, and passed explicit quit and OS SIGINT with terminal
+reset and flags restored. External sampler CPU was reported separately and
+never subtracted. The small Python 3.11 miss therefore remains present with
+sampler work outside the consumer; it is not explained by the original
+in-process measurement overhead. The limit remains 5%, and read-path optimization
+remains deferred. The following expiry/shutdown corrections require fresh
+qualification of their own artifact; these earlier receipts do not qualify it.
 
 T5 also completed eight measured hours on Python 3.14: 4.93% CPU, about 70 MiB
 peak RSS and 3.28 MiB growth. The ten-minute outage had one loss and one fresh
@@ -690,6 +699,29 @@ deadlines independently of ordinary revisions; the UI cancels cosmetic timers
 and paints revoked generations or due leases immediately. The deadline marker
 remains latched if a not-yet-painted frame shortened a lease and the next read
 has already replaced that deadline. Ordinary metadata changes remain throttled.
+
+The real public-cache expiry probe exposed another frontend delay: the admitted
+projection had withdrawn authority before the screen updated, while framework
+timer dispatch and widget removal/remount pushed visible withdrawal past 250 ms.
+The UI now hides revoked content and paints explicit uncertainty synchronously
+before waiting for that framework work. A fresh fenced projection can update
+source health immediately; content becomes visible again only after the final
+projection fence. The pending view contains only fixed guidance/help, so a
+background report replacement during unmount cannot introduce unfenced facts.
+Input-only changes retain their current content rather than withdrawing authority.
+The clock worker now wakes at an earlier known receiving deadline instead of
+sleeping through it until the next 100 ms check. Its ordinary idle polling rate,
+proof cadence and guard/native acquisition policy are unchanged. Focused tests
+cover blocked teardown, concurrent pending-view updates and revocation during
+the final age update. Exact-candidate terminal and sustained qualification
+remain required after this correction.
+
+Shutdown stops app update requests and timers synchronously before reader
+revocation can wake the UI during teardown. The outer owner still joins the
+notification/age tasks asynchronously. In-flight paints recheck the stop gate
+after framework awaits, so they cannot resume against unmounted widgets.
+Deterministic tests cover the stop-before-revoke order, pending-paint resumption,
+the retained async join and an app factory without the optional synchronous hook.
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted

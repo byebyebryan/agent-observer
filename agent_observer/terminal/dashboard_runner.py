@@ -57,12 +57,22 @@ async def run_dashboard(
     requested_signal = None
     code, reason = 0, None
     started_cleanup = None
+    ui_stop_requested = False
+    ui_stop_request_failed = False
     previous_no_color = os.environ.get("NO_COLOR")
     if no_color:
         os.environ["NO_COLOR"] = "1"
 
     def begin_cleanup():
-        nonlocal cleanup, started_cleanup
+        nonlocal cleanup, started_cleanup, ui_stop_requested, ui_stop_request_failed
+        if not ui_stop_requested:
+            ui_stop_requested = True
+            request_stop = getattr(app, "request_stop_updates", None)
+            if callable(request_stop):
+                try:
+                    request_stop()
+                except Exception:
+                    ui_stop_request_failed = True
         reader.request_close()
         if cleanup is None:
             started_cleanup = time.monotonic()
@@ -115,6 +125,8 @@ async def run_dashboard(
 
         async def finish():
             failures = []
+            if ui_stop_request_failed:
+                failures.append("ui_stop_request_failed")
             if app is not None:
                 try:
                     await app.stop_updates()

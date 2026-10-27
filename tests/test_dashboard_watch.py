@@ -7,6 +7,7 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from test_terminal_model import NAMESPACE, lease, read, row
 from test_terminal_sources import source_from_sample, synthetic_state, terminal_source
@@ -175,6 +176,24 @@ class Harness:
 
 
 class PersistentWatchTest(unittest.IsolatedAsyncioTestCase):
+    async def test_clock_worker_does_not_sleep_past_a_known_receiving_deadline(self):
+        harness = Harness()
+        watch = PersistentSources(
+            (terminal_source("default", mesh_source="working"),),
+            dependencies=harness.dependencies(),
+        )
+        watch.slots[0].deadline = harness.now + 5
+        sleeps = []
+
+        async def stop_at_sleep(delay):
+            sleeps.append(delay)
+            watch._stop.set()
+
+        with patch("agent_observer.terminal.watch.asyncio.sleep", stop_at_sleep):
+            await watch._clock_worker()
+        self.assertEqual(sleeps, [0.005])
+        self.assertIsNone(watch.cleanup_error)
+
     async def test_priority_latches_a_shorter_deadline_not_yet_seen_by_the_ui(self):
         harness = Harness()
         watch = await self.make_watch(harness)

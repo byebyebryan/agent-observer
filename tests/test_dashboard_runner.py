@@ -12,6 +12,7 @@ from agent_observer.terminal.dashboard_runner import run_dashboard
 
 class Reader:
     def __init__(self, *, blocked=False):
+        self.events = []
         self.requested = False
         self.close_started = asyncio.Event()
         self.release = asyncio.Event()
@@ -25,6 +26,7 @@ class Reader:
         pass
 
     def request_close(self):
+        self.events.append("reader-request-close")
         self.requested = True
 
     async def close(self):
@@ -39,6 +41,7 @@ class Reader:
 
 class App:
     def __init__(self, *, blocked_restore=False, failure=None):
+        self.events = None
         self.started = asyncio.Event()
         self.exit_requested = asyncio.Event()
         self.restoring = asyncio.Event()
@@ -49,6 +52,7 @@ class App:
         self.return_code = 0
         self.restored = False
         self.stopped = False
+        self.stop_requested = False
         self.cancellations = 0
         self.failure = failure
 
@@ -70,14 +74,22 @@ class App:
         self.return_code = return_code
         self.exit_requested.set()
 
+    def request_stop_updates(self):
+        self.stop_requested = True
+        if self.events is not None:
+            self.events.append("app-stop-request")
+
     async def stop_updates(self):
         self.stopped = True
+        if self.events is not None:
+            self.events.append("app-stop-join")
 
 
 class DashboardRunnerTests(unittest.IsolatedAsyncioTestCase):
     def launch(self, reader=None, app=None, **kwargs):
         reader = reader or Reader()
         app = app or App()
+        app.events = reader.events
 
         def factory(_reader, _filters, **options):
             self.assertIs(_reader, reader)
@@ -114,6 +126,39 @@ class DashboardRunnerTests(unittest.IsolatedAsyncioTestCase):
         reader.release.set()
         result = await task
         self.assertEqual(result.code, 0)
+        self.assertTrue(reader.closed and app.restored and app.stopped)
+        self.assertTrue(app.stop_requested)
+        self.assertEqual(
+            reader.events[:2], ["app-stop-request", "reader-request-close"]
+        )
+        self.assertIn("app-stop-join", reader.events)
+
+    async def test_legacy_app_factory_without_sync_stop_hook_still_cleans_up(self):
+        app = App()
+        app.request_stop_updates = None
+        task, reader, app = self.launch(app=app)
+        await app.started.wait()
+        app.exit()
+        result = await task
+        self.assertEqual(result.code, 0)
+        self.assertTrue(reader.closed and app.restored and app.stopped)
+        self.assertNotIn("app-stop-request", reader.events)
+        self.assertIn("app-stop-join", reader.events)
+
+    async def test_sync_stop_hook_failure_does_not_skip_reader_or_app_join(self):
+        app = App()
+
+        def fail_stop():
+            raise RuntimeError("synthetic UI stop failure")
+
+        app.request_stop_updates = fail_stop
+        task, reader, app = self.launch(app=app)
+        await app.started.wait()
+        app.exit()
+        result = await task
+        self.assertEqual(result.code, 3)
+        self.assertEqual(result.reason, "ui_stop_request_failed")
+        self.assertIn("ui_stop_request_failed", result.failures)
         self.assertTrue(reader.closed and app.restored and app.stopped)
 
     async def test_repeated_cancel_never_cancels_ui_restore_or_owned_reader_join(self):

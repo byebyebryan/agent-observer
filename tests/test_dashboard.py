@@ -22,6 +22,7 @@ class FakeReader:
         self.slots = [SimpleNamespace(source=item["config"]) for item in states]
         self.changed = asyncio.Event()
         self.revision = 1
+        self.priority_revision = 1
         self.retry_calls = []
         self.stages = {item["config"]["id"]: "observing" for item in states}
         self._owner = object()
@@ -31,6 +32,7 @@ class FakeReader:
         return SimpleNamespace(
             owner=self._owner,
             revision=self.revision,
+            priority_revision=self.priority_revision,
             report=report(self.states, mode=mode, filters=filters, target=target),
         )
 
@@ -55,8 +57,7 @@ class FakeReader:
         ]
 
     def requires_priority_refresh(self, projection):
-        # This stand-in advances its source generation on every replacement.
-        return projection is None or not self.is_current(projection)
+        return projection is None or projection.priority_revision != self.priority_revision
 
     def refresh_due(self):
         return None
@@ -65,10 +66,12 @@ class FakeReader:
         self.retry_calls.append(source_id)
         return source_id in self.stages and self.stages[source_id] in {"blocked", "retry-wait"}
 
-    def replace(self, states):
+    def replace(self, states, *, priority=True):
         self.states = list(states)
         self.slots = [SimpleNamespace(source=item["config"]) for item in states]
         self.revision += 1
+        if priority:
+            self.priority_revision += 1
         self.changed.set()
 
 
@@ -88,6 +91,166 @@ def _session_state(source_config=None, *, rows=(), ids=(), lifecycle="observing"
 
 @unittest.skipUnless(TEXTUAL_AVAILABLE, "optional dashboard dependencies required")
 class DashboardTests(unittest.IsolatedAsyncioTestCase):
+    async def test_sync_stop_blocks_reader_wakeup_and_async_stop_still_joins_tasks(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            projection_count = 0
+            original_projection = reader.projection
+
+            def count_projection(*args, **kwargs):
+                nonlocal projection_count
+                projection_count += 1
+                return original_projection(*args, **kwargs)
+
+            reader.projection = count_projection
+            existing_projections = projection_count
+            reader._priority_checks = 0
+            original_priority_check = reader.requires_priority_refresh
+
+            def count_priority_checks(projection):
+                reader._priority_checks += 1
+                return original_priority_check(projection)
+
+            reader.requires_priority_refresh = count_priority_checks
+            app._projection_requested = True
+            app._search_timer = app.set_timer(60, app._debounced_search_update)
+            app._projection_timer = app.set_timer(60, app._run_queued_projection)
+            app._render_timer = app.set_timer(60, app._paint)
+            owned_tasks = tuple(app._update_tasks)
+
+            app.request_stop_updates()
+            self.assertTrue(app._updates_stopped)
+            self.assertIsNone(app._search_timer)
+            self.assertIsNone(app._projection_timer)
+            self.assertIsNone(app._render_timer)
+            self.assertFalse(app._projection_requested)
+            self.assertTrue(all(not task.done() for task in owned_tasks))
+
+            reader.replace([_session_state(lifecycle="failed", baseline=False)])
+            await asyncio.wait_for(owned_tasks[0], 1)
+            self.assertEqual(reader._priority_checks, 0)
+            self.assertEqual(projection_count, existing_projections)
+
+            await app.stop_updates()
+            self.assertTrue(all(task.done() for task in owned_tasks))
+            self.assertEqual(app._update_tasks, [])
+
+    async def test_quit_stop_and_reader_wakeup_fence_pending_paint_resume(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            container = app.query_one("#content")
+            original_remove = container.remove_children
+            original_mount = container.mount
+            removal_started = asyncio.Event()
+            release_removal = asyncio.Event()
+            mount_calls = []
+
+            async def delayed_remove():
+                removal_started.set()
+                await release_removal.wait()
+                return await original_remove()
+
+            async def track_mount(*children, **kwargs):
+                mount_calls.append(len(children))
+                return await original_mount(*children, **kwargs)
+
+            container.remove_children = delayed_remove
+            container.mount = track_mount
+            paint_task = asyncio.create_task(app._paint_pending())
+            try:
+                await asyncio.wait_for(removal_started.wait(), 1)
+                self.assertFalse(container.display)
+                app.request_stop_updates()
+                reader.replace([_session_state(lifecycle="failed", baseline=False)])
+                reader_task = app._update_tasks[0]
+                await asyncio.wait_for(reader_task, 1)
+            finally:
+                release_removal.set()
+            await asyncio.wait_for(paint_task, 1)
+            self.assertFalse(container.display)
+            self.assertEqual(mount_calls, [])
+
+            owned_tasks = tuple(app._update_tasks)
+            await app.stop_updates()
+            self.assertTrue(all(task.done() for task in owned_tasks))
+
+    async def test_revoked_facts_are_hidden_while_widget_removal_is_blocked(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            container = app.query_one("#content")
+            remove_children = container.remove_children
+            removal_started = asyncio.Event()
+            release_removal = asyncio.Event()
+
+            async def delayed_removal():
+                removal_started.set()
+                await release_removal.wait()
+                return await remove_children()
+
+            container.remove_children = delayed_removal
+            reader.replace([_session_state(lifecycle="failed", baseline=False)])
+            try:
+                await asyncio.wait_for(removal_started.wait(), 1)
+                # Revocation must withdraw visible authority before waiting for
+                # framework unmount/remount work, which can exceed the budget.
+                self.assertFalse(container.display)
+                self.assertNotIn("1 members", str(app.query_one("#header").render()))
+            finally:
+                release_removal.set()
+            await pilot.pause()
+            self.assertTrue(container.display)
+            self.assertEqual(app._all_rows, [])
+            self.assertFalse(app._selection_available)
+
+    async def test_pending_view_cannot_adopt_facts_arriving_during_unmount(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            await app.stop_updates()
+            # Keep the asynchronous update loops joined while exercising the
+            # pending renderer directly as an isolated UI operation.
+            app._updates_stopped = False
+            container = app.query_one("#content")
+            remove_children = container.remove_children
+
+            async def update_during_removal():
+                await remove_children()
+                reader.replace([_session_state(rows=[row("bravo")], ids=["bravo"])])
+                app._refresh_projection()
+
+            container.remove_children = update_during_removal
+            await app._paint_pending()
+            self.assertTrue(reader.is_current(app._projection))
+            self.assertEqual(app._line_widgets, {})
+            self.assertIsNone(app._content_signature_value)
+            self.assertTrue(container.display)
+
+    async def test_last_age_update_cannot_unhide_a_revoked_projection(self):
+        reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            await app.stop_updates()
+            app._updates_stopped = False
+            refresh_ages = app._refresh_age_cells
+
+            def revoke_after_ages():
+                refresh_ages()
+                reader.replace([_session_state(lifecycle="failed", baseline=False)])
+
+            app._refresh_age_cells = revoke_after_ages
+            await app._paint()
+            self.assertEqual(app._line_widgets, {})
+            self.assertIsNone(app._content_signature_value)
+            self.assertTrue(app.query_one("#content").display)
+
     async def test_revoked_generation_bypasses_an_existing_cosmetic_timer(self):
         reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
         app = DashboardApp(reader, {})
@@ -176,7 +339,10 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             original = tuple(app.query_one("#content").children)
             # An admitted replacement with identical display values must not
             # lose the registry used to repaint an explicit selection change.
-            app.reader.replace([_session_state(rows=rows, ids=["alpha", "beta"])])
+            app.reader.replace(
+                [_session_state(rows=rows, ids=["alpha", "beta"])], priority=False
+            )
+            self.assertFalse(app.reader.requires_priority_refresh(app._projection))
             self.assertTrue(app._ensure_current_projection())
             await pilot.press("j")
             await pilot.pause()
