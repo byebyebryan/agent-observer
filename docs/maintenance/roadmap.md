@@ -132,8 +132,16 @@ without treating its current renderer or 60-second budget as the final design.
 
 The [detailed terminal product plan](terminal-product.md) records the inspected
 baseline, CLI contract, proposed dashboard interaction and measurable gates.
-The user selected the CLI-first implementation slice; dashboard layout,
-dependencies, persistent reconnect and sustained budgets remain proposed.
+The CLI-first slice is released. The reviewed TUI implementation uses a
+full session list with on-demand details, a persistent source-health strip,
+shared configuration/semantics and a separately supervised read lifecycle.
+Layout, keys, optional dependencies, reconnect and measurable resource gates
+are documented in that plan. The user authorized implementation under
+luna-goal-loop, starting with the feasibility and lifecycle checkpoint.
+Preimplementation probes found fixed-rate facade CPU cost and stock terminal
+output/cleanup limitations. The first implementation checkpoint must qualify
+deadline-driven evaluation, bounded output and explicit cleanup ownership
+before the main UI build; normal-terminal framework smoke tests are insufficient.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |

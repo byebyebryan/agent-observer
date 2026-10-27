@@ -33,7 +33,7 @@ carries the shared showcase and project relationships.
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
 | [Roadmap](maintenance/roadmap.md) | CLI/dashboard milestone, acceptance and deferred work |
-| [Terminal product plan](maintenance/terminal-product.md) | CLI source checkpoint, shared contract and proposed dashboard gates |
+| [Terminal product plan](maintenance/terminal-product.md) | Released CLI baseline, reviewed TUI proposal, feasibility findings and acceptance gates |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.
