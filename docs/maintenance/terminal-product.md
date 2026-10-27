@@ -6,8 +6,10 @@ direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
 setup. Managed reader selection is separate from collector/publisher selection.
 The reviewed dashboard plan is implemented as an unreleased source preview.
-Textual 8.2.8 passes the current source and installed test boundaries, while
-long-run and capacity qualification remain open. Focused native evidence is
+Textual 8.2.8 passes the current source and installed test boundaries. The short
+realistic-fleet check passes; the long-run gate remains open. The user replaced the
+8,192-session stress requirement with that limited preview check; large-fleet
+optimization is deferred. Focused native evidence is
 bounded to the selected cases; human acceptance, publication and deployment
 remain separate. The preview does not select a deployment.
 
@@ -516,14 +518,14 @@ silently enable another transport.
 
 | Area | Proposed bound and proof |
 | --- | --- |
-| Sources/model | Reuse at most eight sources, 4,096 identities/source, aggregate 8,192 outcomes and 32 MiB encoded admitted payload. Reserve configured shares before I/O; defaults 1,024 identities/4 MiB per source. Include uncertainty/nonmembers/support, not only displayed rows. These are admission limits, not predecode or peak-RSS guarantees; account for SDK buffers/candidate copies separately. |
+| Sources/model | Reuse at most eight sources, 4,096 identities/source, aggregate 8,192 outcomes and 32 MiB encoded admitted payload. Reserve configured shares before I/O; defaults 1,024 identities/4 MiB per source. Include uncertainty/nonmembers/support, not only displayed rows. These are admission limits, not qualified fleet capacity, predecode or peak-RSS guarantees; account for SDK buffers/candidate copies separately. |
 | Over capacity | Revoke/block the affected generation visibly. Do not truncate inventory silently, choose winners by admission order or report complete coverage. Other reserved sources remain usable. |
 | UI work | At most four cosmetic repaints/second and one age-only update/second; unchanged heartbeats do not rebuild/repaint the table. Turn animations off. Materialize at most 200 list rows/page; filtering/counts span all accepted rows. Paging preserves exact selection. |
 | Queues/history | One pending stream read/source and one latest UI replacement/source; bounded epoch/reason/retry state, no event history or disk session cache. Verify SDK/task/child cleanup rather than assuming it. |
 | Output | At most 512 KiB pending encoded output; a full/stalled sink must not block the model/input loop. Fail after two seconds without drain progress and verify termios restoration plus bounded owned cleanup. |
 | Normal quiet run | Three sources x 100 identities, 120x40, two-minute warmup then 30 minutes: client plus owned child CPU averages <=5% of one core provisionally; combined RSS <=192 MiB. Report existing producer cost separately. The user relaxed the original 2% target and deferred read-path optimization. |
 | Long run | Eight hours after warmup: RSS growth <=16 MiB; no growing task/FD/child counts or retained old generations. Source failure/recovery must be included. |
-| Capacity | Eight sources / 8,192 identities within reserved shares: combined RSS <=768 MiB; update-to-screen p95 <=1 s. Normal workload p95 <=250 ms. |
+| Practical preview | Short 20-second installed-dashboard check of the actual configured cached fleet. Verify current projection, source health, matching/rendered counts, clean exit and terminal restoration. Reuse the existing controlled installed update, key/resize, expiry and disconnect/fresh-baseline recovery results; the real-fleet snapshot does not reproduce those transitions or establish sustained performance. Normal UI update p95 remains <=250 ms at the timing boundary recorded below. The former eight-source/8,192-session stress gate is deferred with optimization; it is not required for this preview. |
 | Interaction | Resize/key-to-visible response p95 <=100 ms at normal load; measure real PTYs at 120x40, 80x24, 60x16 and 40x10 guidance. |
 | Recovery | Warming/source UI within 500 ms independently of setup. Controlled available source baseline within five seconds of an attempt starting, plus at most 30 seconds backoff and the documented global start queue. Partial native coverage stays partial. |
 | Outage/churn | Ten-minute outage obeys retry limits. 100 controlled disconnect/recovery cycles leave task/FD/child counts at steady state. One failed feed never stops healthy siblings. |
@@ -662,7 +664,8 @@ They are distinct from Observer's `baseline_timeout`, and observed frame sizes
 were below the reserved limits. The configured consumer facade exposes no
 setting for Mesh's internal I/O/handshake deadlines or queue policy. Raising the
 dashboard connect timeout is not a demonstrated fix. The owning read/producer
-boundary needs source-specific investigation before capacity acceptance; this
+boundary needs source-specific investigation before any later large-fleet
+capacity claim. That stress qualification is now deferred by the user; this
 preview does not select a different SDK, transport or inventory fallback.
 
 Process suspend/resume review found that the inherited suspend path closed the
@@ -726,7 +729,9 @@ the retained async join and an app factory without the optional synchronous hook
 
 `scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
 `soak` and `capacity` resource profiles. Short/custom runs cannot become accepted
-qualification. Qualification binds exact fixture roster/outcomes, 120x40 UI,
+normal or soak qualification. The separate practical preview smoke does not
+claim either sustained or large-fleet acceptance. Qualification binds exact
+fixture roster/outcomes, 120x40 UI,
 durations, runtime bytes, coverage and cleanup. The soak proof names the failed
 source and requires advanced epochs, a fresh baseline and continuously healthy
 siblings. Resource receipts explicitly exclude interaction/paint latency claims;
@@ -768,7 +773,7 @@ This tests process job control, not physical machine sleep.
 
 The latest T9 receipt shows the 8-hour soak still running, with no terminal
 outcome available. The original T5 task-minimum failure remains failed.
-Practical eight-source/8192-outcome capacity is unmet:
+Historical eight-source/8192-outcome stress capacity is unmet and deferred:
 both baseline and traced 8x1024 reader-only runs timed out before reaching
 eight complete sources. Each had a sampled maximum of four complete sources/4,096
 members and ended with three/3,072. Consumer CPU was 45.60–47.38 seconds per minute and
@@ -776,7 +781,17 @@ maximum event-loop lateness was 1.43–1.48 seconds. The consumer had no Textual
 UI; traces show substantial cached source/publication work but do not prove the
 exact timeout cause or establish dashboard capacity. Read-path optimization
 remains deferred, with no SDK tuning, guard bypass, dark prepared branch or
-hidden fallback.
+hidden fallback. The user replaced that mandatory stress gate with a quick
+check of the actual cached fleet, supplemented by existing controlled installed
+update, interaction and source-recovery checks.
+The replacement installed-dashboard smoke passed on Python 3.14.8: after twenty
+seconds the public projection was current, with three complete sources,
+16 members, zero uncertainty and all 16 rows materialized. Exit was zero,
+terminal flags and reset were restored, and owned cleanup took 0.18 seconds.
+Only aggregate metadata was retained. Existing installed update, key/resize,
+expiry and 100-cycle source-loss/recovery checks supplement this snapshot;
+those transitions were not reproduced in the real-fleet run. The stress failure
+is retained as a limit, not a preview blocker or a successful capacity result.
 
 The real cached fleet showed three complete sources and 15 members. Installed
 public-CLI readings matched independent metadata-only native RPC samples taken
@@ -806,8 +821,9 @@ Headless input/literal-label/resize probes passed on Python 3.11.17 and 3.14.8
 at 120x40, 80x24, 60x16 and 40x10. Ten real PTY cases distinguished the default
 behavior from the required no-color and cleanup ownership paths. These
 preimplementation checks validated assumptions; later source, installed and
-resource evidence is recorded in the T9 checkpoint above. The eight-source
-capacity and eight-hour stability gates remain open.
+resource evidence is recorded in the T9 checkpoint above. The realistic preview
+check passes; the eight-hour stability gate remains open. Large-fleet stress
+testing is deferred.
 
 ## Implementation structure and dependencies
 
@@ -836,7 +852,7 @@ does not replace explicit guard/SDK cleanup or source-specific error handling.
 
 Curses would reduce third-party dependencies but require custom layout, focus
 and terminal-test plumbing. Textual is the selected source-preview framework;
-the capacity gate and release acceptance still apply.
+the realistic preview check and release acceptance still apply.
 Rich remains a
 transitive dashboard dependency, never a core/finite-CLI requirement. Install
 `.[mesh,dashboard]`; lazy imports keep core-only and mesh-only behavior intact.
@@ -860,9 +876,9 @@ Publication and managed deployment remain separate later steps.
 | Stage | Work and concrete exit |
 | --- | --- |
 | T0: design review | Complete; the selected full-list layout with on-demand details, source/view distinction, keys, Textual and budgets are specified above. |
-| T1: feasibility and lifecycle foundation | Implemented and covered by source/installed checks. Current normal, quiet-expiry and cleanup evidence is summarized in T9; practical capacity remains unmet. |
+| T1: feasibility and lifecycle foundation | Implemented and covered by source/installed checks. Current normal, quiet-expiry and cleanup evidence is summarized in T9; large-fleet stress capacity is deferred. |
 | T2: usable TUI preview | Implemented as a source preview with list, health, details, search/filters, source view, stable selection, help, resize and guidance. Actual PTY and installed checks pass at their stated boundaries; user acceptance is pending. |
-| T3: resilience and budgets | Partial: expiry, startup, interaction, job-control recovery and churn checks pass. The eight-hour soak is pending and eight-source/8192-outcome capacity is unmet. |
+| T3: resilience and budgets | Partial: expiry, startup, interaction, job-control recovery, churn and the short realistic preview check pass. The eight-hour soak is pending. The user deferred the eight-source/8192-outcome stress gate and read-path optimization. |
 | T4: package and consumer qualification | Source and paired installed-wheel matrices pass. The public local/two-host recipe is documented; real cached-fleet and the focused independent native comparison pass at their recorded scope. No full remote/native coverage or human acceptance is inferred. |
 | Later delivery | New immutable release and package/dependency provenance, retaining terminal JSON v1; independently reviewed TUI pin, managed rollout/recovery and Fleet presentation. No collector/publisher/hardware/Agent Plus/Tmux migration is inferred. |
 

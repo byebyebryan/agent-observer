@@ -72,7 +72,8 @@ There are at most eight configured sources. Each reserves 1,024 identity
 outcomes and 4 MiB of admitted payload by default; optional `max_identities`
 and `max_payload_mib` adjust reservations within the aggregate 8,192-identity/
 32 MiB limit and the native per-source bound. A source over its allowance fails
-visibly instead of silently truncating its inventory.
+visibly instead of silently truncating its inventory. These are admission safety
+limits, not a guarantee of interactive large-fleet performance.
 
 Check the resolved file without opening a connection:
 

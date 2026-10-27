@@ -131,10 +131,18 @@ The frozen source-preview candidate passed its 30-minute normal dashboard
 profile at 4.88% and 4.74% of one core, with peak RSS of 65.17 and 66.60 MiB
 on Python 3.11.17 and 3.14.8. This ran the installed `agent-observer dashboard`
 with three sources x100 identities and an external sampler on a draining
-120x40 terminal. The eight-hour soak is still running, and the original
-eight-source/8192-outcome capacity gate remains unmet. Reader-only capacity
-diagnostics timed out before reaching eight complete sources; they do not
-measure dashboard capacity. Read-path optimization remains deferred.
+120x40 terminal. The eight-hour soak is still running. Preview acceptance now
+uses a 20-second installed-dashboard check of the actual configured cached fleet,
+supplemented by existing controlled installed update, interaction and source
+loss/fresh-baseline recovery checks.
+The new smoke passed on Python 3.14.8: its snapshot had three complete sources,
+16 members and no uncertainty, with a current projection, clean exit and restored
+terminal flags/reset. It retains aggregate metadata only and does not establish
+native accuracy or sustained performance. The user deferred the original
+eight-source/8192-outcome stress requirement and read-path optimization.
+Its failed reader-only diagnostics
+remain a large-fleet limitation; configured admission caps do not promise usable
+fleet capacity.
 Neither synthetic fixtures nor agreement with another Observer command prove
 native classification. Human terminal acceptance and managed rollout remain
 separate from this preview.
