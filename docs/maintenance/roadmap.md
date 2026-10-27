@@ -143,9 +143,15 @@ output/cleanup limitations. The first implementation checkpoint must qualify
 deadline-driven evaluation, bounded output and explicit cleanup ownership
 before the main UI build; normal-terminal framework smoke tests are insufficient.
 The branch now contains the persistent reader and bounded output foundations.
-An early three-source/300-identity consumer measurement still exceeds the
-reviewed 2% CPU target. The main UI remains behind this feasibility checkpoint;
-the roadmap does not claim a completed dashboard or resource acceptance.
+The user relaxed the original CPU target to a provisional 5% of one core and
+deferred read-path optimization. Main UI implementation can proceed; the early
+three-source/300-identity reader measurements straddle that revised target.
+Sustained complete-dashboard resource qualification remains outstanding, and
+the roadmap does not claim a released dashboard or resource acceptance.
+The branch now has a usable source preview with list/details, source health,
+search/filters, keyboard navigation and bounded outer cleanup. Early actual-PTY
+interaction/no-color checks passed after review corrections; sustained resource,
+capacity, installed-wheel and native comparisons remain separate pending gates.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |

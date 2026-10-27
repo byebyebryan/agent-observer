@@ -58,7 +58,9 @@ class _SessionParser(argparse.ArgumentParser):
         return parsed
 
 
-def _add_common(parser: argparse.ArgumentParser, *, suppress: bool = False) -> None:
+def _add_common(
+    parser: argparse.ArgumentParser, *, suppress: bool = False, dashboard: bool = False
+) -> None:
     def add(*flags, **options):
         if not suppress:
             name = flags[0].removeprefix("--").replace("-", "_")
@@ -100,13 +102,21 @@ def _add_common(parser: argparse.ArgumentParser, *, suppress: bool = False) -> N
         default=argparse.SUPPRESS if suppress else None,
         help="select an exact configured home ID; repeat to OR values",
     )
-    add(
-        "--timeout",
-        type=_timeout,
-        default=argparse.SUPPRESS if suppress else 10.0,
-        help="shared finite read deadline in seconds (1-60; default 10)",
-    )
-    add("--format", choices=("text", "json"), default=argparse.SUPPRESS if suppress else "text")
+    if dashboard:
+        add(
+            "--connect-timeout",
+            type=_timeout,
+            default=15.0,
+            help="setup/baseline deadline per attempt in seconds (1-60; default 15)",
+        )
+    else:
+        add(
+            "--timeout",
+            type=_timeout,
+            default=argparse.SUPPRESS if suppress else 10.0,
+            help="shared finite read deadline in seconds (1-60; default 10)",
+        )
+        add("--format", choices=("text", "json"), default=argparse.SUPPRESS if suppress else "text")
     add(
         "--color",
         choices=("auto", "always", "never"),

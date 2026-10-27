@@ -8,21 +8,26 @@ Only aggregate metadata and resource measurements are written to the receipt.
 
 import argparse
 import asyncio
+import dataclasses
 import hashlib
 import importlib.metadata
 import json
+import math
 import os
 import resource
 import signal
 import sys
 import time
+from collections import deque
+from collections.abc import Iterable
 from pathlib import Path
 
-from agent_observer.terminal import watch as watch_module
 from agent_observer.terminal.config import load_config, select_sources
-from agent_observer.terminal.watch import PersistentSources
 
 FILTERS = {
+    "source": (),
+    "host": (),
+    "home": (),
     "membership": (),
     "runtime": (),
     "phase": (),
@@ -32,6 +37,565 @@ FILTERS = {
     "sort": "activity",
     "group": "none",
 }
+
+MAX_READY_BYTES = 4096
+MAX_OUTAGE_PROOF_BYTES = 2048
+MAX_HASHED_FILES = 50_000
+MAX_HASHED_BYTES = 2 * 1024 * 1024 * 1024
+MAX_DISTRIBUTIONS = 2048
+HASH_CHUNK_BYTES = 1024 * 1024
+MAX_OUTAGE_LOSS_SECONDS = 5.0
+MAX_BASELINE_SECONDS = 5.0
+MAX_RETRY_SECONDS = 30.0
+MAX_SAMPLE_GAP_SECONDS = 1.0
+RSS_GROWTH_MIB = 16
+
+
+class QualificationSetupError(ValueError):
+    """The requested profile cannot prove its published acceptance scope."""
+
+
+def validate_terminal_geometry(policy, size) -> None:
+    if policy.is_qualification and tuple(size) != (120, 40):
+        raise QualificationSetupError("qualification_requires_120x40_terminal")
+
+
+@dataclasses.dataclass(frozen=True)
+class ProfilePolicy:
+    name: str
+    warmup_seconds: float
+    duration_seconds: float
+    cpu_percent_limit: float | None
+    rss_mib_limit: float
+    rss_growth_mib_limit: float
+    expected_sources: int | None = None
+    outcomes_per_source: int | None = None
+    require_ui: bool = False
+    require_outage: bool = False
+
+    @property
+    def is_qualification(self) -> bool:
+        return self.name != "diagnostic"
+
+
+def resolve_profile(args) -> ProfilePolicy:
+    """Resolve fixed qualification budgets; only diagnostics may tune them."""
+    name = getattr(args, "profile", "diagnostic")
+    if name not in {"diagnostic", "normal", "soak", "capacity"}:
+        raise QualificationSetupError("unknown_profile")
+
+    warmup = args.warmup
+    duration = args.duration
+    cpu_percent = args.cpu_percent
+    rss_mib = args.rss_mib
+    if any(
+        value is not None and not math.isfinite(value)
+        for value in (warmup, duration, cpu_percent, rss_mib)
+    ):
+        raise QualificationSetupError("resource_arguments_must_be_finite")
+    if (
+        (warmup is not None and warmup < 0)
+        or (duration is not None and duration < 1)
+        or (cpu_percent is not None and cpu_percent <= 0)
+        or (rss_mib is not None and rss_mib <= 0)
+    ):
+        raise QualificationSetupError("resource_arguments_out_of_range")
+
+    if name == "diagnostic":
+        warmup = 0.0 if warmup is None else warmup
+        duration = 60.0 if duration is None else duration
+        cpu_percent = 5.0 if cpu_percent is None else cpu_percent
+        rss_mib = 192.0 if rss_mib is None else rss_mib
+        return ProfilePolicy(name, warmup, duration, cpu_percent, rss_mib, RSS_GROWTH_MIB)
+
+    expected_sources, outcomes_per_source = {
+        "normal": (3, 100),
+        "soak": (3, 100),
+        "capacity": (8, 1024),
+    }[name]
+    minimum_warmup = 120.0
+    minimum_duration = 28_800.0 if name == "soak" else 1_800.0
+    if warmup is not None and warmup < minimum_warmup:
+        raise QualificationSetupError("qualification_warmup_too_short")
+    if duration is not None and duration < minimum_duration:
+        raise QualificationSetupError("qualification_duration_too_short")
+    warmup = minimum_warmup if warmup is None else warmup
+    duration = minimum_duration if duration is None else duration
+    if not args.ui:
+        raise QualificationSetupError("qualification_requires_real_ui")
+
+    if name == "capacity":
+        if cpu_percent is not None:
+            raise QualificationSetupError("capacity_cpu_limit_not_configurable")
+        if rss_mib is not None and rss_mib != 768.0:
+            raise QualificationSetupError("qualification_rss_limit_fixed")
+        cpu_limit = None
+        rss_limit = 768.0
+    else:
+        if cpu_percent is not None and cpu_percent != 5.0:
+            raise QualificationSetupError("qualification_cpu_limit_fixed")
+        if rss_mib is not None and rss_mib != 192.0:
+            raise QualificationSetupError("qualification_rss_limit_fixed")
+        cpu_limit = 5.0
+        rss_limit = 192.0
+
+    return ProfilePolicy(
+        name,
+        warmup,
+        duration,
+        cpu_limit,
+        rss_limit,
+        RSS_GROWTH_MIB,
+        expected_sources,
+        outcomes_per_source,
+        require_ui=True,
+        require_outage=name == "soak",
+    )
+
+
+def _read_json_bounded(path: Path, limit: int) -> dict:
+    try:
+        if path.stat().st_size > limit:
+            raise QualificationSetupError("qualification_metadata_too_large")
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise QualificationSetupError("qualification_metadata_unavailable") from error
+    if type(value) is not dict:
+        raise QualificationSetupError("qualification_metadata_invalid")
+    return value
+
+
+def _path_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        while chunk := source.read(HASH_CHUNK_BYTES):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_qualification_setup(args, selected) -> tuple[ProfilePolicy, dict | None]:
+    """Reject under-sized or non-fixture qualification runs before read I/O."""
+    policy = resolve_profile(args)
+    source_ids = tuple(source.id for source in selected)
+    outage_source = getattr(args, "outage_source", None)
+    outage_proof = getattr(args, "outage_proof", None)
+
+    if policy.name == "diagnostic":
+        if (outage_source is None) != (outage_proof is None):
+            raise QualificationSetupError("outage_source_and_proof_required_together")
+        if outage_source is not None and (len(selected) < 2 or outage_source not in source_ids):
+            raise QualificationSetupError("outage_source_not_selected_or_no_sibling")
+        return policy, None
+
+    expected_ids = tuple(f"fixture-{index}" for index in range(1, policy.expected_sources + 1))
+    if source_ids != expected_ids:
+        raise QualificationSetupError("qualification_fixture_source_selection_mismatch")
+
+    config_path = Path(args.config).resolve()
+    directory = config_path.parent
+    try:
+        directory_stat = directory.stat()
+        ready_path = directory / "ready.json"
+        ready_stat = ready_path.stat()
+    except OSError as error:
+        raise QualificationSetupError("qualification_fixture_metadata_missing") from error
+    if (
+        directory_stat.st_uid != os.geteuid()
+        or directory_stat.st_mode & 0o077
+        or ready_stat.st_uid != os.geteuid()
+        or ready_stat.st_mode & 0o077
+    ):
+        raise QualificationSetupError("qualification_fixture_metadata_not_private")
+    ready = _read_json_bounded(ready_path, MAX_READY_BYTES)
+    try:
+        ready_config = Path(ready["config"]).resolve()
+        ready_sources = ready["sources"]
+        ready_count = ready["identitiesPerSource"]
+        ready_pid = ready["pid"]
+    except (KeyError, TypeError, OSError) as error:
+        raise QualificationSetupError("qualification_fixture_metadata_invalid") from error
+    if (
+        ready_config != config_path
+        or type(ready_sources) is not int
+        or ready_sources != policy.expected_sources
+        or type(ready_count) is not int
+        or ready_count != policy.outcomes_per_source
+        or type(ready_pid) is not int
+        or ready_pid <= 0
+        or ready.get("synthetic") is not True
+        or type(ready.get("nativeProviderCalls")) is not int
+        or ready.get("nativeProviderCalls") != 0
+        or not Path(f"/proc/{ready_pid}").exists()
+    ):
+        raise QualificationSetupError("qualification_fixture_workload_mismatch")
+
+    for index, source in enumerate(selected, 1):
+        expected_id = f"fixture-{index}"
+        socket = Path(source.socket).resolve()
+        if (
+            source.id != expected_id
+            or source.host != expected_id
+            or source.home != "default"
+            or source.mesh_source != "agent_working_set"
+            or source.scope != "local"
+            or socket.parent != directory
+            or socket.name != f"mesh-{index}.sock"
+            or source.max_identities != max(1024, policy.outcomes_per_source)
+            or source.max_payload_mib != 4
+            or source.window_hours != 0
+            or not isinstance(source.namespace, str)
+        ):
+            raise QualificationSetupError("qualification_fixture_config_mismatch")
+
+    outage_configured = ready.get("outageConfigured") is True
+    if policy.require_outage:
+        if len(selected) < 2:
+            raise QualificationSetupError("outage_requires_healthy_sibling")
+        if outage_source != expected_ids[0] or outage_proof is None:
+            raise QualificationSetupError("soak_requires_fixture_outage_proof")
+        if not outage_configured:
+            raise QualificationSetupError("fixture_outage_not_configured")
+        fixture_started = ready.get("fixtureStartedAtMonotonic")
+        outage_after = ready.get("outageAfterSeconds")
+        outage_duration = ready.get("outageDurationSeconds")
+        if (
+            type(fixture_started) not in {int, float}
+            or not math.isfinite(fixture_started)
+            or type(outage_after) not in {int, float}
+            or not math.isfinite(outage_after)
+            or outage_after < 0
+            or type(outage_duration) not in {int, float}
+            or not math.isfinite(outage_duration)
+            or outage_duration <= 0
+        ):
+            raise QualificationSetupError("fixture_outage_schedule_invalid")
+        proof_path = Path(outage_proof).resolve()
+        if proof_path.parent != directory or proof_path.name != "outage.json":
+            raise QualificationSetupError("outage_proof_outside_fixture_directory")
+    elif outage_source is not None or outage_proof is not None or outage_configured:
+        raise QualificationSetupError("outage_only_allowed_for_soak_or_diagnostic")
+
+    return policy, {
+        "sourceCount": ready_sources,
+        "outcomesPerSource": ready_count,
+        "fixtureReadySha256": _path_sha256(ready_path),
+        "configSha256": _path_sha256(config_path),
+        "fixturePid": ready_pid,
+    }
+
+
+def _iter_source_files(root: Path, suffixes: set[str] | None = None):
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root)
+        if "__pycache__" in relative.parts or path.suffix in {".pyc", ".pyo"}:
+            continue
+        if suffixes is not None and path.suffix not in suffixes:
+            continue
+        if path.is_file():
+            yield relative.as_posix(), path
+
+
+def _digest_named_files(entries: Iterable[tuple[str, Path]]) -> dict:
+    digest = hashlib.sha256()
+    file_count = total_bytes = 0
+    for name, path in entries:
+        if file_count >= MAX_HASHED_FILES:
+            raise QualificationSetupError("provenance_file_limit")
+        try:
+            size = path.stat().st_size
+        except OSError as error:
+            raise QualificationSetupError("provenance_file_unavailable") from error
+        if total_bytes + size > MAX_HASHED_BYTES:
+            raise QualificationSetupError("provenance_byte_limit")
+        file_digest = _path_sha256(path)
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(str(size).encode("ascii"))
+        digest.update(b"\0")
+        digest.update(file_digest.encode("ascii"))
+        digest.update(b"\n")
+        file_count += 1
+        total_bytes += size
+    return {"fileCount": file_count, "totalBytes": total_bytes, "sha256": digest.hexdigest()}
+
+
+def _installed_distribution_provenance(distributions=None) -> dict:
+    distributions = list(
+        importlib.metadata.distributions() if distributions is None else distributions
+    )
+    if len(distributions) > MAX_DISTRIBUTIONS:
+        raise QualificationSetupError("provenance_distribution_limit")
+    records = []
+    total_files = 0
+    for index, dist in enumerate(distributions):
+        files = tuple(sorted(dist.files or (), key=str))
+        total_files += len(files)
+        if total_files > MAX_HASHED_FILES:
+            raise QualificationSetupError("provenance_file_limit")
+        name = str(dist.metadata.get("Name", "unknown"))
+        version = str(dist.version)
+        metadata_paths = sorted(
+            str(relative)
+            for relative in files
+            if Path(str(relative)).name in {"METADATA", "PKG-INFO"}
+        )
+        metadata_marker = metadata_paths[0] if metadata_paths else f"instance-{index}"
+        records.append((name, version, metadata_marker, dist, files))
+    records.sort(key=lambda record: (record[0].casefold(), record[1], record[2]))
+    entries = []
+    versions = []
+    for name, version, metadata_marker, dist, files in records:
+        canonical_name = name.casefold().replace("_", "-")
+        versions.append({"name": name, "version": version, "metadata": metadata_marker})
+        for relative in sorted(files, key=str):
+            relative_path = Path(str(relative))
+            if "__pycache__" in relative_path.parts or relative_path.suffix in {".pyc", ".pyo"}:
+                continue
+            path = Path(dist.locate_file(relative))
+            if not path.is_file():
+                raise QualificationSetupError("provenance_file_unavailable")
+            entries.append(
+                (
+                    f"{canonical_name}=={version}/{metadata_marker}/{relative.as_posix()}",
+                    path,
+                )
+            )
+            if len(entries) > MAX_HASHED_FILES:
+                raise QualificationSetupError("provenance_file_limit")
+    summary = _digest_named_files(entries)
+    return {**summary, "distributions": versions}
+
+
+def build_provenance(product_root: Path, *, script_path: Path, fixture_path: Path) -> dict:
+    """Hash shipped source/data, the harness and all installed distribution files."""
+    package_files = _digest_named_files(_iter_source_files(product_root, {".py", ".json", ".tcss"}))
+    modules = {}
+    for relative in (
+        "terminal/dashboard_cli.py",
+        "terminal/dashboard_output.py",
+        "terminal/dashboard_runner.py",
+        "terminal/watch.py",
+    ):
+        path = product_root / relative
+        if path.is_file():
+            modules[relative] = _path_sha256(path)
+    return {
+        "productSourceTree": package_files,
+        "criticalModuleSha256": modules,
+        "resourceScriptSha256": _path_sha256(script_path),
+        "fixtureSha256": _path_sha256(fixture_path),
+        "installedDistributions": _installed_distribution_provenance(),
+    }
+
+
+def load_outage_proof(path: Path | None, expected_source: str) -> dict | None:
+    if path is None or not Path(path).exists():
+        return None
+    try:
+        info = Path(path).stat()
+    except OSError as error:
+        raise QualificationSetupError("outage_proof_unavailable") from error
+    if info.st_uid != os.geteuid() or info.st_mode & 0o077:
+        raise QualificationSetupError("outage_proof_not_private")
+    proof = _read_json_bounded(Path(path), MAX_OUTAGE_PROOF_BYTES)
+    started = proof.get("outageStartedAtMonotonic")
+    restored = proof.get("listenerRestoredAtMonotonic")
+    if (
+        proof.get("source") != expected_source
+        or type(started) not in {int, float}
+        or not math.isfinite(started)
+        or started < 0
+        or proof.get("stage") not in {"unavailable", "listener-restored"}
+        or proof.get("stage") == "unavailable"
+        and restored is not None
+        or proof.get("stage") == "listener-restored"
+        and (
+            type(restored) not in {int, float} or not math.isfinite(restored) or restored <= started
+        )
+    ):
+        raise QualificationSetupError("outage_proof_invalid_or_wrong_source")
+    return proof
+
+
+class ControlledOutageTracker:
+    """Keep bounded evidence that the named source alone lost and regained coverage."""
+
+    def __init__(self, source_id: str, source_ids: tuple[str, ...]):
+        if len(source_ids) < 2 or source_id not in source_ids:
+            raise QualificationSetupError("outage_requires_selected_source_and_sibling")
+        self.source_id = source_id
+        self.source_ids = source_ids
+        self.initial_epoch = None
+        self.initial_attempts = None
+        self.initial_complete_at = None
+        self.loss_epoch = None
+        self.loss_attempts = None
+        self.loss_observed_at = None
+        self.recovery_epoch = None
+        self.recovery_attempts = None
+        self.recovery_observed_at = None
+        self.attempt_observed_at = None
+        self.siblings_complete = True
+        self.failure_codes: set[str] = set()
+        self._proof_start = None
+        self._proof_restore = None
+        self._last_sample_at = None
+
+    def observe(self, now: float, snapshots: dict, proof: dict | None) -> None:
+        if self._last_sample_at is not None and now - self._last_sample_at > MAX_SAMPLE_GAP_SECONDS:
+            if self.loss_observed_at is not None and self.recovery_observed_at is None:
+                self.failure_codes.add("outage_proof_sample_gap")
+        self._last_sample_at = now
+
+        if proof is not None:
+            if proof.get("source") != self.source_id:
+                self.failure_codes.add("outage_proof_wrong_source")
+                return
+            proof_start = proof["outageStartedAtMonotonic"]
+            proof_restore = proof.get("listenerRestoredAtMonotonic")
+            if self._proof_start is not None and proof_start != self._proof_start:
+                self.failure_codes.add("outage_proof_changed")
+                return
+            if self._proof_restore is not None and proof_restore != self._proof_restore:
+                self.failure_codes.add("outage_proof_changed")
+                return
+            self._proof_start = proof_start
+            if proof_restore is not None:
+                self._proof_restore = proof_restore
+
+        target = snapshots.get(self.source_id)
+        if target is None:
+            self.failure_codes.add("outage_source_missing")
+            return
+        if self.recovery_observed_at is not None and (
+            target["health"] != "complete" or target["baseline"] is not True
+        ):
+            self.failure_codes.add("unexpected_source_loss_after_recovery")
+        all_complete = all(
+            snapshots.get(source_id, {}).get("health") == "complete"
+            and snapshots.get(source_id, {}).get("baseline") is True
+            for source_id in self.source_ids
+        )
+        if self.initial_epoch is None and all_complete:
+            self.initial_epoch = target["epoch"]
+            self.initial_attempts = target["attempts"]
+            self.initial_complete_at = now
+
+        if self._proof_start is None or now < self._proof_start or self.initial_epoch is None:
+            return
+        target_incomplete = target["health"] != "complete" or target["baseline"] is not True
+        if target_incomplete and self.loss_observed_at is None:
+            if target["epoch"] <= self.initial_epoch:
+                self.failure_codes.add("outage_revocation_epoch_not_advanced")
+            else:
+                self.loss_epoch = target["epoch"]
+                self.loss_attempts = target["attempts"]
+                self.loss_observed_at = now
+
+        if self.loss_observed_at is None:
+            return
+
+        if self._proof_restore is None or now <= self._proof_restore:
+            if any(
+                snapshots.get(source_id, {}).get("health") != "complete"
+                or snapshots.get(source_id, {}).get("baseline") is not True
+                for source_id in self.source_ids
+                if source_id != self.source_id
+            ):
+                self.siblings_complete = False
+                self.failure_codes.add("healthy_sibling_coverage_lost")
+
+        if (
+            self._proof_restore is not None
+            and now >= self._proof_restore
+            and self.recovery_observed_at is None
+        ):
+            epoch = target["epoch"]
+            attempts = target["attempts"]
+            if (
+                epoch > self.loss_epoch
+                and attempts > self.loss_attempts
+                and target["stage"] in {"connecting", "warming", "observing"}
+            ):
+                if self.attempt_observed_at is None:
+                    self.attempt_observed_at = now
+                if (
+                    target["health"] == "complete"
+                    and target["baseline"] is True
+                    and target["stage"] == "observing"
+                ):
+                    self.recovery_epoch = epoch
+                    self.recovery_attempts = attempts
+                    self.recovery_observed_at = now
+
+    def failures(self, *, measurement_started: float, measurement_ended: float) -> list[str]:
+        result = set(self.failure_codes)
+        if self.initial_epoch is None:
+            result.add("outage_initial_baseline_missing")
+        if self._proof_start is None or self._proof_restore is None:
+            result.add("outage_proof_incomplete")
+        else:
+            if not measurement_started <= self._proof_start <= measurement_ended:
+                result.add("outage_start_outside_measurement")
+            if self.initial_complete_at is None or self._proof_start <= self.initial_complete_at:
+                result.add("outage_before_initial_baseline")
+            if not self._proof_start < self._proof_restore <= measurement_ended:
+                result.add("outage_restore_outside_measurement")
+        if self.loss_observed_at is None:
+            result.add("outage_loss_not_observed")
+        else:
+            if self.loss_epoch <= self.initial_epoch:
+                result.add("outage_revocation_epoch_not_advanced")
+            if self._proof_start is None or self.loss_observed_at < self._proof_start:
+                result.add("outage_loss_not_after_proof_start")
+            elif self.loss_observed_at - self._proof_start > MAX_OUTAGE_LOSS_SECONDS:
+                result.add("outage_loss_detection_too_slow")
+        if self.recovery_observed_at is None:
+            result.add("outage_fresh_recovery_not_observed")
+            if self._proof_restore is not None:
+                max_recovery = (
+                    MAX_RETRY_SECONDS + MAX_BASELINE_SECONDS + max(0, len(self.source_ids) - 1)
+                )
+                if measurement_ended - self._proof_restore > max_recovery:
+                    result.add("outage_recovery_too_slow")
+        elif self.recovery_epoch <= self.loss_epoch or self.recovery_observed_at < (
+            self._proof_restore or float("inf")
+        ):
+            result.add("outage_recovery_epoch_not_fresh")
+        elif self._proof_restore is not None:
+            max_recovery = (
+                MAX_RETRY_SECONDS + MAX_BASELINE_SECONDS + max(0, len(self.source_ids) - 1)
+            )
+            if self.recovery_observed_at - self._proof_restore > max_recovery:
+                result.add("outage_recovery_too_slow")
+            if (
+                self.attempt_observed_at is None
+                or self.recovery_observed_at - self.attempt_observed_at > MAX_BASELINE_SECONDS
+            ):
+                result.add("outage_baseline_too_slow")
+        if not self.siblings_complete:
+            result.add("healthy_sibling_coverage_lost")
+        return sorted(result)
+
+    def partial_allowed(self, now: float, snapshots: dict) -> bool:
+        if (
+            self._proof_start is None
+            or now < self._proof_start
+            or self.loss_epoch is None
+            or self.recovery_observed_at is not None
+        ):
+            return False
+        if any(
+            snapshots.get(source_id, {}).get("health") != "complete"
+            or snapshots.get(source_id, {}).get("baseline") is not True
+            for source_id in self.source_ids
+            if source_id != self.source_id
+        ):
+            return False
+        if self._proof_restore is None:
+            return True
+        maximum = MAX_RETRY_SECONDS + MAX_BASELINE_SECONDS + max(0, len(self.source_ids) - 1)
+        return now <= self._proof_restore + maximum
 
 
 def resources():
@@ -65,65 +629,303 @@ def resources():
     }
 
 
+def _source_snapshots(watch, report) -> dict:
+    reports = {source["id"]: source for source in report["sources"]}
+    statuses = {source["id"]: source for source in watch.status()}
+    snapshots = {}
+    for state in watch.states:
+        source_id = state["config"]["id"]
+        read = state.get("read")
+        counts = {
+            "members": len(read.members) if read is not None else 0,
+            "uncertain": len(read.uncertain) if read is not None else 0,
+            "nonmembers": len(read.nonmembers) if read is not None else 0,
+        }
+        status = statuses.get(source_id, {})
+        source = reports.get(source_id, {})
+        snapshots[source_id] = {
+            "health": source.get("health", "unavailable"),
+            "baseline": source.get("baseline") is True,
+            "epoch": status.get("epoch", state.get("epoch", 0)),
+            "attempts": status.get("attempts", 0),
+            "stage": status.get("stage", "unknown"),
+            **counts,
+            "total": sum(counts.values()),
+        }
+    return snapshots
+
+
+def outcome_count_valid(policy: ProfilePolicy, source: dict) -> bool:
+    return policy.outcomes_per_source is None or source.get("total") == policy.outcomes_per_source
+
+
+def ui_presentation_options(*, environ=None, encoding=None) -> dict:
+    from agent_observer.terminal.render import color_enabled, icons_enabled
+
+    environ = os.environ if environ is None else environ
+    if encoding is None:
+        encoding = sys.stdout.encoding
+    colors = color_enabled("auto", environ=environ, isatty=True)
+    icons = icons_enabled("auto", environ=environ, isatty=True, encoding=encoding)
+    return {
+        "noColor": not colors,
+        "icons": icons,
+        "noColorEnvironmentPresent": bool(environ.get("NO_COLOR")),
+    }
+
+
+def _profile_status(policy: ProfilePolicy, failures: set[str]) -> str:
+    if policy.name == "diagnostic":
+        return "diagnostic_pass" if not failures else "diagnostic_failed"
+    return "accepted" if not failures else "failed"
+
+
 async def measure(args):
+    from agent_observer.terminal import watch as watch_module
+    from agent_observer.terminal.watch import PersistentSources
+
     config = load_config(args.config)
-    watch = PersistentSources(select_sources(config))
+    selected = select_sources(config)
+    policy, fixture = validate_qualification_setup(args, selected)
+    if args.ui:
+        validate_terminal_geometry(policy, os.get_terminal_size(sys.__stderr__.fileno()))
+    if policy.require_ui and not args.ui:
+        raise QualificationSetupError("qualification_requires_real_ui")
+
+    outage_path = Path(args.outage_proof) if args.outage_proof is not None else None
+    tracker = (
+        ControlledOutageTracker(args.outage_source, tuple(source.id for source in selected))
+        if args.outage_source is not None
+        else None
+    )
+    if policy.require_outage and tracker is None:
+        raise QualificationSetupError("soak_requires_fixture_outage_proof")
+
+    product_root = Path(watch_module.__file__).resolve().parents[1]
+    provenance = build_provenance(
+        product_root,
+        script_path=Path(__file__).resolve(),
+        fixture_path=Path(__file__).resolve().parents[1] / "tests" / "dashboard_fixtures.py",
+    )
+    watch = PersistentSources(selected)
     stopping = asyncio.Event()
     loop = asyncio.get_running_loop()
-    for signum in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(signum, stopping.set)
+    if not args.ui:
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(signum, stopping.set)
+
     started = time.monotonic()
-    deadline = started + args.warmup + args.duration
+    deadline = started + policy.warmup_seconds + policy.duration_seconds
     baseline = final = None
     peak_rss = peak_tasks = peak_fds = peak_children = 0
     samples = 0
     all_complete = True
+    first_complete = previous_complete = None
+    lost_coverage = recovered_coverage = 0
+    minimum_healthy_during_outage = len(watch.slots)
+    first_window_minima = {}
+    trailing_counts = deque(maxlen=241)
     last = None
+    failure_codes: set[str] = set()
+    outcome_mismatches = {source.id: 0 for source in selected}
+    complete_samples = {source.id: 0 for source in selected}
+    first_outcomes = None
+    latest_outcomes = {}
+    max_outcomes = {source.id: 0 for source in selected}
+    latest_proof = None
+    presentation = ui_presentation_options() if args.ui else None
+    package_versions = {
+        name: importlib.metadata.version(name)
+        for name in ("agent-observer", "mesh-plus", "jsonschema")
+    }
+    if args.ui:
+        package_versions["textual"] = importlib.metadata.version("textual")
+    cpu_model = next(
+        (
+            line.split(":", 1)[1].strip()
+            for line in Path("/proc/cpuinfo").read_text().splitlines()
+            if line.startswith("model name")
+        ),
+        "unknown",
+    )
     receipt = {
         "status": "running",
+        "profile": policy.name,
         "pid": os.getpid(),
-        "config": str(args.config),
+        "config": str(Path(args.config).resolve()),
         "python": sys.version.split()[0],
-        "warmupSeconds": args.warmup,
-        "measurementSeconds": args.duration,
-        "nativeProviderCalls": 0,
-        "boundary": "reader/projection only; UI and output adapter are separately qualified",
-        "consumerModuleSha256": hashlib.sha256(
-            Path(watch_module.__file__).read_bytes()
-        ).hexdigest(),
-        "packages": {
-            name: importlib.metadata.version(name)
-            for name in ("agent-observer", "mesh-plus", "jsonschema")
+        "pythonExecutable": sys.executable,
+        "host": os.uname().nodename,
+        "machine": os.uname().machine,
+        "kernel": os.uname().release,
+        "cpuModel": cpu_model,
+        "warmupSeconds": policy.warmup_seconds,
+        "measurementSeconds": policy.duration_seconds,
+        "thresholds": {
+            "cpuPercent": policy.cpu_percent_limit,
+            "rssMiB": policy.rss_mib_limit,
+            "rssGrowthMiB": policy.rss_growth_mib_limit,
         },
+        "nativeProviderCalls": 0,
+        "boundary": (
+            "complete dashboard, bounded Linux output, persistent reads and owned cleanup"
+            if args.ui
+            else "diagnostic reader/projection only; UI and output adapter are outside this run"
+        ),
+        "doesNotProve": [
+            "interaction or key-to-visible latency",
+            "visible update or paint latency",
+            "native provider classification accuracy",
+            "fixture producer resource cost",
+        ],
+        "presentation": presentation,
+        "packages": package_versions,
+        "provenance": provenance,
+        "qualificationFixture": fixture,
+        "expectedWorkload": (
+            None
+            if policy.outcomes_per_source is None
+            else {
+                "sources": policy.expected_sources,
+                "outcomesPerSource": policy.outcomes_per_source,
+            }
+        ),
+        "controlledOutageSource": args.outage_source,
+        "controlledOutageProofFile": outage_path.name if outage_path is not None else None,
     }
 
-    def save():
+    args.output.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    last_save_at = 0.0
+
+    def save(force=False):
+        nonlocal last_save_at
+        now = time.monotonic()
+        if not force and now - last_save_at < 5:
+            return
         staging = args.output.with_suffix(".tmp")
-        staging.write_text(json.dumps(receipt, indent=2) + "\n")
+        staging.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
         staging.chmod(0o600)
         staging.replace(args.output)
+        last_save_at = now
 
-    args.output.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    save()
-    await watch.start()
+    ui_task = app = ui_result = None
+    ended_early = False
+    if args.ui:
+        from agent_observer.terminal import dashboard_runner
+
+        receipt["terminalSize"] = list(os.get_terminal_size(sys.__stderr__.fileno()))
+
+        def make_app(*values, **options):
+            nonlocal app
+            app = dashboard_runner._app_factory(*values, **options)
+            return app
+
+        ui_task = asyncio.create_task(
+            dashboard_runner.run_dashboard(
+                tuple(slot.source for slot in watch.slots),
+                FILTERS,
+                no_color=presentation["noColor"],
+                icons=presentation["icons"],
+                reader_factory=lambda *_values, **_options: watch,
+                app_factory=make_app,
+            )
+        )
+    save(force=True)
+    if not args.ui:
+        await watch.start()
     try:
         while not stopping.is_set() and time.monotonic() < deadline:
-            if watch.changed.is_set() or last is None:
-                watch.changed.clear()
+            if args.ui and policy.is_qualification:
+                if tuple(os.get_terminal_size(sys.__stderr__.fileno())) != (120, 40):
+                    failure_codes.add("qualification_terminal_geometry_changed")
+            if ui_task is not None and ui_task.done():
+                ended_early = True
+                break
+            if args.ui or tracker is not None or watch.changed.is_set() or last is None:
+                if not args.ui and tracker is None:
+                    watch.changed.clear()
                 last = watch.report(FILTERS)
             now = time.monotonic()
-            if now - started >= args.warmup:
+            snapshots = _source_snapshots(watch, last)
+            if tracker is not None:
+                try:
+                    latest_proof = load_outage_proof(outage_path, tracker.source_id)
+                except QualificationSetupError:
+                    failure_codes.add("outage_proof_invalid_or_wrong_source")
+                    latest_proof = None
+                tracker.observe(now, snapshots, latest_proof)
+            if now - started >= policy.warmup_seconds:
                 sample = resources()
                 if baseline is None:
                     baseline = {**sample, "at": now}
+                    deadline = now + policy.duration_seconds
                 final = {**sample, "at": now}
                 samples += 1
                 peak_rss = max(peak_rss, sample["rssBytes"])
                 peak_tasks = max(peak_tasks, sample["tasks"])
                 peak_fds = max(peak_fds, sample["fds"])
                 peak_children = max(peak_children, sample["children"])
-                all_complete = all_complete and last["result"] == "complete"
+
+                complete = last["result"] == "complete"
+                all_complete = all_complete and complete
+                if first_complete is None:
+                    first_complete = complete
+                if previous_complete is True and not complete:
+                    lost_coverage += 1
+                elif previous_complete is False and complete:
+                    recovered_coverage += 1
+                previous_complete = complete
+
+                for source_id, source in snapshots.items():
+                    if source["health"] == "complete":
+                        complete_samples[source_id] += 1
+                        if not outcome_count_valid(policy, source):
+                            outcome_mismatches[source_id] += 1
+                    max_outcomes[source_id] = max(max_outcomes[source_id], source["total"])
+                latest_outcomes = {
+                    source_id: {
+                        key: value
+                        for key, value in source.items()
+                        if key
+                        in {
+                            "health",
+                            "baseline",
+                            "epoch",
+                            "attempts",
+                            "stage",
+                            "members",
+                            "uncertain",
+                            "nonmembers",
+                            "total",
+                        }
+                    }
+                    for source_id, source in snapshots.items()
+                }
+                if complete and first_outcomes is None:
+                    first_outcomes = latest_outcomes
+
+                if tracker is not None and tracker.loss_observed_at is not None:
+                    healthy = sum(
+                        source_id != tracker.source_id
+                        and source["health"] == "complete"
+                        and source["baseline"]
+                        for source_id, source in snapshots.items()
+                    )
+                    minimum_healthy_during_outage = min(minimum_healthy_during_outage, healthy)
+
+                if tracker is not None:
+                    if not complete and not tracker.partial_allowed(now, snapshots):
+                        failure_codes.add("coverage_incomplete_outside_controlled_outage")
+                elif not complete:
+                    failure_codes.add("coverage_incomplete")
                 elapsed = max(0.001, now - baseline["at"])
+                counts = {key: sample[key] for key in ("tasks", "fds", "children")}
+                if elapsed < 60:
+                    for key, value in counts.items():
+                        first_window_minima[key] = min(first_window_minima.get(key, value), value)
+                trailing_counts.append((now, counts))
+                while trailing_counts and trailing_counts[0][0] < now - 60:
+                    trailing_counts.popleft()
                 receipt.update(
                     elapsedMeasurementSeconds=elapsed,
                     samples=samples,
@@ -139,50 +941,166 @@ async def measure(args):
                     allSelectedCoverageComplete=all_complete,
                     metrics=dict(watch.metrics),
                     members=last["totals"]["members"],
+                    coverageLossTransitions=lost_coverage,
+                    coverageRecoveryTransitions=recovered_coverage,
+                    minimumHealthySourcesDuringOutage=minimum_healthy_during_outage,
+                    firstCompleteMeasurementSample=first_complete,
+                    firstCompleteOutcomesBySource=first_outcomes,
+                    currentOutcomesBySource=latest_outcomes,
+                    maxOutcomesBySource=max_outcomes,
+                    completeSamplesBySource=complete_samples,
+                    outcomeCountMismatchesBySource=outcome_mismatches,
                 )
                 save()
             await asyncio.sleep(0.25)
     finally:
         before_close = time.monotonic()
-        watch.request_close()
-        await watch.close()
+        if ui_task is not None:
+            if app is not None and not ui_task.done():
+                app.exit(return_code=0)
+            ui_result = await ui_task
+            receipt["uiExitCode"] = ui_result.code
+            receipt["uiFailure"] = ui_result.reason
+            receipt["uiFailures"] = list(ui_result.failures)
+            receipt["terminalFlagsRestored"] = ui_result.terminal_flags_restored
+            receipt["screenResetDelivered"] = ui_result.screen_reset_delivered
+        else:
+            watch.request_close()
+            await watch.close()
         receipt["cleanupSeconds"] = time.monotonic() - before_close
         receipt["cleanupError"] = watch.cleanup_error
         receipt["afterCleanup"] = resources()
+
     elapsed = 0 if baseline is None else final["at"] - baseline["at"]
-    complete_duration = elapsed >= args.duration - 1
-    failures = []
-    if not complete_duration:
-        failures.append("duration_incomplete")
-    if receipt.get("meanCpuPercent", float("inf")) > args.cpu_percent:
-        failures.append("cpu_budget")
-    if receipt.get("peakCombinedRssBytes", float("inf")) > args.rss_mib * 1024 * 1024:
-        failures.append("rss_budget")
-    if receipt.get("rssGrowthBytes", 0) > 16 * 1024 * 1024:
-        failures.append("rss_growth")
-    if not all_complete:
-        failures.append("coverage_incomplete")
+    failures = set(failure_codes)
+    if elapsed + 0.5 < policy.duration_seconds:
+        failures.add("duration_incomplete")
+    if (
+        policy.cpu_percent_limit is not None
+        and receipt.get("meanCpuPercent", float("inf")) > policy.cpu_percent_limit
+    ):
+        failures.add("cpu_budget")
+    if receipt.get("peakCombinedRssBytes", float("inf")) > policy.rss_mib_limit * 1024 * 1024:
+        failures.add("rss_budget")
+    if receipt.get("rssGrowthBytes", 0) > policy.rss_growth_mib_limit * 1024 * 1024:
+        failures.add("rss_growth")
+    if policy.name in {"normal", "capacity", "soak"} and not first_complete:
+        failures.add("measurement_did_not_start_complete")
+    if policy.name in {"normal", "capacity"} and not all_complete:
+        failures.add("coverage_incomplete")
+    if policy.outcomes_per_source is not None:
+        if any(outcome_mismatches.values()):
+            failures.add("fixture_outcome_count_mismatch")
+        if first_outcomes is None:
+            failures.add("initial_fixture_outcomes_missing")
+    if tracker is not None:
+        failures.update(
+            tracker.failures(
+                measurement_started=baseline["at"] if baseline else started + policy.warmup_seconds,
+                measurement_ended=final["at"] if final else time.monotonic(),
+            )
+        )
+        if lost_coverage != 1 or recovered_coverage != 1:
+            failures.add("unexpected_coverage_transitions")
+        if minimum_healthy_during_outage < len(selected) - 1:
+            failures.add("healthy_sibling_coverage_lost")
+    if elapsed >= 120 and trailing_counts:
+        final_minima = {
+            key: min(counts[key] for _, counts in trailing_counts) for key in first_window_minima
+        }
+        receipt["steadyCounts"] = {
+            "initial60SecondMinima": first_window_minima,
+            "final60SecondMinima": final_minima,
+        }
+        if any(final_minima[key] > value for key, value in first_window_minima.items()):
+            failures.add("resource_counts_growth")
     if watch.cleanup_error or receipt["cleanupSeconds"] > 5:
-        failures.append("cleanup")
+        failures.add("cleanup")
+    if ended_early:
+        failures.add("ui_ended_early")
+    if ui_result is not None and ui_result.code != 0:
+        failures.add("ui_failed")
+    if policy.is_qualification and ui_result is not None:
+        if ui_result.terminal_flags_restored is not True:
+            failures.add("terminal_restoration_not_proved")
+        if ui_result.screen_reset_delivered is not True:
+            failures.add("screen_reset_delivery_not_proved")
+
+    if tracker is not None:
+        receipt["controlledOutage"] = {
+            "source": tracker.source_id,
+            "proofStartedAtMonotonic": tracker._proof_start,
+            "listenerRestoredAtMonotonic": tracker._proof_restore,
+            "lossObservedAtMonotonic": tracker.loss_observed_at,
+            "initialEpoch": tracker.initial_epoch,
+            "lossEpoch": tracker.loss_epoch,
+            "recoveryObservedAtMonotonic": tracker.recovery_observed_at,
+            "recoveryEpoch": tracker.recovery_epoch,
+            "healthySiblingsContinuous": tracker.siblings_complete,
+            "maxLossDetectionSeconds": MAX_OUTAGE_LOSS_SECONDS,
+            "maxRetryToRecoverySeconds": (
+                MAX_RETRY_SECONDS + MAX_BASELINE_SECONDS + max(0, len(selected) - 1)
+            ),
+            "maxSampleGapSeconds": MAX_SAMPLE_GAP_SECONDS,
+        }
+    complete_duration = elapsed + 0.5 >= policy.duration_seconds
     receipt.update(
-        status="accepted" if not failures else "failed",
-        failures=failures,
+        status=_profile_status(policy, failures),
+        failures=sorted(failures),
         completedMeasurementSeconds=elapsed,
+        measurementComplete=complete_duration,
     )
-    save()
-    print(json.dumps(receipt), flush=True)
+    save(force=True)
+    if not args.ui:
+        print(json.dumps(receipt), flush=True)
     return 0 if not failures else 1
 
 
-if __name__ == "__main__":
+def build_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--warmup", type=float, default=120)
-    parser.add_argument("--duration", type=float, default=1800)
-    parser.add_argument("--cpu-percent", type=float, default=2)
-    parser.add_argument("--rss-mib", type=float, default=192)
-    args = parser.parse_args()
-    if args.warmup < 0 or args.duration < 1 or args.output.exists():
-        parser.error("use positive duration, nonnegative warmup and a fresh receipt path")
-    raise SystemExit(asyncio.run(measure(args)))
+    parser.add_argument(
+        "--profile",
+        choices=("diagnostic", "normal", "soak", "capacity"),
+        default="diagnostic",
+    )
+    parser.add_argument("--warmup", type=float)
+    parser.add_argument("--duration", type=float)
+    parser.add_argument("--cpu-percent", type=float)
+    parser.add_argument("--rss-mib", type=float)
+    parser.add_argument(
+        "--ui", action="store_true", help="measure the complete app on a draining real PTY"
+    )
+    parser.add_argument(
+        "--outage-source", help="exact configured source intentionally taken offline"
+    )
+    parser.add_argument(
+        "--outage-proof", type=Path, help="fixture outage.json proving listener loss and restore"
+    )
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        resolve_profile(args)
+    except QualificationSetupError as error:
+        parser.error(str(error))
+    if args.output.exists():
+        parser.error("receipt path must be fresh")
+    if args.ui:
+        from agent_observer.terminal.dashboard_cli import terminal_error
+
+        if error := terminal_error():
+            parser.error(error)
+    try:
+        return asyncio.run(measure(args))
+    except QualificationSetupError as error:
+        parser.error(str(error))
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

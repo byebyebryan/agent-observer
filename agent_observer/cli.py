@@ -131,6 +131,10 @@ def main(argv=None):
     if arguments and arguments[0] == "working-set":
         from .working_set_cli import main as working_set_main
         return working_set_main(arguments[1:])
+    if arguments and arguments[0] == "dashboard":
+        from .terminal.dashboard_cli import main as dashboard_main
+
+        return dashboard_main(arguments[1:])
     if not arguments or arguments[0] == "sessions":
         from .terminal.cli import main as sessions_main
 
@@ -145,6 +149,7 @@ def main(argv=None):
     commands.add_parser("mesh", help="optional Mesh Plus cached state client (mesh --help)")
     commands.add_parser("working-set", help="cached working-set list or bounded watch")
     commands.add_parser("sessions", help="read configured cached sessions and source health")
+    commands.add_parser("dashboard", help="persistent cached session dashboard (optional extra)")
     profiles = commands.add_parser("profiles", help="list explicit Codex home profile routes")
     profiles.add_argument("--config", type=Path, required=True)
     profiles.add_argument(

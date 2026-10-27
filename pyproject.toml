@@ -27,7 +27,7 @@ include = ["agent_observer*"]
 version = { attr = "agent_observer.__version__" }
 
 [tool.setuptools.package-data]
-agent_observer = ["contracts/*.json"]
+agent_observer = ["contracts/*.json", "terminal/*.tcss"]
 
 [tool.ruff]
 target-version = "py311"

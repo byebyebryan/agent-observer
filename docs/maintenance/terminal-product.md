@@ -1,6 +1,6 @@
 # CLI and dashboard product plan
 
-Status: **CLI released in 0.7.0a12; TUI foundations implemented, T1 CPU gate pending**. The
+Status: **CLI released in 0.7.0a12; TUI source preview implemented, qualification in progress**. The
 [roadmap](roadmap.md#next-milestone-cli-and-dashboard) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
@@ -520,7 +520,7 @@ silently enable another transport.
 | UI work | At most four cosmetic repaints/second and one age-only update/second; unchanged heartbeats do not rebuild/repaint the table. Turn animations off. Materialize at most 200 list rows/page; filtering/counts span all accepted rows. Paging preserves exact selection. |
 | Queues/history | One pending stream read/source and one latest UI replacement/source; bounded epoch/reason/retry state, no event history or disk session cache. Verify SDK/task/child cleanup rather than assuming it. |
 | Output | At most 512 KiB pending encoded output; a full/stalled sink must not block the model/input loop. Fail after two seconds without drain progress and verify termios restoration plus bounded owned cleanup. |
-| Normal quiet run | Three sources x 100 identities, 120x40, two-minute warmup then 30 minutes: client plus owned child CPU averages <=2% of one core; combined RSS <=192 MiB. Report existing producer cost separately. |
+| Normal quiet run | Three sources x 100 identities, 120x40, two-minute warmup then 30 minutes: client plus owned child CPU averages <=5% of one core provisionally; combined RSS <=192 MiB. Report existing producer cost separately. The user relaxed the original 2% target and deferred read-path optimization. |
 | Long run | Eight hours after warmup: RSS growth <=16 MiB; no growing task/FD/child counts or retained old generations. Source failure/recovery must be included. |
 | Capacity | Eight sources / 8,192 identities within reserved shares: combined RSS <=768 MiB; update-to-screen p95 <=1 s. Normal workload p95 <=250 ms. |
 | Interaction | Resize/key-to-visible response p95 <=100 ms at normal load; measure real PTYs at 120x40, 80x24, 60x16 and 40x10 guidance. |
@@ -541,8 +541,9 @@ The feature branch now has a persistent consumer in
 [`terminal/watch.py`](../../agent_observer/terminal/watch.py) and the bounded
 Linux driver in
 [`terminal/dashboard_output.py`](../../agent_observer/terminal/dashboard_output.py).
-The dashboard command and main UI are not implemented yet. These foundations
-are not a shipped TUI or an accepted installed/deployment selection.
+These foundations now support the dashboard command and source-preview UI
+described below. They are not a shipped TUI or an accepted installed/deployment
+selection.
 
 The reader uses the existing public admitted facade, a single lightweight clock
 wake, exported receiving deadlines and fresh guards per recovered attempt.
@@ -568,7 +569,12 @@ These are early failure checkpoints, not the required 30-minute or soak passes.
 Profiling attributes most remaining work to existing schema/native admission
 validation; the consumer is no longer projecting every clock tick. Do not skip
 validation, change proof cadence, select a dark research path or silently raise
-the 2% gate. The main UI stays behind this feasibility decision.
+the acceptance target. The user subsequently authorized a provisional 5% CPU
+target and deferred read-path optimization so the main UI can proceed. The
+earlier measurements straddle that revised target: they are not a sustained
+pass. Measure the complete dashboard at T3 and report any remaining miss.
+The fixed-frame compiler experiment remains unadopted; no producer or SDK
+change is part of this TUI implementation.
 
 Use `scripts/check --require-working-set-mesh --require-dashboard` to require
 both optional stacks; the dashboard gate locks the qualification framework to
@@ -577,6 +583,44 @@ finite CLI or core. `scripts/check-dashboard-resources` measures an explicit
 cached consumer; `tests/dashboard_fixtures.py` supplies separate-process
 invented sources without native provider calls. Record source/package bytes
 and keep fixture producer CPU separate from consumer/owned-child CPU.
+
+## T2 source-preview checkpoint
+
+The branch now implements `agent-observer dashboard`, the shared CLI selectors,
+full-list default, adaptive details, source view, search/filters, ordering and
+grouping, stable identity selection, keyboard help and guidance layouts. The
+outer runner starts revocation/cleanup on quit independently of framework
+restoration. It shields its owned app/read joins from repeated cancellation;
+output failure remains explicit even alongside another cleanup failure.
+
+Controlled tests exercise fresh-projection fences on paint, age updates,
+resize/resume and identity restoration, including an admitted replacement
+whose display values stay unchanged. List rows retain their widgets, and
+selection changes repaint only the affected rows. Long identity/evidence
+fields wrap in details rather than losing their suffixes to list ellipses.
+
+Early actual-CLI PTY probes used three invented sources x100 identities, 100
+navigation inputs, details/source/search, and 120x40/80x24/60x16/40x10 resize
+transitions. After correcting row invalidation and widget overhead, key-to-visible
+p95 was about 12 ms; measured resize responses were 20-62 ms. The no-color probe
+emitted no foreground/background SGR, printable q/j/k stayed in search, and
+explicit quit restored terminal flags. These are candidate observations, not
+complete installed-wheel, update-to-screen, sustained-resource or native proof.
+
+Before the final row-widget changes, short full-app runs after the two-minute
+warmup measured 5.55% CPU on Python 3.11 and 5.16% on 3.14, roughly 77-79 MiB RSS.
+Those observations still miss the user's provisional 5% target. Keep that miss
+visible with read-path optimization deferred; the required 30-minute and
+eight-hour complete-app runs remain outstanding.
+
+`scripts/check-dashboard-resources` separates `diagnostic` from fixed `normal`,
+`soak` and `capacity` resource profiles. Short/custom runs cannot become accepted
+qualification. Qualification binds exact fixture roster/outcomes, 120x40 UI,
+durations, runtime bytes, coverage and cleanup. The soak proof names the failed
+source and requires advanced epochs, a fresh baseline and continuously healthy
+siblings. Resource receipts explicitly exclude interaction/paint latency claims;
+those need their own draining-terminal evidence. See the
+[source-preview guide](../guides/dashboard.md) for setup and use.
 
 ## Review findings and validation
 
@@ -587,7 +631,7 @@ review changed the lifecycle/output design before product implementation:
 
 | Finding | Evidence and resulting requirement |
 | --- | --- |
-| Fixed-rate full evaluation conflicts with the idle CPU target | On Ryzen 9 7900X / Python 3.11.17, 30 public-facade read samples for 100 synthetic identities averaged 15.57 ms CPU. Three such reads at 4 Hz project 18.68% of one core before proof/UI work. This is a microbenchmark projection, not measured fleet CPU. Schedule exported deadlines instead; the <=2% sustained gate is still unproven. |
+| Fixed-rate full evaluation conflicts with the idle CPU target | On Ryzen 9 7900X / Python 3.11.17, 30 public-facade read samples for 100 synthetic identities averaged 15.57 ms CPU. Three such reads at 4 Hz project 18.68% of one core before proof/UI work. This is a microbenchmark projection, not measured fleet CPU. Schedule exported deadlines instead; the subsequently revised <=5% sustained target is still unproven. |
 | Deadline scheduling can use existing public exports | Controlled admitted cached-service cases with 0, 1 and 100 members evaluated just before/at the exported receiving deadline, without consuming another frame. Positives and complete-empty coverage revoked at the boundary. The facade supplied uncertainty where appropriate. This proves boundary semantics, not a finished scheduler or its sustained cost. |
 | Default NO_COLOR is insufficient for the stated contract | Textual 8.2.8 real PTYs emitted grayscale color commands under default NO_COLOR. Native ANSI construction plus NO_COLOR emitted no foreground/background color selections, with default resets/control sequences retained. Use this path and avoid the discouraged filter module. |
 | Framework worker cancellation does not prove cleanup | A synthetic three-second finally block in a Textual worker was interrupted on shutdown on Python 3.11/3.14. An outer async owner completed it, while terminal restoration arrived at about 0.5 s from process start and process exit at about 3.6 s. This is a framework ownership probe, not qualification of Mesh cleanup. |
@@ -602,8 +646,11 @@ not qualify the unimplemented dashboard, its output adapter, reconnect
 supervisor, CPU/RSS targets, native behavior or installed TUI package.
 
 T1 must turn the corrected policies into reproducible product tests and measure
-the combined lifecycle/proof/output path. Do not advance to the main UI build
-while the bounded-output or sustained quiet-cost checkpoint is failing.
+the combined lifecycle/proof/output path. Bounded output and cleanup must pass
+before the main UI build. After those foundations passed, the user authorized
+continuing the UI with a provisional 5% CPU target and read-path optimization
+deferred. Sustained resource qualification remains required at T3; this change
+does not promote the short reader measurements into completed TUI acceptance.
 
 ## Implementation structure and dependencies
 

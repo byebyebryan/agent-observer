@@ -11,6 +11,7 @@ carries the shared showcase and project relationships.
 | [Local cached service](guides/local-service.md) | Host Service 4 explicitly and consume its cache |
 | [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |
 | [Sessions CLI](guides/sessions-cli.md) | Readable configured overview, listing, exact-session details and source health |
+| [Standalone dashboard](guides/dashboard.md) | Source preview setup, watched sources, navigation, recovery and qualification boundary |
 | [Full Mesh reads](guides/full-mesh-reads.md) | Full cached diagnostic inventories |
 | [Read utilities](guides/read-utilities.md) | A complete bounded consumer example |
 

@@ -30,6 +30,8 @@ With working-set sources configured, run `agent-observer` for the quick fleet
 overview. Use `agent-observer sessions list` for all matching sessions and full
 IDs. The [sessions guide](docs/guides/sessions-cli.md) describes the published
 CLI installation, source setup and exact-session inspection.
+The [standalone dashboard source preview](docs/guides/dashboard.md) uses the same
+configuration for persistent monitoring with the optional dashboard dependencies.
 
 | Need | Documentation |
 | --- | --- |
