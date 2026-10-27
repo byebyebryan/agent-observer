@@ -1,8 +1,7 @@
 # Sessions CLI
 
-The `0.7.0a12` candidate adds the sessions CLI described here; published
-`0.7.0a11` does not contain these commands. Source/package qualification does
-not update an installed managed reader.
+The `0.7.0a12` prerelease adds the sessions CLI described here. Installing a
+reader does not change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
 commands read the same configured working-set caches for overview,
@@ -12,34 +11,25 @@ Service 4 and Mesh diagnostics remain available separately.
 
 ## Prerequisites
 
-Use an Observer installation containing the sessions CLI and its optional
-Mesh dependency. From this source tree, in an isolated environment:
+Use Linux and Python 3.11+ in an isolated environment. Install the published
+Observer/Mesh pair with the qualified wheel hashes:
 
 ```sh
-python -m pip install '.[mesh]'
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a12/agent_observer-0.7.0a12-py3-none-any.whl#sha256=1cfc8896950240448dc0485d0e12e05157855dc54b84713f9da5a916fcafef1d' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a12/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
-Use the compatible published Mesh package selected for your reader; source
-installation does not advance any deployed package pin. An already running
+From a checkout, `python -m pip install '.[mesh]'` installs the source reader
+instead. Neither installation advances a deployed package pin. An already running
 [working-set publisher/bridge](working-set.md) is required. A cached local
 bridge is distinct from the collector's Service 4 socket. Installing or opening
 this CLI starts neither. No Textual/dashboard dependency is required.
 
 ## Configure sources once
-
-For a separate local trial installation, the `agent-observer-cli` launcher
-enters the sessions commands directly:
-
-```sh
-agent-observer-cli
-agent-observer-cli list
-agent-observer-cli sources
-```
-
-This local alias uses an isolated reader environment and the same configuration
-below. The packaged commands are bare `agent-observer` and `agent-observer sessions`; collector,
-publisher and managed client package selections have independent ownership.
 
 The default file is `$XDG_CONFIG_HOME/agent-observer/terminal.toml`, or
 `~/.config/agent-observer/terminal.toml`. Use `--config` to select another file.
@@ -217,5 +207,5 @@ or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
 The persistent dashboard remains a later stage in the
-[terminal product plan](../maintenance/terminal-product.md). Release, managed
+[terminal product plan](../maintenance/terminal-product.md). Managed reader
 installation, native acceptance and hardware/Fleet presentation are separate.

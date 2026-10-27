@@ -23,11 +23,12 @@ Existing direct, service and Mesh commands support diagnostic inspection.
 the current watch is bounded to 60 seconds. The terminal product builds on
 these capabilities. The dashboard described below is planned, not shipped.
 
-The new source [sessions CLI](../guides/sessions-cli.md) provides configured
+The [a12 sessions CLI](../guides/sessions-cli.md) provides configured
 overview/list/show/source inspection and versioned JSON output. It has source,
-clean-package and cached-consumer checks; the `0.7.0a12` candidate adds it to
-the a11 clock-recovery source. Published `0.7.0a11` does not include it. The
-standalone dashboard and managed delivery remain separate stages.
+clean-package and cached-consumer checks and includes the a11 clock-recovery
+source. CLI reader selection/configuration is independent of the a11
+collectors/publishers and other consumers. The standalone dashboard remains a
+separate stage.
 
 ## Next milestone: CLI and dashboard
 

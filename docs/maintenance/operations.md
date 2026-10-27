@@ -1,9 +1,15 @@
 # Releases and operations
 
-The [0.7.0a11 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
-publishes Codex-only read-only API 4 / snapshot 6 / Service 4 and working-set v1
-interfaces. The collector/working-set cohort uses Mesh a25. Full publishers,
-dashboards, Tmux and SSH authority retain independent reviewed selections.
+The [0.7.0a12 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a12)
+adds the configured sessions CLI and terminal JSON interface 1. Its reader
+installation/configuration is independently selected; publishing it does not
+upgrade a collector or publisher. See the [sessions guide](../guides/sessions-cli.md).
+
+The collector/working-set cohort retains the
+[a11 clock-recovery pair](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
+with Mesh a25: Codex-only read-only API 4 / snapshot 6 / Service 4 and working-set
+v1 interfaces. Full publishers, dashboards, Tmux and SSH authority retain
+independent reviewed selections.
 
 ## Selection and recovery
 
@@ -28,6 +34,18 @@ instead of that permanent veto. Installing source does not update selected
 collectors; qualification and scoped delivery remain separate gates.
 
 ## Provenance
+
+The [a12 CLI manifest](../../artifacts/observer-0.7.0a12.json) binds runtime source
+`44f9774`, the exact reader wheel and unchanged Mesh a25 bytes. Its public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a12/provenance.json)
+binds qualification/tag source `e008ec9`, all six successful CI jobs, Python
+3.11/3.14 source/installed checks and cached consumer/terminal qualification.
+All eight public assets were downloaded and matched to the qualified bytes.
+The added terminal v1 schema is a consumer output contract; native producer
+schemas and a11 clock-recovery behavior are unchanged. The persistent dashboard
+is not part of this release. Managed CLI selection belongs to the independent
+`deployments/agent-observer-cli.json` role in dotfiles; collector/publisher
+selection remains in the producer manifests below.
 
 The [a11 artifact manifest](../../artifacts/observer-0.7.0a11.json) binds the
 clock-recovery runtime source, exact Observer wheel and existing Mesh a25 pair.

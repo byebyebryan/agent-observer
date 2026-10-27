@@ -1,10 +1,10 @@
 # CLI and dashboard product plan
 
-Status: **CLI implemented in source; dashboard remains proposed**. The
+Status: **CLI released in 0.7.0a12; dashboard remains proposed**. The
 [roadmap](roadmap.md#next-milestone-cli-and-dashboard) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
-setup. Source/package qualification is separate from a published release.
+setup. Managed reader selection is separate from collector/publisher selection.
 Dashboard layout/dependencies, persistent reconnect
 and sustained dashboard budgets remain proposed for a later pass.
 
@@ -391,7 +391,9 @@ Exact show, zero-match reporting, wrong-namespace isolation, publisher-window
 mismatch, plain pipes and real 60/80/120-column PTYs were exercised. Wheel,
 installed and source Python/schema bytes matched. Only aggregate metadata was
 retained; cached consumer checks do not establish independent native accuracy.
-Release/pin selection and managed installation remain separate, and the
+The a12 public artifacts bind the CLI source, terminal schema and exact Mesh a25
+pair; Python 3.11/3.14 source and clean installed-package checks passed. Reader
+pin selection and managed installation remain separate, and the
 persistent dashboard/soak gates below have not run.
 
 | Checkpoint | Reviewable exit |

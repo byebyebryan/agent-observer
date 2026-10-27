@@ -28,9 +28,8 @@ published-package installation, home selection and output explanation.
 
 With working-set sources configured, run `agent-observer` for the quick fleet
 overview. Use `agent-observer sessions list` for all matching sessions and full
-IDs. The [sessions guide](docs/guides/sessions-cli.md) describes source setup;
-these commands are in the `0.7.0a12` candidate and are not in the published
-`0.7.0a11` release.
+IDs. The [sessions guide](docs/guides/sessions-cli.md) describes the published
+CLI installation, source setup and exact-session inspection.
 
 | Need | Documentation |
 | --- | --- |
@@ -63,8 +62,9 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a11](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
-is the published read-only prerelease: API 4, snapshot/watch 6 and Service 4.
+[0.7.0a12](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a12)
+adds the sessions CLI and terminal JSON interface 1 while retaining read-only
+API 4, snapshot/watch 6 and Service 4.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
 Installing source does not change deployed pins or accept a dashboard/device.

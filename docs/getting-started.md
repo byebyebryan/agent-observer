@@ -12,11 +12,11 @@ Create a dedicated environment in a directory you choose:
 ```sh
 python3 -m venv observer-venv
 . observer-venv/bin/activate
-python -m pip install 'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a11/agent_observer-0.7.0a11-py3-none-any.whl#sha256=f8956346ce169062b88940475a17b5f3e5b70e8ba5c2396c5c1844aab3bfe755'
+python -m pip install 'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a12/agent_observer-0.7.0a12-py3-none-any.whl#sha256=1cfc8896950240448dc0485d0e12e05157855dc54b84713f9da5a916fcafef1d'
 agent-observer api
 ```
 
-The hash binds the download to the published a9 artifact. The core has no runtime
+The hash binds the download to the published a12 artifact. The core has no runtime
 Python dependencies and requires no Mesh, Rofi or tmux installation. `api` reports
 package interfaces without contacting a provider. Expect `apiVersion: 4` and
 snapshot/watch schema versions `6`.
@@ -90,9 +90,10 @@ socket. Client reads and watches do not start the service or a provider daemon.
 Mesh is optional. A working-set reader needs the paired Mesh a25 installation,
 a configured source publisher and directional Host Mesh routes. Its active/recent
 window must match the publisher's policy; the reviewed default is 72 hours.
-Use the [working-set CLI guide](https://github.com/byebyebryan/agent-observer/blob/9c0636c7ac286d965a4c66452f26c47e1f4886b5/docs/read-only-retirement.md#cached-inspection) after
-those endpoints exist, and the [compatibility overview](https://dev.byebyebryan.com/fleet-plus/compatibility/)
-for independently selected roles. Adding `--host` to a read never provisions a peer.
+Once those endpoints exist, use the [sessions CLI](guides/sessions-cli.md) for a
+configured fleet overview or the [working-set guide](guides/working-set.md) for
+bounded diagnostics. The [compatibility overview](https://dev.byebyebryan.com/fleet-plus/compatibility/)
+describes independently selected roles. Adding `--host` to a read never provisions a peer.
 
 Start a new utility with the [bounded public-read example](guides/read-utilities.md).
 Native providers continue to own conversation control throughout these read paths.
