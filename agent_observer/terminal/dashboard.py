@@ -74,6 +74,7 @@ class DashboardApp(App[None]):
 
     TITLE = "Agent Observer"
     ENABLE_COMMAND_PALETTE = False
+    ALLOW_SELECT = False
     BINDINGS = []
     CSS_PATH = "dashboard.tcss"
 
@@ -1908,6 +1909,14 @@ class DashboardApp(App[None]):
             self.reader.refresh_due()
             self._ensure_current_projection()
             self._request_render(immediate=True)
+
+    def copy_to_clipboard(self, text: str) -> None:
+        """Query editing and metadata views never emit terminal clipboard writes."""
+        return None
+
+    def open_url(self, url: str, *, new_tab: bool = True) -> None:
+        """Admitted metadata remains literal and cannot launch a link."""
+        return None
 
     def _header_text(self) -> str:
         if self._projection is None:

@@ -84,6 +84,15 @@ def _session_state(source_config=None, *, rows=(), ids=(), lifecycle="observing"
 
 @unittest.skipUnless(TEXTUAL_AVAILABLE, "optional dashboard dependencies required")
 class DashboardTests(unittest.IsolatedAsyncioTestCase):
+    async def test_input_cut_does_not_write_clipboard_and_ctrl_c_remains_global(self):
+        app = DashboardApp(FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.press("/", "a", "b", "c", "ctrl+a", "ctrl+x")
+            self.assertEqual(app.clipboard, "")
+            self.assertFalse(app.ALLOW_SELECT)
+            await pilot.press("ctrl+c")
+            self.assertEqual(app.return_code, 130)
+
     async def test_help_is_available_inside_menus_and_source_focus_is_visible(self):
         app = DashboardApp(FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {})
         async with app.run_test(size=(80, 24)) as pilot:

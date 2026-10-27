@@ -269,6 +269,8 @@ def validate_qualification_setup(args, selected) -> tuple[ProfilePolicy, dict | 
             or outage_duration <= 0
         ):
             raise QualificationSetupError("fixture_outage_schedule_invalid")
+        if outage_duration < 600:
+            raise QualificationSetupError("qualification_outage_too_short")
         proof_path = Path(outage_proof).resolve()
         if proof_path.parent != directory or proof_path.name != "outage.json":
             raise QualificationSetupError("outage_proof_outside_fixture_directory")
@@ -1000,6 +1002,10 @@ async def measure(args):
                 measurement_ended=final["at"] if final else time.monotonic(),
             )
         )
+        if policy.require_outage and latest_proof is not None:
+            restored = latest_proof.get("listenerRestoredAtMonotonic")
+            if restored is not None and restored - latest_proof["outageStartedAtMonotonic"] < 600:
+                failures.add("qualification_outage_too_short")
         if lost_coverage != 1 or recovered_coverage != 1:
             failures.add("unexpected_coverage_transitions")
         if minimum_healthy_during_outage < len(selected) - 1:

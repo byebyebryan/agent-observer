@@ -183,6 +183,28 @@ class ResourceProfileTests(unittest.TestCase):
                     soak, fixture_sources(soak_config.parent, 3, outcomes=100)
                 )
 
+    def test_soak_requires_ten_minute_fixture_outage(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            config = write_fixture_metadata(directory, outage=True)
+            value = arguments(
+                profile="soak",
+                ui=True,
+                config=config,
+                outage_source="fixture-1",
+                outage_proof=directory / "outage.json",
+            )
+            sources = fixture_sources(directory, 3, outcomes=100)
+            resource_check.validate_qualification_setup(value, sources)
+            ready_path = directory / "ready.json"
+            ready = json.loads(ready_path.read_text())
+            ready["outageDurationSeconds"] = 599
+            ready_path.write_text(json.dumps(ready) + "\n")
+            with self.assertRaisesRegex(
+                resource_check.QualificationSetupError, "qualification_outage_too_short"
+            ):
+                resource_check.validate_qualification_setup(value, sources)
+
     def test_zero_and_wrong_per_source_outcomes_fail_at_complete_coverage(self):
         policy = resource_check.resolve_profile(arguments(profile="normal", ui=True))
         self.assertFalse(resource_check.outcome_count_valid(policy, complete_snapshot(total=0)))
