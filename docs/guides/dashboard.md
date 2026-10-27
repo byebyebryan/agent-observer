@@ -1,6 +1,6 @@
 # Standalone dashboard
 
-The dashboard is a **source preview under qualification**. The published
+The dashboard is an **unreleased source preview**. The published
 `0.7.0a12` release contains the finite sessions CLI, not this dashboard. Bare
 `agent-observer` remains the quick overview; `agent-observer dashboard` opens
 the persistent terminal application until you quit.
@@ -131,7 +131,9 @@ The frozen source-preview candidate passed its 30-minute normal dashboard
 profile at 4.88% and 4.74% of one core, with peak RSS of 65.17 and 66.60 MiB
 on Python 3.11.17 and 3.14.8. This ran the installed `agent-observer dashboard`
 with three sources x100 identities and an external sampler on a draining
-120x40 terminal. The eight-hour soak is still running. Preview acceptance now
+120x40 terminal. An eight-hour soak is optional future testing rather than a
+preview gate. Its partial run was cancelled with owned cleanup and terminal
+restoration; no eight-hour pass is claimed. Preview acceptance now
 uses a 20-second installed-dashboard check of the actual configured cached fleet,
 supplemented by existing controlled installed update, interaction and source
 loss/fresh-baseline recovery checks.

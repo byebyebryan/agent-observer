@@ -1,15 +1,15 @@
 # CLI and dashboard product plan
 
-Status: **CLI released in 0.7.0a12; TUI source preview implemented, qualification in progress**. The
+Status: **CLI released in 0.7.0a12; TUI source preview implemented and checked within the scope below**. The
 [roadmap](roadmap.md#current-milestone-cli-and-dashboard-qualification) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
 setup. Managed reader selection is separate from collector/publisher selection.
 The reviewed dashboard plan is implemented as an unreleased source preview.
 Textual 8.2.8 passes the current source and installed test boundaries. The short
-realistic-fleet check passes; the long-run gate remains open. The user replaced the
-8,192-session stress requirement with that limited preview check; large-fleet
-optimization is deferred. Focused native evidence is
+realistic-fleet check and normal 30-minute resource checks pass. Extended
+eight-hour soak and 8,192-outcome stress testing are optional future work,
+not preview acceptance gates; large-fleet optimization is deferred. Focused native evidence is
 bounded to the selected cases; human acceptance, publication and deployment
 remain separate. The preview does not select a deployment.
 
@@ -524,11 +524,11 @@ silently enable another transport.
 | Queues/history | One pending stream read/source and one latest UI replacement/source; bounded epoch/reason/retry state, no event history or disk session cache. Verify SDK/task/child cleanup rather than assuming it. |
 | Output | At most 512 KiB pending encoded output; a full/stalled sink must not block the model/input loop. Fail after two seconds without drain progress and verify termios restoration plus bounded owned cleanup. |
 | Normal quiet run | Three sources x 100 identities, 120x40, two-minute warmup then 30 minutes: client plus owned child CPU averages <=5% of one core provisionally; combined RSS <=192 MiB. Report existing producer cost separately. The user relaxed the original 2% target and deferred read-path optimization. |
-| Long run | Eight hours after warmup: RSS growth <=16 MiB; no growing task/FD/child counts or retained old generations. Source failure/recovery must be included. |
+| Optional extended run | Eight hours after warmup: RSS growth <=16 MiB; no growing task/FD/child counts or retained old generations. Include source failure/recovery. This is deferred testing, not a preview gate; reopen for a suspected leak or a concrete stronger uptime requirement. The completed normal resource runs and controlled recovery checks qualify the current preview scope. |
 | Practical preview | Short 20-second installed-dashboard check of the actual configured cached fleet. Verify current projection, source health, matching/rendered counts, clean exit and terminal restoration. Reuse the existing controlled installed update, key/resize, expiry and disconnect/fresh-baseline recovery results; the real-fleet snapshot does not reproduce those transitions or establish sustained performance. Normal UI update p95 remains <=250 ms at the timing boundary recorded below. The former eight-source/8,192-session stress gate is deferred with optimization; it is not required for this preview. |
 | Interaction | Resize/key-to-visible response p95 <=100 ms at normal load; measure real PTYs at 120x40, 80x24, 60x16 and 40x10 guidance. |
 | Recovery | Warming/source UI within 500 ms independently of setup. Controlled available source baseline within five seconds of an attempt starting, plus at most 30 seconds backoff and the documented global start queue. Partial native coverage stays partial. |
-| Outage/churn | Ten-minute outage obeys retry limits. 100 controlled disconnect/recovery cycles leave task/FD/child counts at steady state. One failed feed never stops healthy siblings. |
+| Outage/churn | 100 controlled disconnect/recovery cycles leave task/FD/child counts at steady state. One failed feed never stops healthy siblings; recovery requires a fresh baseline. The extended ten-minute outage is part of optional soak testing, not an additional preview gate. |
 | Exit | Normal terminal mode restored within two seconds of quit/interrupt; all owned reader cleanup completes within five seconds. No publisher/provider or existing native session is stopped. |
 
 State generation, guard evaluation, filtering/sort, framework rendering and
@@ -568,7 +568,8 @@ The first separate-process producer/consumer measurements failed the CPU gate
 with three sources x100 identities: 5.38% of one core on Python 3.11.17 and
 4.95% on Python 3.14.8, over 60 measured seconds after short warmup. Both kept
 all 300 members complete, used about 46.4 MiB RSS and closed in about 6 ms.
-These are early failure checkpoints, not the required 30-minute or soak passes.
+These are early failure checkpoints, not the required 30-minute resource passes
+or an optional extended-soak pass.
 Profiling attributes most remaining work to existing schema/native admission
 validation; the consumer is no longer projecting every clock tick. Do not skip
 validation, change proof cadence, select a dark research path or silently raise
@@ -717,8 +718,8 @@ The clock worker now wakes at an earlier known receiving deadline instead of
 sleeping through it until the next 100 ms check. Its ordinary idle polling rate,
 proof cadence and guard/native acquisition policy are unchanged. Focused tests
 cover blocked teardown, concurrent pending-view updates and revocation during
-the final age update. Exact-candidate terminal and sustained qualification
-remain required after this correction.
+the final age update. The corrected candidate's exact terminal and normal
+30-minute resource results are recorded in the T9 checkpoint below.
 
 Shutdown stops app update requests and timers synchronously before reader
 revocation can wake the UI during teardown. The outer owner still joins the
@@ -771,8 +772,13 @@ stop and expired before continue, degraded state appeared in 33.634/33.452 ms
 before fresh writes, then all 300 outcomes and complete baselines recovered.
 This tests process job control, not physical machine sleep.
 
-The latest T9 receipt shows the 8-hour soak still running, with no terminal
-outcome available. The original T5 task-minimum failure remains failed.
+The optional T9 eight-hour soak was stopped after about 3.6 measured hours when
+the user narrowed preview acceptance. The owner and test children exited, test
+sockets were removed, and terminal flags/reset were restored. The receipt
+retains its incomplete-duration and cancellation-related failures; this is not
+an eight-hour pass or a substitute long-run qualification. The completed normal
+resource runs and controlled recovery evidence supply the preview acceptance.
+The original T5 task-minimum failure remains failed.
 Historical eight-source/8192-outcome stress capacity is unmet and deferred:
 both baseline and traced 8x1024 reader-only runs timed out before reaching
 eight complete sources. Each had a sampled maximum of four complete sources/4,096
@@ -822,8 +828,8 @@ at 120x40, 80x24, 60x16 and 40x10. Ten real PTY cases distinguished the default
 behavior from the required no-color and cleanup ownership paths. These
 preimplementation checks validated assumptions; later source, installed and
 resource evidence is recorded in the T9 checkpoint above. The realistic preview
-check passes; the eight-hour stability gate remains open. Large-fleet stress
-testing is deferred.
+check passes. Eight-hour stability and large-fleet stress testing are optional
+future work.
 
 ## Implementation structure and dependencies
 
@@ -878,7 +884,7 @@ Publication and managed deployment remain separate later steps.
 | T0: design review | Complete; the selected full-list layout with on-demand details, source/view distinction, keys, Textual and budgets are specified above. |
 | T1: feasibility and lifecycle foundation | Implemented and covered by source/installed checks. Current normal, quiet-expiry and cleanup evidence is summarized in T9; large-fleet stress capacity is deferred. |
 | T2: usable TUI preview | Implemented as a source preview with list, health, details, search/filters, source view, stable selection, help, resize and guidance. Actual PTY and installed checks pass at their stated boundaries; user acceptance is pending. |
-| T3: resilience and budgets | Partial: expiry, startup, interaction, job-control recovery, churn and the short realistic preview check pass. The eight-hour soak is pending. The user deferred the eight-source/8192-outcome stress gate and read-path optimization. |
+| T3: resilience and budgets | Preview scope checked: expiry, startup, interaction, job-control recovery, churn, normal 30-minute resource runs and the short realistic-fleet check pass. Extended eight-hour soak, eight-source/8192-outcome stress testing and read-path optimization are deferred. |
 | T4: package and consumer qualification | Source and paired installed-wheel matrices pass. The public local/two-host recipe is documented; real cached-fleet and the focused independent native comparison pass at their recorded scope. No full remote/native coverage or human acceptance is inferred. |
 | Later delivery | New immutable release and package/dependency provenance, retaining terminal JSON v1; independently reviewed TUI pin, managed rollout/recovery and Fleet presentation. No collector/publisher/hardware/Agent Plus/Tmux migration is inferred. |
 

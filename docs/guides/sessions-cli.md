@@ -207,7 +207,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is an unreleased source preview under qualification;
+The persistent dashboard is an unreleased source preview with its own recorded checks;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product plan](../maintenance/terminal-product.md) for its acceptance
 gates. Managed reader installation, native acceptance and hardware/Fleet

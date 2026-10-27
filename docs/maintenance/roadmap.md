@@ -1,7 +1,8 @@
 # Agent Observer roadmap
 
 Agent Observer provides reusable Codex read-only observation for dashboards,
-diagnostics and agent utilities. The CLI/dashboard milestone is in qualification:
+diagnostics and agent utilities. The CLI/dashboard milestone has passed the
+source-preview checks described below:
 the CLI is released and the persistent terminal dashboard is implemented as an
 unreleased source preview. Native managers continue to own conversation control.
 [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase;
@@ -21,7 +22,7 @@ plans for restoring those retired paths are superseded.
 Existing direct, service and Mesh commands support diagnostic inspection.
 `working-set list` and `working-set watch` already read qualified cached state;
 the current watch is bounded to 60 seconds. The terminal product builds on
-these capabilities. The dashboard is a source preview under qualification; it
+these capabilities. The dashboard is a checked, unreleased source preview; it
 is not part of the published a12 package or a managed selection.
 
 The [a12 sessions CLI](../guides/sessions-cli.md) provides configured
@@ -97,8 +98,8 @@ implicitly advance collector, publisher or hardware-dashboard pins.
 | --- | --- |
 | Detailed planning | Reviewed; command/output shapes, configuration, dashboard screen/keys, dependencies and lifecycle/resource policy are recorded in the terminal product plan |
 | Usable CLI | Released in 0.7.0a12; its finite CLI and JSON v1 remain the published interface |
-| Standalone dashboard | Implemented as an unreleased source preview; source/installed checks, a focused native comparison and the short realistic-fleet check pass. The long-run gate remains open; large-fleet stress testing is deferred. Human acceptance and release are separate later steps |
-| Release and delivery | Pending qualification and independent review; no package pin, managed installation or showcase update is selected |
+| Standalone dashboard | Implemented as an unreleased source preview; source/installed checks, normal resource runs, controlled recovery, a focused native comparison and the short realistic-fleet check pass. Extended soak and large-fleet stress testing are deferred. Human acceptance and release are separate later steps |
+| Release and delivery | Pending independent release review and human acceptance; no package pin, managed installation or showcase update is selected |
 
 The terminal product plan records the selected command names, filters/order,
 key bindings, optional extras and machine-readable output contract. The preview
@@ -116,7 +117,8 @@ alive past their leases.
 
 The plan defines the resource durations and thresholds. The fixed
 3-source/300-identity normal installed-dashboard profile and paired package
-matrix pass on this candidate. The eight-hour run remains open. The user replaced
+matrix pass on this candidate. An eight-hour soak is optional future testing,
+not a preview gate. The user replaced
 the eight-source/8192-outcome stress gate with a quick practical check of the
 actual configured cached fleet. Existing controlled installed update,
 interaction and source-recovery results supplement that short snapshot.
@@ -157,8 +159,11 @@ and no measurement coverage misses. This does not establish capacity.
 Earlier T6 Python 3.11 evidence at 5.1597% remains a failure; the candidates and
 measurement windows differ, so these results do not prove a speedup.
 
-The latest T9 receipt shows the 8-hour soak still running, with no terminal
-outcome available. Historical 8-source/8192-outcome stress capacity remains unmet: baseline
+The optional T9 eight-hour soak was stopped after about 3.6 measured hours,
+with its owned test processes and sockets cleaned up and terminal restored.
+It remains incomplete, not an eight-hour pass. Preview acceptance uses the
+completed normal resource and controlled recovery checks.
+Historical 8-source/8192-outcome stress capacity remains unmet: baseline
 and traced reader-only runs never reached eight complete sources. Their sampled
 maximum was four complete sources/4,096 members; they ended with three/3,072
 after timeouts.
@@ -177,13 +182,13 @@ acceptance is claimed.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
-| Terminal product | Complete the source-preview qualification gates in the plan | Long-run/outage and quick realistic-fleet checks; human acceptance and delivery remain separate |
+| Terminal product | Review the qualified source preview for ordinary use and later delivery | Completed normal resource, recovery and realistic-fleet checks; human acceptance and delivery remain separate |
 | Native coverage | Investigate a reproducible identity or membership discrepancy | Independent native comparison on the affected host/home |
 | Efficiency | Measure the owning collector/read path against an exact baseline | Matched CPU, memory and unchanged freshness/coverage |
 | Consumer integration | Adopt an accepted producer interface where useful | Consumer-specific package, UI/device and recovery proof |
 
-The terminal product remains the current direction; its source preview is under
-qualification. Other rows are follow-ups driven by demonstrated need.
+The terminal product remains the current direction; its source preview has
+passed the recorded checks. Other rows are follow-ups driven by demonstrated need.
 Deployment and unrelated infrastructure changes need their own scope.
 Working-set coverage now reports a primary census, support or membership blocker.
 Clock changes use bounded recency uncertainty and retain a detector incident
@@ -196,6 +201,9 @@ partial samples do not establish a producer bug.
 
 ## Deferred work and reopen conditions
 
+- Extended eight-hour soak testing is optional future work. Reopen for a
+  suspected leak, resource growth during ordinary use or a concrete stronger
+  uptime requirement. The cancelled partial soak is not an eight-hour pass.
 - Large-fleet stress capacity and read-path optimization are deferred. The
   configured identity/payload caps are safety bounds, not proven fleet capacity.
   Reopen for an observed limitation at the user's actual workload or a concrete
