@@ -103,7 +103,13 @@ content area. At least 80x24 shows single-line rows, 60x16 uses compact rows,
 and smaller terminals show resize guidance with overall health and quit/help.
 Opening/closing panels does not restart subscriptions.
 
-In-app source/host/home filters narrow presentation only. `Watching N sources`
+The list gives session names priority. Project context and separate runtime/phase
+columns appear at 140 columns; narrower full layouts keep runtime/phase together.
+Details group the session summary, workspace and source health before exact
+identity, reason and deadline evidence lower down. Use the contextual footer for
+common actions and `?` for the full keyboard guide.
+
+In-app source/host/home filters narrow presentation only. `Sources N`
 still describes the immutable startup watched set, and source failures continue
 to affect overall coverage. Restart with different selectors to watch a
 different set. No preferences or search history are written.

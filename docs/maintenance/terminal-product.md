@@ -237,9 +237,9 @@ publisher window and never reconfigures it. Do not use ambient `CODEX_HOME`
 to redirect a cached source. Config contains no credentials/SSH commands and
 is frozen during an invocation: no hot-added homes/hosts or automatic routes.
 
-## Proposed TUI experience
+## Dashboard experience
 
-Recommend `agent-observer dashboard`: one persistent session list, source health
+`agent-observer dashboard` provides one persistent session list, source health
 always visible, and details opened on demand. Bare `agent-observer` continues
 to be the quick finite CLI. The implementation uses this reviewed default;
 an always-visible split or host board is not part of the first TUI.
@@ -276,7 +276,9 @@ qualified outcomes rather than an exhaustive fleet size.
 ### Layout and details
 
 - Default: use the full available list width. At least 80x24 gives single-line
-  rows; at 120x30 add optional context and separate runtime/phase columns.
+  rows, prioritizing readable session names. At >=140 columns add project
+  context and separate runtime/phase columns; this threshold is independent
+  of the split-details threshold below.
 - Enter opens details. At 120x30 or wider it opens a side panel; below that it
   opens a full-screen detail view. Details stay closed initially at every width.
   Resize preserves whether details are open, their target and scroll position.
@@ -289,7 +291,9 @@ qualified outcomes rather than an exhaustive fleet size.
   incomplete/failed source counts remain visible, including with zero matches.
 - Color follows the CLI: cyan navigation, green working/complete, cyan waiting,
   amber blocked/unknown/partial, red unavailable. Use literal state words,
-  a `>` selection marker and bold/reverse focus so color is never required.
+  a `>` selection marker and a restrained theme-aware selection surface. Keep
+  strong bold/reverse focus without color. Ordinary host/context text is quieter
+  than the session name; section headings separate navigation from state.
   Icons follow `--icons auto|always|never`. Default ornaments require no Nerd Font.
 - Use safe literal text, including Textual/Rich markup-like strings. Sanitize
   terminal/bidi controls using shared metadata rules; disable metadata markup,
@@ -297,11 +301,18 @@ qualified outcomes rather than an exhaustive fleet size.
 
 Details have a readable summary first: full name, host/home, membership,
 runtime/phase with independent health, and qualified native activity time.
-Expandable evidence shows full five-field identity, source ID, bounded reasons,
+Project/path and source-health context precede the technical evidence. Sectioned
+details retain full five-field identity, source ID, bounded reasons,
 last-known values explicitly marked noncurrent, expected/observed namespace,
 scope coverage and receiving-clock/deadline context. Show admitted path/project
 metadata as optional context without filesystem/Git access. Details are not a
 transcript, event log or native terminal.
+
+The top bar identifies the view and totals; the toolbar emphasizes active
+search/filter settings. A short contextual footer shows common actions, while
+`?` groups the complete keyboard guide. These changes add no modes or keys.
+Filter dimensions are clearly identified, and friendly source labels still
+toggle exact configured source IDs.
 
 The source view lists every watched source, including empty and blocked ones:
 host/home, delivery, baseline, coverage, latest frame age, error explanation and

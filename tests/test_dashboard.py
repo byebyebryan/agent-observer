@@ -288,9 +288,17 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(app._overlay, overlay)
                 await pilot.press("escape")
             await pilot.press("s")
-            self.assertIn("List focus", app._footer_text())
+            await pilot.pause()
+            source_text = "\n".join(
+                widget.content.plain for widget in app.query_one("#content").children
+            )
+            self.assertIn("Source list", source_text)
             await pilot.press("tab")
-            self.assertIn("Details focus", app._footer_text())
+            await pilot.pause()
+            source_text = "\n".join(
+                widget.content.plain for widget in app.query_one("#content").children
+            )
+            self.assertIn("Source evidence", source_text)
 
     async def test_revocation_during_mount_drops_the_just_mounted_projection(self):
         item = row("alpha", title="Alpha task")
@@ -489,6 +497,260 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("ctrl+c")
             self.assertEqual(app.return_code, 130)
 
+    async def test_context_columns_start_at_140_and_titles_keep_20_columns_at_80(self):
+        item = row("alpha", title="A session title that should remain readable")
+        app = DashboardApp(FakeReader([_session_state(rows=[item], ids=["alpha"])]), {})
+
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            header = app.query_one("#content").children[0]
+            self.assertNotIn("CONTEXT", str(header.content))
+            self.assertGreaterEqual(app._column_widths(76)[0], 20)
+
+            await pilot.resize_terminal(120, 30)
+            await pilot.pause()
+            self.assertNotIn("CONTEXT", str(app.query_one("#content").children[0].content))
+            await pilot.press("enter")
+            await pilot.pause()
+            self.assertTrue(app._split_details())
+            self.assertTrue(app.query_one("#split-detail").display)
+
+            await pilot.press("escape")
+            await pilot.pause()
+            await pilot.resize_terminal(140, 30)
+            await pilot.pause()
+            self.assertIn("CONTEXT", str(app.query_one("#content").children[0].content))
+
+    async def test_grouped_30_row_pages_keep_last_selected_row_visible_at_full_and_compact_sizes(self):
+        route_a = source("route-a", host="laptop", home="default")
+        route_b = source("route-b", host="workstation", home="work")
+        rows_a = [row(f"a-{index:02}", title=f"Laptop task {index:02}", host="laptop") for index in range(15)]
+        rows_b = [
+            row(f"b-{index:02}", title=f"Workstation task {index:02}", host="workstation")
+            for index in range(15)
+        ]
+        reader = FakeReader(
+            [
+                _session_state(route_a, rows=rows_a, ids=[item["identity"]["nativeId"] for item in rows_a]),
+                _session_state(route_b, rows=rows_b, ids=[item["identity"]["nativeId"] for item in rows_b]),
+            ]
+        )
+        app = DashboardApp(reader, {"group": "host-home"})
+
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            for size in ((80, 24), (60, 16)):
+                await pilot.resize_terminal(*size)
+                await pilot.pause()
+                page_size = app._page_size()
+                current_index = next(
+                    index
+                    for index, item in enumerate(app._visible_rows)
+                    if app._row_key(item) == app._selected_key
+                )
+                page_start = current_index // page_size * page_size
+                target = min(len(app._visible_rows) - 1, page_start + page_size - 1)
+                app._select_row(app._visible_rows[target])
+                await pilot.pause()
+
+                self.assertIn(
+                    app._selected_key,
+                    {app._row_key(item) for item in app._page_rows},
+                )
+                if app._layout_mode() == "compact":
+                    age_cell = app._age_cells[app._selected_key][0]
+                    selected_widget = age_cell.parent.parent
+                    selected_text = selected_widget.children[0].children[1].content.plain
+                else:
+                    selected_widget = app._line_widgets[app._selected_key]
+                    selected_text = selected_widget.content.plain
+                self.assertIn(app._selected_label, selected_text)
+                content = app.query_one("#content")
+                region = selected_widget.region
+                viewport = content.scrollable_content_region
+                self.assertGreaterEqual(region.y, viewport.y)
+                self.assertLessEqual(region.bottom, viewport.bottom)
+
+    async def test_selection_surface_is_consistent_and_no_color_uses_reverse(self):
+        item = row("alpha", title="Alpha task")
+        app = DashboardApp(FakeReader([_session_state(rows=[item], ids=["alpha"])]), {})
+
+        async with app.run_test(size=(70, 20)) as pilot:
+            await pilot.pause()
+            compact = next(
+                widget
+                for widget in app.query_one("#content").children
+                if "compact-row" in widget.classes
+            )
+            self.assertTrue(compact.children[0].has_class("selected-row"))
+            self.assertTrue(compact.children[1].has_class("selected-row"))
+
+            await pilot.press("enter")
+            await pilot.resize_terminal(130, 40)
+            await pilot.pause()
+            self.assertTrue(app._split_details())
+            selected = next(
+                widget
+                for widget in app.query_one("#split-list").children
+                if widget.has_class("selected-row")
+            )
+            self.assertIn(app._selected_label, selected.children[1].content.plain)
+            self.assertIn("Details · ↑↓ scroll · Tab list", app._footer_text())
+            self.assertTrue(app.query_one("#split-detail").has_class("details-focused"))
+            await pilot.press("tab")
+            await pilot.pause()
+            self.assertIn("List · ↑↓ select · Tab details", app._footer_text())
+            await pilot.resize_terminal(100, 40)
+            await pilot.pause()
+            self.assertIn("↑↓ scroll · Esc back", app._footer_text())
+
+        no_color = DashboardApp(
+            FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {}, no_color=True
+        )
+        async with no_color.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            selected = no_color._line_widgets[no_color._selected_key]
+            self.assertFalse(selected.has_class("selected-row"))
+            self.assertTrue(
+                selected.content.get_style_at_offset(no_color.console, 0).reverse
+            )
+
+    async def test_details_are_summary_first_and_keep_exact_source_and_identity_evidence(self):
+        item = row("alpha", title="Alpha task")
+        app = DashboardApp(FakeReader([_session_state(rows=[item], ids=["alpha"])]), {})
+
+        async with app.run_test(size=(100, 24)) as pilot:
+            await pilot.pause()
+            lines = app._detail_lines()
+            self.assertEqual(lines[0], "Alpha task")
+            self.assertLess(lines.index("Session summary"), lines.index("Project and activity"))
+            self.assertLess(lines.index("Project and activity"), lines.index("Source health and coverage"))
+            self.assertNotIn("Observation reasons", lines)
+            self.assertLess(
+                lines.index("Source health and coverage"),
+                lines.index("Native identity and lease diagnostics"),
+            )
+            joined = "\n".join(lines)
+            self.assertIn("Project context: fixture-project", joined)
+            self.assertIn("Admitted path metadata: /synthetic/workspace", joined)
+            self.assertIn("Activity: ", joined)
+            self.assertIn("Configured home: default", joined)
+            self.assertIn("Configured source ID: fixture-default", joined)
+            self.assertIn("namespace: sha256:", joined)
+
+            item["blockedReasons"] = ["native_reason"]
+            app.reader.replace([_session_state(rows=[item], ids=["alpha"])])
+            app._refresh_projection()
+            reason_lines = app._detail_lines()
+            self.assertLess(
+                reason_lines.index("Observation reasons"),
+                reason_lines.index("Source health and coverage"),
+            )
+            self.assertIn("Bounded reasons: native_reason", reason_lines)
+
+    async def test_split_detail_wraps_fit_scrollable_width_and_preserve_exact_values(self):
+        native_id = "thread-" + "x" * 96
+        admitted_path = "/synthetic/" + "long-directory/" * 12
+        item = row(native_id, title="Long identity task")
+        item["cwd"] = admitted_path
+        reader = FakeReader([_session_state(rows=[item], ids=[native_id])])
+        app = DashboardApp(reader, {})
+
+        async with app.run_test(size=(130, 40)) as pilot:
+            await pilot.pause()
+            await pilot.press("enter")
+            await pilot.pause()
+            pane = app.query_one("#split-detail")
+            self.assertTrue(app._split_details())
+            content_width = pane.scrollable_content_region.width
+            self.assertGreater(content_width, 0)
+            self.assertEqual(app._detail_width(), content_width)
+            visible_pages = []
+            for _ in range(len(app._wrapped_detail_lines()) + 2):
+                pane = app.query_one("#split-detail")
+                visible_pages.append("".join(widget.content.plain for widget in pane.children))
+                visible_lines = len(app._wrapped_detail_lines())
+                maximum = max(0, visible_lines - max(1, app.size.height - 7))
+                if app._scroll_offset >= maximum:
+                    break
+                await pilot.press("down")
+                await pilot.pause(0.02)
+            pane = app.query_one("#split-detail")
+            self.assertTrue(any(native_id in page for page in visible_pages))
+            self.assertTrue(any(admitted_path in page for page in visible_pages))
+            self.assertEqual(
+                pane.children[-1].content.plain,
+                app._wrapped_detail_lines()[-1],
+            )
+            self.assertLessEqual(
+                pane.children[-1].region.bottom,
+                pane.scrollable_content_region.bottom,
+            )
+            self.assertTrue(
+                all(
+                    widget.content.cell_len <= content_width for widget in pane.children
+                )
+            )
+
+    async def test_filter_source_choices_are_friendly_but_toggle_exact_ids(self):
+        route_a = source("route-a", host="laptop", home="default")
+        route_b = source("route-b", host="workstation", home="work")
+        app = DashboardApp(
+            FakeReader([_session_state(route_a), _session_state(route_b)]), {}
+        )
+
+        async with app.run_test(size=(100, 24)) as pilot:
+            await pilot.pause()
+            await pilot.press("f")
+            await pilot.pause()
+            displayed = "\n".join(str(widget.content) for widget in app.query_one("#content").children)
+            self.assertIn("[Source]", displayed)
+            self.assertIn("laptop/Default", displayed)
+            self.assertIn("workstation/Work", displayed)
+            self.assertIn("Display filters only.", displayed)
+            self.assertIn("All watched sources stay counted.", displayed)
+            self.assertNotIn("route-a", displayed)
+            await pilot.press("space")
+            self.assertEqual(app.filters["source"], ("route-b",))
+
+        narrow = DashboardApp(
+            FakeReader([_session_state(route_a), _session_state(route_b)]), {}
+        )
+        async with narrow.run_test(size=(60, 24)) as pilot:
+            await pilot.pause()
+            await pilot.press("f")
+            narrow._filter_dimension_index = 5
+            await narrow._paint()
+            heading = str(narrow.query_one("#content").children[0].content)
+            self.assertIn("[Phase]", heading)
+            self.assertIn("6/7", heading)
+
+    async def test_sources_list_summaries_before_selected_exact_evidence(self):
+        route_a = source("route-a", host="laptop", home="default")
+        route_b = source("route-b", host="workstation", home="work")
+        reader = FakeReader([_session_state(route_a), _session_state(route_b)])
+        reader.stages["route-a"] = "blocked"
+        app = DashboardApp(reader, {})
+
+        async with app.run_test(size=(100, 30)) as pilot:
+            await pilot.pause()
+            app._open_sources()
+            await pilot.pause()
+            widgets = app._source_widgets()
+            texts = [widget.content.plain for widget in widgets]
+            second_source_index = next(
+                index for index, line in enumerate(texts) if "workstation/Work" in line
+            )
+            evidence_index = next(
+                index for index, line in enumerate(texts) if "Selected source evidence" in line
+            )
+            self.assertLess(second_source_index, evidence_index)
+            joined = "\n".join(texts)
+            self.assertIn("route-a", joined)
+            self.assertIn("Configured home: default", joined)
+            self.assertIn("Reader stage: blocked", joined)
+            self.assertIn("manual correction required", joined)
+
     async def test_queued_paint_and_age_tick_revoke_before_reusing_cached_rows(self):
         alpha = row("alpha", title="Alpha task")
         reader = FakeReader([_session_state(rows=[alpha], ids=["alpha"])])
@@ -616,8 +878,13 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         async with app.run_test(size=(40, 10)) as pilot:
             await pilot.pause()
             summary = app._source_ribbon()
-            self.assertIn("Unavailable 1", summary)
-            self.assertIn("Complete 1", summary)
+            self.assertIn("2 src", summary)
+            self.assertIn("unavailable 1", summary)
+            self.assertIn("s sources", summary)
+            self.assertIn("Observer", app._header_text())
+            self.assertIn("members", app._header_text())
+            self.assertIn("uncertain", app._header_text())
+            self.assertIn("Default", app._toolbar_text())
             await pilot.press("?")
             self.assertEqual(app._overlay, "help")
             await pilot.pause()

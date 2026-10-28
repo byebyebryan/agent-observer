@@ -1,5 +1,5 @@
 Screen { background: $surface; color: $text; }
-#header { height: 1; padding: 0 1; background: $panel; color: $accent; text-style: bold; }
+#header { height: 1; padding: 0 1; background: $panel; color: $text; text-style: bold; }
 #sources { height: 1; padding: 0 1; color: $text-muted; }
 #toolbar { height: 1; padding: 0 1; color: $text-muted; }
 #search { height: 1; display: none; padding: 0 1; }
@@ -7,6 +7,17 @@ Screen { background: $surface; color: $text; }
 #status { height: 1; padding: 0 1; color: $text-muted; }
 #footer { height: 1; padding: 0 1; background: $panel; color: $text-muted; }
 .row { height: 1; }
+.row.selected-row { background: $primary 18%; color: $text; text-style: bold; }
+.table-heading { color: $text-muted; text-style: bold; }
 .compact-row { height: 2; }
 .cell { height: 1; padding: 0; margin: 0; overflow: hidden; text-wrap: nowrap; }
+.selected-row .cell { background: $primary 18%; color: $text; text-style: bold; }
+.selected-row .selection-marker { color: $primary; text-style: bold; }
+.section-heading { height: 1; color: $text; text-style: bold; }
 .detail-title { text-style: bold; }
+.filter-tabs { color: $text; }
+.source-evidence { color: $text-muted; }
+#split-content { height: 1fr; }
+#split-list { height: 1fr; }
+#split-detail { height: 1fr; border-left: solid $panel; padding-left: 1; scrollbar-gutter: stable; }
+#split-detail.details-focused { border-left: solid $primary; }

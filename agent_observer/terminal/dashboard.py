@@ -26,6 +26,7 @@ _FILTER_DIMENSIONS = ("source", "host", "home", "membership", "runtime", "phase"
 _SINGLE_ROW_MIN_WIDTH = 80
 _SPLIT_WIDTH = 120
 _SPLIT_HEIGHT = 30
+_WIDE_COLUMNS_WIDTH = 140
 _COMPACT_MIN_WIDTH = 60
 _COMPACT_MIN_HEIGHT = 16
 _MAX_PAGE_ROWS = 200
@@ -35,13 +36,19 @@ _MIN_PAINT_INTERVAL = 0.25
 class SessionLine(Static):
     """One terminal row, with bounded literal cells and no per-cell DOM nodes."""
 
-    def __init__(self, values, widths, *, selected, header, style_for):
+    def __init__(self, values, widths, *, selected, header, style_for, surface_selection=True):
         self._cell_values = list(values)
         self._cell_widths = widths
         self._selected_row = selected
         self._header_row = header
+        self._surface_selection = surface_selection
         self._style_for_cell = style_for
-        super().__init__(self._line(), markup=False, classes="row")
+        classes = ["row"]
+        if header:
+            classes.append("table-heading")
+        if selected and surface_selection:
+            classes.append("selected-row")
+        super().__init__(self._line(), markup=False, classes=" ".join(classes))
 
     def _line(self) -> Text:
         line = Text(no_wrap=True, overflow="ellipsis")
@@ -62,6 +69,10 @@ class SessionLine(Static):
     def select_row(self, selected: bool) -> None:
         if selected != self._selected_row:
             self._selected_row = selected
+            if selected and self._surface_selection:
+                self.add_class("selected-row")
+            elif self._surface_selection:
+                self.remove_class("selected-row")
             self.update(self._line())
 
     def update_age(self, value: str) -> None:
@@ -165,13 +176,13 @@ class DashboardApp(App[None]):
         yield Static("Agent Observer", id="header", markup=False)
         yield Static("Sources: connecting", id="sources", markup=False)
         yield Static(
-            "Find: — · Filters: default · Order: activity · Group: none", id="toolbar", markup=False
+            "Search off · default filters · activity · no grouping", id="toolbar", markup=False
         )
         yield Input(placeholder="Search sessions", max_length=256, id="search")
         yield VerticalScroll(id="content")
         yield Static("", id="status", markup=False)
         yield Static(
-            "↑↓ move · Enter details · / search · f filters · s sources · ? help · q quit",
+            "↑↓ move · Enter details · / find · f filters · s sources · ? help · q quit",
             id="footer",
             markup=False,
         )
@@ -502,11 +513,21 @@ class DashboardApp(App[None]):
 
     def _page_size(self) -> int:
         mode = self._layout_mode()
-        available = max(1, self.size.height - 7 - int(self._search_open))
-        if mode == "compact":
-            available //= 2
+        line_budget = max(1, self.size.height - 5 - int(self._search_open))
+        row_height = 2 if mode == "compact" else 1
+        header_lines = int(mode == "full")
         if self._split_details():
-            available = max(1, self.size.height - 9)
+            header_lines = 1
+        group_lines = 0
+        if self.filters.get("group") == "host-home":
+            group_lines = len(
+                {
+                    (row.get("source", {}).get("host"), row.get("source", {}).get("home"))
+                    for row in self._visible_rows
+                }
+            )
+        page_line = int(bool(self._visible_rows))
+        available = max(1, (line_budget - header_lines - group_lines - page_line) // row_height)
         return max(1, min(_MAX_PAGE_ROWS, available))
 
     def _sync_page_rows(self) -> None:
@@ -643,25 +664,25 @@ class DashboardApp(App[None]):
         if self._render_values.get(widget_id) == value:
             return
         text = self._as_text(value)
-        if not self.no_color:
-            if widget_id in {"header", "footer"}:
-                text.stylize("bold cyan" if widget_id == "header" else "cyan")
-            elif widget_id == "sources":
-                palette = {
-                    "complete": "green",
-                    "partial": "yellow",
-                    "stale": "yellow",
-                    "warming": "yellow",
-                    "unavailable": "bold red",
-                    "blocked": "yellow",
-                    "refreshing": "yellow",
-                }
-                for match in re.finditer(
-                    r"\b(complete|partial|stale|warming|unavailable|blocked|refreshing)\b",
-                    value,
-                    re.I,
-                ):
-                    text.stylize(palette[match.group().lower()], match.start(), match.end())
+        if widget_id == "footer":
+            for match in re.finditer(r"(?:^| · )([^ ]+)", value):
+                text.stylize("bold", match.start(1), match.end(1))
+        elif not self.no_color and widget_id == "sources":
+            palette = {
+                "complete": "green",
+                "partial": "yellow",
+                "stale": "yellow",
+                "warming": "yellow",
+                "unavailable": "bold red",
+                "blocked": "yellow",
+                "refreshing": "yellow",
+            }
+            for match in re.finditer(
+                r"\b(complete|partial|stale|warming|unavailable|blocked|refreshing)\b",
+                value,
+                re.I,
+            ):
+                text.stylize(palette[match.group().lower()], match.start(), match.end())
         self.query_one(f"#{widget_id}", Static).update(text)
         self._render_values[widget_id] = value
 
@@ -750,10 +771,10 @@ class DashboardApp(App[None]):
             row = self._selected_detail_row if self._selection_available else None
             detail_lines = []
             for line in self._detail_lines():
-                if line.startswith("Native activity: "):
-                    line = "Native activity: <age>"
-                elif line.startswith("Baseline: ") and " · frame " in line:
-                    line = line.split(" · frame ", 1)[0] + " · frame <age>"
+                if line.startswith("Activity: "):
+                    line = "Activity: <age>"
+                elif line.startswith("Baseline: ") and " · Frame age: " in line:
+                    line = line.split(" · Frame age: ", 1)[0] + " · Frame age: <age>"
                 detail_lines.append(line)
             return (
                 *base,
@@ -874,18 +895,23 @@ class DashboardApp(App[None]):
                         "Resize to 60×16 for session controls.",
                     ]
                 )
-            return self._plain_lines(
+            widgets = self._plain_lines(
                 [
                     "Keyboard help",
-                    "↑/↓ or j/k move · PageUp/PageDown page · Home/End jump",
-                    "Enter details · Esc back or clear selection · Tab changes focus",
-                    "/ search one term (150 ms debounce) · Esc restores prior query",
-                    "f filters · o order · g grouping · s source health · r retry focused failed source",
-                    "? close help · q quit · Ctrl+C interrupt",
+                    "Navigation",
+                    "↑↓/j/k move · PgUp/PgDn page · Home/End jump",
+                    "Views",
+                    "Enter details · Tab focus · Esc back/clear",
+                    "Search and filters",
+                    "/ find one term · f filters · o order · g grouping",
+                    "Sources and exit",
+                    "s sources · r retry · q quit · Ctrl+C exit",
                     "Search input keeps printable keys, including q/j/k.",
-                    "All state labels come from the shared qualified projection.",
                 ]
             )
+            for index in (0, 1, 3, 5, 7):
+                widgets[index].add_class("section-heading")
+            return widgets
         if self._overlay == "filters":
             return self._filter_widgets()
         if self._overlay in {"sort", "group"}:
@@ -895,8 +921,9 @@ class DashboardApp(App[None]):
             current = self.filters["sort"] if self._overlay == "sort" else self.filters["group"]
             title = "Order" if self._overlay == "sort" else "Group"
             lines = [
-                f"{title}: choose with ↑/↓ and Enter; Esc returns",
-                "Reset filter selections with f → Reset.",
+                title,
+                "↑/↓ choose · Enter apply · Esc returns",
+                "Use f for filters · r resets from the Filters menu.",
             ]
             lines.extend(("> " if item == current else "  ") + item for item in values)
             return self._plain_lines(lines)
@@ -944,22 +971,74 @@ class DashboardApp(App[None]):
         dimension = _FILTER_DIMENSIONS[self._filter_dimension_index]
         options = self._filter_options(dimension)
         selected = self._effective_filter_values(dimension, options)
+        labels = {
+            "source": "Source",
+            "host": "Host",
+            "home": "Home",
+            "membership": "Member",
+            "runtime": "Runtime",
+            "phase": "Phase",
+            "kind": "Kind",
+        }
+        if self.size.width < 80:
+            active_label = labels[dimension]
+            heading = Text(
+                f"Filters · [{active_label}] "
+                f"{self._filter_dimension_index + 1}/{len(_FILTER_DIMENSIONS)}",
+                style="bold underline",
+            )
+        else:
+            heading = Text("Filters  ", style="bold")
+            for index, name in enumerate(_FILTER_DIMENSIONS):
+                if index:
+                    heading.append("  ")
+                label = labels[name]
+                heading.append(f"[{label}]" if index == self._filter_dimension_index else label)
+                if index == self._filter_dimension_index:
+                    heading.stylize("bold underline", len(heading) - len(label) - 2, len(heading))
+                else:
+                    heading.stylize("dim", len(heading) - len(label), len(heading))
+        widgets = [Static(heading, markup=False, classes="filter-tabs")]
         lines = [
-            f"Filters · {dimension}",
-            "←/→ or Tab changes dimension · ↑/↓ selects · Space/Enter toggles · Reset clears · Esc returns",
+            "←/→ or Tab: dimension · ↑/↓: option · Space/Enter: toggle",
         ]
         if not options:
             lines.append("No configured values for this dimension.")
         for index, option in enumerate(options):
             marker = ">" if index == self._filter_option_index else " "
             checked = "[x]" if option in selected else "[ ]"
-            lines.append(f"{marker} {checked} {self._safe(option)}")
+            lines.append(f"{marker} {checked} {self._filter_option_label(dimension, option)}")
         lines.append("")
-        lines.append("Press r to reset dashboard filters and kind inclusion to defaults")
-        lines.append(
-            "This only narrows presentation; all configured sources remain watched and counted."
+        lines.append("r resets filters and kind inclusion to defaults.")
+        lines.append("Display filters only.")
+        lines.append("All watched sources stay counted.")
+        widgets.extend(self._plain_lines(lines))
+        return widgets
+
+    def _filter_option_label(self, dimension: str, option: str) -> str:
+        if dimension != "source":
+            return self._safe(option)
+        config = next(
+            (item for item in self._source_configs() if self._config_value(item, "id") == option),
+            None,
         )
-        return self._plain_lines(lines)
+        if config is None:
+            return self._safe(option)
+        friendly = self._filter_source_label(config)
+        matches = [
+            item
+            for item in self._source_configs()
+            if self._filter_source_label(item) == friendly
+        ]
+        if len(matches) > 1:
+            friendly += f" ({self._safe(option)})"
+        return friendly
+
+    def _filter_source_label(self, config: Any) -> str:
+        host = self._safe(self._config_value(config, "host"))
+        home = self._safe(self._config_value(config, "home"))
+        label = self._safe(self._config_value(config, "label"))
+        return f"{host}/{label or home}"
 
     def _source_configs(self) -> list[Any]:
         slots = getattr(self.reader, "slots", ())
@@ -988,75 +1067,113 @@ class DashboardApp(App[None]):
         configs = self._source_configs()
         lines: list[Static] = [
             Static(
-                self._as_text("Watched sources · all remain in the health denominator"),
+                self._as_text(
+                    f"Watched sources · {max(len(configs), len(report_sources))} configured"
+                ),
                 markup=False,
+                classes="section-heading",
             ),
             Static(
                 self._as_text(
-                    "Focus: source details · ↑↓ scroll · Tab selects source list"
+                    "Source evidence · ↑↓ scroll · Tab returns to source list"
                     if self._focus == "source-details"
-                    else "Focus: source list · ↑↓ select · Tab opens source details"
+                    else "Source list · ↑↓ select · Tab opens selected source evidence"
                 ),
                 markup=False,
             ),
         ]
+        option_labels = {
+            source_id: self._filter_source_label(config)
+            for config in configs
+            if (source_id := self._config_value(config, "id"))
+        }
         self._source_age_cells = {}
+        selected_evidence: list[Static] = []
         for config in configs:
             source_id = self._config_value(config, "id")
             source = report_sources.get(source_id, {})
             status = statuses.get(source_id, {})
             selected = source_id == self._focused_source_id
-            name = f"{self._config_value(config, 'host')}/{self._config_value(config, 'home')} · {self._config_value(config, 'label')} · {source_id}"
-            health = source.get("health", "refreshing" if self._projection is None else "warming")
-            coverage = (
-                ", ".join(
-                    str(scope.get("coverage", {}).get("status", "unknown"))
-                    for scope in source.get("scopes", ())
-                )
-                or "coverage unknown"
-            )
-            reasons = source.get("reasons") or (
-                [source.get("reason")] if source.get("reason") else []
-            )
-            reason = ", ".join(self._safe(item) for item in reasons if item)
-            reason = reason or "no reported error"
-            retry = self._retry_text(status)
-            frame_age = self._frame_age_text(source)
-            status_line = (
-                f"{health} · stage {self._safe(status.get('stage', 'unknown'))} · delivery "
-                f"{self._safe(source.get('delivery', 'unknown'))} · baseline "
-                f"{'yes' if source.get('baseline') else 'no'} · {coverage} · frame {frame_age}"
-            )
-            if retry:
-                status_line += f" · {retry}"
-            if reason != "no reported error":
-                explanation = reason.replace("_", " ")
-                status_line += f" · reason {reason} ({explanation})"
+            name = option_labels.get(source_id, self._filter_source_label(config))
+            summary = self._source_summary_text(source, status)
             prefix = "> " if selected else "  "
             lines.append(
                 Static(
                     self._as_text(self._fit_line(prefix + name, self.size.width - 4)), markup=False
                 )
             )
-            lines.append(
-                Static(
-                    self._as_text(self._fit_line("  " + status_line, self.size.width - 4)),
-                    markup=False,
-                )
+            status_widget = Static(
+                self._source_summary_display(source, status),
+                markup=False,
             )
+            lines.append(status_widget)
             if source.get("lastFrameBoottimeMs") is not None:
-                self._source_age_cells[source_id] = (lines[-1], status_line)
+                self._source_age_cells[source_id] = (status_widget, summary)
             if selected:
-                for detail in self._source_detail_text(source):
-                    for part in Text("    " + detail).wrap(
-                        self.console, max(1, self.size.width - 4), overflow="fold"
-                    ):
-                        lines.append(Static(self._as_text(part.plain), markup=False))
+                selected_evidence = self._source_detail_widgets(
+                    source, config=config, status=status
+                )
         if not configs:
             lines.append(
                 Static(self._as_text("No source configuration is available."), markup=False)
             )
+        lines.extend(selected_evidence)
         return lines
+
+    def _source_summary_text(self, source: dict, status: dict) -> str:
+        health = source.get("health", "refreshing" if self._projection is None else "warming")
+        retry = self._retry_text(status)
+        stage = self._safe(status.get("stage", "unknown"))
+        coverage_states = tuple(
+            dict.fromkeys(
+                str(scope.get("coverage", {}).get("status", "unknown"))
+                for scope in source.get("scopes", ())
+            )
+        )
+        coverage = ", ".join(coverage_states) or "unknown"
+        freshness = self._frame_age_text(source)
+        recovery = retry or f"reader {stage}"
+        return f"{health} · {recovery} · coverage {coverage} · frame age {freshness}"
+
+    def _source_summary_display(self, source: dict, status: dict) -> Text:
+        prefix = "  "
+        value = self._fit_line(
+            prefix + self._source_summary_text(source, status),
+            max(1, self.size.width - 4),
+        )
+        text = self._as_text(value)
+        health = str(
+            source.get("health", "refreshing" if self._projection is None else "warming")
+        )
+        if not self.no_color:
+            style = self._semantic_style(health)
+            if style:
+                text.stylize(style, len(prefix), min(len(value), len(prefix) + len(health)))
+        return text
+
+    def _source_detail_widgets(
+        self, source: dict, *, config: Any | None = None, status: dict | None = None
+    ) -> list[Static]:
+        label = (
+            self._filter_source_label(config)
+            if config is not None
+            else self._safe(source.get("id", "unknown"))
+        )
+        lines = [f"Selected source evidence · {label}"]
+        wrap_width = max(1, self.size.width - 9)
+        for detail in self._source_detail_text(source, config=config, status=status):
+            lines.extend(
+                "    " + part.plain
+                for part in Text(detail).wrap(self.console, wrap_width, overflow="fold")
+            )
+        return [
+            Static(
+                self._as_text(line),
+                markup=False,
+                classes="section-heading" if index == 0 else "source-evidence",
+            )
+            for index, line in enumerate(lines)
+        ]
 
     def _list_widgets(self, *, width: int | None = None, split: bool = False) -> list[Any]:
         self._age_cells = {}
@@ -1082,19 +1199,26 @@ class DashboardApp(App[None]):
         )
         stop = min(total, start + page_size)
         if mode == "full" and not split:
-            wide = render_width >= _SPLIT_WIDTH
+            wide = render_width >= _WIDE_COLUMNS_WIDTH
             widths = self._column_widths(render_width - 4, wide=wide)
             headers = (
-                ("SESSION", "CONTEXT", "HOST / HOME", "MEMBER", "RUNTIME", "PHASE", "ACTIVITY")
+                ("SESSION", "CONTEXT", "HOST/HOME", "MEMBER", "RUNTIME", "PHASE", "ACTIVITY")
                 if wide
-                else ("SESSION", "HOST / HOME", "MEMBER", "RUNTIME / PHASE", "ACTIVITY")
+                else ("SESSION", "HOST/HOME", "MEMBER", "RUNTIME / PHASE", "ACTIVITY")
             )
             header, _ = self._row_widget(headers, widths, selected=False, header=True)
             widgets.append(header)
         elif split:
             widgets.append(
                 Static(
-                    self._as_text(self._fit_line("SESSION · MEMBER", render_width - 4)),
+                    self._as_text(
+                        self._fit_line(
+                            "SESSION · MEMBER · LIST FOCUS"
+                            if self._focus == "list"
+                            else "SESSION · MEMBER",
+                            render_width - 4,
+                        )
+                    ),
                     markup=False,
                 )
             )
@@ -1109,7 +1233,7 @@ class DashboardApp(App[None]):
                         Static(
                             self._as_text(
                                 self._fit_line(
-                                    f"{self._safe(group[0])} / {self._safe(group[1])}",
+                                    f"{self._safe(group[0])}/{self._safe(group[1])}",
                                     render_width - 4,
                                 )
                             ),
@@ -1163,29 +1287,45 @@ class DashboardApp(App[None]):
         key = self._row_key(row)
         if split:
             label_width = max(12, width - 34)
+            selected_style = "reverse bold" if selected and self.no_color else ""
             item = Horizontal(
-                self._cell("> " if selected else "  ", 2, "bold" if selected else ""),
                 self._cell(
-                    self._safe(row.get("label")), label_width, "reverse bold" if selected else ""
+                    "> " if selected else "  ",
+                    2,
+                    selected_style,
+                    selection_marker=selected,
+                ),
+                self._cell(
+                    self._safe(row.get("label")), label_width, selected_style
                 ),
                 self._cell(
                     self._safe(row.get("membership", "unknown")),
                     28,
-                    "reverse bold" if selected else "",
+                    selected_style
+                    if selected
+                    else self._semantic_style(self._safe(row.get("membership", "unknown"))),
                 ),
-                classes="row",
+                classes=self._row_classes(selected),
             )
             return [item]
         if mode == "compact":
             label = self._safe(row.get("label"))
             membership = self._safe(row.get("membership", "unknown"))
+            selected_style = "reverse bold" if selected and self.no_color else ""
             first = Horizontal(
-                self._cell("> " if selected else "  ", 2, "bold" if selected else ""),
-                self._cell(label, max(12, width - 22), "reverse bold" if selected else ""),
                 self._cell(
-                    membership, 18, "reverse bold" if selected else self._semantic_style(membership)
+                    "> " if selected else "  ",
+                    2,
+                    selected_style,
+                    selection_marker=selected,
                 ),
-                classes="row",
+                self._cell(label, max(12, width - 22), selected_style),
+                self._cell(
+                    membership,
+                    18,
+                    selected_style if selected else self._semantic_style(membership),
+                ),
+                classes=self._row_classes(selected),
             )
             source = row.get("source", {})
             runtime = self._fact_text(row.get("runtime"))
@@ -1193,32 +1333,38 @@ class DashboardApp(App[None]):
             age = self._activity_age(row)
             second_text = (
                 f"{self._safe(source.get('host'))}/{self._safe(source.get('home'))} · "
-                f"{runtime} / {phase} · "
+                f"{runtime}/{phase} · "
             )
             age = self._activity_age(row)
             age_cell = self._cell(
-                age, 10, "reverse" if selected else "dim", widget_id=f"age-{page_index}"
+                age,
+                10,
+                selected_style if selected else "dim",
+                widget_id=f"age-{page_index}",
             )
             second = Horizontal(
                 self._cell("  ", 2),
                 self._cell(
                     second_text,
                     max(12, width - 14),
-                    "reverse" if selected else self._semantic_style(f"{runtime} / {phase}"),
+                    selected_style
+                    if selected
+                    else self._semantic_style(f"{runtime}/{phase}"),
                 ),
                 age_cell,
+                classes=self._row_classes(selected),
             )
             self._age_cells[key] = (age_cell, age, row)
             return [Vertical(first, second, classes="compact-row")]
 
-        wide = width >= _SPLIT_WIDTH
+        wide = width >= _WIDE_COLUMNS_WIDTH
         widths = self._column_widths(width - 4, wide=wide)
         source = row.get("source", {})
         cells = (
             self._safe(row.get("label")),
-            f"{self._safe(source.get('host'))} / {self._safe(source.get('label') or source.get('home'))}",
+            f"{self._safe(source.get('host'))}/{self._safe(source.get('label') or source.get('home'))}",
             self._safe(row.get("membership", "unknown")),
-            f"{self._fact_text(row.get('runtime'))} / {self._phase_text(row.get('phase'))}",
+            f"{self._fact_text(row.get('runtime'))}/{self._phase_text(row.get('phase'))}",
             self._activity_age(row),
         )
         if wide:
@@ -1241,6 +1387,9 @@ class DashboardApp(App[None]):
         self._age_cells[key] = (age_cell, cells[-1], row)
         self._line_widgets[key] = row_widget
         return [row_widget]
+
+    def _row_classes(self, selected: bool) -> str:
+        return "row selected-row" if selected and not self.no_color else "row"
 
     def _phase_text(self, fact: dict | None) -> str:
         label = self._fact_text(fact)
@@ -1271,17 +1420,27 @@ class DashboardApp(App[None]):
         def style_for(index, value, selected_row, header_row):
             role = roles[index]
             if header_row:
-                return "bold" if self.no_color else "bold cyan"
+                return "bold"
             if selected_row:
-                return "reverse bold"
+                if self.no_color:
+                    return "reverse bold"
+                if role == "state":
+                    semantic = self._semantic_style(value)
+                    return f"bold {semantic}" if semantic else "bold"
+                return "bold"
             if role == "state":
                 return self._semantic_style(value)
-            if role in {"marker", "host"}:
-                return "cyan" if not self.no_color else ""
-            return "bold" if role == "label" else "dim"
+            if role == "label":
+                return "bold"
+            return "dim"
 
         line = SessionLine(
-            values, all_widths, selected=selected, header=header, style_for=style_for
+            values,
+            all_widths,
+            selected=selected,
+            header=header,
+            style_for=style_for,
+            surface_selection=not self.no_color,
         )
         return line, line
 
@@ -1291,10 +1450,10 @@ class DashboardApp(App[None]):
         if wide:
             # Preserve a readable label and state words before adding context.
             return max(16, width - 76), 16, 18, 9, 9, 12, 10
-        age = min(14, max(10, width // 8))
-        membership = 9
-        runtime_phase = min(22, max(16, width // 4))
-        host_home = max(16, min(26, width // 4))
+        age = min(12, max(9, width // 12))
+        membership = 10
+        runtime_phase = min(24, max(18, width // 5))
+        host_home = max(17, min(24, width // 5))
         title = max(8, width - 2 - age - membership - runtime_phase - host_home)
         return title, host_home, membership, runtime_phase, age
 
@@ -1318,13 +1477,20 @@ class DashboardApp(App[None]):
         return ""
 
     def _cell(
-        self, value: str, width: int, style: str = "", *, widget_id: str | None = None
+        self,
+        value: str,
+        width: int,
+        style: str = "",
+        *,
+        widget_id: str | None = None,
+        selection_marker: bool = False,
     ) -> Static:
         safe_value = self._safe(value)
         text = Text(safe_value, style=style or None, no_wrap=True, overflow="ellipsis")
         text.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
         text.pad_right(max(1, width))
-        widget = Static(text, markup=False, id=widget_id, classes="cell")
+        classes = "cell selection-marker" if selection_marker else "cell"
+        widget = Static(text, markup=False, id=widget_id, classes=classes)
         widget.styles.width = max(1, width)
         return widget
 
@@ -1332,7 +1498,8 @@ class DashboardApp(App[None]):
         if self._split_details():
             width = max(1, self.size.width - 6)
             left = max(55, int(width * 0.57))
-            return max(1, width - left - 2)
+            # The split pane reserves its border, padding, and stable scrollbar.
+            return max(1, width - left - 6)
         return max(1, self.size.width - 4)
 
     def _wrapped_detail_lines(self) -> list[str]:
@@ -1350,18 +1517,44 @@ class DashboardApp(App[None]):
         start = self._scroll_offset
         visible = lines[start : start + max(1, self.size.height - 7)]
         result = []
+        section_headings = {
+            "Session summary",
+            "Project and activity",
+            "Observation reasons",
+            "Source health and coverage",
+            "Native identity and lease diagnostics",
+        }
         for line in visible:
-            widget_id = "detail-activity" if line.startswith("Native activity: ") else None
+            widget_id = None
+            if line.startswith("Activity: "):
+                widget_id = "detail-activity"
+            elif line.startswith("Baseline: ") and " · Frame age: " in line:
+                widget_id = "detail-frame-age"
             result.append(
                 Static(
                     self._as_text(line),
                     markup=False,
                     id=widget_id,
+                    classes=(
+                        "section-heading"
+                        if line in section_headings
+                        else "detail-title"
+                        if line == (self._selected_label or "Selected session")
+                        else ""
+                    ),
                 )
             )
-        if "detail-activity" in [widget.id for widget in result]:
+        if any(widget.id == "detail-activity" for widget in result):
             self._render_values["detail-activity"] = self._activity_age(
                 self._selected_detail_row if self._selection_available else None
+            )
+        if any(widget.id == "detail-frame-age" for widget in result):
+            source = self._source_for_row(
+                self._selected_detail_row if self._selection_available else None
+            ) or {}
+            self._render_values["detail-frame-age"] = (
+                f"Baseline: {'yes' if source.get('baseline') else 'no'} · "
+                f"Frame age: {self._frame_age_text(source)}"
             )
         return result
 
@@ -1371,7 +1564,10 @@ class DashboardApp(App[None]):
         right_width = max(1, width - left_width - 2)
         list_widgets = self._list_widgets(width=left_width, split=True)
         left_panel = VerticalScroll(*list_widgets, id="split-list")
-        right_panel = VerticalScroll(*self._detail_widgets(), id="split-detail")
+        detail_widgets = self._detail_widgets()
+        right_panel = VerticalScroll(*detail_widgets, id="split-detail")
+        if self._focus == "details":
+            right_panel.add_class("details-focused")
         left_panel.styles.width = left_width
         right_panel.styles.width = right_width
         left_panel.styles.height = "1fr"
@@ -1390,43 +1586,45 @@ class DashboardApp(App[None]):
                 return ["No session selected.", "Use ↑/↓ to select a visible row."]
             return [
                 self._selected_label or "Selected session",
+                "Selection status",
                 status,
-                "Pinned identity (source provenance):",
+                "Native identity and lease diagnostics",
+                "Pinned identity (source provenance)",
                 *self._identity_lines(self._selected_identity or {}),
             ]
         source = row.get("source", {})
         runtime = row.get("runtime", {})
         phase = row.get("phase", {})
         activity = row.get("activity", {})
+        detail = row.get("details", {})
+        source_doc = next(
+            (
+                item
+                for item in self._report.get("sources", ())
+                if item.get("id") == source.get("id")
+            ),
+            {},
+        )
+        statuses = {item.get("id"): item for item in self.reader.status()}
+        config = next(
+            (
+                item
+                for item in self._source_configs()
+                if self._config_value(item, "id") == source.get("id")
+            ),
+            None,
+        )
         lines = [
             self._safe(row.get("label")),
-            *(["selected session hidden by filters"] if self._selection_hidden else []),
-            f"{self._safe(source.get('host'))} / {self._safe(source.get('home'))} · source {self._safe(source.get('id'))}",
+            *( ["selected session hidden by filters"] if self._selection_hidden else []),
+            "Session summary",
+            f"{self._safe(source.get('host'))}/{self._safe(source.get('label') or source.get('home'))}",
             f"Membership: {self._safe(row.get('membership', 'unknown'))}",
-            f"Runtime: {self._fact_text(runtime)} · Phase: {self._fact_text(phase)}",
-            f"Native activity: {self._activity_age(row)}",
-            *(
-                [f"Native activity time: {self._wall_time(activity.get('at'))}"]
-                if activity.get("health") == "current"
-                else []
-            ),
-            "Exact identity:",
-            *self._identity_lines(row.get("identity", {})),
-            f"Kind: {self._safe(row.get('kind', 'unknown'))}",
+            f"Runtime: {self._fact_text(runtime)}{self._fact_reason(runtime)}",
+            f"Phase: {self._fact_text(phase)}{self._fact_reason(phase)}",
+            "",
+            "Project and activity",
         ]
-        if row.get("reason"):
-            lines.append(f"Membership reason: {self._safe(row.get('reason'))}")
-        if runtime.get("health") != "current" and runtime.get("lastKnownValue") is not None:
-            lines.append(
-                f"Last-known runtime (not current): {self._safe(runtime['lastKnownValue'])}"
-            )
-        if phase.get("health") != "current" and phase.get("lastKnownValue") is not None:
-            lines.append(f"Last-known phase (not current): {self._safe(phase['lastKnownValue'])}")
-        if activity.get("health") != "current" and activity.get("lastKnownAt") is not None:
-            lines.append(
-                f"Last-known activity (not current): {self._wall_time(activity['lastKnownAt'])}"
-            )
-        detail = row.get("details", {})
         if detail.get("projectKey"):
             lines.append(f"Project context: {self._safe(detail['projectKey'])}")
         if detail.get("cwd"):
@@ -1440,29 +1638,58 @@ class DashboardApp(App[None]):
                     else ""
                 )
             )
+        lines.append(f"Activity: {self._activity_age(row)}")
+        if activity.get("health") == "current":
+            lines.append(f"Activity time: {self._wall_time(activity.get('at'))}")
+
+        reason_lines = []
+        if row.get("reason"):
+            reason_lines.append(f"Membership reason: {self._safe(row.get('reason'))}")
+        for fact_name, fact in (("Runtime", runtime), ("Phase", phase), ("Activity", activity)):
+            if type(fact) is dict and fact.get("health") != "current" and fact.get("reason"):
+                reason_lines.append(f"{fact_name} reason: {self._safe(fact['reason'])}")
+        if runtime.get("health") != "current" and runtime.get("lastKnownValue") is not None:
+            reason_lines.append(
+                f"Last-known runtime (not current): {self._safe(runtime['lastKnownValue'])}"
+            )
+        if phase.get("health") != "current" and phase.get("lastKnownValue") is not None:
+            reason_lines.append(
+                f"Last-known phase (not current): {self._safe(phase['lastKnownValue'])}"
+            )
+        if activity.get("health") != "current" and activity.get("lastKnownAt") is not None:
+            reason_lines.append(
+                f"Last-known activity (not current): {self._wall_time(activity['lastKnownAt'])}"
+            )
         if detail.get("metadataIssues"):
-            lines.append(
+            reason_lines.append(
                 "Metadata issues: "
                 + ", ".join(self._safe(item) for item in detail["metadataIssues"])
             )
         if detail.get("blockedReasons"):
-            lines.append(
+            reason_lines.append(
                 "Bounded reasons: "
                 + ", ".join(self._safe(item) for item in detail["blockedReasons"])
             )
-        lines.extend(self._membership_expiry_lines(row))
-        source_doc = next(
-            (
-                item
-                for item in self._report.get("sources", ())
-                if item.get("id") == source.get("id")
-            ),
-            {},
-        )
+        if reason_lines:
+            lines.extend(("", "Observation reasons", *reason_lines))
+        lines.extend(("", "Source health and coverage"))
         lines.extend(
-            ("Source coverage and receiving clock:", *self._source_detail_text(source_doc))
+            self._source_detail_text(
+                source_doc,
+                config=config,
+                status=statuses.get(source.get("id"), {}),
+            )
         )
+        lines.extend(("", "Native identity and lease diagnostics", "Exact identity"))
+        lines.extend(self._identity_lines(row.get("identity", {})))
+        lines.append(f"Kind: {self._safe(row.get('kind', 'unknown'))}")
+        lines.extend(self._membership_expiry_lines(row))
         return lines
+
+    def _fact_reason(self, fact: dict) -> str:
+        if type(fact) is not dict or fact.get("health") == "current" or not fact.get("reason"):
+            return ""
+        return f" · reason {self._safe(fact['reason'])}"
 
     def _identity_lines(self, identity: dict) -> list[str]:
         names = ("hostScope", "provider", "namespace", "nativeIdKind", "nativeId")
@@ -1487,13 +1714,19 @@ class DashboardApp(App[None]):
             result.append("Field deadlines (receiving clock): " + ", ".join(expiries))
         return result
 
-    def _source_detail_text(self, source: dict) -> list[str]:
+    def _source_detail_text(
+        self, source: dict, *, config: Any | None = None, status: dict | None = None
+    ) -> list[str]:
+        status = status or {}
         lines = [
-            f"Expected namespace: {self._safe(source.get('expectedNamespace'))}",
-            f"Observed namespace: {self._safe(source.get('observedNamespace')) if source.get('observedNamespace') else 'unknown'}",
             f"Health: {self._safe(source.get('health', 'unknown'))} · delivery {self._safe(source.get('delivery', 'unknown'))}",
-            f"Baseline: {'yes' if source.get('baseline') else 'no'} · frame {self._frame_age_text(source)}",
+            f"Baseline: {'yes' if source.get('baseline') else 'no'} · Frame age: {self._frame_age_text(source)}",
         ]
+        if status.get("stage") is not None:
+            lines.append(f"Reader stage: {self._safe(status['stage'])}")
+        retry = self._retry_text(status)
+        if retry:
+            lines.append(f"Retry: {retry}")
         reasons = source.get("reasons") or ([source["reason"]] if source.get("reason") else [])
         if reasons:
             lines.append("Source reasons: " + ", ".join(self._safe(reason) for reason in reasons))
@@ -1507,6 +1740,22 @@ class DashboardApp(App[None]):
                 lines.append(
                     f"  Coverage deadline (receiving clock): {coverage['expiresAtBoottimeMs']}"
                 )
+        source_id = (
+            self._config_value(config, "id") if config is not None else source.get("id", "unknown")
+        )
+        if config is not None:
+            lines.append(f"Configured host: {self._safe(self._config_value(config, 'host'))}")
+            lines.append(f"Configured home: {self._safe(self._config_value(config, 'home'))}")
+        lines.append(f"Configured source ID: {self._safe(source_id)}")
+        lines.append(f"Expected namespace: {self._safe(source.get('expectedNamespace'))}")
+        lines.append(
+            "Observed namespace: "
+            + (
+                self._safe(source.get("observedNamespace"))
+                if source.get("observedNamespace")
+                else "unknown"
+            )
+        )
         clock = source.get("clock") or {}
         if clock:
             lines.append(
@@ -2002,50 +2251,114 @@ class DashboardApp(App[None]):
 
     def _header_text(self) -> str:
         if self._projection is None:
-            return "Agent Observer · refreshing current source state"
+            label = "Observer" if self.size.width < 60 else "Agent Observer"
+            suffix = " · refreshing source state"
+            if self.size.width < 80:
+                return self._fit_line(label + suffix, max(1, self.size.width - 2))
+            return f"{label} · {self._view_label()} · refreshing source state"
         totals = self._report.get("totals", {})
         members = totals.get("members", 0)
         uncertain = totals.get("uncertain", 0)
         label = "Agent Observer"
-        if self.icons:
+        if self.icons and self.size.width >= 80:
             label = "◈ " + label
-        return f"{label}    {members} members · {uncertain} uncertain"
+        if self.size.width < 80:
+            label = "Observer" if self.size.width < 60 else "Agent Observer"
+            value = f"{label} · {members} members, {uncertain} uncertain"
+            if Text(value).cell_len <= max(1, self.size.width - 2):
+                return value
+            return self._fit_line(
+                f"{members} members · {uncertain} uncertain", max(1, self.size.width - 2)
+            )
+        return f"{label} · {self._view_label()} · {members} members · {uncertain} uncertain"
 
-    def _source_ribbon(self) -> str:
-        if self._projection is None:
-            return self._fit_line(
-                f"Sources {len(self._source_configs())} · health refreshing",
-                max(1, self.size.width - 4),
-            )
-        sources = self._report.get("sources", ())
-        statuses: dict[str, dict] = {item.get("id"): item for item in sources}
-        complete = sum(item.get("health") == "complete" for item in sources)
-        unavailable = sum(item.get("health") in {"unavailable", "blocked"} for item in sources)
-        other = len(sources) - complete - unavailable
-        health_summary = f"Complete {complete} Partial {other} Unavailable {unavailable}"
-        summary = f"Watching {len(sources)} sources · {health_summary}"
-        details = []
-        for config in self._source_configs():
-            source_id = self._config_value(config, "id")
-            source = statuses.get(source_id, {})
-            details.append(
-                f"{self._config_value(config, 'host')}/{self._config_value(config, 'label')} "
-                f"{source.get('health', 'warming')}"
-            )
-        ribbon = "Sources  " + " · ".join(details)
-        if self.size.width < _SINGLE_ROW_MIN_WIDTH or len(ribbon) > max(20, self.size.width - 4):
-            return self._fit_line(
-                health_summary
-                if self.size.width < _SINGLE_ROW_MIN_WIDTH
-                else "Sources  " + summary,
-                max(1, self.size.width - 4),
-            )
-        return self._fit_line(
-            ribbon if details else "Sources  " + summary, max(1, self.size.width - 4)
+    def _view_label(self) -> str:
+        if self._overlay == "help":
+            return "Help"
+        if self._overlay == "filters":
+            return "Filters"
+        if self._overlay == "sort":
+            return "Order"
+        if self._overlay == "group":
+            return "Group"
+        return {"list": "Sessions", "details": "Details", "sources": "Sources"}.get(
+            self._view, "Sessions"
         )
 
+    def _source_ribbon(self) -> str:
+        available = max(1, self.size.width - 4)
+        configs = self._source_configs()
+        sources = self._report.get("sources", ()) if self._projection is not None else ()
+        source_docs = {item.get("id"): item for item in sources}
+        details = []
+        health_counts: dict[str, int] = {}
+        configured_ids = set()
+        for config in configs:
+            source_id = self._config_value(config, "id")
+            configured_ids.add(source_id)
+            source = source_docs.get(source_id, {})
+            health = source.get(
+                "health", "refreshing" if self._projection is None else "warming"
+            )
+            details.append(f"{self._filter_source_label(config)} {health}")
+            health_counts[health] = health_counts.get(health, 0) + 1
+        for source in sources:
+            source_id = source.get("id")
+            if source_id in configured_ids:
+                continue
+            health = source.get("health", "unknown")
+            details.append(f"{self._safe(source_id)} {health}")
+            health_counts[health] = health_counts.get(health, 0) + 1
+
+        total = len(details) if self._projection is not None else max(len(configs), 0)
+        if self._projection is None:
+            health_counts["refreshing"] = total
+            details = [f"{self._filter_source_label(config)} refreshing" for config in configs]
+        named = f"Sources {total} · " + " · ".join(details) if details else "Sources 0"
+        if Text(named).cell_len <= available:
+            return named
+
+        aggregate = "Sources " + str(total)
+        categories = ("complete", "partial", "stale", "warming", "blocked", "unavailable")
+        for category in (*categories, *sorted(set(health_counts) - set(categories))):
+            count = health_counts.get(category, 0)
+            if count:
+                aggregate += f" · {category} {count}"
+        if Text(aggregate).cell_len <= available:
+            return aggregate
+
+        priority = next(
+            (
+                (category, health_counts[category])
+                for category in (
+                    "unavailable",
+                    "blocked",
+                    "stale",
+                    "partial",
+                    "warming",
+                    "refreshing",
+                    "complete",
+                )
+                if health_counts.get(category, 0)
+            ),
+            None,
+        )
+        if priority is None:
+            short = f"{total} sources · s sources"
+        else:
+            category, count = priority
+            short = f"{total} src · {category} {count} · s sources"
+        if Text(short).cell_len <= available:
+            return short
+        shorter = (
+            f"{total} src · {priority[0]} {priority[1]} · s"
+            if priority is not None
+            else f"{total} src · s"
+        )
+        return self._fit_line(shorter, available)
+
     def _toolbar_text(self) -> str:
-        query = " ".join(self.filters.get("query", ())) or "—"
+        query = " ".join(self.filters.get("query", ()))
         active = []
         for dimension in ("source", "host", "home", "membership", "runtime", "phase"):
             if dimension in self._empty_dimensions:
@@ -2053,16 +2366,29 @@ class DashboardApp(App[None]):
                 continue
             values = self.filters.get(dimension, ())
             if values:
-                active.append(f"{dimension}={','.join(self._safe(value) for value in values)}")
+                labels = (
+                    self._filter_option_label(dimension, value)
+                    for value in values
+                )
+                active.append(f"{dimension}={','.join(labels)}")
         if self.filters.get("includeChildren"):
             active.append("children")
         if self.filters.get("includeSystem"):
             active.append("system")
-        return self._fit_line(
-            f"Find: {self._safe(query)} · Filters: {', '.join(active) or 'default'} · "
-            f"Order: {self.filters.get('sort', 'activity')} · Group: {self.filters.get('group', 'none')}",
-            max(1, self.size.width - 4),
-        )
+        order = self.filters.get("sort", "activity")
+        group = self.filters.get("group", "none")
+        if not query and not active and order == "activity" and group == "none":
+            default = "Default view · / search · f filters · o order · g group"
+            if self.size.width < 80:
+                default = "Default · / search · f filters"
+            return self._fit_line(default, max(1, self.size.width - 4))
+        parts = [f"Search {self._safe(query)}" if query else "Search off"]
+        parts.append(f"Filters {', '.join(active)}" if active else "default filters")
+        if order != "activity":
+            parts.append(f"Order {order}")
+        if group != "none":
+            parts.append("Group host/home" if group == "host-home" else f"Group {group}")
+        return self._fit_line(" · ".join(parts), max(1, self.size.width - 4))
 
     def _status_text(self) -> str:
         if self._projection is None:
@@ -2092,38 +2418,39 @@ class DashboardApp(App[None]):
     def _footer_text(self) -> str:
         if self.focused is not None and isinstance(self.focused, Input):
             if self.size.width < 60:
-                return "Esc cancel · Ctrl+C interrupt"
-            return "Type search · Enter apply · Esc restore · Ctrl+C interrupt"
+                return "Esc cancel · Ctrl+C exit"
+            return "Type search · Enter apply · Esc restore · Ctrl+C exit"
         if self._overlay == "help":
             if self._layout_mode() == "tiny":
                 return "Esc or ? back · q quit · Ctrl+C exit"
-            return "? or Esc close help · q quit · Ctrl+C interrupt"
+            return "? or Esc close · q quit · Ctrl+C exit"
         if self._layout_mode() == "tiny":
-            return "? help · q quit · Ctrl+C interrupt"
+            return "? help · q quit · Ctrl+C exit"
         if self._overlay == "filters":
             if self.size.width < 80:
-                return "Space toggle · r reset · Esc back · ? help · q quit"
-            return "←→ field · ↑↓ option · Space toggle · r reset · Esc back · q quit"
+                return "Space toggle · r reset · Esc back · q quit"
+            return "←→ field · ↑↓ option · Space toggle · r reset · Esc · ? help · q quit"
         if self._overlay == "sort" or self._overlay == "group":
-            return "↑/↓ choose · Enter apply · Esc back · q quit"
+            return "↑↓ choose · Enter apply · Esc back · ? help · q quit"
         if self._view == "sources":
             if self._focus == "source-details":
                 if self.size.width < 80:
-                    return "Details focus · Tab list · ? help · q quit"
-                return "Details focus · ↑↓ scroll · Tab list · ? help · q quit"
+                    return "Evidence · Tab list · Esc back · q quit"
+                return "Evidence · ↑↓ scroll · Tab list · Esc back · ? help · q quit"
             if self.size.width < 80:
-                return "List focus · Tab details · r retry · ? help · q quit"
-            return "List focus · ↑↓ select · Tab details · r retry · ? help · q quit"
+                return "↑↓ select · Tab evidence · r retry · q quit"
+            return "↑↓ select · Tab evidence · r retry · ? help · q quit"
         if self._view == "details":
-            target = "List" if self._focus == "list" else "Details"
+            if self._split_details():
+                if self._focus == "list":
+                    return "List · ↑↓ select · Tab details · Esc back · ? help · q quit"
+                return "Details · ↑↓ scroll · Tab list · Esc back · ? help · q quit"
             if self.size.width < 80:
-                return f"{target} · Tab focus · Esc back · ? help · q quit"
-            return f"{target} focus · ↑↓ move · Tab switch · Esc back · ? help · q quit"
+                return "↑↓ scroll · Esc back · q quit"
+            return "↑↓ scroll · Esc back · ? help · q quit"
         if self.size.width < 80:
             return "↑↓ move · Enter view · / find · ? help · q quit"
-        if self.size.width < _SPLIT_WIDTH:
-            return "↑↓ move · Enter details · / find · f filters · s sources · ? help · q quit"
-        return "↑↓/j/k move · PgUp/PgDn · Enter details · / find · f filters · o order · g group · s sources · ? help · q quit"
+        return "↑↓ move · Enter details · / find · f filters · s sources · ? help · q quit"
 
     def _empty_state_text(self) -> str:
         if self._projection is None:
@@ -2157,22 +2484,9 @@ class DashboardApp(App[None]):
         for source_id, (widget, previous) in tuple(self._source_age_cells.items()):
             status = statuses.get(source_id, {})
             source = report_sources.get(source_id, {})
-            current = (
-                f"{source.get('health', 'warming')} · stage {self._safe(status.get('stage', 'unknown'))} · delivery "
-                f"{self._safe(source.get('delivery', 'unknown'))} · baseline "
-                f"{'yes' if source.get('baseline') else 'no'} · {', '.join(scope.get('coverage', {}).get('status', 'unknown') for scope in source.get('scopes', ())) or 'coverage unknown'} · frame {self._frame_age_text(source)}"
-            )
-            retry = self._retry_text(status)
-            if retry:
-                current += f" · {retry}"
-            reasons = source.get("reasons") or (
-                [source.get("reason")] if source.get("reason") else []
-            )
-            reason = ", ".join(self._safe(item) for item in reasons if item)
-            if reason:
-                current += f" · reason {reason}"
+            current = self._source_summary_text(source, status)
             if current != previous:
-                widget.update(self._as_text(self._fit_line("  " + current, self.size.width - 4)))
+                widget.update(self._source_summary_display(source, status))
                 self._source_age_cells[source_id] = (widget, current)
 
     def _refresh_age_cells(self) -> None:
@@ -2189,7 +2503,11 @@ class DashboardApp(App[None]):
                     widget.update_age(current)
                     self._age_cells[key] = (widget, current, row)
                     continue
-                style = "reverse" if key == self._selected_key else ""
+                style = (
+                    "reverse bold"
+                    if self.no_color and key == self._selected_key
+                    else "" if key == self._selected_key else "dim"
+                )
                 width = widget.region.width or max(1, len(current))
                 updated = Text(current, style=style or None, no_wrap=True, overflow="ellipsis")
                 updated.truncate(width, overflow="ellipsis")
@@ -2206,8 +2524,23 @@ class DashboardApp(App[None]):
                 row = self._selected_detail_row if self._selection_available else None
                 value = self._activity_age(row, age_now) if row else "unknown"
                 if self._render_values.get("detail-activity") != value:
-                    widget.update(self._as_text("Native activity: " + value))
+                    widget.update(self._as_text("Activity: " + value))
                     self._render_values["detail-activity"] = value
+            try:
+                frame_widget = self.query_one("#detail-frame-age", Static)
+            except Exception:
+                frame_widget = None
+            if frame_widget is not None:
+                source = self._source_for_row(
+                    self._selected_detail_row if self._selection_available else None
+                ) or {}
+                value = (
+                    f"Baseline: {'yes' if source.get('baseline') else 'no'} · "
+                    f"Frame age: {self._frame_age_text(source)}"
+                )
+                if self._render_values.get("detail-frame-age") != value:
+                    frame_widget.update(self._as_text(value))
+                    self._render_values["detail-frame-age"] = value
 
     def _activity_age(self, row: dict | None, now_ms: int | None = None) -> str:
         if row is None:
