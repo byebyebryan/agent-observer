@@ -276,9 +276,12 @@ qualified outcomes rather than an exhaustive fleet size.
 ### Layout and details
 
 - Default: use the full available list width. At least 80x24 gives single-line
-  rows, prioritizing readable session names. At >=140 columns add project
-  context and separate runtime/phase columns; this threshold is independent
-  of the split-details threshold below.
+  rows, prioritizing readable session names. At >=140 columns add a Repo
+  column and separate runtime/phase columns; this threshold is independent
+  of the split-details threshold below. Repo is the basename of the current
+  cached Git working-tree root, not a project label or guessed cwd basename.
+  A linked worktree keeps its own directory name. Current non-Git workspaces
+  show none; missing or noncurrent workspace data stays explicit.
 - Enter opens details. At 120x30 or wider it opens a side panel; below that it
   opens a full-screen detail view. Details stay closed initially at every width.
   Resize preserves whether details are open, their target and scroll position.
@@ -301,12 +304,18 @@ qualified outcomes rather than an exhaustive fleet size.
 
 Details have a readable summary first: full name, host/home, membership,
 runtime/phase with independent health, and qualified native activity time.
-Project/path and source-health context precede the technical evidence. Sectioned
-details retain full five-field identity, source ID, bounded reasons,
+The workspace section puts the full reported working directory and current
+cached repository root first, then relative repository path and independent
+project context. Source health precedes the technical evidence. Sectioned
+details retain the full shared Git directory, five-field identity, source ID, bounded reasons,
 last-known values explicitly marked noncurrent, expected/observed namespace,
 scope coverage and receiving-clock/deadline context. Show admitted path/project
 metadata as optional context without filesystem/Git access. Details are not a
-transcript, event log or native terminal.
+transcript, event log or native terminal. Repository data shares the existing
+workspace lease and is carried only in the dashboard's internal projection;
+the finite sessions CLI and terminal JSON v1 output/schema stay unchanged.
+Reported cwd has no separate field lease and must not imply a fresh native cwd
+sample. The dashboard does no Git or filesystem discovery.
 
 The top bar identifies the view and totals; the toolbar emphasizes active
 search/filter settings. A short contextual footer shows common actions, while

@@ -596,6 +596,7 @@ class PersistentSources:
                 mode=mode,
                 filters=filters,
                 target=target,
+                include_repository=True,
             )
             for source in report["sources"]:
                 if source["reason"] == "identity_conflict":

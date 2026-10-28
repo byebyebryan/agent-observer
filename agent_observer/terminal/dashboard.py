@@ -6,6 +6,7 @@ import asyncio
 import re
 import time
 from datetime import UTC, datetime
+from pathlib import PurePosixPath
 from typing import Any
 
 from rich.text import Text
@@ -825,9 +826,32 @@ class DashboardApp(App[None]):
             details.get("projectKey"),
             details.get("cwd"),
             details.get("workspaceHealth"),
+            details.get("workspaceReason"),
+            self._repository_signature(details.get("repo")),
             tuple(details.get("metadataIssues", ())),
             tuple(details.get("blockedReasons", ())),
         )
+
+    @staticmethod
+    def _repository_signature(repository: Any) -> tuple | None:
+        if type(repository) is not dict:
+            return None
+        return tuple(repository.get(name) for name in ("root", "commonDir", "relativePath"))
+
+    def _repository_name(self, row: dict) -> str:
+        details = row.get("details", {})
+        health = details.get("workspaceHealth")
+        if health != "current":
+            return self._safe(health) if type(health) is str and health else "unavailable"
+        repository = details.get("repo")
+        if repository is None:
+            return "none"
+        if type(repository) is not dict:
+            return "unavailable"
+        root = repository.get("root")
+        if type(root) is not str or not root:
+            return "unavailable"
+        return self._safe(PurePosixPath(root).name or root)
 
     def _source_for_row(self, row: dict | None) -> dict | None:
         if row is None:
@@ -1202,7 +1226,7 @@ class DashboardApp(App[None]):
             wide = render_width >= _WIDE_COLUMNS_WIDTH
             widths = self._column_widths(render_width - 4, wide=wide)
             headers = (
-                ("SESSION", "CONTEXT", "HOST/HOME", "MEMBER", "RUNTIME", "PHASE", "ACTIVITY")
+                ("SESSION", "REPO", "HOST/HOME", "MEMBER", "RUNTIME", "PHASE", "ACTIVITY")
                 if wide
                 else ("SESSION", "HOST/HOME", "MEMBER", "RUNTIME / PHASE", "ACTIVITY")
             )
@@ -1370,7 +1394,7 @@ class DashboardApp(App[None]):
         if wide:
             cells = (
                 cells[0],
-                self._safe(row.get("context")) if row.get("context") else "—",
+                self._repository_name(row),
                 cells[1],
                 cells[2],
                 self._fact_text(row.get("runtime")),
@@ -1412,7 +1436,7 @@ class DashboardApp(App[None]):
         values = (marker, *cells)
         all_widths = (2, *widths)
         roles = (
-            ("marker", "label", "context", "host", "state", "state", "state", "age")
+            ("marker", "label", "repository", "host", "state", "state", "state", "age")
             if len(cells) == 7
             else ("marker", "label", "host", "state", "state", "age")
         )
@@ -1519,7 +1543,7 @@ class DashboardApp(App[None]):
         result = []
         section_headings = {
             "Session summary",
-            "Project and activity",
+            "Workspace and activity",
             "Observation reasons",
             "Source health and coverage",
             "Native identity and lease diagnostics",
@@ -1623,21 +1647,52 @@ class DashboardApp(App[None]):
             f"Runtime: {self._fact_text(runtime)}{self._fact_reason(runtime)}",
             f"Phase: {self._fact_text(phase)}{self._fact_reason(phase)}",
             "",
-            "Project and activity",
+            "Workspace and activity",
         ]
+        cwd = detail.get("cwd")
+        lines.append(
+            f"Working directory: {self._safe(cwd)}"
+            if type(cwd) is str and cwd
+            else "Working directory: unavailable"
+        )
+        workspace_health = detail.get("workspaceHealth")
+        workspace_reason = detail.get("workspaceReason")
+        repository = detail.get("repo")
+        if workspace_health != "current":
+            health = (
+                self._safe(workspace_health)
+                if type(workspace_health) is str and workspace_health
+                else "unavailable"
+            )
+            repository_line = f"Repository: {health}"
+            if type(workspace_reason) is str and workspace_reason:
+                repository_line += f" · {self._safe(workspace_reason)}"
+            lines.append(repository_line)
+        elif repository is None:
+            lines.append("Repository: none reported")
+        elif type(repository) is dict:
+            root = repository.get("root")
+            lines.append(
+                f"Repository root: {self._safe(root)}"
+                if type(root) is str and root
+                else "Repository: unavailable"
+            )
+            relative_path = repository.get("relativePath")
+            if type(relative_path) is str and relative_path:
+                lines.append(f"Path in repository: {self._safe(relative_path)}")
+        else:
+            lines.append("Repository: unavailable")
         if detail.get("projectKey"):
             lines.append(f"Project context: {self._safe(detail['projectKey'])}")
-        if detail.get("cwd"):
-            lines.append(f"Admitted path metadata: {self._safe(detail['cwd'])}")
-        if detail.get("workspaceHealth"):
-            lines.append(
-                f"Workspace metadata: {self._safe(detail['workspaceHealth'])}"
-                + (
-                    f" · {self._safe(detail.get('workspaceReason'))}"
-                    if detail.get("workspaceReason")
-                    else ""
-                )
-            )
+        workspace_label = (
+            self._safe(workspace_health)
+            if type(workspace_health) is str and workspace_health
+            else "unavailable"
+        )
+        workspace_line = f"Workspace metadata: {workspace_label}"
+        if type(workspace_reason) is str and workspace_reason:
+            workspace_line += f" · {self._safe(workspace_reason)}"
+        lines.append(workspace_line)
         lines.append(f"Activity: {self._activity_age(row)}")
         if activity.get("health") == "current":
             lines.append(f"Activity time: {self._wall_time(activity.get('at'))}")
@@ -1682,6 +1737,13 @@ class DashboardApp(App[None]):
         )
         lines.extend(("", "Native identity and lease diagnostics", "Exact identity"))
         lines.extend(self._identity_lines(row.get("identity", {})))
+        if (
+            workspace_health == "current"
+            and type(repository) is dict
+            and type(repository.get("commonDir")) is str
+            and repository["commonDir"]
+        ):
+            lines.append(f"Shared Git directory: {self._safe(repository['commonDir'])}")
         lines.append(f"Kind: {self._safe(row.get('kind', 'unknown'))}")
         lines.extend(self._membership_expiry_lines(row))
         return lines

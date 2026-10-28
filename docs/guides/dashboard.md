@@ -103,8 +103,15 @@ content area. At least 80x24 shows single-line rows, 60x16 uses compact rows,
 and smaller terminals show resize guidance with overall health and quit/help.
 Opening/closing panels does not restart subscriptions.
 
-The list gives session names priority. Project context and separate runtime/phase
+The list gives session names priority. A Repo column and separate runtime/phase
 columns appear at 140 columns; narrower full layouts keep runtime/phase together.
+Repo names come from current cached Git working-tree roots, including each linked
+worktree's own directory name. Project labels are separate context. Details show
+the full reported working directory and repository root near the top, with the
+shared Git directory in the diagnostic section. A current workspace with no
+repository says none reported; missing or expired metadata stays explicit.
+The dashboard uses cached metadata without inspecting paths or running Git.
+Working-directory metadata is a reported path, not a fresh native cwd sample.
 Details group the session summary, workspace and source health before exact
 identity, reason and deadline evidence lower down. Use the contextual footer for
 common actions and `?` for the full keyboard guide.

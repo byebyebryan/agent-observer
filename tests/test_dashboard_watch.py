@@ -1,6 +1,7 @@
 """Persistent ownership/scheduling tests; injected cases are not SDK admission proof."""
 
 import asyncio
+import copy
 import os
 import tempfile
 import unittest
@@ -79,6 +80,8 @@ class Harness:
         self.setup_cancelled = asyncio.Event()
         self.setup_calls = []
         self.field_deadline = None
+        self.repository_workspace = None
+        self.repository_deadline = None
 
     def dependencies(self):
         harness = self
@@ -101,13 +104,31 @@ class Harness:
                 self.reads += 1
                 present = now < 1700
                 native_id = harness.alias_id or self.source
+                session = row(native_id)
+                if harness.repository_workspace is not None:
+                    session["workspace"] = copy.deepcopy(harness.repository_workspace)
+                if (
+                    harness.repository_deadline is not None
+                    and now >= harness.repository_deadline
+                ):
+                    # Model the public working-set read after its independent
+                    # workspace support has expired and been masked.
+                    session["workspace"] = None
                 value = read(
-                    rows=[row(native_id)] if present else [],
+                    rows=[session] if present else [],
                     leases=[lease(native_id)] if present else [],
                 )
                 value.scopes[0]["namespace"] = self.frame.namespace
                 if now >= 1700:
                     value.scopes[0]["coverage"].update(status="partial", expiresAtMs=None)
+                if harness.repository_deadline is not None and value.member_leases:
+                    value.member_leases[0]["fieldExpiresAtMs"] = {
+                        "workspace": (
+                            harness.repository_deadline
+                            if now < harness.repository_deadline
+                            else None
+                        )
+                    }
                 if harness.field_deadline is not None and value.member_leases:
                     value.member_leases[0]["fieldExpiresAtMs"] = {"runtime": harness.field_deadline}
                 return value
@@ -426,6 +447,42 @@ class PersistentWatchTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["totals"]["members"], 0)
         self.assertNotEqual(result["totals"]["state"], "complete-empty")
         self.assertEqual(result["sources"][0]["health"], "partial")
+
+    async def test_persistent_dashboard_report_opts_in_and_expires_repository_metadata(self):
+        harness = Harness()
+        harness.repository_workspace = {
+            "health": "current",
+            "reason": "mapped",
+            "root": "/synthetic/worktrees/feature",
+            "rootKey": "workspace-feature",
+            "relativePath": "src",
+            "projectKey": "fixture-project",
+            "repo": {
+                "root": "/synthetic/worktrees/feature",
+                "commonDir": "/synthetic/repositories/shared/.git",
+                "relativePath": "src",
+            },
+        }
+        harness.repository_deadline = 1200
+        watch = await self.make_watch(harness)
+        await harness.baseline(watch)
+
+        before = watch.projection(FILTERS)
+        before_session = before.report["sessions"][0]
+        self.assertEqual(
+            before_session["details"]["repo"]["root"],
+            "/synthetic/worktrees/feature",
+        )
+        self.assertEqual(before.next_deadline_boottime_ms, 1200)
+
+        harness.now = 1200
+        after = watch.projection(FILTERS)
+        after_session = after.report["sessions"][0]
+        self.assertEqual(after.report["totals"]["members"], 1)
+        self.assertIsNone(after_session["details"]["repo"])
+        self.assertIsNone(after_session["details"]["workspaceHealth"])
+
+        await watch.close()
 
     async def test_recovery_requires_a_new_guard_and_a_new_baseline(self):
         harness = Harness()

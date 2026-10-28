@@ -4,6 +4,7 @@ import unittest
 from types import SimpleNamespace
 
 from agent_observer.terminal.model import build_report, safe_metadata
+from agent_observer.terminal.output import json_document
 
 NOW = 1_000
 NAMESPACE = "sha256:" + "a" * 64
@@ -49,7 +50,12 @@ def row(native_id, *, title="Fixture session", kind="user", host="fixture", work
         "kind": kind,
         "cwd": "/synthetic/workspace",
         "workspace": workspace
-        or {"health": "current", "reason": "mapped", "projectKey": "fixture-project"},
+        or {
+            "health": "current",
+            "reason": "mapped",
+            "projectKey": "fixture-project",
+            "repo": None,
+        },
         "metadataIssues": [],
         "blockedReasons": [],
         "runtime": {"value": "running", "health": "current", "reason": "native", "observedAt": 900},
@@ -95,6 +101,7 @@ def lease(native_id, *, active=1_500, recent=1_700, host="fixture"):
         "activeExpiresAtMs": active,
         "recentExpiresAtMs": recent,
         "membershipExpiresAtMs": 1_700,
+        "fieldExpiresAtMs": {"workspace": 2_000},
     }
 
 
@@ -125,7 +132,7 @@ def state(
     }
 
 
-def report(states, *, mode="list", filters=None, target=None):
+def report(states, *, mode="list", filters=None, target=None, include_repository=False):
     defaults = {
         "source": (),
         "host": (),
@@ -155,6 +162,7 @@ def report(states, *, mode="list", filters=None, target=None):
         mode=mode,
         filters=defaults,
         target=target,
+        include_repository=include_repository,
     )
 
 
@@ -246,16 +254,106 @@ class TerminalModelTests(unittest.TestCase):
                 "health": "unavailable",
                 "reason": "git_metadata_unavailable",
                 "projectKey": "unproved-project",
+                "repo": {
+                    "root": "/synthetic/stale-root",
+                    "commonDir": "/synthetic/stale-root/.git",
+                    "relativePath": "src",
+                },
             },
         )
         result = report(
-            [state(current_read=read(rows=[unavailable], leases=[lease("workspace-id")]))]
+            [state(current_read=read(rows=[unavailable], leases=[lease("workspace-id")]))],
+            include_repository=True,
         )
         session = result["sessions"][0]
         self.assertEqual(session["context"], "workspace")
         self.assertIsNone(session["details"]["projectKey"])
         self.assertEqual(session["details"]["workspaceHealth"], "unavailable")
         self.assertEqual(session["details"]["workspaceReason"], "git_metadata_unavailable")
+        self.assertIsNone(session["details"]["repo"])
+        self.assertNotIn("stale-root", json_document(session))
+
+    def test_repository_enrichment_is_opt_in_and_sanitizes_current_workspace(self):
+        current = row("repo-id")
+        current["cwd"] = "/synthetic/worktrees/topic/src"
+        current["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "root": "/synthetic/worktrees/topic",
+            "rootKey": "workspace-topic",
+            "relativePath": "src",
+            "projectKey": "fixture-project",
+            "repo": {
+                "root": "/synthetic/worktrees/topic\x1b",
+                "commonDir": "/synthetic/repos/shared/.git\x01",
+                "relativePath": "src\x1b",
+            },
+        }
+        current_state = state(
+            current_read=read(rows=[current], leases=[lease("repo-id")])
+        )
+
+        finite = report([current_state])
+        finite_false = report([current_state], include_repository=False)
+        dashboard = report([current_state], include_repository=True)
+        finite_session = finite["sessions"][0]
+        dashboard_session = dashboard["sessions"][0]
+        self.assertEqual(finite, finite_false)
+        self.assertEqual(json_document(finite), json_document(finite_false))
+        self.assertNotIn("repo", finite_session["details"])
+        self.assertEqual(
+            dashboard_session["details"]["repo"],
+            {
+                "root": r"/synthetic/worktrees/topic\u001B",
+                "commonDir": r"/synthetic/repos/shared/.git\u0001",
+                "relativePath": r"src\u001B",
+            },
+        )
+
+        expired_lease = lease("repo-id")
+        expired_lease["fieldExpiresAtMs"]["workspace"] = NOW
+        expired = report(
+            [
+                state(
+                    current_read=read(rows=[current], leases=[expired_lease])
+                )
+            ],
+            include_repository=True,
+        )["sessions"][0]
+        self.assertIsNone(expired["details"]["repo"])
+        self.assertEqual(expired["details"]["workspaceHealth"], "unavailable")
+        self.assertEqual(
+            expired["details"]["workspaceReason"], "workspace_support_expired"
+        )
+        self.assertIsNone(expired["details"]["projectKey"])
+        self.assertEqual(expired["context"], "src")
+
+        no_repo = row("no-repo")
+        no_repo["workspace"]["repo"] = None
+        no_repo_report = report(
+            [state(current_read=read(rows=[no_repo], leases=[lease("no-repo")]))],
+            include_repository=True,
+        )
+        self.assertIsNone(no_repo_report["sessions"][0]["details"]["repo"])
+        self.assertEqual(no_repo_report["sessions"][0]["details"]["workspaceHealth"], "current")
+
+        missing = row("missing-workspace")
+        missing["workspace"] = None
+        missing.pop("cwd")
+        missing_report = report(
+            [
+                state(
+                    current_read=read(
+                        rows=[missing], leases=[lease("missing-workspace")]
+                    )
+                )
+            ],
+            include_repository=True,
+        )
+        missing_session = missing_report["sessions"][0]
+        self.assertIsNone(missing_session["details"]["repo"])
+        self.assertIsNone(missing_session["details"]["workspaceHealth"])
+        self.assertIsNone(missing_session["details"]["cwd"])
 
     def test_uncertain_identity_gets_safe_id_label_and_controls_are_visible(self):
         uncertain_identity = identity("uncertain-id")

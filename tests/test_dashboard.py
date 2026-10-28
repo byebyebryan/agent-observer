@@ -33,7 +33,13 @@ class FakeReader:
             owner=self._owner,
             revision=self.revision,
             priority_revision=self.priority_revision,
-            report=report(self.states, mode=mode, filters=filters, target=target),
+            report=report(
+                self.states,
+                mode=mode,
+                filters=filters,
+                target=target,
+                include_repository=True,
+            ),
         )
 
     def is_current(self, projection):
@@ -519,7 +525,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             await pilot.resize_terminal(140, 30)
             await pilot.pause()
-            self.assertIn("CONTEXT", str(app.query_one("#content").children[0].content))
+            self.assertIn("REPO", str(app.query_one("#content").children[0].content))
 
     async def test_grouped_30_row_pages_keep_last_selected_row_visible_at_full_and_compact_sizes(self):
         route_a = source("route-a", host="laptop", home="default")
@@ -623,8 +629,8 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             lines = app._detail_lines()
             self.assertEqual(lines[0], "Alpha task")
-            self.assertLess(lines.index("Session summary"), lines.index("Project and activity"))
-            self.assertLess(lines.index("Project and activity"), lines.index("Source health and coverage"))
+            self.assertLess(lines.index("Session summary"), lines.index("Workspace and activity"))
+            self.assertLess(lines.index("Workspace and activity"), lines.index("Source health and coverage"))
             self.assertNotIn("Observation reasons", lines)
             self.assertLess(
                 lines.index("Source health and coverage"),
@@ -632,7 +638,9 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             )
             joined = "\n".join(lines)
             self.assertIn("Project context: fixture-project", joined)
-            self.assertIn("Admitted path metadata: /synthetic/workspace", joined)
+            self.assertIn("Working directory: /synthetic/workspace", joined)
+            self.assertIn("Repository: none reported", joined)
+            self.assertIn("Workspace metadata: current", joined)
             self.assertIn("Activity: ", joined)
             self.assertIn("Configured home: default", joined)
             self.assertIn("Configured source ID: fixture-default", joined)
@@ -647,6 +655,160 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 reason_lines.index("Source health and coverage"),
             )
             self.assertIn("Bounded reasons: native_reason", reason_lines)
+
+    async def test_repository_column_and_details_keep_linked_worktree_paths(self):
+        worktree_root = "/synthetic/worktrees/topic-feature"
+        common_dir = "/synthetic/repositories/main/.git\x1b"
+        displayed_common_dir = r"/synthetic/repositories/main/.git\u001B"
+        relative_path = "packages/tool"
+        item = row("linked-worktree", title="Linked worktree")
+        item["cwd"] = f"{worktree_root}/{relative_path}"
+        item["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "root": worktree_root,
+            "rootKey": "workspace-topic-feature",
+            "relativePath": relative_path,
+            "projectKey": "independent-project-context",
+            "repo": {
+                "root": worktree_root,
+                "commonDir": common_dir,
+                "relativePath": relative_path,
+            },
+        }
+        app = DashboardApp(
+            FakeReader([_session_state(rows=[item], ids=["linked-worktree"])]), {}
+        )
+
+        async with app.run_test(size=(150, 24)) as pilot:
+            await pilot.pause()
+            header = app.query_one("#content").children[0].content.plain
+            self.assertIn("REPO", header)
+            selected = app._line_widgets[app._selected_key]
+            self.assertIn("topic-feature", selected.content.plain)
+
+            await pilot.press("enter")
+            await pilot.pause()
+            lines = app._detail_lines()
+            joined = "\n".join(lines)
+            self.assertLess(lines.index("Workspace and activity"), lines.index("Source health and coverage"))
+            self.assertLess(
+                lines.index(f"Working directory: {worktree_root}/{relative_path}"),
+                lines.index(f"Repository root: {worktree_root}"),
+            )
+            self.assertIn(f"Path in repository: {relative_path}", joined)
+            self.assertIn("Project context: independent-project-context", joined)
+            self.assertIn("Workspace metadata: current", joined)
+            self.assertIn(f"Shared Git directory: {displayed_common_dir}", joined)
+            self.assertLess(
+                lines.index("Native identity and lease diagnostics"),
+                lines.index(f"Shared Git directory: {displayed_common_dir}"),
+            )
+
+            await pilot.resize_terminal(80, 24)
+            await pilot.pause()
+            path_pages = []
+            max_offset = max(
+                0, len(app._wrapped_detail_lines()) - max(1, app.size.height - 7)
+            )
+            for _ in range(max_offset + 2):
+                path_pages.extend(widget.content.plain for widget in app.query_one("#content").children)
+                if app._scroll_offset >= max_offset:
+                    break
+                await pilot.press("down")
+                await pilot.pause(0.01)
+            joined_pages = "".join(path_pages)
+            for path in (
+                worktree_root,
+                f"{worktree_root}/{relative_path}",
+                displayed_common_dir,
+            ):
+                self.assertIn(path, joined_pages)
+
+    async def test_repository_column_marks_current_none_and_hides_noncurrent_root(self):
+        current_none = row("current-none", title="No Git repository")
+        stale = row("stale-repo", title="Stale repository")
+        stale["workspace"] = {
+            "health": "stale",
+            "reason": "workspace_support_expired",
+            "repo": {
+                "root": "/synthetic/old-root",
+                "commonDir": "/synthetic/old-root/.git",
+                "relativePath": "src",
+            },
+        }
+        missing = row("missing-workspace", title="Missing workspace")
+        missing["workspace"] = None
+        missing.pop("cwd")
+        items = [current_none, stale, missing]
+        ids = [item["identity"]["nativeId"] for item in items]
+        app = DashboardApp(FakeReader([_session_state(rows=items, ids=ids)]), {})
+
+        async with app.run_test(size=(150, 24)) as pilot:
+            await pilot.pause()
+            rows = {
+                item["identity"]["nativeId"]: app._line_widgets[app._row_key(item)].content.plain
+                for item in app._all_rows
+            }
+            self.assertIn("none", rows["current-none"])
+            self.assertIn("stale", rows["stale-repo"])
+            self.assertNotIn("old-root", rows["stale-repo"])
+            self.assertIn("unavailable", rows["missing-workspace"])
+
+            stale_row = next(
+                item
+                for item in app._all_rows
+                if item["identity"]["nativeId"] == "stale-repo"
+            )
+            app._select_row(stale_row, repaint=False)
+            stale_details = "\n".join(app._detail_lines())
+            self.assertIn("Repository: stale · workspace_support_expired", stale_details)
+            self.assertNotIn("old-root", stale_details)
+
+            missing_row = next(
+                item
+                for item in app._all_rows
+                if item["identity"]["nativeId"] == "missing-workspace"
+            )
+            app._select_row(missing_row, repaint=False)
+            missing_details = "\n".join(app._detail_lines())
+            self.assertIn("Working directory: unavailable", missing_details)
+            self.assertIn("Repository: unavailable", missing_details)
+
+    async def test_same_identity_repository_change_repaints_list_and_details(self):
+        old_root = "/synthetic/worktrees/before"
+        new_root = "/synthetic/worktrees/after"
+
+        def repository_row(root):
+            item = row("stable-id", title="Stable identity")
+            item["workspace"]["repo"] = {
+                "root": root,
+                "commonDir": "/synthetic/repositories/shared/.git",
+                "relativePath": "src",
+            }
+            return item
+
+        reader = FakeReader(
+            [_session_state(rows=[repository_row(old_root)], ids=["stable-id"])]
+        )
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(150, 24)) as pilot:
+            await pilot.pause()
+            row_widget = app._line_widgets[app._selected_key]
+            self.assertIn("before", row_widget.content.plain)
+            old_signature = app._content_signature()
+
+            reader.replace(
+                [_session_state(rows=[repository_row(new_root)], ids=["stable-id"])]
+            )
+            app._refresh_projection()
+            self.assertNotEqual(old_signature, app._content_signature())
+            await app._paint()
+            self.assertIn("after", app._line_widgets[app._selected_key].content.plain)
+
+            await pilot.press("enter")
+            await pilot.pause()
+            self.assertIn(f"Repository root: {new_root}", app._detail_lines())
 
     async def test_split_detail_wraps_fit_scrollable_width_and_preserve_exact_values(self):
         native_id = "thread-" + "x" * 96

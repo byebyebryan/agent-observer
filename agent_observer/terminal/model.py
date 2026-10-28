@@ -95,7 +95,15 @@ def _source_context(source: dict) -> dict:
     }
 
 
-def _base_session(row: dict, source: dict, lease: dict, now_boottime_ms: int) -> dict:
+def _base_session(
+    row: dict,
+    source: dict,
+    lease: dict,
+    now_boottime_ms: int,
+    *,
+    include_repository: bool = False,
+    repository_now_boottime_ms: int | None = None,
+) -> dict:
     identity = row["identity"]
     identity_tuple(identity)
     active_expiry = lease.get("activeExpiresAtMs")
@@ -109,17 +117,72 @@ def _base_session(row: dict, source: dict, lease: dict, now_boottime_ms: int) ->
         title = f"Codex {identity['nativeId']}"
     workspace = row.get("workspace") if type(row.get("workspace")) is dict else {}
     workspace_current = workspace.get("health") == "current"
-    project_key = safe_metadata(workspace.get("projectKey")) if workspace_current else None
     cwd = safe_metadata(row.get("cwd"))
-    context = project_key or (
-        safe_metadata(PurePath(row["cwd"]).name) if type(row.get("cwd")) is str else None
-    )
     runtime = _fact(row.get("runtime"))
     is_parked = runtime["value"] == "parked"
     phase = _fact(row.get("phase"), parked=is_parked and runtime["health"] == "current")
     metadata_issues = row.get("metadataIssues")
     if type(metadata_issues) is not list:
         metadata_issues = []
+    workspace_expiry = (lease.get("fieldExpiresAtMs") or {}).get("workspace")
+    repository_support_current = (
+        type(workspace_expiry) is int
+        and type(repository_now_boottime_ms) is int
+        and workspace_expiry > repository_now_boottime_ms
+    )
+    project_key = (
+        safe_metadata(workspace.get("projectKey"))
+        if workspace_current and (not include_repository or repository_support_current)
+        else None
+    )
+    context = project_key or (
+        safe_metadata(PurePath(row["cwd"]).name) if type(row.get("cwd")) is str else None
+    )
+    details = {
+        "title": title,
+        "cwd": cwd,
+        "projectKey": project_key,
+        "workspaceHealth": workspace.get("health"),
+        "workspaceReason": _bounded_reason(workspace.get("reason")),
+        "fieldExpiresAtBoottimeMs": {
+            name: (lease.get("fieldExpiresAtMs") or {}).get(name)
+            for name in (
+                "runtime",
+                "phase",
+                "kind",
+                "savedIdentity",
+                "activity",
+                "outcome",
+                "workspace",
+                "lastUpdated",
+                "latestTurn",
+            )
+        },
+        "metadataIssues": [
+            safe_metadata(item) for item in metadata_issues if type(item) is str
+        ],
+        "blockedReasons": list(row.get("blockedReasons", ()))[:2],
+    }
+    if include_repository:
+        repository_current = workspace_current and repository_support_current
+        raw_repository = workspace.get("repo") if repository_current else None
+        details["repo"] = (
+            None
+            if type(raw_repository) is not dict
+            else {
+                name: safe_metadata(raw_repository.get(name))
+                for name in ("root", "commonDir", "relativePath")
+            }
+        )
+        if workspace_current and not repository_support_current:
+            details["workspaceHealth"] = "unavailable"
+            details["workspaceReason"] = (
+                "workspace_support_expired"
+                if type(workspace_expiry) is int
+                and type(repository_now_boottime_ms) is int
+                and workspace_expiry <= repository_now_boottime_ms
+                else "workspace_support_unavailable"
+            )
     return {
         "identity": {key: identity[key] for key in IDENTITY_FIELDS},
         "source": _source_context(source),
@@ -135,31 +198,7 @@ def _base_session(row: dict, source: dict, lease: dict, now_boottime_ms: int) ->
         "runtime": runtime,
         "phase": phase,
         "activity": _activity(row.get("activity")),
-        "details": {
-            "title": title,
-            "cwd": cwd,
-            "projectKey": project_key,
-            "workspaceHealth": workspace.get("health"),
-            "workspaceReason": _bounded_reason(workspace.get("reason")),
-            "fieldExpiresAtBoottimeMs": {
-                name: (lease.get("fieldExpiresAtMs") or {}).get(name)
-                for name in (
-                    "runtime",
-                    "phase",
-                    "kind",
-                    "savedIdentity",
-                    "activity",
-                    "outcome",
-                    "workspace",
-                    "lastUpdated",
-                    "latestTurn",
-                )
-            },
-            "metadataIssues": [
-                safe_metadata(item) for item in metadata_issues if type(item) is str
-            ],
-            "blockedReasons": list(row.get("blockedReasons", ()))[:2],
-        },
+        "details": details,
     }
 
 
@@ -193,7 +232,7 @@ def _scope_doc(scope: dict, now_boottime_ms: int) -> dict:
 
 
 def _source_doc(
-    source_state: dict, now_boottime_ms: int
+    source_state: dict, now_boottime_ms: int, *, include_repository: bool = False
 ) -> tuple[dict, list[dict], list[dict], list[dict]]:
     config = source_state["config"]
     read = source_state.get("read")
@@ -271,7 +310,14 @@ def _source_doc(
     sessions = []
     for row in read.members:
         lease = leases.get(identity_tuple(row["identity"]), {})
-        session = _base_session(row, config, lease, source_now_ms)
+        session = _base_session(
+            row,
+            config,
+            lease,
+            source_now_ms,
+            include_repository=include_repository,
+            repository_now_boottime_ms=now_boottime_ms,
+        )
         if session["membership"] == "unqualified":
             # The public facade should remove expired positives on read. Do not
             # manufacture an uncertain/nonmember outcome from a local expiry.
@@ -368,12 +414,21 @@ def build_report(
     mode: str,
     filters: dict,
     target: dict | str | None = None,
+    include_repository: bool = False,
 ) -> dict:
-    """Project one finite public-facade capture into the terminal v1 document."""
+    """Project a finite public-facade capture into terminal v1.
+
+    Repository metadata is an opt-in dashboard-only enrichment. The default
+    keeps the published finite CLI report unchanged.
+    """
     source_docs = []
     all_sessions, all_uncertain, all_nonmembers = [], [], []
     for source_state in source_states:
-        source_doc, sessions, uncertain, nonmembers = _source_doc(source_state, now_boottime_ms)
+        source_doc, sessions, uncertain, nonmembers = _source_doc(
+            source_state,
+            now_boottime_ms,
+            include_repository=include_repository,
+        )
         source_docs.append(source_doc)
         all_sessions.extend(sessions)
         all_uncertain.extend(uncertain)

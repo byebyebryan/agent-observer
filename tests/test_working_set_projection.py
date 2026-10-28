@@ -14,6 +14,7 @@ from agent_observer.working_set_decisions import WorkingSetDecision, WorkingSetD
 from agent_observer.working_set_feed import _primary_unresolved_reason
 from agent_observer.working_set_ledger import WorkingSetLedger
 from agent_observer.working_set_policy import PolicyResult
+from agent_observer.working_set_supports import resolve_member
 
 WALL = 1700000020000
 
@@ -345,6 +346,66 @@ class WorkingSetProjectionTest(unittest.TestCase):
         self.assertIsNotNone(row["phase"])
         self.assertEqual(row["phase"]["value"], "unknown")
         self.assertIsNotNone(self.scope(frame)["members"][0]["recent"])
+
+    def test_workspace_repository_is_removed_at_its_history_field_expiry(self):
+        self.state.attempt("codex", "history")
+        history = self.sample(runtime="running", at=None)
+        history["sessions"][0]["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "root": "/synthetic/worktrees/feature",
+            "rootKey": "workspace-feature",
+            "relativePath": "src",
+            "projectKey": "fixture-project",
+            "repo": {
+                "root": "/synthetic/worktrees/feature",
+                "commonDir": "/synthetic/repositories/shared/.git",
+                "relativePath": "src",
+            },
+        }
+        self.state.accept(
+            "codex",
+            "history",
+            history,
+            sampled_ms=10000,
+            ttl_ms=3000,
+            accepted_boottime_ms=10001,
+        )
+
+        self.now = 10002
+        self.state.attempt("codex", "runtime")
+        runtime = self.sample(runtime="running", at=None, wall=WALL + 1000)
+        runtime["sessions"][0]["workspace"] = None
+        self.state.accept(
+            "codex",
+            "runtime",
+            runtime,
+            sampled_ms=10001,
+            ttl_ms=100000,
+            accepted_boottime_ms=10002,
+        )
+
+        current = self.state.working_set_frame("status", 1)
+        current_row = current["projection"]["sessions"][0]
+        self.assertEqual(
+            current_row["workspace"]["repo"]["root"],
+            "/synthetic/worktrees/feature",
+        )
+        current_scope = self.scope(current)
+        current_member = resolve_member(current_scope, current_scope["members"][0])
+        workspace_expiry = current_member["fieldSupports"]["workspace"][
+            "expiresBoottimeMs"
+        ]
+        self.assertIsInstance(workspace_expiry, int)
+
+        self.now = workspace_expiry
+        expired = self.state.working_set_frame("status", 1)
+        self.assertEqual(len(expired["projection"]["sessions"]), 1)
+        self.assertEqual(expired["projection"]["sessions"][0]["runtime"]["health"], "current")
+        self.assertIsNone(expired["projection"]["sessions"][0]["workspace"])
+        expired_scope = self.scope(expired)
+        expired_member = resolve_member(expired_scope, expired_scope["members"][0])
+        self.assertIsNone(expired_member["fieldSupports"]["workspace"])
 
     def test_current_no_turn_requires_original_latest_turn_receipt(self):
         self.accept()
