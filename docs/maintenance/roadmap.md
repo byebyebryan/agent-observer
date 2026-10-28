@@ -1,10 +1,9 @@
 # Agent Observer roadmap
 
 Agent Observer provides reusable Codex read-only observation for dashboards,
-diagnostics and agent utilities. The CLI/dashboard milestone has passed the
-source-preview checks described below:
-the CLI is released and the persistent terminal dashboard is implemented as an
-unreleased source preview. Native managers continue to own conversation control.
+diagnostics and agent utilities. The CLI and persistent terminal dashboard are
+available in the a13 prerelease with the qualification boundaries below.
+Native managers continue to own conversation control.
 [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase;
 this repository owns native semantics, public interfaces and acceptance evidence.
 
@@ -22,16 +21,15 @@ plans for restoring those retired paths are superseded.
 Existing direct, service and Mesh commands support diagnostic inspection.
 `working-set list` and `working-set watch` already read qualified cached state;
 the current watch is bounded to 60 seconds. The terminal product builds on
-these capabilities. The dashboard is a checked, unreleased source preview; it
-is not part of the published a12 package or a managed selection.
+these capabilities. The a13 package includes the dashboard as an optional extra;
+its managed reader role stays independent of collector/publisher selection.
 
 The [a12 sessions CLI](../guides/sessions-cli.md) provides configured
 overview/list/show/source inspection and versioned JSON output. It has source,
 clean-package and cached-consumer checks and includes the a11 clock-recovery
 source. CLI reader selection/configuration is independent of the a11
-collectors/publishers and other consumers. The dashboard is a separate,
-unreleased source preview and keeps its own package, native, resource and user
-acceptance gates.
+collectors/publishers and other consumers. The a13 dashboard retains separate
+package, native, resource, human and managed-deployment acceptance boundaries.
 
 ## Current milestone: CLI and dashboard qualification
 
@@ -98,7 +96,7 @@ implicitly advance collector, publisher or hardware-dashboard pins.
 | --- | --- |
 | Detailed planning | Reviewed; command/output shapes, configuration, dashboard screen/keys, dependencies and lifecycle/resource policy are recorded in the terminal product plan |
 | Usable CLI | Released in 0.7.0a12; its finite CLI and JSON v1 remain the published interface |
-| Standalone dashboard | Implemented as an unreleased source preview; source/installed checks, normal resource runs, controlled recovery, a focused native comparison and the short realistic-fleet check pass. Extended soak and large-fleet stress testing are deferred. Human acceptance and release are separate later steps |
+| Standalone dashboard | Available in a13 with the optional dashboard extra, readable workspace/repository details and the recorded source/installed, recovery and realistic-fleet checks. Resource/native measurements retain their earlier exact-artifact bounds; extended soak and large-fleet stress testing remain deferred |
 | Release and delivery | Pending independent release review and human acceptance; no package pin, managed installation or showcase update is selected |
 
 The terminal product plan records the selected command names, filters/order,
@@ -186,13 +184,13 @@ acceptance is claimed.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
-| Terminal product | Review the qualified source preview for ordinary use and later delivery | Completed normal resource, recovery and realistic-fleet checks; human acceptance and delivery remain separate |
+| Terminal product | Use the a13 CLI/dashboard reader and report concrete usability or recovery defects | Source/package and scoped deployment receipts remain distinct from human/native/resource acceptance |
 | Native coverage | Investigate a reproducible identity or membership discrepancy | Independent native comparison on the affected host/home |
 | Efficiency | Measure the owning collector/read path against an exact baseline | Matched CPU, memory and unchanged freshness/coverage |
 | Consumer integration | Adopt an accepted producer interface where useful | Consumer-specific package, UI/device and recovery proof |
 
-The terminal product remains the current direction; its source preview has
-passed the recorded checks. Other rows are follow-ups driven by demonstrated need.
+The terminal product remains the current direction; a13 publishes the checked
+CLI/dashboard reader without promoting the historical stress failures to passes. Other rows are follow-ups driven by demonstrated need.
 Deployment and unrelated infrastructure changes need their own scope.
 Working-set coverage now reports a primary census, support or membership blocker.
 Clock changes use bounded recency uncertainty and retain a detector incident

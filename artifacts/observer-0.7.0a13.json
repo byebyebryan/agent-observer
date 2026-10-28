@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a13",
+  "wheel": "agent_observer-0.7.0a13-py3-none-any.whl",
+  "wheelSha256": "29f052668d4f436e1b381c5fc5f5819ed5a5b0207ef5613c59442e4554b076a2",
+  "sourceRevision": "931aaecf598bb7ee2ba6b8da5e9d3a9da5ed2578",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified CLI/dashboard reader candidate; publication and managed reader selection have independent receipts.",
+    "Adds the optional Textual dashboard with persistent cached list, source health, exact details, search/filters, keyboard help, resize/no-color and bounded cleanup.",
+    "Shows reported cwd and current cached Git worktree roots with independent workspace expiry; no Git/filesystem discovery.",
+    "Preserves finite sessions CLI and terminal JSON interface1, API4/snapshot6/Service4/working-set1 schemas and membership/source lease semantics.",
+    "Paired unchanged Mesh0.1.0a25; dashboard stack qualified with Textual8.2.8 and dashboard-requirements.txt.",
+    "Reader adoption preserves a11 collectors/publishers and independent full/Mesh/Tmux/Agent Plus/hardware selections."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

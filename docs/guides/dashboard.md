@@ -1,26 +1,30 @@
 # Standalone dashboard
 
-The dashboard is an **unreleased source preview**. The published
-`0.7.0a12` release contains the finite sessions CLI, not this dashboard. Bare
-`agent-observer` remains the quick overview; `agent-observer dashboard` opens
-the persistent terminal application until you quit.
+The `0.7.0a13` prerelease includes the standalone dashboard through the optional
+`dashboard` extra. Bare `agent-observer` remains the quick overview;
+`agent-observer dashboard` opens the persistent terminal application until you quit.
 
-## Install the source preview
+## Install the prerelease
 
-Use Linux, Python 3.11+ and a separate environment in a checkout containing the
-dashboard changes. The initial qualification uses Textual 8.2.8 and Mesh a25:
+Use Linux, Python 3.11+ and a separate environment. The qualified stack uses
+Textual 8.2.8 and the unchanged Mesh a25 wheel:
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install -c tests/fixtures/dashboard-requirements.txt \
-  '.[mesh,dashboard]' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a12/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+curl --fail --location \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/dashboard-requirements.txt \
+  --output dashboard-requirements.txt
+printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
+python -m pip install -c dashboard-requirements.txt \
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/agent_observer-0.7.0a13-py3-none-any.whl#sha256=29f052668d4f436e1b381c5fc5f5819ed5a5b0207ef5613c59442e4554b076a2' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
-This installs only the reader preview. It does not select a managed package,
-start a collector/publisher/provider, or change any other client.
+This installs only the reader. It does not select a managed package, start a
+collector/publisher/provider, or change any other client. The dashboard extra
+is optional; finite CLI and core/local service users need no Textual dependency.
 
 ## Configure and open
 
@@ -159,5 +163,7 @@ Its failed reader-only diagnostics
 remain a large-fleet limitation; configured admission caps do not promise usable
 fleet capacity.
 Neither synthetic fixtures nor agreement with another Observer command prove
-native classification. Human terminal acceptance and managed rollout remain
-separate from this preview.
+native classification. The a13 release retains these measurement boundaries. Its later UI refinements
+and cached repository display passed source/installed tests and short real-fleet
+checks; they do not claim a new sustained resource run. Human terminal acceptance
+and managed rollout remain independent of package publication.

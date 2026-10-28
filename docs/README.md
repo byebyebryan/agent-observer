@@ -11,7 +11,7 @@ carries the shared showcase and project relationships.
 | [Local cached service](guides/local-service.md) | Host Service 4 explicitly and consume its cache |
 | [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |
 | [Sessions CLI](guides/sessions-cli.md) | Readable configured overview, listing, exact-session details and source health |
-| [Standalone dashboard](guides/dashboard.md) | Source preview setup, watched sources, navigation, recovery and qualification boundary |
+| [Standalone dashboard](guides/dashboard.md) | Prerelease setup, watched sources, navigation, recovery and qualification boundary |
 | [Full Mesh reads](guides/full-mesh-reads.md) | Full cached diagnostic inventories |
 | [Read utilities](guides/read-utilities.md) | A complete bounded consumer example |
 
@@ -34,7 +34,7 @@ carries the shared showcase and project relationships.
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
 | [Roadmap](maintenance/roadmap.md) | CLI/dashboard milestone, acceptance and deferred work |
-| [Terminal product plan](maintenance/terminal-product.md) | Released CLI baseline, reviewed TUI proposal, feasibility findings and acceptance gates |
+| [Terminal product plan](maintenance/terminal-product.md) | CLI/dashboard behavior, lifecycle, budgets and qualification gates |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.

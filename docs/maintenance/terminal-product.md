@@ -1,17 +1,17 @@
 # CLI and dashboard product plan
 
-Status: **CLI released in 0.7.0a12; TUI source preview implemented and checked within the scope below**. The
+Status: **CLI and standalone dashboard available in 0.7.0a13; qualification retains the scope below**. The
 [roadmap](roadmap.md#current-milestone-cli-and-dashboard-qualification) establishes the product
 direction. The user selected the CLI-first P1/P2 slice under luna-goal-loop.
 The [sessions guide](../guides/sessions-cli.md) documents the CLI commands and
 setup. Managed reader selection is separate from collector/publisher selection.
-The reviewed dashboard plan is implemented as an unreleased source preview.
+The reviewed dashboard plan is implemented in a13 with the optional dashboard extra.
 Textual 8.2.8 passes the current source and installed test boundaries. The short
 realistic-fleet check and normal 30-minute resource checks pass. Extended
 eight-hour soak and 8,192-outcome stress testing are optional future work,
 not preview acceptance gates; large-fleet optimization is deferred. Focused native evidence is
-bounded to the selected cases; human acceptance, publication and deployment
-remain separate. The preview does not select a deployment.
+bounded to the selected cases; human acceptance and managed deployment remain
+separate from package publication. The independent CLI reader role owns adoption.
 
 ## Inspected baseline
 
@@ -59,7 +59,7 @@ metadata, not freshly sampled native state. Never inspect remote paths/Git.
 | `agent-observer sessions sources` | Source delivery, coverage, reasons and expected/observed home binding, even with no sessions. |
 | `agent-observer sessions sources --configured` | Pure configuration inspection without Mesh imports, connections or provider queries. |
 | `agent-observer sessions schema` | Packaged terminal JSON output schema without configuration or optional imports. |
-| `agent-observer dashboard` | Standalone persistent source-preview TUI until quit/terminal shutdown; no default duration limit. |
+| `agent-observer dashboard` | Standalone persistent TUI until quit/terminal shutdown; no default duration limit. |
 
 Bare `agent-observer` now opens the overview; all existing explicit
 direct/service/mesh/profile commands and diagnostic `working-set watch` retain
@@ -834,8 +834,9 @@ before and after them for three selected local working/waiting/parked cases.
 All five identity fields and activity timestamps matched, and each cached
 observation timestamp fell inside its native sample interval. Agreement at the
 interval endpoints does not prove uninterrupted state, full remote coverage or
-human acceptance. The preview is unreleased; no managed TUI selection or
-deployment is claimed.
+human acceptance. That checkpoint used an unreleased source-preview artifact;
+its evidence alone did not establish publication or managed TUI deployment.
+The later a13 release retains these original measurement bounds.
 
 ## Review findings and validation
 
@@ -904,9 +905,9 @@ No syntax, dev-console, web-serving or remote UI feature is needed.
 
 ## Implementation sequence and review gates
 
-This reviewed plan is implemented as a source preview. Failing qualification
-measurements return to this contract rather than changing scope implicitly.
-Publication and managed deployment remain separate later steps.
+This reviewed plan is implemented in a13. Failing qualification measurements
+return to this contract rather than changing scope implicitly. Managed reader
+adoption remains separate from publication and producer/native acceptance.
 
 | Stage | Work and concrete exit |
 | --- | --- |
@@ -915,7 +916,7 @@ Publication and managed deployment remain separate later steps.
 | T2: usable TUI preview | Implemented as a source preview with list, health, details, search/filters, source view, stable selection, help, resize and guidance. Actual PTY and installed checks pass at their stated boundaries; user acceptance is pending. |
 | T3: resilience and budgets | Preview scope checked: expiry, startup, interaction, job-control recovery, churn, normal 30-minute resource runs and the short realistic-fleet check pass. Extended eight-hour soak, eight-source/8192-outcome stress testing and read-path optimization are deferred. |
 | T4: package and consumer qualification | Source and paired installed-wheel matrices pass. The public local/two-host recipe is documented; real cached-fleet and the focused independent native comparison pass at their recorded scope. No full remote/native coverage or human acceptance is inferred. |
-| Later delivery | New immutable release and package/dependency provenance, retaining terminal JSON v1; independently reviewed TUI pin, managed rollout/recovery and Fleet presentation. No collector/publisher/hardware/Agent Plus/Tmux migration is inferred. |
+| Reader delivery | A13 publishes immutable wheel/dependency provenance while retaining terminal JSON v1. The independent CLI/dashboard pin owns managed rollout/recovery. Fleet presentation and collector/publisher/hardware/Agent Plus/Tmux migrations remain separate. |
 
 Use unittest conventions and deterministic receiving clocks, controlled cached
 servers and documented Textual Pilot APIs. Preserve meaningful installed CLI

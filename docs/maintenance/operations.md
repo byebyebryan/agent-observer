@@ -1,15 +1,35 @@
 # Releases and operations
 
-The [0.7.0a12 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a12)
-adds the configured sessions CLI and terminal JSON interface 1. Its reader
-installation/configuration is independently selected; publishing it does not
-upgrade a collector or publisher. See the [sessions guide](../guides/sessions-cli.md).
+The [0.7.0a13 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a13)
+provides the configured sessions CLI and optional standalone dashboard while
+retaining terminal JSON interface 1. Reader installation/configuration is
+independently selected; publication does not upgrade a collector or publisher.
+See the [sessions guide](../guides/sessions-cli.md) and [dashboard guide](../guides/dashboard.md).
 
 The collector/working-set cohort retains the
 [a11 clock-recovery pair](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a11)
 with Mesh a25: Codex-only read-only API 4 / snapshot 6 / Service 4 and working-set
 v1 interfaces. Full publishers, dashboards, Tmux and SSH authority retain
 independent reviewed selections.
+
+## Dashboard reader release
+
+The [a13 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a13)
+adds the standalone dashboard, refined session details and cached working-directory/
+Git repository presentation. Textual remains an optional extra; the managed CLI
+reader role installs the exact qualified dashboard dependency stack. Finite CLI
+commands and terminal JSON v1 remain compatible. API 4, snapshot/watch 6,
+Service 4, working-set v1 and Mesh a25 bytes are unchanged.
+
+The [a13 artifact manifest](../../artifacts/observer-0.7.0a13.json) binds the
+runtime source and frozen wheel. Release
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/provenance.json)
+binds the qualification/tag commit, exact assets and independent source/installed
+checks. The release includes `dashboard-requirements.txt` for reproducible optional
+stack installation. The [dashboard guide](../guides/dashboard.md) describes use
+and the inherited normal-resource, native and capacity measurement boundaries.
+Managed adoption remains in `deployments/agent-observer-cli.json`; it does not
+advance collector, publisher, Agent Plus, Tmux or hardware selections.
 
 ## Selection and recovery
 
