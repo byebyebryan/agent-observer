@@ -931,6 +931,7 @@ class DashboardApp(App[None]):
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
                     "Search input keeps printable keys, including q/j/k.",
+                    "Find includes current cached repository paths.",
                 ]
             )
             for index in (0, 1, 3, 5, 7):

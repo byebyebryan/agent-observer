@@ -120,8 +120,11 @@ Narrow text wraps labels/secondary columns; piped text has no width truncation.
   nonmembers remain counted and explicitly inspectable.
 - Default hides confirmed child/system kinds only; unknown kind stays visible.
   Add `--include-children`/`--include-system`. Search is case-insensitive literal
-  substring over admitted name/project/path, host/home and full native ID, at
-  most 256 characters. No regex, content search or persisted search history.
+  substring over admitted name/project/reported working directory, host/home
+  and full native ID, at most 256 characters. The dashboard's internal
+  projection also searches current cached repository root, common directory and
+  relative path; this does not change finite CLI results or terminal JSON v1.
+  No regex, content search or persisted search history.
 - Default flat list: active first, other members second, uncertainty last;
   within each class, current native activity descending, unknown activity last,
   full identity tuple as tie-breaker. Share `--sort activity|label|host` and

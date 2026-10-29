@@ -359,6 +359,12 @@ def _matches_query(row: dict, query) -> bool:
     identity = row["identity"]
     source = row["source"]
     details = row.get("details", {})
+    repository = details.get("repo")
+    repository_fields = (
+        tuple(repository.get(name) for name in ("root", "commonDir", "relativePath"))
+        if type(repository) is dict
+        else ()
+    )
     fields = (
         row.get("label"),
         row.get("context"),
@@ -367,6 +373,7 @@ def _matches_query(row: dict, query) -> bool:
         source.get("host"),
         source.get("home"),
         identity.get("nativeId"),
+        *repository_fields,
     )
     needles = (query,) if isinstance(query, str) else tuple(query)
     return any(

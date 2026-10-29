@@ -468,6 +468,11 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
 
             await pilot.press("?")
             self.assertEqual(app._overlay, "help")
+            await pilot.pause()
+            help_text = "\n".join(
+                widget.content.plain for widget in app.query_one("#content").children
+            )
+            self.assertIn("current cached repository paths", help_text)
             await pilot.press("escape")
             await pilot.press("f")
             self.assertEqual(app._overlay, "filters")
@@ -809,6 +814,71 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("enter")
             await pilot.pause()
             self.assertIn(f"Repository root: {new_root}", app._detail_lines())
+
+    async def test_keyed_repository_search_tracks_same_identity_updates_and_recovery(self):
+        def repository_row(root):
+            item = row("stable-search-id", title="Stable identity")
+            item["workspace"]["repo"] = {
+                "root": root,
+                "commonDir": "/synthetic/repositories/shared.git",
+                "relativePath": "src",
+            }
+            return item
+
+        def state_with_root(root):
+            return _session_state(
+                rows=[repository_row(root)], ids=["stable-search-id"]
+            )
+
+        reader = FakeReader([state_with_root("/synthetic/worktrees/before")])
+        app = DashboardApp(reader, {})
+
+        async def wait_for_reader_projection():
+            async with asyncio.timeout(1):
+                while (
+                    app._projection is None
+                    or app._projection.revision != reader.revision
+                ):
+                    await asyncio.sleep(0.005)
+
+        async with app.run_test(size=(100, 24)) as pilot:
+            try:
+                await pilot.pause()
+                selected_key = app._selected_key
+                selected_identity = dict(app._selected_identity)
+
+                await pilot.press("/", "ctrl+a")
+                await pilot.press("a", "f", "t", "e", "r")
+                await pilot.pause(0.2)
+                self.assertEqual(app.filters["query"], ("after",))
+                self.assertEqual(app._visible_rows, [])
+                self.assertEqual(app._report["totals"]["members"], 1)
+                self.assertEqual(len(app._report["sources"]), 1)
+                self.assertTrue(app._selection_hidden)
+                self.assertTrue(app._selection_available)
+                await pilot.press("enter")
+
+                reader.replace([state_with_root("/synthetic/worktrees/after")])
+                await wait_for_reader_projection()
+                self.assertEqual(len(app._visible_rows), 1)
+                self.assertEqual(app._selected_key, selected_key)
+                self.assertEqual(app._selected_identity, selected_identity)
+                self.assertFalse(app._selection_hidden)
+
+                reader.replace([state_with_root("/synthetic/worktrees/elsewhere")])
+                await wait_for_reader_projection()
+                self.assertEqual(app._visible_rows, [])
+                self.assertTrue(app._selection_hidden)
+                self.assertTrue(app._selection_available)
+
+                reader.replace([state_with_root("/synthetic/worktrees/after")])
+                await wait_for_reader_projection()
+                self.assertEqual(len(app._visible_rows), 1)
+                self.assertEqual(app._selected_key, selected_key)
+                self.assertEqual(app._selected_identity, selected_identity)
+                self.assertFalse(app._selection_hidden)
+            finally:
+                await app.stop_updates()
 
     async def test_split_detail_wraps_fit_scrollable_width_and_preserve_exact_values(self):
         native_id = "thread-" + "x" * 96

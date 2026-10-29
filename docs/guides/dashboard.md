@@ -91,6 +91,13 @@ sources cannot establish a complete empty fleet.
 | `?` | Keyboard help |
 | `q` / Ctrl-C | Quit / interrupt |
 
+Search is a case-insensitive literal substring over the session name, project
+context, reported working directory, host/home and full native ID. It also
+searches the current cached repository root, shared Git directory and path
+relative to that repository. Expired or unavailable repository metadata does
+not match. Search remains a display filter; it does not inspect the filesystem
+or merge linked worktrees.
+
 While a text input is focused, printable keys including `q`, `j` and `k` enter
 text. Ctrl-C remains global. Details show qualified facts first and retain full
 identity, source, namespace, bounded reasons and deadline context as evidence.

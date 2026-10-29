@@ -467,20 +467,32 @@ class PersistentWatchTest(unittest.IsolatedAsyncioTestCase):
         watch = await self.make_watch(harness)
         await harness.baseline(watch)
 
-        before = watch.projection(FILTERS)
+        query_filters = {**FILTERS, "query": ("worktrees/feature",)}
+        before = watch.projection(query_filters)
         before_session = before.report["sessions"][0]
         self.assertEqual(
             before_session["details"]["repo"]["root"],
             "/synthetic/worktrees/feature",
         )
+        self.assertEqual(before.report["totals"]["displayedMatches"], 1)
         self.assertEqual(before.next_deadline_boottime_ms, 1200)
 
         harness.now = 1200
-        after = watch.projection(FILTERS)
-        after_session = after.report["sessions"][0]
+        self.assertFalse(watch.is_current(before))
+        self.assertTrue(watch.requires_priority_refresh(before))
+        after = watch.projection(query_filters)
         self.assertEqual(after.report["totals"]["members"], 1)
-        self.assertIsNone(after_session["details"]["repo"])
-        self.assertIsNone(after_session["details"]["workspaceHealth"])
+        self.assertEqual(after.report["totals"]["selectedSources"], 1)
+        self.assertEqual(after.report["totals"]["completeSources"], 1)
+        self.assertEqual(after.report["totals"]["displayedMatches"], 0)
+        self.assertEqual(len(after.report["sessions"]), 0)
+        self.assertEqual(after.report["sources"][0]["health"], "complete")
+        self.assertNotEqual(after.report["totals"]["state"], "complete-empty")
+        unfiltered = watch.projection(FILTERS)
+        unfiltered_session = unfiltered.report["sessions"][0]
+        self.assertIsNone(unfiltered_session["details"]["repo"])
+        self.assertIsNone(unfiltered_session["details"]["workspaceHealth"])
+        self.assertNotIn("worktrees/feature", str(unfiltered.report))
 
         await watch.close()
 

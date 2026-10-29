@@ -355,6 +355,175 @@ class TerminalModelTests(unittest.TestCase):
         self.assertIsNone(missing_session["details"]["workspaceHealth"])
         self.assertIsNone(missing_session["details"]["cwd"])
 
+    def test_repository_search_uses_only_current_cached_fields_and_keeps_filters(self):
+        first = row("worktree-one", title="Alpha task")
+        first["cwd"] = "/synthetic/cwd/alpha"
+        first["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "projectKey": "alpha-project",
+            "repo": {
+                "root": "/synthetic/worktrees/feature-one",
+                "commonDir": "/synthetic/repositories/shared.git",
+                "relativePath": "modules/alpha",
+            },
+        }
+        second = row("worktree-two", title="Beta task")
+        second["cwd"] = "/synthetic/cwd/beta"
+        second["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "projectKey": "beta-project",
+            "repo": {
+                "root": "/synthetic/worktrees/feature-two",
+                "commonDir": "/synthetic/repositories/shared.git",
+                "relativePath": "tools/beta",
+            },
+        }
+        second_lease = lease("worktree-two")
+        second_lease["activeExpiresAtMs"] = None
+        current = state(
+            current_read=read(
+                rows=[first, second],
+                leases=[lease("worktree-one"), second_lease],
+            )
+        )
+
+        def matching_ids(query, *, extra_filters=None, include_repository=True):
+            filters = {"query": query}
+            filters.update(extra_filters or {})
+            result = report(
+                [current], filters=filters, include_repository=include_repository
+            )
+            return [item["identity"]["nativeId"] for item in result["sessions"]]
+
+        # Root, common directory, and relative path are all searchable. Full
+        # shared-directory matching returns both linked worktrees independently.
+        self.assertEqual(matching_ids(("FEATURE-ONE",)), ["worktree-one"])
+        self.assertEqual(
+            matching_ids(("repositories/shared",)), ["worktree-one", "worktree-two"]
+        )
+        self.assertEqual(matching_ids(("tools/beta",)), ["worktree-two"])
+
+        # Search terms remain OR-ed, while other filter dimensions still narrow
+        # the matching identities. Regex punctuation remains literal text.
+        self.assertEqual(
+            matching_ids(("feature-one", "Beta task")),
+            ["worktree-one", "worktree-two"],
+        )
+        self.assertEqual(
+            matching_ids(
+                ("feature-one", "Beta task"),
+                extra_filters={"membership": ("recent",)},
+            ),
+            ["worktree-two"],
+        )
+        self.assertEqual(matching_ids(("feature-one|Beta task",)), [])
+
+        # The finite CLI keeps its existing search fields and JSON contract.
+        self.assertEqual(
+            matching_ids(("feature-one",), include_repository=False), []
+        )
+
+        stale = row("stale-repository", title="Expired task")
+        stale["cwd"] = "/synthetic/reported-cwd"
+        stale["workspace"] = {
+            "health": "current",
+            "reason": "mapped",
+            "projectKey": "still-project-context",
+            "repo": {
+                "root": "/synthetic/worktrees/expired-root",
+                "commonDir": "/synthetic/repositories/expired-shared.git",
+                "relativePath": "expired/path",
+            },
+        }
+        expired_lease = lease("stale-repository")
+        expired_lease["fieldExpiresAtMs"]["workspace"] = NOW
+        expired_state = state(
+            current_read=read(rows=[stale], leases=[expired_lease])
+        )
+
+        def expired_matches(query):
+            return report(
+                [expired_state],
+                filters={"query": (query,)},
+                include_repository=True,
+            )["sessions"]
+
+        self.assertEqual(expired_matches("expired-root"), [])
+        # Repo expiry does not disable independently admitted label or cwd text.
+        self.assertEqual(len(expired_matches("Expired task")), 1)
+        self.assertEqual(len(expired_matches("reported-cwd")), 1)
+
+        stale_workspace = row("unavailable-repository")
+        stale_workspace["workspace"] = {
+            "health": "unavailable",
+            "reason": "workspace_unavailable",
+            "projectKey": "stale-project",
+            "repo": {
+                "root": "/synthetic/worktrees/unavailable-root",
+                "commonDir": "/synthetic/repositories/unavailable.git",
+                "relativePath": "unavailable/path",
+            },
+        }
+        unavailable = report(
+            [
+                state(
+                    current_read=read(
+                        rows=[stale_workspace],
+                        leases=[lease("unavailable-repository")],
+                    )
+                )
+            ],
+            filters={"query": ("unavailable-root",)},
+            include_repository=True,
+        )
+        self.assertEqual(unavailable["sessions"], [])
+
+        missing_lease = row("missing-repository-lease")
+        missing_lease["workspace"]["repo"] = {
+            "root": "/synthetic/worktrees/unleased-root",
+            "commonDir": "/synthetic/repositories/unleased.git",
+            "relativePath": "unleased/path",
+        }
+        no_workspace_lease = lease("missing-repository-lease")
+        no_workspace_lease["fieldExpiresAtMs"].pop("workspace")
+        missing_lease_report = report(
+            [
+                state(
+                    current_read=read(
+                        rows=[missing_lease], leases=[no_workspace_lease]
+                    )
+                )
+            ],
+            filters={"query": ("unleased-root",)},
+            include_repository=True,
+        )
+        self.assertEqual(missing_lease_report["sessions"], [])
+
+        no_repository = row("no-repository", title="No repository task")
+        no_repository["workspace"]["repo"] = None
+        no_repository_state = state(
+            current_read=read(
+                rows=[no_repository], leases=[lease("no-repository")]
+            )
+        )
+        project_match = report(
+            [no_repository_state],
+            filters={"query": ("fixture-project",)},
+            include_repository=True,
+        )
+        self.assertEqual(len(project_match["sessions"]), 1)
+        for placeholder in ("none", "unavailable"):
+            self.assertEqual(
+                report(
+                    [no_repository_state],
+                    filters={"query": (placeholder,)},
+                    include_repository=True,
+                )["sessions"],
+                [],
+            )
+
     def test_uncertain_identity_gets_safe_id_label_and_controls_are_visible(self):
         uncertain_identity = identity("uncertain-id")
         value = read(
