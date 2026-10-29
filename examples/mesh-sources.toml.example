@@ -1,0 +1,6 @@
+version = 1
+host = "workstation"
+
+[sources.agent_working_set]
+domain = "agent"
+socket = "/absolute/private/runtime/agent-observer/read.sock"

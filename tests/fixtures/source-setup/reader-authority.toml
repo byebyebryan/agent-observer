@@ -1,0 +1,8 @@
+schema_version = 1
+local_id = "reader"
+local_display = "Reader"
+
+[[hosts]]
+id = "source"
+display = "Synthetic source"
+routes = ["source-fixture.invalid"]
