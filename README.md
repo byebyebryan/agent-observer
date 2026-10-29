@@ -64,9 +64,10 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a13](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a13)
-adds the standalone dashboard with the optional `dashboard` extra, readable
-session and workspace details, source health, filters and keyboard navigation.
+[0.7.0a14](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+adds dashboard search over current cached repository roots, shared Git directories
+and relative paths. The optional dashboard retains readable workspace details,
+source health, filters and keyboard navigation from a13.
 The finite sessions CLI and terminal JSON interface 1 remain compatible, along
 with read-only API 4, snapshot/watch 6 and Service 4.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
