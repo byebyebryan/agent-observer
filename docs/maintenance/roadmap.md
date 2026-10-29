@@ -86,9 +86,10 @@ gap needs an explicitly scoped follow-up.
 
 Agent Plus remains independently useful for native TUI entry. Tmux components
 have no planned work for this milestone. Preserve configured directional host
-authority. Chezmoi installation and Fleet Plus presentation are later delivery
-steps, separate from source acceptance; new reader/UI packaging must not
-implicitly advance collector, publisher or hardware-dashboard pins.
+authority. Managed reader installation has its own artifact and host checks,
+separate from source acceptance; Fleet Plus presentation remains a separate
+step. Reader packaging must not implicitly advance collector, publisher or
+hardware-dashboard pins.
 
 ### Delivery sequence
 
@@ -97,16 +98,16 @@ implicitly advance collector, publisher or hardware-dashboard pins.
 | Detailed planning | Reviewed; command/output shapes, configuration, dashboard screen/keys, dependencies and lifecycle/resource policy are recorded in the terminal product plan |
 | Usable CLI | Released in 0.7.0a12; its finite CLI and JSON v1 remain the published interface |
 | Standalone dashboard | Available in a13 with the optional dashboard extra, readable workspace/repository details and the recorded source/installed, recovery and realistic-fleet checks. Resource/native measurements retain their earlier exact-artifact bounds; extended soak and large-fleet stress testing remain deferred |
-| Release and delivery | Pending independent release review and human acceptance; no package pin, managed installation or showcase update is selected |
+| Release and delivery | A13 is published and the independent CLI/dashboard reader role is selected on Snap, Starship and Carbon. Installed CLI/terminal and short dashboard checks pass; human/native/resource acceptance retains the recorded boundaries. Fleet presentation remains separate |
 
 The terminal product plan records the selected command names, filters/order,
-key bindings, optional extras and machine-readable output contract. The preview
+key bindings, optional extras and machine-readable output contract. The dashboard
 does not change the finite CLI/JSON v1 contract and needs no new wire API, daemon
 or native lifecycle controller.
 
 ### Acceptance
 
-Review both CLI output and source-preview behavior with busy, quiet, empty,
+Review both CLI output and dashboard behavior with busy, quiet, empty,
 partial, stale, unavailable and reconnecting sources. Include multiple
 hosts/homes and one failed source alongside healthy ones. Prove that zero
 displayed rows, filtering or loss of a source cannot produce a false
@@ -179,8 +180,9 @@ large-fleet limit, not a blocker for the revised realistic preview scope.
 The detailed plan retains the earlier T5/T6 failures and current measurement
 boundaries. Selected local native comparisons and public CLI checks are bounded
 evidence; they do not establish full native, remote, human or physical-device
-acceptance. No dashboard release, new package pin, managed deployment or human
-acceptance is claimed.
+acceptance. Package publication and managed reader selection have their own
+receipts, linked from [operations](operations.md); they do not broaden those
+native/resource measurement claims.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
