@@ -25,7 +25,9 @@ agent-observer sessions --help
 
 From a checkout, `python -m pip install '.[mesh]'` installs the source reader
 instead. Neither installation advances a deployed package pin. An already running
-[working-set publisher/bridge](working-set.md) is required. A cached local
+[working-set publisher/bridge](working-set.md) is required. If you own the
+Codex home but have not hosted a publisher yet, use the complete
+[first-source setup guide](source-setup.md). A cached local
 bridge is distinct from the collector's Service 4 socket. Installing or opening
 this CLI starts neither. No Textual/dashboard dependency is required.
 
@@ -37,7 +39,9 @@ It must be a private regular file owned by your user, without a symlink; use
 mode 0600. No file, unknown selections and invalid configuration produce setup
 errors instead of guessing a native home or adding routes.
 
-For an existing local home manifest, inspect its pure route descriptions:
+For a local home manifest, inspect its pure route descriptions. The
+[first-source guide](source-setup.md#resolve-one-existing-home-without-starting-it)
+shows the minimal private `profiles.toml` and a private runtime root:
 
 ```sh
 agent-observer profiles --config /absolute/path/profiles.toml --json

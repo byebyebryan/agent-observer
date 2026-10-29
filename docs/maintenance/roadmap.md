@@ -19,12 +19,20 @@ and managed-role guidance.
 | Quick check | Bare `agent-observer`: readable fleet overview, source health and up to ten rows |
 | Investigate | `sessions list/show/sources`: all matching rows, exact-session details, coverage and terminal JSON v1 |
 | Keep watch | `dashboard`: persistent list, literal metadata/repository search, filters, exact pinned selection, adaptive details and source recovery |
+| Host the first source | [First-source setup](../guides/source-setup.md): private foreground a11 collector + Mesh a25 publisher to the released a14 reader |
 
 Working-set supplies active membership and recent context, ordinarily over
 72 hours. Membership, runtime and phase remain separate; active does not mean
 working, and waiting does not itself mean a response is required. Explicit full
 inventories remain diagnostic. Observer writes, Claude observation and standalone
 active-only hosting are retired.
+
+The [Fleet Plus showcase](https://dev.byebyebryan.com/fleet-plus/projects/agent-observer/)
+and Devlog presentation are delivered. Detailed pages use released a14 terminal
+captures and an opt-in demo over fictional cached sources, with explicit
+provenance. The small portfolio card uses a readable workflow figure centered
+on Agent Observer and local/multi-host use. Fleet Plus owns those presentation
+choices; they add no native, resource or physical qualification.
 
 ## Current focus: everyday CLI and dashboard use
 
@@ -39,7 +47,6 @@ resource budgets and current acceptance limits.
 | Everyday usability | Check whether names, workspace context, search, selection and source-health explanations answer routine questions | Real user feedback; source/package tests do not establish human acceptance |
 | Recovery | Investigate expired facts shown as current, false empty results, failed reconnects or terminal restoration | Exact reader/dependency bytes, affected source, lease/baseline transitions and owned cleanup |
 | Native coverage | Investigate a reproducible identity/runtime/membership discrepancy on its owning host/home | Independent native evidence; a frontend release or a later complete sample does not close a producer incident |
-| Presentation | Show the established CLI/dashboard workflows through the separate Fleet Plus presentation pass | Current released behavior, sanitized examples and explicit acceptance limits |
 
 Implementation remains in `agent-observer` unless evidence identifies a specific
 cross-repo gap. Reuse public cached facades and configured directional Mesh

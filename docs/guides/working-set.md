@@ -85,7 +85,9 @@ members, uncertain identities or known nonmembers.
 
 Requires the compatible optional Mesh pair, a running cached working-set
 publisher/bridge and configured host routes. Installing a reader starts none
-of these. With your configured logical host ID:
+of these. If you own a Codex home and need to host the first source, follow the
+[first-source setup guide](source-setup.md). With your configured logical host
+ID:
 
 ```sh
 agent-observer working-set list --host workstation --scope local

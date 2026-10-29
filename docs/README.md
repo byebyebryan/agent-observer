@@ -1,10 +1,10 @@
 # Agent Observer documentation
 
-Start with the [sessions CLI](guides/sessions-cli.md) for quick checks and
-investigation, or the [standalone dashboard](guides/dashboard.md) for persistent
-monitoring. Both use a one-time private source configuration and existing
-working-set publishers/bridges. For a direct native diagnostic read, use
-[getting started](getting-started.md).
+Start with [first-source setup](guides/source-setup.md) if you own the Codex
+home but have not published a working-set cache yet. It links the separately
+released a11 producer to the a14 [sessions CLI](guides/sessions-cli.md) and
+[standalone dashboard](guides/dashboard.md). For a direct native diagnostic
+read, use [getting started](getting-started.md).
 
 The [repository README](../README.md) is the short project entry point;
 [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase
@@ -14,6 +14,7 @@ and project relationships.
 
 | Read | Purpose |
 | --- | --- |
+| [First-source setup](guides/source-setup.md) | Host one private foreground working-set source and use the released CLI/dashboard |
 | [Sessions CLI](guides/sessions-cli.md) | Readable configured overview, listing, exact-session details and source health |
 | [Standalone dashboard](guides/dashboard.md) | Prerelease setup, watched sources, navigation, recovery and qualification boundary |
 | [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |

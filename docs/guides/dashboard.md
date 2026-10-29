@@ -29,10 +29,12 @@ is optional; finite CLI and core/local service users need no Textual dependency.
 ## Configure and open
 
 Reuse the private version-1 `terminal.toml` from the
-[sessions guide](sessions-cli.md#configure-sources-once). It describes existing
-working-set Mesh bridges, distinct from collector Service 4 sockets. The file
-must be owned by your user, regular, without a symlink, and mode 0600. Check it
-without connecting, then inspect the actual source health:
+[sessions guide](sessions-cli.md#configure-sources-once). If a working-set source
+is not hosted yet, use the [first-source setup guide](source-setup.md) before
+opening the dashboard. The file describes existing working-set Mesh bridges,
+distinct from collector Service 4 sockets. It must be an owner-private regular
+file without a symlink, with mode 0600. Check it without connecting, then
+inspect the actual source health:
 
 ```sh
 agent-observer sessions sources --configured

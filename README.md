@@ -16,7 +16,8 @@ Requires Linux and Python 3.11+. Install the
 [configure sources once](docs/guides/sessions-cli.md#configure-sources-once)
 in your private `terminal.toml`. The reader uses existing working-set
 publishers/bridges; their sockets differ from the collector's Service 4 socket.
-If those endpoints are not hosted yet, follow the [working-set guide](docs/guides/working-set.md).
+If you own the Codex source but have not hosted those endpoints, follow the
+[first-source setup guide](docs/guides/source-setup.md).
 
 With sources configured, check setup and coverage:
 
@@ -49,6 +50,7 @@ control conversations, or add host routes.
 | --- | --- |
 | Inspect the local runtime | [First local read](docs/getting-started.md) |
 | Share one collector's cached state | [Local Service 4](docs/guides/local-service.md) |
+| Host the first working-set source | [Source setup](docs/guides/source-setup.md) |
 | Read active sessions and recent context across configured hosts | [Working-set](docs/guides/working-set.md) |
 | Inspect a fuller cached inventory | [Full Mesh reads](docs/guides/full-mesh-reads.md) |
 | Build a read-only utility | [Utility example](docs/guides/read-utilities.md) and [API reference](docs/reference/read-api.md) |

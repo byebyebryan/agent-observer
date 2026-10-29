@@ -116,4 +116,6 @@ heartbeats and cached delivery never renew native facts.
 Working-set cache creation is explicit through `--working-set-window-hours 72` on
 an intentionally configured publisher. It is not required for the ordinary local
 Service 4 recipe above. Mesh publication and remote routing have their own setup
-and role selections; see [working-set reads](working-set.md).
+and role selections; see [first-source setup](source-setup.md) for the complete
+a11 producer-to-a14 reader path and [working-set reads](working-set.md) for
+membership semantics.
