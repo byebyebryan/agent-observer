@@ -149,28 +149,14 @@ screen reset are separate outcomes when a terminal has stopped draining.
 
 ## Qualification boundary
 
-The [terminal product plan](../maintenance/terminal-product.md) tracks source,
-installed-wheel, controlled-failure, resource and native comparisons separately.
-The frozen source-preview candidate passed its 30-minute normal dashboard
-profile at 4.88% and 4.74% of one core, with peak RSS of 65.17 and 66.60 MiB
-on Python 3.11.17 and 3.14.8. This ran the installed `agent-observer dashboard`
-with three sources x100 identities and an external sampler on a draining
-120x40 terminal. An eight-hour soak is optional future testing rather than a
-preview gate. Its partial run was cancelled with owned cleanup and terminal
-restoration; no eight-hour pass is claimed. Preview acceptance now
-uses a 20-second installed-dashboard check of the actual configured cached fleet,
-supplemented by existing controlled installed update, interaction and source
-loss/fresh-baseline recovery checks.
-The new smoke passed on Python 3.14.8: its snapshot had three complete sources,
-16 members and no uncertainty, with a current projection, clean exit and restored
-terminal flags/reset. It retains aggregate metadata only and does not establish
-native accuracy or sustained performance. The user deferred the original
-eight-source/8192-outcome stress requirement and read-path optimization.
-Its failed reader-only diagnostics
-remain a large-fleet limitation; configured admission caps do not promise usable
-fleet capacity.
-Neither synthetic fixtures nor agreement with another Observer command prove
-native classification. The a14 release retains these measurement boundaries. The a13 UI refinements
-and cached repository display passed source/installed tests and short real-fleet
-checks; they do not claim a new sustained resource run. Human terminal acceptance
-and managed rollout remain independent of package publication.
+The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
+summarizes current evidence and links the frozen qualification record. The a14
+reader has source/installed checks and short actual-fleet terminal checks;
+sustained resource and selected native measurements retain their earlier exact
+artifact bounds. No new sustained run is claimed for the a13/a14 UI/search work.
+
+The user accepted the practical preview and deferred large-fleet stress,
+read-path optimization and the extended eight-hour soak. Earlier failures and
+the cancelled partial soak remain failed/incomplete. Admission caps are not
+usable fleet capacity. Cached-consumer agreement does not prove native accuracy;
+human/physical acceptance and managed delivery remain separate gates.

@@ -209,6 +209,6 @@ coverage, warming and missing baselines do not satisfy that condition.
 
 The persistent dashboard is available with the optional `dashboard` extra in a14;
 see the [dashboard guide](dashboard.md) for setup and use and the
-[terminal product plan](../maintenance/terminal-product.md) for its acceptance
-gates. Managed reader installation, native acceptance and hardware/Fleet
+[terminal product contract](../maintenance/terminal-product.md) for its acceptance
+limits. Managed reader installation, native acceptance and hardware/Fleet
 presentation are separate.

@@ -1,5 +1,9 @@
 # Your first local Observer read
 
+This guide covers explicit native diagnostics. For the everyday cached fleet
+overview, use the [sessions CLI](guides/sessions-cli.md); for persistent
+monitoring, use the [dashboard](guides/dashboard.md).
+
 Start on the machine where your Codex runtime lives. You need Linux, Python 3.11+
 with `venv` and pip, and an existing authenticated Codex home with its native daemon
 running through your normal native workflow. Observer reads that runtime; it does

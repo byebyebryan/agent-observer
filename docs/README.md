@@ -1,17 +1,23 @@
 # Agent Observer documentation
 
-Start with [getting started](getting-started.md). The [repository README](../README.md)
-is the short project entry point; [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/)
-carries the shared showcase and project relationships.
+Start with the [sessions CLI](guides/sessions-cli.md) for quick checks and
+investigation, or the [standalone dashboard](guides/dashboard.md) for persistent
+monitoring. Both use a one-time private source configuration and existing
+working-set publishers/bridges. For a direct native diagnostic read, use
+[getting started](getting-started.md).
+
+The [repository README](../README.md) is the short project entry point;
+[Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase
+and project relationships.
 
 ## Guides
 
 | Read | Purpose |
 | --- | --- |
-| [Local cached service](guides/local-service.md) | Host Service 4 explicitly and consume its cache |
-| [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |
 | [Sessions CLI](guides/sessions-cli.md) | Readable configured overview, listing, exact-session details and source health |
 | [Standalone dashboard](guides/dashboard.md) | Prerelease setup, watched sources, navigation, recovery and qualification boundary |
+| [Working-set](guides/working-set.md) | Active membership and recent context across configured hosts |
+| [Local cached service](guides/local-service.md) | Host Service 4 explicitly and consume its cache |
 | [Full Mesh reads](guides/full-mesh-reads.md) | Full cached diagnostic inventories |
 | [Read utilities](guides/read-utilities.md) | A complete bounded consumer example |
 
@@ -33,8 +39,8 @@ carries the shared showcase and project relationships.
 | [Development](maintenance/development.md) | Source setup, checks and repository layout |
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
-| [Roadmap](maintenance/roadmap.md) | CLI/dashboard milestone, acceptance and deferred work |
-| [Terminal product plan](maintenance/terminal-product.md) | CLI/dashboard behavior, lifecycle, budgets and qualification gates |
+| [Roadmap](maintenance/roadmap.md) | Current direction, next priorities and deferred work |
+| [Terminal product contract](maintenance/terminal-product.md) | Current CLI/dashboard semantics, lifecycle, budgets and acceptance limits |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.
