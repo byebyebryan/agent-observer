@@ -1,6 +1,6 @@
 # Sessions CLI
 
-The `0.7.0a13` prerelease retains the sessions CLI described here. Installing a
+The `0.7.0a14` prerelease retains the sessions CLI described here. Installing a
 reader does not change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
@@ -18,8 +18,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/agent_observer-0.7.0a13-py3-none-any.whl#sha256=29f052668d4f436e1b381c5fc5f5819ed5a5b0207ef5613c59442e4554b076a2' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/agent_observer-0.7.0a14-py3-none-any.whl#sha256=46a1158023023b60d9b839184a45f7b7eeb21b04dce67aad808fa8277522518f' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -207,7 +207,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a13;
+The persistent dashboard is available with the optional `dashboard` extra in a14;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product plan](../maintenance/terminal-product.md) for its acceptance
 gates. Managed reader installation, native acceptance and hardware/Fleet

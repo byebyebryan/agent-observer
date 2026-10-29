@@ -1,7 +1,7 @@
 # Standalone dashboard
 
-The `0.7.0a13` prerelease includes the standalone dashboard through the optional
-`dashboard` extra. Bare `agent-observer` remains the quick overview;
+The `0.7.0a14` prerelease adds repository-path search to the standalone dashboard,
+available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
 `agent-observer dashboard` opens the persistent terminal application until you quit.
 
 ## Install the prerelease
@@ -13,12 +13,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/agent_observer-0.7.0a13-py3-none-any.whl#sha256=29f052668d4f436e1b381c5fc5f5819ed5a5b0207ef5613c59442e4554b076a2' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/agent_observer-0.7.0a14-py3-none-any.whl#sha256=46a1158023023b60d9b839184a45f7b7eeb21b04dce67aad808fa8277522518f' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -170,7 +170,7 @@ Its failed reader-only diagnostics
 remain a large-fleet limitation; configured admission caps do not promise usable
 fleet capacity.
 Neither synthetic fixtures nor agreement with another Observer command prove
-native classification. The a13 release retains these measurement boundaries. Its later UI refinements
+native classification. The a14 release retains these measurement boundaries. The a13 UI refinements
 and cached repository display passed source/installed tests and short real-fleet
 checks; they do not claim a new sustained resource run. Human terminal acceptance
 and managed rollout remain independent of package publication.

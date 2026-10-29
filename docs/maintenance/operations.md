@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a13 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a13)
+The [0.7.0a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
 provides the configured sessions CLI and optional standalone dashboard while
 retaining terminal JSON interface 1. Reader installation/configuration is
 independently selected; publication does not upgrade a collector or publisher.
@@ -14,22 +14,28 @@ independent reviewed selections.
 
 ## Dashboard reader release
 
-The [a13 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a13)
-adds the standalone dashboard, refined session details and cached working-directory/
-Git repository presentation. Textual remains an optional extra; the managed CLI
-reader role installs the exact qualified dashboard dependency stack. Finite CLI
-commands and terminal JSON v1 remain compatible. API 4, snapshot/watch 6,
-Service 4, working-set v1 and Mesh a25 bytes are unchanged.
+The [a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+adds dashboard literal search over current cached repository roots, shared Git
+directories and relative paths. Repository fields stop matching when their
+workspace support expires; exact selection and source health remain independent
+of displayed matches. It retains a13's standalone dashboard and workspace details.
+Textual remains optional. The qualified dependency stack and Mesh a25 bytes are
+unchanged, as are finite CLI query results, terminal JSON v1, API 4,
+snapshot/watch 6, Service 4 and working-set v1.
 
-The [a13 artifact manifest](../../artifacts/observer-0.7.0a13.json) binds the
+The [a14 artifact manifest](../../artifacts/observer-0.7.0a14.json) binds the
 runtime source and frozen wheel. Release
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a13/provenance.json)
-binds the qualification/tag commit, exact assets and independent source/installed
-checks. The release includes `dashboard-requirements.txt` for reproducible optional
-stack installation. The [dashboard guide](../guides/dashboard.md) describes use
-and the inherited normal-resource, native and capacity measurement boundaries.
-Managed adoption remains in `deployments/agent-observer-cli.json`; it does not
-advance collector, publisher, Agent Plus, Tmux or hardware selections.
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/provenance.json)
+binds qualification/tag source, exact assets and source/installed checks.
+The release includes `dashboard-requirements.txt` for reproducible optional-stack
+installation. The [dashboard guide](../guides/dashboard.md) retains the earlier
+native/resource measurement boundaries; this search fix adds no new sustained
+capacity or native-classification claim.
+Managed CLI/dashboard adoption belongs to `deployments/agent-observer-cli.json`;
+it preserves the a11 collector/publisher cohort and independent Agent Plus,
+Tmux, full-publisher and hardware selections. The previous
+[a13 artifact manifest](../../artifacts/observer-0.7.0a13.json) and public release
+remain immutable rollback inputs.
 
 ## Selection and recovery
 

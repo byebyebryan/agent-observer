@@ -1,0 +1,47 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a14",
+  "wheel": "agent_observer-0.7.0a14-py3-none-any.whl",
+  "wheelSha256": "46a1158023023b60d9b839184a45f7b7eeb21b04dce67aad808fa8277522518f",
+  "sourceRevision": "dcbd69d9debed39eaff3f898815dfb52c6711174",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified repository-search CLI/dashboard reader candidate; publication and managed selection have independent receipts.",
+    "Dashboard literal search adds current cached repo root, commonDir and relativePath under the existing workspace lease, including quiet expiry and exact pinned selection.",
+    "Preserves finite sessions CLI query results and terminal JSON1, API4/snapshot6/Service4/working-set1 schemas and source/membership semantics.",
+    "Retains the a13 dashboard presentation and unchanged Mesh0.1.0a25/Textual8.2.8 dependency stack.",
+    "Reader adoption preserves a11 collectors/publishers, directional routes and independent full/Mesh/Tmux/Agent Plus/hardware selections."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

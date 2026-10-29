@@ -2,7 +2,7 @@
 
 Agent Observer provides reusable Codex read-only observation for dashboards,
 diagnostics and agent utilities. The CLI and persistent terminal dashboard are
-available in the a13 prerelease with the qualification boundaries below.
+available in the a14 prerelease with the qualification boundaries below.
 Native managers continue to own conversation control.
 [Fleet Plus](https://dev.byebyebryan.com/fleet-plus/) carries the shared showcase;
 this repository owns native semantics, public interfaces and acceptance evidence.
@@ -21,14 +21,14 @@ plans for restoring those retired paths are superseded.
 Existing direct, service and Mesh commands support diagnostic inspection.
 `working-set list` and `working-set watch` already read qualified cached state;
 the current watch is bounded to 60 seconds. The terminal product builds on
-these capabilities. The a13 package includes the dashboard as an optional extra;
+these capabilities. The dashboard remains an optional extra in a14;
 its managed reader role stays independent of collector/publisher selection.
 
 The [a12 sessions CLI](../guides/sessions-cli.md) provides configured
 overview/list/show/source inspection and versioned JSON output. It has source,
 clean-package and cached-consumer checks and includes the a11 clock-recovery
 source. CLI reader selection/configuration is independent of the a11
-collectors/publishers and other consumers. The a13 dashboard retains separate
+collectors/publishers and other consumers. The a14 dashboard retains separate
 package, native, resource, human and managed-deployment acceptance boundaries.
 
 ## Current milestone: CLI and dashboard qualification
@@ -97,8 +97,8 @@ hardware-dashboard pins.
 | --- | --- |
 | Detailed planning | Reviewed; command/output shapes, configuration, dashboard screen/keys, dependencies and lifecycle/resource policy are recorded in the terminal product plan |
 | Usable CLI | Released in 0.7.0a12; its finite CLI and JSON v1 remain the published interface |
-| Standalone dashboard | Available in a13 with the optional dashboard extra, readable workspace/repository details and the recorded source/installed, recovery and realistic-fleet checks. Resource/native measurements retain their earlier exact-artifact bounds; extended soak and large-fleet stress testing remain deferred |
-| Release and delivery | A13 is published and the independent CLI/dashboard reader role is selected on Snap, Starship and Carbon. Installed CLI/terminal and short dashboard checks pass; human/native/resource acceptance retains the recorded boundaries. Fleet presentation remains separate |
+| Standalone dashboard | Available in a14 with the optional dashboard extra, current repository-path search, readable workspace/repository details and the recorded source/installed, recovery and realistic-fleet checks. Resource/native measurements retain their earlier exact-artifact bounds; extended soak and large-fleet stress testing remain deferred |
+| Release and delivery | A14 publication and independent CLI/dashboard reader selection are scoped to Snap, Starship and Carbon. Installed CLI/terminal and short dashboard checks pass; human/native/resource acceptance retains the recorded boundaries. Fleet presentation remains separate |
 
 The terminal product plan records the selected command names, filters/order,
 key bindings, optional extras and machine-readable output contract. The dashboard
@@ -186,12 +186,12 @@ native/resource measurement claims.
 
 | Area | Useful next step | Acceptance boundary |
 | --- | --- | --- |
-| Terminal product | Use the a13 CLI/dashboard reader and report concrete usability or recovery defects | Source/package and scoped deployment receipts remain distinct from human/native/resource acceptance |
+| Terminal product | Use the a14 CLI/dashboard reader and report concrete usability or recovery defects | Source/package and scoped deployment receipts remain distinct from human/native/resource acceptance |
 | Native coverage | Investigate a reproducible identity or membership discrepancy | Independent native comparison on the affected host/home |
 | Efficiency | Measure the owning collector/read path against an exact baseline | Matched CPU, memory and unchanged freshness/coverage |
 | Consumer integration | Adopt an accepted producer interface where useful | Consumer-specific package, UI/device and recovery proof |
 
-The terminal product remains the current direction; a13 publishes the checked
+The terminal product remains the current direction; a14 publishes the checked
 CLI/dashboard reader without promoting the historical stress failures to passes. Other rows are follow-ups driven by demonstrated need.
 Deployment and unrelated infrastructure changes need their own scope.
 Working-set coverage now reports a primary census, support or membership blocker.
