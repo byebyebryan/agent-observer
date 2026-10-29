@@ -934,20 +934,25 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         app = DashboardApp(reader, {})
 
         async with app.run_test(size=(100, 24)):
-            container = app.query_one("#content")
-            remove_children = container.remove_children
+            try:
+                container = app.query_one("#content")
+                remove_children = container.remove_children
 
-            async def revoke_during_mount_prep():
-                await remove_children()
-                reader.replace([_session_state()])
+                async def revoke_during_mount_prep():
+                    await remove_children()
+                    reader.replace([_session_state()])
 
-            container.remove_children = revoke_during_mount_prep
-            app._view = "details"
-            await app._paint()
-            self.assertNotIn("alpha", [row["identity"]["nativeId"] for row in app._all_rows])
-            self.assertFalse(app._selection_available)
-            self.assertTrue(reader.is_current(app._projection))
-            self.assertIn("not currently available", " ".join(app._detail_lines()))
+                container.remove_children = revoke_during_mount_prep
+                app._view = "details"
+                await app._paint()
+                self.assertNotIn("alpha", [row["identity"]["nativeId"] for row in app._all_rows])
+                self.assertFalse(app._selection_available)
+                self.assertTrue(reader.is_current(app._projection))
+                self.assertIn("not currently available", " ".join(app._detail_lines()))
+            finally:
+                # The raw app test bypasses the public runner exit hook. Stop
+                # updates before Textual removes the screen, as that owner does.
+                await app.stop_updates()
 
     async def test_age_only_refresh_checks_projection_before_updating_cells(self):
         alpha = row("alpha", title="Alpha task")
