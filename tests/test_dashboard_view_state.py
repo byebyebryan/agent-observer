@@ -9,6 +9,7 @@ import tempfile
 import textwrap
 import time
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import patch
 
@@ -62,6 +63,23 @@ def write_test_helper(path: Path, body: str) -> Path:
     )
     path.chmod(0o700)
     return path
+
+
+@contextmanager
+def tracked_helper_processes():
+    create_process = asyncio.create_subprocess_exec
+    children = []
+
+    async def create(*args, **kwargs):
+        process = await create_process(*args, **kwargs)
+        children.append(process)
+        return process
+
+    with patch(
+        "agent_observer.terminal.dashboard_view.asyncio.create_subprocess_exec",
+        side_effect=create,
+    ):
+        yield children
 
 
 class SavedViewSchemaTests(unittest.TestCase):
@@ -418,17 +436,6 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(decode_saved_view(state_file(self.root).read_bytes()), view_c)
 
     async def test_blocked_load_and_save_are_killed_reaped_and_do_not_block_event_loop(self):
-        helper = write_test_helper(
-            Path(self.temp.name) / "blocked_helper.py",
-            """
-            pathlib.Path(root, "helper-pid").write_text(str(os.getpid()))
-            if operation == "load":
-                time.sleep(60)
-            else:
-                sys.stdin.buffer.read()
-                time.sleep(60)
-            """,
-        )
         ticks = 0
         running = True
 
@@ -439,61 +446,45 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
                 await asyncio.sleep(0.002)
 
         ticker = asyncio.create_task(tick())
-        controller = SavedViewController(
-            self.root,
-            helper_path=helper,
-            load_timeout=0.05,
-            save_timeout=0.05,
-            shutdown_drain=0.5,
-            reap_timeout=0.2,
-        )
-        started = time.monotonic()
-        self.assertEqual(await controller.load(), SavedView())
-        self.assertLess(time.monotonic() - started, 1.0)
-        self.assertFalse(controller.persistence_enabled)
-        self.assertEqual(controller.warning, "saved_view_load_timeout")
-        load_pid_file = self.root / "helper-pid"
-        if load_pid_file.exists():
-            load_pid = int(load_pid_file.read_text())
-            with self.assertRaises(ProcessLookupError):
-                os.kill(load_pid, 0)
-        await controller.close()
-        self.assertGreater(ticks, 0)
-        self.assertIsNone(controller._process)
-        self.assertTrue(controller._save_task is None or controller._save_task.done())
-
-        helper = write_test_helper(
-            Path(self.temp.name) / "blocked_save_helper.py",
-            """
-            if operation == "load":
-                sys.stdout.buffer.write(b"MISSING\\n")
-            else:
-                pathlib.Path(root, "helper-pid").write_text(str(os.getpid()))
-                sys.stdin.buffer.read()
-                time.sleep(60)
-            """,
-        )
-        load_pid_file.unlink(missing_ok=True)
-        save_controller = SavedViewController(
-            self.root,
-            helper_path=helper,
-            save_timeout=0.05,
-            shutdown_drain=0.5,
-            reap_timeout=0.2,
-        )
-        await save_controller.load()
-        # A stale receipt from the load case cannot prove the save child ran.
-        (self.root / "helper-pid").unlink(missing_ok=True)
-        save_controller.submit(SavedView.from_references([reference("unsaved")]))
-        await save_controller.close()
-        self.assertEqual(save_controller.warning, "saved_view_save_timeout")
-        self.assertTrue(load_pid_file.exists())
-        save_pid = int((self.root / "helper-pid").read_text())
-        with self.assertRaises(ProcessLookupError):
-            os.kill(save_pid, 0)
-        self.assertIsNone(save_controller._process)
-        running = False
-        await ticker
+        try:
+            for blocked_operation in ("load", "save"):
+                helper = write_test_helper(
+                    Path(self.temp.name) / f"blocked_{blocked_operation}_helper.py",
+                    f"""
+                    if operation == "load" and {blocked_operation!r} == "save":
+                        sys.stdout.buffer.write(b"MISSING\\n")
+                    else:
+                        time.sleep(60)
+                    """,
+                )
+                controller = SavedViewController(
+                    self.root,
+                    helper_path=helper,
+                    load_timeout=0.05 if blocked_operation == "load" else 0.25,
+                    save_timeout=0.05,
+                    shutdown_drain=0.5,
+                    reap_timeout=0.2,
+                )
+                started = time.monotonic()
+                with tracked_helper_processes() as children:
+                    self.assertEqual(await controller.load(), SavedView())
+                    if blocked_operation == "save":
+                        controller.submit(SavedView.from_references([reference("unsaved")]))
+                    await controller.close()
+                self.assertLess(time.monotonic() - started, 1.0)
+                self.assertEqual(controller.warning, f"saved_view_{blocked_operation}_timeout")
+                self.assertFalse(controller.persistence_enabled)
+                self.assertEqual(len(children), 1 if blocked_operation == "load" else 2)
+                for process in children:
+                    self.assertIsNotNone(process.returncode)
+                    with self.assertRaises(ProcessLookupError):
+                        os.kill(process.pid, 0)
+                self.assertIsNone(controller._process)
+                self.assertTrue(controller._save_task is None or controller._save_task.done())
+            self.assertGreater(ticks, 0)
+        finally:
+            running = False
+            await ticker
 
     async def test_unexpected_finished_save_task_failure_is_observed_on_close(self):
         controller = SavedViewController(self.root)
@@ -514,7 +505,6 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
             if operation == "load":
                 sys.stdout.buffer.write(b"MISSING\\n")
             else:
-                pathlib.Path(root, "helper-pid").write_text(str(os.getpid()))
                 sys.stdin.buffer.read()
                 time.sleep(60)
             """,
@@ -527,16 +517,17 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
             reap_timeout=0.2,
         )
         await controller.load()
-        controller.submit(SavedView.from_references([reference("pending")]))
-        deadline = asyncio.get_running_loop().time() + 1
-        pid_file = self.root / "helper-pid"
-        while not pid_file.exists() and asyncio.get_running_loop().time() < deadline:
-            await asyncio.sleep(0.005)
-        await controller.close()
+        with tracked_helper_processes() as children:
+            controller.submit(SavedView.from_references([reference("pending")]))
+            deadline = asyncio.get_running_loop().time() + 1
+            while not children and asyncio.get_running_loop().time() < deadline:
+                await asyncio.sleep(0.005)
+            self.assertEqual(len(children), 1)
+            await controller.close()
         self.assertEqual(controller.warning, "saved_view_shutdown_timeout")
-        pid = int(pid_file.read_text())
+        self.assertIsNotNone(children[0].returncode)
         with self.assertRaises(ProcessLookupError):
-            os.kill(pid, 0)
+            os.kill(children[0].pid, 0)
         self.assertIsNone(controller._process)
         self.assertTrue(controller._save_task.done())
 
