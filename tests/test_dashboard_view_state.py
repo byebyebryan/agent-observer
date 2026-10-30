@@ -544,7 +544,6 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
         helper = write_test_helper(
             Path(self.temp.name) / "late_spawn_helper.py",
             """
-            pathlib.Path(root, "helper-pid").write_text(str(os.getpid()))
             time.sleep(60)
             """,
         )
@@ -555,10 +554,12 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
             reap_timeout=0.25,
         )
         create_process = asyncio.create_subprocess_exec
+        created = []
 
         async def delayed_create(*args, **kwargs):
             await asyncio.sleep(0.06)
             process = await create_process(*args, **kwargs)
+            created.append(process)
             await asyncio.sleep(0.02)
             return process
 
@@ -568,9 +569,10 @@ class SavedViewControllerTests(unittest.IsolatedAsyncioTestCase):
         ):
             await controller.load()
         self.assertEqual(controller.warning, "saved_view_load_timeout")
-        pid = int((self.root / "helper-pid").read_text())
+        self.assertEqual(len(created), 1)
+        self.assertIsNotNone(created[0].returncode)
         with self.assertRaises(ProcessLookupError):
-            os.kill(pid, 0)
+            os.kill(created[0].pid, 0)
         self.assertIsNone(controller._process)
         self.assertIsNone(controller.cleanup_error)
 
