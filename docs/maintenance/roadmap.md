@@ -36,6 +36,15 @@ choices; they add no native, resource or physical qualification.
 
 ## Current focus: everyday CLI and dashboard use
 
+The next scoped proposal is an independent **read-only session board** beside
+the normal Codex TUI: a small pinned region with stable relative order and
+remembered sort/group choices. The user adopted that conservative direction;
+the [design and research](terminal-product.md#proposed-refinement-a-read-only-session-board)
+records proposed interaction, missing-session and local-state rules for review.
+It is planning only, not implemented or part of a14. Native TUI switching and
+its feasibility spike are deferred. Keep current guides describing released
+behavior until an implementation is qualified.
+
 Use the installed reader in ordinary terminals and turn concrete usability or
 recovery defects into bounded follow-ups. The [sessions guide](../guides/sessions-cli.md)
 and [dashboard guide](../guides/dashboard.md) own setup/use; the
@@ -44,6 +53,7 @@ resource budgets and current acceptance limits.
 
 | Priority | Next useful work | Acceptance boundary |
 | --- | --- | --- |
+| Session-board refinement | Review the bounded pin/order/preferences proposal, then implement within the existing terminal presentation | Exact identity, source truth and current CLI/native workflow preserved; local-state/lifecycle gates and human usefulness remain separate |
 | Everyday usability | Check whether names, workspace context, search, selection and source-health explanations answer routine questions | Real user feedback; source/package tests do not establish human acceptance |
 | Recovery | Investigate expired facts shown as current, false empty results, failed reconnects or terminal restoration | Exact reader/dependency bytes, affected source, lease/baseline transitions and owned cleanup |
 | Native coverage | Investigate a reproducible identity/runtime/membership discrepancy on its owning host/home | Independent native evidence; a frontend release or a later complete sample does not close a producer incident |
@@ -84,6 +94,8 @@ unexplained historical sample.
 - **Agent Plus sidebar/native composition:** revisit when standalone use shows
   repeated need for an agent list beside a native TUI. The old WSNav design is
   deprecated; Kitty spikes are historical evidence, not a tmux-runtime mandate.
+  The independent session-board proposal adds no native control or terminal
+  ownership. A procedural switching spike needs a separate scope decision.
 - **Delta synchronization:** remains dark after failed CPU/capacity gates.
   Reopen only for a measured requirement and a bounded qualification plan.
 - **Optional complete-view/prepared delivery:** needs an actual consumer,
