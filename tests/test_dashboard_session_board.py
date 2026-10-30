@@ -220,6 +220,7 @@ class DashboardSessionBoardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertTrue(app._split_details())
             self.assertIn("* Pinned label", _text(app.query_one("#content")))
+            self.assertIn("active fixture/default", _text(app.query_one("#content")))
             self.assertIn(app._selected_key, {app._row_key(item) for item in app._page_rows})
 
     async def test_grouped_pin_pages_keep_end_selection_visible_after_resize(self):

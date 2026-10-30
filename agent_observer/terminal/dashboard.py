@@ -1466,8 +1466,12 @@ class DashboardApp(App[None]):
             label_width = max(12, width - 34)
             selected_style = "reverse bold" if selected and self.no_color else ""
             label = self._safe(row.get("label"))
+            membership = self._safe(row.get("membership", "unknown"))
+            member_context = membership
             if self._is_pinned_row(row):
                 label = "* " + label
+                source = row.get("source", {})
+                member_context += f" {self._safe(source.get('host'))}/{self._safe(source.get('home'))}"
             item = Horizontal(
                 self._cell(
                     "> " if selected else "  ",
@@ -1479,7 +1483,7 @@ class DashboardApp(App[None]):
                     label, label_width, selected_style
                 ),
                 self._cell(
-                    self._safe(row.get("membership", "unknown")),
+                    member_context,
                     28,
                     selected_style
                     if selected
