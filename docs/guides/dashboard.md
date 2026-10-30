@@ -132,7 +132,42 @@ common actions and `?` for the full keyboard guide.
 In-app source/host/home filters narrow presentation only. `Sources N`
 still describes the immutable startup watched set, and source failures continue
 to affect overall coverage. Restart with different selectors to watch a
-different set. No preferences or search history are written.
+different set. The released a14 dashboard writes no preferences or search history.
+
+## Source candidate: favorites and saved view
+
+The maintained source also provides a small session board. This section does
+not describe additions to the published a14 wheel or change managed selections.
+
+- `p` with list focus pins/unpins the visible selected session; its exact
+  selection follows it after movement. Matching favorites appear first in
+  first-pinned order, marked `*`. The remaining rows keep normal ordering/grouping.
+- `P` opens Pins. Select a reference and press `p` to remove it even when it is
+  absent or hidden. `not in this view` makes no claim about native state.
+- Order/group menus preview choices; Enter/Space accepts, Escape restores the
+  previous value. Text input continues to own printable `p` and `P`.
+
+Pin counts distinguish references in the current view from saved references;
+favorites bypass no source selection, filter, kind or identity check. A missing
+favorite creates no session row or native fact. Full exact identity, rather than
+name or path, controls whether a returning row matches.
+
+Optional local view state remembers only ordered exact pin identities and
+accepted sort/group values (32 pins, 64 KiB maximum). Its path is
+`$XDG_STATE_HOME/agent-observer/dashboard-view.json`, falling back to
+`~/.local/state/agent-observer/dashboard-view.json`. The state root must already
+exist; startup creates nothing. Labels, paths, queries, filters, selected rows,
+source definitions and observations are never saved.
+
+Explicit startup `--sort`/`--group` wins over saved choices without saving by
+itself. Later deliberate edits save the current complete view. Use
+`agent-observer dashboard --no-saved-view` for session-only edits and no state-file
+I/O, including fixtures/previews. Independent dashboards use the last successful
+save without merge or live reload. Invalid, unsupported or unsafe state is
+preserved with a visible session-only warning; failed saves retain the current
+in-memory choice and report it unsaved. See the
+[local-state contract](../maintenance/terminal-product.md#optional-local-view-state)
+for permissions, operation deadlines and interrupted-save limits.
 
 ## Recovery and exits
 

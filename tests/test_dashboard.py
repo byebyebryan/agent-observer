@@ -606,14 +606,14 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 if widget.has_class("selected-row")
             )
             self.assertIn(app._selected_label, selected.children[1].content.plain)
-            self.assertIn("Details · ↑↓ scroll · Tab list", app._footer_text())
+            self.assertIn("Details · ↑↓ scroll · P pins · Tab list", app._footer_text())
             self.assertTrue(app.query_one("#split-detail").has_class("details-focused"))
             await pilot.press("tab")
             await pilot.pause()
-            self.assertIn("List · ↑↓ select · Tab details", app._footer_text())
+            self.assertIn("List · ↑↓ select · p pin · P pins · Tab details", app._footer_text())
             await pilot.resize_terminal(100, 40)
             await pilot.pause()
-            self.assertIn("↑↓ scroll · Esc back", app._footer_text())
+            self.assertIn("↑↓ scroll · P pins · Esc", app._footer_text())
 
         no_color = DashboardApp(
             FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {}, no_color=True

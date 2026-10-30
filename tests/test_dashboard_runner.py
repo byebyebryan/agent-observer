@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from agent_observer.terminal.dashboard_runner import run_dashboard
+from agent_observer.terminal.dashboard_view import SavedView
 
 
 class Reader:
@@ -299,3 +300,118 @@ class DashboardRunnerTests(unittest.IsolatedAsyncioTestCase):
             app.exit()
             self.assertEqual((await task).code, 0)
             self.assertEqual(os.environ["NO_COLOR"], "old")
+
+    async def test_saved_view_load_precedes_reader_and_only_unset_cli_choices_are_overridden(self):
+        events = []
+
+        class Controller:
+            view = SavedView(sort="label", group="host-home")
+            persisted_view = view
+            persistence_enabled = True
+            warning = None
+            cleanup_error = None
+
+            def __init__(self):
+                self.submissions = []
+
+            async def load(self):
+                events.append("view-load")
+                return self.view
+
+            def submit(self, view):
+                self.submissions.append(view)
+
+            async def close(self):
+                events.append("view-close")
+
+        controller = Controller()
+        reader = Reader()
+        app = App()
+        app.events = reader.events
+
+        def reader_factory(_sources, **_options):
+            self.assertEqual(events, ["view-load"])
+            events.append("reader-create")
+            return reader
+
+        def app_factory(_reader, filters, **options):
+            self.assertEqual(filters["sort"], "host")
+            self.assertEqual(filters["group"], "host-home")
+            self.assertIs(options["saved_view"], controller.view)
+            self.assertIs(options["view_controller"], controller)
+            events.append("app-create")
+            app.callback = options["on_exit_requested"]
+            return app
+
+        task = asyncio.create_task(
+            run_dashboard(
+                (),
+                {"sort": "host", "group": "none"},
+                reader_factory=reader_factory,
+                app_factory=app_factory,
+                install_signals=False,
+                saved_view_controller=controller,
+                explicit_sort=True,
+                explicit_group=False,
+            )
+        )
+        await app.started.wait()
+        app.exit()
+        result = await task
+        self.assertEqual(result.code, 0)
+        self.assertEqual(events[:3], ["view-load", "reader-create", "app-create"])
+        self.assertEqual(events[-1], "view-close")
+        self.assertEqual(controller.submissions, [])
+
+    async def test_signal_during_startup_load_cancels_and_joins_owned_load(self):
+        class Controller:
+            view = SavedView()
+            persisted_view = None
+            persistence_enabled = True
+            warning = None
+            cleanup_error = None
+
+            def __init__(self):
+                self.started = asyncio.Event()
+                self.release = asyncio.Event()
+                self.cancelled = False
+                self.closed = False
+
+            async def load(self):
+                self.started.set()
+                try:
+                    await self.release.wait()
+                except asyncio.CancelledError:
+                    self.cancelled = True
+                    raise
+
+            async def close(self):
+                self.closed = True
+
+        controller = Controller()
+        loop = asyncio.get_running_loop()
+        callbacks = {}
+
+        def register(signum, callback, *args):
+            callbacks[signum] = lambda: callback(*args)
+
+        with (
+            patch.object(loop, "add_signal_handler", side_effect=register),
+            patch.object(loop, "remove_signal_handler"),
+            patch("signal.signal"),
+        ):
+            task = asyncio.create_task(
+                run_dashboard(
+                    (),
+                    {},
+                    reader_factory=lambda *_args, **_kwargs: self.fail("reader started"),
+                    app_factory=lambda *_args, **_kwargs: self.fail("UI started"),
+                    install_signals=True,
+                    saved_view_controller=controller,
+                )
+            )
+            await controller.started.wait()
+            callbacks[signal.SIGTERM]()
+            result = await asyncio.wait_for(task, 1)
+        self.assertEqual(result.code, 128 + signal.SIGTERM)
+        self.assertTrue(controller.cancelled and controller.closed)

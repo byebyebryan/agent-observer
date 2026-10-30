@@ -17,6 +17,12 @@ from .sources import TerminalDependencyError, _dependencies
 def parser():
     result = _SessionParser(prog="agent-observer dashboard", description=__doc__)
     _add_common(result, dashboard=True)
+    result.set_defaults(_before_sort=None, _before_group=None)
+    result.add_argument(
+        "--no-saved-view",
+        action="store_true",
+        help="keep pins, order and grouping only for this dashboard run",
+    )
     return result
 
 
@@ -58,6 +64,10 @@ def dashboard_dependencies():
 
 def main(argv=None) -> int:
     args = parser().parse_args(sys.argv[1:] if argv is None else argv)
+    explicit_sort = args.sort is not None
+    explicit_group = args.group is not None
+    args.sort = args.sort or "activity"
+    args.group = args.group or "none"
     try:
         config = load_config(args.config)
         filters = _filters(args)
@@ -84,6 +94,11 @@ def main(argv=None) -> int:
     if message := terminal_error():
         write_stderr(message)
         return 2
+    view_controller = None
+    if not args.no_saved_view:
+        from .dashboard_view import SavedViewController
+
+        view_controller = SavedViewController.from_environment()
     from .dashboard_runner import run_dashboard
 
     try:
@@ -94,6 +109,9 @@ def main(argv=None) -> int:
                 connect_timeout=args.connect_timeout,
                 no_color=not color_enabled(args.color, isatty=True),
                 icons=icons_enabled(args.icons, isatty=True, encoding=sys.stdout.encoding),
+                saved_view_controller=view_controller,
+                explicit_sort=explicit_sort,
+                explicit_group=explicit_group,
             )
         )
     except TerminalDependencyError as error:
@@ -106,6 +124,12 @@ def main(argv=None) -> int:
         return 3
     if result.reason:
         write_stderr(f"dashboard failed ({result.reason})")
+    if result.view_warning:
+        warning = (safe_metadata(result.view_warning) or "unavailable")[:64]
+        write_stderr(
+            "dashboard view not saved; pins and display choices were session-only "
+            f"({warning})"
+        )
     return result.code
 
 

@@ -8,6 +8,7 @@ import signal
 import time
 from dataclasses import dataclass
 
+from .dashboard_view import SavedViewController
 from .watch import PersistentSources, _join_owned
 
 
@@ -19,9 +20,19 @@ class DashboardResult:
     terminal_flags_restored: bool | None
     screen_reset_delivered: bool | None
     failures: tuple[str, ...] = ()
+    view_warning: str | None = None
 
 
-def _app_factory(reader, filters, *, no_color, icons, on_exit_requested):
+def _app_factory(
+    reader,
+    filters,
+    *,
+    no_color,
+    icons,
+    on_exit_requested,
+    saved_view=None,
+    view_controller=None,
+):
     from .dashboard import DashboardApp
 
     class OwnedDashboardApp(DashboardApp):
@@ -29,7 +40,14 @@ def _app_factory(reader, filters, *, no_color, icons, on_exit_requested):
             on_exit_requested()
             return super().exit(*args, **kwargs)
 
-    return OwnedDashboardApp(reader, filters, no_color=no_color, icons=icons)
+    return OwnedDashboardApp(
+        reader,
+        filters,
+        no_color=no_color,
+        icons=icons,
+        saved_view=saved_view,
+        view_controller=view_controller,
+    )
 
 
 async def run_dashboard(
@@ -42,6 +60,9 @@ async def run_dashboard(
     reader_factory=PersistentSources,
     app_factory=_app_factory,
     install_signals=True,
+    saved_view_controller: SavedViewController | None = None,
+    explicit_sort=False,
+    explicit_group=False,
 ):
     """Return only after UI restoration and all owned cleanup have joined.
 
@@ -50,8 +71,9 @@ async def run_dashboard(
     that owned join. A five-second miss fails acceptance; it cannot justify
     abandoning a still-live owned task.
     """
-    reader = reader_factory(sources, connect_timeout=connect_timeout)
+    reader = None
     cleanup = None
+    view_cleanup = None
     app = None
     installed = []
     requested_signal = None
@@ -60,11 +82,14 @@ async def run_dashboard(
     ui_stop_requested = False
     ui_stop_request_failed = False
     previous_no_color = os.environ.get("NO_COLOR")
+    owner_task = asyncio.current_task()
     if no_color:
         os.environ["NO_COLOR"] = "1"
 
     def begin_cleanup():
-        nonlocal cleanup, started_cleanup, ui_stop_requested, ui_stop_request_failed
+        nonlocal cleanup, view_cleanup, started_cleanup, ui_stop_requested, ui_stop_request_failed
+        if started_cleanup is None:
+            started_cleanup = time.monotonic()
         if not ui_stop_requested:
             ui_stop_requested = True
             request_stop = getattr(app, "request_stop_updates", None)
@@ -73,10 +98,12 @@ async def run_dashboard(
                     request_stop()
                 except Exception:
                     ui_stop_request_failed = True
-        reader.request_close()
-        if cleanup is None:
-            started_cleanup = time.monotonic()
+        if reader is not None:
+            reader.request_close()
+        if reader is not None and cleanup is None:
             cleanup = asyncio.create_task(reader.close())
+        if saved_view_controller is not None and view_cleanup is None:
+            view_cleanup = asyncio.create_task(saved_view_controller.close())
 
     def on_signal(signum):
         nonlocal requested_signal
@@ -85,21 +112,34 @@ async def run_dashboard(
         begin_cleanup()
         if app is not None:
             app.exit(return_code=requested_signal)
+        elif owner_task is not None:
+            owner_task.cancel()
 
     try:
-        app = app_factory(
-            reader,
-            filters,
-            no_color=no_color,
-            icons=icons,
-            on_exit_requested=begin_cleanup,
-        )
         if install_signals:
             loop = asyncio.get_running_loop()
             for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
                 previous = signal.getsignal(signum)
                 loop.add_signal_handler(signum, on_signal, signum)
                 installed.append((signum, previous))
+        effective_filters = dict(filters)
+        saved_view = None
+        if saved_view_controller is not None:
+            saved_view = await saved_view_controller.load()
+            if not explicit_sort:
+                effective_filters["sort"] = saved_view.sort
+            if not explicit_group:
+                effective_filters["group"] = saved_view.group
+        reader = reader_factory(sources, connect_timeout=connect_timeout)
+        app_options = {
+            "no_color": no_color,
+            "icons": icons,
+            "on_exit_requested": begin_cleanup,
+        }
+        if saved_view_controller is not None:
+            app_options["saved_view"] = saved_view
+            app_options["view_controller"] = saved_view_controller
+        app = app_factory(reader, effective_filters, **app_options)
         await reader.start()
         running = asyncio.create_task(app.run_async())
         interrupted = False
@@ -132,10 +172,18 @@ async def run_dashboard(
                     await app.stop_updates()
                 except (Exception, asyncio.CancelledError):
                     failures.append("ui_cleanup_failed")
-            try:
-                await cleanup
-            except (Exception, asyncio.CancelledError):
-                failures.append("reader_cleanup_failed")
+            if cleanup is not None:
+                try:
+                    await cleanup
+                except (Exception, asyncio.CancelledError):
+                    failures.append("reader_cleanup_failed")
+            if view_cleanup is not None:
+                try:
+                    await view_cleanup
+                except (Exception, asyncio.CancelledError):
+                    failures.append("saved_view_cleanup_failed")
+            if saved_view_controller is not None and saved_view_controller.cleanup_error:
+                failures.append(saved_view_controller.cleanup_error)
             driver = getattr(app, "output_driver", None)
             if driver is not None:
                 try:
@@ -157,7 +205,7 @@ async def run_dashboard(
         try:
             failures, cancelled = await _join_owned(asyncio.create_task(finish()))
             elapsed = time.monotonic() - started_cleanup
-            if reader.cleanup_error:
+            if reader is not None and reader.cleanup_error:
                 failures.append(reader.cleanup_error)
             if elapsed > 5:
                 failures.append("cleanup_timeout")
@@ -182,4 +230,5 @@ async def run_dashboard(
         getattr(driver, "terminal_flags_restored", None),
         getattr(driver, "screen_reset_delivered", None),
         tuple(failures),
+        saved_view_controller.warning if saved_view_controller is not None else None,
     )

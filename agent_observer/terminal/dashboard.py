@@ -17,6 +17,13 @@ from textual.timer import Timer
 from textual.widgets import Input, Static
 
 from .dashboard_output import BoundedLinuxDriver
+from .dashboard_view import (
+    SavedView,
+    SavedViewController,
+    SavedViewError,
+    order_pinned_rows,
+    toggle_pin,
+)
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import _activity_text
 
@@ -32,6 +39,7 @@ _COMPACT_MIN_WIDTH = 60
 _COMPACT_MIN_HEIGHT = 16
 _MAX_PAGE_ROWS = 200
 _MIN_PAINT_INTERVAL = 0.25
+_PIN_PAGE_SIZE = 5
 
 
 class SessionLine(Static):
@@ -98,6 +106,8 @@ class DashboardApp(App[None]):
         no_color: bool = False,
         icons: bool = False,
         driver_class=None,
+        saved_view: SavedView | None = None,
+        view_controller: SavedViewController | None = None,
     ) -> None:
         super().__init__(
             driver_class=driver_class or BoundedLinuxDriver,
@@ -109,6 +119,14 @@ class DashboardApp(App[None]):
         self.icons = bool(icons)
         self.filters = self._copy_filters(filters)
         self._startup_filters = self._copy_filters(self.filters)
+        self.view_controller = view_controller
+        self.saved_view = (
+            view_controller.view
+            if view_controller is not None
+            else saved_view if saved_view is not None else SavedView()
+        )
+        self._sort_group_original: tuple[str, str] | None = None
+        self._pins_cursor = 0
         self._empty_dimensions: set[str] = set()
 
         self._projection = None
@@ -203,6 +221,12 @@ class DashboardApp(App[None]):
             asyncio.create_task(self._reader_updates(), name="dashboard-reader-updates"),
             asyncio.create_task(self._age_updates(), name="dashboard-age-updates"),
         ]
+        if self.view_controller is not None:
+            self._update_tasks.append(
+                asyncio.create_task(
+                    self._saved_view_updates(), name="dashboard-saved-view-updates"
+                )
+            )
         self._request_render(immediate=True)
 
     async def on_unmount(self) -> None:
@@ -263,6 +287,17 @@ class DashboardApp(App[None]):
             self._refresh_age_cells()
             self._refresh_source_countdowns()
 
+    async def _saved_view_updates(self) -> None:
+        controller = self.view_controller
+        if controller is None:
+            return
+        while True:
+            await controller.changed.wait()
+            controller.changed.clear()
+            if self._updates_stopped:
+                return
+            self._request_render(immediate=True)
+
     def _ensure_current_projection(self) -> bool:
         projection = self._projection
         if projection is not None and self.reader.is_current(projection):
@@ -322,7 +357,9 @@ class DashboardApp(App[None]):
         self._projection = projection
         self._report = projection.report
         self._all_rows = self._rows_from_report(self._report)
-        self._visible_rows = self._filter_presentation_rows(self._all_rows)
+        self._visible_rows = order_pinned_rows(
+            self._filter_presentation_rows(self._all_rows), self.saved_view
+        )
         self._last_age_wall_ms = self._report_wall_ms(self._report)
         self._age_anchor_monotonic = time.monotonic()
 
@@ -466,6 +503,25 @@ class DashboardApp(App[None]):
             result.append(row)
         return result
 
+    def _is_pinned_row(self, row: dict) -> bool:
+        try:
+            return identity_tuple(row.get("identity")) in set(self.saved_view.pins)
+        except (KeyError, TypeError, ValueError):
+            return False
+
+    def _visible_pin_counts(self) -> tuple[int, int]:
+        pins = set(self.saved_view.pins)
+        visible = set()
+        for row in self._visible_rows:
+            try:
+                key = identity_tuple(row.get("identity"))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if key in pins:
+                visible.add(key)
+        matching_rows = sum(1 for row in self._visible_rows if self._is_pinned_row(row))
+        return len(visible), matching_rows
+
     def _select_row(self, row: dict, *, repaint: bool = True) -> None:
         try:
             key = self._row_key(row)
@@ -519,16 +575,23 @@ class DashboardApp(App[None]):
         header_lines = int(mode == "full")
         if self._split_details():
             header_lines = 1
+        visible_pins, pinned_rows = self._visible_pin_counts()
+        other_rows = self._visible_rows[pinned_rows:]
+        section_lines = int(visible_pins > 0) + int(visible_pins > 0 and bool(other_rows))
         group_lines = 0
         if self.filters.get("group") == "host-home":
             group_lines = len(
                 {
                     (row.get("source", {}).get("host"), row.get("source", {}).get("home"))
-                    for row in self._visible_rows
+                    for row in other_rows
                 }
             )
         page_line = int(bool(self._visible_rows))
-        available = max(1, (line_budget - header_lines - group_lines - page_line) // row_height)
+        available = max(
+            1,
+            (line_budget - header_lines - section_lines - group_lines - page_line)
+            // row_height,
+        )
         return max(1, min(_MAX_PAGE_ROWS, available))
 
     def _sync_page_rows(self) -> None:
@@ -634,7 +697,7 @@ class DashboardApp(App[None]):
             return
         # Reader updates may replace the report while framework operations
         # yield. This fallback must never pick up facts from that mutable state.
-        if self._overlay == "help":
+        if self._overlay in {"help", "pins"}:
             children = self._overlay_widgets()
         elif self._layout_mode() == "tiny":
             children = self._plain_lines(
@@ -696,7 +759,7 @@ class DashboardApp(App[None]):
         self._age_cells = {}
         self._line_widgets = {}
         self._source_age_cells = {}
-        if self._overlay == "help":
+        if self._overlay in {"help", "pins"}:
             children = self._overlay_widgets()
         elif self._layout_mode() == "tiny":
             children = self._plain_lines(
@@ -733,6 +796,8 @@ class DashboardApp(App[None]):
             else None,
             self._selection_hidden,
             self._selection_available,
+            self.saved_view.pins,
+            self._pins_cursor,
         )
         if self._projection is None:
             return (*base, "no-current-projection")
@@ -755,7 +820,9 @@ class DashboardApp(App[None]):
             )
         if self._overlay in {"sort", "group"}:
             key = "sort" if self._overlay == "sort" else "group"
-            return (*base, self.filters[key])
+            return (*base, self.filters[key], self._sort_group_original)
+        if self._overlay == "pins":
+            return (*base, self.saved_view.references)
         if self._view == "sources":
             sources = {item.get("id"): item for item in self._report.get("sources", ())}
             statuses = {item.get("id"): item for item in self.reader.status()}
@@ -927,7 +994,7 @@ class DashboardApp(App[None]):
                     "Views",
                     "Enter details · Tab focus · Esc back/clear",
                     "Search and filters",
-                    "/ find one term · f filters · o order · g grouping",
+                    "/ find one term · f filters · o order · g grouping · p pin · P pins",
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
                     "Search input keeps printable keys, including q/j/k.",
@@ -952,7 +1019,82 @@ class DashboardApp(App[None]):
             ]
             lines.extend(("> " if item == current else "  ") + item for item in values)
             return self._plain_lines(lines)
+        if self._overlay == "pins":
+            return self._pins_overlay_widgets()
         return self._plain_lines(["No overlay"])
+
+    def _pins_overlay_widgets(self) -> list[Static]:
+        references = self.saved_view.references
+        if not references:
+            return self._plain_lines(
+                ["Pins", "No pinned identities.", "Esc back · p pins a visible selected session."]
+            )
+        self._pins_cursor = max(0, min(self._pins_cursor, len(references) - 1))
+        page_start = self._pins_cursor // _PIN_PAGE_SIZE * _PIN_PAGE_SIZE
+        page_stop = min(len(references), page_start + _PIN_PAGE_SIZE)
+        width = max(1, self.size.width - 8)
+        widgets = self._plain_lines(
+            [
+                "Pins",
+                "↑/↓ choose · PgUp/PgDn page · Ctrl+↑/↓ scroll · p remove · Esc back",
+                f"Pin {self._pins_cursor + 1}/{len(references)}",
+            ]
+        )
+        reference = references[self._pins_cursor]
+        visible_row = self._find_identity_row(self._visible_rows, reference)
+        admitted_row = self._find_identity_row(self._all_rows, reference)
+        if visible_row is not None:
+            focused_label = f"Focused session: {self._safe(visible_row.get('label'))}"
+        elif admitted_row is not None:
+            focused_label = f"Not in this view · {self._safe(admitted_row.get('label'))}"
+        else:
+            focused_label = (
+                "Not in this view · "
+                + self._safe(reference["hostScope"])
+                + " / "
+                + self._abbreviated_id(reference["nativeId"])
+            )
+        widgets.extend(self._wrapped_panel_lines(focused_label, width))
+        for field in IDENTITY_FIELDS:
+            value = self._safe(reference[field])
+            widgets.extend(self._wrapped_panel_lines(f"{field}: {value}", width, indent="  "))
+        widgets.append(
+            Static(
+                self._as_text(f"Showing pins {page_start + 1}-{page_stop} of {len(references)}"),
+                markup=False,
+                classes="section-heading",
+            )
+        )
+        for index in range(page_start, page_stop):
+            item = references[index]
+            visible = self._find_identity_row(self._visible_rows, item)
+            admitted = self._find_identity_row(self._all_rows, item)
+            if visible is not None:
+                name = self._safe(visible.get("label"))
+            elif admitted is not None:
+                name = "Not in this view · " + self._safe(admitted.get("label"))
+            else:
+                name = (
+                    "Not in this view · "
+                    + self._safe(item["hostScope"])
+                    + " / "
+                    + self._abbreviated_id(item["nativeId"])
+                )
+            prefix = "> " if index == self._pins_cursor else "  "
+            widgets.extend(self._wrapped_panel_lines(f"{prefix}{index + 1}. {name}", width))
+        return widgets
+
+    @staticmethod
+    def _abbreviated_id(value: str) -> str:
+        if len(value) <= 24:
+            return value
+        return value[:12] + "…" + value[-8:]
+
+    def _wrapped_panel_lines(self, value: str, width: int, *, indent: str = "") -> list[Static]:
+        wrapped = Text(indent + value).wrap(
+            self.console, max(1, width - len(indent)), overflow="fold"
+        )
+        return [Static(self._as_text(line.plain), markup=False) for line in wrapped]
 
     def _filter_options(self, dimension: str) -> tuple[str, ...]:
         if dimension == "source":
@@ -1223,6 +1365,8 @@ class DashboardApp(App[None]):
             else 0
         )
         stop = min(total, start + page_size)
+        _, pinned_row_count = self._visible_pin_counts()
+        has_visible_pins = self._visible_pin_counts()[0] > 0
         if mode == "full" and not split:
             wide = render_width >= _WIDE_COLUMNS_WIDTH
             widths = self._column_widths(render_width - 4, wide=wide)
@@ -1247,10 +1391,16 @@ class DashboardApp(App[None]):
                     markup=False,
                 )
             )
-        if self.filters.get("group") == "host-home":
-            prior_group = None
-            for index in range(start, stop):
-                row = self._visible_rows[index]
+        prior_group = None
+        for index in range(start, stop):
+            row = self._visible_rows[index]
+            if has_visible_pins and index == start:
+                section = "Pinned sessions" if index < pinned_row_count else "Other sessions"
+                widgets.append(self._section_widget(section, render_width))
+            elif has_visible_pins and index == pinned_row_count:
+                widgets.append(self._section_widget("Other sessions", render_width))
+                prior_group = None
+            if index >= pinned_row_count and self.filters.get("group") == "host-home":
                 group = (row.get("source", {}).get("host"), row.get("source", {}).get("home"))
                 if group != prior_group:
                     prior_group = group
@@ -1265,20 +1415,15 @@ class DashboardApp(App[None]):
                             markup=False,
                         )
                     )
-                widgets.extend(
-                    self._session_widgets(row, index - start, mode, width=render_width, split=split)
+            widgets.extend(
+                self._session_widgets(
+                    row,
+                    index - start,
+                    mode,
+                    width=render_width,
+                    split=split,
                 )
-        else:
-            for index in range(start, stop):
-                widgets.extend(
-                    self._session_widgets(
-                        self._visible_rows[index],
-                        index - start,
-                        mode,
-                        width=render_width,
-                        split=split,
-                    )
-                )
+            )
         if not self._visible_rows:
             widgets.extend(
                 self._plain_lines(
@@ -1299,6 +1444,13 @@ class DashboardApp(App[None]):
             )
         return widgets
 
+    def _section_widget(self, label: str, width: int) -> Static:
+        return Static(
+            self._as_text(self._fit_line(label, max(1, width - 4))),
+            markup=False,
+            classes="section-heading",
+        )
+
     def _session_widgets(
         self,
         row: dict,
@@ -1313,6 +1465,9 @@ class DashboardApp(App[None]):
         if split:
             label_width = max(12, width - 34)
             selected_style = "reverse bold" if selected and self.no_color else ""
+            label = self._safe(row.get("label"))
+            if self._is_pinned_row(row):
+                label = "* " + label
             item = Horizontal(
                 self._cell(
                     "> " if selected else "  ",
@@ -1321,7 +1476,7 @@ class DashboardApp(App[None]):
                     selection_marker=selected,
                 ),
                 self._cell(
-                    self._safe(row.get("label")), label_width, selected_style
+                    label, label_width, selected_style
                 ),
                 self._cell(
                     self._safe(row.get("membership", "unknown")),
@@ -1335,6 +1490,8 @@ class DashboardApp(App[None]):
             return [item]
         if mode == "compact":
             label = self._safe(row.get("label"))
+            if self._is_pinned_row(row):
+                label = "* " + label
             membership = self._safe(row.get("membership", "unknown"))
             selected_style = "reverse bold" if selected and self.no_color else ""
             first = Horizontal(
@@ -1386,7 +1543,7 @@ class DashboardApp(App[None]):
         widths = self._column_widths(width - 4, wide=wide)
         source = row.get("source", {})
         cells = (
-            self._safe(row.get("label")),
+            ("* " if self._is_pinned_row(row) else "") + self._safe(row.get("label")),
             f"{self._safe(source.get('host'))}/{self._safe(source.get('label') or source.get('home'))}",
             self._safe(row.get("membership", "unknown")),
             f"{self._fact_text(row.get('runtime'))}/{self._phase_text(row.get('phase'))}",
@@ -2070,6 +2227,7 @@ class DashboardApp(App[None]):
         self._request_render()
 
     def _open_sort_or_group(self, overlay: str) -> None:
+        self._sort_group_original = (self.filters["sort"], self.filters["group"])
         self._overlay = overlay
         self._request_render()
 
@@ -2083,7 +2241,98 @@ class DashboardApp(App[None]):
         self._request_render()
 
     def _accept_sort_or_group(self) -> None:
+        original = self._sort_group_original
+        changed = original is not None and original != (
+            self.filters["sort"],
+            self.filters["group"],
+        )
+        if changed:
+            try:
+                self._set_saved_view(
+                    SavedView(
+                        self.saved_view.pins,
+                        self.filters["sort"],
+                        self.filters["group"],
+                    )
+                )
+            except SavedViewError as error:
+                self._message = f"Saved view change rejected ({error.code})."
+            else:
+                self._message = "View choice accepted."
+        self._sort_group_original = None
         self._overlay = None
+        self._request_render()
+
+    def _cancel_sort_or_group(self) -> None:
+        if self._sort_group_original is None:
+            return
+        sort, group = self._sort_group_original
+        changed = (self.filters["sort"], self.filters["group"]) != (sort, group)
+        self.filters["sort"] = sort
+        self.filters["group"] = group
+        self._sort_group_original = None
+        if changed:
+            self._queue_projection()
+
+    def _set_saved_view(self, view: SavedView) -> None:
+        view = SavedView(view.pins, self.filters["sort"], self.filters["group"])
+        if self.view_controller is not None:
+            self.view_controller.submit(view)
+        self.saved_view = view
+        self._visible_rows = order_pinned_rows(
+            self._filter_presentation_rows(self._all_rows), self.saved_view
+        )
+        self._sync_page_rows()
+
+    def _toggle_selected_pin(self) -> None:
+        if not (
+            self._view == "list"
+            or (self._view == "details" and self._focus == "list" and self._split_details())
+        ):
+            return
+        row = self._find_row(self._visible_rows, self._selected_key)
+        if row is None:
+            self._message = "Select a visible session to pin it."
+            self._request_render()
+            return
+        try:
+            was_pinned = identity_tuple(row["identity"]) in set(self.saved_view.pins)
+        except (KeyError, TypeError, ValueError):
+            was_pinned = False
+        try:
+            view = toggle_pin(self.saved_view, row["identity"])
+        except SavedViewError as error:
+            self._message = (
+                "Pin limit reached; remove a pin first."
+                if error.code == "saved_view_pin_limit"
+                else "Pin change rejected."
+            )
+        else:
+            self._set_saved_view(view)
+            self._message = "Pin removed." if was_pinned else "Session pinned."
+        self._request_render()
+
+    def _remove_focused_pin(self) -> None:
+        references = self.saved_view.references
+        if not references:
+            self._message = "No pins to remove."
+            self._request_render()
+            return
+        self._pins_cursor = max(0, min(self._pins_cursor, len(references) - 1))
+        try:
+            view = toggle_pin(self.saved_view, references[self._pins_cursor])
+        except SavedViewError:
+            self._message = "Pin removal rejected."
+        else:
+            self._set_saved_view(view)
+            self._pins_cursor = min(self._pins_cursor, max(0, len(view.pins) - 1))
+            self._message = "Pin removed."
+        self._request_render()
+
+    def _move_pin_cursor(self, delta: int) -> None:
+        if not self.saved_view.pins:
+            return
+        self._pins_cursor = max(0, min(len(self.saved_view.pins) - 1, self._pins_cursor + delta))
         self._request_render()
 
     def _handle_key(self, event: events.Key) -> None:
@@ -2124,6 +2373,8 @@ class DashboardApp(App[None]):
         if key in {"escape", "ctrl+["}:
             event.stop()
             if self._overlay is not None:
+                if self._overlay in {"sort", "group"}:
+                    self._cancel_sort_or_group()
                 self._overlay = self._help_return_overlay if self._overlay == "help" else None
                 self._help_return_overlay = None
             elif self._search_open:
@@ -2168,6 +2419,32 @@ class DashboardApp(App[None]):
                 self._choose_sort_or_group(1)
             elif key in {"enter", "space"}:
                 self._accept_sort_or_group()
+            return
+
+        if self._overlay == "pins":
+            event.stop()
+            if key == "ctrl+up":
+                if self._content is not None:
+                    self._content.scroll_relative(y=-3, animate=False, immediate=True)
+            elif key == "ctrl+down":
+                if self._content is not None:
+                    self._content.scroll_relative(y=3, animate=False, immediate=True)
+            elif key in {"up", "k"}:
+                self._move_pin_cursor(-1)
+            elif key in {"down", "j"}:
+                self._move_pin_cursor(1)
+            elif key == "pageup":
+                self._move_pin_cursor(-_PIN_PAGE_SIZE)
+            elif key == "pagedown":
+                self._move_pin_cursor(_PIN_PAGE_SIZE)
+            elif key == "home":
+                self._pins_cursor = 0
+                self._request_render()
+            elif key == "end":
+                self._pins_cursor = max(0, len(self.saved_view.pins) - 1)
+                self._request_render()
+            elif key == "p" or character == "p":
+                self._remove_focused_pin()
             return
 
         if self._overlay == "help":
@@ -2275,6 +2552,14 @@ class DashboardApp(App[None]):
             event.stop()
             self._open_sort_or_group("group")
             return
+        if key == "P" or character == "P":
+            self._overlay = "pins"
+            self._pins_cursor = min(self._pins_cursor, max(0, len(self.saved_view.pins) - 1))
+            self._request_render()
+            return
+        if key == "p" or character == "p":
+            self._toggle_selected_pin()
+            return
         if key in {"s", "S"} or character.lower() == "s":
             event.stop()
             self._open_sources()
@@ -2344,6 +2629,8 @@ class DashboardApp(App[None]):
             return "Order"
         if self._overlay == "group":
             return "Group"
+        if self._overlay == "pins":
+            return "Pins"
         return {"list": "Sessions", "details": "Details", "sources": "Sources"}.get(
             self._view, "Sessions"
         )
@@ -2440,12 +2727,16 @@ class DashboardApp(App[None]):
             active.append("system")
         order = self.filters.get("sort", "activity")
         group = self.filters.get("group", "none")
+        pin_count = self._pinned_count_text() if self.saved_view.pins else None
         if not query and not active and order == "activity" and group == "none":
+            if pin_count is not None:
+                return self._fit_line(pin_count, max(1, self.size.width - 4))
             default = "Default view · / search · f filters · o order · g group"
             if self.size.width < 80:
                 default = "Default · / search · f filters"
             return self._fit_line(default, max(1, self.size.width - 4))
-        parts = [f"Search {self._safe(query)}" if query else "Search off"]
+        parts = [pin_count] if pin_count is not None else []
+        parts.append(f"Search {self._safe(query)}" if query else "Search off")
         parts.append(f"Filters {', '.join(active)}" if active else "default filters")
         if order != "activity":
             parts.append(f"Order {order}")
@@ -2454,29 +2745,51 @@ class DashboardApp(App[None]):
         return self._fit_line(" · ".join(parts), max(1, self.size.width - 4))
 
     def _status_text(self) -> str:
+        if self.view_controller is not None and self.view_controller.warning:
+            available = max(1, self.size.width - 4)
+            prefix = "View not saved; session only"
+            reason = self._safe(self.view_controller.warning).removeprefix("saved_view_")
+            reason = reason[: max(0, min(24, available - len(prefix) - 3))]
+            message = f"{prefix} ({reason})" if reason else prefix
+            return self._fit_line(message, available)
+        status_parts = []
         if self._projection is None:
-            return "Refreshing current source state; no empty-state verdict."
+            status_parts.append("Refreshing current source state; no empty-state verdict.")
+            return self._fit_line(" · ".join(status_parts), max(1, self.size.width - 4))
         report_totals = self._report.get("totals", {})
         total = len(self._visible_rows)
         hidden_presentation = max(0, len(self._all_rows) - total)
         state = report_totals.get("state", "warming")
-        status = f"{total} matches"
+        status_parts.append(f"{total} matches")
         if self._empty_dimensions:
-            status += " · no values selected for " + ", ".join(sorted(self._empty_dimensions))
+            status_parts.append("no values selected for " + ", ".join(sorted(self._empty_dimensions)))
         elif hidden_presentation:
-            status += f" · {hidden_presentation} hidden by source/host/home filters"
+            status_parts.append(f"{hidden_presentation} hidden by source/host/home filters")
         hidden_kinds = report_totals.get("hiddenKinds", 0)
         if hidden_kinds:
-            status += f" · {hidden_kinds} hidden by kind"
+            status_parts.append(f"{hidden_kinds} hidden by kind")
         if state != "complete":
-            status += f" · coverage {self._safe(state)}"
+            status_parts.append(f"coverage {self._safe(state)}")
         if self._selected_key is not None and self._selection_hidden:
-            status += " · selected session hidden by filters"
+            status_parts.append("selected session hidden by filters")
         elif self._selected_key is not None and not self._selection_available:
-            status += " · selected session not currently available"
+            status_parts.append("selected session not currently available")
         if self._message:
-            status += " · " + self._safe(self._message)
-        return self._fit_line(status, max(1, self.size.width - 4))
+            status_parts.append(self._safe(self._message))
+        return self._fit_line(" · ".join(status_parts), max(1, self.size.width - 4))
+
+    def _pinned_count_text(self) -> str:
+        in_view, _matching_rows = self._visible_pin_counts()
+        total = len(self.saved_view.pins)
+        controller = self.view_controller
+        persisted = (
+            controller is not None
+            and controller.persistence_enabled
+            and controller.persisted_view is not None
+            and controller.persisted_view.pins == self.saved_view.pins
+        )
+        durability = "saved" if persisted else "this run (unsaved)"
+        return f"Pinned {in_view} in view / {total} {durability}"
 
     def _footer_text(self) -> str:
         if self.focused is not None and isinstance(self.focused, Input):
@@ -2487,6 +2800,10 @@ class DashboardApp(App[None]):
             if self._layout_mode() == "tiny":
                 return "Esc or ? back · q quit · Ctrl+C exit"
             return "? or Esc close · q quit · Ctrl+C exit"
+        if self._overlay == "pins":
+            if self.size.width < 80:
+                return "↑↓ choose · p remove · Esc · ? · q"
+            return "↑↓ choose · PgUp/Dn page · p remove · Esc · ? · q"
         if self._layout_mode() == "tiny":
             return "? help · q quit · Ctrl+C exit"
         if self._overlay == "filters":
@@ -2494,26 +2811,26 @@ class DashboardApp(App[None]):
                 return "Space toggle · r reset · Esc back · q quit"
             return "←→ field · ↑↓ option · Space toggle · r reset · Esc · ? help · q quit"
         if self._overlay == "sort" or self._overlay == "group":
-            return "↑↓ choose · Enter apply · Esc back · ? help · q quit"
+            return "↑↓ preview · Enter/Space accept · Esc cancel · ? help · q quit"
         if self._view == "sources":
             if self._focus == "source-details":
                 if self.size.width < 80:
-                    return "Evidence · Tab list · Esc back · q quit"
-                return "Evidence · ↑↓ scroll · Tab list · Esc back · ? help · q quit"
+                    return "Evidence · Tab list · P pins · Esc · q"
+                return "Evidence · ↑↓ scroll · Tab list · P pins · Esc · ? · q"
             if self.size.width < 80:
-                return "↑↓ select · Tab evidence · r retry · q quit"
-            return "↑↓ select · Tab evidence · r retry · ? help · q quit"
+                return "↑↓ select · Tab evidence · r retry · P pins · q"
+            return "↑↓ select · Tab evidence · r retry · P pins · ? · q"
         if self._view == "details":
             if self._split_details():
                 if self._focus == "list":
-                    return "List · ↑↓ select · Tab details · Esc back · ? help · q quit"
-                return "Details · ↑↓ scroll · Tab list · Esc back · ? help · q quit"
+                    return "List · ↑↓ select · p pin · P pins · Tab details · Esc · ? · q"
+                return "Details · ↑↓ scroll · P pins · Tab list · Esc · ? · q"
             if self.size.width < 80:
-                return "↑↓ scroll · Esc back · q quit"
-            return "↑↓ scroll · Esc back · ? help · q quit"
+                return "↑↓ scroll · P pins · Esc · ? · q"
+            return "↑↓ scroll · P pins · Esc · ? · q"
         if self.size.width < 80:
-            return "↑↓ move · Enter view · / find · ? help · q quit"
-        return "↑↓ move · Enter details · / find · f filters · s sources · ? help · q quit"
+            return "↑↓ move · p pin · P pins · Enter view · ? · q"
+        return "↑↓ move · p pin · P pins · Enter details · / · ? · q"
 
     def _empty_state_text(self) -> str:
         if self._projection is None:

@@ -39,6 +39,17 @@ class DashboardCliTests(unittest.TestCase):
                 cli.parser().parse_args(options)
             self.assertEqual(error.exception.code, 2)
 
+    def test_dashboard_parser_tracks_explicit_order_flags_and_no_saved_view(self):
+        defaults = cli.parser().parse_args([])
+        self.assertIsNone(defaults.sort)
+        self.assertIsNone(defaults.group)
+        self.assertFalse(defaults.no_saved_view)
+        explicit = cli.parser().parse_args(
+            ["--sort=label", "--group=host-home", "--no-saved-view"]
+        )
+        self.assertEqual((explicit.sort, explicit.group), ("label", "host-home"))
+        self.assertTrue(explicit.no_saved_view)
+
     def test_bad_config_does_not_import_dependencies_or_start_a_reader(self):
         with (
             patch.object(
@@ -81,12 +92,96 @@ class DashboardCliTests(unittest.TestCase):
                 patch.object(cli, "terminal_error", return_value="fixture requires terminal"),
                 patch.object(cli, "write_stderr") as message,
                 patch(
+                    "agent_observer.terminal.dashboard_view.SavedViewController.from_environment",
+                    side_effect=AssertionError("state resolution before terminal preflight"),
+                ),
+                patch(
                     "agent_observer.terminal.dashboard_runner.run_dashboard",
                     side_effect=AssertionError("reader started"),
                 ),
             ):
                 self.assertEqual(cli.main(["--config", str(config)]), 2)
                 message.assert_called_once_with("fixture requires terminal")
+
+    def test_no_saved_view_skips_state_controller_and_explicit_order_reaches_runner(self):
+        calls = []
+        sentinel_controller = object()
+
+        async def run(sources, filters, **options):
+            calls.append((filters, options))
+            return DashboardResult(0, None, 0.01, True, True)
+
+        with tempfile.TemporaryDirectory() as directory:
+            config = write_config(Path(directory))
+            with (
+                patch.object(cli, "dashboard_dependencies"),
+                patch.object(cli, "terminal_error", return_value=None),
+                patch(
+                    "agent_observer.terminal.dashboard_view.SavedViewController.from_environment",
+                    return_value=sentinel_controller,
+                ) as create_controller,
+                patch("agent_observer.terminal.dashboard_runner.run_dashboard", side_effect=run),
+            ):
+                self.assertEqual(
+                    cli.main(
+                        ["--config", str(config), "--sort=label", "--group=host-home"]
+                    ),
+                    0,
+                )
+                filters, options = calls[-1]
+                self.assertTrue(options["explicit_sort"] and options["explicit_group"])
+                self.assertEqual((filters["sort"], filters["group"]), ("label", "host-home"))
+                self.assertIs(options["saved_view_controller"], sentinel_controller)
+                create_controller.assert_called_once_with()
+
+            calls.clear()
+            with (
+                patch.object(cli, "dashboard_dependencies"),
+                patch.object(cli, "terminal_error", return_value=None),
+                patch(
+                    "agent_observer.terminal.dashboard_view.SavedViewController.from_environment",
+                    side_effect=AssertionError("--no-saved-view must skip state resolution"),
+                ),
+                patch("agent_observer.terminal.dashboard_runner.run_dashboard", side_effect=run),
+            ):
+                self.assertEqual(
+                    cli.main(["--config", str(config), "--no-saved-view"]), 0
+                )
+            filters, options = calls[-1]
+            self.assertFalse(options["explicit_sort"] or options["explicit_group"])
+            self.assertIsNone(options["saved_view_controller"])
+            self.assertEqual((filters["sort"], filters["group"]), ("activity", "none"))
+
+    def test_shutdown_save_warning_is_reported_as_session_only(self):
+        messages = []
+
+        async def run(_sources, _filters, **_options):
+            return DashboardResult(
+                0,
+                None,
+                0.01,
+                True,
+                True,
+                view_warning="saved_view_save_timeout",
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            config = write_config(Path(directory))
+            with (
+                patch.object(cli, "dashboard_dependencies"),
+                patch.object(cli, "terminal_error", return_value=None),
+                patch(
+                    "agent_observer.terminal.dashboard_view.SavedViewController.from_environment",
+                    return_value=object(),
+                ),
+                patch("agent_observer.terminal.dashboard_runner.run_dashboard", side_effect=run),
+                patch.object(cli, "write_stderr", side_effect=messages.append),
+            ):
+                self.assertEqual(cli.main(["--config", str(config)]), 0)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("view not saved", messages[0])
+        self.assertIn("session-only", messages[0])
+        self.assertIn("saved_view_save_timeout", messages[0])
 
     def test_preflight_checks_the_original_streams_used_by_the_linux_driver(self):
         master, slave = pty.openpty()

@@ -41,7 +41,7 @@ and project relationships.
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
 | [Roadmap](maintenance/roadmap.md) | Current direction, next priorities and deferred work |
-| [Terminal product contract](maintenance/terminal-product.md) | Released CLI/dashboard semantics and limits; proposed read-only session-board refinement |
+| [Terminal product contract](maintenance/terminal-product.md) | Released CLI/dashboard semantics and limits; separate source session-board candidate |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.
