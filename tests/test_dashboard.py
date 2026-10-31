@@ -206,7 +206,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 # Revocation must withdraw visible authority before waiting for
                 # framework unmount/remount work, which can exceed the budget.
                 self.assertFalse(container.display)
-                self.assertNotIn("1 members", str(app.query_one("#header").render()))
+                self.assertNotIn("1 session", str(app.query_one("#header").render()))
             finally:
                 release_removal.set()
             await pilot.pause()
@@ -508,19 +508,22 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("ctrl+c")
             self.assertEqual(app.return_code, 130)
 
-    async def test_context_columns_start_at_140_and_titles_keep_20_columns_at_80(self):
+    async def test_profile_and_workspace_columns_keep_a_flexible_title(self):
         item = row("alpha", title="A session title that should remain readable")
         app = DashboardApp(FakeReader([_session_state(rows=[item], ids=["alpha"])]), {})
 
         async with app.run_test(size=(80, 24)) as pilot:
             await pilot.pause()
             header = app.query_one("#content").children[0]
-            self.assertNotIn("CONTEXT", str(header.content))
-            self.assertGreaterEqual(app._column_widths(76)[0], 20)
+            self.assertIn("STATUS", str(header.content))
+            self.assertIn("LAST ACTIVE", str(header.content))
+            self.assertIn("PROFILE", str(header.content))
+            self.assertIn("WORKSPACE", str(header.content))
+            self.assertGreaterEqual(app._column_widths(76)[2], 20)
 
             await pilot.resize_terminal(120, 30)
             await pilot.pause()
-            self.assertNotIn("CONTEXT", str(app.query_one("#content").children[0].content))
+            self.assertIn("WORKSPACE", str(app.query_one("#content").children[0].content))
             await pilot.press("enter")
             await pilot.pause()
             self.assertTrue(app._split_details())
@@ -530,7 +533,111 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             await pilot.resize_terminal(140, 30)
             await pilot.pause()
-            self.assertIn("REPO", str(app.query_one("#content").children[0].content))
+            self.assertIn("WORKSPACE", str(app.query_one("#content").children[0].content))
+
+    async def test_five_field_order_and_age_tick_only_updates_the_age_cell(self):
+        item = row("alpha", title="Alpha task")
+        app = DashboardApp(FakeReader([_session_state(rows=[item], ids=["alpha"])]), {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            header = app.query_one("#content").children[0].content.plain
+            self.assertLess(header.index("STATUS"), header.index("LAST ACTIVE"))
+            self.assertLess(header.index("LAST ACTIVE"), header.index("SESSION"))
+            self.assertLess(header.index("SESSION"), header.index("PROFILE"))
+            self.assertLess(header.index("PROFILE"), header.index("WORKSPACE"))
+
+            widget = app._line_widgets[app._selected_key]
+            self.assertEqual(widget._cell_values[1], "Working")
+            self.assertTrue(widget._cell_values[2].startswith("~"))
+            self.assertEqual(widget._cell_values[3], "Alpha task")
+            self.assertEqual(widget._cell_values[4], "fixture/default")
+            self.assertEqual(widget._cell_values[5], "…/workspace")
+
+            prior_workspace = widget._cell_values[5]
+            app._display_now_ms = lambda: 5_000_000
+            app._refresh_age_cells()
+            self.assertEqual(widget._cell_values[2], app._activity_age(app._all_rows[0], 5_000_000))
+            self.assertNotEqual(widget._cell_values[2], "~20751d")
+            self.assertEqual(widget._cell_values[5], prior_workspace)
+
+        unavailable = row("unavailable", title="Unavailable runtime")
+        unavailable["runtime"].update(value="unknown", health="unavailable")
+        icon_app = DashboardApp(
+            FakeReader([_session_state(rows=[unavailable], ids=["unavailable"])]),
+            {},
+            icons=True,
+        )
+        async with icon_app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            self.assertEqual(
+                icon_app._line_widgets[icon_app._selected_key]._cell_values[1],
+                "× Unavailable",
+            )
+
+    async def test_partial_source_keeps_row_status_and_runtime_expiry_keeps_activity_age(self):
+        item = row("alpha", title="Alpha task")
+        reader = FakeReader([_session_state(rows=[item], ids=["alpha"])])
+        original_projection = reader.projection
+
+        def partial_projection(filters, *, mode="list", target=None):
+            projection = original_projection(filters, mode=mode, target=target)
+            projection.report["sources"][0]["health"] = "partial"
+            projection.report["totals"]["completeSources"] = 0
+            projection.report["totals"]["partialSources"] = 1
+            return projection
+
+        reader.projection = partial_projection
+        app = DashboardApp(reader, {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            self.assertIn("partial", app._source_ribbon())
+            self.assertEqual(app._line_widgets[app._selected_key]._cell_values[1], "Working")
+            prior_age = app._line_widgets[app._selected_key]._cell_values[2]
+
+            expired = row("alpha", title="Alpha task")
+            expired["runtime"].update(value="unknown", health="stale", lastKnownValue="running")
+            reader.replace([_session_state(rows=[expired], ids=["alpha"])])
+            app._refresh_projection()
+            await app._paint()
+            refreshed = app._line_widgets[app._selected_key]
+            self.assertEqual(refreshed._cell_values[1], "Stale")
+            self.assertEqual(refreshed._cell_values[2], prior_age)
+
+            phase_expired = row("alpha", title="Alpha task")
+            phase_expired["phase"].update(value="unknown", health="stale", lastKnownValue="working")
+            reader.replace([_session_state(rows=[phase_expired], ids=["alpha"])])
+            app._refresh_projection()
+            await app._paint()
+            refreshed = app._line_widgets[app._selected_key]
+            self.assertEqual(refreshed._cell_values[1], "Stale")
+            self.assertEqual(refreshed._cell_values[2], prior_age)
+
+    async def test_compact_and_split_pages_charge_two_lines_per_session(self):
+        items = [row(f"id-{index}", title=f"Task {index}") for index in range(20)]
+        app = DashboardApp(
+            FakeReader([_session_state(rows=items, ids=[item["identity"]["nativeId"] for item in items])]),
+            {},
+        )
+        async with app.run_test(size=(60, 16)) as pilot:
+            await pilot.pause()
+            self.assertEqual(app._page_size(), 4)
+            compact_age = app._age_cells[app._selected_key][0]
+            compact_row = compact_age.parent.parent
+            self.assertEqual(compact_row.children[0].children[1].content.plain.strip(), "Working")
+            self.assertTrue(compact_row.children[0].children[2].content.plain.startswith("~"))
+            self.assertIn("Task 0", compact_row.children[0].children[3].content.plain)
+            self.assertIn("fixture/default", compact_row.children[1].children[1].content.plain)
+            self.assertIn("workspace", compact_row.children[1].children[3].content.plain)
+            await pilot.press("enter")
+            await pilot.resize_terminal(120, 30)
+            await pilot.pause()
+            self.assertTrue(app._split_details())
+            self.assertEqual(app._page_size(), 11)
+            split_age = app._age_cells[app._selected_key][0]
+            split_row = split_age.parent.parent
+            self.assertEqual(split_row.children[0].children[1].content.plain.strip(), "Working")
+            self.assertTrue(split_row.children[0].children[2].content.plain.startswith("~"))
+            self.assertIn("Task 0", split_row.children[0].children[3].content.plain)
 
     async def test_grouped_30_row_pages_keep_last_selected_row_visible_at_full_and_compact_sizes(self):
         route_a = source("route-a", host="laptop", home="default")
@@ -571,7 +678,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 if app._layout_mode() == "compact":
                     age_cell = app._age_cells[app._selected_key][0]
                     selected_widget = age_cell.parent.parent
-                    selected_text = selected_widget.children[0].children[1].content.plain
+                    selected_text = selected_widget.children[0].children[3].content.plain
                 else:
                     selected_widget = app._line_widgets[app._selected_key]
                     selected_text = selected_widget.content.plain
@@ -605,7 +712,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 for widget in app.query_one("#split-list").children
                 if widget.has_class("selected-row")
             )
-            self.assertIn(app._selected_label, selected.children[1].content.plain)
+            self.assertIn(app._selected_label, selected.children[0].children[3].content.plain)
             self.assertIn("Details · ↑↓ scroll · P pins · Tab list", app._footer_text())
             self.assertTrue(app.query_one("#split-detail").has_class("details-focused"))
             await pilot.press("tab")
@@ -625,6 +732,11 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(
                 selected.content.get_style_at_offset(no_color.console, 0).reverse
             )
+            age_offset = 2 + no_color._column_widths(76)[0]
+            age_style = no_color._line_widgets[no_color._selected_key].content.get_style_at_offset(
+                no_color.console, age_offset
+            )
+            self.assertIsNone(age_style.color)
 
     async def test_details_are_summary_first_and_keep_exact_source_and_identity_evidence(self):
         item = row("alpha", title="Alpha task")
@@ -646,8 +758,15 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn("Working directory: /synthetic/workspace", joined)
             self.assertIn("Repository: none reported", joined)
             self.assertIn("Workspace metadata: current", joined)
-            self.assertIn("Activity: ", joined)
-            self.assertIn("Configured home: default", joined)
+            self.assertIn("Status: Working", joined)
+            self.assertIn("Last active: ~", joined)
+            self.assertIn("Profile: fixture/default", joined)
+            self.assertIn("Workspace: …/workspace", joined)
+            self.assertIn("Activity evidence: current", joined)
+            self.assertIn("Raw observation facts", joined)
+            self.assertIn("Runtime: running", joined)
+            self.assertIn("Phase: working", joined)
+            self.assertIn("Configured profile: default", joined)
             self.assertIn("Configured source ID: fixture-default", joined)
             self.assertIn("namespace: sha256:", joined)
 
@@ -688,7 +807,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         async with app.run_test(size=(150, 24)) as pilot:
             await pilot.pause()
             header = app.query_one("#content").children[0].content.plain
-            self.assertIn("REPO", header)
+            self.assertIn("WORKSPACE", header)
             selected = app._line_widgets[app._selected_key]
             self.assertIn("topic-feature", selected.content.plain)
 
@@ -755,10 +874,10 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 item["identity"]["nativeId"]: app._line_widgets[app._row_key(item)].content.plain
                 for item in app._all_rows
             }
-            self.assertIn("none", rows["current-none"])
-            self.assertIn("stale", rows["stale-repo"])
+            self.assertIn("…/workspace", rows["current-none"])
+            self.assertIn("…/workspace", rows["stale-repo"])
             self.assertNotIn("old-root", rows["stale-repo"])
-            self.assertIn("unavailable", rows["missing-workspace"])
+            self.assertIn("unknown", rows["missing-workspace"])
 
             stale_row = next(
                 item
@@ -979,7 +1098,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertLess(second_source_index, evidence_index)
             joined = "\n".join(texts)
             self.assertIn("route-a", joined)
-            self.assertIn("Configured home: default", joined)
+            self.assertIn("Configured profile: default", joined)
             self.assertIn("Reader stage: blocked", joined)
             self.assertIn("manual correction required", joined)
 
@@ -1119,7 +1238,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn("unavailable 1", summary)
             self.assertIn("s sources", summary)
             self.assertIn("Observer", app._header_text())
-            self.assertIn("members", app._header_text())
+            self.assertIn("1 session", app._header_text())
             self.assertIn("uncertain", app._header_text())
             self.assertIn("Default", app._toolbar_text())
             await pilot.press("?")

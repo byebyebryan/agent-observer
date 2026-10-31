@@ -6,12 +6,11 @@ import os
 import re
 import unicodedata
 from datetime import UTC, datetime
+from pathlib import PurePosixPath
 
 from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
-_PHASE_ICONS = {"working": "●", "waiting": "○", "blocked": "!", "unknown": "?"}
-_PHASE_COLORS = {"working": "32", "waiting": "36", "blocked": "33", "unknown": "33"}
 
 
 def _cells(value: str) -> int:
@@ -100,42 +99,26 @@ def _style(value: str, code: str, enabled: bool) -> str:
     return f"\x1b[{code}m{value}\x1b[0m" if enabled else value
 
 
-def _phase_key(value: str) -> str | None:
-    value = value.strip()
-    return next(
-        (
-            key
-            for key in _PHASE_ICONS
-            if value == key or value.startswith(key + " (") or value.endswith(" " + key)
-        ),
-        None,
-    )
-
-
-def _phase_label(value: str, icons: bool) -> str:
-    key = _phase_key(value)
-    return f"{_PHASE_ICONS[key]} {value}" if icons and key else value
-
-
 def _cell_style(value: str, field: str, enabled: bool) -> str:
     code = {
         "session": "1",
-        "context": "2",
-        "host": "36",
-        "activity": "2",
+        "profile": "2",
+        "workspace": "2",
+        "last_active": "36",
         "id": "2",
     }.get(field)
-    if field == "phase":
-        code = _PHASE_COLORS.get(_phase_key(value), "2")
-    elif field in {"membership", "runtime"}:
+    if field == "status":
         plain = value.strip()
-        code = (
-            "33"
-            if plain.startswith("unknown") or plain == "uncertain"
-            else "2"
-            if plain in {"recent", "nonmember", "parked"}
-            else None
-        )
+        status = plain[2:] if plain[:2] in {"● ", "○ ", "! ", "- ", "? ", "× "} else plain
+        code = {
+            "Working": "32",
+            "Ready": "36",
+            "Blocked": "33",
+            "Inactive": "2",
+            "Stale": "33",
+            "Unknown": "33",
+            "Unavailable": "31",
+        }.get(status)
     if not code or not enabled:
         return value
     text = value.rstrip()
@@ -277,20 +260,118 @@ def _activity_text(session: dict, now_ms: int) -> str:
     return f"approx. {quantity}{unit} ago"
 
 
-def _runtime_text(session: dict) -> str:
-    fact = session.get("runtime", {})
-    if fact.get("health") == "current" and fact.get("value") in {"running", "parked"}:
-        return fact["value"]
-    return f"unknown ({fact.get('health', 'unavailable')})"
+def _qualified_fact_state(fact: object) -> str:
+    if type(fact) is not dict:
+        return "Unknown"
+    health = fact.get("health")
+    if health == "stale":
+        return "Stale"
+    if health == "unavailable":
+        return "Unavailable"
+    return "Unknown"
 
 
-def _phase_text(session: dict) -> str:
-    fact = session.get("phase", {})
-    if fact.get("health") == "not_applicable":
-        return "-"
-    if fact.get("health") == "current" and fact.get("value") in {"working", "blocked", "waiting"}:
-        return fact["value"]
-    return f"unknown ({fact.get('health', 'unavailable')})"
+def _status_text(row: dict) -> str:
+    """Conservative human status from current runtime and phase facts only."""
+    runtime = row.get("runtime")
+    if type(runtime) is not dict or runtime.get("health") != "current":
+        return _qualified_fact_state(runtime)
+    if runtime.get("value") == "parked":
+        return "Inactive"
+    if runtime.get("value") != "running":
+        return "Unknown"
+
+    phase = row.get("phase")
+    if type(phase) is not dict or phase.get("health") != "current":
+        return _qualified_fact_state(phase)
+    return {
+        "working": "Working",
+        "waiting": "Ready",
+        "blocked": "Blocked",
+    }.get(phase.get("value"), "Unknown")
+
+
+def _status_label(value: str, icons: bool = False) -> str:
+    if not icons:
+        return value
+    glyph = {
+        "Working": "●",
+        "Ready": "○",
+        "Blocked": "!",
+        "Inactive": "-",
+        "Stale": "?",
+        "Unknown": "?",
+        "Unavailable": "×",
+    }.get(value)
+    return f"{glyph} {value}" if glyph else value
+
+
+def _last_active_text(row: dict, now_ms: int) -> str:
+    activity = row.get("activity")
+    if type(activity) is not dict:
+        return "Unknown"
+    if activity.get("health") != "current" or type(activity.get("at")) is not int:
+        return _qualified_fact_state(activity)
+    text = _activity_text(row, now_ms)
+    if text == "clock ahead":
+        return "Clock ahead"
+    return text.replace("approx. ", "~").removesuffix(" ago")
+
+
+def _profile_text(row: dict) -> str:
+    source = row.get("source")
+    if type(source) is not dict:
+        return "unknown"
+    host, home = source.get("host"), source.get("home")
+    if type(host) is not str or not host or type(home) is not str or not home:
+        return "unknown"
+    return f"{host}/{home}"
+
+
+def _compact_cwd(value: object) -> str | None:
+    if type(value) is not str or not value:
+        return None
+    path = PurePosixPath(value)
+    parts = [part for part in path.parts if part not in {"/", "."}]
+    if not parts:
+        return "/" if path.is_absolute() else None
+    tail = parts[-1]
+    if len(parts) == 1:
+        return f"/{tail}" if path.is_absolute() else tail
+    return f"…/{tail}"
+
+
+def _workspace_text(row: dict) -> str:
+    """Use only already-projected current repo metadata or reported cwd."""
+    details = row.get("details")
+    if type(details) is not dict:
+        return "unknown"
+    repository = details.get("repo")
+    if (
+        details.get("workspaceHealth") == "current"
+        and type(repository) is dict
+        and type(repository.get("root")) is str
+        and repository["root"]
+    ):
+        leaf = PurePosixPath(repository["root"]).name
+        if leaf:
+            return leaf
+    return _compact_cwd(details.get("cwd")) or "unknown"
+
+
+def _session_title(row: dict) -> str:
+    label = row.get("label")
+    return label if type(label) is str and label else f"Codex {row['identity']['nativeId']}"
+
+
+def _main_values(row: dict, now_ms: int) -> list[str]:
+    return [
+        _status_text(row),
+        _last_active_text(row, now_ms),
+        _session_title(row),
+        _profile_text(row),
+        _workspace_text(row),
+    ]
 
 
 def _rows(report: dict) -> list[dict]:
@@ -345,34 +426,76 @@ def _overview_header(report: dict, enabled: bool, icons: bool) -> list[str]:
     return lines
 
 
-def _overview_values(
-    row: dict, now_ms: int, context: bool, icons: bool
-) -> tuple[list[str], list[str]]:
-    member = row["membership"] in {"active", "recent"}
-    runtime = _runtime_text(row) if member else "unknown"
-    phase = _phase_text(row) if member else "unknown"
-    activity = _activity_text(row, now_ms) if member else "unknown"
-    notes = []
-    for name, value in (("runtime", runtime), ("phase", phase), ("activity", activity)):
-        if member and value.startswith("unknown ("):
-            notes.append(f"{name}: {value}")
-    values = [row.get("label") or f"Codex {row['identity']['nativeId']}"]
-    if context:
-        values.append(row.get("context") or "-")
-    values.extend(
-        (
-            f"{row['source']['host']}/{row['source']['label']}",
-            row["membership"],
-            "unknown" if runtime.startswith("unknown (") else runtime,
-            _phase_label("unknown" if phase.startswith("unknown (") else phase, icons),
-            "unknown"
-            if activity.startswith("unknown (")
-            else activity.replace("approx. ", "~").removesuffix(" ago"),
+_MAIN_HEADERS = ("Status", "Last active", "Session", "Profile", "Workspace")
+_MAIN_FIELDS = ("status", "last_active", "session", "profile", "workspace")
+_MIN_COLUMN_WIDTHS = (13, 11, 10, 16, 12)
+
+
+def _main_column_widths(
+    rows: list[dict], now_ms: int, width: int | None, icons: bool
+) -> list[int] | None:
+    prepared = [_main_values(row, now_ms) for row in rows]
+    for values in prepared:
+        values[0] = _status_label(values[0], icons)
+    widths = [
+        max(minimum, _cells(header), *(_cells(values[index]) for values in prepared))
+        for index, (minimum, header) in enumerate(
+            zip(_MIN_COLUMN_WIDTHS, _MAIN_HEADERS, strict=True)
         )
+    ]
+    if width is None:
+        return widths
+    spare = width - sum(widths) - 2 * (len(widths) - 1)
+    if spare < 0:
+        return None
+    # Keep an ordinary row on one line when it fits. Otherwise use the
+    # status/title + context layout rather than splitting identifiers down
+    # narrow metadata columns. Any spare width belongs to the title.
+    widths[2] += spare
+    return widths
+
+
+def _main_table_header(enabled: bool, widths: list[int]) -> str:
+    header = "  ".join(
+        value.ljust(size) for value, size in zip(_MAIN_HEADERS, widths, strict=True)
+    ).rstrip()
+    return _style(header, "1;2", enabled)
+
+
+def _main_table_row(
+    row: dict, now_ms: int, enabled: bool, widths: list[int], icons: bool
+) -> list[str]:
+    values = _main_values(row, now_ms)
+    values[0] = _status_label(values[0], icons)
+    cells = [
+        _finish([value], size).splitlines()
+        for value, size in zip(values, widths, strict=True)
+    ]
+    output = []
+    for line_index in range(max(map(len, cells))):
+        parts = []
+        for index, (cell, size) in enumerate(zip(cells, widths, strict=True)):
+            value = cell[line_index] if line_index < len(cell) else ""
+            padded = value + " " * max(0, size - _cells(value))
+            parts.append(_cell_style(padded, _MAIN_FIELDS[index], enabled))
+        output.append("  ".join(parts).rstrip())
+    return output
+
+
+def _compact_main_row(
+    row: dict, now_ms: int, enabled: bool, width: int, icons: bool
+) -> list[str]:
+    status, activity, title, profile, workspace = _main_values(row, now_ms)
+    status = _status_label(status, icons)
+    first = (
+        _cell_style(status, "status", enabled)
+        + "  "
+        + _cell_style(activity, "last_active", enabled)
+        + "  "
+        + _cell_style(title, "session", enabled)
     )
-    if not member and row.get("reason"):
-        notes.append(f"membership: {row['reason']}")
-    return values, notes
+    second = "  " + _cell_style(f"{profile} · {workspace}", "profile", enabled)
+    return _finish([first, second], width).splitlines()
 
 
 def _overview_table(
@@ -380,85 +503,22 @@ def _overview_table(
 ) -> list[str]:
     if not rows:
         return []
-    context = any(row.get("context") for row in rows) and (width is None or width >= 110)
-    headers = [
-        "Session",
-        *(["Context"] if context else []),
-        "Host/home",
-        "Member",
-        "Runtime",
-        "Phase",
-        "Activity",
-    ]
-    fields = [
-        "session",
-        *(["context"] if context else []),
-        "host",
-        "membership",
-        "runtime",
-        "phase",
-        "activity",
-    ]
-    prepared = [_overview_values(row, now_ms, context, icons) for row in rows]
-    widths = [
-        max(_cells(header), *(_cells(values[index]) for values, _ in prepared))
-        for index, header in enumerate(headers)
-    ]
-    flexible = {0: (12, 30), 1: (10, 22), 2: (10, 24)} if context else {0: (12, 30), 1: (10, 24)}
-    if width is not None:
-        for index, (_, preferred) in flexible.items():
-            widths[index] = min(widths[index], preferred)
-        while sum(widths) + 2 * (len(headers) - 1) > width:
-            choices = [index for index, (minimum, _) in flexible.items() if widths[index] > minimum]
-            if not choices:
-                break
-            index = max(choices, key=lambda item: widths[item] - flexible[item][0])
-            widths[index] -= 1
-    compact = width is not None and (width < 72 or sum(widths) + 2 * (len(headers) - 1) > width)
-    output = []
-    if not compact:
-        heading = "  ".join(
-            value.ljust(size) for value, size in zip(headers, widths, strict=True)
-        ).rstrip()
-        rule = (
-            "─" * (sum(widths) + 2 * (len(headers) - 1))
-            if icons
-            else "  ".join("-" * size for size in widths)
-        )
-        output.extend((_style(heading, "1;2", enabled), _style(rule, "2", enabled)))
+    widths = _main_column_widths(rows, now_ms, width, icons)
+    output = [_main_table_header(enabled, widths)] if widths is not None else []
+    if widths is None:
+        output.extend(_finish(["STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE"], width).splitlines())
     previous_group = None
-    for row, (values, notes) in zip(rows, prepared, strict=True):
+    for row in rows:
         source = row["source"]
         if group == "host-home":
-            selected_group = (source["host"], source["home"], source["label"])
+            selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                output.append(_style(f"[{selected_group[0]}/{selected_group[2]}]", "1;36", enabled))
+                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", "1;36", enabled))
                 previous_group = selected_group
-        if compact:
-            if output:
-                output.append("")
-            output.append(_style(values[0], "1", enabled))
-            output.append(
-                "  "
-                + " · ".join(
-                    _cell_style(value, field, enabled)
-                    for value, field in zip(values[1:], fields[1:], strict=True)
-                )
-            )
+        if widths is None:
+            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
         else:
-            cells = [
-                _finish([value], size).splitlines()
-                for value, size in zip(values, widths, strict=True)
-            ]
-            for line_index in range(max(map(len, cells))):
-                parts = []
-                for index, (cell, size) in enumerate(zip(cells, widths, strict=True)):
-                    value = cell[line_index] if line_index < len(cell) else ""
-                    padded = value + " " * (size - _cells(value))
-                    parts.append(_cell_style(padded, fields[index], enabled))
-                output.append("  ".join(parts).rstrip())
-        if notes:
-            output.append("  " + _style("; ".join(notes), "33", enabled))
+            output.extend(_main_table_row(row, now_ms, enabled, widths, icons))
     return output
 
 
@@ -467,88 +527,27 @@ def _session_table(
 ) -> list[str]:
     if not rows:
         return []
-    values = [
-        (
-            row.get("label", ""),
-            f"{row['source']['host']}/{row['source']['label']}",
-            row["membership"],
-            _runtime_text(row) if row["membership"] in {"active", "recent"} else "unknown",
-            _phase_label(
-                _phase_text(row) if row["membership"] in {"active", "recent"} else "unknown", icons
-            ),
-            _activity_text(row, now_ms) if row["membership"] in {"active", "recent"} else "unknown",
-            row["identity"]["nativeId"],
-        )
-        for row in rows
-    ]
-    headers = ("SESSION", "HOST/HOME", "MEMBERSHIP", "RUNTIME", "PHASE", "ACTIVITY", "ID")
-    widths = [
-        max(_cells(headers[index]), *(_cells(value[index]) for value in values))
-        for index in range(len(headers))
-    ]
-    if width is not None and sum(widths) + 2 * (len(headers) - 1) > width:
-        output = []
-        previous_group = None
-        for row in rows:
-            source = row["source"]
-            if group == "host-home":
-                selected_group = (source["host"], source["home"], source["label"])
-                if selected_group != previous_group:
-                    output.append(f"[{selected_group[0]}/{selected_group[2]}]")
-                    previous_group = selected_group
-            membership = row["membership"]
-            runtime = _runtime_text(row) if membership in {"active", "recent"} else "unknown"
-            phase = _phase_text(row) if membership in {"active", "recent"} else "unknown"
-            activity = (
-                _activity_text(row, now_ms) if membership in {"active", "recent"} else "unknown"
-            )
-            output.append(
-                f"- {_cell_style(membership, 'membership', enabled)} / "
-                f"{_cell_style(runtime, 'runtime', enabled)} / "
-                f"{_cell_style(_phase_label(phase, icons), 'phase', enabled)} / "
-                f"{_style(activity, '2', enabled)}"
-            )
-            label = row.get("label") or f"Codex {row['identity']['nativeId']}"
-            output.append("  " + _style(label, "1", enabled))
-            output.append(_style(f"  host/home: {source['host']}/{source['label']}", "36", enabled))
-            if row.get("context"):
-                output.append(_style("  context: " + row["context"], "2", enabled))
-            output.append(_style("  id: " + row["identity"]["nativeId"], "2", enabled))
-        return output
-    output = [
-        _style(
-            "  ".join(headers[index].ljust(widths[index]) for index in range(len(headers))),
-            "1;2",
-            enabled,
-        )
-    ]
-    rule = (
-        "─" * (sum(widths) + 2 * (len(headers) - 1))
-        if icons
-        else "  ".join("-" * size for size in widths)
-    )
-    output.append(_style(rule, "2", enabled))
+    widths = _main_column_widths(rows, now_ms, width, icons)
+    output = [_main_table_header(enabled, widths)] if widths is not None else []
+    if widths is None:
+        output.extend(_finish(["STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE"], width).splitlines())
     previous_group = None
-    for row, value in zip(rows, values, strict=True):
+    for row in rows:
+        source = row["source"]
         if group == "host-home":
-            selected_group = (row["source"]["host"], row["source"]["home"], row["source"]["label"])
+            selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                output.append(f"[{selected_group[0]}/{selected_group[2]}]")
+                output.append(f"[{selected_group[0]}/{selected_group[1]}]")
                 previous_group = selected_group
-        colored = list(value)
-        padded = [
-            colored[index] + " " * (widths[index] - _cells(colored[index]))
-            for index in range(len(colored))
-        ]
-        fields = ("session", "host", "membership", "runtime", "phase", "activity", "id")
-        output.append(
-            "  ".join(
-                _cell_style(value, field, enabled)
-                for value, field in zip(padded, fields, strict=True)
-            )
-        )
+        if widths is None:
+            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
+        else:
+            output.extend(_main_table_row(row, now_ms, enabled, widths, icons))
+        evidence = "  id: " + _cell_style(row["identity"]["nativeId"], "id", enabled)
+        output.extend(_finish([evidence], width).splitlines() if width is not None else [evidence])
         if row.get("context"):
-            output.append(_style("  context: " + row["context"], "2", enabled))
+            context = "  context: " + _cell_style(row["context"], "profile", enabled)
+            output.extend(_finish([context], width).splitlines() if width is not None else [context])
     return output
 
 

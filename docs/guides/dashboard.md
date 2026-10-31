@@ -139,6 +139,20 @@ different set. The released a14 dashboard writes no preferences or search histor
 The maintained source also provides a small session board. This section does
 not describe additions to the published a14 wheel or change managed selections.
 
+Its main rows show **Status · Last active · Session · Profile · Workspace**.
+Working, Ready and Blocked summarize current running runtime with the matching
+phase; positively parked sessions show Inactive. Unknown, stale and unavailable
+evidence stay explicit. Last active measures conversation activity, not duration
+in that status. Source health remains above the list, and raw facts/reasons
+remain in details.
+
+Session titles receive the most flexible width. Profile shows host/profile;
+Workspace shows a known current repo/worktree name or compact reported cwd.
+Narrow rows and the split-details list keep status, activity age and title on
+the first line, with profile/workspace below. Full paths and exact identity
+remain inspectable. The [presentation contract](../maintenance/terminal-product.md#user-facing-rows)
+defines status qualification and metadata limits.
+
 - `p` with list focus pins/unpins the visible selected session; its exact
   selection follows it after movement. Matching favorites appear first in
   first-pinned order, marked `*`. The remaining rows keep normal ordering/grouping.

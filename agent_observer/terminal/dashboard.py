@@ -6,7 +6,6 @@ import asyncio
 import re
 import time
 from datetime import UTC, datetime
-from pathlib import PurePosixPath
 from typing import Any
 
 from rich.text import Text
@@ -25,7 +24,14 @@ from .dashboard_view import (
     toggle_pin,
 )
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
-from .render import _activity_text
+from .render import (
+    _last_active_text,
+    _profile_text,
+    _session_title,
+    _status_label,
+    _status_text,
+    _workspace_text,
+)
 
 _MEMBERSHIPS = ("active", "recent", "uncertain", "nonmember")
 _RUNTIMES = ("running", "parked", "unknown")
@@ -34,7 +40,6 @@ _FILTER_DIMENSIONS = ("source", "host", "home", "membership", "runtime", "phase"
 _SINGLE_ROW_MIN_WIDTH = 80
 _SPLIT_WIDTH = 120
 _SPLIT_HEIGHT = 30
-_WIDE_COLUMNS_WIDTH = 140
 _COMPACT_MIN_WIDTH = 60
 _COMPACT_MIN_HEIGHT = 16
 _MAX_PAGE_ROWS = 200
@@ -45,13 +50,24 @@ _PIN_PAGE_SIZE = 5
 class SessionLine(Static):
     """One terminal row, with bounded literal cells and no per-cell DOM nodes."""
 
-    def __init__(self, values, widths, *, selected, header, style_for, surface_selection=True):
+    def __init__(
+        self,
+        values,
+        widths,
+        *,
+        selected,
+        header,
+        style_for,
+        age_index=None,
+        surface_selection=True,
+    ):
         self._cell_values = list(values)
         self._cell_widths = widths
         self._selected_row = selected
         self._header_row = header
         self._surface_selection = surface_selection
         self._style_for_cell = style_for
+        self._age_index = age_index
         classes = ["row"]
         if header:
             classes.append("table-heading")
@@ -85,7 +101,9 @@ class SessionLine(Static):
             self.update(self._line())
 
     def update_age(self, value: str) -> None:
-        self._cell_values[-1] = value
+        if self._age_index is None:
+            return
+        self._cell_values[self._age_index] = value
         self.update(self._line())
 
 
@@ -571,8 +589,9 @@ class DashboardApp(App[None]):
     def _page_size(self) -> int:
         mode = self._layout_mode()
         line_budget = max(1, self.size.height - 5 - int(self._search_open))
-        row_height = 2 if mode == "compact" else 1
-        header_lines = int(mode == "full")
+        compact_rows = mode == "compact" or self._split_details()
+        row_height = 2 if compact_rows else 1
+        header_lines = int(mode == "full" or compact_rows)
         if self._split_details():
             header_lines = 1
         visible_pins, pinned_rows = self._visible_pin_counts()
@@ -905,21 +924,6 @@ class DashboardApp(App[None]):
             return None
         return tuple(repository.get(name) for name in ("root", "commonDir", "relativePath"))
 
-    def _repository_name(self, row: dict) -> str:
-        details = row.get("details", {})
-        health = details.get("workspaceHealth")
-        if health != "current":
-            return self._safe(health) if type(health) is str and health else "unavailable"
-        repository = details.get("repo")
-        if repository is None:
-            return "none"
-        if type(repository) is not dict:
-            return "unavailable"
-        root = repository.get("root")
-        if type(root) is not str or not root:
-            return "unavailable"
-        return self._safe(PurePosixPath(root).name or root)
-
     def _source_for_row(self, row: dict | None) -> dict | None:
         if row is None:
             return None
@@ -1017,7 +1021,11 @@ class DashboardApp(App[None]):
                 "↑/↓ choose · Enter apply · Esc returns",
                 "Use f for filters · r resets from the Filters menu.",
             ]
-            lines.extend(("> " if item == current else "  ") + item for item in values)
+            lines.extend(
+                ("> " if item == current else "  ")
+                + ("host/profile" if item == "host-home" else item)
+                for item in values
+            )
             return self._plain_lines(lines)
         if self._overlay == "pins":
             return self._pins_overlay_widgets()
@@ -1141,7 +1149,7 @@ class DashboardApp(App[None]):
         labels = {
             "source": "Source",
             "host": "Host",
-            "home": "Home",
+            "home": "Profile",
             "membership": "Member",
             "runtime": "Runtime",
             "phase": "Phase",
@@ -1368,23 +1376,16 @@ class DashboardApp(App[None]):
         _, pinned_row_count = self._visible_pin_counts()
         has_visible_pins = self._visible_pin_counts()[0] > 0
         if mode == "full" and not split:
-            wide = render_width >= _WIDE_COLUMNS_WIDTH
-            widths = self._column_widths(render_width - 4, wide=wide)
-            headers = (
-                ("SESSION", "REPO", "HOST/HOME", "MEMBER", "RUNTIME", "PHASE", "ACTIVITY")
-                if wide
-                else ("SESSION", "HOST/HOME", "MEMBER", "RUNTIME / PHASE", "ACTIVITY")
-            )
+            widths = self._column_widths(render_width - 4)
+            headers = ("STATUS", "LAST ACTIVE", "SESSION", "PROFILE", "WORKSPACE")
             header, _ = self._row_widget(headers, widths, selected=False, header=True)
             widgets.append(header)
-        elif split:
+        elif mode == "compact" or split:
             widgets.append(
                 Static(
                     self._as_text(
                         self._fit_line(
-                            "SESSION · MEMBER · LIST FOCUS"
-                            if self._focus == "list"
-                            else "SESSION · MEMBER",
+                            "STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE",
                             render_width - 4,
                         )
                     ),
@@ -1462,128 +1463,86 @@ class DashboardApp(App[None]):
     ) -> list[Any]:
         selected = self._row_key(row) == self._selected_key
         key = self._row_key(row)
-        if split:
-            label_width = max(12, width - 34)
-            selected_style = "reverse bold" if selected and self.no_color else ""
-            label = self._safe(row.get("label"))
-            membership = self._safe(row.get("membership", "unknown"))
-            member_context = membership
+        title = self._safe(_session_title(row))
+        if split or mode == "compact":
             if self._is_pinned_row(row):
-                label = "* " + label
-                source = row.get("source", {})
-                member_context += f" {self._safe(source.get('host'))}/{self._safe(source.get('home'))}"
-            item = Horizontal(
-                self._cell(
-                    "> " if selected else "  ",
-                    2,
-                    selected_style,
-                    selection_marker=selected,
-                ),
-                self._cell(
-                    label, label_width, selected_style
-                ),
-                self._cell(
-                    member_context,
-                    28,
-                    selected_style
-                    if selected
-                    else self._semantic_style(self._safe(row.get("membership", "unknown"))),
-                ),
-                classes=self._row_classes(selected),
-            )
-            return [item]
-        if mode == "compact":
-            label = self._safe(row.get("label"))
-            if self._is_pinned_row(row):
-                label = "* " + label
-            membership = self._safe(row.get("membership", "unknown"))
+                title = "* " + title
             selected_style = "reverse bold" if selected and self.no_color else ""
-            first = Horizontal(
-                self._cell(
-                    "> " if selected else "  ",
-                    2,
-                    selected_style,
-                    selection_marker=selected,
-                ),
-                self._cell(label, max(12, width - 22), selected_style),
-                self._cell(
-                    membership,
-                    18,
-                    selected_style if selected else self._semantic_style(membership),
-                ),
-                classes=self._row_classes(selected),
-            )
-            source = row.get("source", {})
-            runtime = self._fact_text(row.get("runtime"))
-            phase = self._phase_text(row.get("phase"))
+            status = _status_label(_status_text(row), self.icons)
             age = self._activity_age(row)
-            second_text = (
-                f"{self._safe(source.get('host'))}/{self._safe(source.get('home'))} · "
-                f"{runtime}/{phase} · "
-            )
-            age = self._activity_age(row)
+            body_width = max(1, width - 4)
+            status_width, age_width = (14 if self.icons else 12), 12
+            label_width = max(8, body_width - 2 - status_width - age_width)
             age_cell = self._cell(
                 age,
-                10,
-                selected_style if selected else "dim",
+                age_width,
+                selected_style if selected else ("cyan" if not self.no_color else ""),
                 widget_id=f"age-{page_index}",
             )
+            first = Horizontal(
+                self._cell("> " if selected else "  ", 2, selected_style, selection_marker=selected),
+                self._cell(
+                    status,
+                    status_width,
+                    selected_style if selected else self._semantic_style(status),
+                ),
+                age_cell,
+                self._cell(title, label_width, selected_style),
+                classes=self._row_classes(selected),
+            )
+            profile = self._safe(_profile_text(row))
+            workspace = self._safe(_workspace_text(row))
+            context_width = max(1, body_width - 4)
+            profile_width = max(1, context_width // 2)
+            workspace_width = max(1, context_width - profile_width)
             second = Horizontal(
                 self._cell("  ", 2),
                 self._cell(
-                    second_text,
-                    max(12, width - 14),
-                    selected_style
-                    if selected
-                    else self._semantic_style(f"{runtime}/{phase}"),
+                    profile,
+                    profile_width,
+                    selected_style if selected else "dim",
                 ),
-                age_cell,
+                self._cell("·", 2),
+                self._cell(
+                    workspace,
+                    workspace_width,
+                    selected_style if selected else "dim",
+                ),
                 classes=self._row_classes(selected),
             )
             self._age_cells[key] = (age_cell, age, row)
-            return [Vertical(first, second, classes="compact-row")]
+            return [
+                Vertical(
+                    first,
+                    second,
+                    classes="compact-row " + self._row_classes(selected),
+                )
+            ]
 
-        wide = width >= _WIDE_COLUMNS_WIDTH
-        widths = self._column_widths(width - 4, wide=wide)
-        source = row.get("source", {})
+        status = _status_label(_status_text(row), self.icons)
+        age = self._activity_age(row)
+        title = ("* " if self._is_pinned_row(row) else "") + title
         cells = (
-            ("* " if self._is_pinned_row(row) else "") + self._safe(row.get("label")),
-            f"{self._safe(source.get('host'))}/{self._safe(source.get('label') or source.get('home'))}",
-            self._safe(row.get("membership", "unknown")),
-            f"{self._fact_text(row.get('runtime'))}/{self._phase_text(row.get('phase'))}",
-            self._activity_age(row),
+            status,
+            age,
+            title,
+            self._safe(_profile_text(row)),
+            self._safe(_workspace_text(row)),
         )
-        if wide:
-            cells = (
-                cells[0],
-                self._repository_name(row),
-                cells[1],
-                cells[2],
-                self._fact_text(row.get("runtime")),
-                self._phase_text(row.get("phase")),
-                cells[-1],
-            )
+        widths = self._column_widths(width - 4)
         row_widget, age_cell = self._row_widget(
             cells,
             widths,
             selected=selected,
             marker="> " if selected else "  ",
-            last_cell_id=f"age-{page_index}",
+            age_index=2,
         )
-        self._age_cells[key] = (age_cell, cells[-1], row)
+        self._age_cells[key] = (age_cell, age, row)
         self._line_widgets[key] = row_widget
         return [row_widget]
 
     def _row_classes(self, selected: bool) -> str:
         return "row selected-row" if selected and not self.no_color else "row"
-
-    def _phase_text(self, fact: dict | None) -> str:
-        label = self._fact_text(fact)
-        if not self.icons or not isinstance(fact, dict) or fact.get("health") == "not_applicable":
-            return label
-        current = fact.get("value") if fact.get("health") == "current" else "unknown"
-        glyph = {"working": "●", "waiting": "○", "blocked": "!", "unknown": "?"}.get(current)
-        return f"{glyph} {label}" if glyph else label
 
     def _row_widget(
         self,
@@ -1593,15 +1552,11 @@ class DashboardApp(App[None]):
         selected: bool,
         header: bool = False,
         marker: str = "  ",
-        last_cell_id: str | None = None,
-    ) -> tuple[SessionLine, Static]:
+        age_index: int | None = None,
+    ) -> tuple[SessionLine, SessionLine]:
         values = (marker, *cells)
         all_widths = (2, *widths)
-        roles = (
-            ("marker", "label", "repository", "host", "state", "state", "state", "age")
-            if len(cells) == 7
-            else ("marker", "label", "host", "state", "state", "age")
-        )
+        roles = ("marker", "status", "age", "label", "profile", "workspace")
 
         def style_for(index, value, selected_row, header_row):
             role = roles[index]
@@ -1610,15 +1565,19 @@ class DashboardApp(App[None]):
             if selected_row:
                 if self.no_color:
                     return "reverse bold"
-                if role == "state":
+                if role == "status":
                     semantic = self._semantic_style(value)
                     return f"bold {semantic}" if semantic else "bold"
                 return "bold"
-            if role == "state":
+            if role == "status":
                 return self._semantic_style(value)
+            if role == "age":
+                return "cyan" if not self.no_color else ""
             if role == "label":
                 return "bold"
-            return "dim"
+            if role in {"profile", "workspace"}:
+                return "dim"
+            return ""
 
         line = SessionLine(
             values,
@@ -1626,25 +1585,21 @@ class DashboardApp(App[None]):
             selected=selected,
             header=header,
             style_for=style_for,
+            age_index=age_index,
             surface_selection=not self.no_color,
         )
         return line, line
 
-    @staticmethod
-    def _column_widths(width: int, *, wide: bool = False) -> tuple[int, ...]:
-        width = max(72, width)
-        if wide:
-            # Preserve a readable label and state words before adding context.
-            return max(16, width - 76), 16, 18, 9, 9, 12, 10
-        age = min(12, max(9, width // 12))
-        membership = 10
-        runtime_phase = min(24, max(18, width // 5))
-        host_home = max(17, min(24, width // 5))
-        title = max(8, width - 2 - age - membership - runtime_phase - host_home)
-        return title, host_home, membership, runtime_phase, age
+    def _column_widths(self, width: int) -> tuple[int, ...]:
+        status, age = (14 if self.icons else 12), 12
+        profile, workspace = (22, 24) if width >= 100 else (16, 12)
+        title = max(8, width - 2 - status - age - profile - workspace)
+        return status, age, title, profile, workspace
 
     def _semantic_style(self, value: str) -> str:
         normalized = value.casefold()
+        if normalized[:2] in {"● ", "○ ", "! ", "- ", "? ", "× "}:
+            normalized = normalized[2:]
         if any(
             token in normalized for token in ("unavailable", "not currently available", "failed")
         ):
@@ -1656,9 +1611,9 @@ class DashboardApp(App[None]):
             return "bold yellow" if not self.no_color else "bold"
         if "working" in normalized or normalized in {"complete", "active"}:
             return "green" if not self.no_color else "bold"
-        if "waiting" in normalized:
+        if "ready" in normalized or "waiting" in normalized:
             return "cyan" if not self.no_color else "bold"
-        if normalized in {"parked", "recent", "nonmember"}:
+        if normalized.removeprefix("- ") in {"inactive", "parked", "recent", "nonmember"}:
             return "dim"
         return ""
 
@@ -1706,14 +1661,15 @@ class DashboardApp(App[None]):
         section_headings = {
             "Session summary",
             "Workspace and activity",
+            "Raw observation facts",
             "Observation reasons",
             "Source health and coverage",
             "Native identity and lease diagnostics",
         }
         for line in visible:
             widget_id = None
-            if line.startswith("Activity: "):
-                widget_id = "detail-activity"
+            if line.startswith("Last active: "):
+                widget_id = "detail-last-active"
             elif line.startswith("Baseline: ") and " · Frame age: " in line:
                 widget_id = "detail-frame-age"
             result.append(
@@ -1730,8 +1686,8 @@ class DashboardApp(App[None]):
                     ),
                 )
             )
-        if any(widget.id == "detail-activity" for widget in result):
-            self._render_values["detail-activity"] = self._activity_age(
+        if any(widget.id == "detail-last-active" for widget in result):
+            self._render_values["detail-last-active"] = self._activity_age(
                 self._selected_detail_row if self._selection_available else None
             )
         if any(widget.id == "detail-frame-age" for widget in result):
@@ -1804,10 +1760,10 @@ class DashboardApp(App[None]):
             self._safe(row.get("label")),
             *( ["selected session hidden by filters"] if self._selection_hidden else []),
             "Session summary",
-            f"{self._safe(source.get('host'))}/{self._safe(source.get('label') or source.get('home'))}",
-            f"Membership: {self._safe(row.get('membership', 'unknown'))}",
-            f"Runtime: {self._fact_text(runtime)}{self._fact_reason(runtime)}",
-            f"Phase: {self._fact_text(phase)}{self._fact_reason(phase)}",
+            f"Status: {_status_label(_status_text(row), self.icons)}",
+            f"Last active: {self._activity_age(row)}",
+            f"Profile: {self._safe(_profile_text(row))}",
+            f"Workspace: {self._safe(_workspace_text(row))}",
             "",
             "Workspace and activity",
         ]
@@ -1855,9 +1811,20 @@ class DashboardApp(App[None]):
         if type(workspace_reason) is str and workspace_reason:
             workspace_line += f" · {self._safe(workspace_reason)}"
         lines.append(workspace_line)
-        lines.append(f"Activity: {self._activity_age(row)}")
-        if activity.get("health") == "current":
-            lines.append(f"Activity time: {self._wall_time(activity.get('at'))}")
+        activity_at = activity.get("at") if activity.get("at") is not None else activity.get("lastKnownAt")
+
+        lines.extend(
+            (
+                "",
+                "Raw observation facts",
+                f"Membership: {self._safe(row.get('membership', 'unknown'))}",
+                f"Runtime: {self._fact_text(runtime)}{self._fact_reason(runtime)}",
+                f"Phase: {self._fact_text(phase)}{self._fact_reason(phase)}",
+                f"Activity evidence: {self._safe(activity.get('health', 'unavailable'))} · "
+                f"time {self._wall_time(activity_at)} · "
+                f"reason {self._safe(activity.get('reason') or 'none')}",
+            )
+        )
 
         reason_lines = []
         if row.get("reason"):
@@ -1969,7 +1936,7 @@ class DashboardApp(App[None]):
         )
         if config is not None:
             lines.append(f"Configured host: {self._safe(self._config_value(config, 'host'))}")
-            lines.append(f"Configured home: {self._safe(self._config_value(config, 'home'))}")
+            lines.append(f"Configured profile: {self._safe(self._config_value(config, 'home'))}")
         lines.append(f"Configured source ID: {self._safe(source_id)}")
         lines.append(f"Expected namespace: {self._safe(source.get('expectedNamespace'))}")
         lines.append(
@@ -2610,19 +2577,22 @@ class DashboardApp(App[None]):
             return f"{label} · {self._view_label()} · refreshing source state"
         totals = self._report.get("totals", {})
         members = totals.get("members", 0)
+        count = f"{members} session" + ("" if members == 1 else "s")
         uncertain = totals.get("uncertain", 0)
         label = "Agent Observer"
         if self.icons and self.size.width >= 80:
             label = "◈ " + label
         if self.size.width < 80:
             label = "Observer" if self.size.width < 60 else "Agent Observer"
-            value = f"{label} · {members} members, {uncertain} uncertain"
+            value = f"{label} · {count} · {uncertain} uncertain"
             if Text(value).cell_len <= max(1, self.size.width - 2):
                 return value
             return self._fit_line(
-                f"{members} members · {uncertain} uncertain", max(1, self.size.width - 2)
+                f"{count} · {uncertain} uncertain", max(1, self.size.width - 2)
             )
-        return f"{label} · {self._view_label()} · {members} members · {uncertain} uncertain"
+        view = self._view_label()
+        context = "" if view == "Sessions" else f" · {view}"
+        return f"{label}{context} · {count} · {uncertain} uncertain"
 
     def _view_label(self) -> str:
         if self._overlay == "help":
@@ -2715,8 +2685,9 @@ class DashboardApp(App[None]):
         query = " ".join(self.filters.get("query", ()))
         active = []
         for dimension in ("source", "host", "home", "membership", "runtime", "phase"):
+            caption = "profile" if dimension == "home" else dimension
             if dimension in self._empty_dimensions:
-                active.append(f"{dimension}=none")
+                active.append(f"{caption}=none")
                 continue
             values = self.filters.get(dimension, ())
             if values:
@@ -2724,7 +2695,7 @@ class DashboardApp(App[None]):
                     self._filter_option_label(dimension, value)
                     for value in values
                 )
-                active.append(f"{dimension}={','.join(labels)}")
+                active.append(f"{caption}={','.join(labels)}")
         if self.filters.get("includeChildren"):
             active.append("children")
         if self.filters.get("includeSystem"):
@@ -2745,7 +2716,7 @@ class DashboardApp(App[None]):
         if order != "activity":
             parts.append(f"Order {order}")
         if group != "none":
-            parts.append("Group host/home" if group == "host-home" else f"Group {group}")
+            parts.append("Group host/profile" if group == "host-home" else f"Group {group}")
         return self._fit_line(" · ".join(parts), max(1, self.size.width - 4))
 
     def _status_text(self) -> str:
@@ -2766,9 +2737,10 @@ class DashboardApp(App[None]):
         state = report_totals.get("state", "warming")
         status_parts.append(f"{total} matches")
         if self._empty_dimensions:
-            status_parts.append("no values selected for " + ", ".join(sorted(self._empty_dimensions)))
+            dimensions = ("profile" if item == "home" else item for item in sorted(self._empty_dimensions))
+            status_parts.append("no values selected for " + ", ".join(dimensions))
         elif hidden_presentation:
-            status_parts.append(f"{hidden_presentation} hidden by source/host/home filters")
+            status_parts.append(f"{hidden_presentation} hidden by source/host/profile filters")
         hidden_kinds = report_totals.get("hiddenKinds", 0)
         if hidden_kinds:
             status_parts.append(f"{hidden_kinds} hidden by kind")
@@ -2890,7 +2862,9 @@ class DashboardApp(App[None]):
                 style = (
                     "reverse bold"
                     if self.no_color and key == self._selected_key
-                    else "" if key == self._selected_key else "dim"
+                    else ""
+                    if key == self._selected_key or self.no_color
+                    else "cyan"
                 )
                 width = widget.region.width or max(1, len(current))
                 updated = Text(current, style=style or None, no_wrap=True, overflow="ellipsis")
@@ -2898,18 +2872,18 @@ class DashboardApp(App[None]):
                 updated.pad_right(width)
                 widget.update(updated)
                 self._age_cells[key] = (widget, current, row)
-        # Details are stable widgets; refresh the activity line only when its text changes.
+        # Details are stable widgets; refresh last-active age only when it changes.
         if self._view == "details" and self._overlay is None:
             try:
-                widget = self.query_one("#detail-activity", Static)
+                widget = self.query_one("#detail-last-active", Static)
             except Exception:
                 widget = None
             if widget is not None:
                 row = self._selected_detail_row if self._selection_available else None
-                value = self._activity_age(row, age_now) if row else "unknown"
-                if self._render_values.get("detail-activity") != value:
-                    widget.update(self._as_text("Activity: " + value))
-                    self._render_values["detail-activity"] = value
+                value = self._activity_age(row, age_now) if row else "Unknown"
+                if self._render_values.get("detail-last-active") != value:
+                    widget.update(self._as_text("Last active: " + value))
+                    self._render_values["detail-last-active"] = value
             try:
                 frame_widget = self.query_one("#detail-frame-age", Static)
             except Exception:
@@ -2928,9 +2902,8 @@ class DashboardApp(App[None]):
 
     def _activity_age(self, row: dict | None, now_ms: int | None = None) -> str:
         if row is None:
-            return "unknown"
-        label = _activity_text(row, self._display_now_ms() if now_ms is None else now_ms)
-        return label.replace("approx. ", "~").removesuffix(" ago")
+            return "Unknown"
+        return _last_active_text(row, self._display_now_ms() if now_ms is None else now_ms)
 
     @staticmethod
     def _report_wall_ms(report: dict) -> int:

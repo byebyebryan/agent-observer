@@ -1,12 +1,21 @@
 """Review terminal width and grouping with synthetic admitted metadata."""
 
+import json
 import re
 import unicodedata
 import unittest
 
 from test_terminal_model import lease, read, report, row, source, state
 
-from agent_observer.terminal.render import color_enabled, icons_enabled, render
+from agent_observer.terminal.render import (
+    _last_active_text,
+    _status_label,
+    _status_text,
+    _workspace_text,
+    color_enabled,
+    icons_enabled,
+    render,
+)
 
 SGR = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -24,6 +33,33 @@ def screen_width(line):
 
 
 class TerminalRenderTests(unittest.TestCase):
+    def test_status_colors_survive_padding_in_the_wide_table(self):
+        items = [row(f"id-{index}", title=f"Task {index}") for index in range(3)]
+        for item, phase in zip(items, ("working", "waiting", "blocked"), strict=True):
+            item["phase"]["value"] = phase
+        document = report(
+            [state(current_read=read(rows=items, leases=[lease(item["identity"]["nativeId"]) for item in items]))]
+        )
+        colored = render(document, width=140, color=True, icons=True)
+        self.assertIn("\x1b[32m● Working\x1b[0m", colored)
+        self.assertIn("\x1b[36m○ Ready\x1b[0m", colored)
+        self.assertIn("\x1b[33m! Blocked\x1b[0m", colored)
+        self.assertEqual(SGR.sub("", colored), render(document, width=140, icons=True))
+
+    def test_long_workspace_uses_compact_rows_without_splitting_identifiers(self):
+        item = row("full-id", title="Review the observer CLI layout")
+        item["cwd"] = "/reported/worktrees/agent-observer-feature"
+        document = report([state(current_read=read(rows=[item], leases=[lease("full-id")]))])
+        before = json.dumps(document, sort_keys=True)
+        text = render(document, width=80, icons=True)
+        title_line = next(line for line in text.splitlines() if item["title"] in line)
+        self.assertIn("Working", title_line)
+        self.assertIn("~", title_line)
+        context_line = next(line for line in text.splitlines() if "fixture/default" in line and "·" in line)
+        self.assertIn("agent-observer-feature", context_line)
+        self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
+        self.assertEqual(json.dumps(document, sort_keys=True), before)
+
     def test_long_and_wide_metadata_wraps_in_all_tty_views_without_losing_text(self):
         native_id = "00000000-0000-4000-8000-000000000123"
         title = "界" * 80 + " cafe\u0301 " + "a" * 100
@@ -66,19 +102,31 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertIn("Showing 10 of 12 matches.", text)
         for member in document["sessions"]:
             matching = [
-                line for line in text.splitlines() if line.startswith(member["label"] + " ")
+                line
+                for line in text.splitlines()
+                if re.search(re.escape(member["label"]) + r"(?:\s|$)", line)
             ]
             self.assertEqual(len(matching), 1)
-            self.assertIn("fixture/Default", matching[0])
-            self.assertIn("active", matching[0])
-            self.assertIn("running", matching[0])
-            self.assertIn("working", matching[0])
+            self.assertIn("Working", matching[0])
+            self.assertIn("~", matching[0])
+            self.assertIn("fixture/default", matching[0])
             self.assertNotIn(member["identity"]["nativeId"], text)
         self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
         full = render(report(states), mode="list")
         for member in members:
             self.assertIn(member["identity"]["nativeId"], full)
         self.assertIn("fixture-project", full)
+        header = next(line for line in full.splitlines() if line.startswith("Status"))
+        self.assertLess(header.index("Status"), header.index("Last active"))
+        self.assertLess(header.index("Last active"), header.index("Session"))
+        self.assertLess(header.index("Session"), header.index("Profile"))
+        self.assertLess(header.index("Profile"), header.index("Workspace"))
+        id_lines = [line for line in full.splitlines() if line.startswith("  id: ")]
+        self.assertEqual(len(id_lines), len(members))
+        self.assertEqual(_status_label("Working", True), "● Working")
+        self.assertEqual(_status_label("Ready", True), "○ Ready")
+        self.assertEqual(_status_label("Blocked", True), "! Blocked")
+        self.assertEqual(_status_label("Unavailable", True), "× Unavailable")
 
     def test_filtered_overview_keeps_failed_source_and_unfiltered_counts_visible(self):
         states = [
@@ -100,7 +148,7 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertNotIn("complete current coverage", text)
 
         stale_member = row("stale-id", title="Stale session")
-        stale_member["runtime"].update(value="unknown", health="stale", lastKnownValue="running")
+        stale_member["runtime"].update(value="running", health="current")
         stale_member["phase"].update(value="unknown", health="unavailable")
         stale_member["activity"].update(at=None, health="stale", lastKnownAt=950)
         stale = report(
@@ -109,8 +157,8 @@ class TerminalRenderTests(unittest.TestCase):
         )
         for width in (40, 80, 120):
             text = render(stale, width=width)
-            self.assertIn("unknown (stale)", text)
-            self.assertIn("unknown (unavailable)", text)
+            self.assertIn("Unavailable", text)
+            self.assertIn("Stale", text)
             self.assertNotIn("running", text)
             self.assertNotIn("working", text)
 
@@ -138,8 +186,8 @@ class TerminalRenderTests(unittest.TestCase):
             ["alpha", "alpha", "bravo", "bravo"],
         )
         text = render(document)
-        self.assertEqual(text.count("[alpha/Default]"), 1)
-        self.assertEqual(text.count("[bravo/Default]"), 1)
+        self.assertEqual(text.count("[alpha/default]"), 1)
+        self.assertEqual(text.count("[bravo/default]"), 1)
 
     def test_no_color_and_pipes_override_terminal_color_requests(self):
         self.assertFalse(color_enabled("always", environ={"NO_COLOR": "1"}, isatty=True))
@@ -156,7 +204,7 @@ class TerminalRenderTests(unittest.TestCase):
             self.assertFalse(icons_enabled("auto", isatty=True, encoding=encoding))
         self.assertTrue(icons_enabled("auto", environ={"NO_COLOR": "1"}, isatty=True))
 
-    def test_status_glyphs_keep_independent_unknown_facts_and_readable_no_color_labels(self):
+    def test_status_labels_keep_unknown_facts_conservative_and_readable_without_color(self):
         member = row("exact-id", title="Session")
         member["runtime"].update(value="unknown", health="stale", lastKnownValue="running")
         member["phase"].update(value="unknown", health="stale", lastKnownValue="working")
@@ -165,11 +213,59 @@ class TerminalRenderTests(unittest.TestCase):
             mode="overview",
         )
         plain = render(document, icons=True, width=80)
-        self.assertIn("? unknown", plain)
-        self.assertIn("unknown (stale)", plain)
+        self.assertIn("Stale", plain)
         self.assertNotIn("● working", plain)
         self.assertNotIn("running", plain)
         self.assertNotIn("\x1b", plain)
         styled = render(document, color=True, icons=True, width=80)
-        self.assertIn("? unknown", styled)
+        self.assertIn("Stale", styled)
         self.assertEqual(SGR.sub("", styled), plain)
+
+    def test_status_is_current_runtime_then_phase_not_membership(self):
+        item = row("status-id")
+        self.assertEqual(_status_text(item), "Working")
+
+        item["runtime"].update(value="parked", health="current")
+        item["phase"].update(value="waiting", health="current")
+        self.assertEqual(_status_text(item), "Inactive")
+
+        item["membership"] = "recent"
+        item["runtime"].update(value="unknown", health="current")
+        item["phase"].update(value="working", health="current")
+        self.assertEqual(_status_text(item), "Unknown")
+
+        item["runtime"].update(value="unknown", health="unavailable")
+        self.assertEqual(_status_text(item), "Unavailable")
+
+        item["runtime"].update(value="running", health="current")
+        item["phase"].update(value="working", health="stale")
+        self.assertEqual(_status_text(item), "Stale")
+        item["phase"].update(value="unknown", health="unavailable")
+        self.assertEqual(_status_text(item), "Unavailable")
+        item["phase"].update(value="unknown", health="unsupported")
+        self.assertEqual(_status_text(item), "Unknown")
+
+        item["membership"] = "recent"
+        item["phase"].update(value="waiting", health="current")
+        self.assertEqual(_status_text(item), "Ready")
+
+    def test_activity_age_is_independent_and_workspace_falls_back_without_reusing_stale_repo(self):
+        item = row("status-id")
+        item["runtime"].update(value="parked", health="current")
+        item["phase"].update(value="waiting", health="current")
+        self.assertEqual(_status_text(item), "Inactive")
+        self.assertEqual(_last_active_text(item, 1_000), "~1s")
+
+        item["details"] = {
+            "workspaceHealth": "current",
+            "repo": {"root": "/synthetic/worktrees/topic-feature"},
+            "cwd": "/reported/elsewhere/src",
+        }
+        self.assertEqual(_workspace_text(item), "topic-feature")
+        item["details"]["workspaceHealth"] = "stale"
+        self.assertEqual(_workspace_text(item), "…/src")
+        item["details"]["cwd"] = None
+        self.assertEqual(_workspace_text(item), "unknown")
+
+        item["activity"].update(at=None, health="stale", lastKnownAt=950)
+        self.assertEqual(_last_active_text(item, 1_000), "Stale")

@@ -100,7 +100,7 @@ class DashboardSessionBoardTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(labels, ["Zulu", "Alpha", "Bravo"])
             content = _text(app.query_one("#content"))
             self.assertLess(content.index("Pinned sessions"), content.index("Other sessions"))
-            self.assertLess(content.index("Other sessions"), content.index("fixture/default"))
+            self.assertLess(content.index("Other sessions"), content.index("Alpha"))
             self.assertIn("* Zulu", content)
 
     async def test_pin_count_excludes_filtered_and_missing_identities_without_fake_rows(self):
@@ -220,7 +220,7 @@ class DashboardSessionBoardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertTrue(app._split_details())
             self.assertIn("* Pinned label", _text(app.query_one("#content")))
-            self.assertIn("active fixture/default", _text(app.query_one("#content")))
+            self.assertIn("fixture/default", _text(app.query_one("#content")))
             self.assertIn(app._selected_key, {app._row_key(item) for item in app._page_rows})
 
     async def test_grouped_pin_pages_keep_end_selection_visible_after_resize(self):

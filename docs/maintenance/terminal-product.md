@@ -227,12 +227,59 @@ not as additional maintained contracts or current deployment instructions.
 
 ## Source candidate: a read-only session board
 
-The maintained source adds favorites and remembered ordering to the independent
-read-only dashboard. These additions are **not in the published a14 reader**;
+The maintained source prioritizes status and activity in human terminal output,
+and adds favorites and remembered ordering to the independent read-only dashboard.
+These additions are **not in the published a14 reader**;
 publication and managed selection remain separate decisions. The
 [reviewed plan](https://github.com/byebyebryan/agent-observer/blob/ef623e80b7f419518df844acc9a80477289cce00/docs/maintenance/terminal-product.md#proposed-refinement-a-read-only-session-board)
 records the design research. Native Codex owns conversation selection, drafts,
 prompts, approvals and lifecycle. Native switching and its spike stay deferred.
+
+### User-facing rows
+
+The main human CLI and dashboard rows use **Status, Last active, Session,
+Profile, Workspace**. Status and activity age are the scan targets; the session
+title receives the flexible width. Profile and workspace are quieter context.
+Narrow dashboard rows and the split-details list put status/activity/title on
+the first line and profile/workspace below. Section/group headings and both
+lines count against the page budget; exact selection stays visible on resize.
+
+Status is a presentation summary of qualified facts, with no new producer state:
+
+| Required current evidence | Status |
+| --- | --- |
+| Running runtime and working phase | Working |
+| Running runtime and waiting phase | Ready |
+| Running runtime and blocked phase | Blocked |
+| Positively observed parked runtime | Inactive |
+| A required runtime/phase fact is stale or unavailable | Stale or Unavailable |
+| Unknown, unsupported, ambiguous or missing required evidence | Unknown |
+
+Runtime qualifies phase; an old waiting phase cannot make a parked or unknown
+runtime Ready. Active/recent membership does not establish work state. Source
+coverage remains visible independently, including partial coverage with valid
+positive row facts. Raw membership/runtime/phase and reasons remain available
+in details and terminal JSON v1. Existing filters and ordering retain their
+fact-level semantics.
+
+Last active is approximate time since native conversation activity, never time
+spent in the displayed status. It retains its own freshness and qualifications
+independently of runtime/phase; a display tick renews no evidence. Unknown ages
+stay qualified, and the approximate marker remains visible.
+
+Profile is a user-facing caption for the configured home, displayed with its
+host to distinguish identical profile names. Configuration keys, selectors
+such as `--home`, exact namespaces and the saved `host-home` group value do not
+change. Workspace uses a current already-projected repository/worktree name,
+otherwise compact reported cwd, otherwise unknown. The finite report's existing
+cwd metadata supplies its fallback. There is no filesystem or Git discovery.
+Full paths remain in details, and cwd is reported metadata without an independent
+freshness lease. Linked working-tree roots remain distinct.
+
+The finite overview retains its ten-row bound; human `list` retains full native
+IDs as secondary evidence. Piped text preserves full names and IDs without
+color or truncation. Human columns change; JSON v1 bytes and query/filter
+behavior remain compatible. Pins and saved-view state have no format change.
 
 ### Favorites and ordering
 

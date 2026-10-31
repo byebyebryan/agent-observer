@@ -137,6 +137,24 @@ ages are approximate against display wall time; receiving BOOTTIME leases own
 validity. Source health, uncertainty, nonmembers and clock discontinuity remain
 visible even if filters match no rows.
 
+## Source candidate: status-first output
+
+The maintained source uses **Status · Last active · Session · Profile · Workspace**
+for human overview/list output. This layout is separate from the published a14
+reader described above. It shares the dashboard's
+[qualified status vocabulary](../maintenance/terminal-product.md#user-facing-rows):
+Working, Ready, Blocked, Inactive and explicit Unknown/Stale/Unavailable.
+
+Last active is approximate time since conversation activity. Profile displays
+host/profile, while Workspace uses admitted repository/worktree context where
+available or reported cwd. Full paths and raw membership/runtime/phase remain
+in exact-session details; `list` retains full IDs as secondary evidence. The
+overview still displays at most ten rows. Long names and IDs remain complete in
+piped text, and no color/control sequences are added to pipes.
+
+This changes human presentation only. Terminal JSON v1, existing selectors
+including `--home`, query/filter behavior and ordering remain compatible.
+
 ## More hosts and homes
 
 Add another explicit source entry with a unique ID and host/home pair. For a

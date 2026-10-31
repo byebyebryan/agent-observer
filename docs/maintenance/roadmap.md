@@ -36,8 +36,10 @@ choices; they add no native, resource or physical qualification.
 
 ## Current focus: everyday CLI and dashboard use
 
-The maintained-source **read-only session board** adds exact favorites in stable
-relative order and remembered sort/group choices beside the normal Codex TUI.
+The maintained-source **read-only session board** prioritizes a combined status,
+last activity and session title, with profile/workspace context. It adds exact
+favorites in stable relative order and remembered sort/group choices beside
+the normal Codex TUI.
 The [source-candidate contract](terminal-product.md#source-candidate-a-read-only-session-board)
 records interaction, missing-session and local-state rules. This is separate
 from the published a14 reader. Native TUI switching and its feasibility spike
