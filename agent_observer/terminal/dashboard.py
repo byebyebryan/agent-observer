@@ -26,12 +26,14 @@ from .dashboard_view import (
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import (
     _activity_color,
+    _host_color,
     _last_active_text,
     _profile_color,
     _profile_text,
     _session_title,
     _status_label,
     _status_text,
+    _workspace_color,
     _workspace_text,
 )
 
@@ -62,6 +64,8 @@ class SessionLine(Static):
         style_for,
         age_index=None,
         age_style="",
+        profile_host_length=0,
+        profile_host_style="",
         surface_selection=True,
     ):
         self._cell_values = list(values)
@@ -72,6 +76,8 @@ class SessionLine(Static):
         self._style_for_cell = style_for
         self._age_index = age_index
         self._age_style = age_style
+        self._profile_host_length = profile_host_length
+        self._profile_host_style = profile_host_style
         classes = ["row"]
         if header:
             classes.append("table-heading")
@@ -91,6 +97,17 @@ class SessionLine(Static):
                 style = f"{style} {self._age_style}".strip()
             cell = Text(value, style=style)
             cell.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
+            if (
+                index == 4
+                and not self._header_row
+                and self._profile_host_length
+                and self._profile_host_style
+            ):
+                cell.stylize(
+                    self._profile_host_style,
+                    0,
+                    min(self._profile_host_length, len(cell.plain)),
+                )
             cell.pad_right(max(0, width - cell.cell_len))
             line.append_text(cell)
         return line
@@ -1007,6 +1024,10 @@ class DashboardApp(App[None]):
                     "/ find one term · f filters · o order · g grouping · p pin · P pins",
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
+                    "Palette: status=state · age fades new→old",
+                    "Profile: hue=host · shade=profile",
+                    "Workspace: repo=current cached root",
+                    "Workspace: dir=reported cwd · unknown=neutral",
                     "Search input keeps printable keys, including q/j/k.",
                     "Find includes current cached repository paths.",
                 ]
@@ -1418,7 +1439,18 @@ class DashboardApp(App[None]):
                         )
                     )
                     if not self.no_color:
-                        heading.stylize(self._profile_style(row))
+                        host_color = _host_color(row, light=not self.current_theme.dark)
+                        home_color = _profile_color(row, light=not self.current_theme.dark)
+                        if host_color and home_color:
+                            host_length = len(self._safe(group[0]))
+                            home_end = host_length + 1 + len(self._safe(group[1]))
+                            heading.stylize("bold", 0, len(heading.plain))
+                            heading.stylize(host_color[1], 0, min(host_length, len(heading.plain)))
+                            heading.stylize(
+                                home_color[1],
+                                min(host_length + 1, len(heading.plain)),
+                                min(home_end, len(heading.plain)),
+                            )
                     widgets.append(Static(heading, markup=False))
             widgets.extend(
                 self._session_widgets(
@@ -1471,7 +1503,9 @@ class DashboardApp(App[None]):
         if split or mode == "compact":
             if self._is_pinned_row(row):
                 title = "* " + title
-            selected_style = "reverse bold" if selected and self.no_color else ""
+            selected_style = (
+                "reverse bold" if selected and self.no_color else "bold" if selected else ""
+            )
             status = _status_label(_status_text(row), self.icons)
             age = self._activity_age(row)
             body_width = max(1, width - 4)
@@ -1484,15 +1518,17 @@ class DashboardApp(App[None]):
                 widget_id=f"age-{page_index}",
             )
             first = Horizontal(
-                self._cell("> " if selected else "  ", 2, selected_style, selection_marker=selected),
+                self._cell(
+                    "> " if selected else "  ", 2, selected_style, selection_marker=selected
+                ),
                 self._cell(
                     status,
                     status_width,
-                    selected_style if selected else self._semantic_style(status),
+                    "reverse bold" if selected and self.no_color else self._semantic_style(status),
                 ),
                 age_cell,
                 self._cell(title, label_width, selected_style),
-                classes=self._row_classes(selected),
+                classes="row",
             )
             profile = self._safe(_profile_text(row))
             workspace = self._safe(_workspace_text(row))
@@ -1505,14 +1541,21 @@ class DashboardApp(App[None]):
                     profile,
                     profile_width,
                     self._profile_style(row, selected=selected),
+                    span_styles=(
+                        (
+                            0,
+                            len(self._safe(row.get("source", {}).get("host"))),
+                            self._profile_host_style(row, selected=selected),
+                        ),
+                    ),
                 ),
                 self._cell("·", 2),
                 self._cell(
                     workspace,
                     workspace_width,
-                    selected_style if selected else "dim",
+                    self._workspace_style(row, selected=selected),
                 ),
-                classes=self._row_classes(selected),
+                classes="row",
             )
             self._age_cells[key] = (age_cell, age, row)
             return [
@@ -1541,6 +1584,13 @@ class DashboardApp(App[None]):
             marker="> " if selected else "  ",
             age_index=2,
             profile_style=self._profile_style(row),
+            profile_host_style=(
+                self._profile_host_style(row) if not self.no_color else ""
+            ),
+            profile_host_length=(
+                len(self._safe(row.get("source", {}).get("host"))) if not self.no_color else 0
+            ),
+            workspace_style=self._workspace_style(row),
             age_style=self._activity_style(row),
         )
         self._age_cells[key] = (age_cell, age, row)
@@ -1555,6 +1605,19 @@ class DashboardApp(App[None]):
             return "reverse bold" if selected else "dim"
         color = _profile_color(row, light=not self.current_theme.dark)
         style = color[1] if color else "dim"
+        return f"bold {style}" if selected else style
+
+    def _profile_host_style(self, row: dict, *, selected: bool = False) -> str:
+        if self.no_color:
+            return "reverse bold" if selected else "dim"
+        color = _host_color(row, light=not self.current_theme.dark)
+        style = color[1] if color else "dim"
+        return f"bold {style}" if selected else style
+
+    def _workspace_style(self, row: dict, *, selected: bool = False) -> str:
+        if self.no_color:
+            return "reverse bold" if selected else "dim"
+        style = _workspace_color(row, light=not self.current_theme.dark)[1]
         return f"bold {style}" if selected else style
 
     def _activity_style(
@@ -1576,6 +1639,9 @@ class DashboardApp(App[None]):
         marker: str = "  ",
         age_index: int | None = None,
         profile_style: str = "dim",
+        profile_host_style: str = "dim",
+        profile_host_length: int = 0,
+        workspace_style: str = "dim",
         age_style: str = "",
     ) -> tuple[SessionLine, SessionLine]:
         values = (marker, *cells)
@@ -1594,6 +1660,10 @@ class DashboardApp(App[None]):
                     return f"bold {semantic}" if semantic else "bold"
                 if role == "profile":
                     return f"bold {profile_style}"
+                if role == "workspace":
+                    return f"bold {workspace_style}"
+                if role == "marker":
+                    return "bold"
                 return "bold"
             if role == "status":
                 return self._semantic_style(value)
@@ -1604,7 +1674,7 @@ class DashboardApp(App[None]):
             if role == "profile":
                 return profile_style
             if role == "workspace":
-                return "dim"
+                return workspace_style
             return ""
 
         line = SessionLine(
@@ -1615,6 +1685,8 @@ class DashboardApp(App[None]):
             style_for=style_for,
             age_index=age_index,
             age_style=age_style,
+            profile_host_length=profile_host_length,
+            profile_host_style=profile_host_style,
             surface_selection=not self.no_color,
         )
         return line, line
@@ -1626,24 +1698,29 @@ class DashboardApp(App[None]):
         return status, age, title, profile, workspace
 
     def _semantic_style(self, value: str) -> str:
+        red, amber, green, cyan, quiet = (
+            ("red", "yellow", "green", "cyan", "dim")
+            if self.current_theme.dark
+            else ("#8c2233", "#665000", "#245624", "#005464", "#4b535e")
+        )
         normalized = value.casefold()
         if normalized[:2] in {"● ", "○ ", "! ", "- ", "? ", "× "}:
             normalized = normalized[2:]
         if any(
             token in normalized for token in ("unavailable", "not currently available", "failed")
         ):
-            return "bold red" if not self.no_color else "bold"
+            return f"bold {red}" if not self.no_color else "bold"
         if any(
             token in normalized
             for token in ("partial", "stale", "warming", "blocked", "unknown", "uncertain")
         ):
-            return "bold yellow" if not self.no_color else "bold"
+            return f"bold {amber}" if not self.no_color else "bold"
         if "working" in normalized or normalized in {"complete", "active"}:
-            return "green" if not self.no_color else "bold"
+            return green if not self.no_color else "bold"
         if "ready" in normalized or "waiting" in normalized:
-            return "cyan" if not self.no_color else "bold"
+            return cyan if not self.no_color else "bold"
         if normalized.removeprefix("- ") in {"inactive", "parked", "recent", "nonmember"}:
-            return "dim"
+            return quiet if not self.no_color else "dim"
         return ""
 
     def _cell(
@@ -1654,6 +1731,7 @@ class DashboardApp(App[None]):
         *,
         widget_id: str | None = None,
         selection_marker: bool = False,
+        span_styles: tuple[tuple[int, int, str], ...] = (),
     ) -> Static:
         safe_value = self._safe(value)
         text = Text(safe_value, style=style or None, no_wrap=True, overflow="ellipsis")
@@ -1661,6 +1739,9 @@ class DashboardApp(App[None]):
             # Explicit spans survive the Static cell's CSS foreground style.
             text.stylize(style)
         text.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
+        for start, end, span_style in span_styles:
+            if span_style and start < len(text.plain):
+                text.stylize(span_style, start, min(end, len(text.plain)))
         text.pad_right(max(1, width))
         classes = "cell selection-marker" if selection_marker else "cell"
         widget = Static(text, markup=False, id=widget_id, classes=classes)

@@ -473,6 +473,9 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 widget.content.plain for widget in app.query_one("#content").children
             )
             self.assertIn("current cached repository paths", help_text)
+            self.assertIn("age fades new→old", help_text)
+            self.assertIn("Profile: hue=host · shade=profile", help_text)
+            self.assertIn("Workspace: dir=reported cwd", help_text)
             await pilot.press("escape")
             await pilot.press("f")
             self.assertEqual(app._overlay, "filters")
@@ -551,7 +554,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(widget._cell_values[2].startswith("~"))
             self.assertEqual(widget._cell_values[3], "Alpha task")
             self.assertEqual(widget._cell_values[4], "fixture/default")
-            self.assertEqual(widget._cell_values[5], "…/workspace")
+            self.assertEqual(widget._cell_values[5], "dir …/workspace")
 
             prior_workspace = widget._cell_values[5]
             app._display_now_ms = lambda: 5_000_000
@@ -700,8 +703,11 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 for widget in app.query_one("#content").children
                 if "compact-row" in widget.classes
             )
-            self.assertTrue(compact.children[0].has_class("selected-row"))
-            self.assertTrue(compact.children[1].has_class("selected-row"))
+            self.assertTrue(compact.has_class("selected-row"))
+            self.assertFalse(compact.children[0].has_class("selected-row"))
+            self.assertFalse(compact.children[1].has_class("selected-row"))
+            self.assertTrue(compact.children[0].styles.background.is_transparent)
+            self.assertTrue(compact.children[1].styles.background.is_transparent)
 
             await pilot.press("enter")
             await pilot.resize_terminal(130, 40)
@@ -761,7 +767,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertIn("Status: Working", joined)
             self.assertIn("Last active: ~", joined)
             self.assertIn("Profile: fixture/default", joined)
-            self.assertIn("Workspace: …/workspace", joined)
+            self.assertIn("Workspace: dir …/workspace", joined)
             self.assertIn("Activity evidence: current", joined)
             self.assertIn("Raw observation facts", joined)
             self.assertIn("Runtime: running", joined)

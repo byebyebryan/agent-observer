@@ -7,12 +7,13 @@ Screen { background: $surface; color: $text; }
 #status { height: 1; padding: 0 1; color: $text-muted; }
 #footer { height: 1; padding: 0 1; background: $panel; color: $text-muted; }
 .row { height: 1; }
-.row.selected-row { background: $primary 18%; color: $text; text-style: bold; }
+.row.selected-row { background: $foreground 8%; text-style: bold; }
 .table-heading { color: $text-muted; text-style: bold; }
 .compact-row { height: 2; }
+.compact-row .row { background: transparent; }
 .cell { height: 1; padding: 0; margin: 0; overflow: hidden; text-wrap: nowrap; }
-.selected-row .cell { background: $primary 18%; color: $text; text-style: bold; }
-.selected-row .selection-marker { color: $primary; text-style: bold; }
+.selected-row .cell { text-style: bold; }
+.selected-row .selection-marker { text-style: bold; }
 .section-heading { height: 1; color: $text; text-style: bold; }
 .detail-title { text-style: bold; }
 .filter-tabs { color: $text; }

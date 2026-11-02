@@ -4,6 +4,8 @@ import json
 import re
 import unicodedata
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from test_terminal_model import lease, read, report, row, source, state
 
@@ -11,9 +13,12 @@ from agent_observer.terminal.render import (
     _last_active_text,
     _status_label,
     _status_text,
+    _workspace_color,
+    _workspace_kind,
     _workspace_text,
     color_enabled,
     icons_enabled,
+    light_background,
     render,
 )
 
@@ -33,6 +38,35 @@ def screen_width(line):
 
 
 class TerminalRenderTests(unittest.TestCase):
+    def test_explicit_light_background_hint_and_palette_keep_plain_output_identical(self):
+        self.assertTrue(light_background(environ={"COLORFGBG": "0;15"}))
+        self.assertTrue(light_background(environ={"COLORFGBG": "0;default;7"}))
+        for value in ("", "15;0", "garbage", "0;999", None):
+            self.assertFalse(light_background(environ={"COLORFGBG": value}))
+        item = row("light-palette")
+        document = report([state(current_read=read(rows=[item], leases=[lease("light-palette")]))])
+        for mode in ("overview", "list"):
+            for width in (60, 140):
+                light = render(document, mode=mode, color=True, light=True, width=width)
+                dark = render(document, mode=mode, color=True, width=width)
+                plain = render(document, mode=mode, width=width)
+                self.assertNotEqual(light, dark)
+                self.assertEqual(SGR.sub("", light), plain)
+                self.assertEqual(render(document, mode=mode, light=True, width=width), plain)
+                self.assertIn("\x1b[38;2;128;69;0m", light)
+        from agent_observer.terminal.cli import _emit
+
+        output = []
+        tty = SimpleNamespace(isatty=lambda: True, encoding="utf-8")
+        args = SimpleNamespace(format="text", color="always", icons="never")
+        with (
+            patch("agent_observer.terminal.cli.sys.stdout", tty),
+            patch("agent_observer.terminal.cli.write_stdout", output.append),
+            patch.dict("os.environ", {"COLORFGBG": "0;15", "NO_COLOR": ""}),
+        ):
+            self.assertEqual(_emit(document, args, "overview"), 0)
+        self.assertIn("\x1b[38;2;128;69;0m", output[0])
+
     def test_status_colors_survive_padding_in_the_wide_table(self):
         items = [row(f"id-{index}", title=f"Task {index}") for index in range(3)]
         for item, phase in zip(items, ("working", "waiting", "blocked"), strict=True):
@@ -56,8 +90,10 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertIn("Working", title_line)
         self.assertIn("~", title_line)
         context_line = next(line for line in text.splitlines() if "fixture/default" in line and "·" in line)
+        self.assertIn("dir …/agent-observer-feature", context_line)
         self.assertIn("agent-observer-feature", context_line)
         self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
+        self.assertNotIn("\x1b", render(document, width=80))
         self.assertEqual(json.dumps(document, sort_keys=True), before)
 
     def test_long_and_wide_metadata_wraps_in_all_tty_views_without_losing_text(self):
@@ -261,11 +297,19 @@ class TerminalRenderTests(unittest.TestCase):
             "repo": {"root": "/synthetic/worktrees/topic-feature"},
             "cwd": "/reported/elsewhere/src",
         }
-        self.assertEqual(_workspace_text(item), "topic-feature")
+        self.assertEqual(_workspace_kind(item), "repo")
+        self.assertEqual(_workspace_text(item), "repo topic-feature")
+        self.assertEqual(_workspace_color(item), ("38;2;85;215;175", "#55d7af"))
+        self.assertEqual(_workspace_color(item, light=True), ("38;2;0;93;73", "#005d49"))
         item["details"]["workspaceHealth"] = "stale"
-        self.assertEqual(_workspace_text(item), "…/src")
+        self.assertEqual(_workspace_kind(item), "dir")
+        self.assertEqual(_workspace_text(item), "dir …/src")
+        self.assertEqual(_workspace_color(item), ("38;2;240;181;111", "#f0b56f"))
+        self.assertEqual(_workspace_color(item, light=True), ("38;2;128;69;0", "#804500"))
         item["details"]["cwd"] = None
+        self.assertEqual(_workspace_kind(item), "unknown")
         self.assertEqual(_workspace_text(item), "unknown")
+        self.assertEqual(_workspace_color(item, light=True), ("38;2;75;83;94", "#4b535e"))
 
         item["activity"].update(at=None, health="stale", lastKnownAt=950)
         self.assertEqual(_last_active_text(item, 1_000), "Stale")

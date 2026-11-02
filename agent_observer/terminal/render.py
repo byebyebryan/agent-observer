@@ -13,14 +13,31 @@ from pathlib import PurePosixPath
 from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
-_PROFILE_COLORS = (
-    (69, 25),
-    (68, 24),
-    (98, 55),
-    (134, 91),
-    (140, 97),
-    (170, 127),
+_DARK_PROFILE_FAMILIES = (
+    (93, 153, 255),
+    (189, 122, 255),
+    (242, 116, 213),
+    (82, 181, 255),
+    (140, 144, 255),
 )
+_LIGHT_PROFILE_FAMILIES = (
+    (23, 70, 176),
+    (116, 38, 185),
+    (150, 22, 120),
+    (0, 74, 153),
+    (69, 52, 184),
+)
+_ACTIVITY_DARK = ((255, 228, 154), (129, 159, 199))
+_ACTIVITY_LIGHT = ((108, 75, 0), (49, 82, 122))
+_ACTIVITY_NEUTRAL_DARK = (169, 178, 187)
+_ACTIVITY_NEUTRAL_LIGHT = (75, 83, 94)
+_WORKSPACE_REPO_DARK = (85, 215, 175)
+_WORKSPACE_REPO_LIGHT = (0, 93, 73)
+_WORKSPACE_DIR_DARK = (240, 181, 111)
+_WORKSPACE_DIR_LIGHT = (128, 69, 0)
+_WORKSPACE_UNKNOWN_DARK = (169, 178, 187)
+_WORKSPACE_UNKNOWN_LIGHT = (75, 83, 94)
+_PROFILE_SHADE_STRENGTHS = (0.16, 0.28, 0.40)
 _ACTIVITY_FADE_MS = 86_400_000
 _ACTIVITY_FADE_LOG = math.log1p(_ACTIVITY_FADE_MS / 60_000)
 
@@ -92,6 +109,13 @@ def color_enabled(mode: str, *, environ=None, isatty: bool = False) -> bool:
     return environ.get("TERM", "") != "dumb"
 
 
+def light_background(*, environ=None) -> bool:
+    """Honor an explicit conventional white-background hint without terminal I/O."""
+    environ = os.environ if environ is None else environ
+    value = environ.get("COLORFGBG", "")
+    return isinstance(value, str) and value.rsplit(";", 1)[-1] in {"7", "15"}
+
+
 def icons_enabled(
     mode: str, *, environ=None, isatty: bool = False, encoding: str | None = "utf-8"
 ) -> bool:
@@ -114,11 +138,12 @@ def _style(value: str, code: str, enabled: bool) -> str:
 def _cell_style(
     value: str, field: str, enabled: bool, *,
     profile_code: str | None = None, activity_code: str | None = None,
+    workspace_code: str | None = None,
 ) -> str:
     code = {
         "session": "1",
         "profile": profile_code or "2",
-        "workspace": "2",
+        "workspace": workspace_code or "2",
         "last_active": activity_code,
         "id": "2",
     }.get(field)
@@ -343,21 +368,81 @@ def _profile_text(row: dict) -> str:
     return f"{host}/{home}"
 
 
-def _indexed_color(index: int) -> tuple[str, str]:
-    return f"38;5;{index}", f"color({index})"
+def _rgb_color(rgb: tuple[int, int, int]) -> tuple[str, str]:
+    red, green, blue = rgb
+    return f"38;2;{red};{green};{blue}", f"#{red:02x}{green:02x}{blue:02x}"
 
 
-def _profile_color(row: dict, *, light: bool = False) -> tuple[str, str] | None:
-    """Stable ANSI/Rich identity color, independent of row order or selection."""
+def _mix_rgb(
+    start: tuple[int, int, int], end: tuple[int, int, int], amount: float
+) -> tuple[int, int, int]:
+    return tuple(
+        round(left + (right - left) * amount) for left, right in zip(start, end, strict=True)
+    )
+
+
+def _profile_identity(row: dict) -> tuple[str, str] | None:
     source = row.get("source")
     if type(source) is not dict:
         return None
     host, home = source.get("host"), source.get("home")
     if type(host) is not str or not host or type(home) is not str or not home:
         return None
-    key = (host + "\0" + home).encode("utf-8")
-    slot = int.from_bytes(hashlib.sha256(key).digest()[:4], "big") % len(_PROFILE_COLORS)
-    return _indexed_color(_PROFILE_COLORS[slot][int(light)])
+    return host, home
+
+
+def _profile_family(host: str) -> int:
+    """Choose a host color family without depending on roster or row order."""
+    digest = hashlib.sha256(host.encode("utf-8")).digest()
+    return int.from_bytes(digest[:4], "big") % len(_DARK_PROFILE_FAMILIES)
+
+
+def _host_color(row: dict, *, light: bool = False) -> tuple[str, str] | None:
+    identity = _profile_identity(row)
+    if identity is None:
+        return None
+    host, _home = identity
+    palette = _LIGHT_PROFILE_FAMILIES if light else _DARK_PROFILE_FAMILIES
+    return _rgb_color(palette[_profile_family(host)])
+
+
+def _profile_color(row: dict, *, light: bool = False) -> tuple[str, str] | None:
+    """Stable home shade inside the exact host's family."""
+    identity = _profile_identity(row)
+    if identity is None:
+        return None
+    host, home = identity
+    palette = _LIGHT_PROFILE_FAMILIES if light else _DARK_PROFILE_FAMILIES
+    family = palette[_profile_family(host)]
+    if home == "default":
+        strength = 0.0
+    else:
+        digest = hashlib.sha256(home.encode("utf-8")).digest()
+        shade = int.from_bytes(digest[:4], "big") % len(_PROFILE_SHADE_STRENGTHS)
+        strength = _PROFILE_SHADE_STRENGTHS[shade]
+    target = (0, 0, 0) if light else (255, 255, 255)
+    return _rgb_color(_mix_rgb(family, target, strength))
+
+
+def _profile_ansi(row: dict, enabled: bool, *, bracketed: bool = False, light: bool = False) -> str:
+    """Render host and home as separate identity-color spans."""
+    identity = _profile_identity(row)
+    if identity is None:
+        return "unknown"
+    host, home = identity
+    host_color = _host_color(row, light=light)
+    home_color = _profile_color(row, light=light)
+    prefix = "[" if bracketed else ""
+    suffix = "]" if bracketed else ""
+    if not enabled or host_color is None or home_color is None:
+        return f"{prefix}{host}/{home}{suffix}"
+    return (
+        prefix
+        + _style(host, host_color[0], True)
+        + "/"
+        + _style(home, home_color[0], True)
+        + suffix
+    )
 
 
 def _activity_color(row: dict | None, now_ms: int, *, light: bool = False) -> tuple[str, str]:
@@ -368,11 +453,11 @@ def _activity_color(row: dict | None, now_ms: int, *, light: bool = False) -> tu
         type(activity) is not dict or activity.get("health") != "current"
         or type(at) is not int or at > now_ms
     ):
-        return _indexed_color(239 if light else 247)
+        return _rgb_color(_ACTIVITY_NEUTRAL_LIGHT if light else _ACTIVITY_NEUTRAL_DARK)
     age = min(now_ms - at, _ACTIVITY_FADE_MS)
     progress = math.log1p(age / 60_000) / _ACTIVITY_FADE_LOG
-    start, end = (232, 240) if light else (255, 245)
-    return _indexed_color(round(start + (end - start) * progress))
+    start, end = _ACTIVITY_LIGHT if light else _ACTIVITY_DARK
+    return _rgb_color(_mix_rgb(start, end, progress))
 
 
 def _compact_cwd(value: object) -> str | None:
@@ -388,8 +473,8 @@ def _compact_cwd(value: object) -> str | None:
     return f"…/{tail}"
 
 
-def _workspace_text(row: dict) -> str:
-    """Use only already-projected current repo metadata or reported cwd."""
+def _workspace_kind(row: dict) -> str:
+    """Classify the same leased workspace evidence used by its visible label."""
     details = row.get("details")
     if type(details) is not dict:
         return "unknown"
@@ -399,11 +484,33 @@ def _workspace_text(row: dict) -> str:
         and type(repository) is dict
         and type(repository.get("root")) is str
         and repository["root"]
+        and PurePosixPath(repository["root"]).name
     ):
-        leaf = PurePosixPath(repository["root"]).name
-        if leaf:
-            return leaf
-    return _compact_cwd(details.get("cwd")) or "unknown"
+        return "repo"
+    return "dir" if _compact_cwd(details.get("cwd")) else "unknown"
+
+
+def _workspace_text(row: dict) -> str:
+    """Use only current cached repo metadata or the reported working directory."""
+    details = row.get("details")
+    if type(details) is not dict:
+        return "unknown"
+    kind = _workspace_kind(row)
+    if kind == "repo":
+        return f"repo {PurePosixPath(details['repo']['root']).name}"
+    if kind == "dir":
+        return f"dir {_compact_cwd(details.get('cwd'))}"
+    return "unknown"
+
+
+def _workspace_color(row: dict, *, light: bool = False) -> tuple[str, str]:
+    kind = _workspace_kind(row)
+    palette = {
+        "repo": _WORKSPACE_REPO_LIGHT if light else _WORKSPACE_REPO_DARK,
+        "dir": _WORKSPACE_DIR_LIGHT if light else _WORKSPACE_DIR_DARK,
+        "unknown": _WORKSPACE_UNKNOWN_LIGHT if light else _WORKSPACE_UNKNOWN_DARK,
+    }
+    return _rgb_color(palette[kind])
 
 
 def _session_title(row: dict) -> str:
@@ -510,11 +617,11 @@ def _main_table_header(enabled: bool, widths: list[int]) -> str:
 
 
 def _main_table_row(
-    row: dict, now_ms: int, enabled: bool, widths: list[int], icons: bool
+    row: dict, now_ms: int, enabled: bool, widths: list[int], icons: bool, *, light: bool = False
 ) -> list[str]:
     values = _main_values(row, now_ms)
-    profile_color = _profile_color(row)
-    activity_color = _activity_color(row, now_ms)
+    activity_color = _activity_color(row, now_ms, light=light)
+    workspace_color = _workspace_color(row, light=light)
     values[0] = _status_label(values[0], icons)
     cells = [
         _finish([value], size).splitlines()
@@ -526,45 +633,52 @@ def _main_table_row(
         for index, (cell, size) in enumerate(zip(cells, widths, strict=True)):
             value = cell[line_index] if line_index < len(cell) else ""
             padded = value + " " * max(0, size - _cells(value))
-            parts.append(
-                _cell_style(
-                    padded,
-                    _MAIN_FIELDS[index],
-                    enabled,
-                    profile_code=profile_color[0] if profile_color else None,
-                    activity_code=activity_color[0],
+            field = _MAIN_FIELDS[index]
+            if field == "profile" and value == _profile_text(row):
+                parts.append(_profile_ansi(row, enabled, light=light))
+                parts[-1] += " " * max(0, size - _cells(value))
+            else:
+                parts.append(
+                    _cell_style(
+                        padded,
+                        field,
+                        enabled,
+                        activity_code=activity_color[0],
+                        workspace_code=workspace_color[0],
+                    )
                 )
-            )
         output.append("  ".join(parts).rstrip())
     return output
 
 
 def _compact_main_row(
-    row: dict, now_ms: int, enabled: bool, width: int, icons: bool
+    row: dict, now_ms: int, enabled: bool, width: int, icons: bool, *, light: bool = False
 ) -> list[str]:
     status, activity, title, profile, workspace = _main_values(row, now_ms)
     status = _status_label(status, icons)
     first = (
         _cell_style(status, "status", enabled)
         + "  "
-        + _cell_style(activity, "last_active", enabled, activity_code=_activity_color(row, now_ms)[0])
+        + _cell_style(activity, "last_active", enabled, activity_code=_activity_color(row, now_ms, light=light)[0])
         + "  "
         + _cell_style(title, "session", enabled)
     )
-    profile_color = _profile_color(row)
     second = (
         "  "
+        + _profile_ansi(row, enabled, light=light)
         + _cell_style(
-            profile, "profile", enabled,
-            profile_code=profile_color[0] if profile_color else None,
+            f" · {workspace}",
+            "workspace",
+            enabled,
+            workspace_code=_workspace_color(row, light=light)[0],
         )
-        + _cell_style(f" · {workspace}", "workspace", enabled)
     )
     return _finish([first, second], width).splitlines()
 
 
 def _overview_table(
-    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool
+    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool,
+    *, light: bool = False
 ) -> list[str]:
     if not rows:
         return []
@@ -578,19 +692,18 @@ def _overview_table(
         if group == "host-home":
             selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                profile_color = _profile_color(row)
-                code = "1;" + profile_color[0] if profile_color else "1"
-                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", code, enabled))
+                output.append(_profile_ansi(row, enabled, bracketed=True, light=light))
                 previous_group = selected_group
         if widths is None:
-            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
+            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons, light=light))
         else:
-            output.extend(_main_table_row(row, now_ms, enabled, widths, icons))
+            output.extend(_main_table_row(row, now_ms, enabled, widths, icons, light=light))
     return output
 
 
 def _session_table(
-    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool
+    rows: list[dict], now_ms: int, enabled: bool, group: str, width: int | None, icons: bool,
+    *, light: bool = False
 ) -> list[str]:
     if not rows:
         return []
@@ -604,14 +717,12 @@ def _session_table(
         if group == "host-home":
             selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                profile_color = _profile_color(row)
-                code = "1;" + profile_color[0] if profile_color else "1"
-                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", code, enabled))
+                output.append(_profile_ansi(row, enabled, bracketed=True, light=light))
                 previous_group = selected_group
         if widths is None:
-            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
+            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons, light=light))
         else:
-            output.extend(_main_table_row(row, now_ms, enabled, widths, icons))
+            output.extend(_main_table_row(row, now_ms, enabled, widths, icons, light=light))
         evidence = "  id: " + _cell_style(row["identity"]["nativeId"], "id", enabled)
         output.extend(_finish([evidence], width).splitlines() if width is not None else [evidence])
         if row.get("context"):
@@ -714,6 +825,7 @@ def render(
     *,
     mode: str = "overview",
     color: bool = False,
+    light: bool = False,
     icons: bool = False,
     width: int | None = None,
     command: str = "agent-observer sessions",
@@ -794,7 +906,7 @@ def render(
         lines.append("0 matches; source health and unfiltered counts are shown above.")
     rows = _rows(report)
     table = _overview_table if mode == "overview" else _session_table
-    lines.extend(table(rows, _wall_now_ms(report), color, report["filters"]["group"], width, icons))
+    lines.extend(table(rows, _wall_now_ms(report), color, report["filters"]["group"], width, icons, light=light))
     if mode == "overview":
         lines.append("")
         if totals["displayedMatches"] > totals["shown"]:

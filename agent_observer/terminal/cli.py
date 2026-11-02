@@ -18,7 +18,7 @@ from ..bounded_json import WireError, decode_document
 from .config import TerminalConfigError, load_config, select_sources
 from .model import build_report, generated_at_now, identity_tuple, safe_metadata
 from .output import OutputError, json_document, schema_document, write_stderr, write_stdout
-from .render import color_enabled, icons_enabled, render
+from .render import color_enabled, icons_enabled, light_background, render
 from .sources import TerminalDependencyError, read_sources
 
 
@@ -453,7 +453,8 @@ def _emit(
                 shutil.get_terminal_size(fallback=(80, 24)).columns if sys.stdout.isatty() else None
             )
             document = render(
-                report, mode=mode, color=enabled, icons=glyphs, width=width, command=command
+                report, mode=mode, color=enabled, light=light_background(),
+                icons=glyphs, width=width, command=command
             )
         write_stdout(document)
     except OutputError as error:
