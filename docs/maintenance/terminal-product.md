@@ -276,6 +276,12 @@ cwd metadata supplies its fallback. There is no filesystem or Git discovery.
 Full paths remain in details, and cwd is reported metadata without an independent
 freshness lease. Linked working-tree roots remain distinct.
 
+Profile labels and their group headings use a stable six-color ANSI palette
+derived from the exact host/profile pair. Colors stay consistent across row
+order, filters, selection and CLI/dashboard views; palette colors may repeat.
+Only profile identity is colored this way. Status retains its own colors,
+workspace stays quiet, and no-color/piped output retains plain labels.
+
 The finite overview retains its ten-row bound; human `list` retains full native
 IDs as secondary evidence. Piped text preserves full names and IDs without
 color or truncation. Human columns change; JSON v1 bytes and query/filter

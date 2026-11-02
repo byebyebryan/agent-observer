@@ -26,6 +26,7 @@ from .dashboard_view import (
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import (
     _last_active_text,
+    _profile_color,
     _profile_text,
     _session_title,
     _status_label,
@@ -1405,17 +1406,15 @@ class DashboardApp(App[None]):
                 group = (row.get("source", {}).get("host"), row.get("source", {}).get("home"))
                 if group != prior_group:
                     prior_group = group
-                    widgets.append(
-                        Static(
-                            self._as_text(
-                                self._fit_line(
-                                    f"{self._safe(group[0])}/{self._safe(group[1])}",
-                                    render_width - 4,
-                                )
-                            ),
-                            markup=False,
+                    heading = self._as_text(
+                        self._fit_line(
+                            f"{self._safe(group[0])}/{self._safe(group[1])}",
+                            render_width - 4,
                         )
                     )
+                    if not self.no_color:
+                        heading.stylize(self._profile_style(row))
+                    widgets.append(Static(heading, markup=False))
             widgets.extend(
                 self._session_widgets(
                     row,
@@ -1500,7 +1499,7 @@ class DashboardApp(App[None]):
                 self._cell(
                     profile,
                     profile_width,
-                    selected_style if selected else "dim",
+                    self._profile_style(row, selected=selected),
                 ),
                 self._cell("·", 2),
                 self._cell(
@@ -1536,6 +1535,7 @@ class DashboardApp(App[None]):
             selected=selected,
             marker="> " if selected else "  ",
             age_index=2,
+            profile_style=self._profile_style(row),
         )
         self._age_cells[key] = (age_cell, age, row)
         self._line_widgets[key] = row_widget
@@ -1543,6 +1543,13 @@ class DashboardApp(App[None]):
 
     def _row_classes(self, selected: bool) -> str:
         return "row selected-row" if selected and not self.no_color else "row"
+
+    def _profile_style(self, row: dict, *, selected: bool = False) -> str:
+        if self.no_color:
+            return "reverse bold" if selected else "dim"
+        color = _profile_color(row)
+        style = color[1] if color else "dim"
+        return f"bold {style}" if selected else style
 
     def _row_widget(
         self,
@@ -1553,6 +1560,7 @@ class DashboardApp(App[None]):
         header: bool = False,
         marker: str = "  ",
         age_index: int | None = None,
+        profile_style: str = "dim",
     ) -> tuple[SessionLine, SessionLine]:
         values = (marker, *cells)
         all_widths = (2, *widths)
@@ -1568,6 +1576,8 @@ class DashboardApp(App[None]):
                 if role == "status":
                     semantic = self._semantic_style(value)
                     return f"bold {semantic}" if semantic else "bold"
+                if role == "profile":
+                    return f"bold {profile_style}"
                 return "bold"
             if role == "status":
                 return self._semantic_style(value)
@@ -1575,7 +1585,9 @@ class DashboardApp(App[None]):
                 return "cyan" if not self.no_color else ""
             if role == "label":
                 return "bold"
-            if role in {"profile", "workspace"}:
+            if role == "profile":
+                return profile_style
+            if role == "workspace":
                 return "dim"
             return ""
 

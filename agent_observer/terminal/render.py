@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import unicodedata
@@ -11,6 +12,14 @@ from pathlib import PurePosixPath
 from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
+_PROFILE_COLORS = (
+    ("94", "bright_blue"),
+    ("34", "blue"),
+    ("35", "magenta"),
+    ("95", "bright_magenta"),
+    ("36", "cyan"),
+    ("96", "bright_cyan"),
+)
 
 
 def _cells(value: str) -> int:
@@ -99,10 +108,12 @@ def _style(value: str, code: str, enabled: bool) -> str:
     return f"\x1b[{code}m{value}\x1b[0m" if enabled else value
 
 
-def _cell_style(value: str, field: str, enabled: bool) -> str:
+def _cell_style(
+    value: str, field: str, enabled: bool, *, profile_code: str | None = None
+) -> str:
     code = {
         "session": "1",
-        "profile": "2",
+        "profile": profile_code or "2",
         "workspace": "2",
         "last_active": "36",
         "id": "2",
@@ -328,6 +339,19 @@ def _profile_text(row: dict) -> str:
     return f"{host}/{home}"
 
 
+def _profile_color(row: dict) -> tuple[str, str] | None:
+    """Stable ANSI/Rich identity color, independent of row order or selection."""
+    source = row.get("source")
+    if type(source) is not dict:
+        return None
+    host, home = source.get("host"), source.get("home")
+    if type(host) is not str or not host or type(home) is not str or not home:
+        return None
+    key = (host + "\0" + home).encode("utf-8")
+    slot = int.from_bytes(hashlib.sha256(key).digest()[:4], "big") % len(_PROFILE_COLORS)
+    return _PROFILE_COLORS[slot]
+
+
 def _compact_cwd(value: object) -> str | None:
     if type(value) is not str or not value:
         return None
@@ -466,6 +490,7 @@ def _main_table_row(
     row: dict, now_ms: int, enabled: bool, widths: list[int], icons: bool
 ) -> list[str]:
     values = _main_values(row, now_ms)
+    profile_color = _profile_color(row)
     values[0] = _status_label(values[0], icons)
     cells = [
         _finish([value], size).splitlines()
@@ -477,7 +502,14 @@ def _main_table_row(
         for index, (cell, size) in enumerate(zip(cells, widths, strict=True)):
             value = cell[line_index] if line_index < len(cell) else ""
             padded = value + " " * max(0, size - _cells(value))
-            parts.append(_cell_style(padded, _MAIN_FIELDS[index], enabled))
+            parts.append(
+                _cell_style(
+                    padded,
+                    _MAIN_FIELDS[index],
+                    enabled,
+                    profile_code=profile_color[0] if profile_color else None,
+                )
+            )
         output.append("  ".join(parts).rstrip())
     return output
 
@@ -494,7 +526,15 @@ def _compact_main_row(
         + "  "
         + _cell_style(title, "session", enabled)
     )
-    second = "  " + _cell_style(f"{profile} · {workspace}", "profile", enabled)
+    profile_color = _profile_color(row)
+    second = (
+        "  "
+        + _cell_style(
+            profile, "profile", enabled,
+            profile_code=profile_color[0] if profile_color else None,
+        )
+        + _cell_style(f" · {workspace}", "workspace", enabled)
+    )
     return _finish([first, second], width).splitlines()
 
 
@@ -513,7 +553,9 @@ def _overview_table(
         if group == "host-home":
             selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", "1;36", enabled))
+                profile_color = _profile_color(row)
+                code = "1;" + profile_color[0] if profile_color else "1"
+                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", code, enabled))
                 previous_group = selected_group
         if widths is None:
             output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
@@ -537,7 +579,9 @@ def _session_table(
         if group == "host-home":
             selected_group = (source["host"], source["home"])
             if selected_group != previous_group:
-                output.append(f"[{selected_group[0]}/{selected_group[1]}]")
+                profile_color = _profile_color(row)
+                code = "1;" + profile_color[0] if profile_color else "1"
+                output.append(_style(f"[{selected_group[0]}/{selected_group[1]}]", code, enabled))
                 previous_group = selected_group
         if widths is None:
             output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons))
