@@ -2,7 +2,7 @@
 
 Start with [first-source setup](guides/source-setup.md) if you own the Codex
 home but have not published a working-set cache yet. It links the separately
-released a11 producer to the a14 [sessions CLI](guides/sessions-cli.md) and
+released a11 producer to the a15 [sessions CLI](guides/sessions-cli.md) and
 [standalone dashboard](guides/dashboard.md). For a direct native diagnostic
 read, use [getting started](getting-started.md).
 
@@ -41,7 +41,7 @@ and project relationships.
 | [Native validation](maintenance/validation.md) | Independent Codex proof and its limits |
 | [Operations](maintenance/operations.md) | Releases, selected roles and recovery ownership |
 | [Roadmap](maintenance/roadmap.md) | Current direction, next priorities and deferred work |
-| [Terminal product contract](maintenance/terminal-product.md) | Released CLI/dashboard semantics and limits; separate source session-board candidate |
+| [Terminal product contract](maintenance/terminal-product.md) | Released CLI/dashboard and session-board semantics, lifecycle and limits |
 
 These pages describe maintained behavior. Superseded plans, status notes and
 old receipts are kept in Git rather than in this documentation tree.

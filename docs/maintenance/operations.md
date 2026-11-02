@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+The [0.7.0a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
 provides the configured sessions CLI and optional standalone dashboard while
 retaining terminal JSON interface 1. Reader installation/configuration is
 independently selected; publication does not upgrade a collector or publisher.
@@ -12,29 +12,30 @@ with Mesh a25: Codex-only read-only API 4 / snapshot 6 / Service 4 and working-s
 v1 interfaces. Full publishers, dashboards, Tmux and SSH authority retain
 independent reviewed selections.
 
-## Dashboard reader release
+## CLI and dashboard reader release
 
-The [a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
-adds dashboard literal search over current cached repository roots, shared Git
-directories and relative paths. Repository fields stop matching when their
-workspace support expires; exact selection and source health remain independent
-of displayed matches. It retains a13's standalone dashboard and workspace details.
-Textual remains optional. The qualified dependency stack and Mesh a25 bytes are
-unchanged, as are finite CLI query results, terminal JSON v1, API 4,
-snapshot/watch 6, Service 4 and working-set v1.
+The [a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
+adds status/activity-first human rows, exact favorites, optional saved ordering,
+stable host/profile colors and explicit repo/directory cues. The finite CLI also
+honors an explicit terminal light-background hint. Activity and host sorting use
+recency across running/parked and active/recent members; this intentionally
+changes row order in terminal JSON v1 while preserving its schema and fields.
+Current repository search and exact selection retain their existing leases.
 
-The [a14 artifact manifest](../../artifacts/observer-0.7.0a14.json) binds the
-runtime source and frozen wheel. Release
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/provenance.json)
-binds qualification/tag source, exact assets and source/installed checks.
-The release includes `dashboard-requirements.txt` for reproducible optional-stack
-installation. The [dashboard guide](../guides/dashboard.md) retains the earlier
-native/resource measurement boundaries; this search fix adds no new sustained
-capacity or native-classification claim.
-Managed CLI/dashboard adoption belongs to `deployments/agent-observer-cli.json`;
-it preserves the a11 collector/publisher cohort and independent Agent Plus,
-Tmux, full-publisher and hardware selections. The previous
-[a13 artifact manifest](../../artifacts/observer-0.7.0a13.json) and public release
+The [a15 artifact manifest](../../artifacts/observer-0.7.0a15.json) binds runtime
+source and the frozen wheel. Public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/provenance.json)
+binds qualification/tag source, exact assets, CI and installed checks on Python
+3.11/3.14. `dashboard-requirements.txt` retains the qualified Textual 8.2.8 stack
+and Mesh a25 bytes. API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
+No new sustained-resource, large-fleet, soak or native-classification acceptance
+is claimed. The [dashboard guide](../guides/dashboard.md) and
+[product contract](terminal-product.md) preserve those boundaries.
+
+Managed adoption belongs to `deployments/agent-observer-cli.json`, independently
+of the a11 collector/publisher cohort, routes, Agent Plus, Tmux, full publishers
+and hardware. The previous [a14 artifact](../../artifacts/observer-0.7.0a14.json)
+and [a14 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
 remain immutable rollback inputs.
 
 ## Selection and recovery

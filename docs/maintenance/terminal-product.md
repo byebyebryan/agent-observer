@@ -1,6 +1,6 @@
 # CLI and dashboard product contract
 
-The [0.7.0a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+The [0.7.0a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
 provides the finite sessions CLI and optional persistent dashboard. This page
 records their current behavior, ownership and acceptance limits. Use the
 [sessions guide](../guides/sessions-cli.md) and [dashboard guide](../guides/dashboard.md)
@@ -49,9 +49,8 @@ than choosing by arrival order. Native observation semantics remain in
 - Default presentation hides confirmed child/system kinds, retaining unknown
   kinds. Membership/runtime/phase/query selectors OR within a dimension and AND
   across dimensions. Nonmembers require explicit inclusion; exact inspection
-  can still resolve them. Published a14 ordering is active, recent, uncertain,
-  then current native activity descending and full identity as tie-breaker.
-  The source candidate below uses activity-first ordering instead.
+  can still resolve them. Activity order is newest first across running and parked
+  rows; unknown ages follow known timestamps and full identity breaks ties.
 - Search is a case-insensitive literal substring over admitted name, project,
   reported cwd, host/home and full native ID; queries are 1–256 characters.
   Dashboard search also includes sanitized current repository root/commonDir/
@@ -67,8 +66,8 @@ than choosing by arrival order. Native observation semantics remain in
   clock uncertainty.
 
 The dashboard initially shows the full list with details closed. At 80x24 it
-uses single-line rows; at 140 columns it adds Repo and separate runtime/phase
-columns. Enter opens split details at 120x30 or larger, otherwise a separate
+uses Status, Last active, Session, Profile and Workspace rows. Enter opens
+split details at 120x30 or larger, otherwise a separate
 view. At least 60x16 supports compact rows; smaller terminals show guidance,
 overall health and help/quit. Source health remains visible in panels and
 filtered views. The [dashboard guide](../guides/dashboard.md#read-and-navigate)
@@ -114,7 +113,7 @@ Product reads require the public working-set facade and optional Mesh dependency
 even for a local bridge; published recipes pair the reader with Mesh a25.
 Core and Service 4 diagnostics import neither Mesh nor Textual. The dashboard
 extra is optional; its qualified framework is Textual 8.2.8. Published dependency constraints are linked from
-[operations](operations.md#dashboard-reader-release).
+[operations](operations.md#cli-and-dashboard-reader-release).
 
 The independent CLI/dashboard reader selection does not advance collectors,
 working-set/full publishers, hardware dashboards, Agent Plus or Tmux. Readers
@@ -196,8 +195,8 @@ comparisons under [validation](validation.md), preserving ordinary providers.
 
 ## Qualification and limits
 
-The a14 [manifest](../../artifacts/observer-0.7.0a14.json) and public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/provenance.json)
+The a15 [manifest](../../artifacts/observer-0.7.0a15.json) and public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/provenance.json)
 bind runtime source, wheel, dependency stack, exact-head CI and source/installed
 checks. The CLI/dashboard reader was delivered to Snap, Starship and Carbon;
 [operations](operations.md) separates managed selections from publication.
@@ -208,8 +207,8 @@ Sustained resource/native evidence retains its original source-preview boundary:
 source `d57233313f01983361b75fb0953662afa212c513`, wheel SHA256
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`
 with unreleased a12 metadata. Its fixed normal profile measured 4.88%/4.74%
-of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14
-UI/search and package/delivery checks do not claim new sustained runs.
+of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15
+reader and package/delivery checks do not claim new sustained runs.
 Selected local native comparisons cover only their exact identities/intervals;
 agreement with another Observer command is cached-consumer evidence.
 
@@ -226,12 +225,10 @@ Completed planning, feasibility and implementation checkpoints remain
 [in Git](https://github.com/byebyebryan/agent-observer/blob/7dbcd611f7b0ecfbebf7b2e8053963fb25915999/docs/maintenance/terminal-product.md),
 not as additional maintained contracts or current deployment instructions.
 
-## Source candidate: a read-only session board
+## Read-only session board
 
-The maintained source prioritizes status and activity in human terminal output,
-and adds favorites and remembered ordering to the independent read-only dashboard.
-These additions are **not in the published a14 reader**;
-publication and managed selection remain separate decisions. The
+The a15 reader prioritizes status and activity in human terminal output,
+with exact favorites and optional remembered ordering in the dashboard. The
 [reviewed plan](https://github.com/byebyebryan/agent-observer/blob/ef623e80b7f419518df844acc9a80477289cce00/docs/maintenance/terminal-product.md#proposed-refinement-a-read-only-session-board)
 records the design research. Native Codex owns conversation selection, drafts,
 prompts, approvals and lifecycle. Native switching and its spike stay deferred.
@@ -269,35 +266,45 @@ order within each host/profile. Explicit groups and favorite order still apply.
 Last active is approximate time since native conversation activity, never time
 spent in the displayed status. It retains its own freshness and qualifications
 independently of runtime/phase; a display tick renews no evidence. Unknown ages
-stay qualified, and the approximate marker remains visible.
-Its neutral grayscale gradually fades over the first day, then holds a readable
-older-activity shade. The dashboard updates the shade on the existing age tick,
-including when the formatted age is unchanged, without adding animation timers.
-Unknown/stale/unavailable ages and clock-ahead timestamps use a neutral shade,
-never the bright newest-activity shade. Light dashboard themes use darker shades.
+stay qualified, and the approximate marker remains visible. A logarithmic
+truecolor fade runs from `#ffe49a` to `#819fc7` over the first 24 hours, then
+holds the older-activity shade. Light dashboard themes use `#6c4b00` to
+`#31527a`. The dashboard updates color on the existing age tick, including when
+the formatted age is unchanged, without adding timers. Unknown, stale,
+unavailable and clock-ahead ages use a neutral shade, never the newest-activity
+color.
 
 Profile is a user-facing caption for the configured home, displayed with its
 host to distinguish identical profile names. Configuration keys, selectors
 such as `--home`, exact namespaces and the saved `host-home` group value do not
-change. Workspace uses a current already-projected repository/worktree name,
-otherwise compact reported cwd, otherwise unknown. The finite report's existing
-cwd metadata supplies its fallback. There is no filesystem or Git discovery.
-Full paths remain in details, and cwd is reported metadata without an independent
-freshness lease. Linked working-tree roots remain distinct.
+change. A five-family blue/violet/magenta palette hashes the exact host for its family;
+the exact home selects a bounded shade within that family. Host and home have
+separate spans. Colors stay consistent across row order, filters, selection and
+CLI/dashboard views; finite palette colors may repeat.
 
-Profile labels and their group headings use a stable six-color blue/purple/magenta palette
-derived from the exact host/profile pair. Colors stay consistent across row
-order, filters, selection and CLI/dashboard views; palette colors may repeat.
-These indexed colors exclude the semantic status hues. Status retains its
-green/cyan/amber/red colors; activity uses grayscale and workspace stays quiet.
-Light dashboard themes use darker profile variants. No-color/piped output
-retains plain labels.
+Dashboard workspace text says `repo name` for a current cached
+repository/worktree root, `dir path` for reported cwd, or `unknown`. The finite
+CLI uses its existing cwd metadata as `dir path`. Workspace colors distinguish
+repo (`#55d7af` dark / `#005d49` light), directory (`#f0b56f` / `#804500`) and
+unknown (neutral `#a9b2bb` dark / `#4b535e` light). An expired repository falls
+back to reported cwd and uses directory styling. There is no filesystem or Git
+discovery. Full paths remain in details, cwd has no independent freshness lease
+and linked working-tree roots remain distinct.
+
+Colors supplement text: status keeps its green/cyan/amber/red semantics, the
+selected-row surface and marker stay neutral, and `?` shows a concise palette
+and workspace-type legend. Explicit labels remain readable without color or
+when a Rich terminal reduces truecolor to its finite palette. Piped output
+retains plain labels and no ANSI sequences.
+Light dashboard status colors use darker shades on selected rows. The finite
+CLI honors an explicit white-background `COLORFGBG` hint ending in `7`/`15`;
+otherwise its palette defaults to dark. It performs no terminal query.
 
 The finite overview retains its ten-row bound; human `list` retains full native
 IDs as secondary evidence. Piped text preserves full names and IDs without
 color or truncation. JSON v1 fields and query/filter behavior remain compatible;
 activity/host row order follows the recency rule above in text and JSON. Pins
-and saved-view state have no format change.
+and saved-view state use version 1.
 
 ### Favorites and ordering
 
@@ -364,6 +371,6 @@ framework, multiple boards, aliases, manual row movement, additional sort engine
 persistent filters or notifications is introduced.
 
 Source/installed checks and controlled terminal previews qualify only the
-candidate's recorded scope. Ordinary use beside an independently opened Codex
+reader's recorded scope. Ordinary use beside an independently opened Codex
 TUI remains the human usefulness decision. The deferred resource, stress, soak,
 native and managed boundaries above remain unchanged.

@@ -82,12 +82,12 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a14](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
-adds dashboard search over current cached repository roots, shared Git directories
-and relative paths. The optional dashboard retains readable workspace details,
-source health, filters and keyboard navigation from a13.
-The finite sessions CLI and terminal JSON interface 1 remain compatible, along
-with read-only API 4, snapshot/watch 6 and Service 4.
+[0.7.0a15](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
+prioritizes status, last activity and session names in the CLI/dashboard. It adds
+exact favorites, optional remembered ordering, host/profile color families and
+repo/directory cues. Activity order is newest first across running and parked
+sessions. The finite terminal JSON v1 fields remain compatible; row order follows
+that recency rule. API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
 Installing source does not change deployed pins or accept a dashboard/device.

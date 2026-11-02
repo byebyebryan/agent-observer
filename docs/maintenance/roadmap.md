@@ -7,7 +7,7 @@ showcase; this repository owns observation semantics and the terminal product.
 
 ## Delivered baseline
 
-The [a14 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+The [a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
 provides the configured CLI and optional standalone dashboard. Its independent
 reader role is delivered to Snap, Starship and Carbon; collectors/working-set
 publishers retain the reviewed a11/Mesh a25 pair. Other consumers and roles
@@ -19,7 +19,7 @@ and managed-role guidance.
 | Quick check | Bare `agent-observer`: readable fleet overview, source health and up to ten rows |
 | Investigate | `sessions list/show/sources`: all matching rows, exact-session details, coverage and terminal JSON v1 |
 | Keep watch | `dashboard`: persistent list, literal metadata/repository search, filters, exact pinned selection, adaptive details and source recovery |
-| Host the first source | [First-source setup](../guides/source-setup.md): private foreground a11 collector + Mesh a25 publisher to the released a14 reader |
+| Host the first source | [First-source setup](../guides/source-setup.md): private foreground a11 collector + Mesh a25 publisher to the released a15 reader |
 
 Working-set supplies active membership and recent context, ordinarily over
 72 hours. Membership, runtime and phase remain separate; active does not mean
@@ -36,13 +36,12 @@ choices; they add no native, resource or physical qualification.
 
 ## Current focus: everyday CLI and dashboard use
 
-The maintained-source **read-only session board** prioritizes a combined status,
+The a15 **read-only session board** prioritizes a combined status,
 last activity and session title, with profile/workspace context. It adds exact
 favorites in stable relative order and remembered sort/group choices beside
 the normal Codex TUI.
-The [source-candidate contract](terminal-product.md#source-candidate-a-read-only-session-board)
-records interaction, missing-session and local-state rules. This is separate
-from the published a14 reader. Native TUI switching and its feasibility spike
+The [session-board contract](terminal-product.md#read-only-session-board)
+records interaction, missing-session and local-state rules. The reader remains independent of native Codex. Native TUI switching and its feasibility spike
 remain deferred; ordinary-use usefulness and a later release/managed selection
 remain independent gates.
 
@@ -54,7 +53,7 @@ resource budgets and current acceptance limits.
 
 | Priority | Next useful work | Acceptance boundary |
 | --- | --- | --- |
-| Session-board refinement | Qualify the source candidate, then assess favorites during ordinary use beside Codex | Source/package checks, human usefulness and release/managed selection remain separate; preserve exact identity, source truth and native workflow |
+| Session-board refinement | Assess exact favorites, activity order and color cues during ordinary use beside Codex | Source/package checks, human usefulness and release/managed selection remain separate; preserve exact identity, source truth and native workflow |
 | Everyday usability | Check whether names, workspace context, search, selection and source-health explanations answer routine questions | Real user feedback; source/package tests do not establish human acceptance |
 | Recovery | Investigate expired facts shown as current, false empty results, failed reconnects or terminal restoration | Exact reader/dependency bytes, affected source, lease/baseline transitions and owned cleanup |
 | Native coverage | Investigate a reproducible identity/runtime/membership discrepancy on its owning host/home | Independent native evidence; a frontend release or a later complete sample does not close a producer incident |
@@ -70,7 +69,7 @@ producer or other consumer pin.
 The released reader has source, installed-package, controlled lifecycle and
 short actual-fleet terminal checks. The original source-preview normal resource
 profile passed at the user-accepted <=5% of one core. Those measurements and
-selected native comparisons retain their exact earlier artifact bounds; a14
+selected native comparisons retain their exact earlier artifact bounds; a15
 adds no new sustained-resource or full native/remote claim. The
 [qualification summary](terminal-product.md#qualification-and-limits) links
 immutable evidence and preserves failed/incomplete historical results.

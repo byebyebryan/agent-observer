@@ -1,0 +1,46 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a15",
+  "wheel": "agent_observer-0.7.0a15-py3-none-any.whl",
+  "wheelSha256": "0d6c883a510b773e6c04931537b7626d75af18c57bc19725eea5f092ead062d5",
+  "sourceRevision": "f56623ea132ec79def21918dbfff8c628f8c08da",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified a15 read-only CLI/dashboard reader; publication and managed selection have separate receipts.",
+    "Status and activity-first rows, exact favorites and saved ordering, stable host/profile families, repo/dir cues and light/dark palettes.",
+    "Terminal JSON1 fields and producer APIs/schemas, a11 collector/publisher selections, routes and Mesh a25/Textual8.2.8 pair remain unchanged; activity order intentionally changes JSON row order.",
+    "No provider control, new runtime controller, transcript discovery, stress or soak acceptance."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

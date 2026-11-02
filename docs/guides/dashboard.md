@@ -1,6 +1,6 @@
 # Standalone dashboard
 
-The `0.7.0a14` prerelease adds repository-path search to the standalone dashboard,
+The `0.7.0a15` prerelease adds a read-only session board to the standalone dashboard,
 available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
 `agent-observer dashboard` opens the persistent terminal application until you quit.
 
@@ -13,12 +13,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/agent_observer-0.7.0a14-py3-none-any.whl#sha256=46a1158023023b60d9b839184a45f7b7eeb21b04dce67aad808fa8277522518f' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/agent_observer-0.7.0a15-py3-none-any.whl#sha256=0d6c883a510b773e6c04931537b7626d75af18c57bc19725eea5f092ead062d5' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -88,6 +88,7 @@ sources cannot establish a complete empty fleet.
 | `/` | Edit literal search; Escape restores the pre-edit query |
 | `f` | Edit display filters and kind inclusion; Reset restores defaults |
 | `o` / `g` | Choose ordering / grouping |
+| `p` / `P` | Pin the selected exact session / manage favorites |
 | `s` | Inspect every watched source |
 | `r` | Retry the focused failed source with the same configured binding |
 | `?` | Keyboard help |
@@ -116,14 +117,11 @@ content area. At least 80x24 shows single-line rows, 60x16 uses compact rows,
 and smaller terminals show resize guidance with overall health and quit/help.
 Opening/closing panels does not restart subscriptions.
 
-The list gives session names priority. A Repo column and separate runtime/phase
-columns appear at 140 columns; narrower full layouts keep runtime/phase together.
-Repo names come from current cached Git working-tree roots, including each linked
-worktree's own directory name. Project labels are separate context. Details show
-the full reported working directory and repository root near the top, with the
-shared Git directory in the diagnostic section. A current workspace with no
-repository says none reported; missing or expired metadata stays explicit.
-The dashboard uses cached metadata without inspecting paths or running Git.
+The list gives status, activity and session names priority, with profile and
+workspace context. Repo names come from current cached Git working-tree roots,
+including each linked worktree's own name. Details retain full reported paths,
+repository roots and separate project labels. Missing/expired metadata stays
+explicit; the dashboard does not inspect paths or run Git.
 Working-directory metadata is a reported path, not a fresh native cwd sample.
 Details group the session summary, workspace and source health before exact
 identity, reason and deadline evidence lower down. Use the contextual footer for
@@ -132,12 +130,11 @@ common actions and `?` for the full keyboard guide.
 In-app source/host/home filters narrow presentation only. `Sources N`
 still describes the immutable startup watched set, and source failures continue
 to affect overall coverage. Restart with different selectors to watch a
-different set. The released a14 dashboard writes no preferences or search history.
+different set. Search history and display filters are never saved.
 
-## Source candidate: favorites and saved view
+## Favorites and saved view
 
-The maintained source also provides a small session board. This section does
-not describe additions to the published a14 wheel or change managed selections.
+The a15 reader provides exact favorites and optional remembered ordering.
 
 Its main rows show **Status · Last active · Session · Profile · Workspace**.
 Working, Ready and Blocked summarize current running runtime with the matching
@@ -147,10 +144,20 @@ in that status. Source health remains above the list, and raw facts/reasons
 remain in details.
 
 Session titles receive the most flexible width. Profile shows host/profile;
-Workspace shows a known current repo/worktree name or compact reported cwd.
-Narrow rows and the split-details list keep status, activity age and title on
-the first line, with profile/workspace below. Full paths and exact identity
-remain inspectable. The [presentation contract](../maintenance/terminal-product.md#user-facing-rows)
+Workspace labels a current cached root as `repo name` and a reported working
+directory as `dir path`. An expired repository falls back to the reported
+directory, and missing metadata is `unknown`. Narrow rows and the split-details
+list keep status, activity age and title on the first line, with
+profile/workspace below. Full paths and exact identity remain inspectable.
+
+The palette keeps selection background and marker neutral while
+preserving status colors. Current activity age fades from newer to older over
+24 hours; unknown, stale, unavailable and future ages stay neutral. Profile hue
+identifies a stable host family and its bounded shade follows the exact home.
+Repo, directory and unknown workspaces use distinct type colors. Light themes
+use darker variants, and `?` includes a short palette/type legend. Words and
+the `repo`/`dir` cues keep the rows readable without color. The
+[presentation contract](../maintenance/terminal-product.md#user-facing-rows)
 defines status qualification and metadata limits.
 
 - `p` with list focus pins/unpins the visible selected session; its exact
@@ -201,10 +208,10 @@ screen reset are separate outcomes when a terminal has stopped draining.
 ## Qualification boundary
 
 The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
-summarizes current evidence and links the frozen qualification record. The a14
+summarizes current evidence and links the frozen qualification record. The a15
 reader has source/installed checks and short actual-fleet terminal checks;
 sustained resource and selected native measurements retain their earlier exact
-artifact bounds. No new sustained run is claimed for the a13/a14 UI/search work.
+artifact bounds. No new sustained run is claimed for the a13/a14/a15 reader work.
 
 The user accepted the practical preview and deferred large-fleet stress,
 read-path optimization and the extended eight-hour soak. Earlier failures and

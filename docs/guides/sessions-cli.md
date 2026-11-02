@@ -1,6 +1,6 @@
 # Sessions CLI
 
-The `0.7.0a14` prerelease retains the sessions CLI described here. Installing a
+The `0.7.0a15` prerelease retains the sessions CLI described here. Installing a
 reader does not change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
@@ -18,8 +18,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/agent_observer-0.7.0a14-py3-none-any.whl#sha256=46a1158023023b60d9b839184a45f7b7eeb21b04dce67aad808fa8277522518f' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a14/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/agent_observer-0.7.0a15-py3-none-any.whl#sha256=0d6c883a510b773e6c04931537b7626d75af18c57bc19725eea5f092ead062d5' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -100,10 +100,10 @@ agent-observer sessions show FULL_THREAD_ID --host workstation --home default
 
 Bare `agent-observer`, `agent-observer sessions` and `sessions overview` show
 the same overview. It has at most ten displayed rows, with a compact coverage
-summary and separate membership/runtime/phase columns. Ordinary rows fit an
-80-column terminal; narrower views use labeled session blocks. Long labels
+summary and Status, Last active, Session, Profile and Workspace columns. Rows
+use a compact two-line layout when they cannot fit. Long labels
 wrap without losing text. Approximate activity ages use `~`; unknown or stale
-facts retain their qualifications. Optional context appears in wider overviews.
+facts retain their qualifications. Raw facts remain in exact-session details.
 Full IDs and context are available with `list` and `show`.
 
 Interactive terminals use a cyan heading/navigation accent, bold session names,
@@ -126,8 +126,8 @@ Repeat source/host/home/membership/runtime/phase/query selectors to OR values
 within one selector; different selectors are ANDed. Search is literal and
 case-insensitive over admitted metadata, never conversation content. Source
 selection and membership filters do not restart or reconfigure a publisher.
-Published a14 activity ordering puts active members first, then other members, then uncertain
-identities, using current native conversation activity and exact identity ties.
+Activity ordering uses current native conversation activity across running and
+parked rows, then exact identity ties. Unknown ages follow known timestamps.
 Use `--sort activity|label|host` and `--group none|host-home` for presentation.
 
 Runtime, phase and membership are separate. `waiting` does not mean a response
@@ -137,31 +137,34 @@ ages are approximate against display wall time; receiving BOOTTIME leases own
 validity. Source health, uncertainty, nonmembers and clock discontinuity remain
 visible even if filters match no rows.
 
-## Source candidate: status-first output
+## Status-first output
 
-The maintained source uses **Status · Last active · Session · Profile · Workspace**
-for human overview/list output. This layout is separate from the published a14
-reader described above. It shares the dashboard's
+Human rows use **Status · Last active · Session · Profile · Workspace**
+for overview/list output. They share the dashboard's
 [qualified status vocabulary](../maintenance/terminal-product.md#user-facing-rows):
 Working, Ready, Blocked, Inactive and explicit Unknown/Stale/Unavailable.
 
 Last active is approximate time since conversation activity. Profile displays
-host/profile, while Workspace uses admitted repository/worktree context where
-available or reported cwd. Full paths and raw membership/runtime/phase remain
-in exact-session details; `list` retains full IDs as secondary evidence. The
-overview still displays at most ten rows. Long names and IDs remain complete in
-piped text, and no color/control sequences are added to pipes.
+host/profile with a stable host family and home shade. The finite CLI Workspace
+uses reported cwd only, marked `dir path`; the dashboard can prefer a current
+cached repo/worktree root as `repo name`, falling back to reported cwd. Full
+paths and raw membership/runtime/phase remain in exact-session details; `list`
+retains full IDs as secondary evidence. The overview still displays at most ten
+rows. Long names and IDs remain complete in piped text, with no ANSI sequences.
 
-The source candidate orders activity newest-first across running and parked
+Activity order is newest-first across running and parked
 sessions, without membership priority. Unknown ages follow known ones; exact
 identity breaks ties. Host order uses recency within each profile. Explicit
 grouping and dashboard favorites still apply.
 
-Status uses semantic colors, profiles use blue/purple/magenta identity colors,
-and activity age fades from bright recent activity to muted older activity.
-The dashboard refreshes age shades as time passes. No-color/piped output stays
-plain. Terminal JSON v1 fields, selectors including `--home` and query/filter
-behavior remain compatible; JSON row order follows the same recency rule.
+Status retains semantic colors. Activity age uses a restrained logarithmic fade
+over 24 hours; unknown, stale, unavailable and future ages stay neutral, and the
+dashboard refreshes age color on its existing tick even when age text is
+unchanged. Profile hue marks host family and shade marks home. Workspace uses
+distinct repo/dir/unknown colors. Plain and piped output keeps its text cues
+without ANSI color. Terminal JSON v1 fields, selectors including `--home` and
+query/filter behavior remain compatible; JSON row order follows the same
+recency rule.
 
 ## More hosts and homes
 
@@ -208,6 +211,9 @@ Auto enables them only on an interactive terminal whose output encoding
 supports them; `TERM=dumb` uses the plain fallback. Pipes omit decorative glyphs
 even with `--icons always`. `--icons never` uses plain status words and separators.
 Every colored/icon state retains its text label; color alone conveys no state.
+For truecolor rows, an explicit `COLORFGBG` background hint ending in `7` or
+`15` selects the light palette. Without that hint the CLI uses its dark palette;
+`NO_COLOR=1` selects plain output. It does not query the terminal background.
 The finite read budget is ten seconds by default (`--timeout` 1-60), including
 setup. Reads recheck expiry while waiting for slower feeds. Invocation/output
 errors go to stderr; source failures and degraded results are in the report.
@@ -237,7 +243,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a14;
+The persistent dashboard is available with the optional `dashboard` extra in a15;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product contract](../maintenance/terminal-product.md) for its acceptance
 limits. Managed reader installation, native acceptance and hardware/Fleet
