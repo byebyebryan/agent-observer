@@ -385,15 +385,17 @@ def _matches_query(row: dict, query) -> bool:
 
 def _row_sort_key(row: dict, sort: str) -> tuple:
     ident = identity_tuple(row["identity"])
-    category = {"active": 0, "recent": 1, "uncertain": 2, "nonmember": 3}.get(row["membership"], 4)
-    activity = row.get("activity", {}).get("at")
+    fact = row.get("activity")
+    activity = fact.get("at") if type(fact) is dict and fact.get("health") == "current" else None
+    if type(activity) is not int:
+        activity = None
     age_key = (activity is None, -(activity or 0))
     if sort == "label":
         return (row.get("label", "").casefold(), ident)
     if sort == "host":
         source = row["source"]
-        return (source["host"], source["home"], category, *age_key, ident)
-    return (category, *age_key, ident)
+        return (source["host"], source["home"], *age_key, ident)
+    return (*age_key, ident)
 
 
 def sort_rows(rows: list[dict], sort: str, group: str = "none") -> list[dict]:

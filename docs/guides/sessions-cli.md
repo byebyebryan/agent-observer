@@ -126,7 +126,7 @@ Repeat source/host/home/membership/runtime/phase/query selectors to OR values
 within one selector; different selectors are ANDed. Search is literal and
 case-insensitive over admitted metadata, never conversation content. Source
 selection and membership filters do not restart or reconfigure a publisher.
-Activity ordering puts active members first, then other members, then uncertain
+Published a14 activity ordering puts active members first, then other members, then uncertain
 identities, using current native conversation activity and exact identity ties.
 Use `--sort activity|label|host` and `--group none|host-home` for presentation.
 
@@ -152,8 +152,16 @@ in exact-session details; `list` retains full IDs as secondary evidence. The
 overview still displays at most ten rows. Long names and IDs remain complete in
 piped text, and no color/control sequences are added to pipes.
 
-This changes human presentation only. Terminal JSON v1, existing selectors
-including `--home`, query/filter behavior and ordering remain compatible.
+The source candidate orders activity newest-first across running and parked
+sessions, without membership priority. Unknown ages follow known ones; exact
+identity breaks ties. Host order uses recency within each profile. Explicit
+grouping and dashboard favorites still apply.
+
+Status uses semantic colors, profiles use blue/purple/magenta identity colors,
+and activity age fades from bright recent activity to muted older activity.
+The dashboard refreshes age shades as time passes. No-color/piped output stays
+plain. Terminal JSON v1 fields, selectors including `--home` and query/filter
+behavior remain compatible; JSON row order follows the same recency rule.
 
 ## More hosts and homes
 

@@ -25,6 +25,7 @@ from .dashboard_view import (
 )
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import (
+    _activity_color,
     _last_active_text,
     _profile_color,
     _profile_text,
@@ -60,6 +61,7 @@ class SessionLine(Static):
         header,
         style_for,
         age_index=None,
+        age_style="",
         surface_selection=True,
     ):
         self._cell_values = list(values)
@@ -69,6 +71,7 @@ class SessionLine(Static):
         self._surface_selection = surface_selection
         self._style_for_cell = style_for
         self._age_index = age_index
+        self._age_style = age_style
         classes = ["row"]
         if header:
             classes.append("table-heading")
@@ -83,10 +86,10 @@ class SessionLine(Static):
         ):
             if index == 0 and not self._header_row:
                 value = "> " if self._selected_row else "  "
-            cell = Text(
-                value,
-                style=self._style_for_cell(index, value, self._selected_row, self._header_row),
-            )
+            style = self._style_for_cell(index, value, self._selected_row, self._header_row)
+            if index == self._age_index and self._age_style:
+                style = f"{style} {self._age_style}".strip()
+            cell = Text(value, style=style)
             cell.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
             cell.pad_right(max(0, width - cell.cell_len))
             line.append_text(cell)
@@ -101,10 +104,12 @@ class SessionLine(Static):
                 self.remove_class("selected-row")
             self.update(self._line())
 
-    def update_age(self, value: str) -> None:
+    def update_age(self, value: str, style: str | None = None) -> None:
         if self._age_index is None:
             return
         self._cell_values[self._age_index] = value
+        if style is not None:
+            self._age_style = style
         self.update(self._line())
 
 
@@ -1475,7 +1480,7 @@ class DashboardApp(App[None]):
             age_cell = self._cell(
                 age,
                 age_width,
-                selected_style if selected else ("cyan" if not self.no_color else ""),
+                self._activity_style(row, selected=selected),
                 widget_id=f"age-{page_index}",
             )
             first = Horizontal(
@@ -1536,6 +1541,7 @@ class DashboardApp(App[None]):
             marker="> " if selected else "  ",
             age_index=2,
             profile_style=self._profile_style(row),
+            age_style=self._activity_style(row),
         )
         self._age_cells[key] = (age_cell, age, row)
         self._line_widgets[key] = row_widget
@@ -1547,8 +1553,17 @@ class DashboardApp(App[None]):
     def _profile_style(self, row: dict, *, selected: bool = False) -> str:
         if self.no_color:
             return "reverse bold" if selected else "dim"
-        color = _profile_color(row)
+        color = _profile_color(row, light=not self.current_theme.dark)
         style = color[1] if color else "dim"
+        return f"bold {style}" if selected else style
+
+    def _activity_style(
+        self, row: dict | None, now_ms: int | None = None, *, selected: bool = False
+    ) -> str:
+        if self.no_color:
+            return "reverse bold" if selected else ""
+        now_ms = self._display_now_ms() if now_ms is None else now_ms
+        style = _activity_color(row, now_ms, light=not self.current_theme.dark)[1]
         return f"bold {style}" if selected else style
 
     def _row_widget(
@@ -1561,6 +1576,7 @@ class DashboardApp(App[None]):
         marker: str = "  ",
         age_index: int | None = None,
         profile_style: str = "dim",
+        age_style: str = "",
     ) -> tuple[SessionLine, SessionLine]:
         values = (marker, *cells)
         all_widths = (2, *widths)
@@ -1582,7 +1598,7 @@ class DashboardApp(App[None]):
             if role == "status":
                 return self._semantic_style(value)
             if role == "age":
-                return "cyan" if not self.no_color else ""
+                return ""
             if role == "label":
                 return "bold"
             if role == "profile":
@@ -1598,6 +1614,7 @@ class DashboardApp(App[None]):
             header=header,
             style_for=style_for,
             age_index=age_index,
+            age_style=age_style,
             surface_selection=not self.no_color,
         )
         return line, line
@@ -1640,6 +1657,9 @@ class DashboardApp(App[None]):
     ) -> Static:
         safe_value = self._safe(value)
         text = Text(safe_value, style=style or None, no_wrap=True, overflow="ellipsis")
+        if style:
+            # Explicit spans survive the Static cell's CSS foreground style.
+            text.stylize(style)
         text.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
         text.pad_right(max(1, width))
         classes = "cell selection-marker" if selection_marker else "cell"
@@ -1684,9 +1704,13 @@ class DashboardApp(App[None]):
                 widget_id = "detail-last-active"
             elif line.startswith("Baseline: ") and " · Frame age: " in line:
                 widget_id = "detail-frame-age"
+            text = self._as_text(line)
+            if widget_id == "detail-last-active" and not self.no_color:
+                row = self._selected_detail_row if self._selection_available else None
+                text.stylize(self._activity_style(row), len("Last active: "))
             result.append(
                 Static(
-                    self._as_text(line),
+                    text,
                     markup=False,
                     id=widget_id,
                     classes=(
@@ -1699,9 +1723,11 @@ class DashboardApp(App[None]):
                 )
             )
         if any(widget.id == "detail-last-active" for widget in result):
+            row = self._selected_detail_row if self._selection_available else None
             self._render_values["detail-last-active"] = self._activity_age(
-                self._selected_detail_row if self._selection_available else None
+                row
             )
+            self._render_values["detail-last-active-style"] = self._activity_style(row)
         if any(widget.id == "detail-frame-age" for widget in result):
             source = self._source_for_row(
                 self._selected_detail_row if self._selection_available else None
@@ -2866,20 +2892,18 @@ class DashboardApp(App[None]):
         age_now = self._display_now_ms()
         for key, (widget, previous, row) in tuple(self._age_cells.items()):
             current = self._activity_age(row, age_now)
-            if current != previous:
-                if isinstance(widget, SessionLine):
-                    widget.update_age(current)
+            if isinstance(widget, SessionLine):
+                style = self._activity_style(row, age_now)
+                if current != previous or style != widget._age_style:
+                    widget.update_age(current, style)
                     self._age_cells[key] = (widget, current, row)
-                    continue
-                style = (
-                    "reverse bold"
-                    if self.no_color and key == self._selected_key
-                    else ""
-                    if key == self._selected_key or self.no_color
-                    else "cyan"
-                )
+                continue
+            style = self._activity_style(row, age_now, selected=key == self._selected_key)
+            if current != previous or style != widget.content.style:
                 width = widget.region.width or max(1, len(current))
                 updated = Text(current, style=style or None, no_wrap=True, overflow="ellipsis")
+                if style:
+                    updated.stylize(style)
                 updated.truncate(width, overflow="ellipsis")
                 updated.pad_right(width)
                 widget.update(updated)
@@ -2893,9 +2917,17 @@ class DashboardApp(App[None]):
             if widget is not None:
                 row = self._selected_detail_row if self._selection_available else None
                 value = self._activity_age(row, age_now) if row else "Unknown"
-                if self._render_values.get("detail-last-active") != value:
-                    widget.update(self._as_text("Last active: " + value))
+                style = self._activity_style(row, age_now)
+                if (
+                    self._render_values.get("detail-last-active") != value
+                    or self._render_values.get("detail-last-active-style") != style
+                ):
+                    text = self._as_text("Last active: " + value)
+                    if not self.no_color:
+                        text.stylize(style, len("Last active: "))
+                    widget.update(text)
                     self._render_values["detail-last-active"] = value
+                    self._render_values["detail-last-active-style"] = style
             try:
                 frame_widget = self.query_one("#detail-frame-age", Static)
             except Exception:

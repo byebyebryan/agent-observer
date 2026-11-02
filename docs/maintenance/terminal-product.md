@@ -49,8 +49,9 @@ than choosing by arrival order. Native observation semantics remain in
 - Default presentation hides confirmed child/system kinds, retaining unknown
   kinds. Membership/runtime/phase/query selectors OR within a dimension and AND
   across dimensions. Nonmembers require explicit inclusion; exact inspection
-  can still resolve them. Default ordering is active, recent, uncertain, then
-  current native activity descending and full identity as tie-breaker.
+  can still resolve them. Published a14 ordering is active, recent, uncertain,
+  then current native activity descending and full identity as tie-breaker.
+  The source candidate below uses activity-first ordering instead.
 - Search is a case-insensitive literal substring over admitted name, project,
   reported cwd, host/home and full native ID; queries are 1–256 characters.
   Dashboard search also includes sanitized current repository root/commonDir/
@@ -259,13 +260,21 @@ Runtime qualifies phase; an old waiting phase cannot make a parked or unknown
 runtime Ready. Active/recent membership does not establish work state. Source
 coverage remains visible independently, including partial coverage with valid
 positive row facts. Raw membership/runtime/phase and reasons remain available
-in details and terminal JSON v1. Existing filters and ordering retain their
-fact-level semantics.
+in details and terminal JSON v1. Existing filters retain their fact-level
+semantics. Activity order uses current native conversation activity descending,
+without active/recent membership or running/parked priority. Unknown ages follow
+known timestamps; full identity breaks ties. Host order uses the same recency
+order within each host/profile. Explicit groups and favorite order still apply.
 
 Last active is approximate time since native conversation activity, never time
 spent in the displayed status. It retains its own freshness and qualifications
 independently of runtime/phase; a display tick renews no evidence. Unknown ages
 stay qualified, and the approximate marker remains visible.
+Its neutral grayscale gradually fades over the first day, then holds a readable
+older-activity shade. The dashboard updates the shade on the existing age tick,
+including when the formatted age is unchanged, without adding animation timers.
+Unknown/stale/unavailable ages and clock-ahead timestamps use a neutral shade,
+never the bright newest-activity shade. Light dashboard themes use darker shades.
 
 Profile is a user-facing caption for the configured home, displayed with its
 host to distinguish identical profile names. Configuration keys, selectors
@@ -276,16 +285,19 @@ cwd metadata supplies its fallback. There is no filesystem or Git discovery.
 Full paths remain in details, and cwd is reported metadata without an independent
 freshness lease. Linked working-tree roots remain distinct.
 
-Profile labels and their group headings use a stable six-color ANSI palette
+Profile labels and their group headings use a stable six-color blue/purple/magenta palette
 derived from the exact host/profile pair. Colors stay consistent across row
 order, filters, selection and CLI/dashboard views; palette colors may repeat.
-Only profile identity is colored this way. Status retains its own colors,
-workspace stays quiet, and no-color/piped output retains plain labels.
+These indexed colors exclude the semantic status hues. Status retains its
+green/cyan/amber/red colors; activity uses grayscale and workspace stays quiet.
+Light dashboard themes use darker profile variants. No-color/piped output
+retains plain labels.
 
 The finite overview retains its ten-row bound; human `list` retains full native
 IDs as secondary evidence. Piped text preserves full names and IDs without
-color or truncation. Human columns change; JSON v1 bytes and query/filter
-behavior remain compatible. Pins and saved-view state have no format change.
+color or truncation. JSON v1 fields and query/filter behavior remain compatible;
+activity/host row order follows the recency rule above in text and JSON. Pins
+and saved-view state have no format change.
 
 ### Favorites and ordering
 

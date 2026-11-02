@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import os
 import re
 import unicodedata
@@ -13,13 +14,15 @@ from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
 _PROFILE_COLORS = (
-    ("94", "bright_blue"),
-    ("34", "blue"),
-    ("35", "magenta"),
-    ("95", "bright_magenta"),
-    ("36", "cyan"),
-    ("96", "bright_cyan"),
+    (69, 25),
+    (68, 24),
+    (98, 55),
+    (134, 91),
+    (140, 97),
+    (170, 127),
 )
+_ACTIVITY_FADE_MS = 86_400_000
+_ACTIVITY_FADE_LOG = math.log1p(_ACTIVITY_FADE_MS / 60_000)
 
 
 def _cells(value: str) -> int:
@@ -109,13 +112,14 @@ def _style(value: str, code: str, enabled: bool) -> str:
 
 
 def _cell_style(
-    value: str, field: str, enabled: bool, *, profile_code: str | None = None
+    value: str, field: str, enabled: bool, *,
+    profile_code: str | None = None, activity_code: str | None = None,
 ) -> str:
     code = {
         "session": "1",
         "profile": profile_code or "2",
         "workspace": "2",
-        "last_active": "36",
+        "last_active": activity_code,
         "id": "2",
     }.get(field)
     if field == "status":
@@ -339,7 +343,11 @@ def _profile_text(row: dict) -> str:
     return f"{host}/{home}"
 
 
-def _profile_color(row: dict) -> tuple[str, str] | None:
+def _indexed_color(index: int) -> tuple[str, str]:
+    return f"38;5;{index}", f"color({index})"
+
+
+def _profile_color(row: dict, *, light: bool = False) -> tuple[str, str] | None:
     """Stable ANSI/Rich identity color, independent of row order or selection."""
     source = row.get("source")
     if type(source) is not dict:
@@ -349,7 +357,22 @@ def _profile_color(row: dict) -> tuple[str, str] | None:
         return None
     key = (host + "\0" + home).encode("utf-8")
     slot = int.from_bytes(hashlib.sha256(key).digest()[:4], "big") % len(_PROFILE_COLORS)
-    return _PROFILE_COLORS[slot]
+    return _indexed_color(_PROFILE_COLORS[slot][int(light)])
+
+
+def _activity_color(row: dict | None, now_ms: int, *, light: bool = False) -> tuple[str, str]:
+    """A neutral recency fade; unknown/future evidence never looks newly active."""
+    activity = row.get("activity") if type(row) is dict else None
+    at = activity.get("at") if type(activity) is dict else None
+    if (
+        type(activity) is not dict or activity.get("health") != "current"
+        or type(at) is not int or at > now_ms
+    ):
+        return _indexed_color(239 if light else 247)
+    age = min(now_ms - at, _ACTIVITY_FADE_MS)
+    progress = math.log1p(age / 60_000) / _ACTIVITY_FADE_LOG
+    start, end = (232, 240) if light else (255, 245)
+    return _indexed_color(round(start + (end - start) * progress))
 
 
 def _compact_cwd(value: object) -> str | None:
@@ -491,6 +514,7 @@ def _main_table_row(
 ) -> list[str]:
     values = _main_values(row, now_ms)
     profile_color = _profile_color(row)
+    activity_color = _activity_color(row, now_ms)
     values[0] = _status_label(values[0], icons)
     cells = [
         _finish([value], size).splitlines()
@@ -508,6 +532,7 @@ def _main_table_row(
                     _MAIN_FIELDS[index],
                     enabled,
                     profile_code=profile_color[0] if profile_color else None,
+                    activity_code=activity_color[0],
                 )
             )
         output.append("  ".join(parts).rstrip())
@@ -522,7 +547,7 @@ def _compact_main_row(
     first = (
         _cell_style(status, "status", enabled)
         + "  "
-        + _cell_style(activity, "last_active", enabled)
+        + _cell_style(activity, "last_active", enabled, activity_code=_activity_color(row, now_ms)[0])
         + "  "
         + _cell_style(title, "session", enabled)
     )
