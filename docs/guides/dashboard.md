@@ -1,6 +1,6 @@
 # Standalone dashboard
 
-The `0.7.0a16` prerelease adds responsive four-cell rows to the standalone dashboard,
+The `0.7.0a17` prerelease adds Status-first filtering to the standalone dashboard,
 available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
 `agent-observer dashboard` opens the persistent terminal application until you quit.
 
@@ -13,12 +13,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/agent_observer-0.7.0a16-py3-none-any.whl#sha256=ec6338ee6e326e2637a41841df7d2209bf3b5d1782ff12b53a7a473d311f89be' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/agent_observer-0.7.0a17-py3-none-any.whl#sha256=e4dac8b3c799c1dc88aa54472126aa8f9610b98404628de656bf67b479177fc9' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -94,15 +94,14 @@ sources cannot establish a complete empty fleet.
 | `?` | Keyboard help |
 | `q` / Ctrl-C | Quit / interrupt |
 
-Maintained source adds **Status** as the first dimension in `f`: Working,
+The dashboard opens `f` with **Status**: Working,
 Ready, Blocked, Inactive, Unknown, Stale and Unavailable, matching the row
-labels. This is an unreleased refinement; the published a16 reader retains its
-earlier filter panel. Multiple statuses match with OR and combine with the
+labels. Multiple statuses match with OR and combine with the
 other filters using AND. All are selected by default; `a` toggles all/none while
 Status is open. For one status, press `a` to clear all, then Space/Enter on that
 status. Selecting none shows no rows. `r` restores all statuses and the other
-default filters. Existing Source,
-Host, Profile, Member, Runtime, Phase and Kind dimensions remain available.
+default filters. Existing Source, Host, Profile, Member, Runtime, Phase and Kind
+dimensions remain available.
 Status choices are display filters for this run, with source health and exact
 selection retained. See the [status-filter contract](../maintenance/terminal-product.md#dashboard-status-filter).
 
@@ -158,7 +157,7 @@ different set. Search history and display filters are never saved.
 
 ## Favorites and saved view
 
-The a16 reader provides exact favorites and optional remembered ordering.
+The a17 reader provides exact favorites and optional remembered ordering.
 
 Human rows use four cells: **Status / age · Session · Profile · Workspace**.
 Status and activity age keep separate colors within their shared cell. Ages
@@ -241,10 +240,10 @@ screen reset are separate outcomes when a terminal has stopped draining.
 ## Qualification boundary
 
 The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
-summarizes current evidence and links the frozen qualification record. The a16
+summarizes current evidence and links the frozen qualification record. The a17
 reader has source/installed checks and short actual-fleet terminal checks;
 sustained resource and selected native measurements retain their earlier exact
-artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16 reader work.
+artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16/a17 reader work.
 
 The user accepted the practical preview and deferred large-fleet stress,
 read-path optimization and the extended eight-hour soak. Earlier failures and

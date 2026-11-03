@@ -1,6 +1,6 @@
 # CLI and dashboard product contract
 
-The [0.7.0a16 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
+The [0.7.0a17 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
 provides the finite sessions CLI and optional persistent dashboard. This page
 records their current behavior, ownership and acceptance limits. Use the
 [sessions guide](../guides/sessions-cli.md) and [dashboard guide](../guides/dashboard.md)
@@ -65,7 +65,7 @@ than choosing by arrival order. Native observation semantics remain in
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. The a16 reader
+The dashboard initially shows the full list with details closed. The a17 reader
 uses width-only list modes: at 110 columns and wider it shows the full
 four-cell Status / age, Session, Profile and Workspace table; 60–109 columns use
 two-line session rows with one shared left/right boundary for both rows and all
@@ -201,8 +201,8 @@ comparisons under [validation](validation.md), preserving ordinary providers.
 
 ## Qualification and limits
 
-The a16 [manifest](../../artifacts/observer-0.7.0a16.json) and public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/provenance.json)
+The a17 [manifest](../../artifacts/observer-0.7.0a17.json) and public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/provenance.json)
 bind runtime source, wheel, dependency stack, exact-head CI and source/installed
 checks. The CLI/dashboard reader was delivered to Snap, Starship and Carbon;
 [operations](operations.md) separates managed selections from publication.
@@ -213,7 +213,7 @@ Sustained resource/native evidence retains its original source-preview boundary:
 source `d57233313f01983361b75fb0953662afa212c513`, wheel SHA256
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`
 with unreleased a12 metadata. Its fixed normal profile measured 4.88%/4.74%
-of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15/a16
+of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15/a16/a17
 reader and package/delivery checks do not claim new sustained runs.
 Selected local native comparisons cover only their exact identities/intervals;
 agreement with another Observer command is cached-consumer evidence.
@@ -233,7 +233,7 @@ not as additional maintained contracts or current deployment instructions.
 
 ## Read-only session board
 
-The a16 reader prioritizes status and activity in human terminal output,
+The a17 reader prioritizes status and activity in human terminal output,
 with exact favorites and optional remembered ordering in the dashboard. The
 [reviewed plan](https://github.com/byebyebryan/agent-observer/blob/ef623e80b7f419518df844acc9a80477289cce00/docs/maintenance/terminal-product.md#proposed-refinement-a-read-only-session-board)
 records the design research. Native Codex owns conversation selection, drafts,
@@ -283,10 +283,8 @@ order within each host/profile. Explicit groups and favorite order still apply.
 
 ### Dashboard status filter
 
-Maintained source adds an unreleased Status dimension at the start of the
-dashboard filter panel. The published/managed a16 reader keeps its previous
-filter panel until a separate release. Choices use the qualified status table
-above, including Unknown, Stale and Unavailable; membership or last-known facts
+The a17 dashboard opens its filter panel with Status. Choices use the qualified
+status table above, including Unknown, Stale and Unavailable; membership or last-known facts
 cannot make a row match Working, Ready or Blocked.
 
 Choices OR within Status and AND with the existing query, source, host, profile,

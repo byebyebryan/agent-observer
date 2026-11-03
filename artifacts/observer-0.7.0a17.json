@@ -1,0 +1,47 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a17",
+  "wheel": "agent_observer-0.7.0a17-py3-none-any.whl",
+  "wheelSha256": "e4dac8b3c799c1dc88aa54472126aa8f9610b98404628de656bf67b479177fc9",
+  "sourceRevision": "5b1b6ad280a0239b07263b6e28cddbb07f30f3f3",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified a17 read-only CLI/dashboard reader; publication and managed selection have separate receipts.",
+    "CLI help foregrounds configured cached workflows and describes independent local native diagnostics.",
+    "Dashboard Status filtering reuses qualified row labels, combines OR within statuses and AND across other filters, and supports all/none/reset without losing exact hidden selection or source truth.",
+    "Status is presentation-only and adds no CLI/config/backend/JSON/saved-view field. Producer APIs/schemas, a11 selections, routes and the Mesh a25/Textual 8.2.8 pair are unchanged.",
+    "No provider control, runtime controller, transcript discovery, native-classification, sustained-resource, stress or soak acceptance."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

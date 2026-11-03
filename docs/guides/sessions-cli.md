@@ -1,6 +1,6 @@
 # Sessions CLI
 
-The `0.7.0a16` prerelease retains the sessions CLI described here. Installing a
+The `0.7.0a17` prerelease retains the sessions CLI described here. Installing a
 reader does not change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
@@ -23,8 +23,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/agent_observer-0.7.0a16-py3-none-any.whl#sha256=ec6338ee6e326e2637a41841df7d2209bf3b5d1782ff12b53a7a473d311f89be' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/agent_observer-0.7.0a17-py3-none-any.whl#sha256=e4dac8b3c799c1dc88aa54472126aa8f9610b98404628de656bf67b479177fc9' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -161,7 +161,7 @@ Working, Ready, Blocked, Inactive and explicit Unknown/Stale/Unavailable.
 Last active is approximate time since conversation activity. Profile displays
 host/profile with a stable host family and home shade. The finite CLI Workspace
 uses reported cwd only; the dashboard can prefer a current cached repo/worktree
-root, falling back to reported cwd. Maintained source omits `repo`/`dir`
+root, falling back to reported cwd. Workspace labels omit `repo`/`dir`
 prefixes and shortens reported `/home/<user>` paths to `~`, including remote
 users. Full paths and raw membership/runtime/phase remain in exact-session
 details; `list` retains full IDs as secondary evidence. The overview still
@@ -259,7 +259,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a16;
+The persistent dashboard is available with the optional `dashboard` extra in a17;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product contract](../maintenance/terminal-product.md) for its acceptance
 limits. Managed reader installation, native acceptance and hardware/Fleet
