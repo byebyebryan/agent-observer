@@ -1,6 +1,6 @@
 # CLI and dashboard product contract
 
-The [0.7.0a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
+The [0.7.0a16 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
 provides the finite sessions CLI and optional persistent dashboard. This page
 records their current behavior, ownership and acceptance limits. Use the
 [sessions guide](../guides/sessions-cli.md) and [dashboard guide](../guides/dashboard.md)
@@ -65,14 +65,13 @@ than choosing by arrival order. Native observation semantics remain in
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. Maintained
-source uses width-only list modes: at 110 columns and wider it shows the full
+The dashboard initially shows the full list with details closed. The a16 reader
+uses width-only list modes: at 110 columns and wider it shows the full
 four-cell Status / age, Session, Profile and Workspace table; 60–109 columns use
 two-line session rows with one shared left/right boundary for both rows and all
 entries on the page; 32–59 columns use four-line cards. Below 32 columns or
 12 rows it shows resize guidance with live source health and help/quit. Height
-reduces chrome and page capacity but does not compact a wide table. Released
-and managed a15 keeps its prior 80/60-column layout until a separate release.
+reduces chrome and page capacity but does not compact a wide table.
 Enter opens split details at 120x30 or larger, otherwise a separate view.
 Source health remains visible with its denominator in the main view, panels and
 filtered states. Detail paths, source evidence and filter choices wrap and
@@ -202,8 +201,8 @@ comparisons under [validation](validation.md), preserving ordinary providers.
 
 ## Qualification and limits
 
-The a15 [manifest](../../artifacts/observer-0.7.0a15.json) and public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/provenance.json)
+The a16 [manifest](../../artifacts/observer-0.7.0a16.json) and public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/provenance.json)
 bind runtime source, wheel, dependency stack, exact-head CI and source/installed
 checks. The CLI/dashboard reader was delivered to Snap, Starship and Carbon;
 [operations](operations.md) separates managed selections from publication.
@@ -214,7 +213,7 @@ Sustained resource/native evidence retains its original source-preview boundary:
 source `d57233313f01983361b75fb0953662afa212c513`, wheel SHA256
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`
 with unreleased a12 metadata. Its fixed normal profile measured 4.88%/4.74%
-of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15
+of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15/a16
 reader and package/delivery checks do not claim new sustained runs.
 Selected local native comparisons cover only their exact identities/intervals;
 agreement with another Observer command is cached-consumer evidence.
@@ -234,7 +233,7 @@ not as additional maintained contracts or current deployment instructions.
 
 ## Read-only session board
 
-The a15 reader prioritizes status and activity in human terminal output,
+The a16 reader prioritizes status and activity in human terminal output,
 with exact favorites and optional remembered ordering in the dashboard. The
 [reviewed plan](https://github.com/byebyebryan/agent-observer/blob/ef623e80b7f419518df844acc9a80477289cce00/docs/maintenance/terminal-product.md#proposed-refinement-a-read-only-session-board)
 records the design research. Native Codex owns conversation selection, drafts,
@@ -256,10 +255,8 @@ full values remain in details. At 32–59 columns the dashboard and finite TTY
 output use four-line cards: status left and age right, full-width title, profile
 and workspace. Below 32 columns, finite text retains stacked rows with bounded
 wrapping; the dashboard shows a minimum-size guide. A non-TTY finite CLI has no
-known width and keeps its natural full-field layout. These are maintained-source
-candidate behaviors; released/managed a15 remains on the earlier layout until
-separately released. Section/group headings and all row lines count against the
-dashboard page budget; exact selection stays visible on resize. Breakpoints
+known width and keeps its natural full-field layout. Section/group headings and
+all row lines count against the dashboard page budget; exact selection stays visible on resize. Breakpoints
 describe terminal cells, not a fixed pixel size; physical fit depends on the
 terminal emulator and font.
 
@@ -304,12 +301,12 @@ the exact home selects a bounded shade within that family. Host and home have
 separate spans. Colors stay consistent across row order, filters, selection and
 CLI/dashboard views; finite palette colors may repeat.
 
-Maintained-source workspace labels omit `repo`/`dir` prefixes: the dashboard
+Workspace labels omit `repo`/`dir` prefixes: the dashboard
 shows the current cached repository/worktree name, otherwise compact reported
 cwd, otherwise `unknown`. Reported `/home/<user>` prefixes display as `~`
 without consulting the viewing machine; full paths remain in details and JSON.
 The finite CLI uses its existing cwd metadata.
-Released a15 still includes the prefixes. Full repository/directory labels
+Full repository/directory labels
 remain in details; no-color rows retain the workspace name/path. Workspace
 colors distinguish
 repo (`#55d7af` dark / `#005d49` light), directory (`#f0b56f` / `#804500`) and

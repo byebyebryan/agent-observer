@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
+The [0.7.0a16 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
 provides the configured sessions CLI and optional standalone dashboard while
 retaining terminal JSON interface 1. Reader installation/configuration is
 independently selected; publication does not upgrade a collector or publisher.
@@ -14,17 +14,18 @@ independent reviewed selections.
 
 ## CLI and dashboard reader release
 
-The [a15 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
-adds status/activity-first human rows, exact favorites, optional saved ordering,
-stable host/profile colors and explicit repo/directory cues. The finite CLI also
-honors an explicit terminal light-background hint. Activity and host sorting use
-recency across running/parked and active/recent members; this intentionally
-changes row order in terminal JSON v1 while preserving its schema and fields.
-Current repository search and exact selection retain their existing leases.
+The [a16 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
+adds a responsive four-cell layout: Status (with right-aligned age), Session,
+Profile and Workspace. At 110+ columns entries use one row; at 60-109 they use
+a shared 2x2 grid; at 32-59 they use four stacked rows. The dashboard supports
+32x12 and keeps source health explicit, with wrapping/scrolling evidence and
+keyboard help. Numeric ages omit a prefix; home paths use `~` in compact labels;
+workspace colors replace repo/directory prefixes. Exact selection, favorites,
+activity ordering, full-path details, terminal JSON v1 and exit behavior remain.
 
-The [a15 artifact manifest](../../artifacts/observer-0.7.0a15.json) binds runtime
+The [a16 artifact manifest](../../artifacts/observer-0.7.0a16.json) binds runtime
 source and the frozen wheel. Public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/provenance.json)
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/provenance.json)
 binds qualification/tag source, exact assets, CI and installed checks on Python
 3.11/3.14. `dashboard-requirements.txt` retains the qualified Textual 8.2.8 stack
 and Mesh a25 bytes. API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
@@ -34,8 +35,8 @@ is claimed. The [dashboard guide](../guides/dashboard.md) and
 
 Managed adoption belongs to `deployments/agent-observer-cli.json`, independently
 of the a11 collector/publisher cohort, routes, Agent Plus, Tmux, full publishers
-and hardware. The previous [a14 artifact](../../artifacts/observer-0.7.0a14.json)
-and [a14 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a14)
+and hardware. The previous [a15 artifact](../../artifacts/observer-0.7.0a15.json)
+and [a15 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
 remain immutable rollback inputs.
 
 ## Selection and recovery

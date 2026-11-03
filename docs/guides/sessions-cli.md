@@ -1,6 +1,6 @@
 # Sessions CLI
 
-The `0.7.0a15` prerelease retains the sessions CLI described here. Installing a
+The `0.7.0a16` prerelease retains the sessions CLI described here. Installing a
 reader does not change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
@@ -18,8 +18,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/agent_observer-0.7.0a15-py3-none-any.whl#sha256=0d6c883a510b773e6c04931537b7626d75af18c57bc19725eea5f092ead062d5' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/agent_observer-0.7.0a16-py3-none-any.whl#sha256=ec6338ee6e326e2637a41841df7d2209bf3b5d1782ff12b53a7a473d311f89be' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -101,16 +101,14 @@ agent-observer sessions show FULL_THREAD_ID --host workstation --home default
 Bare `agent-observer`, `agent-observer sessions` and `sessions overview` show
 the same overview. It has at most ten displayed rows, with a compact coverage
 summary and four ordered cells: Status / age, Session, Profile and Workspace.
-In maintained source, a TTY at 110 columns or wider uses the four-cell table;
+A TTY at 110 columns or wider uses the four-cell table;
 60–109 columns use two-line rows with a shared left/right boundary: status/age
 and Profile on the left, Session and Workspace on the right. The dashboard
 reserves about 27 cells for the right column at 60 columns; finite output uses
 the remaining width without a selection gutter. At 32–59 columns, rows stack
 status left with age right-aligned in the shared cell, then session, profile
 and workspace. Below 32 columns, finite text keeps
-the stacked layout and wraps within the known width. These are private-candidate
-breakpoints; released/managed a15 retains its released layout until a separate
-release. Bounded text wraps long labels without losing content. When stdout is
+the stacked layout and wraps within the known width. Bounded text wraps long labels without losing content. When stdout is
 not a TTY, width is unknown and the natural full-field layout is kept. Activity ages use
 compact units without a prefix and remain approximate; unknown or stale facts
 retain their qualifications. Raw
@@ -256,7 +254,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a15;
+The persistent dashboard is available with the optional `dashboard` extra in a16;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product contract](../maintenance/terminal-product.md) for its acceptance
 limits. Managed reader installation, native acceptance and hardware/Fleet

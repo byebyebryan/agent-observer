@@ -1,6 +1,6 @@
 # Standalone dashboard
 
-The `0.7.0a15` prerelease adds a read-only session board to the standalone dashboard,
+The `0.7.0a16` prerelease adds responsive four-cell rows to the standalone dashboard,
 available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
 `agent-observer dashboard` opens the persistent terminal application until you quit.
 
@@ -13,12 +13,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/agent_observer-0.7.0a15-py3-none-any.whl#sha256=0d6c883a510b773e6c04931537b7626d75af18c57bc19725eea5f092ead062d5' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a15/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/agent_observer-0.7.0a16-py3-none-any.whl#sha256=ec6338ee6e326e2637a41841df7d2209bf3b5d1782ff12b53a7a473d311f89be' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a16/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -112,9 +112,7 @@ and resize. A hidden selection stays pinned. If evidence leaves the projection,
 only its identity and sanitized label remain, marked unavailable; old runtime
 facts are discarded. A background update does not choose a neighboring row.
 
-Responsive breakpoints below describe maintained-source/private-candidate
-behavior. Released or managed a15 still uses its released 80/60-column layout
-until a separate release. The candidate chooses list rows by terminal columns,
+The dashboard chooses list rows by terminal columns,
 independent of height: 110 columns and wider use the four-cell table; 60–109
 columns use two-line session rows; 32–59 columns use four-line cards. Below 32
 columns or 12 rows, the app shows resize guidance with live source health and
@@ -148,9 +146,9 @@ different set. Search history and display filters are never saved.
 
 ## Favorites and saved view
 
-The a15 reader provides exact favorites and optional remembered ordering.
+The a16 reader provides exact favorites and optional remembered ordering.
 
-Maintained-source rows use four cells: **Status / age · Session · Profile · Workspace**.
+Human rows use four cells: **Status / age · Session · Profile · Workspace**.
 Status and activity age keep separate colors within their shared cell. Ages
 use compact units such as `8s` or `5m`, without a prefix; they remain approximate.
 Working, Ready and Blocked summarize current running runtime with the matching
@@ -166,7 +164,7 @@ Workspace. The left column fits complete status/age and useful profile context;
 the right column gets the remaining width. At 60 columns, the title/workspace
 column retains about 27 cells. Long TUI cells ellipsize while details retain
 full values. Cards put status left and age right on the first line, then
-full-width title, profile and workspace. In maintained source, Workspace shows the current
+full-width title, profile and workspace. Workspace shows the current
 cached root's name or a compact reported directory path, without `repo`/`dir`
 prefixes. Reported `/home/<user>` paths display as `~` (for example,
 `~/code/widget`); full reported paths remain in details and JSON. An expired
@@ -231,10 +229,10 @@ screen reset are separate outcomes when a terminal has stopped draining.
 ## Qualification boundary
 
 The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
-summarizes current evidence and links the frozen qualification record. The a15
+summarizes current evidence and links the frozen qualification record. The a16
 reader has source/installed checks and short actual-fleet terminal checks;
 sustained resource and selected native measurements retain their earlier exact
-artifact bounds. No new sustained run is claimed for the a13/a14/a15 reader work.
+artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16 reader work.
 
 The user accepted the practical preview and deferred large-fleet stress,
 read-path optimization and the extended eight-hour soak. Earlier failures and

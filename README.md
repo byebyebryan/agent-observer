@@ -82,12 +82,14 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a15](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a15)
-prioritizes status, last activity and session names in the CLI/dashboard. It adds
-exact favorites, optional remembered ordering, host/profile color families and
-repo/directory cues. Activity order is newest first across running and parked
-sessions. The finite terminal JSON v1 fields remain compatible; row order follows
-that recency rule. API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
+[0.7.0a16](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
+adds responsive four-cell CLI/dashboard rows: status and activity age, session,
+profile and workspace. Wide terminals use one row, medium terminals a shared
+2x2 grid, and narrow terminals four stacked rows. Status and age align to opposite
+edges, numeric ages omit a prefix, and reported home paths display as `~`.
+Workspace colors distinguish repository and directory labels without prefixes.
+Exact favorites, activity order and host/profile palettes remain available.
+Terminal JSON v1, API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
 Installing source does not change deployed pins or accept a dashboard/device.

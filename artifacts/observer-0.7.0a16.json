@@ -1,0 +1,47 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a16",
+  "wheel": "agent_observer-0.7.0a16-py3-none-any.whl",
+  "wheelSha256": "ec6338ee6e326e2637a41841df7d2209bf3b5d1782ff12b53a7a473d311f89be",
+  "sourceRevision": "781f2aca68c8f9d9cf5fc8792e4086059a3e16e2",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified a16 read-only CLI/dashboard reader; publication and managed selection have separate receipts.",
+    "Responsive four-cell session rows: one row at 110+ columns, shared 2x2 grid at 60-109, four stacked rows at 32-59; dashboard minimum 32x12.",
+    "Status and age share a cell with opposite alignment; numeric ages omit a prefix; workspace labels omit repo/dir prefixes and abbreviate reported home paths.",
+    "Terminal JSON1 fields/order/exit behavior, producer APIs/schemas, a11 collector/publisher selections, routes and Mesh a25/Textual8.2.8 pair remain unchanged.",
+    "No provider control, new runtime controller, transcript discovery, stress or soak acceptance."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}
