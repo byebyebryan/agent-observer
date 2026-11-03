@@ -10,6 +10,7 @@ import unicodedata
 from datetime import UTC, datetime
 from pathlib import PurePosixPath
 
+from .layout import layout_mode, medium_columns
 from .model import sort_rows
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
@@ -355,7 +356,7 @@ def _last_active_text(row: dict, now_ms: int) -> str:
     text = _activity_text(row, now_ms)
     if text == "clock ahead":
         return "Clock ahead"
-    return text.replace("approx. ", "~").removesuffix(" ago")
+    return text.removeprefix("approx. ").removesuffix(" ago")
 
 
 def _profile_text(row: dict) -> str:
@@ -467,6 +468,13 @@ def _compact_cwd(value: object) -> str | None:
     parts = [part for part in path.parts if part not in {"/", "."}]
     if not parts:
         return "/" if path.is_absolute() else None
+    if (
+        path.is_absolute()
+        and len(parts) >= 2
+        and parts[0] == "home"
+        and parts[1] != ".."
+    ):
+        return "~" + ("/" + "/".join(parts[2:]) if len(parts) > 2 else "")
     tail = parts[-1]
     if len(parts) == 1:
         return f"/{tail}" if path.is_absolute() else tail
@@ -497,9 +505,9 @@ def _workspace_text(row: dict) -> str:
         return "unknown"
     kind = _workspace_kind(row)
     if kind == "repo":
-        return f"repo {PurePosixPath(details['repo']['root']).name}"
+        return PurePosixPath(details["repo"]["root"]).name
     if kind == "dir":
-        return f"dir {_compact_cwd(details.get('cwd'))}"
+        return _compact_cwd(details.get("cwd")) or "unknown"
     return "unknown"
 
 
@@ -580,32 +588,65 @@ def _overview_header(report: dict, enabled: bool, icons: bool) -> list[str]:
     return lines
 
 
-_MAIN_HEADERS = ("Status", "Last active", "Session", "Profile", "Workspace")
-_MAIN_FIELDS = ("status", "last_active", "session", "profile", "workspace")
-_MIN_COLUMN_WIDTHS = (13, 11, 10, 16, 12)
+_MAIN_HEADERS = ("Status", "Session", "Profile", "Workspace")
+_MAIN_FIELDS = ("status_age", "session", "profile", "workspace")
+_MIN_COLUMN_WIDTHS = (13, 28, 18, 22)
+
+
+def _status_age_parts_width(rows: list[dict], now_ms: int, icons: bool) -> tuple[int, int]:
+    statuses = [_cells(_status_label(_status_text(row), icons)) for row in rows]
+    ages = [_cells(_last_active_text(row, now_ms)) for row in rows]
+    return max([0, *statuses]), max([7, *ages])
+
+
+def _status_age_content_width(rows: list[dict], now_ms: int, icons: bool) -> int:
+    status_width, age_width = _status_age_parts_width(rows, now_ms, icons)
+    return status_width + 2 + age_width
+
+
+def _status_age_width(rows: list[dict], now_ms: int, icons: bool) -> int:
+    # Numeric ages can grow between projection updates; reserve their normal
+    # maximum while keeping longer explicit uncertainty labels intact.
+    return max(13, _status_age_content_width(rows, now_ms, icons) + 1)
+
+
+def _medium_geometry(
+    rows: list[dict], now_ms: int, width: int, icons: bool, *, gutter: int = 0
+) -> tuple[int, int, int]:
+    status_width, age_width = _status_age_parts_width(rows, now_ms, icons)
+    profiles = [_cells(_profile_text(row)) for row in rows]
+    preferred_left = max(24, max([0, *profiles]))
+    return medium_columns(
+        width,
+        gutter=gutter,
+        required_left=status_width + 2 + age_width,
+        preferred_left=preferred_left,
+    )
+
+
+def _main_table_values(row: dict, now_ms: int, icons: bool) -> list[str]:
+    status, age, title, profile, workspace = _main_values(row, now_ms)
+    return [f"{_status_label(status, icons)}  {age}", title, profile, workspace]
 
 
 def _main_column_widths(
     rows: list[dict], now_ms: int, width: int | None, icons: bool
 ) -> list[int] | None:
-    prepared = [_main_values(row, now_ms) for row in rows]
-    for values in prepared:
-        values[0] = _status_label(values[0], icons)
-    widths = [
-        max(minimum, _cells(header), *(_cells(values[index]) for values in prepared))
-        for index, (minimum, header) in enumerate(
-            zip(_MIN_COLUMN_WIDTHS, _MAIN_HEADERS, strict=True)
-        )
-    ]
+    prepared = [_main_table_values(row, now_ms, icons) for row in rows]
     if width is None:
-        return widths
+        return [
+            max(minimum, _cells(header), *(_cells(values[index]) for values in prepared))
+            for index, (minimum, header) in enumerate(
+                zip(_MIN_COLUMN_WIDTHS, _MAIN_HEADERS, strict=True)
+            )
+        ]
+    widths = list(_MIN_COLUMN_WIDTHS)
+    widths[0] = _status_age_width(rows, now_ms, icons)
     spare = width - sum(widths) - 2 * (len(widths) - 1)
     if spare < 0:
         return None
-    # Keep an ordinary row on one line when it fits. Otherwise use the
-    # status/title + context layout rather than splitting identifiers down
-    # narrow metadata columns. Any spare width belongs to the title.
-    widths[2] += spare
+    # Keep metadata on stable budgets and give all remaining width to names.
+    widths[1] += spare
     return widths
 
 
@@ -619,10 +660,9 @@ def _main_table_header(enabled: bool, widths: list[int]) -> str:
 def _main_table_row(
     row: dict, now_ms: int, enabled: bool, widths: list[int], icons: bool, *, light: bool = False
 ) -> list[str]:
-    values = _main_values(row, now_ms)
+    values = _main_table_values(row, now_ms, icons)
     activity_color = _activity_color(row, now_ms, light=light)
     workspace_color = _workspace_color(row, light=light)
-    values[0] = _status_label(values[0], icons)
     cells = [
         _finish([value], size).splitlines()
         for value, size in zip(values, widths, strict=True)
@@ -634,7 +674,16 @@ def _main_table_row(
             value = cell[line_index] if line_index < len(cell) else ""
             padded = value + " " * max(0, size - _cells(value))
             field = _MAIN_FIELDS[index]
-            if field == "profile" and value == _profile_text(row):
+            if field == "status_age" and value:
+                status = _status_label(_status_text(row), icons)
+                age = _last_active_text(row, now_ms)
+                gap = max(2, size - _cells(status) - _cells(age))
+                parts.append(
+                    _cell_style(status, "status", enabled)
+                    + " " * gap
+                    + _cell_style(age, "last_active", enabled, activity_code=activity_color[0])
+                )
+            elif field == "profile" and value == _profile_text(row):
                 parts.append(_profile_ansi(row, enabled, light=light))
                 parts[-1] += " " * max(0, size - _cells(value))
             else:
@@ -651,29 +700,129 @@ def _main_table_row(
     return output
 
 
-def _compact_main_row(
-    row: dict, now_ms: int, enabled: bool, width: int, icons: bool, *, light: bool = False
-) -> list[str]:
-    status, activity, title, profile, workspace = _main_values(row, now_ms)
-    status = _status_label(status, icons)
-    first = (
+def _status_age_value(
+    row: dict,
+    now_ms: int,
+    enabled: bool,
+    icons: bool,
+    light: bool,
+    width: int,
+) -> str:
+    status = _status_label(_status_text(row), icons)
+    activity = _last_active_text(row, now_ms)
+    gap = max(2, width - _cells(status) - _cells(activity))
+    return (
         _cell_style(status, "status", enabled)
-        + "  "
-        + _cell_style(activity, "last_active", enabled, activity_code=_activity_color(row, now_ms, light=light)[0])
-        + "  "
-        + _cell_style(title, "session", enabled)
-    )
-    second = (
-        "  "
-        + _profile_ansi(row, enabled, light=light)
+        + " " * gap
         + _cell_style(
-            f" · {workspace}",
-            "workspace",
+            activity,
+            "last_active",
             enabled,
-            workspace_code=_workspace_color(row, light=light)[0],
+            activity_code=_activity_color(row, now_ms, light=light)[0],
         )
     )
-    return _finish([first, second], width).splitlines()
+
+
+def _pad_cell(value: str, width: int) -> str:
+    return value + " " * max(0, width - _cells(value))
+
+
+def _aligned_pair(
+    left: str, right: str, left_width: int, right_width: int, gap: int
+) -> list[str]:
+    left_lines = _finish([left], left_width).splitlines() or [""]
+    right_lines = _finish([right], right_width).splitlines() or [""]
+    output = []
+    for index in range(max(len(left_lines), len(right_lines))):
+        left_line = left_lines[index] if index < len(left_lines) else ""
+        right_line = right_lines[index] if index < len(right_lines) else ""
+        output.append(_pad_cell(left_line, left_width) + " " * gap + right_line)
+    return output
+
+
+def _medium_table_header(
+    enabled: bool, left_width: int, right_width: int, gap: int
+) -> list[str]:
+    return [
+        *_aligned_pair(
+            _style("STATUS", "1;2", enabled),
+            _style("SESSION", "1;2", enabled),
+            left_width,
+            right_width,
+            gap,
+        ),
+        *_aligned_pair(
+            _style("PROFILE", "1;2", enabled),
+            _style("WORKSPACE", "1;2", enabled),
+            left_width,
+            right_width,
+            gap,
+        ),
+    ]
+
+
+def _compact_main_row(
+    row: dict,
+    now_ms: int,
+    enabled: bool,
+    icons: bool,
+    geometry: tuple[int, int, int],
+    *,
+    light: bool = False,
+) -> list[str]:
+    _, _, title, _, workspace = _main_values(row, now_ms)
+    left_width, right_width, gap = geometry
+    status_age = _status_age_value(row, now_ms, enabled, icons, light, left_width)
+    return [
+        *_aligned_pair(
+            status_age,
+            _cell_style(title, "session", enabled),
+            left_width,
+            right_width,
+            gap,
+        ),
+        *_aligned_pair(
+            _profile_ansi(row, enabled, light=light),
+            _cell_style(
+                workspace,
+                "workspace",
+                enabled,
+                workspace_code=_workspace_color(row, light=light)[0],
+            ),
+            left_width,
+            right_width,
+            gap,
+        ),
+    ]
+
+
+def _stacked_main_row(
+    row: dict,
+    now_ms: int,
+    enabled: bool,
+    width: int,
+    icons: bool,
+    *,
+    light: bool = False,
+) -> list[str]:
+    _, _, title, _, workspace = _main_values(row, now_ms)
+    status_age = _status_age_value(row, now_ms, enabled, icons, light, width)
+    return [
+        status_age,
+        *_finish([_cell_style(title, "session", enabled)], width).splitlines(),
+        *_finish([_profile_ansi(row, enabled, light=light)], width).splitlines(),
+        *_finish(
+            [
+                _cell_style(
+                    workspace,
+                    "workspace",
+                    enabled,
+                    workspace_code=_workspace_color(row, light=light)[0],
+                )
+            ],
+            width,
+        ).splitlines(),
+    ]
 
 
 def _overview_table(
@@ -682,10 +831,12 @@ def _overview_table(
 ) -> list[str]:
     if not rows:
         return []
-    widths = _main_column_widths(rows, now_ms, width, icons)
+    mode = layout_mode(width) if width is not None else "full"
+    widths = _main_column_widths(rows, now_ms, width, icons) if mode == "full" else None
     output = [_main_table_header(enabled, widths)] if widths is not None else []
-    if widths is None:
-        output.extend(_finish(["STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE"], width).splitlines())
+    geometry = _medium_geometry(rows, now_ms, width or 80, icons) if mode == "compact" else None
+    if mode == "compact":
+        output.extend(_medium_table_header(enabled, *geometry))
     previous_group = None
     for row in rows:
         source = row["source"]
@@ -694,8 +845,12 @@ def _overview_table(
             if selected_group != previous_group:
                 output.append(_profile_ansi(row, enabled, bracketed=True, light=light))
                 previous_group = selected_group
-        if widths is None:
-            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons, light=light))
+        if mode == "compact":
+            output.extend(
+                _compact_main_row(row, now_ms, enabled, icons, geometry, light=light)
+            )
+        elif mode == "stacked" or mode == "tiny":
+            output.extend(_stacked_main_row(row, now_ms, enabled, width or 80, icons, light=light))
         else:
             output.extend(_main_table_row(row, now_ms, enabled, widths, icons, light=light))
     return output
@@ -707,10 +862,12 @@ def _session_table(
 ) -> list[str]:
     if not rows:
         return []
-    widths = _main_column_widths(rows, now_ms, width, icons)
+    mode = layout_mode(width) if width is not None else "full"
+    widths = _main_column_widths(rows, now_ms, width, icons) if mode == "full" else None
     output = [_main_table_header(enabled, widths)] if widths is not None else []
-    if widths is None:
-        output.extend(_finish(["STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE"], width).splitlines())
+    geometry = _medium_geometry(rows, now_ms, width or 80, icons) if mode == "compact" else None
+    if mode == "compact":
+        output.extend(_medium_table_header(enabled, *geometry))
     previous_group = None
     for row in rows:
         source = row["source"]
@@ -719,8 +876,12 @@ def _session_table(
             if selected_group != previous_group:
                 output.append(_profile_ansi(row, enabled, bracketed=True, light=light))
                 previous_group = selected_group
-        if widths is None:
-            output.extend(_compact_main_row(row, now_ms, enabled, width or 80, icons, light=light))
+        if mode == "compact":
+            output.extend(
+                _compact_main_row(row, now_ms, enabled, icons, geometry, light=light)
+            )
+        elif mode == "stacked" or mode == "tiny":
+            output.extend(_stacked_main_row(row, now_ms, enabled, width or 80, icons, light=light))
         else:
             output.extend(_main_table_row(row, now_ms, enabled, widths, icons, light=light))
         evidence = "  id: " + _cell_style(row["identity"]["nativeId"], "id", enabled)
@@ -924,6 +1085,4 @@ def render(
             + _style("All rows, context and full IDs: ", "2", color)
             + _style(f"{command} list", "36", color)
         )
-        if rows:
-            lines.append(_style("~ approximate activity age", "2", color))
     return _finish(lines, width)

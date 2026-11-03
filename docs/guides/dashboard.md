@@ -112,10 +112,24 @@ and resize. A hidden selection stays pinned. If evidence leaves the projection,
 only its identity and sanitized label remain, marked unavailable; old runtime
 facts are discarded. A background update does not choose a neighboring row.
 
-At 120x30 or larger, details open alongside the list; below that they use the
-content area. At least 80x24 shows single-line rows, 60x16 uses compact rows,
-and smaller terminals show resize guidance with overall health and quit/help.
-Opening/closing panels does not restart subscriptions.
+Responsive breakpoints below describe maintained-source/private-candidate
+behavior. Released or managed a15 still uses its released 80/60-column layout
+until a separate release. The candidate chooses list rows by terminal columns,
+independent of height: 110 columns and wider use the four-cell table; 60–109
+columns use two-line session rows; 32–59 columns use four-line cards. Below 32
+columns or 12 rows, the app shows resize guidance with live source health and
+help/quit. Height changes chrome and page capacity without switching a wide
+terminal to compact rows, so 120x16 keeps the full table. The source ribbon
+retains the source denominator and explicit health, including partial, stale
+and unavailable states. Narrow footers use short key labels; `?` retains the
+full meanings. Details, source evidence and filter choices wrap and scroll in
+the content area, without horizontal list scrolling. Opening/closing panels
+does not restart subscriptions.
+
+These breakpoints refer to terminal columns and rows. Their fit in a particular
+pixel-sized window depends on its emulator and font and remains a human visual
+check. At 120x30 or larger, details open alongside the list; below that they use
+the content area.
 
 The list gives status, activity and session names priority, with profile and
 workspace context. Repo names come from current cached Git working-tree roots,
@@ -136,27 +150,36 @@ different set. Search history and display filters are never saved.
 
 The a15 reader provides exact favorites and optional remembered ordering.
 
-Its main rows show **Status · Last active · Session · Profile · Workspace**.
+Maintained-source rows use four cells: **Status / age · Session · Profile · Workspace**.
+Status and activity age keep separate colors within their shared cell. Ages
+use compact units such as `8s` or `5m`, without a prefix; they remain approximate.
 Working, Ready and Blocked summarize current running runtime with the matching
 phase; positively parked sessions show Inactive. Unknown, stale and unavailable
 evidence stay explicit. Last active measures conversation activity, not duration
 in that status. Source health remains above the list, and raw facts/reasons
 remain in details.
 
-Session titles receive the most flexible width. Profile shows host/profile;
-Workspace labels a current cached root as `repo name` and a reported working
-directory as `dir path`. An expired repository falls back to the reported
-directory, and missing metadata is `unknown`. Narrow rows and the split-details
-list keep status, activity age and title on the first line, with
-profile/workspace below. Full paths and exact identity remain inspectable.
+Session titles receive the most flexible width in the table and two-line rows.
+Medium rows share one left/right column boundary across both lines and every
+entry on the page: status/age sits left of Session, then Profile sits left of
+Workspace. The left column fits complete status/age and useful profile context;
+the right column gets the remaining width. At 60 columns, the title/workspace
+column retains about 27 cells. Long TUI cells ellipsize while details retain
+full values. Cards put status left and age right on the first line, then
+full-width title, profile and workspace. In maintained source, Workspace shows the current
+cached root's name or a compact reported directory path, without `repo`/`dir`
+prefixes. Reported `/home/<user>` paths display as `~` (for example,
+`~/code/widget`); full reported paths remain in details and JSON. An expired
+repository falls back to the reported directory, and
+missing metadata is `unknown`. Full paths and exact identity remain inspectable.
 
 The palette keeps selection background and marker neutral while
 preserving status colors. Current activity age fades from newer to older over
 24 hours; unknown, stale, unavailable and future ages stay neutral. Profile hue
 identifies a stable host family and its bounded shade follows the exact home.
 Repo, directory and unknown workspaces use distinct type colors. Light themes
-use darker variants, and `?` includes a short palette/type legend. Words and
-the `repo`/`dir` cues keep the rows readable without color. The
+use darker variants, and `?` includes a short palette/type legend. No-color rows
+keep the workspace name/path; details identify the repository and directory. The
 [presentation contract](../maintenance/terminal-product.md#user-facing-rows)
 defines status qualification and metadata limits.
 

@@ -65,13 +65,20 @@ than choosing by arrival order. Native observation semantics remain in
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. At 80x24 it
-uses Status, Last active, Session, Profile and Workspace rows. Enter opens
-split details at 120x30 or larger, otherwise a separate
-view. At least 60x16 supports compact rows; smaller terminals show guidance,
-overall health and help/quit. Source health remains visible in panels and
-filtered views. The [dashboard guide](../guides/dashboard.md#read-and-navigate)
-owns the key reference and layout explanation.
+The dashboard initially shows the full list with details closed. Maintained
+source uses width-only list modes: at 110 columns and wider it shows the full
+four-cell Status / age, Session, Profile and Workspace table; 60–109 columns use
+two-line session rows with one shared left/right boundary for both rows and all
+entries on the page; 32–59 columns use four-line cards. Below 32 columns or
+12 rows it shows resize guidance with live source health and help/quit. Height
+reduces chrome and page capacity but does not compact a wide table. Released
+and managed a15 keeps its prior 80/60-column layout until a separate release.
+Enter opens split details at 120x30 or larger, otherwise a separate view.
+Source health remains visible with its denominator in the main view, panels and
+filtered states. Detail paths, source evidence and filter choices wrap and
+scroll; selection remains visible on resize. The
+[dashboard guide](../guides/dashboard.md#read-and-navigate) owns the key
+reference and layout explanation.
 
 Selection follows the exact identity through reorder, filtering, paging and
 resize. A hidden selection stays pinned. If evidence disappears or its source
@@ -180,7 +187,7 @@ or visible revocation; record that distinction explicitly.
 | UI/state | At most four cosmetic paints/second, one age update/second and 200 materialized list rows/page. Filtering/counts span all admitted outcomes. One pending read/source; bounded latest state, no event history or session disk cache. |
 | Output | At most 512 KiB pending encoded output and per accepted write; fail after two seconds without drain progress. No blocked event-loop queue put or unbounded writer join. |
 | Normal resource profile | Three sources x100 identities, draining 120x40 terminal, two-minute warmup and 30 measured minutes. Client plus owned children <=5% of one core and <=192 MiB RSS; report producer/sampler cost separately. |
-| Interaction | Normal key/resize-to-visible p95 <=100 ms; admitted-update-to-visible p95 <=250 ms at its recorded boundary. Test 120x40, 80x24, 60x16 and 40x10 guidance. |
+| Interaction | Normal key/resize-to-visible p95 <=100 ms; admitted-update-to-visible p95 <=250 ms at its recorded boundary. Exercise 120x30 and 120x16 full tables, 80x24 compact rows, 60x16 compact rows, 40x12 and 32x12 stacked cards, and guidance below 32 columns or 12 rows. Pixel-to-column fit depends on the emulator/font and remains a human visual check. |
 | Recovery | Source/warming UI within 500 ms; controlled available baseline within five seconds of an attempt, plus start queue/backoff. Fresh baseline and healthy siblings required. Verify quiet expiry, receiving-clock changes, job control and 100 controlled disconnect/recovery cycles without resource growth. |
 | Shutdown | Terminal flags restored within two seconds and all owned cleanup joined within five. Preserve unrelated native sessions, services and processes. Measure delivered screen reset separately. |
 | Practical preview | Twenty-second installed-dashboard check over the actual configured cached fleet: current projection/counts/source health, clean quit and terminal restoration. Supplement with controlled update/input/expiry/recovery checks. This is not sustained-performance or native-accuracy proof. |
@@ -235,12 +242,26 @@ prompts, approvals and lifecycle. Native switching and its spike stay deferred.
 
 ### User-facing rows
 
-The main human CLI and dashboard rows use **Status, Last active, Session,
-Profile, Workspace**. Status and activity age are the scan targets; the session
-title receives the flexible width. Profile and workspace are quieter context.
-Narrow dashboard rows and the split-details list put status/activity/title on
-the first line and profile/workspace below. Section/group headings and both
-lines count against the page budget; exact selection stays visible on resize.
+The main human CLI and dashboard rows use four cells: **Status / age,
+Session, Profile, Workspace**. Status and activity age are the scan targets;
+status and age share a cell with separate colors, and the session title receives
+flexible width. Profile and workspace are quieter
+context. At 110 columns and wider, dashboard and finite TTY output use the
+four-cell table. At 60–109 columns they use two-line rows with a shared column
+boundary: status/age and profile on the left, session and workspace on the
+right. The left fits complete status/age and useful profile context; the right
+gets the remaining width. At 60 columns the dashboard retains about 27 cells
+for the right column, including room for a pinned title. TUI cells ellipsize;
+full values remain in details. At 32–59 columns the dashboard and finite TTY
+output use four-line cards: status left and age right, full-width title, profile
+and workspace. Below 32 columns, finite text retains stacked rows with bounded
+wrapping; the dashboard shows a minimum-size guide. A non-TTY finite CLI has no
+known width and keeps its natural full-field layout. These are maintained-source
+candidate behaviors; released/managed a15 remains on the earlier layout until
+separately released. Section/group headings and all row lines count against the
+dashboard page budget; exact selection stays visible on resize. Breakpoints
+describe terminal cells, not a fixed pixel size; physical fit depends on the
+terminal emulator and font.
 
 Status is a presentation summary of qualified facts, with no new producer state:
 
@@ -266,7 +287,8 @@ order within each host/profile. Explicit groups and favorite order still apply.
 Last active is approximate time since native conversation activity, never time
 spent in the displayed status. It retains its own freshness and qualifications
 independently of runtime/phase; a display tick renews no evidence. Unknown ages
-stay qualified, and the approximate marker remains visible. A logarithmic
+stay qualified. Numeric ages use compact units without a prefix and remain
+approximate activity ages. A logarithmic
 truecolor fade runs from `#ffe49a` to `#819fc7` over the first 24 hours, then
 holds the older-activity shade. Light dashboard themes use `#6c4b00` to
 `#31527a`. The dashboard updates color on the existing age tick, including when
@@ -282,9 +304,14 @@ the exact home selects a bounded shade within that family. Host and home have
 separate spans. Colors stay consistent across row order, filters, selection and
 CLI/dashboard views; finite palette colors may repeat.
 
-Dashboard workspace text says `repo name` for a current cached
-repository/worktree root, `dir path` for reported cwd, or `unknown`. The finite
-CLI uses its existing cwd metadata as `dir path`. Workspace colors distinguish
+Maintained-source workspace labels omit `repo`/`dir` prefixes: the dashboard
+shows the current cached repository/worktree name, otherwise compact reported
+cwd, otherwise `unknown`. Reported `/home/<user>` prefixes display as `~`
+without consulting the viewing machine; full paths remain in details and JSON.
+The finite CLI uses its existing cwd metadata.
+Released a15 still includes the prefixes. Full repository/directory labels
+remain in details; no-color rows retain the workspace name/path. Workspace
+colors distinguish
 repo (`#55d7af` dark / `#005d49` light), directory (`#f0b56f` / `#804500`) and
 unknown (neutral `#a9b2bb` dark / `#4b535e` light). An expired repository falls
 back to reported cwd and uses directory styling. There is no filesystem or Git

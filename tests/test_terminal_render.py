@@ -10,7 +10,9 @@ from unittest.mock import patch
 from test_terminal_model import lease, read, report, row, source, state
 
 from agent_observer.terminal.render import (
+    _compact_cwd,
     _last_active_text,
+    _main_column_widths,
     _status_label,
     _status_text,
     _workspace_color,
@@ -67,6 +69,29 @@ class TerminalRenderTests(unittest.TestCase):
             self.assertEqual(_emit(document, args, "overview"), 0)
         self.assertIn("\x1b[38;2;128;69;0m", output[0])
 
+    def test_home_workspace_shorthand_preserves_reported_paths_and_json(self):
+        for value, expected in (
+            ("/home/alice", "~"),
+            ("/home/remote-user/code/widget", "~/code/widget"),
+            ("/home/alice/projects/界面", "~/projects/界面"),
+            ("/home", "/home"),
+            ("/home/../widget", "…/widget"),
+            ("/opt/projects/widget", "…/widget"),
+        ):
+            with self.subTest(value=value):
+                self.assertEqual(_compact_cwd(value), expected)
+        item = row("home-path", title="Workspace review")
+        item["cwd"] = "/home/remote-user/code/widget"
+        document = report([state(current_read=read(rows=[item], leases=[lease("home-path")]))])
+        before = json.dumps(document, sort_keys=True)
+        for width in (32, 60, 110):
+            with self.subTest(width=width):
+                text = render(document, width=width)
+                self.assertIn("~/code/widget", text)
+                self.assertNotIn(item["cwd"], text)
+        self.assertEqual(document["sessions"][0]["details"]["cwd"], item["cwd"])
+        self.assertEqual(json.dumps(document, sort_keys=True), before)
+
     def test_status_colors_survive_padding_in_the_wide_table(self):
         items = [row(f"id-{index}", title=f"Task {index}") for index in range(3)]
         for item, phase in zip(items, ("working", "waiting", "blocked"), strict=True):
@@ -88,13 +113,98 @@ class TerminalRenderTests(unittest.TestCase):
         text = render(document, width=80, icons=True)
         title_line = next(line for line in text.splitlines() if item["title"] in line)
         self.assertIn("Working", title_line)
-        self.assertIn("~", title_line)
-        context_line = next(line for line in text.splitlines() if "fixture/default" in line and "·" in line)
-        self.assertIn("dir …/agent-observer-feature", context_line)
+        self.assertRegex(title_line, r"Working\s+\d+[smhd]")
+        context_line = next(line for line in text.splitlines() if "fixture/default" in line)
+        self.assertIn("…/agent-observer-feature", context_line)
         self.assertIn("agent-observer-feature", context_line)
         self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
         self.assertNotIn("\x1b", render(document, width=80))
         self.assertEqual(json.dumps(document, sort_keys=True), before)
+
+    def test_finite_rows_keep_field_priority_across_responsive_widths(self):
+        item = row("layout-id", title="Renderer review")
+        document = report(
+            [state(current_read=read(rows=[item], leases=[lease("layout-id")]))]
+        )
+
+        widths = _main_column_widths(document["sessions"], 1_000, 110, False)
+        self.assertIsNotNone(widths)
+        self.assertEqual(len(widths), 4)
+        self.assertGreaterEqual(widths[1], 28)
+        full = render(document, mode="list", width=110)
+        header = next(line for line in full.splitlines() if line.startswith("Status"))
+        for left, right in zip(
+            ("Status", "Session", "Profile"),
+            ("Session", "Profile", "Workspace"),
+            strict=True,
+        ):
+            self.assertLess(header.index(left), header.index(right))
+
+        compact = render(document, mode="list", width=80).splitlines()
+        session_heading = next(line for line in compact if line.startswith("STATUS"))
+        workspace_heading = next(line for line in compact if line.startswith("PROFILE"))
+        session_x = session_heading.index("SESSION")
+        workspace_x = workspace_heading.index("WORKSPACE")
+        self.assertEqual(session_x, workspace_x)
+        title_index = next(index for index, line in enumerate(compact) if "Renderer review" in line)
+        self.assertIn("Working", compact[title_index])
+        self.assertRegex(compact[title_index], r"Working\s+\d+[smhd]")
+        self.assertEqual(compact[title_index].index("Renderer review"), session_x)
+        self.assertIn("fixture/default", compact[title_index + 1])
+        self.assertEqual(compact[title_index + 1].index("…/workspace"), workspace_x)
+
+        stacked = render(document, mode="list", width=32).splitlines()
+        title_index = next(index for index, line in enumerate(stacked) if line == "Renderer review")
+        self.assertIn("Working", stacked[title_index - 1])
+        self.assertRegex(stacked[title_index - 1], r"Working\s+\d+[smhd]")
+        self.assertEqual(stacked[title_index + 1], "fixture/default")
+        self.assertIn("workspace", stacked[title_index + 2])
+
+    def test_medium_grid_shares_column_edges_and_right_aligns_mixed_ages(self):
+        active = row("medium-active", title="Active medium task")
+        unavailable = row("medium-unavailable", title="Unavailable medium task")
+        unavailable["activity"].update(health="unavailable", at=None, reason="read_unavailable")
+        document = report(
+            [
+                state(
+                    current_read=read(
+                        rows=[active, unavailable],
+                        leases=[lease("medium-active"), lease("medium-unavailable")],
+                    )
+                )
+            ]
+        )
+
+        for mode in ("overview", "list"):
+            for width in (60, 80, 109):
+                with self.subTest(mode=mode, width=width):
+                    lines = render(document, mode=mode, width=width, icons=True).splitlines()
+                    session_heading = next(
+                        line for line in lines if line.startswith("STATUS")
+                    )
+                    workspace_heading = next(
+                        line for line in lines if line.startswith("PROFILE")
+                    )
+                    right_edge = session_heading.index("SESSION")
+                    self.assertEqual(workspace_heading.index("WORKSPACE"), right_edge)
+                    title_lines = [line for line in lines if " medium task" in line]
+                    workspace_lines = [line for line in lines if "workspace" in line]
+                    self.assertEqual(len(title_lines), 2)
+                    self.assertEqual(len(workspace_lines), 2)
+                    for line in title_lines:
+                        title = (
+                            "Active medium task"
+                            if "Active medium task" in line
+                            else "Unavailable medium task"
+                        )
+                        self.assertEqual(line.index(title), right_edge)
+                        status_age = line[:right_edge].rstrip()
+                        age = re.search(r"(?:Unavailable|\d+[smhd]+)$", status_age)
+                        self.assertIsNotNone(age)
+                        self.assertEqual(age.end(), right_edge - 1)
+                    for line in workspace_lines:
+                        self.assertEqual(line.index("…/workspace"), right_edge)
+                    self.assertTrue(all(screen_width(line) <= width for line in lines))
 
     def test_long_and_wide_metadata_wraps_in_all_tty_views_without_losing_text(self):
         native_id = "00000000-0000-4000-8000-000000000123"
@@ -106,7 +216,7 @@ class TerminalRenderTests(unittest.TestCase):
                 )
             ]
         )
-        for width in (40, 60, 80, 120, 180):
+        for width in (32, 40, 59, 60, 80, 109, 110, 120, 180):
             for mode in ("overview", "list", "show", "sources"):
                 for color, icons in ((False, False), (True, True), (False, True)):
                     with self.subTest(width=width, mode=mode, color=color, icons=icons):
@@ -132,7 +242,7 @@ class TerminalRenderTests(unittest.TestCase):
             )
         ]
         document = report(states, mode="overview")
-        text = render(document, width=80)
+        text = render(document, width=120)
         self.assertIn("12 sessions", text)
         self.assertIn("1/1 sources complete", text)
         self.assertIn("Showing 10 of 12 matches.", text)
@@ -144,17 +254,18 @@ class TerminalRenderTests(unittest.TestCase):
             ]
             self.assertEqual(len(matching), 1)
             self.assertIn("Working", matching[0])
-            self.assertIn("~", matching[0])
+            self.assertRegex(matching[0], r"Working\s+\d+[smhd]")
             self.assertIn("fixture/default", matching[0])
             self.assertNotIn(member["identity"]["nativeId"], text)
-        self.assertTrue(all(screen_width(line) <= 80 for line in text.splitlines()))
+        self.assertTrue(all(screen_width(line) <= 120 for line in text.splitlines()))
         full = render(report(states), mode="list")
         for member in members:
             self.assertIn(member["identity"]["nativeId"], full)
         self.assertIn("fixture-project", full)
         header = next(line for line in full.splitlines() if line.startswith("Status"))
-        self.assertLess(header.index("Status"), header.index("Last active"))
-        self.assertLess(header.index("Last active"), header.index("Session"))
+        self.assertIn("Status", header)
+        self.assertNotIn("Last active", header)
+        self.assertLess(header.index("Status"), header.index("Session"))
         self.assertLess(header.index("Session"), header.index("Profile"))
         self.assertLess(header.index("Profile"), header.index("Workspace"))
         id_lines = [line for line in full.splitlines() if line.startswith("  id: ")]
@@ -290,7 +401,7 @@ class TerminalRenderTests(unittest.TestCase):
         item["runtime"].update(value="parked", health="current")
         item["phase"].update(value="waiting", health="current")
         self.assertEqual(_status_text(item), "Inactive")
-        self.assertEqual(_last_active_text(item, 1_000), "~1s")
+        self.assertEqual(_last_active_text(item, 1_000), "1s")
 
         item["details"] = {
             "workspaceHealth": "current",
@@ -298,12 +409,12 @@ class TerminalRenderTests(unittest.TestCase):
             "cwd": "/reported/elsewhere/src",
         }
         self.assertEqual(_workspace_kind(item), "repo")
-        self.assertEqual(_workspace_text(item), "repo topic-feature")
+        self.assertEqual(_workspace_text(item), "topic-feature")
         self.assertEqual(_workspace_color(item), ("38;2;85;215;175", "#55d7af"))
         self.assertEqual(_workspace_color(item, light=True), ("38;2;0;93;73", "#005d49"))
         item["details"]["workspaceHealth"] = "stale"
         self.assertEqual(_workspace_kind(item), "dir")
-        self.assertEqual(_workspace_text(item), "dir …/src")
+        self.assertEqual(_workspace_text(item), "…/src")
         self.assertEqual(_workspace_color(item), ("38;2;240;181;111", "#f0b56f"))
         self.assertEqual(_workspace_color(item, light=True), ("38;2;128;69;0", "#804500"))
         item["details"]["cwd"] = None

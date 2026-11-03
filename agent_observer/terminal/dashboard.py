@@ -23,6 +23,7 @@ from .dashboard_view import (
     order_pinned_rows,
     toggle_pin,
 )
+from .layout import header_height, layout_mode, medium_columns, row_height
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import (
     _activity_color,
@@ -31,6 +32,8 @@ from .render import (
     _profile_color,
     _profile_text,
     _session_title,
+    _status_age_parts_width,
+    _status_age_width,
     _status_label,
     _status_text,
     _workspace_color,
@@ -41,11 +44,8 @@ _MEMBERSHIPS = ("active", "recent", "uncertain", "nonmember")
 _RUNTIMES = ("running", "parked", "unknown")
 _PHASES = ("working", "blocked", "waiting", "unknown")
 _FILTER_DIMENSIONS = ("source", "host", "home", "membership", "runtime", "phase", "kind")
-_SINGLE_ROW_MIN_WIDTH = 80
 _SPLIT_WIDTH = 120
 _SPLIT_HEIGHT = 30
-_COMPACT_MIN_WIDTH = 60
-_COMPACT_MIN_HEIGHT = 16
 _MAX_PAGE_ROWS = 200
 _MIN_PAINT_INTERVAL = 0.25
 _PIN_PAGE_SIZE = 5
@@ -87,16 +87,27 @@ class SessionLine(Static):
 
     def _line(self) -> Text:
         line = Text(no_wrap=True, overflow="ellipsis")
-        for index, (value, width) in enumerate(
-            zip(self._cell_values, self._cell_widths, strict=True)
-        ):
+        # Runtime status and activity remain distinct facts in the row data;
+        # their two colored spans share the first of four presentation cells.
+        for index, width in zip((0, 1, 3, 4, 5), self._cell_widths, strict=True):
+            value = self._cell_values[index]
             if index == 0 and not self._header_row:
                 value = "> " if self._selected_row else "  "
             style = self._style_for_cell(index, value, self._selected_row, self._header_row)
-            if index == self._age_index and self._age_style:
-                style = f"{style} {self._age_style}".strip()
-            cell = Text(value, style=style)
-            cell.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
+            if index == 1 and not self._header_row:
+                cell = Text()
+                cell.append(value, style)
+                age = self._cell_values[2]
+                age_style = self._style_for_cell(2, age, self._selected_row, False)
+                if self._age_style:
+                    age_style = f"{age_style} {self._age_style}".strip()
+                gap = max(2, width - 1 - cell.cell_len - Text(age).cell_len)
+                cell.append(" " * gap)
+                cell.append(age, age_style)
+            else:
+                cell = Text(value, style=style)
+            inset = 1 if width > 2 else 0
+            cell.truncate(max(1, width - inset), overflow="ellipsis")
             if (
                 index == 4
                 and not self._header_row
@@ -594,12 +605,7 @@ class DashboardApp(App[None]):
         self._request_render()
 
     def _layout_mode(self) -> str:
-        width, height = self.size.width, self.size.height
-        if width < _COMPACT_MIN_WIDTH or height < _COMPACT_MIN_HEIGHT:
-            return "tiny"
-        if width < _SINGLE_ROW_MIN_WIDTH or height < 24:
-            return "compact"
-        return "full"
+        return layout_mode(self.size.width, self.size.height)
 
     def _split_details(self) -> bool:
         return (
@@ -609,14 +615,15 @@ class DashboardApp(App[None]):
             and self.size.height >= _SPLIT_HEIGHT
         )
 
-    def _page_size(self) -> int:
-        mode = self._layout_mode()
-        line_budget = max(1, self.size.height - 5 - int(self._search_open))
-        compact_rows = mode == "compact" or self._split_details()
-        row_height = 2 if compact_rows else 1
-        header_lines = int(mode == "full" or compact_rows)
-        if self._split_details():
-            header_lines = 1
+    def _page_size(self, width: int | None = None) -> int:
+        split = self._split_details()
+        mode = layout_mode(
+            width if width is not None else self._split_left_width() if split else self.size.width,
+            self.size.height,
+        )
+        line_budget = self._content_height_budget()
+        row_lines = max(1, row_height(mode))
+        header_lines = header_height(mode)
         visible_pins, pinned_rows = self._visible_pin_counts()
         other_rows = self._visible_rows[pinned_rows:]
         section_lines = int(visible_pins > 0) + int(visible_pins > 0 and bool(other_rows))
@@ -628,13 +635,83 @@ class DashboardApp(App[None]):
                     for row in other_rows
                 }
             )
-        page_line = int(bool(self._visible_rows))
+        page_line = int(bool(self._visible_rows) and mode in {"full", "compact"})
         available = max(
             1,
             (line_budget - header_lines - section_lines - group_lines - page_line)
-            // row_height,
+            // row_lines,
         )
         return max(1, min(_MAX_PAGE_ROWS, available))
+
+    def _content_height_budget(self) -> int:
+        """Return the list viewport height after the currently visible chrome."""
+        expected = max(1, self.size.height - self._chrome_line_count())
+        if self._content is not None:
+            actual = self._content.region.height
+            if actual > 0:
+                return max(1, min(actual, expected))
+        return expected
+
+    def _chrome_line_count(self) -> int:
+        toolbar_lines = (
+            len(self._wrap_lines(self._toolbar_text(), self._chrome_width()))
+            if self._toolbar_visible()
+            else 0
+        )
+        return (
+            len(self._wrap_lines(self._header_text(), self._chrome_width()))
+            + len(self._wrap_lines(self._source_ribbon(), self._chrome_width()))
+            + toolbar_lines
+            + int(self._search_open)
+            + (
+                len(self._wrap_lines(self._status_text(), self._chrome_width()))
+                if self._status_visible()
+                else 0
+            )
+            # The narrow footer can include the current page fraction, which
+            # depends on _page_size(). Pagination itself needs the chrome
+            # budget, so count the intentionally single-line footer directly.
+            + (
+                1
+                if self.size.width < 60
+                else len(self._wrap_lines(self._footer_text(), self._chrome_width()))
+            )
+        )
+
+    def _chrome_width(self) -> int:
+        return max(1, self.size.width - 4)
+
+    def _wrap_lines(self, value: str, width: int) -> list[str]:
+        output = []
+        for line in value.splitlines() or [""]:
+            output.extend(
+                segment.plain
+                for segment in Text(line).wrap(self.console, max(1, width), overflow="fold")
+            )
+        return output or [""]
+
+    def _toolbar_visible(self) -> bool:
+        return self.size.width >= 60 and self._toolbar_state_active()
+
+    def _toolbar_state_active(self) -> bool:
+        return bool(
+            self.filters.get("query")
+            or self._empty_dimensions
+            or any(
+                self.filters.get(name)
+                for name in ("source", "host", "home", "membership", "runtime", "phase")
+            )
+            or self.filters.get("includeChildren")
+            or self.filters.get("includeSystem")
+            or self.filters.get("sort") != "activity"
+            or self.filters.get("group") != "none"
+            or self.saved_view.pins
+        )
+
+    def _status_visible(self) -> bool:
+        if self.size.width >= 60:
+            return True
+        return False
 
     def _sync_page_rows(self) -> None:
         if not self._visible_rows:
@@ -675,6 +752,7 @@ class DashboardApp(App[None]):
         if not self._ensure_current_projection():
             await self._paint_pending()
             return
+        self._paint_chrome()
         self._sync_page_rows()
         render_projection = self._projection
         signature = self._content_signature()
@@ -711,6 +789,7 @@ class DashboardApp(App[None]):
                 await container.mount(*children)
                 if not self._mounted or self._updates_stopped:
                     return
+                self.call_after_refresh(self._scroll_to_active_content)
             self._content_signature_value = signature
             self._rebind_age_cells()
         else:
@@ -743,7 +822,7 @@ class DashboardApp(App[None]):
             children = self._overlay_widgets()
         elif self._layout_mode() == "tiny":
             children = self._plain_lines(
-                ["Resize to at least 60×16 to view sessions.", "Use ? for keys · q quits."]
+                ["Resize to at least 32×12 to view sessions.", "Use ? for keys · q quits."]
             )
         else:
             children = self._plain_lines(
@@ -760,11 +839,30 @@ class DashboardApp(App[None]):
     def _paint_chrome(self) -> None:
         if not self._mounted or self._updates_stopped:
             return
-        self._update_static("header", self._header_text())
-        self._update_static("sources", self._source_ribbon())
-        self._update_static("toolbar", self._toolbar_text())
-        self._update_static("status", self._status_text())
-        self._update_static("footer", self._footer_text())
+        values = {
+            "header": self._header_text(),
+            "sources": self._source_ribbon(),
+            "toolbar": self._toolbar_text(),
+            "status": self._status_text(),
+            "footer": self._footer_text(),
+        }
+        toolbar_visible = self._toolbar_visible()
+        status_visible = self._status_visible()
+        self.query_one("#toolbar", Static).display = toolbar_visible
+        for widget_id, value in values.items():
+            value = "\n".join(self._wrap_lines(value, self._chrome_width()))
+            widget = self.query_one(f"#{widget_id}", Static)
+            visible = (
+                toolbar_visible
+                if widget_id == "toolbar"
+                else status_visible
+                if widget_id == "status"
+                else True
+            )
+            if widget_id == "status":
+                widget.display = visible
+            widget.styles.height = max(1, len(value.splitlines()) or 1) if visible else 0
+            self._update_static(widget_id, value)
 
     def _update_static(self, widget_id: str, value: str) -> None:
         if self._render_values.get(widget_id) == value:
@@ -806,7 +904,7 @@ class DashboardApp(App[None]):
         elif self._layout_mode() == "tiny":
             children = self._plain_lines(
                 [
-                    "Resize to at least 60×16 to view sessions.",
+                    "Resize to at least 32×12 to view sessions.",
                     "Readers continue to expire evidence and recover independently.",
                     "Use ? for keys · q quits · Ctrl+C interrupts.",
                 ]
@@ -834,7 +932,7 @@ class DashboardApp(App[None]):
             self._focus,
             self._scroll_offset,
             self._selected_key
-            if self._view != "list" or self._layout_mode() == "compact"
+            if self._view != "list" or self._layout_mode() in {"compact", "stacked"}
             else None,
             self._selection_hidden,
             self._selection_available,
@@ -878,6 +976,7 @@ class DashboardApp(App[None]):
                 ),
             )
         if self._view == "details":
+            split = self._split_details()
             row = self._selected_detail_row if self._selection_available else None
             detail_lines = []
             for line in self._detail_lines():
@@ -891,12 +990,29 @@ class DashboardApp(App[None]):
                 self._row_signature(row) if row else self._selected_label,
                 self._source_signature(self._source_for_row(row)) if row else None,
                 tuple(detail_lines),
-                self._split_details(),
+                split,
+                self._list_signature() if split else None,
             )
+
+        return (*base, self._list_signature())
+
+    def _list_signature(self) -> tuple:
         rows = tuple(self._row_signature(row) for row in self._page_rows)
+        page_size = self._page_size()
+        selected_index = next(
+            (
+                index
+                for index, row in enumerate(self._visible_rows)
+                if self._row_key(row) == self._selected_key
+            ),
+            0,
+        )
         return (
-            *base,
             rows,
+            len(self._visible_rows),
+            page_size,
+            selected_index // page_size,
+            (len(self._visible_rows) + page_size - 1) // page_size,
             self.filters.get("group", "none"),
             self._report.get("totals", {}).get("state", "unknown"),
             tuple(sorted(self._empty_dimensions)),
@@ -998,10 +1114,40 @@ class DashboardApp(App[None]):
         }
 
     def _plain_lines(self, lines: list[str]) -> list[Static]:
-        return [
-            Static(self._as_text(self._fit_line(line, max(1, self.size.width - 4))), markup=False)
-            for line in lines
-        ]
+        result = []
+        for line in lines:
+            result.extend(
+                Static(self._as_text(part), markup=False)
+                for part in self._wrap_lines(line, self._chrome_width())
+            )
+        return result
+
+    def _scroll_to_active_content(self) -> None:
+        if self._content is None:
+            return
+        target_id = None
+        if self._overlay == "filters":
+            target_id = "filter-option-current"
+        elif self._view == "sources":
+            target_id = (
+                "source-evidence-start"
+                if self._focus == "source-details"
+                else "source-selected"
+            )
+        if target_id is None:
+            if self._overlay is not None or self._view in {"list", "details"}:
+                self._content.scroll_home(animate=False, immediate=True)
+            return
+        try:
+            target = self.query_one(f"#{target_id}")
+        except Exception:
+            return
+        self._content.scroll_to_widget(
+            target,
+            top=self._overlay != "filters",
+            animate=False,
+            immediate=True,
+        )
 
     def _overlay_widgets(self) -> list[Static]:
         if self._overlay == "help":
@@ -1010,7 +1156,7 @@ class DashboardApp(App[None]):
                     [
                         "Keyboard help",
                         "Esc or ? back · q quit · Ctrl+C exit",
-                        "Resize to 60×16 for session controls.",
+                        "Resize to 32×12 for session controls.",
                     ]
                 )
             widgets = self._plain_lines(
@@ -1025,9 +1171,10 @@ class DashboardApp(App[None]):
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
                     "Palette: status=state · age fades new→old",
+                    "Age is approximate time since conversation activity.",
                     "Profile: hue=host · shade=profile",
-                    "Workspace: repo=current cached root",
-                    "Workspace: dir=reported cwd · unknown=neutral",
+                    "Workspace: teal=repo · orange=directory",
+                    "Unknown workspace stays neutral; full paths in details.",
                     "Search input keeps printable keys, including q/j/k.",
                     "Find includes current cached repository paths.",
                 ]
@@ -1169,7 +1316,7 @@ class DashboardApp(App[None]):
             return {"active", "recent", "uncertain"}
         return set(options)
 
-    def _filter_widgets(self) -> list[Static]:
+    def _filter_widgets(self) -> list[Any]:
         dimension = _FILTER_DIMENSIONS[self._filter_dimension_index]
         options = self._filter_options(dimension)
         selected = self._effective_filter_values(dimension, options)
@@ -1182,39 +1329,47 @@ class DashboardApp(App[None]):
             "phase": "Phase",
             "kind": "Kind",
         }
-        if self.size.width < 80:
-            active_label = labels[dimension]
-            heading = Text(
-                f"Filters · [{active_label}] "
-                f"{self._filter_dimension_index + 1}/{len(_FILTER_DIMENSIONS)}",
-                style="bold underline",
-            )
-        else:
-            heading = Text("Filters  ", style="bold")
-            for index, name in enumerate(_FILTER_DIMENSIONS):
-                if index:
-                    heading.append("  ")
-                label = labels[name]
-                heading.append(f"[{label}]" if index == self._filter_dimension_index else label)
-                if index == self._filter_dimension_index:
-                    heading.stylize("bold underline", len(heading) - len(label) - 2, len(heading))
-                else:
-                    heading.stylize("dim", len(heading) - len(label), len(heading))
+        active_label = labels[dimension]
+        heading = Text(
+            f"Filters · [{active_label}] "
+            f"{self._filter_dimension_index + 1}/{len(_FILTER_DIMENSIONS)}",
+            style="bold underline",
+        )
         widgets = [Static(heading, markup=False, classes="filter-tabs")]
         lines = [
             "←/→ or Tab: dimension · ↑/↓: option · Space/Enter: toggle",
         ]
         if not options:
             lines.append("No configured values for this dimension.")
+        option_widgets = []
         for index, option in enumerate(options):
             marker = ">" if index == self._filter_option_index else " "
             checked = "[x]" if option in selected else "[ ]"
-            lines.append(f"{marker} {checked} {self._filter_option_label(dimension, option)}")
+            label = f"{marker} {checked} {self._filter_option_label(dimension, option)}"
+            option_lines = self._wrap_lines(label, self._chrome_width())
+            option_widgets.append(
+                Vertical(
+                    *[
+                        Static(
+                            self._as_text(line),
+                            markup=False,
+                            classes="section-heading" if index == self._filter_option_index else "",
+                        )
+                        for line in option_lines
+                    ],
+                    id="filter-option-current" if index == self._filter_option_index else None,
+                    classes="filter-option",
+                )
+            )
+        # The focused option is scrolled into view after mount; retaining the
+        # full option set lets long source names and paths wrap without loss.
         lines.append("")
         lines.append("r resets filters and kind inclusion to defaults.")
         lines.append("Display filters only.")
         lines.append("All watched sources stay counted.")
-        widgets.extend(self._plain_lines(lines))
+        widgets.extend(self._plain_lines(lines[:1]))
+        widgets.extend(option_widgets)
+        widgets.extend(self._plain_lines(lines[1:]))
         return widgets
 
     def _filter_option_label(self, dimension: str, option: str) -> str:
@@ -1299,11 +1454,15 @@ class DashboardApp(App[None]):
             name = option_labels.get(source_id, self._filter_source_label(config))
             summary = self._source_summary_text(source, status)
             prefix = "> " if selected else "  "
-            lines.append(
-                Static(
-                    self._as_text(self._fit_line(prefix + name, self.size.width - 4)), markup=False
+            for line_index, part in enumerate(self._wrap_lines(prefix + name, self._chrome_width())):
+                lines.append(
+                    Static(
+                        self._as_text(part),
+                        markup=False,
+                        id="source-selected" if selected and line_index == 0 else None,
+                        classes="section-heading" if selected else "",
+                    )
                 )
-            )
             status_widget = Static(
                 self._source_summary_display(source, status),
                 markup=False,
@@ -1339,9 +1498,8 @@ class DashboardApp(App[None]):
 
     def _source_summary_display(self, source: dict, status: dict) -> Text:
         prefix = "  "
-        value = self._fit_line(
-            prefix + self._source_summary_text(source, status),
-            max(1, self.size.width - 4),
+        value = "\n".join(
+            self._wrap_lines(prefix + self._source_summary_text(source, status), self._chrome_width())
         )
         text = self._as_text(value)
         health = str(
@@ -1362,16 +1520,17 @@ class DashboardApp(App[None]):
             else self._safe(source.get("id", "unknown"))
         )
         lines = [f"Selected source evidence · {label}"]
-        wrap_width = max(1, self.size.width - 9)
+        wrap_width = max(1, self._chrome_width() - 2)
         for detail in self._source_detail_text(source, config=config, status=status):
             lines.extend(
-                "    " + part.plain
+                "  " + part.plain
                 for part in Text(detail).wrap(self.console, wrap_width, overflow="fold")
             )
         return [
             Static(
                 self._as_text(line),
                 markup=False,
+                id="source-evidence-start" if index == 0 else None,
                 classes="section-heading" if index == 0 else "source-evidence",
             )
             for index, line in enumerate(lines)
@@ -1380,11 +1539,11 @@ class DashboardApp(App[None]):
     def _list_widgets(self, *, width: int | None = None, split: bool = False) -> list[Any]:
         self._age_cells = {}
         self._sync_page_rows()
-        mode = self._layout_mode()
         render_width = width or self.size.width
+        mode = layout_mode(render_width, self.size.height)
         widgets: list[Any] = []
         total = len(self._visible_rows)
-        page_size = self._page_size()
+        page_size = self._page_size(render_width)
         start = (
             next(
                 (
@@ -1402,23 +1561,26 @@ class DashboardApp(App[None]):
         stop = min(total, start + page_size)
         _, pinned_row_count = self._visible_pin_counts()
         has_visible_pins = self._visible_pin_counts()[0] > 0
-        if mode == "full" and not split:
+        medium_geometry = (
+            self._medium_column_widths(render_width) if mode == "compact" else None
+        )
+        if mode == "full":
             widths = self._column_widths(render_width - 4)
-            headers = ("STATUS", "LAST ACTIVE", "SESSION", "PROFILE", "WORKSPACE")
+            headers = ("STATUS", "", "SESSION", "PROFILE", "WORKSPACE")
             header, _ = self._row_widget(headers, widths, selected=False, header=True)
             widgets.append(header)
-        elif mode == "compact" or split:
-            widgets.append(
-                Static(
-                    self._as_text(
-                        self._fit_line(
-                            "STATUS · LAST ACTIVE · SESSION / PROFILE · WORKSPACE",
-                            render_width - 4,
-                        )
-                    ),
-                    markup=False,
+        elif mode == "compact":
+            left_width, right_width, gap = medium_geometry
+            for left, right in (("STATUS", "SESSION"), ("PROFILE", "WORKSPACE")):
+                widgets.append(
+                    Horizontal(
+                        self._cell("  ", 2),
+                        self._cell(left, left_width, "bold"),
+                        self._cell(" " * gap, gap),
+                        self._cell(right, right_width, "bold"),
+                        classes="row table-heading compact-heading",
+                    )
                 )
-            )
         prior_group = None
         for index in range(start, stop):
             row = self._visible_rows[index]
@@ -1458,7 +1620,7 @@ class DashboardApp(App[None]):
                     index - start,
                     mode,
                     width=render_width,
-                    split=split,
+                    medium_geometry=medium_geometry,
                 )
             )
         if not self._visible_rows:
@@ -1470,7 +1632,7 @@ class DashboardApp(App[None]):
                     ]
                 )
             )
-        if total > page_size:
+        if total > page_size and self.size.width >= 60:
             widgets.append(
                 Static(
                     self._as_text(
@@ -1495,51 +1657,54 @@ class DashboardApp(App[None]):
         mode: str,
         *,
         width: int,
-        split: bool = False,
+        medium_geometry: tuple[int, int, int] | None = None,
     ) -> list[Any]:
         selected = self._row_key(row) == self._selected_key
         key = self._row_key(row)
         title = self._safe(_session_title(row))
-        if split or mode == "compact":
-            if self._is_pinned_row(row):
-                title = "* " + title
-            selected_style = (
-                "reverse bold" if selected and self.no_color else "bold" if selected else ""
-            )
+        if mode == "stacked":
             status = _status_label(_status_text(row), self.icons)
             age = self._activity_age(row)
-            body_width = max(1, width - 4)
-            status_width, age_width = (14 if self.icons else 12), 12
-            label_width = max(8, body_width - 2 - status_width - age_width)
+            status_width, age_width = self._compact_column_budgets()
+            cell_width = max(1, width - 6)
+            spacer_width = max(1, cell_width - status_width - age_width)
             age_cell = self._cell(
                 age,
                 age_width,
                 self._activity_style(row, selected=selected),
                 widget_id=f"age-{page_index}",
+                truncate=False,
+                right_align=True,
             )
-            first = Horizontal(
+            status_age = Horizontal(
                 self._cell(
-                    "> " if selected else "  ", 2, selected_style, selection_marker=selected
+                    "> " if selected else "  ",
+                    2,
+                    "reverse bold" if selected and self.no_color else "",
+                    selection_marker=selected,
                 ),
                 self._cell(
                     status,
                     status_width,
                     "reverse bold" if selected and self.no_color else self._semantic_style(status),
+                    truncate=False,
                 ),
+                self._cell(" " * spacer_width, spacer_width, truncate=False),
                 age_cell,
-                self._cell(title, label_width, selected_style),
+                classes="row",
+            )
+            pin = "* " if self._is_pinned_row(row) else ""
+            title_line = Horizontal(
+                self._cell("  ", 2),
+                self._cell(pin + title, cell_width, "bold" if selected else ""),
                 classes="row",
             )
             profile = self._safe(_profile_text(row))
-            workspace = self._safe(_workspace_text(row))
-            context_width = max(1, body_width - 4)
-            profile_width = max(1, context_width // 2)
-            workspace_width = max(1, context_width - profile_width)
-            second = Horizontal(
+            profile_line = Horizontal(
                 self._cell("  ", 2),
                 self._cell(
                     profile,
-                    profile_width,
+                    cell_width,
                     self._profile_style(row, selected=selected),
                     span_styles=(
                         (
@@ -1549,10 +1714,84 @@ class DashboardApp(App[None]):
                         ),
                     ),
                 ),
-                self._cell("·", 2),
+                classes="row",
+            )
+            workspace = self._safe(_workspace_text(row))
+            workspace_line = Horizontal(
+                self._cell("  ", 2),
                 self._cell(
                     workspace,
-                    workspace_width,
+                    cell_width,
+                    self._workspace_style(row, selected=selected),
+                ),
+                classes="row",
+            )
+            self._age_cells[key] = (age_cell, age, row)
+            return [
+                Vertical(
+                    status_age,
+                    title_line,
+                    profile_line,
+                    workspace_line,
+                    classes="stacked-row " + self._row_classes(selected),
+                )
+            ]
+
+        if mode == "compact":
+            if self._is_pinned_row(row):
+                title = "* " + title
+            selected_style = (
+                "reverse bold" if selected and self.no_color else "bold" if selected else ""
+            )
+            status = _status_label(_status_text(row), self.icons)
+            age = self._activity_age(row)
+            status_width, age_width = self._compact_column_budgets()
+            left_width, right_width, gap = medium_geometry
+            spacer_width = max(1, left_width - status_width - age_width)
+            age_cell = self._cell(
+                age,
+                age_width,
+                self._activity_style(row, selected=selected),
+                widget_id=f"age-{page_index}",
+                truncate=False,
+                right_align=True,
+            )
+            first = Horizontal(
+                self._cell(
+                    "> " if selected else "  ", 2, selected_style, selection_marker=selected
+                ),
+                self._cell(
+                    status,
+                    status_width,
+                    "reverse bold" if selected and self.no_color else self._semantic_style(status),
+                    truncate=False,
+                ),
+                self._cell(" " * spacer_width, spacer_width, truncate=False),
+                age_cell,
+                self._cell(" " * gap, gap),
+                self._cell(title, right_width, selected_style),
+                classes="row",
+            )
+            profile = self._safe(_profile_text(row))
+            workspace = self._safe(_workspace_text(row))
+            second = Horizontal(
+                self._cell("  ", 2),
+                self._cell(
+                    profile,
+                    left_width,
+                    self._profile_style(row, selected=selected),
+                    span_styles=(
+                        (
+                            0,
+                            len(self._safe(row.get("source", {}).get("host"))),
+                            self._profile_host_style(row, selected=selected),
+                        ),
+                    ),
+                ),
+                self._cell(" " * gap, gap),
+                self._cell(
+                    workspace,
+                    right_width,
                     self._workspace_style(row, selected=selected),
                 ),
                 classes="row",
@@ -1692,10 +1931,31 @@ class DashboardApp(App[None]):
         return line, line
 
     def _column_widths(self, width: int) -> tuple[int, ...]:
-        status, age = (14 if self.icons else 12), 12
-        profile, workspace = (22, 24) if width >= 100 else (16, 12)
-        title = max(8, width - 2 - status - age - profile - workspace)
-        return status, age, title, profile, workspace
+        rows = self._page_rows or self._visible_rows[:1]
+        status_age = _status_age_width(rows, self._display_now_ms(), self.icons)
+        profile, workspace = 18, 22
+        title = max(28, width - 2 - status_age - profile - workspace)
+        return status_age, title, profile, workspace
+
+    def _compact_column_budgets(self) -> tuple[int, int]:
+        rows = self._page_rows or self._visible_rows[:1]
+        status_width, age_width = _status_age_parts_width(
+            rows, self._display_now_ms(), self.icons
+        )
+        # Reserve the full named age qualifier so ordinary age-only updates
+        # never change the split pane's structural grid.
+        return status_width, max(11, age_width)
+
+    def _medium_column_widths(self, width: int) -> tuple[int, int, int]:
+        rows = self._page_rows or self._visible_rows[:1]
+        status_width, age_width = self._compact_column_budgets()
+        profile_width = max([24, *(Text(_profile_text(row)).cell_len for row in rows)])
+        return medium_columns(
+            max(1, width - 4),
+            gutter=2,
+            required_left=status_width + 2 + age_width,
+            preferred_left=profile_width,
+        )
 
     def _semantic_style(self, value: str) -> str:
         red, amber, green, cyan, quiet = (
@@ -1732,13 +1992,18 @@ class DashboardApp(App[None]):
         widget_id: str | None = None,
         selection_marker: bool = False,
         span_styles: tuple[tuple[int, int, str], ...] = (),
+        truncate: bool = True,
+        right_align: bool = False,
     ) -> Static:
         safe_value = self._safe(value)
         text = Text(safe_value, style=style or None, no_wrap=True, overflow="ellipsis")
         if style:
             # Explicit spans survive the Static cell's CSS foreground style.
             text.stylize(style)
-        text.truncate(max(1, width - (1 if width > 2 else 0)), overflow="ellipsis")
+        inset = 1 if truncate and width > 2 else 0
+        text.truncate(max(1, width - inset), overflow="ellipsis")
+        if right_align:
+            text.pad_left(max(0, width - text.cell_len))
         for start, end, span_style in span_styles:
             if span_style and start < len(text.plain):
                 text.stylize(span_style, start, min(end, len(text.plain)))
@@ -1746,15 +2011,21 @@ class DashboardApp(App[None]):
         classes = "cell selection-marker" if selection_marker else "cell"
         widget = Static(text, markup=False, id=widget_id, classes=classes)
         widget.styles.width = max(1, width)
+        widget._right_align = right_align
+        widget._cell_width = max(1, width)
         return widget
 
     def _detail_width(self) -> int:
         if self._split_details():
             width = max(1, self.size.width - 6)
-            left = max(55, int(width * 0.57))
+            left = self._split_left_width()
             # The split pane reserves its border, padding, and stable scrollbar.
             return max(1, width - left - 6)
         return max(1, self.size.width - 4)
+
+    def _split_left_width(self) -> int:
+        width = max(1, self.size.width - 6)
+        return max(55, int(width * 0.57))
 
     def _wrapped_detail_lines(self) -> list[str]:
         # Exact IDs, namespaces and admitted paths must remain fully readable
@@ -1769,7 +2040,7 @@ class DashboardApp(App[None]):
     def _detail_widgets(self) -> list[Static]:
         lines = self._wrapped_detail_lines()
         start = self._scroll_offset
-        visible = lines[start : start + max(1, self.size.height - 7)]
+        visible = lines[start : start + self._content_height_budget()]
         result = []
         section_headings = {
             "Session summary",
@@ -1821,7 +2092,7 @@ class DashboardApp(App[None]):
 
     def _split_widgets(self) -> list[Horizontal]:
         width = max(1, self.size.width - 6)
-        left_width = max(55, int(width * 0.57))
+        left_width = self._split_left_width()
         right_width = max(1, width - left_width - 2)
         list_widgets = self._list_widgets(width=left_width, split=True)
         left_panel = VerticalScroll(*list_widgets, id="split-list")
@@ -2227,7 +2498,7 @@ class DashboardApp(App[None]):
             self._select_row(self._visible_rows[-1 if end else 0])
 
     def _scroll_details(self, delta: int) -> None:
-        visible = max(1, self.size.height - 7)
+        visible = self._content_height_budget()
         maximum = max(0, len(self._wrapped_detail_lines()) - visible)
         self._scroll_offset = max(0, min(maximum, self._scroll_offset + delta))
         self._request_render()
@@ -2539,7 +2810,15 @@ class DashboardApp(App[None]):
 
         if self._overlay == "help":
             event.stop()
-            if key in {"?", "escape", "enter"} or character == "?":
+            if key in {"up", "k"}:
+                self._scroll_source_page(-1)
+            elif key in {"down", "j"}:
+                self._scroll_source_page(1)
+            elif key == "pageup":
+                self._scroll_source_page(-self._content_height_budget())
+            elif key == "pagedown":
+                self._scroll_source_page(self._content_height_budget())
+            elif key in {"?", "escape", "enter"} or character == "?":
                 self._overlay = self._help_return_overlay
                 self._help_return_overlay = None
                 self._request_render()
@@ -2671,6 +2950,12 @@ class DashboardApp(App[None]):
             self.reader.refresh_due()
             self._ensure_current_projection()
             self._sync_page_rows()
+            if self._view == "details" and not self._split_details():
+                maximum = max(
+                    0,
+                    len(self._wrapped_detail_lines()) - self._content_height_budget(),
+                )
+                self._scroll_offset = min(self._scroll_offset, maximum)
         self._request_render(immediate=True)
 
     def _resume_refresh(self, _app) -> None:
@@ -2690,25 +2975,78 @@ class DashboardApp(App[None]):
     def _header_text(self) -> str:
         if self._projection is None:
             label = "Observer" if self.size.width < 60 else "Agent Observer"
-            suffix = " · refreshing source state"
-            if self.size.width < 80:
-                return self._fit_line(label + suffix, max(1, self.size.width - 2))
             return f"{label} · {self._view_label()} · refreshing source state"
         totals = self._report.get("totals", {})
+        if self.size.width < 60:
+            critical = []
+            if self.view_controller is not None and self.view_controller.warning:
+                warning = self._safe(self.view_controller.warning).removeprefix("saved_view_")
+                critical.append(f"View not saved; session only ({warning})")
+            elif self._selected_key is not None and self._selection_hidden:
+                critical.append("Selected session hidden by filters")
+            elif self._selected_key is not None and not self._selection_available:
+                critical.append("Selected session not currently available")
+            message = self._safe(self._message)
+            if message.casefold().startswith(
+                (
+                    "select a session",
+                    "select a visible session",
+                    "pin limit reached",
+                    "pin change rejected",
+                    "saved view change rejected",
+                    "retry for ",
+                    "source is not waiting",
+                    "pin removal rejected",
+                    "no pins to remove",
+                )
+            ):
+                critical.append(message)
+            if critical:
+                return " · ".join(critical)
+        if self._overlay == "filters":
+            dimension = _FILTER_DIMENSIONS[self._filter_dimension_index]
+            labels = {
+                "source": "Source",
+                "host": "Host",
+                "home": "Profile",
+                "membership": "Member",
+                "runtime": "Runtime",
+                "phase": "Phase",
+                "kind": "Kind",
+            }
+            count = len(self._visible_rows)
+            text = f"{labels[dimension]} filter · {count} matches"
+            if Text(text).cell_len > self._chrome_width():
+                text = f"{labels[dimension]} filter · {count}"
+            return text
         members = totals.get("members", 0)
         count = f"{members} session" + ("" if members == 1 else "s")
         uncertain = totals.get("uncertain", 0)
+        if self.size.width < 60:
+            matches = len(self._visible_rows)
+            parts = [f"{matches} match" + ("" if matches == 1 else "es"), f"{uncertain} uncertain"]
+            filters_active = bool(
+                self.filters.get("query")
+                or self._empty_dimensions
+                or any(
+                    self.filters.get(name)
+                    for name in ("source", "host", "home", "membership", "runtime", "phase")
+                )
+                or self.filters.get("includeChildren")
+                or self.filters.get("includeSystem")
+            )
+            if filters_active:
+                parts.append("Filtered")
+            if self.filters.get("sort") != "activity":
+                parts.append("Sorted")
+            if self.filters.get("group") != "none":
+                parts.append("Grouped")
+            if self.saved_view.pins:
+                parts.append(f"Pins {len(self.saved_view.pins)}")
+            return " · ".join(parts)
         label = "Agent Observer"
         if self.icons and self.size.width >= 80:
             label = "◈ " + label
-        if self.size.width < 80:
-            label = "Observer" if self.size.width < 60 else "Agent Observer"
-            value = f"{label} · {count} · {uncertain} uncertain"
-            if Text(value).cell_len <= max(1, self.size.width - 2):
-                return value
-            return self._fit_line(
-                f"{count} · {uncertain} uncertain", max(1, self.size.width - 2)
-            )
         view = self._view_label()
         context = "" if view == "Sessions" else f" · {view}"
         return f"{label}{context} · {count} · {uncertain} uncertain"
@@ -2729,7 +3067,7 @@ class DashboardApp(App[None]):
         )
 
     def _source_ribbon(self) -> str:
-        available = max(1, self.size.width - 4)
+        available = self._chrome_width()
         configs = self._source_configs()
         sources = self._report.get("sources", ()) if self._projection is not None else ()
         source_docs = {item.get("id"): item for item in sources}
@@ -2761,44 +3099,23 @@ class DashboardApp(App[None]):
         if Text(named).cell_len <= available:
             return named
 
-        aggregate = "Sources " + str(total)
+        parts = ["Sources " + str(total)]
         categories = ("complete", "partial", "stale", "warming", "blocked", "unavailable")
         for category in (*categories, *sorted(set(health_counts) - set(categories))):
             count = health_counts.get(category, 0)
             if count:
-                aggregate += f" · {category} {count}"
-        if Text(aggregate).cell_len <= available:
-            return aggregate
-
-        priority = next(
-            (
-                (category, health_counts[category])
-                for category in (
-                    "unavailable",
-                    "blocked",
-                    "stale",
-                    "partial",
-                    "warming",
-                    "refreshing",
-                    "complete",
-                )
-                if health_counts.get(category, 0)
-            ),
-            None,
-        )
-        if priority is None:
-            short = f"{total} sources · s sources"
-        else:
-            category, count = priority
-            short = f"{total} src · {category} {count} · s sources"
-        if Text(short).cell_len <= available:
-            return short
-        shorter = (
-            f"{total} src · {priority[0]} {priority[1]} · s"
-            if priority is not None
-            else f"{total} src · s"
-        )
-        return self._fit_line(shorter, available)
+                parts.append(f"{category} {count}")
+        # Keep each health and its count together when the ribbon wraps.
+        lines = []
+        line = parts[0]
+        for part in parts[1:]:
+            combined = line + " · " + part
+            if Text(combined).cell_len <= available:
+                line = combined
+            else:
+                lines.append(line)
+                line = part
+        return "\n".join([*lines, line])
 
     def _toolbar_text(self) -> str:
         query = " ".join(self.filters.get("query", ()))
@@ -2822,13 +3139,23 @@ class DashboardApp(App[None]):
         order = self.filters.get("sort", "activity")
         group = self.filters.get("group", "none")
         pin_count = self._pinned_count_text() if self.saved_view.pins else None
+        if 60 <= self.size.width < 110:
+            summary = []
+            if query:
+                summary.append("Search active")
+            if active:
+                summary.append("Filtered")
+            if order != "activity":
+                summary.append(f"Order {order}")
+            if group != "none":
+                summary.append("Grouped by host/profile")
+            if pin_count is not None:
+                summary.append(pin_count)
+            return " · ".join(summary)
         if not query and not active and order == "activity" and group == "none":
             if pin_count is not None:
-                return self._fit_line(pin_count, max(1, self.size.width - 4))
-            default = "Default view · / search · f filters · o order · g group"
-            if self.size.width < 80:
-                default = "Default · / search · f filters"
-            return self._fit_line(default, max(1, self.size.width - 4))
+                return pin_count
+            return ""
         parts = [pin_count] if pin_count is not None else []
         parts.append(f"Search {self._safe(query)}" if query else "Search off")
         parts.append(f"Filters {', '.join(active)}" if active else "default filters")
@@ -2836,20 +3163,25 @@ class DashboardApp(App[None]):
             parts.append(f"Order {order}")
         if group != "none":
             parts.append("Group host/profile" if group == "host-home" else f"Group {group}")
-        return self._fit_line(" · ".join(parts), max(1, self.size.width - 4))
+        return " · ".join(parts)
 
     def _status_text(self) -> str:
         if self.view_controller is not None and self.view_controller.warning:
-            available = max(1, self.size.width - 4)
             prefix = "View not saved; session only"
             reason = self._safe(self.view_controller.warning).removeprefix("saved_view_")
-            reason = reason[: max(0, min(24, available - len(prefix) - 3))]
-            message = f"{prefix} ({reason})" if reason else prefix
-            return self._fit_line(message, available)
+            return f"{prefix} ({reason})" if reason else prefix
         status_parts = []
         if self._projection is None:
-            status_parts.append("Refreshing current source state; no empty-state verdict.")
-            return self._fit_line(" · ".join(status_parts), max(1, self.size.width - 4))
+            return "Refreshing current source state; no empty-state verdict."
+        if self.size.width < 60:
+            critical = []
+            if self._selected_key is not None and self._selection_hidden:
+                critical.append("Selected session hidden by filters")
+            elif self._selected_key is not None and not self._selection_available:
+                critical.append("Selected session not currently available")
+            if self._message:
+                critical.append(self._safe(self._message))
+            return " · ".join(critical)
         report_totals = self._report.get("totals", {})
         total = len(self._visible_rows)
         hidden_presentation = max(0, len(self._all_rows) - total)
@@ -2865,13 +3197,15 @@ class DashboardApp(App[None]):
             status_parts.append(f"{hidden_kinds} hidden by kind")
         if state != "complete":
             status_parts.append(f"coverage {self._safe(state)}")
+        if self._toolbar_visible() and not self.saved_view.pins:
+            status_parts.append("filters active · f view")
         if self._selected_key is not None and self._selection_hidden:
             status_parts.append("selected session hidden by filters")
         elif self._selected_key is not None and not self._selection_available:
             status_parts.append("selected session not currently available")
         if self._message:
             status_parts.append(self._safe(self._message))
-        return self._fit_line(" · ".join(status_parts), max(1, self.size.width - 4))
+        return " · ".join(status_parts)
 
     def _pinned_count_text(self) -> str:
         in_view, _matching_rows = self._visible_pin_counts()
@@ -2887,33 +3221,66 @@ class DashboardApp(App[None]):
         return f"Pinned {in_view} in view / {total} {durability}"
 
     def _footer_text(self) -> str:
+        if self.size.width < 60:
+            if self.focused is not None and isinstance(self.focused, Input):
+                return "↵ apply · Esc restore · ^C"
+            if self._overlay == "help":
+                return "↑↓  Esc  ?  q"
+            if self._layout_mode() == "tiny":
+                return "? help · q quit · ^C"
+            if self._overlay == "pins":
+                return "↑↓  p  Esc  ?  q"
+            if self._overlay == "filters":
+                return "←→ ↑↓ Space ↵ r Esc ? q"
+            if self._overlay in {"sort", "group"}:
+                return "↑↓  ↵  Esc  ?  q"
+            if self._view == "sources":
+                return "↑↓  Tab  r  Esc  ?  q"
+            if self._view == "details":
+                return "↑↓  P  Esc  ?  q"
+            page_size = self._page_size()
+            total = len(self._visible_rows)
+            selected_index = next(
+                (
+                    index
+                    for index, row in enumerate(self._visible_rows)
+                    if self._row_key(row) == self._selected_key
+                ),
+                0,
+            )
+            page = (
+                f" {selected_index // page_size + 1}/{(total + page_size - 1) // page_size}"
+                if total > page_size
+                else ""
+            )
+            return f"↑↓ move · ↵ / ? q{page}"
         if self.focused is not None and isinstance(self.focused, Input):
-            if self.size.width < 60:
-                return "Esc cancel · Ctrl+C exit"
             return "Type search · Enter apply · Esc restore · Ctrl+C exit"
         if self._overlay == "help":
             if self._layout_mode() == "tiny":
-                return "Esc or ? back · q quit · Ctrl+C exit"
+                return "Esc or ? back · q quit · ^C exit"
             return "? or Esc close · q quit · Ctrl+C exit"
         if self._overlay == "pins":
             if self.size.width < 80:
-                return "↑↓ choose · p remove · Esc · ? · q"
+                return "↑↓ choose · p remove · Esc\n? help · q quit · ^C exit"
             return "↑↓ choose · PgUp/Dn page · p remove · Esc · ? · q"
         if self._layout_mode() == "tiny":
-            return "? help · q quit · Ctrl+C exit"
+            return "? help · q quit · ^C exit"
         if self._overlay == "filters":
             if self.size.width < 80:
-                return "Space toggle · r reset · Esc back · q quit"
+                return "↑↓ option · Space/↵ toggle\n←→ field · r reset · Esc back\n? help · q quit"
             return "←→ field · ↑↓ option · Space toggle · r reset · Esc · ? help · q quit"
         if self._overlay == "sort" or self._overlay == "group":
+            if self.size.width < 80:
+                return "↑↓ preview · ↵ accept\nEsc cancel · ? help · q quit"
             return "↑↓ preview · Enter/Space accept · Esc cancel · ? help · q quit"
         if self._view == "sources":
             if self._focus == "source-details":
                 if self.size.width < 80:
-                    return "Evidence · Tab list · P pins · Esc · q"
+                    return "↑↓ scroll · Tab list · r retry\nEsc back · ? help · q quit"
                 return "Evidence · ↑↓ scroll · Tab list · P pins · Esc · ? · q"
             if self.size.width < 80:
-                return "↑↓ select · Tab evidence · r retry · P pins · q"
+                return "↑↓ select · Tab evidence · r retry\nP pins · ? help · q quit"
             return "↑↓ select · Tab evidence · r retry · P pins · ? · q"
         if self._view == "details":
             if self._split_details():
@@ -2921,10 +3288,10 @@ class DashboardApp(App[None]):
                     return "List · ↑↓ select · p pin · P pins · Tab details · Esc · ? · q"
                 return "Details · ↑↓ scroll · P pins · Tab list · Esc · ? · q"
             if self.size.width < 80:
-                return "↑↓ scroll · P pins · Esc · ? · q"
+                return "↑↓ scroll · P pins · Esc back\n? help · q quit · ^C exit"
             return "↑↓ scroll · P pins · Esc · ? · q"
         if self.size.width < 80:
-            return "↑↓ move · p pin · P pins · Enter view · ? · q"
+            return "↑↓ move · ↵ / ? q"
         return "↑↓ move · p pin · P pins · Enter details · / · ? · q"
 
     def _empty_state_text(self) -> str:
@@ -2981,11 +3348,13 @@ class DashboardApp(App[None]):
                 continue
             style = self._activity_style(row, age_now, selected=key == self._selected_key)
             if current != previous or style != widget.content.style:
-                width = widget.region.width or max(1, len(current))
+                width = getattr(widget, "_cell_width", 0) or widget.region.width or max(1, len(current))
                 updated = Text(current, style=style or None, no_wrap=True, overflow="ellipsis")
                 if style:
                     updated.stylize(style)
                 updated.truncate(width, overflow="ellipsis")
+                if getattr(widget, "_right_align", False):
+                    updated.pad_left(max(0, width - updated.cell_len))
                 updated.pad_right(width)
                 widget.update(updated)
                 self._age_cells[key] = (widget, current, row)

@@ -239,7 +239,7 @@ class TerminalRecencyTests(unittest.TestCase):
 class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
     async def test_newly_active_parked_row_leads_and_selection_remains_exact(self):
         app = DashboardApp(FakeReader([mixed_state()]), {})
-        async with app.run_test(size=(80, 24)) as pilot:
+        async with app.run_test(size=(110, 24)) as pilot:
             await pilot.pause()
             self.assertEqual(app._visible_rows[0]["identity"]["nativeId"], "recent-parked")
             self.assertEqual(app._line_widgets[app._selected_key]._cell_values[1], "Inactive")
@@ -251,7 +251,7 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(app._selected_key, selected)
 
     async def test_age_color_ticks_in_full_compact_and_details_without_renewing_facts(self):
-        for size in ((80, 24), (60, 16)):
+        for size in ((110, 24), (60, 16)):
             item = row("ready")
             item["phase"]["value"] = "waiting"
             item["activity"]["at"] = 0
@@ -263,7 +263,10 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
                 await pilot.pause()
                 widget, previous, projected = app._age_cells[app._selected_key]
                 expected = _activity_color(projected, 61_000)[1]
-                age_index = 2 + app._column_widths(76)[0] if size[0] == 80 else 0
+                age_index = (
+                    widget.content.plain[: 2 + widget._cell_widths[1]].rfind(widget._cell_values[2])
+                    if size[0] == 110 else 0
+                )
                 self.assertEqual(
                     widget.content.get_style_at_offset(app.console, age_index).color.name, expected
                 )
@@ -377,13 +380,14 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
         app = DashboardApp(FakeReader([state(current_read=read(rows=[item], leases=[lease("ready")]))]), {})
         app.theme = "textual-light"
         app._display_now_ms = lambda: 119_000
-        async with app.run_test(size=(80, 24)) as pilot:
+        async with app.run_test(size=(110, 24)) as pilot:
             await pilot.pause()
             item = app._all_rows[0]
             widget = app._line_widgets[app._selected_key]
-            widths = app._column_widths(76)
-            age = widget.content.get_style_at_offset(app.console, 2 + widths[0]).color.name
-            profile_offset = 2 + sum(widths[:3])
+            widths = app._column_widths(106)
+            age_offset = widget.content.plain[: 2 + widths[0]].rfind(widget._cell_values[2])
+            age = widget.content.get_style_at_offset(app.console, age_offset).color.name
+            profile_offset = 2 + sum(widths[:2])
             host = item["source"]["host"]
             host_color = widget.content.get_style_at_offset(app.console, profile_offset).color.name
             profile = widget.content.get_style_at_offset(

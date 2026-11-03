@@ -100,11 +100,22 @@ agent-observer sessions show FULL_THREAD_ID --host workstation --home default
 
 Bare `agent-observer`, `agent-observer sessions` and `sessions overview` show
 the same overview. It has at most ten displayed rows, with a compact coverage
-summary and Status, Last active, Session, Profile and Workspace columns. Rows
-use a compact two-line layout when they cannot fit. Long labels
-wrap without losing text. Approximate activity ages use `~`; unknown or stale
-facts retain their qualifications. Raw facts remain in exact-session details.
-Full IDs and context are available with `list` and `show`.
+summary and four ordered cells: Status / age, Session, Profile and Workspace.
+In maintained source, a TTY at 110 columns or wider uses the four-cell table;
+60–109 columns use two-line rows with a shared left/right boundary: status/age
+and Profile on the left, Session and Workspace on the right. The dashboard
+reserves about 27 cells for the right column at 60 columns; finite output uses
+the remaining width without a selection gutter. At 32–59 columns, rows stack
+status left with age right-aligned in the shared cell, then session, profile
+and workspace. Below 32 columns, finite text keeps
+the stacked layout and wraps within the known width. These are private-candidate
+breakpoints; released/managed a15 retains its released layout until a separate
+release. Bounded text wraps long labels without losing content. When stdout is
+not a TTY, width is unknown and the natural full-field layout is kept. Activity ages use
+compact units without a prefix and remain approximate; unknown or stale facts
+retain their qualifications. Raw
+facts remain in exact-session details. Full IDs and context are available with
+`list` and `show`; JSON output is unchanged.
 
 Interactive terminals use a cyan heading/navigation accent, bold session names,
 quiet secondary metadata and colored state labels. Standard Unicode glyphs
@@ -139,18 +150,20 @@ visible even if filters match no rows.
 
 ## Status-first output
 
-Human rows use **Status · Last active · Session · Profile · Workspace**
+Maintained-source human rows use **Status / age · Session · Profile · Workspace**
 for overview/list output. They share the dashboard's
 [qualified status vocabulary](../maintenance/terminal-product.md#user-facing-rows):
 Working, Ready, Blocked, Inactive and explicit Unknown/Stale/Unavailable.
 
 Last active is approximate time since conversation activity. Profile displays
 host/profile with a stable host family and home shade. The finite CLI Workspace
-uses reported cwd only, marked `dir path`; the dashboard can prefer a current
-cached repo/worktree root as `repo name`, falling back to reported cwd. Full
-paths and raw membership/runtime/phase remain in exact-session details; `list`
-retains full IDs as secondary evidence. The overview still displays at most ten
-rows. Long names and IDs remain complete in piped text, with no ANSI sequences.
+uses reported cwd only; the dashboard can prefer a current cached repo/worktree
+root, falling back to reported cwd. Maintained source omits `repo`/`dir`
+prefixes and shortens reported `/home/<user>` paths to `~`, including remote
+users. Full paths and raw membership/runtime/phase remain in exact-session
+details; `list` retains full IDs as secondary evidence. The overview still
+displays at most ten rows. Long names and IDs remain complete in piped text,
+with no ANSI sequences.
 
 Activity order is newest-first across running and parked
 sessions, without membership priority. Unknown ages follow known ones; exact

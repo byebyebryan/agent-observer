@@ -164,12 +164,12 @@ class ProfileColorTests(unittest.TestCase):
 class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
     async def test_selected_compact_and_split_profile_cells_keep_the_same_color(self):
         app = DashboardApp(FakeReader(samples()), {"group": "host-home"})
-        async with app.run_test(size=(80, 24)) as pilot:
+        async with app.run_test(size=(110, 24)) as pilot:
             await pilot.pause()
 
             def check_full_rows():
-                widths = app._column_widths(76)
-                profile_offset = 2 + sum(widths[:3])
+                widths = app._column_widths(106)
+                profile_offset = 2 + sum(widths[:2])
                 for item in app._all_rows:
                     widget = app._line_widgets[app._row_key(item)]
                     host = item["source"]["host"]
@@ -190,7 +190,7 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(
                         widget.content.get_style_at_offset(app.console, 2).color.name, "green"
                     )
-                    workspace_offset = 2 + sum(widths[:4])
+                    workspace_offset = 2 + sum(widths[:3])
                     workspace_color = widget.content.get_style_at_offset(
                         app.console, workspace_offset
                     ).color
@@ -235,7 +235,13 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
             check_compact_rows()
 
     async def test_rendered_selection_surface_is_single_layer_in_all_layouts_and_themes(self):
-        layouts = ((80, 24, False), (60, 16, False), (140, 36, True))
+        layouts = (
+            (110, 24, False),
+            (80, 24, False),
+            (60, 16, False),
+            (40, 16, False),
+            (140, 36, True),
+        )
         surface_by_theme = {}
 
         def rendered_style_at(strips, x, y):
@@ -266,7 +272,8 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
             light = theme == "textual-light"
             for size, height, split in layouts:
                 with self.subTest(theme=theme, size=(size, height), split=split):
-                    app = DashboardApp(FakeReader(samples()), {"group": "host-home"})
+                    filters = {"group": "host-home"} if size >= 60 else {}
+                    app = DashboardApp(FakeReader(samples()), filters)
                     app.theme = theme
                     async with app.run_test(size=(size, height)) as pilot:
                         await pilot.pause()
@@ -275,9 +282,10 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                             await pilot.pause()
 
                         key = app._selected_key
+                        full_table = size >= 110 and not split
                         selected = (
                             app._line_widgets[key]
-                            if size == 80
+                            if full_table
                             else app._age_cells[key][0].parent.parent
                         )
                         item = next(row for row in app._all_rows if app._row_key(row) == key)
@@ -288,7 +296,7 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                         strips = app.screen._compositor.render_strips()
                         rendered_backgrounds = colors_in_region(strips, selected.region)
                         self.assertTrue(rendered_backgrounds)
-                        if size == 80:
+                        if full_table:
                             unselected = next(
                                 widget
                                 for row_key, widget in app._line_widgets.items()
@@ -310,25 +318,55 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                             for foreground, background in zip(tint, base_background, strict=True)
                         )
                         self.assertEqual(set(rendered_backgrounds), {selected_background})
-                        if size != 80:
+                        if not full_table:
                             for child in selected.children:
                                 self.assertTrue(child.styles.background.is_transparent)
 
-                        if size == 80:
+                        if full_table:
                             widths = app._column_widths(size - 4)
                             x = selected.region.x + 2
-                            profile_x = x + sum(widths[:3])
+                            profile_x = x + sum(widths[:2])
                             palette_points = (
-                                ("age", x + widths[0], selected.region.y),
+                                (
+                                    "age",
+                                    selected.region.x + selected.content.plain[: 2 + widths[0]].rfind(
+                                        selected._cell_values[2]
+                                    ),
+                                    selected.region.y,
+                                ),
                                 ("host", profile_x, selected.region.y),
                                 (
                                     "profile",
                                     profile_x + len(item["source"]["host"]) + 1,
                                     selected.region.y,
                                 ),
-                                ("workspace", x + sum(widths[:4]), selected.region.y),
+                                ("workspace", x + sum(widths[:3]), selected.region.y),
                             )
                             status_point = ("status", x, selected.region.y)
+                        elif size < 60:
+                            first, _title, profile_row, workspace_row = selected.children
+                            profile = profile_row.children[1]
+                            palette_points = (
+                                (
+                                    "age",
+                                    app._age_cells[key][0].region.x,
+                                    app._age_cells[key][0].region.y,
+                                ),
+                                ("host", profile.region.x, profile.region.y),
+                                (
+                                    "profile",
+                                    profile.region.x + len(item["source"]["host"]) + 1,
+                                    profile.region.y,
+                                ),
+                                (
+                                    "workspace",
+                                    workspace_row.children[1].region.x,
+                                    workspace_row.children[1].region.y,
+                                ),
+                            )
+                            status_point = (
+                                "status", first.children[1].region.x, first.children[1].region.y
+                            )
                         else:
                             first, second = selected.children
                             profile = second.children[1]
@@ -431,9 +469,9 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_no_color_retains_colorless_cells_and_selection(self):
         app = DashboardApp(FakeReader(samples()), {}, no_color=True)
-        async with app.run_test(size=(80, 24)) as pilot:
+        async with app.run_test(size=(110, 24)) as pilot:
             await pilot.pause()
-            offset = 2 + sum(app._column_widths(76)[:3])
+            offset = 2 + sum(app._column_widths(106)[:2])
             for item in app._all_rows:
                 widget = app._line_widgets[app._row_key(item)]
                 style = widget.content.get_style_at_offset(app.console, offset)
@@ -448,3 +486,10 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIsNone(style.color)
                 if key == app._selected_key:
                     self.assertTrue(style.reverse)
+            await pilot.resize_terminal(32, 12)
+            await pilot.pause()
+            card = app._age_cells[app._selected_key][0].parent.parent
+            profile = card.children[2].children[1].content
+            style = profile.get_style_at_offset(app.console, 0)
+            self.assertIsNone(style.color)
+            self.assertTrue(style.reverse)
