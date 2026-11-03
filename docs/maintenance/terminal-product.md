@@ -281,6 +281,29 @@ without active/recent membership or running/parked priority. Unknown ages follow
 known timestamps; full identity breaks ties. Host order uses the same recency
 order within each host/profile. Explicit groups and favorite order still apply.
 
+### Dashboard status filter
+
+Maintained source adds an unreleased Status dimension at the start of the
+dashboard filter panel. The published/managed a16 reader keeps its previous
+filter panel until a separate release. Choices use the qualified status table
+above, including Unknown, Stale and Unavailable; membership or last-known facts
+cannot make a row match Working, Ready or Blocked.
+
+Choices OR within Status and AND with the existing query, source, host, profile,
+membership, runtime, phase and kind filters. All statuses are initially enabled;
+none means no matching rows. In the Status panel, `a` clears all when all are
+selected and selects all from a partial/empty choice. Space/Enter toggles the
+focused status. Reset restores all statuses and the ordinary defaults.
+Current cached updates and quiet expiry recompute status matches.
+Favorites bypass no filter, and a hidden selection retains its exact identity.
+Unfiltered counts and watched source health remain visible with zero matches.
+
+Status is dashboard presentation state for this run. It adds no CLI selector,
+configuration field, saved-view field, producer fact or terminal JSON v1 field.
+Existing raw filters retain their semantics.
+
+### Activity and context colors
+
 Last active is approximate time since native conversation activity, never time
 spent in the displayed status. It retains its own freshness and qualifications
 independently of runtime/phase; a display tick renews no evidence. Unknown ages

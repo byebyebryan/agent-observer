@@ -98,6 +98,24 @@ def _session_state(source_config=None, *, rows=(), ids=(), lifecycle="observing"
     )
 
 
+def _row_with_qualified_status(native_id, status, *, host="fixture"):
+    item = row(native_id, title=f"{status} task", host=host)
+    if status == "Ready":
+        item["phase"].update(value="waiting", health="current")
+    elif status == "Blocked":
+        item["phase"].update(value="blocked", health="current")
+    elif status == "Inactive":
+        item["runtime"].update(value="parked", health="current")
+        item["phase"].update(value="blocked", health="current")
+    elif status == "Unknown":
+        item["phase"].update(value="unknown", health="unsupported")
+    elif status == "Stale":
+        item["phase"].update(value="unknown", health="stale", lastKnownValue="working")
+    elif status == "Unavailable":
+        item["runtime"].update(value="unknown", health="unavailable")
+    return item
+
+
 def _widget_text(widget):
     content = getattr(widget, "content", None)
     own = [content.plain] if content is not None and hasattr(content, "plain") else []
@@ -466,11 +484,11 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             await pilot.press("/")
             await pilot.press("ctrl+a")
-            await pilot.press("q", "j", "k")
-            self.assertEqual(app.query_one("#search").value, "qjkalpha")
+            await pilot.press("q", "j", "k", "a")
+            self.assertEqual(app.query_one("#search").value, "qjkaalpha")
             self.assertIsNone(app.return_code)
             await pilot.pause(0.2)
-            self.assertEqual(app.filters["query"], ("qjkalpha",))
+            self.assertEqual(app.filters["query"], ("qjkaalpha",))
             await pilot.press("escape")
             await pilot.pause()
             self.assertEqual(app.filters["query"], ("alpha",))
@@ -667,6 +685,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(app._selected_key, selected_key)
 
             await pilot.press("f")
+            await pilot.press("right")
             await pilot.pause()
             filter_heading = app.query_one("#content").children[0]
             self.assertIn("[Source]", filter_heading.content.plain)
@@ -1466,6 +1485,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         async with app.run_test(size=(100, 24)) as pilot:
             await pilot.pause()
             await pilot.press("f")
+            await pilot.press("right")
             await pilot.pause()
             displayed = "\n".join(
                 line for widget in app.query_one("#content").children for line in _widget_text(widget)
@@ -1485,11 +1505,237 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         async with narrow.run_test(size=(60, 24)) as pilot:
             await pilot.pause()
             await pilot.press("f")
-            narrow._filter_dimension_index = 5
+            narrow._filter_dimension_index = 6
             await narrow._paint()
             heading = str(narrow.query_one("#content").children[0].content)
             self.assertIn("[Phase]", heading)
-            self.assertIn("6/7", heading)
+            self.assertIn("7/8", heading)
+
+    async def test_status_filter_uses_qualified_facts_and_ands_with_cached_filters(self):
+        from agent_observer.terminal.dashboard_view import SavedView
+        from agent_observer.terminal.model import identity_tuple
+        from agent_observer.terminal.render import _status_text
+
+        route = source("laptop-default", host="laptop", home="default")
+        offline = source("offline-default", host="offline", home="default")
+        status_names = (
+            "Working",
+            "Ready",
+            "Blocked",
+            "Inactive",
+            "Unknown",
+            "Stale",
+            "Unavailable",
+        )
+        rows = [
+            _row_with_qualified_status(f"{index}-{status.lower()}", status, host="laptop")
+            for index, status in enumerate(status_names)
+        ]
+        reader = FakeReader(
+            [
+                _session_state(
+                    route,
+                    rows=rows,
+                    ids=[item["identity"]["nativeId"] for item in rows],
+                ),
+                _session_state(offline, lifecycle="failed", baseline=False),
+            ]
+        )
+        saved = SavedView((identity_tuple(rows[0]["identity"]),))
+        app = DashboardApp(reader, {"status": ("Blocked",)}, saved_view=saved)
+
+        async with app.run_test(size=(110, 30)) as pilot:
+            await pilot.pause()
+            self.assertEqual(app._filter_options("status"), status_names)
+            self.assertEqual(app._status_filter, set(status_names))
+            self.assertNotIn("status", app.filters)
+            self.assertNotIn("status", app._projection_filters())
+            self.assertNotIn("status", app.saved_view.__dataclass_fields__)
+            self.assertEqual(
+                {
+                    item["identity"]["nativeId"]: _status_text(item)
+                    for item in app._all_rows
+                },
+                {
+                    item["identity"]["nativeId"]: status
+                    for item, status in zip(rows, status_names, strict=True)
+                },
+            )
+            self.assertEqual(len(app._visible_rows), len(status_names))
+            self.assertEqual(app._report["totals"]["selectedSources"], 2)
+            self.assertIn("Sources 2", app._source_ribbon())
+            self.assertIn("offline/Default unavailable", app._source_ribbon())
+
+            for status, item in zip(status_names, rows, strict=True):
+                app._status_filter = {status}
+                app._refresh_projection()
+                self.assertEqual(
+                    [row_["identity"]["nativeId"] for row_ in app._visible_rows],
+                    [item["identity"]["nativeId"]],
+                )
+
+            app._status_filter = {"Working", "Ready"}
+            app._refresh_projection()
+            self.assertEqual(
+                {item["identity"]["nativeId"] for item in app._visible_rows},
+                {rows[0]["identity"]["nativeId"], rows[1]["identity"]["nativeId"]},
+            )
+            app.filters["runtime"] = ("running",)
+            app.filters["phase"] = ("waiting",)
+            app._refresh_projection()
+            self.assertEqual(
+                [item["identity"]["nativeId"] for item in app._visible_rows],
+                [rows[1]["identity"]["nativeId"]],
+            )
+            self.assertEqual(app._selected_identity, rows[0]["identity"])
+            self.assertTrue(app._selection_hidden)
+            self.assertEqual(app._report["totals"]["selectedSources"], 2)
+            self.assertIn("offline/Default unavailable", app._source_ribbon())
+            self.assertNotIn(rows[0]["identity"]["nativeId"], {
+                item["identity"]["nativeId"] for item in app._visible_rows
+            })
+
+    async def test_status_all_none_reset_and_narrow_filter_panel(self):
+        rows = [
+            _row_with_qualified_status("working", "Working"),
+            _row_with_qualified_status("ready", "Ready"),
+        ]
+        app = DashboardApp(
+            FakeReader([_session_state(rows=rows, ids=["working", "ready"])]), {}
+        )
+
+        async with app.run_test(size=(32, 12)) as pilot:
+            await pilot.pause()
+            await pilot.press("f")
+            await pilot.pause()
+            panel = " ".join(
+                line
+                for widget in app.query_one("#content").children
+                for line in _widget_text(widget)
+            )
+            self.assertIn("[Status] 1/8", panel)
+            self.assertIn("Working", panel)
+            self.assertIn(
+                "a selects none or restores all statuses", " ".join(panel.split())
+            )
+            self.assertLessEqual(Text(app._footer_text()).cell_len, 28)
+
+            await pilot.press("a")
+            await pilot.pause(0.3)
+            self.assertEqual(app._status_filter, set())
+            self.assertEqual(app._visible_rows, [])
+            self.assertIn("status=none", app._toolbar_text())
+            self.assertIn("No statuses selected", app._status_text())
+            self.assertIn("Status none", app._header_text())
+
+            await pilot.press("space")
+            await pilot.pause(0.3)
+            self.assertEqual(app._status_filter, {"Working"})
+            self.assertEqual(
+                [item["identity"]["nativeId"] for item in app._visible_rows],
+                ["working"],
+            )
+            await pilot.press("a")
+            await pilot.pause(0.3)
+            self.assertEqual(app._status_filter, {
+                "Working", "Ready", "Blocked", "Inactive", "Unknown", "Stale", "Unavailable"
+            })
+            await pilot.press("a")
+            await pilot.pause(0.3)
+            self.assertEqual(app._status_filter, set())
+
+            await pilot.press("r")
+            await pilot.pause(0.3)
+            self.assertEqual(len(app._visible_rows), 2)
+            self.assertEqual(
+                app._status_filter,
+                {"Working", "Ready", "Blocked", "Inactive", "Unknown", "Stale", "Unavailable"},
+            )
+
+    async def test_status_filter_revokes_working_after_update_and_reclassifies_expiry(self):
+        from agent_observer.terminal.render import _status_text
+
+        working = _row_with_qualified_status("alpha", "Working")
+        reader = FakeReader([_session_state(rows=[working], ids=["alpha"])])
+        app = DashboardApp(reader, {})
+
+        async with app.run_test(size=(100, 24)) as pilot:
+            await pilot.pause()
+            app._status_filter = {"Working"}
+            app._refresh_projection()
+            self.assertEqual(len(app._visible_rows), 1)
+            identity_before = dict(app._selected_identity)
+
+            blocked = _row_with_qualified_status("alpha", "Blocked")
+            reader.replace([_session_state(rows=[blocked], ids=["alpha"])])
+            app._refresh_projection()
+            self.assertEqual(app._visible_rows, [])
+            self.assertEqual(app._selected_identity, identity_before)
+            self.assertTrue(app._selection_hidden)
+
+            expired = _row_with_qualified_status("alpha", "Working")
+            expired["phase"].update(
+                value="unknown", health="stale", lastKnownValue="working"
+            )
+            reader.replace([_session_state(rows=[expired], ids=["alpha"])])
+            app._status_filter = {"Stale"}
+            app._refresh_projection()
+            self.assertEqual(len(app._visible_rows), 1)
+            self.assertEqual(_status_text(app._visible_rows[0]), "Stale")
+
+    async def test_status_filter_withdraws_working_on_quiet_field_expiry(self):
+        from test_dashboard_watch import Harness, until
+        from test_terminal_sources import terminal_source
+
+        from agent_observer.terminal.watch import PersistentSources
+
+        harness = Harness()
+        harness.field_deadline = 1100
+        dependencies = harness.dependencies()
+        guard_type = dependencies["PreparedWorkingSetAgentWatch"]
+
+        class ExpiringRuntimeGuard(guard_type):
+            def read(self, now, clock):
+                value = super().read(now, clock)
+                if now >= harness.field_deadline:
+                    # Model the public facade masking expired runtime support.
+                    for item in value.members:
+                        item["runtime"].update(
+                            value="unknown", health="stale", lastKnownValue="running"
+                        )
+                return value
+
+        dependencies["PreparedWorkingSetAgentWatch"] = ExpiringRuntimeGuard
+        reader = PersistentSources(
+            (terminal_source("default", mesh_source="working"),),
+            dependencies=dependencies,
+            setup_interval=0,
+        )
+        await reader.start()
+        try:
+            await harness.baseline(reader)
+            app = DashboardApp(reader, {})
+            async with app.run_test(size=(80, 24)) as pilot:
+                await pilot.pause()
+                selected = dict(app._selected_identity)
+                await pilot.press("f", "a", "space", "escape")
+                await pilot.pause(0.3)
+                self.assertEqual(len(app._visible_rows), 1)
+                frames = reader.metrics["frames"]
+
+                harness.now = harness.field_deadline
+                reader.refresh_due()
+                await until(lambda: not app._visible_rows)
+                await pilot.pause()
+
+                self.assertEqual(reader.metrics["frames"], frames)
+                self.assertEqual(app._selected_identity, selected)
+                self.assertTrue(app._selection_hidden)
+                self.assertEqual(app._report["totals"]["members"], 1)
+                self.assertEqual(len(app._report["sources"]), 1)
+                self.assertNotEqual(app._report["totals"]["state"], "complete-empty")
+        finally:
+            await reader.close()
 
     async def test_sources_list_summaries_before_selected_exact_evidence(self):
         route_a = source("route-a", host="laptop", home="default")
@@ -1617,7 +1863,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
 
         async with app.run_test(size=(100, 24)) as pilot:
             await pilot.pause()
-            app._filter_dimension_index = 3  # membership
+            app._filter_dimension_index = 4  # membership
             for option_index in range(3):
                 app._filter_option_index = option_index
                 app._toggle_filter_option()

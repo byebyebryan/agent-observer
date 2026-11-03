@@ -43,7 +43,17 @@ from .render import (
 _MEMBERSHIPS = ("active", "recent", "uncertain", "nonmember")
 _RUNTIMES = ("running", "parked", "unknown")
 _PHASES = ("working", "blocked", "waiting", "unknown")
-_FILTER_DIMENSIONS = ("source", "host", "home", "membership", "runtime", "phase", "kind")
+_STATUSES = ("Working", "Ready", "Blocked", "Inactive", "Unknown", "Stale", "Unavailable")
+_FILTER_DIMENSIONS = (
+    "status",
+    "source",
+    "host",
+    "home",
+    "membership",
+    "runtime",
+    "phase",
+    "kind",
+)
 _SPLIT_WIDTH = 120
 _SPLIT_HEIGHT = 30
 _MAX_PAGE_ROWS = 200
@@ -171,6 +181,7 @@ class DashboardApp(App[None]):
         self.icons = bool(icons)
         self.filters = self._copy_filters(filters)
         self._startup_filters = self._copy_filters(self.filters)
+        self._status_filter = set(_STATUSES)
         self.view_controller = view_controller
         self.saved_view = (
             view_controller.view
@@ -229,6 +240,8 @@ class DashboardApp(App[None]):
     def _copy_filters(filters: dict) -> dict:
         copied = {}
         for key, value in (filters or {}).items():
+            if key == "status":
+                continue
             copied[key] = tuple(value) if isinstance(value, (tuple, list)) else value
         copied.setdefault("source", ())
         copied.setdefault("host", ())
@@ -541,11 +554,14 @@ class DashboardApp(App[None]):
         if self._empty_dimensions:
             return []
         result = []
+        status_filter = self._status_filter
         source_filter = set(self.filters.get("source", ()))
         host_filter = set(self.filters.get("host", ()))
         home_filter = set(self.filters.get("home", ()))
         for row in rows:
             source = row.get("source", {})
+            if _status_text(row) not in status_filter:
+                continue
             if source_filter and source.get("id") not in source_filter:
                 continue
             if host_filter and source.get("host") not in host_filter:
@@ -697,6 +713,7 @@ class DashboardApp(App[None]):
         return bool(
             self.filters.get("query")
             or self._empty_dimensions
+            or self._status_filter != set(_STATUSES)
             or any(
                 self.filters.get(name)
                 for name in ("source", "host", "home", "membership", "runtime", "phase")
@@ -1168,6 +1185,7 @@ class DashboardApp(App[None]):
                     "Enter details · Tab focus · Esc back/clear",
                     "Search and filters",
                     "/ find one term · f filters · o order · g grouping · p pin · P pins",
+                    "Status filter: Space toggles one · a toggles all/none",
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
                     "Palette: status=state · age fades new→old",
@@ -1179,7 +1197,7 @@ class DashboardApp(App[None]):
                     "Find includes current cached repository paths.",
                 ]
             )
-            for index in (0, 1, 3, 5, 7):
+            for index in (0, 1, 3, 5, 8):
                 widgets[index].add_class("section-heading")
             return widgets
         if self._overlay == "filters":
@@ -1279,6 +1297,8 @@ class DashboardApp(App[None]):
         return [Static(self._as_text(line.plain), markup=False) for line in wrapped]
 
     def _filter_options(self, dimension: str) -> tuple[str, ...]:
+        if dimension == "status":
+            return _STATUSES
         if dimension == "source":
             return tuple(
                 dict.fromkeys(self._config_value(item, "id") for item in self._source_configs())
@@ -1300,6 +1320,8 @@ class DashboardApp(App[None]):
         return ("children", "system")
 
     def _effective_filter_values(self, dimension: str, options: tuple[str, ...]) -> set[str]:
+        if dimension == "status":
+            return set(self._status_filter)
         if dimension in self._empty_dimensions:
             return set()
         if dimension == "kind":
@@ -1321,6 +1343,7 @@ class DashboardApp(App[None]):
         options = self._filter_options(dimension)
         selected = self._effective_filter_values(dimension, options)
         labels = {
+            "status": "Status",
             "source": "Source",
             "host": "Host",
             "home": "Profile",
@@ -1339,6 +1362,9 @@ class DashboardApp(App[None]):
         lines = [
             "←/→ or Tab: dimension · ↑/↓: option · Space/Enter: toggle",
         ]
+        if dimension == "status":
+            lines.append("a selects none or restores all statuses.")
+            lines.append("Matches the status shown on each session.")
         if not options:
             lines.append("No configured values for this dimension.")
         option_widgets = []
@@ -2359,7 +2385,12 @@ class DashboardApp(App[None]):
         if not options:
             return
         option = options[self._filter_option_index % len(options)]
-        if dimension == "kind":
+        if dimension == "status":
+            if option in self._status_filter:
+                self._status_filter.remove(option)
+            else:
+                self._status_filter.add(option)
+        elif dimension == "kind":
             name = "includeChildren" if option == "children" else "includeSystem"
             self.filters[name] = not bool(self.filters.get(name))
         else:
@@ -2390,7 +2421,22 @@ class DashboardApp(App[None]):
                     else tuple(value for value in options if value in current)
                 )
         self._queue_projection()
-        self._message = f"Updated {dimension} filter."
+        if dimension == "status" and not self._status_filter:
+            self._message = "No statuses selected."
+        elif dimension == "status" and self._status_filter == set(_STATUSES):
+            self._message = "All statuses selected."
+        else:
+            self._message = f"Updated {dimension} filter."
+        self._request_render()
+
+    def _toggle_all_statuses(self) -> None:
+        if self._status_filter == set(_STATUSES):
+            self._status_filter.clear()
+            self._message = "No statuses selected."
+        else:
+            self._status_filter = set(_STATUSES)
+            self._message = "All statuses selected."
+        self._queue_projection()
         self._request_render()
 
     def _reset_filters(self) -> None:
@@ -2403,6 +2449,7 @@ class DashboardApp(App[None]):
         self.filters["query"] = ()
         self.filters["includeChildren"] = False
         self.filters["includeSystem"] = False
+        self._status_filter = set(_STATUSES)
         self._empty_dimensions.clear()
         self._queue_projection()
         self._message = "Dashboard filters reset to default values."
@@ -2756,6 +2803,11 @@ class DashboardApp(App[None]):
                 self._overlay_filter_dimension(-1)
             elif key in {"right", "tab"}:
                 self._overlay_filter_dimension(1)
+            elif (
+                _FILTER_DIMENSIONS[self._filter_dimension_index] == "status"
+                and (key in {"a", "A"} or character.lower() == "a")
+            ):
+                self._toggle_all_statuses()
             elif key in {"up", "k"}:
                 options = self._filter_options(_FILTER_DIMENSIONS[self._filter_dimension_index])
                 self._filter_option_index = max(0, self._filter_option_index - 1)
@@ -3002,10 +3054,14 @@ class DashboardApp(App[None]):
             ):
                 critical.append(message)
             if critical:
+                status_caption = self._status_filter_caption()
+                if status_caption is not None:
+                    critical.append("Status " + status_caption.removeprefix("status="))
                 return " · ".join(critical)
         if self._overlay == "filters":
             dimension = _FILTER_DIMENSIONS[self._filter_dimension_index]
             labels = {
+                "status": "Status",
                 "source": "Source",
                 "host": "Host",
                 "home": "Profile",
@@ -3015,9 +3071,10 @@ class DashboardApp(App[None]):
                 "kind": "Kind",
             }
             count = len(self._visible_rows)
-            text = f"{labels[dimension]} filter · {count} matches"
+            result_count = f"{count} match" + ("" if count == 1 else "es")
+            text = f"{labels[dimension]} filter · {result_count}"
             if Text(text).cell_len > self._chrome_width():
-                text = f"{labels[dimension]} filter · {count}"
+                text = f"{labels[dimension]} · {result_count}"
             return text
         members = totals.get("members", 0)
         count = f"{members} session" + ("" if members == 1 else "s")
@@ -3025,6 +3082,9 @@ class DashboardApp(App[None]):
         if self.size.width < 60:
             matches = len(self._visible_rows)
             parts = [f"{matches} match" + ("" if matches == 1 else "es"), f"{uncertain} uncertain"]
+            status_caption = self._status_filter_caption()
+            if status_caption is not None:
+                parts.append("Status " + status_caption.removeprefix("status="))
             filters_active = bool(
                 self.filters.get("query")
                 or self._empty_dimensions
@@ -3120,6 +3180,9 @@ class DashboardApp(App[None]):
     def _toolbar_text(self) -> str:
         query = " ".join(self.filters.get("query", ()))
         active = []
+        status_caption = self._status_filter_caption()
+        if status_caption is not None:
+            active.append(status_caption)
         for dimension in ("source", "host", "home", "membership", "runtime", "phase"):
             caption = "profile" if dimension == "home" else dimension
             if dimension in self._empty_dimensions:
@@ -3143,7 +3206,9 @@ class DashboardApp(App[None]):
             summary = []
             if query:
                 summary.append("Search active")
-            if active:
+            if status_caption is not None:
+                summary.append("Status " + status_caption.removeprefix("status="))
+            if any(item != status_caption for item in active):
                 summary.append("Filtered")
             if order != "activity":
                 summary.append(f"Order {order}")
@@ -3164,6 +3229,14 @@ class DashboardApp(App[None]):
         if group != "none":
             parts.append("Group host/profile" if group == "host-home" else f"Group {group}")
         return " · ".join(parts)
+
+    def _status_filter_caption(self) -> str | None:
+        if self._status_filter == set(_STATUSES):
+            return None
+        if not self._status_filter:
+            return "status=none"
+        selected = (status for status in _STATUSES if status in self._status_filter)
+        return "status=" + ",".join(selected)
 
     def _status_text(self) -> str:
         if self.view_controller is not None and self.view_controller.warning:
@@ -3187,11 +3260,13 @@ class DashboardApp(App[None]):
         hidden_presentation = max(0, len(self._all_rows) - total)
         state = report_totals.get("state", "warming")
         status_parts.append(f"{total} matches")
+        if not self._status_filter:
+            status_parts.append("no statuses selected")
         if self._empty_dimensions:
             dimensions = ("profile" if item == "home" else item for item in sorted(self._empty_dimensions))
             status_parts.append("no values selected for " + ", ".join(dimensions))
         elif hidden_presentation:
-            status_parts.append(f"{hidden_presentation} hidden by source/host/profile filters")
+            status_parts.append(f"{hidden_presentation} hidden by display filters")
         hidden_kinds = report_totals.get("hiddenKinds", 0)
         if hidden_kinds:
             status_parts.append(f"{hidden_kinds} hidden by kind")
@@ -3231,6 +3306,8 @@ class DashboardApp(App[None]):
             if self._overlay == "pins":
                 return "↑↓  p  Esc  ?  q"
             if self._overlay == "filters":
+                if _FILTER_DIMENSIONS[self._filter_dimension_index] == "status":
+                    return "←→ ↑↓ Space ↵ a r Esc ? q"
                 return "←→ ↑↓ Space ↵ r Esc ? q"
             if self._overlay in {"sort", "group"}:
                 return "↑↓  ↵  Esc  ?  q"
@@ -3268,7 +3345,11 @@ class DashboardApp(App[None]):
             return "? help · q quit · ^C exit"
         if self._overlay == "filters":
             if self.size.width < 80:
+                if _FILTER_DIMENSIONS[self._filter_dimension_index] == "status":
+                    return "↑↓ option · Space toggle · a all/none\n←→ field · r reset · Esc back\n? help · q quit"
                 return "↑↓ option · Space/↵ toggle\n←→ field · r reset · Esc back\n? help · q quit"
+            if _FILTER_DIMENSIONS[self._filter_dimension_index] == "status":
+                return "←→ field · ↑↓ option · Space toggle · a all/none · r reset · Esc · ? help · q quit"
             return "←→ field · ↑↓ option · Space toggle · r reset · Esc · ? help · q quit"
         if self._overlay == "sort" or self._overlay == "group":
             if self.size.width < 80:

@@ -94,6 +94,18 @@ sources cannot establish a complete empty fleet.
 | `?` | Keyboard help |
 | `q` / Ctrl-C | Quit / interrupt |
 
+Maintained source adds **Status** as the first dimension in `f`: Working,
+Ready, Blocked, Inactive, Unknown, Stale and Unavailable, matching the row
+labels. This is an unreleased refinement; the published a16 reader retains its
+earlier filter panel. Multiple statuses match with OR and combine with the
+other filters using AND. All are selected by default; `a` toggles all/none while
+Status is open. For one status, press `a` to clear all, then Space/Enter on that
+status. Selecting none shows no rows. `r` restores all statuses and the other
+default filters. Existing Source,
+Host, Profile, Member, Runtime, Phase and Kind dimensions remain available.
+Status choices are display filters for this run, with source health and exact
+selection retained. See the [status-filter contract](../maintenance/terminal-product.md#dashboard-status-filter).
+
 Search is a case-insensitive literal substring over the session name, project
 context, reported working directory, host/home and full native ID. It also
 searches the current cached repository root, shared Git directory and path

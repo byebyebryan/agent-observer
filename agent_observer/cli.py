@@ -140,16 +140,36 @@ def main(argv=None):
 
         return sessions_main(arguments[1:])
     parser = argparse.ArgumentParser(
-        description="Read-only Codex observation. Run without arguments for the configured cached session overview.",
-        epilog="For cached session filters and source selection: agent-observer sessions --help",
+        description=(
+            "Read-only Codex observation. Run without arguments for the\n"
+            "configured cached session overview. Use sessions commands and the\n"
+            "dashboard for everyday configured sources. Top-level snapshot, list,\n"
+            "show, doctor and watch are separate local native diagnostics."
+        ),
+        epilog=(
+            "Everyday configured cached sessions:\n"
+            "  agent-observer                                      quick overview\n"
+            "  agent-observer sessions list                       all matching sessions\n"
+            "  agent-observer sessions show THREAD --host HOST --home HOME\n"
+            "                                                     inspect one exact session\n"
+            "  agent-observer dashboard                            persistent view\n"
+            "\n"
+            "The top-level snapshot, list, show, doctor and watch commands inspect one\n"
+            "local Codex runtime or an explicit snapshot input. They do not read the\n"
+            "configured fleet sources used by the sessions commands. For sessions\n"
+            "filters and source selection: agent-observer sessions --help"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--version", action="version", version=f"agent-observer {VERSION}")
-    commands = parser.add_subparsers(dest="command", required=True)
+    commands = parser.add_subparsers(
+        dest="command", required=True, title="commands", metavar="COMMAND"
+    )
+    commands.add_parser("sessions", help="read configured cached sessions and source health")
+    commands.add_parser("dashboard", help="open the persistent configured cached sessions view")
     commands.add_parser("service", help="explicit cached service read client (service --help)")
     commands.add_parser("mesh", help="optional Mesh Plus cached state client (mesh --help)")
     commands.add_parser("working-set", help="cached working-set list or bounded watch")
-    commands.add_parser("sessions", help="read configured cached sessions and source health")
-    commands.add_parser("dashboard", help="persistent cached session dashboard (optional extra)")
     profiles = commands.add_parser("profiles", help="list explicit Codex home profile routes")
     profiles.add_argument("--config", type=Path, required=True)
     profiles.add_argument(
@@ -163,8 +183,30 @@ def main(argv=None):
     commands.add_parser("api", help="describe the versioned public interface")
     schemas = commands.add_parser("schema", help="emit a bundled public JSON schema")
     schemas.add_argument("--kind", choices=("snapshot", "watch"), required=True)
+    diagnostic_help = {
+        "snapshot": "local native diagnostic snapshot",
+        "list": "list one local native diagnostic snapshot",
+        "show": "inspect one exact local native diagnostic row",
+        "doctor": "diagnose one local native runtime",
+        "watch": "sample one local native runtime",
+    }
+    diagnostic_descriptions = {
+        "snapshot": "Read one existing local Codex runtime or an explicit snapshot input.",
+        "list": "List rows from one local Codex diagnostic snapshot.",
+        "show": "Inspect one exact row from one local Codex diagnostic snapshot.",
+        "doctor": "Check one local Codex diagnostic snapshot.",
+        "watch": "Sample one local Codex runtime or an explicit snapshot input.",
+    }
     for command in ("snapshot", "list", "show", "doctor", "watch"):
-        command_parser = commands.add_parser(command)
+        command_parser = commands.add_parser(
+            command,
+            help=diagnostic_help[command],
+            description=diagnostic_descriptions[command],
+            epilog=(
+                "Local native diagnostics read an existing runtime or --input snapshot; "
+                "they do not read configured fleet sources."
+            ),
+        )
         _scope(command_parser)
         command_parser.add_argument("--json", action="store_true")
         if command in {"list", "watch"}:

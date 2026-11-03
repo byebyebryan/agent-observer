@@ -82,13 +82,13 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a16](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
-adds responsive four-cell CLI/dashboard rows: status and activity age, session,
-profile and workspace. Wide terminals use one row, medium terminals a shared
-2x2 grid, and narrow terminals four stacked rows. Status and age align to opposite
-edges, numeric ages omit a prefix, and reported home paths display as `~`.
-Workspace colors distinguish repository and directory labels without prefixes.
-Exact favorites, activity order and host/profile palettes remain available.
+[0.7.0a17](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
+leads CLI help with everyday cached workflows and clearly labels local native
+diagnostics. The dashboard opens filters with Status, using the same qualified
+Working, Ready, Blocked, Inactive, Unknown, Stale and Unavailable labels as rows.
+Use `a` for all/none, then Space/Enter to choose statuses. Status choices combine
+with existing filters while retaining exact selection and source health.
+Responsive layouts, profile/workspace palettes and favorites remain available.
 Terminal JSON v1, API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.

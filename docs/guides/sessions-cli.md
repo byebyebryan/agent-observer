@@ -9,6 +9,11 @@ listing and exact-session investigation. They never start a provider, control
 a session, change host routes or fall back to a full inventory. Existing direct,
 Service 4 and Mesh diagnostics remain available separately.
 
+Use `agent-observer --help` for command discovery. The top-level
+`agent-observer list` and `agent-observer show` commands are explicit local
+native diagnostics; use `agent-observer sessions list` and `sessions show`
+for the configured cached fleet.
+
 ## Prerequisites
 
 Use Linux and Python 3.11+ in an isolated environment. Install the published
@@ -113,7 +118,7 @@ not a TTY, width is unknown and the natural full-field layout is kept. Activity 
 compact units without a prefix and remain approximate; unknown or stale facts
 retain their qualifications. Raw
 facts remain in exact-session details. Full IDs and context are available with
-`list` and `show`; JSON output is unchanged.
+`sessions list` and `sessions show`; JSON output is unchanged.
 
 Interactive terminals use a cyan heading/navigation accent, bold session names,
 quiet secondary metadata and colored state labels. Standard Unicode glyphs
