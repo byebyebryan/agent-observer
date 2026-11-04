@@ -1,6 +1,7 @@
 # Standalone dashboard
 
-The `0.7.0a17` prerelease adds Status-first filtering to the standalone dashboard,
+The `0.7.0a18` prerelease smooths source arrivals and uses four columns from 100
+terminal columns in the standalone dashboard,
 available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
 `agent-observer dashboard` opens the persistent terminal application until you quit.
 
@@ -13,12 +14,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/agent_observer-0.7.0a17-py3-none-any.whl#sha256=e4dac8b3c799c1dc88aa54472126aa8f9610b98404628de656bf67b479177fc9' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/agent_observer-0.7.0a18-py3-none-any.whl#sha256=1889411f58c58936eceeefeb2698743d8c121865e6551eaedba17974cabad419' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -123,24 +124,22 @@ and resize. A hidden selection stays pinned. If evidence leaves the projection,
 only its identity and sanitized label remain, marked unavailable; old runtime
 facts are discarded. A background update does not choose a neighboring row.
 
-Current source chooses list rows by terminal columns,
+The dashboard chooses list rows by terminal columns,
 independent of height: 100 columns and wider use the four-cell table; 60–99
 columns use two-line session rows; 32–59 columns use four-line cards. Below 32
 columns or 12 rows, the app shows resize guidance with live source health and
 help/quit. Height changes chrome and page capacity without switching a wide
-terminal to compact rows, so 120x16 keeps the full table. This 100-column
-breakpoint is unreleased; published a17 switches at 110 columns. The source ribbon
+terminal to compact rows, so 120x16 keeps the full table. The source ribbon
 retains the source denominator and explicit health, including partial, stale
 and unavailable states. Narrow footers use short key labels; `?` retains the
 full meanings. Details, source evidence and filter choices wrap and scroll in
 the content area, without horizontal list scrolling. Opening/closing panels
 does not restart subscriptions.
 
-Current source also smooths list updates: visible current rows remain while another
+List updates are staged: visible current rows remain while another
 empty source warms or adds its baseline. Health and the watched-source
 denominator update as each source changes. Changed or expired row facts are
-refreshed or withdrawn before the dashboard waits for widget work. This rendering
-refinement is unreleased alongside the 100-column breakpoint.
+refreshed or withdrawn before the dashboard waits for widget work.
 
 These breakpoints refer to terminal columns and rows. Their fit in a particular
 pixel-sized window depends on its emulator and font and remains a human visual
@@ -164,7 +163,7 @@ different set. Search history and display filters are never saved.
 
 ## Favorites and saved view
 
-The a17 reader provides exact favorites and optional remembered ordering.
+The a18 reader provides exact favorites and optional remembered ordering.
 
 Human rows use four cells: **Status / age · Session · Profile · Workspace**.
 Status and activity age keep separate colors within their shared cell. Ages
@@ -247,10 +246,10 @@ screen reset are separate outcomes when a terminal has stopped draining.
 ## Qualification boundary
 
 The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
-summarizes current evidence and links the frozen qualification record. The a17
+summarizes current evidence and links the frozen qualification record. The a18
 reader has source/installed checks and short actual-fleet terminal checks;
 sustained resource and selected native measurements retain their earlier exact
-artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16/a17 reader work.
+artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16/a17/a18 reader work.
 
 The user accepted the practical preview and deferred large-fleet stress,
 read-path optimization and the extended eight-hour soak. Earlier failures and

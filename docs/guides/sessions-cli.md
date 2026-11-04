@@ -1,11 +1,10 @@
 # Sessions CLI
 
-The published `0.7.0a17` prerelease retains the released sessions CLI described
-here. This checkout adds unreleased overview-count, `--status`, show-summary,
-leased repo/worktree-label and 100-column four-cell layout refinements for a
-future candidate; the published
-wheel and managed selections have not changed. Installing a reader does not
-change collector, publisher or other consumer selections.
+The `0.7.0a18` prerelease clarifies overview counts, adds qualified `--status`
+filters and leads exact-session inspection with status/activity, profile,
+workspace and full ID. Human workspace labels reuse current cached repo/worktree
+metadata. Installing a reader does not change collector, publisher or other
+consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
 commands read the same configured working-set caches for overview,
@@ -29,8 +28,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/agent_observer-0.7.0a17-py3-none-any.whl#sha256=e4dac8b3c799c1dc88aa54472126aa8f9610b98404628de656bf67b479177fc9' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/agent_observer-0.7.0a18-py3-none-any.whl#sha256=1889411f58c58936eceeefeb2698743d8c121865e6551eaedba17974cabad419' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -282,7 +281,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a17;
+The persistent dashboard is available with the optional `dashboard` extra in a18;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product contract](../maintenance/terminal-product.md) for its acceptance
 limits. Managed reader installation, native acceptance and hardware/Fleet

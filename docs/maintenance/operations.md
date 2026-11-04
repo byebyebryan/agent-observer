@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a17 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
+The [0.7.0a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
 provides the configured sessions CLI and optional standalone dashboard while
 retaining terminal JSON interface 1. Reader installation/configuration is
 independently selected; publication does not upgrade a collector or publisher.
@@ -14,29 +14,34 @@ independent reviewed selections.
 
 ## CLI and dashboard reader release
 
-The [a17 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
-leads CLI help with everyday configured cached workflows and explains the
-independent local native diagnostics. The dashboard opens filters with Status,
-using the qualified row labels. Multiple statuses OR together and AND with
-existing filters; `a` toggles all/none and `r` restores defaults. Exact hidden
-selection, watched source health and quiet-expiry behavior are preserved.
-Status choices belong only to the current dashboard run; no CLI/config/backend/
-JSON/saved-view field is added.
+The [a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
+clarifies finite overview counts, adds qualified repeatable CLI `--status` filters,
+and puts the exact-session summary before diagnostics. Cached leased repository
+metadata supplies human workspace labels after ordinary row selection, preserving
+finite query results and default JSON. Dashboard rows use four columns from 100
+terminal columns; staged list replacement keeps healthy rows visible during
+source setup/baseline arrival and withdraws expired facts before widget waits.
 
-The [a17 artifact manifest](../../artifacts/observer-0.7.0a17.json) binds runtime
+CLI status choices OR together and AND with existing filters before the overview
+cap; exact `show` bypasses display filters. Supplying `--status` adds optional
+`filters.status` only; default JSON and per-row fields are unchanged. The dashboard
+keeps its independent in-app Status filter, exact hidden selection, watched-source
+health and quiet-expiry behavior. No configuration or saved-view field is added.
+
+The [a18 artifact manifest](../../artifacts/observer-0.7.0a18.json) binds runtime
 source and the frozen wheel. Public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a17/provenance.json)
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/provenance.json)
 binds qualification/tag source, exact assets, CI and installed checks on Python
-3.11/3.14. Textual 8.2.8, Mesh a25, terminal JSON v1, exit behavior, API 4,
-snapshot/watch 6, Service 4 and working-set v1 are unchanged. Qualification
-includes a controlled one-row quiet field-expiry check without a new frame;
-no new native-classification, sustained-resource, large-fleet or soak acceptance
-is claimed.
+3.11/3.14. Textual 8.2.8, Mesh a25, terminal JSON v1 schema, exit behavior, API 4,
+snapshot/watch 6, Service 4 and working-set v1 are unchanged. Bounded controlled
+expiry/paging and actual cached startup checks qualify reader behavior; no new
+native-classification, sustained-resource, large-fleet or soak acceptance is claimed.
 
 Managed adoption belongs to `deployments/agent-observer-cli.json`, independently
 of the a11 collector/publisher cohort, routes, Agent Plus, Tmux, full publishers
-and hardware. The previous [a16 artifact](../../artifacts/observer-0.7.0a16.json)
-and [a16 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a16)
+and hardware. This rollout targets Starship and Snap; Carbon is offline and remains
+pending. The previous [a17 artifact](../../artifacts/observer-0.7.0a17.json)
+and [a17 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
 remain immutable rollback inputs.
 
 ## Selection and recovery

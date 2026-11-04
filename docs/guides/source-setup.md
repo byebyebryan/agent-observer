@@ -2,7 +2,7 @@
 
 This guide starts from an existing owned Codex home and its already-running
 native daemon. It hosts a foreground Service 4 collector and a cached Mesh
-publisher, then uses the separately released a17 sessions CLI/dashboard. The
+publisher, then uses the separately released a18 sessions CLI/dashboard. The
 local trial paths are private and temporary. The local path changes no managed
 service, Mesh authority, native daemon or home/XDG directory. The optional
 remote path requires its source owner to review the shell startup mechanism
@@ -50,7 +50,7 @@ printf 'Trial directory: %s\n' "$TRIAL"
 ## Install the producer pair
 
 The source host uses the separately released Observer a11 working-set producer
-and Mesh a25. Install them in their own environment; do not use the a17 reader
+and Mesh a25. Install them in their own environment; do not use the a18 reader
 environment for collection. The wheel URLs and hashes below identify the
 published bytes:
 
@@ -59,14 +59,14 @@ set -eu
 python3 -m venv "$TRIAL/producer-venv"
 . "$TRIAL/producer-venv/bin/activate"
 python -m pip install \
-  'agent-observer @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a11/agent_observer-0.7.0a11-py3-none-any.whl#sha256=f8956346ce169062b88940475a17b5f3e5b70e8ba5c2396c5c1844aab3bfe755' \
+  'agent-observer @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a11/agent_observer-0.7.0a11-py3-none-any.whl#sha256=f8956346ce169062b88940475a18b5f3e5b70e8ba5c2396c5c1844aab3bfe755' \
   'mesh-plus @ https://github.com/byebyebryan/mesh-plus/releases/download/v0.1.0a25/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer-service --version
 mesh-plus doctor --sdk
 ```
 
 The final command checks the installed Mesh SDK. Installation selects no
-collector, publisher, bridge or route. For the released a17 reader pair and
+collector, publisher, bridge or route. For the released a18 reader pair and
 optional dashboard dependencies, use the hash-pinned commands in the
 [sessions CLI prerequisites](sessions-cli.md#prerequisites) and
 [dashboard install guide](dashboard.md#install-the-prerelease). Keep the reader
@@ -282,9 +282,9 @@ state and check the owner process, exact host/home/source binding and baseline.
 Do not translate zero rows into complete-empty; inspect source health, coverage,
 uncertain identities and known nonmembers.
 
-## Open the released a17 CLI and dashboard
+## Open the released a18 CLI and dashboard
 
-Use a separate a17 reader environment. Create one private terminal source
+Use a separate a18 reader environment. Create one private terminal source
 binding from the exact route output. Copy the full `namespace`, set `socket` to
 `mesh.socket` (the Mesh output, never the collector input), and retain the
 72-hour publisher window.
@@ -293,7 +293,7 @@ The code below creates and activates one `reader-venv` under the local trial.
 Inside that active environment, run only the pip installation commands from
 the linked guides: use the [sessions CLI prerequisites](sessions-cli.md#prerequisites)
 for CLI-only use, or the [dashboard install guide](dashboard.md#install-the-prerelease)
-for the a17 CLI plus its constrained optional dashboard stack. The dashboard
+for the a18 CLI plus its constrained optional dashboard stack. The dashboard
 install includes the same reader pair. Do not run either guide's `.venv`
 creation/activation lines, create a second reader environment, or run both pip
 install alternatives.
@@ -406,7 +406,7 @@ value for an on-demand stdio bridge.
 The common launcher recipe creates the owner-private command at
 `$TRIAL/mesh-plus-observer/mesh-plus` on the source host. Its wrapper uses the
 absolute producer Python with `-I -B`, so remote execution stays on a11 when the
-reader uses a17 and CWD/`PYTHONPATH` cannot shadow installed packages. The
+reader uses a18 and CWD/`PYTHONPATH` cannot shadow installed packages. The
 adjacent owner-private sidecar supplies the collector input because the fixed
 SSH argv carries no `--config`; it does not replace Mesh's default config.
 

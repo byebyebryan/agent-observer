@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a18",
+  "wheel": "agent_observer-0.7.0a18-py3-none-any.whl",
+  "wheelSha256": "1889411f58c58936eceeefeb2698743d8c121865e6551eaedba17974cabad419",
+  "sourceRevision": "ac4d567fd66630034abf74a88b5f29a24c6372ab",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified a18 read-only CLI/dashboard reader; publication and managed selection have separate receipts.",
+    "CLI overview distinguishes shown/matching/unfiltered counts; exact investigation leads with status/activity, profile/workspace and full native identity; help foregrounds everyday cached workflows.",
+    "CLI --status reuses qualified presentation labels; repeated values OR and combine with existing filters, before overview truncation; show retains exact lookup. Default JSON is unchanged; only supplied status filters add filters.status.",
+    "Finite human workspace labels use leased cached repository metadata after normal selection; no Git/filesystem discovery or query-set change.",
+    "Dashboard uses four columns at 100 terminal columns, 2x2 at 60-99 and stacked rows at 32-59. Fenced staged list replacement preserves healthy visible rows while fresh source baselines arrive, with immediate invalidation and quiet expiry.",
+    "Producer APIs/schemas, a11 selections, routes, Mesh a25 and Textual 8.2.8 are unchanged. No provider control, runtime controller, transcript discovery, new native-classification, sustained-resource, stress or soak acceptance."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

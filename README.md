@@ -82,14 +82,15 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a17](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
-leads CLI help with everyday cached workflows and clearly labels local native
-diagnostics. The dashboard opens filters with Status, using the same qualified
-Working, Ready, Blocked, Inactive, Unknown, Stale and Unavailable labels as rows.
-Use `a` for all/none, then Space/Enter to choose statuses. Status choices combine
-with existing filters while retaining exact selection and source health.
-Responsive layouts, profile/workspace palettes and favorites remain available.
-Terminal JSON v1, API 4, snapshot/watch 6, Service 4 and working-set v1 are unchanged.
+[0.7.0a18](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
+clarifies overview counts, adds qualified `sessions --status` filters and leads
+exact-session details with status/activity, profile, workspace and full ID.
+Human workspace labels reuse current cached repository metadata. The dashboard
+uses four columns from 100 terminal columns and keeps healthy rows visible while
+other sources warm or deliver a baseline. Expiry, source health and exact
+selection remain authoritative. Default terminal JSON v1 is unchanged; supplying
+CLI `--status` adds only the optional `filters.status` field. API 4,
+snapshot/watch 6, Service 4 and working-set v1 are unchanged.
 Working-set uses its own version-1 interfaces and paired Mesh a25 support.
 Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
 Installing source does not change deployed pins or accept a dashboard/device.
