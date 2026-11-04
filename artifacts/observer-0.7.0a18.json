@@ -3,8 +3,8 @@
   "package": "agent-observer",
   "version": "0.7.0a18",
   "wheel": "agent_observer-0.7.0a18-py3-none-any.whl",
-  "wheelSha256": "1889411f58c58936eceeefeb2698743d8c121865e6551eaedba17974cabad419",
-  "sourceRevision": "ac4d567fd66630034abf74a88b5f29a24c6372ab",
+  "wheelSha256": "694b086e744319ec1fa07b42519e0aa268a32b4c51e5b7745cd1150cd26ba30d",
+  "sourceRevision": "a2afc46b3114ccba136be1a8c7771e2a7469e73a",
   "apiVersion": 4,
   "schemas": {
     "snapshot": 6,
