@@ -664,6 +664,38 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                 "Fixture session", " ".join(_widget_text(app.query_one("#content")))
             )
 
+    async def test_paint_resuming_after_shutdown_ignores_removed_chrome(self):
+        app = DashboardApp(FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])]), {})
+        async with app.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            await app.stop_updates()
+            app._updates_stopped = False
+            container = app.query_one("#content")
+            remove_children = container.remove_children
+            app._overlay = "help"  # Exercise the guarded replacement path.
+            app._content_signature_value = None
+
+            async def shutdown_during_removal(*args, **kwargs):
+                await remove_children(*args, **kwargs)
+                # Textual clears is_running before pruning screen children;
+                # the app's Unmount handler has not run at this point.
+                app._running = False
+                await app.query_one("#toolbar").remove()
+
+            container.remove_children = shutdown_during_removal
+            try:
+                await app._paint()
+                self.assertTrue(app._mounted)
+                self.assertFalse(app.is_running)
+                self.assertEqual(len(container.children), 0)
+                app._paint_chrome()
+                app._request_render()
+                self.assertIsNone(app._render_timer)
+            finally:
+                container.remove_children = remove_children
+                app._running = True
+                await app.stop_updates()
+
     async def test_revoked_generation_bypasses_an_existing_cosmetic_timer(self):
         reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
         app = DashboardApp(reader, {})

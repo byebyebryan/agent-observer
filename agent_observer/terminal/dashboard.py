@@ -321,6 +321,12 @@ class DashboardApp(App[None]):
         self._mounted = False
         await self.stop_updates()
 
+    def _ui_active(self) -> bool:
+        # Textual stops its message pump before pruning screen widgets and
+        # before dispatching the app Unmount event. A paint may resume from
+        # mount/removal during that gap; _mounted alone cannot authorize it.
+        return self._mounted and not self._updates_stopped and self.is_running
+
     def request_stop_updates(self) -> None:
         """Synchronously prevent new app updates before reader revocation."""
         if self._updates_stopped:
@@ -348,7 +354,7 @@ class DashboardApp(App[None]):
         changed = self.reader.changed
         while True:
             await changed.wait()
-            if self._updates_stopped:
+            if not self._ui_active():
                 return
             changed.clear()
             if self.reader.requires_priority_refresh(self._projection):
@@ -364,7 +370,7 @@ class DashboardApp(App[None]):
     async def _age_updates(self) -> None:
         while True:
             await asyncio.sleep(1.0)
-            if self._updates_stopped:
+            if not self._ui_active():
                 return
             self.reader.refresh_due()
             if not self._ensure_current_projection():
@@ -379,7 +385,7 @@ class DashboardApp(App[None]):
         while True:
             await controller.changed.wait()
             controller.changed.clear()
-            if self._updates_stopped:
+            if not self._ui_active():
                 return
             self._request_render(immediate=True)
 
@@ -440,7 +446,7 @@ class DashboardApp(App[None]):
         self._displayed_overlay = None
         self._content_signature_value = None
         self._painted_selection = None
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         container = self._content or self.query_one("#content", VerticalScroll)
         container.display = False
@@ -587,14 +593,14 @@ class DashboardApp(App[None]):
         self._displayed_size = None
         self._displayed_view = None
         self._displayed_overlay = None
-        if self._mounted and not self._updates_stopped:
+        if self._ui_active():
             container = self._content or self.query_one("#content", VerticalScroll)
             container.display = False
 
     def _withdraw_visible_projection(self) -> None:
         """Withdraw authority without waiting for framework widget teardown."""
         self._discard_projection()
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         container = self._content or self.query_one("#content", VerticalScroll)
         container.display = False
@@ -822,7 +828,7 @@ class DashboardApp(App[None]):
         self._page_rows = self._visible_rows[page_start : page_start + page_size]
 
     def _request_render(self, *, immediate: bool = True, cosmetic: bool = False) -> None:
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         if self._painting:
             self._paint_generation += 1
@@ -843,7 +849,7 @@ class DashboardApp(App[None]):
 
     async def _paint(self) -> None:
         self._render_timer = None
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         if self._painting:
             self._paint_generation += 1
@@ -854,12 +860,12 @@ class DashboardApp(App[None]):
             await self._paint_once()
         finally:
             self._painting = False
-            if self._paint_again and self._mounted and not self._updates_stopped:
+            if self._paint_again and self._ui_active():
                 self._paint_again = False
                 self._request_render(immediate=True)
 
     async def _paint_once(self) -> None:
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         if not self._ensure_current_projection():
             await self._paint_pending()
@@ -897,7 +903,7 @@ class DashboardApp(App[None]):
                 return
             if children:
                 await container.mount(*children)
-            if not self._mounted or self._updates_stopped:
+            if not self._ui_active():
                 return
             if (
                 generation != self._paint_generation
@@ -908,7 +914,7 @@ class DashboardApp(App[None]):
                     self._ensure_current_projection()
                 if children:
                     await container.remove_children(children)
-                    if not self._mounted or self._updates_stopped:
+                    if not self._ui_active():
                         return
                     if self._projection is None or not self.reader.is_current(self._projection):
                         self._ensure_current_projection()
@@ -935,7 +941,7 @@ class DashboardApp(App[None]):
                 self._paint_again = True
             if old_children:
                 await container.remove_children(old_children)
-                if not self._mounted or self._updates_stopped:
+                if not self._ui_active():
                     return
                 if (
                     generation != self._paint_generation
@@ -954,7 +960,7 @@ class DashboardApp(App[None]):
             self._displayed_view = None
             self._displayed_overlay = None
             await container.remove_children()
-            if not self._mounted or self._updates_stopped:
+            if not self._ui_active():
                 return
             if (
                 generation != self._paint_generation
@@ -1000,7 +1006,7 @@ class DashboardApp(App[None]):
         if content_changed:
             if children:
                 await container.mount(*children)
-                if not self._mounted or self._updates_stopped:
+                if not self._ui_active():
                     return
                 self.call_after_refresh(self._scroll_to_active_content)
             self._content_signature_value = signature
@@ -1030,11 +1036,11 @@ class DashboardApp(App[None]):
     async def _paint_pending(self) -> None:
         """Clear invalid cached facts and paint an explicit no-current-state view."""
         self._withdraw_visible_projection()
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         container = self._content or self.query_one("#content", VerticalScroll)
         await container.remove_children()
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         # Reader updates may replace the report while framework operations
         # yield. This fallback must never pick up facts from that mutable state.
@@ -1050,14 +1056,14 @@ class DashboardApp(App[None]):
             )
         if children:
             await container.mount(*children)
-            if not self._mounted or self._updates_stopped:
+            if not self._ui_active():
                 return
         container.display = True
         self._content_signature_value = None
         self._last_paint_at = time.monotonic()
 
     def _paint_chrome(self) -> None:
-        if not self._mounted or self._updates_stopped:
+        if not self._ui_active():
             return
         values = {
             "header": self._header_text(),
@@ -3338,7 +3344,7 @@ class DashboardApp(App[None]):
             self._on_search_changed(event.value)
 
     def on_resize(self, _event: events.Resize) -> None:
-        if self._mounted and not self._updates_stopped:
+        if self._ui_active():
             self.reader.refresh_due()
             self._ensure_current_projection()
             self._sync_page_rows()
@@ -3351,7 +3357,7 @@ class DashboardApp(App[None]):
         self._request_render(immediate=True)
 
     def _resume_refresh(self, _app) -> None:
-        if self._mounted and not self._updates_stopped:
+        if self._ui_active():
             self.reader.refresh_due()
             self._ensure_current_projection()
             self._request_render(immediate=True)
