@@ -16,7 +16,13 @@ from pathlib import Path
 
 from ..bounded_json import WireError, decode_document
 from .config import TerminalConfigError, load_config, select_sources
-from .model import build_report, generated_at_now, identity_tuple, safe_metadata
+from .model import (
+    build_report,
+    enrich_repository_presentation,
+    generated_at_now,
+    identity_tuple,
+    safe_metadata,
+)
 from .output import OutputError, json_document, schema_document, write_stderr, write_stdout
 from .render import color_enabled, icons_enabled, light_background, render
 from .sources import TerminalDependencyError, read_sources
@@ -42,10 +48,19 @@ def _window_hours(value: str) -> int:
     return result
 
 
+_STATUSES = ("working", "ready", "blocked", "inactive", "unknown", "stale", "unavailable")
+
+
+def _status_choice(value: str) -> str:
+    return value.casefold()
+
+
 class _SessionParser(argparse.ArgumentParser):
     def parse_args(self, args=None, namespace=None):
         parsed = super().parse_args(args, namespace)
-        repeated = {"source", "host", "home", "membership", "runtime", "phase", "query"}
+        repeated = {
+            "source", "host", "home", "membership", "runtime", "phase", "query", "status"
+        }
         for name, value in tuple(vars(parsed).items()):
             if not name.startswith("_before_"):
                 continue
@@ -59,16 +74,44 @@ class _SessionParser(argparse.ArgumentParser):
 
 
 def _add_common(
-    parser: argparse.ArgumentParser, *, suppress: bool = False, dashboard: bool = False
+    parser: argparse.ArgumentParser,
+    *,
+    suppress: bool = False,
+    dashboard: bool = False,
+    session_groups: bool = False,
 ) -> None:
+    groups = {}
+    if session_groups:
+        groups = {
+            "filters": parser.add_argument_group("Search, status, selection and sort"),
+            "output": parser.add_argument_group("Output"),
+            "advanced": parser.add_argument_group("Advanced evidence and setup"),
+        }
+
     def add(*flags, **options):
+        argument_group = None
         if not suppress:
             name = flags[0].removeprefix("--").replace("-", "_")
             options["dest"] = "_before_" + name
-            if options.get("action") != "store_true":
+            if options.get("action") != "store_true" and "metavar" not in options:
                 choices = options.get("choices")
                 options["metavar"] = "{" + ",".join(choices) + "}" if choices else name.upper()
-        return parser.add_argument(*flags, **options)
+        if session_groups:
+            name = flags[0].removeprefix("--").replace("-", "_")
+            group = (
+                "filters"
+                if name in {
+                    "source", "host", "home", "query", "status", "sort", "group",
+                }
+                else "advanced"
+                if name in {"membership", "runtime", "phase"}
+                else "output"
+                if name in {"format", "color", "icons"}
+                else "advanced"
+            )
+            argument_group = groups[group]
+        target = argument_group or parser
+        return target.add_argument(*flags, **options)
 
     default = argparse.SUPPRESS if suppress else None
     add("--config", type=Path, default=default, help="private terminal.toml source configuration")
@@ -148,6 +191,19 @@ def _add_common(
         action="append",
         default=argparse.SUPPRESS if suppress else None,
     )
+    if not dashboard:
+        add(
+            "--status",
+            type=_status_choice,
+            choices=_STATUSES,
+            action="append",
+            metavar="STATUS",
+            default=argparse.SUPPRESS if suppress else None,
+            help=(
+                "qualified status (case-insensitive); repeat to OR. Choices: "
+                + ", ".join(_STATUSES)
+            ),
+        )
     add(
         "--query",
         action="append",
@@ -163,31 +219,89 @@ def _add_common(
 
 
 def parser(*, prog: str = "agent-observer sessions") -> argparse.ArgumentParser:
-    root = _SessionParser(prog=prog, description=__doc__)
-    _add_common(root)
-    commands = root.add_subparsers(dest="command", parser_class=argparse.ArgumentParser)
+    description = (
+        "Read configured cached sessions across selected hosts and homes.\n\n"
+        "Examples:\n"
+        "  agent-observer sessions\n"
+        "  agent-observer sessions list --status working --query renderer\n"
+        "  agent-observer sessions show FULL_THREAD_ID --host workstation --home default\n"
+        "  agent-observer sessions sources --configured"
+    )
+    root = _SessionParser(
+        prog=prog,
+        usage="%(prog)s [OPTIONS] [COMMAND]",
+        description=description,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    commands = root.add_subparsers(
+        dest="command",
+        parser_class=argparse.ArgumentParser,
+        metavar="COMMAND",
+        title="commands",
+    )
+    _add_common(root, session_groups=True)
     for name, description in (
         ("overview", "show a concise fleet summary (also the default)"),
         ("list", "list matching members and uncertain identities"),
         ("sources", "inspect source health and expected namespace binding"),
     ):
-        selected = commands.add_parser(name, help=description, description=description)
-        _add_common(selected, suppress=True)
+        selected_description = description
+        if name == "overview":
+            selected_description = (
+                "Show the concise configured fleet overview.\n\n"
+                "Example:\n  agent-observer sessions overview"
+            )
+        elif name == "list":
+            selected_description = (
+                "List matching members and uncertain identities.\n\n"
+                "Example:\n  agent-observer sessions list --status working --query renderer"
+            )
+        elif name == "sources":
+            selected_description = (
+                "Inspect source health and expected namespace binding.\n\n"
+                "Example:\n  agent-observer sessions sources --configured"
+            )
+        selected = commands.add_parser(
+            name,
+            usage="%(prog)s [OPTIONS]",
+            help=description,
+            description=selected_description,
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
+        _add_common(selected, suppress=True, session_groups=True)
         if name == "sources":
             selected.add_argument(
                 "--configured",
                 action="store_true",
                 help="inspect routes without importing Mesh or connecting",
             )
-    show = commands.add_parser("show", help="show one exact thread ID or full JSON identity")
-    _add_common(show, suppress=True)
+    show = commands.add_parser(
+        "show",
+        usage="%(prog)s [OPTIONS] [ID | --ref JSON]",
+        help="show one exact thread ID or full JSON identity",
+        description=(
+            "Inspect one exact session identity and its source evidence.\n\n"
+            "Example:\n"
+            "  agent-observer sessions show FULL_THREAD_ID --host workstation --home default"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    _add_common(show, suppress=True, session_groups=True)
     show.add_argument(
         "id", nargs="?", help="full native thread ID; prefix and title matching are not used"
     )
-    show.add_argument(
+    show.add_argument_group("Exact identity").add_argument(
         "--ref", help="full JSON identity with hostScope/provider/namespace/nativeIdKind/nativeId"
     )
-    commands.add_parser("schema", help="emit the packaged terminal JSON v1 schema")
+    commands.add_parser(
+        "schema",
+        help="emit the packaged terminal JSON v1 schema",
+        description=(
+            "Print the packaged terminal JSON v1 schema without loading configuration.\n\n"
+            "Example:\n  agent-observer sessions schema"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     return root
 
 
@@ -202,7 +316,7 @@ def _validate_query(values) -> tuple[str, ...]:
 
 
 def _filters(args) -> dict:
-    return {
+    filters = {
         "source": tuple(args.source or ()),
         "host": tuple(args.host or ()),
         "home": tuple(args.home or ()),
@@ -215,6 +329,10 @@ def _filters(args) -> dict:
         "sort": args.sort,
         "group": args.group,
     }
+    status = tuple(getattr(args, "status", None) or ())
+    if status:
+        filters["status"] = status
+    return filters
 
 
 def _configured_report(config, selected, filters) -> dict:
@@ -237,6 +355,21 @@ def _configured_report(config, selected, filters) -> dict:
                 "clock": None,
             }
         )
+    output_filters = {
+        "source": list(filters["source"]),
+        "host": list(filters["host"]),
+        "home": list(filters["home"]),
+        "membership": list(filters["membership"]),
+        "runtime": list(filters["runtime"]),
+        "phase": list(filters["phase"]),
+        "query": list(filters["query"]),
+        "includeChildren": filters["includeChildren"],
+        "includeSystem": filters["includeSystem"],
+        "sort": filters["sort"],
+        "group": filters["group"],
+    }
+    if filters.get("status"):
+        output_filters["status"] = list(filters["status"])
     return {
         "interface": "agent-observer.terminal",
         "version": 1,
@@ -255,19 +388,7 @@ def _configured_report(config, selected, filters) -> dict:
             ],
             "config": safe_metadata(str(config.path)),
         },
-        "filters": {
-            "source": list(filters["source"]),
-            "host": list(filters["host"]),
-            "home": list(filters["home"]),
-            "membership": list(filters["membership"]),
-            "runtime": list(filters["runtime"]),
-            "phase": list(filters["phase"]),
-            "query": list(filters["query"]),
-            "includeChildren": filters["includeChildren"],
-            "includeSystem": filters["includeSystem"],
-            "sort": filters["sort"],
-            "group": filters["group"],
-        },
+        "filters": output_filters,
         "clock": None,
         "totals": {
             "selectedSources": len(selected),
@@ -411,6 +532,12 @@ async def _live_report(args, config, selected, filters, mode: str, target):
         filters=filters,
         target=target,
     )
+    if args.format == "text" and mode != "sources":
+        enrich_repository_presentation(
+            report,
+            captured["states"],
+            now_boottime_ms=captured["nowBoottimeMs"],
+        )
     if captured["timedOut"]:
         report["result"] = "degraded"
         report["totals"]["state"] = "degraded"

@@ -35,10 +35,10 @@ from .render import (
     _status_age_parts_width,
     _status_age_width,
     _status_label,
-    _status_text,
     _workspace_color,
     _workspace_text,
 )
+from .status import status_text as _status_text
 
 _MEMBERSHIPS = ("active", "recent", "uncertain", "nonmember")
 _RUNTIMES = ("running", "parked", "unknown")
@@ -142,6 +142,20 @@ class SessionLine(Static):
                 self.remove_class("selected-row")
             self.update(self._line())
 
+    def adopt_row(self, other: SessionLine) -> None:
+        """Update this visible row synchronously from a fresh render candidate."""
+        self._cell_values = list(other._cell_values)
+        self._cell_widths = other._cell_widths
+        self._header_row = other._header_row
+        self._surface_selection = other._surface_selection
+        self._style_for_cell = other._style_for_cell
+        self._age_index = other._age_index
+        self._age_style = other._age_style
+        self._profile_host_length = other._profile_host_length
+        self._profile_host_style = other._profile_host_style
+        self._selected_row = not other._selected_row
+        self.select_row(other._selected_row)
+
     def update_age(self, value: str, style: str | None = None) -> None:
         if self._age_index is None:
             return
@@ -199,6 +213,7 @@ class DashboardApp(App[None]):
         self._page_rows: list[dict] = []
         self._age_cells: dict[tuple[str, ...], tuple[Static, str, dict]] = {}
         self._line_widgets: dict[tuple[str, ...], SessionLine] = {}
+        self._visible_row_widgets: dict[tuple[str, ...], Any] = {}
         self._painted_selection = None
         self._source_age_cells: dict[str, tuple[Static, str]] = {}
         self._selection_initialized = False
@@ -235,6 +250,14 @@ class DashboardApp(App[None]):
         self._render_values: dict[str, str] = {}
         self._content = None
         self._content_signature_value = None
+        self._displayed_row_signatures: dict[tuple[str, ...], tuple] = {}
+        self._displayed_layout_mode: str | None = None
+        self._displayed_size: tuple[int, int] | None = None
+        self._displayed_view: str | None = None
+        self._displayed_overlay: str | None = None
+        self._paint_generation = 0
+        self._painting = False
+        self._paint_again = False
 
     @staticmethod
     def _copy_filters(filters: dict) -> dict:
@@ -329,14 +352,11 @@ class DashboardApp(App[None]):
                 return
             changed.clear()
             if self.reader.requires_priority_refresh(self._projection):
-                self._withdraw_visible_projection()
                 if self._projection_timer is not None:
                     self._projection_timer.stop()
                     self._projection_timer = None
                 self._projection_requested = False
-                self._refresh_projection()
-                if self._projection is not None and self.reader.is_current(self._projection):
-                    self._paint_chrome()
+                self._ensure_current_projection()
                 self._request_render(immediate=True)
             else:
                 self._queue_projection()
@@ -368,23 +388,68 @@ class DashboardApp(App[None]):
         if projection is not None and self.reader.is_current(projection):
             return True
         priority = self.reader.requires_priority_refresh(projection)
-        if priority:
-            self._withdraw_visible_projection()
+        displayed_rows = dict(self._displayed_row_signatures) if priority else {}
         self._refresh_projection()
         if self._projection is not None and self.reader.is_current(self._projection):
             if priority:
+                if not self._displayed_rows_are_represented(displayed_rows):
+                    self._hide_stale_visible_content()
                 self._paint_chrome()
             self._rebind_age_cells()
-            self._request_render(immediate=True)
+            if not self._painting:
+                self._request_render(immediate=True)
             return True
+        if priority:
+            self._withdraw_visible_projection()
         self._queue_projection()
-        self._request_render(immediate=True)
+        if not self._painting:
+            self._request_render(immediate=True)
         return False
+
+    def _displayed_rows_are_represented(
+        self, displayed: dict[tuple[str, ...], tuple]
+    ) -> bool:
+        if (
+            self._view != "list"
+            or self._overlay is not None
+            or self._layout_mode() not in {"full", "compact", "stacked"}
+            or self._displayed_view != "list"
+            or self._displayed_overlay is not None
+            or self._displayed_layout_mode != self._layout_mode()
+            or self._displayed_size != (self.size.width, self.size.height)
+        ):
+            return False
+        if not displayed:
+            return True
+        current = {self._row_key(row): row for row in self._visible_rows}
+        return all(
+            key in current and self._row_signature(current[key]) == signature
+            for key, signature in displayed.items()
+        )
+
+    def _hide_stale_visible_content(self) -> None:
+        """Hide widgets whose facts changed while retaining the fresh projection."""
+        self._age_cells = {}
+        self._line_widgets = {}
+        self._visible_row_widgets = {}
+        self._source_age_cells = {}
+        self._displayed_row_signatures = {}
+        self._displayed_layout_mode = None
+        self._displayed_size = None
+        self._displayed_view = None
+        self._displayed_overlay = None
+        self._content_signature_value = None
+        self._painted_selection = None
+        if not self._mounted or self._updates_stopped:
+            return
+        container = self._content or self.query_one("#content", VerticalScroll)
+        container.display = False
 
     def _projection_filters(self) -> dict:
         return self._copy_filters(self.filters)
 
     def _refresh_projection(self, *, initial: bool = False) -> None:
+        self._paint_generation += 1
         projection = self.reader.projection(self._projection_filters())
         if not self.reader.is_current(projection):
             self._discard_projection()
@@ -502,6 +567,7 @@ class DashboardApp(App[None]):
         return matches[0] if len(matches) == 1 else None
 
     def _discard_projection(self) -> None:
+        self._paint_generation += 1
         self._projection = None
         self._report = {}
         self._all_rows = []
@@ -512,9 +578,18 @@ class DashboardApp(App[None]):
         self._selection_hidden = False
         self._age_cells = {}
         self._line_widgets = {}
+        self._visible_row_widgets = {}
         self._content_signature_value = None
         self._source_age_cells = {}
         self._message = "Refreshing current source state."
+        self._displayed_row_signatures = {}
+        self._displayed_layout_mode = None
+        self._displayed_size = None
+        self._displayed_view = None
+        self._displayed_overlay = None
+        if self._mounted and not self._updates_stopped:
+            container = self._content or self.query_one("#content", VerticalScroll)
+            container.display = False
 
     def _withdraw_visible_projection(self) -> None:
         """Withdraw authority without waiting for framework widget teardown."""
@@ -749,6 +824,10 @@ class DashboardApp(App[None]):
     def _request_render(self, *, immediate: bool = True, cosmetic: bool = False) -> None:
         if not self._mounted or self._updates_stopped:
             return
+        if self._painting:
+            self._paint_generation += 1
+            self._paint_again = True
+            return
         immediate = immediate and not cosmetic
         if self._render_timer is not None:
             if not immediate:
@@ -766,39 +845,156 @@ class DashboardApp(App[None]):
         self._render_timer = None
         if not self._mounted or self._updates_stopped:
             return
+        if self._painting:
+            self._paint_generation += 1
+            self._paint_again = True
+            return
+        self._painting = True
+        try:
+            await self._paint_once()
+        finally:
+            self._painting = False
+            if self._paint_again and self._mounted and not self._updates_stopped:
+                self._paint_again = False
+                self._request_render(immediate=True)
+
+    async def _paint_once(self) -> None:
+        if not self._mounted or self._updates_stopped:
+            return
         if not self._ensure_current_projection():
             await self._paint_pending()
             return
         self._paint_chrome()
         self._sync_page_rows()
         render_projection = self._projection
+        generation = self._paint_generation
         signature = self._content_signature()
         content_changed = signature != self._content_signature_value
-        children = self._content_widgets() if content_changed else []
         container = self._content or self.query_one("#content", VerticalScroll)
+        if not content_changed:
+            if not self._ensure_current_projection():
+                await self._paint_pending()
+                return
+            render_projection = self._projection
+            generation = self._paint_generation
+        children, widget_maps = (
+            self._build_content_widgets_with_maps() if content_changed else ([], None)
+        )
+        old_children = tuple(container.children)
+
+        if content_changed and self._supports_staged_list_replacement(children, old_children):
+            for child in children:
+                child.display = False
+            self._reconcile_visible_list_rows(widget_maps, children, old_children)
+            if (
+                generation != self._paint_generation
+                or render_projection is None
+                or not self.reader.is_current(render_projection)
+            ):
+                if render_projection is not None and not self.reader.is_current(render_projection):
+                    self._ensure_current_projection()
+                self._paint_again = True
+                return
+            if children:
+                await container.mount(*children)
+            if not self._mounted or self._updates_stopped:
+                return
+            if (
+                generation != self._paint_generation
+                or render_projection is None
+                or not self.reader.is_current(render_projection)
+            ):
+                if render_projection is not None and not self.reader.is_current(render_projection):
+                    self._ensure_current_projection()
+                if children:
+                    await container.remove_children(children)
+                    if not self._mounted or self._updates_stopped:
+                        return
+                    if self._projection is None or not self.reader.is_current(self._projection):
+                        self._ensure_current_projection()
+                self._paint_again = True
+                return
+
+            # Both generations switch visibility in one synchronous UI turn.
+            # The prior set stays mounted but hidden until targeted cleanup ends.
+            for child in old_children:
+                child.display = False
+            for child in children:
+                child.display = True
+            self._set_content_widget_maps(widget_maps)
+            self._content_signature_value = signature
+            self._rebind_age_cells()
+            self._record_displayed_content()
+            self.call_after_refresh(self._scroll_to_active_content)
+            container.display = True
+            self._painted_selection = self._selected_key
+            self._last_paint_at = time.monotonic()
+
+            if not self.reader.is_current(render_projection):
+                self._ensure_current_projection()
+                self._paint_again = True
+            if old_children:
+                await container.remove_children(old_children)
+                if not self._mounted or self._updates_stopped:
+                    return
+                if (
+                    generation != self._paint_generation
+                    or not self.reader.is_current(render_projection)
+                ):
+                    if not self.reader.is_current(render_projection):
+                        self._ensure_current_projection()
+                    self._paint_again = True
+            return
+
         if content_changed:
+            self._set_content_widget_maps(widget_maps)
+            self._displayed_row_signatures = {}
+            self._displayed_layout_mode = None
+            self._displayed_size = None
+            self._displayed_view = None
+            self._displayed_overlay = None
             await container.remove_children()
             if not self._mounted or self._updates_stopped:
                 return
-            if render_projection is not None and not self.reader.is_current(render_projection):
-                if not self._ensure_current_projection():
+            if (
+                generation != self._paint_generation
+                or render_projection is None
+                or not self.reader.is_current(render_projection)
+            ):
+                if render_projection is not None and not self.reader.is_current(render_projection):
+                    self._ensure_current_projection()
+                if self._projection is None or not self.reader.is_current(self._projection):
+                    if not self._ensure_current_projection():
+                        await self._paint_pending()
+                        return
+                if self._projection is None or not self.reader.is_current(self._projection):
                     await self._paint_pending()
                     return
                 self._sync_page_rows()
                 render_projection = self._projection
+                generation = self._paint_generation
                 signature = self._content_signature()
-                children = self._content_widgets()
-            if render_projection is not None and self.reader.is_current(render_projection):
+                children, widget_maps = self._build_content_widgets_with_maps()
+                self._set_content_widget_maps(widget_maps)
+            else:
                 self._rebind_age_cells()
+
         elif not self._ensure_current_projection():
             await self._paint_pending()
             return
 
         # This is the paint fence: no cached row or health document is applied
         # until the reader confirms this exact projection is still current.
-        if render_projection is not None and not self.reader.is_current(render_projection):
-            self._discard_projection()
-            await self._paint_pending()
+        if (
+            render_projection is None
+            or generation != self._paint_generation
+            or not self.reader.is_current(render_projection)
+        ):
+            if render_projection is not None and not self.reader.is_current(render_projection):
+                self._ensure_current_projection()
+            if self._projection is None or not self.reader.is_current(self._projection):
+                await self._paint_pending()
+            self._paint_again = True
             return
         self._paint_chrome()
         if content_changed:
@@ -816,10 +1012,17 @@ class DashboardApp(App[None]):
                     self._line_widgets[key].select_row(key == self._selected_key)
             self._refresh_age_cells()
             self._refresh_source_countdowns()
-        if render_projection is not None and not self.reader.is_current(render_projection):
-            await self._paint_pending()
-            self._queue_projection()
+        if (
+            render_projection is None
+            or generation != self._paint_generation
+            or not self.reader.is_current(render_projection)
+        ):
+            if render_projection is not None and not self.reader.is_current(render_projection):
+                self._ensure_current_projection()
+            container.display = False
+            self._paint_again = True
             return
+        self._record_displayed_content()
         container.display = True
         self._painted_selection = self._selected_key
         self._last_paint_at = time.monotonic()
@@ -915,6 +1118,7 @@ class DashboardApp(App[None]):
         children: list[Any] = []
         self._age_cells = {}
         self._line_widgets = {}
+        self._visible_row_widgets = {}
         self._source_age_cells = {}
         if self._overlay in {"help", "pins"}:
             children = self._overlay_widgets()
@@ -938,6 +1142,139 @@ class DashboardApp(App[None]):
         else:
             children = self._list_widgets()
         return children
+
+    def _build_content_widgets_with_maps(self):
+        previous = (
+            self._age_cells,
+            self._line_widgets,
+            self._visible_row_widgets,
+            self._source_age_cells,
+        )
+        children = self._content_widgets()
+        rendered = (
+            self._age_cells,
+            self._line_widgets,
+            self._visible_row_widgets,
+            self._source_age_cells,
+        )
+        (
+            self._age_cells,
+            self._line_widgets,
+            self._visible_row_widgets,
+            self._source_age_cells,
+        ) = previous
+        return children, rendered
+
+    def _set_content_widget_maps(self, maps) -> None:
+        (
+            self._age_cells,
+            self._line_widgets,
+            self._visible_row_widgets,
+            self._source_age_cells,
+        ) = maps
+
+    def _supports_staged_list_replacement(self, children, old_children) -> bool:
+        mode = self._layout_mode()
+        if (
+            self._view != "list"
+            or self._overlay is not None
+            or mode not in {"full", "compact", "stacked"}
+            or self._displayed_view not in {None, "list"}
+            or self._displayed_overlay is not None
+            or (
+                self._displayed_view == "list"
+                and (
+                    self._displayed_layout_mode != mode
+                    or self._displayed_size != (self.size.width, self.size.height)
+                )
+            )
+            or (self._displayed_view is None and bool(old_children))
+        ):
+            return False
+        # The supported list builders emit ID-free direct children. Keep this
+        # check so a future list widget with an explicit ID uses the guarded
+        # replacement path instead of colliding during the temporary overlap.
+        return all(child.id is None for child in (*old_children, *children))
+
+    def _reconcile_visible_list_rows(self, pending_maps, children, old_children) -> None:
+        """Keep unchanged rows and synchronously refresh/hide old row facts."""
+        pending_ages, _pending_lines, pending_rows, _source_ages = pending_maps
+        pending_header = next(
+            (
+                widget
+                for widget in children
+                if isinstance(widget, SessionLine) and widget._header_row
+            ),
+            None,
+        )
+        displayed_header = next(
+            (
+                widget
+                for widget in old_children
+                if isinstance(widget, SessionLine) and widget._header_row
+            ),
+            None,
+        )
+        if pending_header is not None and displayed_header is not None:
+            displayed_header.adopt_row(pending_header)
+        current = {self._row_key(row): row for row in self._page_rows}
+        retained_rows = {}
+        retained_lines = {}
+        retained_ages = {}
+        retained_signatures = {}
+        for key, old_widget in self._visible_row_widgets.items():
+            new_widget = pending_rows.get(key)
+            row = current.get(key)
+            if new_widget is None or row is None:
+                old_widget.display = False
+                continue
+            signature = self._row_signature(row)
+            old_signature = self._displayed_row_signatures.get(key)
+            if isinstance(old_widget, SessionLine) and isinstance(new_widget, SessionLine):
+                old_widget.adopt_row(new_widget)
+                old_widget.display = True
+                retained_lines[key] = old_widget
+            elif type(old_widget) is type(new_widget) and old_signature == signature:
+                old_widget.display = True
+            else:
+                # Compact cards contain multiple cells and are rebuilt as one
+                # unit. Hide a changed card before yielding; unchanged siblings
+                # remain on screen while its current replacement is mounted.
+                old_widget.display = False
+                continue
+            retained_rows[key] = old_widget
+            retained_signatures[key] = signature
+            previous_age = self._age_cells.get(key)
+            pending_age = pending_ages.get(key)
+            if previous_age is not None and pending_age is not None:
+                age_widget = previous_age[0]
+                if not isinstance(old_widget, SessionLine):
+                    age_widget.update(pending_age[0].render())
+                retained_ages[key] = (age_widget, pending_age[1], row)
+
+        self._visible_row_widgets = retained_rows
+        self._line_widgets = retained_lines
+        self._age_cells = retained_ages
+        self._displayed_row_signatures = retained_signatures
+
+    def _record_displayed_content(self) -> None:
+        self._displayed_view = self._view
+        self._displayed_overlay = self._overlay
+        mode = self._layout_mode()
+        if self._view == "list" and self._overlay is None and mode in {
+            "full",
+            "compact",
+            "stacked",
+        }:
+            self._displayed_layout_mode = mode
+            self._displayed_size = (self.size.width, self.size.height)
+            self._displayed_row_signatures = {
+                self._row_key(row): self._row_signature(row) for row in self._page_rows
+            }
+        else:
+            self._displayed_layout_mode = None
+            self._displayed_size = None
+            self._displayed_row_signatures = {}
 
     def _content_signature(self):
         base = (
@@ -1128,6 +1465,9 @@ class DashboardApp(App[None]):
                 del self._age_cells[key]
         self._line_widgets = {
             key: widget for key, widget in self._line_widgets.items() if key in visible
+        }
+        self._visible_row_widgets = {
+            key: widget for key, widget in self._visible_row_widgets.items() if key in visible
         }
 
     def _plain_lines(self, lines: list[str]) -> list[Static]:
@@ -1698,7 +2038,6 @@ class DashboardApp(App[None]):
                 age,
                 age_width,
                 self._activity_style(row, selected=selected),
-                widget_id=f"age-{page_index}",
                 truncate=False,
                 right_align=True,
             )
@@ -1753,15 +2092,15 @@ class DashboardApp(App[None]):
                 classes="row",
             )
             self._age_cells[key] = (age_cell, age, row)
-            return [
-                Vertical(
-                    status_age,
-                    title_line,
-                    profile_line,
-                    workspace_line,
-                    classes="stacked-row " + self._row_classes(selected),
-                )
-            ]
+            row_widget = Vertical(
+                status_age,
+                title_line,
+                profile_line,
+                workspace_line,
+                classes="stacked-row " + self._row_classes(selected),
+            )
+            self._visible_row_widgets[key] = row_widget
+            return [row_widget]
 
         if mode == "compact":
             if self._is_pinned_row(row):
@@ -1778,7 +2117,6 @@ class DashboardApp(App[None]):
                 age,
                 age_width,
                 self._activity_style(row, selected=selected),
-                widget_id=f"age-{page_index}",
                 truncate=False,
                 right_align=True,
             )
@@ -1823,13 +2161,13 @@ class DashboardApp(App[None]):
                 classes="row",
             )
             self._age_cells[key] = (age_cell, age, row)
-            return [
-                Vertical(
-                    first,
-                    second,
-                    classes="compact-row " + self._row_classes(selected),
-                )
-            ]
+            row_widget = Vertical(
+                first,
+                second,
+                classes="compact-row " + self._row_classes(selected),
+            )
+            self._visible_row_widgets[key] = row_widget
+            return [row_widget]
 
         status = _status_label(_status_text(row), self.icons)
         age = self._activity_age(row)
@@ -1860,6 +2198,7 @@ class DashboardApp(App[None]):
         )
         self._age_cells[key] = (age_cell, age, row)
         self._line_widgets[key] = row_widget
+        self._visible_row_widgets[key] = row_widget
         return [row_widget]
 
     def _row_classes(self, selected: bool) -> str:
@@ -1959,7 +2298,8 @@ class DashboardApp(App[None]):
     def _column_widths(self, width: int) -> tuple[int, ...]:
         rows = self._page_rows or self._visible_rows[:1]
         status_age = _status_age_width(rows, self._display_now_ms(), self.icons)
-        profile, workspace = 18, 22
+        profile = 18
+        workspace = min(22, max(16, width - 2 - status_age - profile - 28))
         title = max(28, width - 2 - status_age - profile - workspace)
         return status_age, title, profile, workspace
 
@@ -3202,7 +3542,7 @@ class DashboardApp(App[None]):
         order = self.filters.get("sort", "activity")
         group = self.filters.get("group", "none")
         pin_count = self._pinned_count_text() if self.saved_view.pins else None
-        if 60 <= self.size.width < 110:
+        if layout_mode(self.size.width) == "compact":
             summary = []
             if query:
                 summary.append("Search active")

@@ -6,6 +6,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -178,6 +180,33 @@ class TerminalCliTests(unittest.TestCase):
             .startswith("usage: agent-observer-cli ")
         )
 
+    def test_status_tokens_merge_case_insensitively_and_help_is_grouped_before_options(self):
+        from agent_observer.terminal import cli
+        from agent_observer.terminal.dashboard_cli import parser as dashboard_parser
+
+        parsed = cli.parser().parse_args(
+            ["--status", "WORKING", "list", "--status", "Ready", "--status", "BLOCKED"]
+        )
+        self.assertEqual(parsed.status, ["working", "ready", "blocked"])
+
+        help_text = cli.parser().format_help()
+        self.assertLess(help_text.index("Examples:"), help_text.index("commands:"))
+        self.assertLess(help_text.index("commands:"), help_text.index("Search, status"))
+        self.assertLess(help_text.index("Search, status"), help_text.index("Output:"))
+        self.assertLess(help_text.index("Output:"), help_text.index("Advanced evidence"))
+        self.assertIn("--status STATUS", help_text)
+        self.assertIn("unavailable", help_text)
+
+        output = StringIO()
+        with redirect_stdout(output), self.assertRaises(SystemExit) as raised:
+            cli.parser().parse_args(["show", "--help"])
+        self.assertEqual(raised.exception.code, 0)
+        subcommand_help = output.getvalue()
+        self.assertLess(subcommand_help.index("Example:"), subcommand_help.index("Search, status"))
+        self.assertIn("ID | --ref JSON", subcommand_help)
+        self.assertIn("Advanced evidence and setup", subcommand_help)
+        self.assertNotIn("--status", dashboard_parser().format_help())
+
     def test_repeatable_selectors_merge_across_subcommand_boundary(self):
         from agent_observer.terminal import cli
 
@@ -208,6 +237,8 @@ class TerminalCliTests(unittest.TestCase):
                         "working",
                         "--query",
                         "alpha",
+                        "--status",
+                        "WORKING",
                         "sources",
                         "--configured",
                         "--format",
@@ -226,6 +257,8 @@ class TerminalCliTests(unittest.TestCase):
                         "waiting",
                         "--query",
                         "beta",
+                        "--status",
+                        "Ready",
                     ]
                 )
             self.assertEqual(status, 0)
@@ -240,6 +273,7 @@ class TerminalCliTests(unittest.TestCase):
             self.assertEqual(document["filters"]["runtime"], ["running", "parked"])
             self.assertEqual(document["filters"]["phase"], ["working", "waiting"])
             self.assertEqual(document["filters"]["query"], ["alpha", "beta"])
+            self.assertEqual(document["filters"]["status"], ["working", "ready"])
             reusable = cli.parser()
             self.assertNotIn("_BEFORE_", reusable.format_help())
             self.assertEqual(reusable.parse_args(["--host", "fixture", "list"]).host, ["fixture"])
@@ -283,6 +317,7 @@ class TerminalCliTests(unittest.TestCase):
                 )
                 overview = json.loads(outputs.pop())
                 Draft202012Validator(schema_document()).validate(overview)
+                self.assertNotIn("status", overview["filters"])
                 self.assertEqual(overview["totals"]["members"], 1)
                 self.assertEqual(
                     overview["sessions"][0]["identity"]["nativeId"], "exact-fixture-id"

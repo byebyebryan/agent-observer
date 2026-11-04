@@ -3,7 +3,7 @@
 MIN_SESSION_WIDTH = 32
 MIN_SESSION_HEIGHT = 12
 STACKED_WIDTH = 60
-TABLE_WIDTH = 110
+TABLE_WIDTH = 100
 
 _ROW_HEIGHTS = {"tiny": 0, "full": 1, "compact": 2, "stacked": 4}
 _HEADER_HEIGHTS = {"tiny": 0, "full": 1, "compact": 2, "stacked": 0}

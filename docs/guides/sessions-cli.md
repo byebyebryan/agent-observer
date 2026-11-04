@@ -1,7 +1,11 @@
 # Sessions CLI
 
-The `0.7.0a17` prerelease retains the sessions CLI described here. Installing a
-reader does not change collector, publisher or other consumer selections.
+The published `0.7.0a17` prerelease retains the released sessions CLI described
+here. This checkout adds unreleased overview-count, `--status`, show-summary,
+leased repo/worktree-label and 100-column four-cell layout refinements for a
+future candidate; the published
+wheel and managed selections have not changed. Installing a reader does not
+change collector, publisher or other consumer selections.
 
 Bare `agent-observer` opens the quick fleet overview. The explicit `sessions`
 commands read the same configured working-set caches for overview,
@@ -12,7 +16,9 @@ Service 4 and Mesh diagnostics remain available separately.
 Use `agent-observer --help` for command discovery. The top-level
 `agent-observer list` and `agent-observer show` commands are explicit local
 native diagnostics; use `agent-observer sessions list` and `sessions show`
-for the configured cached fleet.
+for the configured cached fleet. `agent-observer sessions --help` and each
+subcommand's help show everyday examples before the option groups. Common
+options work before or after the subcommand.
 
 ## Prerequisites
 
@@ -97,6 +103,7 @@ agent-observer
 agent-observer sessions
 agent-observer sessions list
 agent-observer sessions list --host workstation --home default
+agent-observer sessions list --status working --query renderer
 agent-observer sessions list --membership active --phase working
 agent-observer sessions list --query renderer --sort label
 agent-observer sessions sources
@@ -104,10 +111,13 @@ agent-observer sessions show FULL_THREAD_ID --host workstation --home default
 ```
 
 Bare `agent-observer`, `agent-observer sessions` and `sessions overview` show
-the same overview. It has at most ten displayed rows, with a compact coverage
-summary and four ordered cells: Status / age, Session, Profile and Workspace.
-A TTY at 110 columns or wider uses the four-cell table;
-60–109 columns use two-line rows with a shared left/right boundary: status/age
+the same overview. It has at most ten displayed rows. Near the top it shows the
+displayed and matching row counts, the unfiltered session total, any uncertain,
+known-nonmember or hidden-kind counts, and the selected-source coverage
+denominator. Degraded sources retain their reason text even when no rows match.
+Rows use four ordered cells: Status / age, Session, Profile and Workspace.
+A TTY at 100 columns or wider uses the four-cell table;
+60–99 columns use two-line rows with a shared left/right boundary: status/age
 and Profile on the left, Session and Workspace on the right. The dashboard
 reserves about 27 cells for the right column at 60 columns; finite output uses
 the remaining width without a selection gutter. At 32–59 columns, rows stack
@@ -118,7 +128,7 @@ not a TTY, width is unknown and the natural full-field layout is kept. Activity 
 compact units without a prefix and remain approximate; unknown or stale facts
 retain their qualifications. Raw
 facts remain in exact-session details. Full IDs and context are available with
-`sessions list` and `sessions show`; JSON output is unchanged.
+`sessions list` and `sessions show`; default JSON output is unchanged.
 
 Interactive terminals use a cyan heading/navigation accent, bold session names,
 quiet secondary metadata and colored state labels. Standard Unicode glyphs
@@ -137,7 +147,12 @@ not select a session. Absence from this projection does not prove deletion or
 absence from saved history.
 
 Repeat source/host/home/membership/runtime/phase/query selectors to OR values
-within one selector; different selectors are ANDed. Search is literal and
+within one selector; different selectors are ANDed. `--status` accepts
+`working`, `ready`, `blocked`, `inactive`, `unknown`, `stale` and `unavailable`
+case-insensitively. Repeated status values are ORed with each other and ANDed
+with other filters. Status uses the same conservative qualified mapping as the
+dashboard and is applied before the overview's ten-row cap. Exact `show`
+bypasses status and the other display filters. Search is literal and
 case-insensitive over admitted metadata, never conversation content. Source
 selection and membership filters do not restart or reconfigure a publisher.
 Activity ordering uses current native conversation activity across running and
@@ -159,12 +174,17 @@ for overview/list output. They share the dashboard's
 Working, Ready, Blocked, Inactive and explicit Unknown/Stale/Unavailable.
 
 Last active is approximate time since conversation activity. Profile displays
-host/profile with a stable host family and home shade. The finite CLI Workspace
-uses reported cwd only; the dashboard can prefer a current cached repo/worktree
-root, falling back to reported cwd. Workspace labels omit `repo`/`dir`
-prefixes and shortens reported `/home/<user>` paths to `~`, including remote
+host/profile with a stable host family and home shade. The finite CLI and
+dashboard prefer a current leased cached repo/worktree root, falling back to
+reported cwd. Workspace labels omit `repo`/`dir`
+prefixes and shorten reported `/home/<user>` paths to `~`, including remote
 users. Full paths and raw membership/runtime/phase remain in exact-session
-details; `list` retains full IDs as secondary evidence. The overview still
+details; `list` retains full IDs as secondary evidence. `show` leads with title,
+qualified Status and activity age, Profile, Workspace and full native ID; raw
+membership/runtime/phase, full identity, source/scope health, reasons, paths,
+leases and clock evidence follow under a diagnostics divider. Uncertain and
+known-nonmember targets are explicitly qualified and do not gain an invented
+Working or Inactive status. The overview still
 displays at most ten rows. Long names and IDs remain complete in piped text,
 with no ANSI sequences.
 
@@ -179,7 +199,10 @@ dashboard refreshes age color on its existing tick even when age text is
 unchanged. Profile hue marks host family and shade marks home. Workspace uses
 distinct repo/dir/unknown colors. Plain and piped output keeps its text cues
 without ANSI color. Terminal JSON v1 fields, selectors including `--home` and
-query/filter behavior remain compatible; JSON row order follows the same
+query/filter behavior remain compatible. When `--status` is explicitly
+supplied, JSON adds lower-case `filters.status`; default JSON omits it, and no
+per-row status field is added. `sources --configured` reports an explicitly
+supplied status filter without connecting. JSON row order follows the same
 recency rule.
 
 ## More hosts and homes

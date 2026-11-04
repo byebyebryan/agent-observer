@@ -7,12 +7,19 @@ records their current behavior, ownership and acceptance limits. Use the
 for installation, source configuration, commands and keys; use the
 [roadmap](roadmap.md) for priorities and deferred work.
 
+Finite CLI overview counts, status filtering, show-summary ordering, leased
+repo/worktree workspace labels, the 100-column four-cell breakpoint and staged
+dashboard list updates are
+unreleased source refinements for a future candidate. The published a17 wheel
+and managed selections retain their recorded
+behavior.
+
 ## Workflows and public interfaces
 
 | Workflow | Contract |
 | --- | --- |
-| Quick check | Bare `agent-observer`, `sessions` and `sessions overview` share a finite overview with source health, unfiltered counts and at most ten rows. |
-| Investigate | `sessions list` returns all matching rows; `show` selects a full native ID in one host/home or an exact five-field JSON reference. Exact inspection bypasses display filters and hidden kinds, but cannot recover absent history. |
+| Quick check | Bare `agent-observer`, `sessions` and `sessions overview` share a finite overview with source health, shown/matching and unfiltered counts, and at most ten rows. |
+| Investigate | `sessions list` returns all matching rows; `show` selects a full native ID in one host/home or an exact five-field JSON reference. Exact inspection bypasses display filters, including status, and hidden kinds, but cannot recover absent history. |
 | Inspect delivery | `sessions sources` reports source health even without sessions. `sources --configured` validates configuration without connecting or importing Mesh. |
 | Script | Finite `--format json` emits terminal interface 1; `sessions schema` prints its packaged schema without configuration or optional imports. Human text spacing is not a parser contract. |
 | Keep watch | `dashboard` remains open until quit or terminal shutdown, over the same configured cached sources. It has no finite lifetime, JSON watch, `--format` or `--timeout` option. |
@@ -47,27 +54,33 @@ than choosing by arrival order. Native observation semantics remain in
   watched sources. Zero matches, missing scopes and unavailable feeds cannot
   establish it. Only known nonmembers means zero qualifying members, not empty.
 - Default presentation hides confirmed child/system kinds, retaining unknown
-  kinds. Membership/runtime/phase/query selectors OR within a dimension and AND
-  across dimensions. Nonmembers require explicit inclusion; exact inspection
-  can still resolve them. Activity order is newest first across running and parked
+  kinds. Source/host/home/membership/runtime/phase/query/status selectors OR
+  within a dimension and AND across dimensions. Finite `--status` uses the same
+  qualified mapping as the dashboard, is applied before the overview cap and
+  does not change in-app dashboard state. Nonmembers require explicit inclusion;
+  exact inspection can still resolve them. Activity order is newest first across running and parked
   rows; unknown ages follow known timestamps and full identity breaks ties.
 - Search is a case-insensitive literal substring over admitted name, project,
   reported cwd, host/home and full native ID; queries are 1–256 characters.
   Dashboard search also includes sanitized current repository root/commonDir/
   relativePath. Expired repository fields stop matching independently of other
-  metadata. Finite CLI query results and terminal JSON v1 remain unchanged.
+  metadata. Existing finite CLI query results and default terminal JSON v1
+  reports remain unchanged.
 - Reported title/cwd have no independent field lease and imply no fresh native
   sample. Optional repository/project metadata uses workspace support; linked
-  worktrees remain distinct. No filesystem/Git discovery, branch/dirty queries,
-  content search or persisted search history is performed.
+  worktrees remain distinct. Human finite CLI and dashboard workspace labels
+  prefer an admitted, current leased repository/worktree root and otherwise use
+  reported cwd; expiry falls back to cwd. This does not add repository fields to
+  finite CLI search or default JSON. No filesystem/Git discovery, branch/dirty
+  queries, content search or persisted search history is performed.
 - Activity uses native `activity.at`. Approximate display age is not evidence
   renewal, membership arithmetic or phase-entry time. Polls, title changes and
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. The a17 reader
-uses width-only list modes: at 110 columns and wider it shows the full
-four-cell Status / age, Session, Profile and Workspace table; 60–109 columns use
+The dashboard initially shows the full list with details closed. Current source
+uses width-only list modes: at 100 columns and wider it shows the full
+four-cell Status / age, Session, Profile and Workspace table; 60–99 columns use
 two-line session rows with one shared left/right boundary for both rows and all
 entries on the page; 32–59 columns use four-line cards. Below 32 columns or
 12 rows it shows resize guidance with live source health and help/quit. Height
@@ -78,6 +91,10 @@ filtered states. Detail paths, source evidence and filter choices wrap and
 scroll; selection remains visible on resize. The
 [dashboard guide](../guides/dashboard.md#read-and-navigate) owns the key
 reference and layout explanation.
+
+List updates remain independent per source. Current visible rows stay on screen
+while an empty sibling warms or adds its baseline; changed or expired facts are
+reconciled or withdrawn before the dashboard waits for widget work.
 
 Selection follows the exact identity through reorder, filtering, paging and
 resize. A hidden selection stays pinned. If evidence disappears or its source
@@ -183,7 +200,7 @@ or visible revocation; record that distinction explicitly.
 | Boundary | Budget and required proof |
 | --- | --- |
 | Admission | At most eight sources, 4,096 outcomes/source, 8,192 total and 32 MiB encoded admitted payload. Defaults reserve 1,024 identities/4 MiB per source before I/O. Capacity faults block the affected source, never silently truncate. These are safety bounds, not fleet capacity or peak-RSS guarantees. |
-| UI/state | At most four cosmetic paints/second, one age update/second and 200 materialized list rows/page. Filtering/counts span all admitted outcomes. One pending read/source; bounded latest state, no event history or session disk cache. |
+| UI/state | At most four cosmetic paints/second, one age update/second and 200 materialized list rows/page. A replacement may prepare one hidden page alongside the current page; paint generations do not accumulate. Filtering/counts span all admitted outcomes. One pending read/source; bounded latest state, no event history or session disk cache. |
 | Output | At most 512 KiB pending encoded output and per accepted write; fail after two seconds without drain progress. No blocked event-loop queue put or unbounded writer join. |
 | Normal resource profile | Three sources x100 identities, draining 120x40 terminal, two-minute warmup and 30 measured minutes. Client plus owned children <=5% of one core and <=192 MiB RSS; report producer/sampler cost separately. |
 | Interaction | Normal key/resize-to-visible p95 <=100 ms; admitted-update-to-visible p95 <=250 ms at its recorded boundary. Exercise 120x30 and 120x16 full tables, 80x24 compact rows, 60x16 compact rows, 40x12 and 32x12 stacked cards, and guidance below 32 columns or 12 rows. Pixel-to-column fit depends on the emulator/font and remains a human visual check. |
@@ -245,8 +262,8 @@ The main human CLI and dashboard rows use four cells: **Status / age,
 Session, Profile, Workspace**. Status and activity age are the scan targets;
 status and age share a cell with separate colors, and the session title receives
 flexible width. Profile and workspace are quieter
-context. At 110 columns and wider, dashboard and finite TTY output use the
-four-cell table. At 60–109 columns they use two-line rows with a shared column
+context. At 100 columns and wider, dashboard and finite TTY output use the
+four-cell table. At 60–99 columns they use two-line rows with a shared column
 boundary: status/age and profile on the left, session and workspace on the
 right. The left fits complete status/age and useful profile context; the right
 gets the remaining width. At 60 columns the dashboard retains about 27 cells
@@ -259,6 +276,14 @@ known width and keeps its natural full-field layout. Section/group headings and
 all row lines count against the dashboard page budget; exact selection stays visible on resize. Breakpoints
 describe terminal cells, not a fixed pixel size; physical fit depends on the
 terminal emulator and font.
+
+Finite `sessions show` leads with title, qualified Status and activity age,
+Profile, Workspace and full native ID. A diagnostics divider precedes raw
+membership/runtime/phase, the complete identity, source and scope health,
+reasons, paths, field leases and receiving-clock evidence. Uncertain and known
+nonmember targets carry their membership qualification and never receive an
+invented Working or Inactive status. Missing targets retain the honest lookup
+outcome and selected-source health.
 
 Status is a presentation summary of qualified facts, with no new producer state:
 
@@ -296,9 +321,14 @@ Current cached updates and quiet expiry recompute status matches.
 Favorites bypass no filter, and a hidden selection retains its exact identity.
 Unfiltered counts and watched source health remain visible with zero matches.
 
-Status is dashboard presentation state for this run. It adds no CLI selector,
-configuration field, saved-view field, producer fact or terminal JSON v1 field.
-Existing raw filters retain their semantics.
+Dashboard status remains presentation state for that run and never enters
+backend read filters. It adds no configuration field, saved-view field or
+producer fact. Finite sessions CLI separately accepts repeatable, case-
+insensitive `--status` values; they OR with each other and AND with other
+selectors. Exact `show` bypasses them. Terminal JSON v1 adds `filters.status`
+only when the user supplies the option, with canonical lowercase values; the
+default JSON shape and per-row fields remain unchanged. The packaged schema
+bytes do not change.
 
 ### Activity and context colors
 

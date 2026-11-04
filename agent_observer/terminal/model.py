@@ -6,6 +6,8 @@ import unicodedata
 from datetime import UTC, datetime
 from pathlib import PurePath
 
+from .status import status_text
+
 IDENTITY_FIELDS = ("hostScope", "provider", "namespace", "nativeIdKind", "nativeId")
 MEMBERSHIPS = ("active", "recent", "uncertain", "nonmember")
 RUNTIMES = ("running", "parked", "unknown")
@@ -470,6 +472,7 @@ def build_report(
     membership_filter = tuple(filters.get("membership", ()))
     runtime_filter = tuple(filters.get("runtime", ()))
     phase_filter = tuple(filters.get("phase", ()))
+    status_filter = tuple(filters.get("status", ()))
     query = tuple(filters.get("query", ()))
     include_children = filters.get("includeChildren") is True
     include_system = filters.get("includeSystem") is True
@@ -515,6 +518,10 @@ def build_report(
         ]
     if mode != "show":
         candidates = [row for row in candidates if _matches_query(row, query)]
+        if status_filter:
+            candidates = [
+                row for row in candidates if status_text(row).casefold() in status_filter
+            ]
     sort = filters.get("sort", "activity")
     candidates = sort_rows(candidates, sort, filters.get("group", "none"))
 
@@ -617,24 +624,28 @@ def build_report(
         shown_sessions, shown_uncertain, shown_nonmembers = [], [], []
         totals["displayedMatches"] = 0
         totals["shown"] = 0
+    output_filters = {
+        "source": _selector_list(filters.get("source")),
+        "host": _selector_list(filters.get("host")),
+        "home": _selector_list(filters.get("home")),
+        "membership": _selector_list(membership_filter),
+        "runtime": _selector_list(runtime_filter),
+        "phase": _selector_list(phase_filter),
+        "query": list(query),
+        "includeChildren": include_children,
+        "includeSystem": include_system,
+        "sort": sort,
+        "group": filters.get("group", "none"),
+    }
+    if status_filter:
+        output_filters["status"] = list(status_filter)
+
     return {
         "interface": "agent-observer.terminal",
         "version": 1,
         "generatedAt": generated_at,
         "selection": {"sources": selection, "config": filters.get("configPath")},
-        "filters": {
-            "source": _selector_list(filters.get("source")),
-            "host": _selector_list(filters.get("host")),
-            "home": _selector_list(filters.get("home")),
-            "membership": _selector_list(membership_filter),
-            "runtime": _selector_list(runtime_filter),
-            "phase": _selector_list(phase_filter),
-            "query": list(query),
-            "includeChildren": include_children,
-            "includeSystem": include_system,
-            "sort": sort,
-            "group": filters.get("group", "none"),
-        },
+        "filters": output_filters,
         "clock": clock,
         "totals": totals,
         "sources": output_sources,
@@ -644,6 +655,47 @@ def build_report(
         "result": result,
         "error": error,
     }
+
+
+def enrich_repository_presentation(
+    report: dict, source_states: list[dict], *, now_boottime_ms: int
+) -> None:
+    """Enrich only already-selected human rows from the same guarded capture.
+
+    The normal terminal query and candidate set stay authoritative. This second
+    bounded projection contributes only leased workspace presentation fields;
+    repository metadata never changes matching, context or JSON v1 output.
+    """
+    selected = {
+        (row["source"]["id"], identity_tuple(row["identity"]))
+        for name in ("sessions", "uncertain", "nonmembers")
+        for row in report.get(name, ())
+    }
+    if not selected:
+        return
+
+    repositories = {}
+    for source_state in source_states:
+        source, sessions, _uncertain, _nonmembers = _source_doc(
+            source_state,
+            now_boottime_ms,
+            include_repository=True,
+        )
+        for row in sessions:
+            key = (source["id"], identity_tuple(row["identity"]))
+            if key in selected:
+                repositories[key] = {
+                    "repo": row["details"].get("repo"),
+                    "workspaceHealth": row["details"].get("workspaceHealth"),
+                    "workspaceReason": row["details"].get("workspaceReason"),
+                }
+
+    for name in ("sessions", "uncertain", "nonmembers"):
+        for row in report.get(name, ()):
+            key = (row["source"]["id"], identity_tuple(row["identity"]))
+            workspace = repositories.get(key)
+            if workspace is not None and type(row.get("details")) is dict:
+                row["details"].update(workspace)
 
 
 def generated_at_now() -> str:

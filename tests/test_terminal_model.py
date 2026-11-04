@@ -3,7 +3,11 @@
 import unittest
 from types import SimpleNamespace
 
-from agent_observer.terminal.model import build_report, safe_metadata
+from agent_observer.terminal.model import (
+    build_report,
+    enrich_repository_presentation,
+    safe_metadata,
+)
 from agent_observer.terminal.output import json_document
 
 NOW = 1_000
@@ -188,6 +192,111 @@ class TerminalModelTests(unittest.TestCase):
         self.assertEqual(result["sessions"][1]["runtime"]["value"], "running")
         self.assertEqual(result["totals"]["displayedMatches"], 2)
 
+    def test_status_filter_uses_qualified_labels_or_within_and_and_across_filters(self):
+        specifications = (
+            ("working", "running", "current", "working", "current"),
+            ("ready", "running", "current", "waiting", "current"),
+            ("blocked", "running", "current", "blocked", "current"),
+            ("inactive", "parked", "current", "waiting", "current"),
+            ("unknown", "unknown", "current", "working", "current"),
+            ("stale", "unknown", "stale", "working", "current"),
+            ("unavailable", "unknown", "unavailable", "working", "current"),
+        )
+        members = []
+        leases = []
+        for name, runtime, runtime_health, phase, phase_health in specifications:
+            item = row(f"{name}-id", title=f"{name.title()} session")
+            item["runtime"].update(value=runtime, health=runtime_health)
+            item["phase"].update(value=phase, health=phase_health)
+            members.append(item)
+            leases.append(lease(item["identity"]["nativeId"]))
+        current = state(
+            current_read=read(
+                rows=members,
+                leases=leases,
+                uncertain=[
+                    {"identity": identity("uncertain-id"), "reason": "membership_unresolved"}
+                ],
+                nonmembers=[
+                    {"identity": identity("nonmember-id"), "reason": "known_nonmember"}
+                ],
+            )
+        )
+
+        unfiltered = report([current])
+        self.assertNotIn("status", unfiltered["filters"])
+        self.assertNotIn("status", unfiltered["sessions"][0])
+
+        working_or_ready = report(
+            [current], filters={"status": ("working", "ready")}
+        )
+        self.assertEqual(
+            {item["identity"]["nativeId"] for item in working_or_ready["sessions"]},
+            {"working-id", "ready-id"},
+        )
+        self.assertEqual(working_or_ready["filters"]["status"], ["working", "ready"])
+
+        status_and_query = report(
+            [current],
+            filters={"status": ("working", "ready"), "query": ("READY SESSION",)},
+        )
+        self.assertEqual(
+            [item["identity"]["nativeId"] for item in status_and_query["sessions"]],
+            ["ready-id"],
+        )
+
+        for status_name, *_ in specifications:
+            result = report([current], filters={"status": (status_name,)})
+            self.assertEqual(
+                {item["identity"]["nativeId"] for item in result["sessions"]},
+                {f"{status_name}-id"},
+            )
+
+        unknowns = report([current], filters={"status": ("unknown",)})
+        self.assertEqual(
+            {
+                item["identity"]["nativeId"]
+                for item in [*unknowns["sessions"], *unknowns["uncertain"]]
+            },
+            {"unknown-id", "uncertain-id"},
+        )
+        self.assertEqual(unknowns["nonmembers"], [])
+        explicit_nonmember = report(
+            [current],
+            filters={"membership": ("nonmember",), "status": ("unknown",)},
+        )
+        self.assertEqual(
+            [item["identity"]["nativeId"] for item in explicit_nonmember["nonmembers"]],
+            ["nonmember-id"],
+        )
+
+    def test_status_filter_applies_before_overview_cap_and_exact_show_bypasses_it(self):
+        members = [row(f"working-{index:02}") for index in range(12)]
+        other = row("ready-id", title="Ready task")
+        other["phase"]["value"] = "waiting"
+        members.append(other)
+        current = state(
+            current_read=read(
+                rows=members,
+                leases=[lease(item["identity"]["nativeId"]) for item in members],
+            )
+        )
+        overview = report(
+            [current], mode="overview", filters={"status": ("working",)}
+        )
+        self.assertEqual(overview["totals"]["displayedMatches"], 12)
+        self.assertEqual(overview["totals"]["shown"], 10)
+        self.assertEqual(len(overview["sessions"]), 10)
+
+        exact = report(
+            [current],
+            mode="show",
+            target="working-00",
+            filters={"status": ("blocked",)},
+        )
+        self.assertEqual(exact["result"], "complete")
+        self.assertEqual(exact["sessions"][0]["identity"]["nativeId"], "working-00")
+
     def test_complete_empty_requires_a_present_complete_scope(self):
         complete = report([state(current_read=read())])
         self.assertEqual(complete["totals"]["state"], "complete-empty")
@@ -354,6 +463,52 @@ class TerminalModelTests(unittest.TestCase):
         self.assertIsNone(missing_session["details"]["repo"])
         self.assertIsNone(missing_session["details"]["workspaceHealth"])
         self.assertIsNone(missing_session["details"]["cwd"])
+
+    def test_human_repository_enrichment_preserves_query_context_and_discards_expired_repo(self):
+        current = row("human-repo-id", title="Repository session")
+        current["cwd"] = "/home/remote-user/worktrees/topic/src"
+        current["workspace"]["repo"] = {
+            "root": "/synthetic/worktrees/repo-only-name",
+            "commonDir": "/synthetic/repositories/shared.git",
+            "relativePath": "src",
+        }
+        current_state = state(
+            current_read=read(rows=[current], leases=[lease("human-repo-id")])
+        )
+
+        ordinary = report([current_state])
+        self.assertNotIn("repo", ordinary["sessions"][0]["details"])
+        before_context = ordinary["sessions"][0]["context"]
+        before_project = ordinary["sessions"][0]["details"]["projectKey"]
+        enrich_repository_presentation(
+            ordinary, [current_state], now_boottime_ms=NOW
+        )
+        self.assertEqual(
+            ordinary["sessions"][0]["details"]["repo"]["root"],
+            "/synthetic/worktrees/repo-only-name",
+        )
+        self.assertEqual(ordinary["sessions"][0]["context"], before_context)
+        self.assertEqual(ordinary["sessions"][0]["details"]["projectKey"], before_project)
+
+        # The ordinary candidate set and query fields never gain repo metadata.
+        self.assertEqual(
+            report([current_state], filters={"query": ("repo-only-name",)})["sessions"], []
+        )
+
+        expired_lease = lease("human-repo-id")
+        expired_lease["fieldExpiresAtMs"]["workspace"] = NOW
+        expired_state = state(
+            current_read=read(rows=[current], leases=[expired_lease])
+        )
+        expired = report([expired_state])
+        legacy_context = expired["sessions"][0]["context"]
+        enrich_repository_presentation(expired, [expired_state], now_boottime_ms=NOW)
+        self.assertIsNone(expired["sessions"][0]["details"]["repo"])
+        self.assertEqual(
+            expired["sessions"][0]["details"]["workspaceReason"],
+            "workspace_support_expired",
+        )
+        self.assertEqual(expired["sessions"][0]["context"], legacy_context)
 
     def test_repository_search_uses_only_current_cached_fields_and_keeps_filters(self):
         first = row("worktree-one", title="Alpha task")

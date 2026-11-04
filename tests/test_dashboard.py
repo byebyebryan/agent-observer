@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import asyncio
 import importlib.util
+import time
 import unittest
-from types import SimpleNamespace
+from types import MethodType, SimpleNamespace
 from unittest.mock import patch
 
 from test_terminal_model import identity, lease, read, report, row, source, state
@@ -124,6 +125,380 @@ def _widget_text(widget):
 
 @unittest.skipUnless(TEXTUAL_AVAILABLE, "optional dashboard dependencies required")
 class DashboardTests(unittest.IsolatedAsyncioTestCase):
+    async def test_staggered_sources_keep_healthy_rows_in_scheduled_frames_at_each_layout(self):
+        configurations = [
+            source(f"fixture-{name}", host=f"fixture-{name}")
+            for name in ("alpha", "beta", "gamma")
+        ]
+
+        def ready(index):
+            item = row(
+                f"fictional-{index}",
+                title=f"Fictional {('alpha', 'beta', 'gamma')[index]}",
+                host=configurations[index]["host"],
+            )
+            return _session_state(
+                configurations[index], rows=[item], ids=[item["identity"]["nativeId"]]
+            )
+
+        def failed(index):
+            return _session_state(configurations[index], lifecycle="failed", baseline=False)
+
+        for width in (106, 80, 40):
+            with self.subTest(width=width):
+                current = [ready(0), failed(1), failed(2)]
+                reader = FakeReader(current)
+                app = DashboardApp(reader, {}, no_color=True)
+                frames = []
+                stage_box = {"value": "initial"}
+                started = time.monotonic()
+                original_display = app._display
+
+                def capture_display(
+                    self,
+                    screen,
+                    renderable,
+                    *,
+                    frames=frames,
+                    stage_box=stage_box,
+                    started=started,
+                    original_display=original_display,
+                ):
+                    if renderable is not None and not self._batch_count:
+                        text = "\n".join(
+                            "".join(segment.text for segment in strip)
+                            for strip in screen._compositor.render_strips()
+                        )
+                        frames.append(
+                            {
+                                "seconds": time.monotonic() - started,
+                                "stage": stage_box["value"],
+                                "text": text,
+                                "content_displayed": (
+                                    self._content.display if self._content is not None else None
+                                ),
+                            }
+                        )
+                    return original_display(screen, renderable)
+
+                app._display = MethodType(capture_display, app)
+
+                async with app.run_test(size=(width, 24)) as pilot:
+                    async def wait_for(predicate, message):
+                        for _ in range(100):
+                            if predicate():
+                                return
+                            await pilot.pause(0.02)
+                        self.fail(message)
+
+                    await wait_for(
+                        lambda frames=frames: any(
+                            "Fictional alpha" in frame["text"] for frame in frames
+                        ),
+                        f"alpha row did not paint at {width} columns",
+                    )
+                    self.assertIn("Sources 3", app._source_ribbon())
+
+                    for index in (1, 2):
+                        stage_box["value"] = f"source-{index}-setup-epoch"
+                        current = list(current)
+                        current[index] = _session_state(
+                            configurations[index], lifecycle="warming", baseline=False
+                        )
+                        reader.replace(current, priority=True)
+                        source_id = configurations[index]["id"]
+                        await wait_for(
+                            lambda app=app, reader=reader, source_id=source_id: (
+                                reader.is_current(app._projection)
+                                and any(
+                                    item["id"] == source_id
+                                    and item["health"] == "warming"
+                                    for item in app._report.get("sources", ())
+                                )
+                            ),
+                            f"source {index} setup epoch was not projected",
+                        )
+                        await pilot.pause(0.04)
+
+                        stage_box["value"] = f"source-{index}-baseline"
+                        current[index] = ready(index)
+                        reader.replace(current, priority=False)
+                        expected = f"Fictional {('alpha', 'beta', 'gamma')[index]}"
+                        await wait_for(
+                            lambda frames=frames, expected=expected: any(
+                                expected in frame["text"] for frame in frames
+                            ),
+                            f"source {index} baseline did not paint",
+                        )
+
+                    for name in ("alpha", "beta", "gamma"):
+                        self.assertIn(f"Fictional {name}", frames[-1]["text"])
+                    seen_alpha = False
+                    observed_setup = set()
+                    for frame in frames:
+                        if "Fictional alpha" in frame["text"]:
+                            seen_alpha = True
+                        if frame["stage"].endswith("setup-epoch") and seen_alpha:
+                            observed_setup.add(frame["stage"])
+                        if seen_alpha:
+                            self.assertTrue(
+                                frame["content_displayed"],
+                                f"content hidden at {width} columns during {frame['stage']}",
+                            )
+                            self.assertIn(
+                                "Fictional alpha",
+                                frame["text"],
+                                f"healthy alpha row missing at {width} columns during {frame['stage']}",
+                            )
+                    self.assertEqual(
+                        observed_setup,
+                        {"source-1-setup-epoch", "source-2-setup-epoch"},
+                    )
+                    for setup_stage in observed_setup:
+                        setup_frames = [
+                            frame for frame in frames if frame["stage"] == setup_stage
+                        ]
+                        self.assertTrue(
+                            any(
+                                "Sources 3" in frame["text"]
+                                and "warming" in frame["text"].lower()
+                                for frame in setup_frames
+                            ),
+                            f"source health or denominator missing during {setup_stage}",
+                        )
+
+    async def test_priority_baseline_page_shift_keeps_selected_admitted_row_visible(self):
+        source_alpha = source("fixture-alpha", host="fixture-alpha")
+        source_beta = source("fixture-beta", host="fixture-beta", home="second")
+        alpha_rows = [
+            row(f"alpha-{index}", title=f"Alpha{index}", host="fixture-alpha")
+            for index in range(12)
+        ]
+        for item in alpha_rows:
+            item["activity"]["at"] = 950
+        beta_state = _session_state(source_beta, lifecycle="warming", baseline=False)
+        reader = FakeReader(
+            [
+                _session_state(
+                    source_alpha,
+                    rows=alpha_rows,
+                    ids=[item["identity"]["nativeId"] for item in alpha_rows],
+                ),
+                beta_state,
+            ]
+        )
+        app = DashboardApp(reader, {}, no_color=True)
+        frames = []
+        stage = {"value": "initial"}
+        original_display = app._display
+
+        def capture_display(self, screen, renderable, *, frames=frames, stage=stage):
+            if renderable is not None and not self._batch_count:
+                text = "\n".join(
+                    "".join(segment.text for segment in strip)
+                    for strip in screen._compositor.render_strips()
+                )
+                frames.append(
+                    {
+                        "stage": stage["value"],
+                        "text": text,
+                        "content_displayed": self._content.display,
+                    }
+                )
+            return original_display(screen, renderable)
+
+        app._display = MethodType(capture_display, app)
+
+        async with app.run_test(size=(106, 12)) as pilot:
+            async def wait_for(predicate, message):
+                for _ in range(100):
+                    if predicate():
+                        return
+                    await pilot.pause(0.02)
+                self.fail(message)
+
+            await wait_for(
+                lambda: any("Alpha0" in frame["text"] for frame in frames),
+                "initial selected row did not paint",
+            )
+            self.assertEqual(app._selected_label, "Alpha0")
+            self.assertEqual(app._page_size(), 6)
+            selected_key = app._selected_key
+            selected_identity = dict(app._selected_identity)
+
+            page_size = app._page_size()
+            beta_rows = [
+                row(f"beta-{index}", title=f"Beta{index}", host="fixture-beta")
+                for index in range(page_size - 1)
+            ]
+            for item in beta_rows:
+                item["activity"]["at"] = 960
+            stage["value"] = "coalesced-setup-and-baseline"
+            # One priority revision models setup epoch and baseline admission
+            # coalesced into the same dirty notification.
+            reader.replace(
+                [
+                    _session_state(
+                        source_alpha,
+                        rows=alpha_rows,
+                        ids=[item["identity"]["nativeId"] for item in alpha_rows],
+                    ),
+                    _session_state(
+                        source_beta,
+                        rows=beta_rows,
+                        ids=[item["identity"]["nativeId"] for item in beta_rows],
+                    ),
+                ],
+                priority=True,
+            )
+            await wait_for(
+                lambda: (
+                    reader.is_current(app._projection)
+                    and all(
+                        f"Beta{index}" in " ".join(_widget_text(app.query_one("#content")))
+                        for index in range(page_size - 1)
+                    )
+                ),
+                "new source baseline rows did not reach the dashboard",
+            )
+            await pilot.pause()
+
+            self.assertTrue(app.query_one("#content").display)
+            self.assertEqual(app._selected_key, selected_key)
+            self.assertEqual(app._selected_identity, selected_identity)
+            self.assertEqual(app._selected_label, "Alpha0")
+            self.assertTrue(app._selection_available)
+            self.assertIn(selected_key, {app._row_key(item) for item in app._visible_rows})
+            self.assertIn(selected_key, {app._row_key(item) for item in app._page_rows})
+            self.assertTrue(any(f"Beta{page_size - 2}" in frame["text"] for frame in frames))
+
+            seen_alpha = False
+            for frame in frames:
+                if "Alpha0" in frame["text"]:
+                    seen_alpha = True
+                if seen_alpha:
+                    self.assertTrue(frame["content_displayed"])
+                    self.assertIn("Alpha0", frame["text"])
+
+    async def test_revocation_during_delayed_staging_hides_old_rows_and_recovers_sibling(self):
+        source_alpha = source("route-alpha", host="alpha-host")
+        source_beta = source("route-beta", host="beta-host", home="second")
+        for width in (106, 80, 40):
+            with self.subTest(width=width):
+                alpha = row("alpha", title="Alpha current", host="alpha-host")
+                beta = row("beta", title="Beta current", host="beta-host")
+                reader = FakeReader(
+                    [
+                        _session_state(source_alpha, rows=[alpha], ids=["alpha"]),
+                        _session_state(source_beta, rows=[beta], ids=["beta"]),
+                    ]
+                )
+                app = DashboardApp(reader, {})
+
+                async with app.run_test(size=(width, 24)) as pilot:
+                    await pilot.pause()
+                    container = app.query_one("#content")
+                    original_mount = container.mount
+                    mount_started = asyncio.Event()
+                    release_mount = asyncio.Event()
+
+                    async def delayed_mount(
+                        *children,
+                        mount_started=mount_started,
+                        release_mount=release_mount,
+                        original_mount=original_mount,
+                        **kwargs,
+                    ):
+                        mount_started.set()
+                        await release_mount.wait()
+                        return await original_mount(*children, **kwargs)
+
+                    container.mount = delayed_mount
+                    alpha_refreshed = row("alpha", title="Alpha refreshed", host="alpha-host")
+                    row_delta = row("charlie", title="Beta addition", host="beta-host")
+                    reader.replace(
+                        [
+                            _session_state(
+                                source_alpha, rows=[alpha_refreshed], ids=["alpha"]
+                            ),
+                            _session_state(
+                                source_beta, rows=[beta, row_delta], ids=["beta", "charlie"]
+                            ),
+                        ],
+                        priority=False,
+                    )
+                    paint_task = asyncio.create_task(app._paint())
+                    try:
+                        await asyncio.wait_for(mount_started.wait(), 1)
+                        self.assertTrue(container.display)
+                        row_ids = {key[-1] for key in app._visible_row_widgets}
+                        self.assertIn("beta", row_ids)
+                        if width >= 100:
+                            self.assertIn("Alpha refreshed", " ".join(_widget_text(container)))
+                            self.assertNotIn("Alpha current", " ".join(_widget_text(container)))
+                            self.assertIn("alpha", row_ids)
+                        else:
+                            # A compound card is hidden if its admitted facts
+                            # changed; the unchanged sibling stays visible.
+                            self.assertNotIn("alpha", row_ids)
+                            self.assertIn("Beta current", " ".join(_widget_text(container)))
+
+                        reader.replace(
+                            [
+                                _session_state(
+                                    source_alpha, lifecycle="failed", baseline=False
+                                ),
+                                _session_state(
+                                    source_beta,
+                                    rows=[beta, row_delta],
+                                    ids=["beta", "charlie"],
+                                ),
+                            ],
+                            priority=True,
+                        )
+                        for _ in range(100):
+                            if (
+                                app._projection is not None
+                                and reader.is_current(app._projection)
+                                and app._projection.revision == reader.revision
+                            ):
+                                break
+                            await asyncio.sleep(0.01)
+                        row_ids = {key[-1] for key in app._visible_row_widgets}
+                        self.assertNotIn("alpha", row_ids)
+                        current_ids = [row["identity"]["nativeId"] for row in app._all_rows]
+                        self.assertNotIn("alpha", current_ids)
+                        self.assertIn("beta", current_ids)
+                        if width >= 100:
+                            self.assertFalse(container.display)
+                        else:
+                            self.assertTrue(container.display)
+                            self.assertIn("beta", row_ids)
+                            self.assertIn("Beta current", " ".join(_widget_text(container)))
+                    finally:
+                        release_mount.set()
+
+                    await asyncio.wait_for(paint_task, 2)
+                    container.mount = original_mount
+                    for _ in range(100):
+                        visible = "\n".join(
+                            "".join(segment.text for segment in strip)
+                            for strip in app.screen._compositor.render_strips()
+                        )
+                        if container.display and "Beta current" in visible and "Beta addition" in visible:
+                            break
+                        await pilot.pause(0.02)
+                    self.assertTrue(container.display)
+                    await pilot.pause()
+                    visible = "\n".join(
+                        "".join(segment.text for segment in strip)
+                        for strip in app.screen._compositor.render_strips()
+                    )
+                    self.assertNotIn("Alpha refreshed", visible)
+                    self.assertNotIn("Alpha current", visible)
+                    self.assertIn("Beta current", visible)
+                    self.assertIn("Beta addition", visible)
+
     async def test_sync_stop_blocks_reader_wakeup_and_async_stop_still_joins_tasks(self):
         reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
         app = DashboardApp(reader, {})
@@ -282,7 +657,12 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
             await app._paint()
             self.assertEqual(app._line_widgets, {})
             self.assertIsNone(app._content_signature_value)
+            self.assertFalse(app.query_one("#content").display)
+            await pilot.pause()
             self.assertTrue(app.query_one("#content").display)
+            self.assertNotIn(
+                "Fixture session", " ".join(_widget_text(app.query_one("#content")))
+            )
 
     async def test_revoked_generation_bypasses_an_existing_cosmetic_timer(self):
         reader = FakeReader([_session_state(rows=[row("alpha")], ids=["alpha"])])
@@ -986,7 +1366,7 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
 
         async with app.run_test(size=(60, 24)) as pilot:
             await pilot.pause()
-            for width in (60, 80, 109):
+            for width in (60, 80, 99):
                 await pilot.resize_terminal(width, 24)
                 await pilot.pause()
                 self.assertEqual(app._layout_mode(), "compact")
@@ -1028,6 +1408,35 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
                         age_cell.content.plain.rfind(refreshed) + len(refreshed),
                         age_cell.region.width,
                     )
+
+    async def test_100_column_table_survives_resize_with_qualified_status_and_exact_selection(self):
+        active = row("boundary-active", title="Long title " + "界" * 40)
+        unavailable = row("boundary-unavailable", title="Boundary task")
+        unavailable["runtime"].update(value="unknown", health="unavailable", reason="read_unavailable")
+        unavailable["activity"].update(at=None, health="unavailable", reason="read_unavailable")
+        app = DashboardApp(
+            FakeReader([_session_state(rows=[active, unavailable], ids=["boundary-active", "boundary-unavailable"])]),
+            {},
+            icons=True,
+        )
+        async with app.run_test(size=(99, 24)) as pilot:
+            await pilot.pause()
+            await pilot.press("end")
+            selected = app._selected_key
+            for width, height, mode in ((99, 24, "compact"), (100, 24, "full"), (106, 75, "full"), (100, 16, "full"), (99, 16, "compact")):
+                await pilot.resize_terminal(width, height)
+                await pilot.pause()
+                self.assertEqual(app._layout_mode(), mode)
+                self.assertEqual(app._selected_key, selected)
+                self.assertIn(selected, {app._row_key(item) for item in app._page_rows})
+                self.assertEqual(app._report["totals"]["selectedSources"], 1)
+                if mode == "full":
+                    self.assertLessEqual(2 + sum(app._column_widths(width - 4)), width - 4)
+                    line = app._line_widgets[selected]
+                    self.assertEqual(line._cell_values[1], "× Unavailable")
+                    self.assertEqual(line._cell_values[2], "Unavailable")
+                    self.assertEqual(line.content.plain.count("Unavailable"), 2)
+                    self.assertLessEqual(line.content.cell_len, line.region.width)
 
     async def test_small_card_keeps_full_unavailable_status_and_age_at_32_columns(self):
         item = row("small-unavailable", title="Small card")

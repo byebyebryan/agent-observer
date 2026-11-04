@@ -123,17 +123,24 @@ and resize. A hidden selection stays pinned. If evidence leaves the projection,
 only its identity and sanitized label remain, marked unavailable; old runtime
 facts are discarded. A background update does not choose a neighboring row.
 
-The dashboard chooses list rows by terminal columns,
-independent of height: 110 columns and wider use the four-cell table; 60–109
+Current source chooses list rows by terminal columns,
+independent of height: 100 columns and wider use the four-cell table; 60–99
 columns use two-line session rows; 32–59 columns use four-line cards. Below 32
 columns or 12 rows, the app shows resize guidance with live source health and
 help/quit. Height changes chrome and page capacity without switching a wide
-terminal to compact rows, so 120x16 keeps the full table. The source ribbon
+terminal to compact rows, so 120x16 keeps the full table. This 100-column
+breakpoint is unreleased; published a17 switches at 110 columns. The source ribbon
 retains the source denominator and explicit health, including partial, stale
 and unavailable states. Narrow footers use short key labels; `?` retains the
 full meanings. Details, source evidence and filter choices wrap and scroll in
 the content area, without horizontal list scrolling. Opening/closing panels
 does not restart subscriptions.
+
+Current source also smooths list updates: visible current rows remain while another
+empty source warms or adds its baseline. Health and the watched-source
+denominator update as each source changes. Changed or expired row facts are
+refreshed or withdrawn before the dashboard waits for widget work. This rendering
+refinement is unreleased alongside the 100-column breakpoint.
 
 These breakpoints refer to terminal columns and rows. Their fit in a particular
 pixel-sized window depends on its emulator and font and remains a human visual

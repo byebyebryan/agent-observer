@@ -12,6 +12,8 @@ from pathlib import PurePosixPath
 
 from .layout import layout_mode, medium_columns
 from .model import sort_rows
+from .status import qualified_fact_state
+from .status import status_text as _status_text
 
 _SGR = re.compile(r"\x1b\[[0-9;]*m")
 _DARK_PROFILE_FAMILIES = (
@@ -301,37 +303,6 @@ def _activity_text(session: dict, now_ms: int) -> str:
     return f"approx. {quantity}{unit} ago"
 
 
-def _qualified_fact_state(fact: object) -> str:
-    if type(fact) is not dict:
-        return "Unknown"
-    health = fact.get("health")
-    if health == "stale":
-        return "Stale"
-    if health == "unavailable":
-        return "Unavailable"
-    return "Unknown"
-
-
-def _status_text(row: dict) -> str:
-    """Conservative human status from current runtime and phase facts only."""
-    runtime = row.get("runtime")
-    if type(runtime) is not dict or runtime.get("health") != "current":
-        return _qualified_fact_state(runtime)
-    if runtime.get("value") == "parked":
-        return "Inactive"
-    if runtime.get("value") != "running":
-        return "Unknown"
-
-    phase = row.get("phase")
-    if type(phase) is not dict or phase.get("health") != "current":
-        return _qualified_fact_state(phase)
-    return {
-        "working": "Working",
-        "waiting": "Ready",
-        "blocked": "Blocked",
-    }.get(phase.get("value"), "Unknown")
-
-
 def _status_label(value: str, icons: bool = False) -> str:
     if not icons:
         return value
@@ -352,7 +323,7 @@ def _last_active_text(row: dict, now_ms: int) -> str:
     if type(activity) is not dict:
         return "Unknown"
     if activity.get("health") != "current" or type(activity.get("at")) is not int:
-        return _qualified_fact_state(activity)
+        return qualified_fact_state(activity)
     text = _activity_text(row, now_ms)
     if text == "clock ahead":
         return "Clock ahead"
@@ -543,14 +514,22 @@ def _rows(report: dict) -> list[dict]:
 
 def _overview_header(report: dict, enabled: bool, icons: bool) -> list[str]:
     totals = report["totals"]
-    count = totals["members"]
-    counts = [_style(f"{count} session{'s' if count != 1 else ''}", "1", enabled)]
-    if totals["uncertain"]:
-        counts.append(_style(f"{totals['uncertain']} uncertain", "33", enabled))
-    if totals["nonmembers"]:
-        counts.append(_style(f"{totals['nonmembers']} known nonmembers", "2", enabled))
     brand = "◈ Agent Observer" if icons else "Agent Observer"
-    lines = [_style(brand, "1;36", enabled) + "   " + " · ".join(counts)]
+    total = f"{totals['members']} session{'s' if totals['members'] != 1 else ''} total"
+    lines = [_style(brand, "1;36", enabled) + "   " + _style(total, "1", enabled)]
+    lines.append(
+        _style("Rows: ", "2", enabled)
+        + _style(f"{totals['shown']} shown / {totals['displayedMatches']} matching", "1", enabled)
+    )
+    other_outcomes = []
+    if totals["uncertain"]:
+        other_outcomes.append(f"{totals['uncertain']} uncertain")
+    if totals["nonmembers"]:
+        other_outcomes.append(f"{totals['nonmembers']} known nonmembers")
+    if totals["hiddenKinds"]:
+        other_outcomes.append(f"{totals['hiddenKinds']} hidden child/system")
+    if other_outcomes:
+        lines.append(_style("Other outcomes: ", "2", enabled) + "; ".join(other_outcomes))
     coverage = [f"{totals['completeSources']}/{totals['selectedSources']} sources complete"]
     if totals["partialSources"]:
         coverage.append(f"{totals['partialSources']} partial/stale/warming")
@@ -578,13 +557,11 @@ def _overview_header(report: dict, enabled: bool, icons: bool) -> list[str]:
         if source["health"] != "complete"
     )
     selectors = []
-    for name in ("membership", "runtime", "phase", "query"):
-        if report["filters"][name]:
+    for name in ("membership", "runtime", "phase", "status", "query"):
+        if report["filters"].get(name):
             selectors.append(f"{name}=" + ", ".join(report["filters"][name]))
     if selectors:
         lines.append(_style("Filters: ", "2", enabled) + "; ".join(selectors))
-    if totals["hiddenKinds"]:
-        lines.append(_style(f"Hidden: {totals['hiddenKinds']} child/system sessions", "2", enabled))
     return lines
 
 
@@ -643,6 +620,11 @@ def _main_column_widths(
     widths = list(_MIN_COLUMN_WIDTHS)
     widths[0] = _status_age_width(rows, now_ms, icons)
     spare = width - sum(widths) - 2 * (len(widths) - 1)
+    if spare < 0:
+        # Keep full status/age qualifiers and the title budget at the table
+        # boundary; let workspace context yield a little width first.
+        widths[3] = max(16, widths[3] + spare)
+        spare = width - sum(widths) - 2 * (len(widths) - 1)
     if spare < 0:
         return None
     # Keep metadata on stable budgets and give all remaining width to names.
@@ -896,7 +878,6 @@ def _details(row: dict, report: dict) -> list[str]:
     ident = row["identity"]
     source = row["source"]
     output = [
-        f"{row.get('label', 'Codex ' + ident['nativeId'])}",
         f"Source: {source['id']} ({source['host']}/{source['label']}; home={source['home']}; Mesh={source['meshSource']})",
         f"Membership: {row['membership']}",
         "Identity: "
@@ -938,6 +919,16 @@ def _details(row: dict, report: dict) -> list[str]:
             f"Workspace metadata: {details['workspaceHealth']} "
             f"(reason={details.get('workspaceReason') or 'none'})"
         )
+    repository = details.get("repo")
+    if type(repository) is dict:
+        output.append(
+            "Repository: "
+            + ", ".join(
+                f"{name}={repository[name]}"
+                for name in ("root", "commonDir", "relativePath")
+                if repository.get(name) is not None
+            )
+        )
     if details.get("metadataIssues"):
         output.append("Metadata issues: " + ", ".join(details["metadataIssues"]))
     if details.get("blockedReasons"):
@@ -967,18 +958,90 @@ def _details(row: dict, report: dict) -> list[str]:
         f"Receiving clock: {report['clock']['bootId']} {report['clock']['timeNamespace']} "
         f"now={report['clock']['nowBoottimeMs']}"
     )
-    source_info = next((item for item in report["sources"] if item["id"] == source["id"]), None)
-    if source_info:
-        output.append(
-            f"Source health: {source_info['health']}; reasons={', '.join(source_info['reasons']) or 'none'}"
-        )
-        for scope in source_info["scopes"]:
-            output.append(
-                f"Scope: {scope['host']}/{scope['provider']}/{scope['namespace']} "
-                f"coverage={scope['coverage']['status']} reason={scope['coverage']['reason'] or 'none'} "
-                f"expires={scope['coverage']['expiresAtBoottimeMs'] or 'unknown'}"
-            )
     return output
+
+
+def _show_summary(
+    row: dict,
+    report: dict,
+    enabled: bool,
+    icons: bool,
+    light: bool,
+) -> list[str]:
+    membership = row.get("membership")
+    now_ms = _wall_now_ms(report)
+    status = _status_label(_status_text(row), icons)
+    status = _cell_style(status, "status", enabled)
+    activity = _activity_text(row, _wall_now_ms(report))
+    activity = _cell_style(
+        activity,
+        "last_active",
+        enabled,
+        activity_code=_activity_color(row, now_ms, light=light)[0],
+    )
+    if membership in {"uncertain", "nonmember"}:
+        status_line = f"Membership: {membership} · Status: {status} (not established by membership) · Activity: {activity}"
+    else:
+        status_line = f"Status: {status} · Activity: {activity}"
+    return [
+        _style(_session_title(row), "1;36", enabled),
+        status_line,
+        f"Profile: {_profile_ansi(row, enabled, light=light)}",
+        "Workspace: "
+        + _cell_style(
+            _workspace_text(row),
+            "workspace",
+            enabled,
+            workspace_code=_workspace_color(row, light=light)[0],
+        ),
+        f"ID: {row['identity']['nativeId']}",
+    ]
+
+
+def _source_diagnostics(report: dict, enabled: bool, icons: bool) -> list[str]:
+    lines = ["Source diagnostics:"]
+    for source in report["sources"]:
+        lines.append(_source_line(source, enabled, verbose=True, icons=icons))
+        lines.append(
+            f"  Binding: id={source['id']} host={source['host']} home={source['home']} "
+            f"label={source['label']} meshSource={source['meshSource']} scope={source['scope']} "
+            f"expectedNamespace={source['expectedNamespace']} "
+            f"observedNamespace={source.get('observedNamespace') or 'unknown'}"
+        )
+        reasons = list(source.get("reasons", ()))
+        if source.get("reason") and source["reason"] not in reasons:
+            reasons.insert(0, source["reason"])
+        if source.get("deliveryError") and source["deliveryError"] not in reasons:
+            reasons.insert(0, source["deliveryError"])
+        lines.append(
+            f"  Health: {source['health']}; delivery={source['delivery']}; "
+            f"reason={source.get('reason') or 'none'}; reasons={','.join(reasons) or 'none'}"
+        )
+        clock = source.get("clock")
+        if type(clock) is dict:
+            lines.append(
+                f"  Source clock: {clock.get('kind') or 'unknown'} "
+                f"bootId={clock.get('bootId') or 'unknown'} "
+                f"timeNamespace={clock.get('timeNamespace') or 'unknown'} "
+                f"clockDomain={clock.get('clockDomain') or 'unknown'}"
+            )
+        last_frame = source.get("lastFrameBoottimeMs")
+        capture = source.get("captureBoottimeMs")
+        lines.append(
+            "  Frame/capture CLOCK_BOOTTIME: "
+            f"lastFrame={last_frame if type(last_frame) is int else 'unknown'} "
+            f"capture={capture if type(capture) is int else 'unknown'}"
+        )
+        for scope in source.get("scopes", ()):
+            coverage = scope.get("coverage", {})
+            expiry = coverage.get("expiresAtBoottimeMs")
+            lines.append(
+                f"  Scope: {scope.get('host')}/{scope.get('provider')}/{scope.get('namespace')} "
+                f"coverage={coverage.get('status', 'unavailable')} "
+                f"reason={coverage.get('reason') or 'none'} "
+                f"expires={expiry if type(expiry) is int else 'unknown'}"
+            )
+    return lines
 
 
 def render(
@@ -994,7 +1057,7 @@ def render(
     """Render one report as safe ordinary terminal text without truncation."""
     lines = []
     totals = report["totals"]
-    if report.get("error"):
+    if mode != "show" and report.get("error"):
         lines.append(
             _style(
                 ("! " if icons else "")
@@ -1017,20 +1080,19 @@ def render(
         return _finish(lines, width)
 
     if mode == "show":
-        if report["result"] == "not_found":
-            lines.append("Exact identity was not in the fully observed selected projection.")
-        elif report["error"] and report["error"].get("code") == "target_unresolved":
-            lines.append("Exact identity membership is unresolved; selected coverage is degraded.")
         rows = _rows(report)
-        lines.extend(
-            _source_line(source, color, verbose=True, icons=icons) for source in report["sources"]
-        )
         if rows:
             row = rows[0]
+            lines.extend(_show_summary(row, report, color, icons, light))
+            lines.extend(("", "Diagnostics"))
+            if report.get("error"):
+                lines.append(
+                    f"Report {report['result']}: {report['error']['code']} - "
+                    f"{report['error']['message']}"
+                )
             if row.get("membership") in {"uncertain", "nonmember"}:
                 lines.extend(
                     (
-                        row.get("label", f"Codex {row['identity']['nativeId']}"),
                         f"Membership: {row['membership']}",
                         f"Reason: {row['reason']}",
                         f"Source: {row['source']['host']}/{row['source']['label']} ({row['source']['id']})",
@@ -1050,36 +1112,34 @@ def render(
                     )
                 )
             else:
-                details = _details(row, report)
-                details[0] = _style(details[0], "1;36", color)
-                lines.extend(details)
+                lines.extend(_details(row, report))
+        else:
+            if report["result"] == "not_found":
+                lines.append("Outcome: exact identity was not in the fully observed selected projection.")
+            else:
+                lines.append("Outcome: exact identity could not be resolved from current coverage.")
+            lines.extend(("", "Diagnostics"))
+            if report.get("error"):
+                lines.append(
+                    f"Report {report['result']}: {report['error']['code']} - "
+                    f"{report['error']['message']}"
+                )
+        lines.extend(("", *_source_diagnostics(report, color, icons)))
         return _finish(lines, width)
 
     lines.extend(_overview_header(report, color, icons))
-    if mode == "list":
-        lines.append(f"Matches: {totals['displayedMatches']}")
     lines.append("")
     if totals["state"] == "complete-empty":
-        lines.append("No qualifying members in complete current coverage.")
+        lines.append("Complete current coverage contains no session outcomes.")
     elif totals["members"] == 0 and totals["nonmembers"]:
-        lines.append(f"0 qualifying members; {totals['nonmembers']} known nonmembers.")
+        lines.append("No qualifying member rows; known nonmembers remain separately classified.")
     elif totals["displayedMatches"] == 0:
-        lines.append("0 matches; source health and unfiltered counts are shown above.")
+        lines.append("No rows match the filters; source health and unfiltered counts remain above.")
     rows = _rows(report)
     table = _overview_table if mode == "overview" else _session_table
     lines.extend(table(rows, _wall_now_ms(report), color, report["filters"]["group"], width, icons, light=light))
     if mode == "overview":
         lines.append("")
-        if totals["displayedMatches"] > totals["shown"]:
-            lines.append(
-                _style(
-                    f"Showing {totals['shown']} of {totals['displayedMatches']} matches.",
-                    "2",
-                    color,
-                )
-            )
-        elif rows and totals["displayedMatches"] != totals["members"] + totals["uncertain"]:
-            lines.append(f"{totals['displayedMatches']} matches in the selected sources.")
         lines.append(
             (_style("› ", "36", color) if icons else "")
             + _style("All rows, context and full IDs: ", "2", color)

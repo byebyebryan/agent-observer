@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from test_terminal_model import lease, read, report, row, source, state
 
+from agent_observer.terminal.model import enrich_repository_presentation
 from agent_observer.terminal.render import (
     _compact_cwd,
     _last_active_text,
@@ -127,11 +128,11 @@ class TerminalRenderTests(unittest.TestCase):
             [state(current_read=read(rows=[item], leases=[lease("layout-id")]))]
         )
 
-        widths = _main_column_widths(document["sessions"], 1_000, 110, False)
+        widths = _main_column_widths(document["sessions"], 1_000, 100, False)
         self.assertIsNotNone(widths)
         self.assertEqual(len(widths), 4)
         self.assertGreaterEqual(widths[1], 28)
-        full = render(document, mode="list", width=110)
+        full = render(document, mode="list", width=100)
         header = next(line for line in full.splitlines() if line.startswith("Status"))
         for left, right in zip(
             ("Status", "Session", "Profile"),
@@ -160,6 +161,27 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertEqual(stacked[title_index + 1], "fixture/default")
         self.assertIn("workspace", stacked[title_index + 2])
 
+    def test_full_table_fits_unavailable_status_and_age_at_100_columns(self):
+        item = row("boundary-id", title="Boundary task")
+        item["runtime"].update(value="unknown", health="unavailable", reason="read_unavailable")
+        item["activity"].update(at=None, health="unavailable", reason="read_unavailable")
+        document = report([state(current_read=read(rows=[item], leases=[lease("boundary-id")]))])
+
+        for width in (100, 106):
+            for icons in (False, True):
+                with self.subTest(width=width, icons=icons):
+                    text = render(document, width=width, icons=icons)
+                    heading = next(line for line in text.splitlines() if line.startswith("Status"))
+                    for field in ("Session", "Profile", "Workspace"):
+                        self.assertIn(field, heading)
+                    entry = next(line for line in text.splitlines() if "Boundary task" in line)
+                    self.assertEqual(entry.count("Unavailable"), 2)
+                    self.assertIn("fixture/default", entry)
+                    self.assertIn("workspace", entry)
+                    self.assertTrue(all(screen_width(line) <= width for line in text.splitlines()))
+                    colored = render(document, width=width, color=True, icons=icons)
+                    self.assertEqual(SGR.sub("", colored), text)
+
     def test_medium_grid_shares_column_edges_and_right_aligns_mixed_ages(self):
         active = row("medium-active", title="Active medium task")
         unavailable = row("medium-unavailable", title="Unavailable medium task")
@@ -176,7 +198,7 @@ class TerminalRenderTests(unittest.TestCase):
         )
 
         for mode in ("overview", "list"):
-            for width in (60, 80, 109):
+            for width in (60, 80, 99):
                 with self.subTest(mode=mode, width=width):
                     lines = render(document, mode=mode, width=width, icons=True).splitlines()
                     session_heading = next(
@@ -216,7 +238,7 @@ class TerminalRenderTests(unittest.TestCase):
                 )
             ]
         )
-        for width in (32, 40, 59, 60, 80, 109, 110, 120, 180):
+        for width in (32, 40, 59, 60, 80, 99, 100, 106, 110, 120, 180):
             for mode in ("overview", "list", "show", "sources"):
                 for color, icons in ((False, False), (True, True), (False, True)):
                     with self.subTest(width=width, mode=mode, color=color, icons=icons):
@@ -243,9 +265,10 @@ class TerminalRenderTests(unittest.TestCase):
         ]
         document = report(states, mode="overview")
         text = render(document, width=120)
-        self.assertIn("12 sessions", text)
+        self.assertIn("12 sessions total", text)
+        self.assertIn("10 shown / 12 matching", text)
         self.assertIn("1/1 sources complete", text)
-        self.assertIn("Showing 10 of 12 matches.", text)
+        self.assertNotIn("Showing 10 of 12", text)
         for member in document["sessions"]:
             matching = [
                 line
@@ -275,6 +298,89 @@ class TerminalRenderTests(unittest.TestCase):
         self.assertEqual(_status_label("Blocked", True), "! Blocked")
         self.assertEqual(_status_label("Unavailable", True), "× Unavailable")
 
+    def test_show_leads_with_human_summary_then_keeps_full_diagnostics_and_source_health(self):
+        member = row("show-full-thread-id", title="Review the renderer rollout")
+        member["cwd"] = "/home/remote-user/worktrees/topic/src"
+        member["workspace"]["repo"] = {
+            "root": "/synthetic/worktrees/topic",
+            "commonDir": "/synthetic/repositories/shared.git",
+            "relativePath": "src",
+        }
+        healthy_state = state(
+            current_read=read(rows=[member], leases=[lease("show-full-thread-id")])
+        )
+        failed_state = state(
+            source("offline-work", host="offline", home="work"),
+            current_read=None,
+            lifecycle="failed",
+            baseline=False,
+            reason="transport_failure",
+        )
+        document = report(
+            [healthy_state, failed_state], mode="show", target="show-full-thread-id"
+        )
+        enrich_repository_presentation(document, [healthy_state, failed_state], now_boottime_ms=1_000)
+
+        plain = render(document, mode="show")
+        lines = plain.splitlines()
+        divider = lines.index("Diagnostics")
+        self.assertEqual(lines[0], "Review the renderer rollout")
+        self.assertIn("Status: Working · Activity: approx.", lines[1])
+        self.assertIn("ago", lines[1])
+        self.assertEqual(lines[2], "Profile: fixture/default")
+        self.assertEqual(lines[3], "Workspace: topic")
+        self.assertEqual(lines[4], "ID: show-full-thread-id")
+        self.assertLess(4, divider)
+        self.assertIn("Identity: fixture/codex/" + "sha256:" + "a" * 64 + "/thread_id/show-full-thread-id", plain)
+        self.assertIn("Runtime: running (current; reason=native)", plain)
+        self.assertIn("Phase: working (current; reason=native)", plain)
+        self.assertIn("Path: /home/remote-user/worktrees/topic/src", plain)
+        self.assertIn("Repository: root=/synthetic/worktrees/topic", plain)
+        self.assertIn("Field leases (receiving CLOCK_BOOTTIME):", plain)
+        self.assertIn("Source diagnostics:", plain)
+        self.assertIn("Binding: id=fixture-default host=fixture home=default", plain)
+        self.assertIn("Source clock: CLOCK_BOOTTIME bootId=fixture-boot", plain)
+        self.assertIn("Frame/capture CLOCK_BOOTTIME: lastFrame=1000 capture=1000", plain)
+        self.assertIn("Scope: fixture/codex/sha256:", plain)
+        self.assertIn("offline/Work [offline-work]: unavailable", plain)
+        self.assertIn("reason=transport_failure", plain)
+        self.assertNotIn("\x1b", plain)
+
+        styled = render(document, mode="show", color=True, icons=True, width=120)
+        self.assertIn("\x1b[1;36mReview the renderer rollout\x1b[0m", styled)
+        self.assertIn("\x1b[32m● Working\x1b[0m", styled)
+        self.assertEqual(SGR.sub("", styled), render(document, mode="show", icons=True, width=120))
+
+        for width in (32, 60, 80, 110, 120):
+            with self.subTest(width=width):
+                wrapped = render(document, mode="show", width=width)
+                self.assertTrue(all(screen_width(line) <= width for line in wrapped.splitlines()))
+                self.assertIn("show-full-thread-id", wrapped)
+
+    def test_unresolved_show_qualifies_membership_and_never_invents_runtime_status(self):
+        unresolved = read(
+            uncertain=[
+                {
+                    "identity": row("unresolved-thread")["identity"],
+                    "reason": "membership_unresolved",
+                }
+            ]
+        )
+        document = report(
+            [state(current_read=unresolved)], mode="show", target="unresolved-thread"
+        )
+        text = render(document, mode="show", width=80)
+        summary = text.split("Diagnostics", maxsplit=1)[0]
+        self.assertIn("Membership: uncertain · Status: Unknown (not established by membership)", summary)
+        self.assertIn("Profile: fixture/default", summary)
+        self.assertIn("Workspace: unknown", summary)
+        self.assertIn("ID: unresolved-thread", summary)
+        self.assertNotIn("Working", summary)
+        self.assertNotIn("Inactive", summary)
+        self.assertIn("Reason: membership_unresolved", text)
+        self.assertIn("Source diagnostics:", text)
+        self.assertIn("fixture/Default", text)
+
     def test_filtered_overview_keeps_failed_source_and_unfiltered_counts_visible(self):
         states = [
             state(current_read=read(rows=[row("healthy-id")], leases=[lease("healthy-id")])),
@@ -287,12 +393,31 @@ class TerminalRenderTests(unittest.TestCase):
         ]
         document = report(states, mode="overview", filters={"query": ("no-match",)})
         text = render(document, width=80)
-        self.assertIn("1 session", text)
+        self.assertIn("1 session total", text)
+        self.assertIn("0 shown / 0 matching", text)
         self.assertIn("1/2 sources complete", text)
         self.assertIn("offline/Work: unavailable", text)
         self.assertIn("host transport is unavailable", text)
-        self.assertIn("0 matches", text)
+        self.assertIn("No rows match the filters", text)
         self.assertNotIn("complete current coverage", text)
+
+        complete_empty = render(
+            report([state(current_read=read())], mode="overview"), width=80
+        )
+        self.assertIn("Complete current coverage contains no session outcomes.", complete_empty)
+        known_nonmember = read(
+            nonmembers=[
+                {
+                    "identity": row("known-nonmember")["identity"],
+                    "reason": "known_nonmember",
+                }
+            ]
+        )
+        nonmember_text = render(
+            report([state(current_read=known_nonmember)], mode="overview"), width=80
+        )
+        self.assertIn("No qualifying member rows; known nonmembers remain separately classified.", nonmember_text)
+        self.assertIn("1 known nonmembers", nonmember_text)
 
         stale_member = row("stale-id", title="Stale session")
         stale_member["runtime"].update(value="running", health="current")

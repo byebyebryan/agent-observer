@@ -164,11 +164,11 @@ class ProfileColorTests(unittest.TestCase):
 class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
     async def test_selected_compact_and_split_profile_cells_keep_the_same_color(self):
         app = DashboardApp(FakeReader(samples()), {"group": "host-home"})
-        async with app.run_test(size=(110, 24)) as pilot:
+        async with app.run_test(size=(100, 24)) as pilot:
             await pilot.pause()
 
             def check_full_rows():
-                widths = app._column_widths(106)
+                widths = app._column_widths(app.size.width - 4)
                 profile_offset = 2 + sum(widths[:2])
                 for item in app._all_rows:
                     widget = app._line_widgets[app._row_key(item)]
@@ -236,7 +236,7 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_rendered_selection_surface_is_single_layer_in_all_layouts_and_themes(self):
         layouts = (
-            (110, 24, False),
+            (100, 24, False),
             (80, 24, False),
             (60, 16, False),
             (40, 16, False),
@@ -282,7 +282,7 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
                             await pilot.pause()
 
                         key = app._selected_key
-                        full_table = size >= 110 and not split
+                        full_table = size >= 100 and not split
                         selected = (
                             app._line_widgets[key]
                             if full_table
@@ -469,7 +469,7 @@ class DashboardProfileColorTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_no_color_retains_colorless_cells_and_selection(self):
         app = DashboardApp(FakeReader(samples()), {}, no_color=True)
-        async with app.run_test(size=(110, 24)) as pilot:
+        async with app.run_test(size=(100, 24)) as pilot:
             await pilot.pause()
             offset = 2 + sum(app._column_widths(106)[:2])
             for item in app._all_rows:
