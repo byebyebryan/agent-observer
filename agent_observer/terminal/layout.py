@@ -20,6 +20,15 @@ def layout_mode(width: int, height: int | None = None) -> str:
     return "stacked"
 
 
+def dashboard_layout_mode(width: int, height: int | None = None) -> str:
+    """Choose the dashboard row shape without changing finite CLI breakpoints."""
+    if width < MIN_SESSION_WIDTH or (height is not None and height < MIN_SESSION_HEIGHT):
+        return "tiny"
+    if width >= TABLE_WIDTH:
+        return "full"
+    return "compact"
+
+
 def row_height(mode: str) -> int:
     """Return the number of terminal lines occupied by a session row."""
     return _ROW_HEIGHTS[mode]
@@ -28,6 +37,11 @@ def row_height(mode: str) -> int:
 def header_height(mode: str) -> int:
     """Return the number of column-heading lines for a row arrangement."""
     return _HEADER_HEIGHTS[mode]
+
+
+def dashboard_header_height(mode: str) -> int:
+    """Return dashboard-only heading height for its current row arrangements."""
+    return 1 if mode == "full" else 0
 
 
 def medium_columns(

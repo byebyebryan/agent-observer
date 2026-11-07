@@ -82,17 +82,19 @@ in [architecture](docs/reference/architecture.md) and [roadmap](docs/maintenance
 
 ## Releases and operation
 
-[0.7.0a18](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
-clarifies overview counts, adds qualified `sessions --status` filters and leads
-exact-session details with status/activity, profile, workspace and full ID.
-Human workspace labels reuse current cached repository metadata. The dashboard
-uses four columns from 100 terminal columns and keeps healthy rows visible while
-other sources warm or deliver a baseline. Expiry, source health and exact
-selection remain authoritative. Default terminal JSON v1 is unchanged; supplying
-CLI `--status` adds only the optional `filters.status` field. API 4,
-snapshot/watch 6, Service 4 and working-set v1 are unchanged.
-Working-set uses its own version-1 interfaces and paired Mesh a25 support.
-Use [operations](docs/maintenance/operations.md) for release provenance and managed selections.
-Installing source does not change deployed pins or accept a dashboard/device.
+[0.7.0a19](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a19)
+refines the dashboard's session hierarchy. At 32–99 terminal columns, each row
+places its status icon, bold title and complete activity age above indented
+italic profile/workspace context. A fixed profile field aligns workspaces; the
+softer dashboard palette preserves host/profile and repository/directory cues.
+The four-column view starts at 100 columns. Exact selection, pins, source health,
+quiet expiry and staged list replacement retain their existing semantics.
+
+Finite CLI output, terminal JSON v1, API 4, snapshot/watch 6, Service 4 and
+working-set v1 are unchanged. Working-set retains paired Mesh a25 support;
+Textual 8.2.8 and producer selections remain independent. Use
+[operations](docs/maintenance/operations.md) for release provenance and managed
+selections. Installing source does not change deployed pins or accept a
+physical dashboard/device.
 
 Current guides are organized in the [documentation index](docs/README.md).

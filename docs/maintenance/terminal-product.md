@@ -71,13 +71,16 @@ than choosing by arrival order. Native observation semantics remain in
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. It uses
-width-only list modes: at 100 columns and wider it shows the full
-four-cell Status / age, Session, Profile and Workspace table; 60–99 columns use
-two-line session rows with one shared left/right boundary for both rows and all
-entries on the page; 32–59 columns use four-line cards. Below 32 columns or
-12 rows it shows resize guidance with live source health and help/quit. Height
-reduces chrome and page capacity but does not compact a wide table.
+The dashboard initially shows the full list with details closed. The current
+source preview has a dashboard-only row refinement, not included in the
+published a18 wheel. At 100 columns and wider it keeps the full four-cell
+Status / age, Session, Profile and Workspace table. At 32–99 columns each entry
+uses exactly two lines: a selection/pin marker, qualified status, truncated
+title and full activity age on the first line, then profile and workspace on
+the second. Age labels can grow on their row while the title start and age
+right edge stay fixed. Below 32 columns or 12 rows it shows resize guidance
+with live source health and help/quit. Height reduces chrome and page capacity
+but does not compact a wide table.
 Enter opens split details at 120x30 or larger, otherwise a separate view.
 Source health remains visible with its denominator in the main view, panels and
 filtered states. Detail paths, source evidence and filter choices wrap and
@@ -196,7 +199,7 @@ or visible revocation; record that distinction explicitly.
 | UI/state | At most four cosmetic paints/second, one age update/second and 200 materialized list rows/page. A replacement may prepare one hidden page alongside the current page; paint generations do not accumulate. Filtering/counts span all admitted outcomes. One pending read/source; bounded latest state, no event history or session disk cache. |
 | Output | At most 512 KiB pending encoded output and per accepted write; fail after two seconds without drain progress. No blocked event-loop queue put or unbounded writer join. |
 | Normal resource profile | Three sources x100 identities, draining 120x40 terminal, two-minute warmup and 30 measured minutes. Client plus owned children <=5% of one core and <=192 MiB RSS; report producer/sampler cost separately. |
-| Interaction | Normal key/resize-to-visible p95 <=100 ms; admitted-update-to-visible p95 <=250 ms at its recorded boundary. Exercise 120x30 and 120x16 full tables, 80x24 compact rows, 60x16 compact rows, 40x12 and 32x12 stacked cards, and guidance below 32 columns or 12 rows. Pixel-to-column fit depends on the emulator/font and remains a human visual check. |
+| Interaction | Normal key/resize-to-visible p95 <=100 ms; admitted-update-to-visible p95 <=250 ms at its recorded boundary. Exercise 120x30 and 120x16 full tables, 80x24 and 60x16 compact rows, 40x12 and 32x12 compact rows in the source refinement, and guidance below 32 columns or 12 rows. Pixel-to-column fit depends on the emulator/font and remains a human visual check. |
 | Recovery | Source/warming UI within 500 ms; controlled available baseline within five seconds of an attempt, plus start queue/backoff. Fresh baseline and healthy siblings required. Verify quiet expiry, receiving-clock changes, job control and 100 controlled disconnect/recovery cycles without resource growth. |
 | Shutdown | Terminal flags restored within two seconds and all owned cleanup joined within five. Preserve unrelated native sessions, services and processes. Measure delivered screen reset separately. |
 | Practical preview | Twenty-second installed-dashboard check over the actual configured cached fleet: current projection/counts/source health, clean quit and terminal restoration. Supplement with controlled update/input/expiry/recovery checks. This is not sustained-performance or native-accuracy proof. |
@@ -251,24 +254,37 @@ prompts, approvals and lifecycle. Native switching and its spike stay deferred.
 
 ### User-facing rows
 
-The main human CLI and dashboard rows use four cells: **Status / age,
-Session, Profile, Workspace**. Status and activity age are the scan targets;
-status and age share a cell with separate colors, and the session title receives
-flexible width. Profile and workspace are quieter
-context. At 100 columns and wider, dashboard and finite TTY output use the
-four-cell table. At 60–99 columns they use two-line rows with a shared column
-boundary: status/age and profile on the left, session and workspace on the
-right. The left fits complete status/age and useful profile context; the right
-gets the remaining width. At 60 columns the dashboard retains about 27 cells
-for the right column, including room for a pinned title. TUI cells ellipsize;
-full values remain in details. At 32–59 columns the dashboard and finite TTY
-output use four-line cards: status left and age right, full-width title, profile
-and workspace. Below 32 columns, finite text retains stacked rows with bounded
-wrapping; the dashboard shows a minimum-size guide. A non-TTY finite CLI has no
-known width and keeps its natural full-field layout. Section/group headings and
-all row lines count against the dashboard page budget; exact selection stays visible on resize. Breakpoints
-describe terminal cells, not a fixed pixel size; physical fit depends on the
-terminal emulator and font.
+Finite human CLI output keeps the shared width modes: at 100 columns and wider
+it uses the four-cell table; 60–99 columns use two-line rows with a shared
+left/right boundary; 32–59 columns use four-line cards; and below 32 columns it
+uses stacked text with bounded wrapping. A non-TTY finite CLI has no known
+width and keeps its natural full-field layout.
+
+The dashboard keeps the four-cell table at 100 columns and wider. In the
+current unpublished source preview, 32–99 columns use exactly two lines per
+entry. The first line shows selection and pin markers, then the qualified
+status, bold truncated title and complete right-aligned activity age. The
+second uses a six-cell indent, then a profile field sized to at most 12 cells
+and a left-aligned workspace. The workspace starts at the same column for every
+row in that list pane. This context line is italic and remains normal weight
+when selected, with the existing readable colors. With icons enabled, compact
+rows show only the status shape: `●` Working, `○` Ready, `!` Blocked, `-`
+Inactive, `?` Unknown,
+`~` Stale and `×` Unavailable. `--icons never` shows the full qualified status
+in that same geometry. The compact footer includes the selected row's full
+status when it fits, and `?` lists the symbol meanings.
+
+Compact ordinary ages reserve at least four cells on each row; qualified ages
+such as Clock ahead, Unknown or Unavailable get the width they need on that
+row. Their title truncates to fit while its left edge and the age's right edge
+remain fixed. Human dashboard row captions omit only the literal home id
+`default` (for example, `starship/default` becomes `starship`). Non-default
+profile names remain visible; details and selectors keep the full identity.
+Workspace uses the current cached repository root or reported directory as
+before. Below 32 columns, the dashboard shows a minimum-size guide. Section and
+group headings and row lines count against the dashboard page budget; exact
+selection stays visible on resize. Breakpoints describe terminal cells, not a
+fixed pixel size; physical fit depends on the terminal emulator and font.
 
 Finite `sessions show` leads with title, qualified Status and activity age,
 Profile, Workspace and full native ID. A diagnostics divider precedes raw
@@ -341,9 +357,11 @@ Profile is a user-facing caption for the configured home, displayed with its
 host to distinguish identical profile names. Configuration keys, selectors
 such as `--home`, exact namespaces and the saved `host-home` group value do not
 change. A five-family blue/violet/magenta palette hashes the exact host for its family;
-the exact home selects a bounded shade within that family. Host and home have
-separate spans. Colors stay consistent across row order, filters, selection and
-CLI/dashboard views; finite palette colors may repeat.
+the exact home selects a fixed shade within that family. Host and home have
+separate spans. Family and shade identity stay consistent across row order,
+filters and selection. The dashboard uses a fixed softer 50% palette variant;
+the finite CLI keeps its current palette, so the exact colors differ between
+those views. Finite palette colors may repeat.
 
 Workspace labels omit `repo`/`dir` prefixes: the dashboard
 shows the current cached repository/worktree name, otherwise compact reported
@@ -351,13 +369,16 @@ cwd, otherwise `unknown`. Reported `/home/<user>` prefixes display as `~`
 without consulting the viewing machine; full paths remain in details and JSON.
 The finite CLI uses its existing cwd metadata.
 Full repository/directory labels
-remain in details; no-color rows retain the workspace name/path. Workspace
-colors distinguish
-repo (`#55d7af` dark / `#005d49` light), directory (`#f0b56f` / `#804500`) and
-unknown (neutral `#a9b2bb` dark / `#4b535e` light). An expired repository falls
-back to reported cwd and uses directory styling. There is no filesystem or Git
-discovery. Full paths remain in details, cwd has no independent freshness lease
-and linked working-tree roots remain distinct.
+remain in details; no-color rows retain the workspace name/path.
+Dashboard workspace colors distinguish repo (`#a8d1bd` dark / `#315449` light),
+directory (`#dac19d` / `#624d30`) and unknown (`#bbc2ca` / `#464f5a`). For a
+directory label, the parent prefix through the last visible slash is neutral
+(`#b3bdc9` dark / `#404b59` light), and the final visible component keeps the
+directory color. The finite CLI retains its repo (`#55d7af` / `#005d49`),
+directory (`#f0b56f` / `#804500`) and unknown (`#a9b2bb` / `#4b535e`) colors.
+An expired repository falls back to reported cwd and uses directory styling.
+There is no filesystem or Git discovery. Full paths remain in details, cwd has
+no independent freshness lease and linked working-tree roots remain distinct.
 
 Colors supplement text: status keeps its green/cyan/amber/red semantics, the
 selected-row surface and marker stay neutral, and `?` shows a concise palette

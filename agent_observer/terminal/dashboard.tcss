@@ -10,9 +10,10 @@ Screen { background: $surface; color: $text; }
 .row.selected-row { background: $foreground 8%; text-style: bold; }
 .table-heading { color: $text-muted; text-style: bold; }
 .compact-row { height: 2; }
+.compact-row.selected-row { background: $foreground 8%; }
 .compact-row .row { background: transparent; }
-.stacked-row { height: 4; }
-.stacked-row .row { background: transparent; }
+.compact-row .compact-context { text-style: not bold; }
+.compact-row.selected-row .compact-context { text-style: not bold; }
 .cell { height: 1; padding: 0; margin: 0; overflow: hidden; text-wrap: nowrap; }
 .selected-row .cell { text-style: bold; }
 .selected-row .selection-marker { text-style: bold; }

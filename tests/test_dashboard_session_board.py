@@ -211,7 +211,19 @@ class DashboardSessionBoardTests(unittest.IsolatedAsyncioTestCase):
             for size in ((140, 30), (70, 20)):
                 await pilot.resize_terminal(*size)
                 await pilot.pause()
-                self.assertIn("* Pinned label", _text(app.query_one("#content")))
+                if size[0] >= 100:
+                    self.assertIn("* Pinned label", _text(app.query_one("#content")))
+                else:
+                    pinned_row = next(
+                        widget
+                        for widget in app.query_one("#content").children
+                        if "compact-row" in widget.classes
+                        and widget._primary_line._status
+                        == "Working"
+                        and "Pinned label" in widget._primary_line._title
+                    )
+                    self.assertIn("*", pinned_row._primary_line._marker)
+                    self.assertIn("Pinned label", pinned_row._primary_line.content.plain)
                 self.assertIn(app._selected_key, {app._row_key(item) for item in app._page_rows})
 
             app._view = "details"
@@ -219,7 +231,12 @@ class DashboardSessionBoardTests(unittest.IsolatedAsyncioTestCase):
             await pilot.resize_terminal(120, 30)
             await pilot.pause()
             self.assertTrue(app._split_details())
-            self.assertIn("* Pinned label", _text(app.query_one("#content")))
+            pinned_row = next(
+                widget
+                for widget in app.query_one("#split-list").children
+                if "compact-row" in widget.classes and "Pinned label" in widget._primary_line._title
+            )
+            self.assertIn("*", pinned_row._primary_line._marker)
             self.assertIn("fixture/default", _text(app.query_one("#content")))
             self.assertIn(app._selected_key, {app._row_key(item) for item in app._page_rows})
 

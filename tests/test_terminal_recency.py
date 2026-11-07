@@ -10,6 +10,21 @@ from unittest.mock import patch
 
 from test_terminal_model import lease, read, report, row, state
 
+from agent_observer.terminal.dashboard_palette import (
+    directory_prefix_color as _dashboard_directory_prefix_color,
+)
+from agent_observer.terminal.dashboard_palette import (
+    directory_prefix_end as _dashboard_directory_prefix_end,
+)
+from agent_observer.terminal.dashboard_palette import (
+    host_color as _dashboard_host_color,
+)
+from agent_observer.terminal.dashboard_palette import (
+    profile_color as _dashboard_profile_color,
+)
+from agent_observer.terminal.dashboard_palette import (
+    workspace_color as _dashboard_workspace_color,
+)
 from agent_observer.terminal.render import (
     _activity_color,
     _host_color,
@@ -265,49 +280,42 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
                 expected = _activity_color(projected, 61_000)[1]
                 age_index = (
                     widget.content.plain[: 2 + widget._cell_widths[1]].rfind(widget._cell_values[2])
-                    if size[0] == 100 else 0
+                    if size[0] == 100 else widget.content.plain.rfind(widget._age)
                 )
                 self.assertEqual(
                     widget.content.get_style_at_offset(app.console, age_index).color.name, expected
                 )
                 if size[0] == 60:
-                    profile_widget = widget.parent.parent.children[1].children[1]
-                    age_color = next(
-                        segment.style.color
-                        for segment in widget.render_line(0)
-                        if segment.text.strip()
-                    )
+                    profile_widget = widget.parent._context_line
+                    age_color = widget.content.get_style_at_offset(app.console, age_index).color
                     self.assertEqual(
                         age_color.get_truecolor(), Color.parse(expected).get_truecolor()
                     )
                     self.assertEqual(
-                        profile_widget.content.get_style_at_offset(app.console, 0).color.name,
-                        _host_color(projected)[1],
+                        profile_widget.content.get_style_at_offset(app.console, 6).color.name,
+                        _dashboard_host_color(projected)[1],
                     )
-                    self.assertEqual(
-                        profile_widget.content.get_style_at_offset(
-                            app.console, len(projected["source"]["host"]) + 1
-                        ).color.name,
-                        _profile_color(projected)[1],
-                    )
-                before_profile = _profile_color(projected)
+                    if projected["source"]["home"] != "default":
+                        self.assertEqual(
+                            profile_widget.content.get_style_at_offset(
+                                app.console, 6 + len(projected["source"]["host"]) + 1
+                            ).color.name,
+                            _dashboard_profile_color(projected)[1],
+                        )
+                before_profile = _dashboard_profile_color(projected)
                 clock["now"] = 119_000
                 app._refresh_age_cells()
                 widget, current, projected = app._age_cells[app._selected_key]
                 self.assertEqual(current, previous)
                 self.assertEqual(projected["activity"]["at"], 0)
                 self.assertEqual(reader.revision, 1)
-                self.assertEqual(_profile_color(projected), before_profile)
+                self.assertEqual(_dashboard_profile_color(projected), before_profile)
                 self.assertEqual(
                     widget.content.get_style_at_offset(app.console, age_index).color.name,
                     _activity_color(projected, 119_000)[1],
                 )
                 if size[0] == 60:
-                    actual = next(
-                        segment.style.color
-                        for segment in widget.render_line(0)
-                        if segment.text.strip()
-                    )
+                    actual = widget.content.get_style_at_offset(app.console, age_index).color
                     self.assertEqual(
                         actual.get_truecolor(),
                         Color.parse(_activity_color(projected, 119_000)[1]).get_truecolor(),
@@ -344,33 +352,49 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
 
             def check_selected_columns():
                 widget, label, projected = app._age_cells[app._selected_key]
-                compact_row = widget.parent.parent
+                compact_row = widget.parent
                 self.assertTrue(compact_row.has_class("selected-row"))
-                status = compact_row.children[0].children[1].content
-                profile = compact_row.children[1].children[1].content
-                workspace = compact_row.children[1].children[3].content
-                self.assertEqual(status.get_style_at_offset(app.console, 0).color.name, "cyan")
+                status = widget.content
+                profile = compact_row._context_line.content
+                self.assertEqual(status.get_style_at_offset(app.console, 2).color.name, "cyan")
                 self.assertEqual(
-                    profile.get_style_at_offset(app.console, 0).color.name,
-                    _host_color(projected)[1],
+                    profile.get_style_at_offset(app.console, 6).color.name,
+                    _dashboard_host_color(projected)[1],
                 )
-                self.assertEqual(
-                    workspace.get_style_at_offset(app.console, 0).color.name,
-                    _workspace_color(projected)[1],
-                )
+                workspace = profile
+                workspace_offset = profile.plain.index(":") + 2
+                workspace_text = profile.plain[workspace_offset:].rstrip()
+                prefix_end = _dashboard_directory_prefix_end(workspace_text, projected)
+                if prefix_end is None:
+                    self.assertEqual(
+                        workspace.get_style_at_offset(app.console, workspace_offset).color.name,
+                        _dashboard_workspace_color(projected)[1],
+                    )
+                else:
+                    self.assertEqual(
+                        workspace.get_style_at_offset(app.console, workspace_offset).color.name,
+                        _dashboard_directory_prefix_color()[1],
+                    )
+                    self.assertEqual(
+                        workspace.get_style_at_offset(
+                            app.console, workspace_offset + prefix_end
+                        ).color.name,
+                        _dashboard_workspace_color(projected)[1],
+                    )
                 return widget, label, projected
 
             widget, previous, projected = check_selected_columns()
-            before = widget.content.get_style_at_offset(app.console, 0).color.name
+            age_offset = widget.content.plain.rfind(widget._age)
+            before = widget.content.get_style_at_offset(app.console, age_offset).color.name
             clock["now"] = 119_000
             app._refresh_age_cells()
             widget, current, projected = check_selected_columns()
             self.assertEqual(current, previous)
             self.assertNotEqual(
-                before, widget.content.get_style_at_offset(app.console, 0).color.name
+                before, widget.content.get_style_at_offset(app.console, age_offset).color.name
             )
             self.assertEqual(
-                widget.content.get_style_at_offset(app.console, 0).color.name,
+                widget.content.get_style_at_offset(app.console, age_offset).color.name,
                 _activity_color(projected, 119_000)[1],
             )
 
@@ -394,6 +418,6 @@ class DashboardRecencyTests(unittest.IsolatedAsyncioTestCase):
                 app.console, profile_offset + len(host) + 1
             ).color.name
             self.assertEqual(age, _activity_color(item, 119_000, light=True)[1])
-            self.assertEqual(host_color, _host_color(item, light=True)[1])
-            self.assertEqual(profile, _profile_color(item, light=True)[1])
-            self.assertNotEqual(profile, _profile_color(item)[1])
+            self.assertEqual(host_color, _dashboard_host_color(item, light=True)[1])
+            self.assertEqual(profile, _dashboard_profile_color(item, light=True)[1])
+            self.assertNotEqual(profile, _dashboard_profile_color(item)[1])

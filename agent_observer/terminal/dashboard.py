@@ -16,6 +16,21 @@ from textual.timer import Timer
 from textual.widgets import Input, Static
 
 from .dashboard_output import BoundedLinuxDriver
+from .dashboard_palette import (
+    directory_prefix_color as _directory_prefix_color,
+)
+from .dashboard_palette import (
+    directory_prefix_end as _directory_prefix_end,
+)
+from .dashboard_palette import (
+    host_color as _host_color,
+)
+from .dashboard_palette import (
+    profile_color as _profile_color,
+)
+from .dashboard_palette import (
+    workspace_color as _workspace_color,
+)
 from .dashboard_view import (
     SavedView,
     SavedViewController,
@@ -23,19 +38,19 @@ from .dashboard_view import (
     order_pinned_rows,
     toggle_pin,
 )
-from .layout import header_height, layout_mode, medium_columns, row_height
+from .layout import (
+    dashboard_header_height,
+    dashboard_layout_mode,
+    row_height,
+)
 from .model import IDENTITY_FIELDS, identity_tuple, safe_metadata
 from .render import (
     _activity_color,
-    _host_color,
     _last_active_text,
-    _profile_color,
     _profile_text,
     _session_title,
-    _status_age_parts_width,
     _status_age_width,
     _status_label,
-    _workspace_color,
     _workspace_text,
 )
 from .status import status_text as _status_text
@@ -59,6 +74,20 @@ _SPLIT_HEIGHT = 30
 _MAX_PAGE_ROWS = 200
 _MIN_PAINT_INTERVAL = 0.25
 _PIN_PAGE_SIZE = 5
+_COMPACT_STATUS_GLYPHS = {
+    "Working": "●",
+    "Ready": "○",
+    "Blocked": "!",
+    "Inactive": "-",
+    "Unknown": "?",
+    "Stale": "~",
+    "Unavailable": "×",
+}
+_COMPACT_AGE_MIN_WIDTH = 4
+_COMPACT_STATUS_WORD_WIDTH = max(Text(status).cell_len for status in _STATUSES)
+_COMPACT_CONTEXT_INDENT = 6
+_COMPACT_CONTEXT_SEPARATOR = " : "
+_COMPACT_CONTEXT_PROFILE_MAX = 12
 
 
 class SessionLine(Static):
@@ -76,6 +105,7 @@ class SessionLine(Static):
         age_style="",
         profile_host_length=0,
         profile_host_style="",
+        workspace_prefix_style="",
         surface_selection=True,
     ):
         self._cell_values = list(values)
@@ -88,6 +118,7 @@ class SessionLine(Static):
         self._age_style = age_style
         self._profile_host_length = profile_host_length
         self._profile_host_style = profile_host_style
+        self._workspace_prefix_style = workspace_prefix_style
         classes = ["row"]
         if header:
             classes.append("table-heading")
@@ -129,6 +160,14 @@ class SessionLine(Static):
                     0,
                     min(self._profile_host_length, len(cell.plain)),
                 )
+            if index == 5 and not self._header_row and self._workspace_prefix_style:
+                directory_prefix_end = cell.plain.rfind("/") + 1
+                if directory_prefix_end:
+                    cell.stylize(
+                        self._workspace_prefix_style,
+                        0,
+                        directory_prefix_end,
+                    )
             cell.pad_right(max(0, width - cell.cell_len))
             line.append_text(cell)
         return line
@@ -153,6 +192,7 @@ class SessionLine(Static):
         self._age_style = other._age_style
         self._profile_host_length = other._profile_host_length
         self._profile_host_style = other._profile_host_style
+        self._workspace_prefix_style = other._workspace_prefix_style
         self._selected_row = not other._selected_row
         self.select_row(other._selected_row)
 
@@ -163,6 +203,119 @@ class SessionLine(Static):
         if style is not None:
             self._age_style = style
         self.update(self._line())
+
+
+class CompactPrimaryLine(Static):
+    """One compact row's status, title and activity age on a fixed-width line."""
+
+    def __init__(
+        self,
+        *,
+        width: int,
+        marker: str,
+        status: str,
+        status_value: str,
+        icons: bool,
+        title: str,
+        age: str,
+        age_style: str,
+        status_style: str,
+        selected: bool,
+        no_color: bool,
+    ) -> None:
+        self._width = max(1, width)
+        self._marker = marker
+        self._status = status
+        self._status_value = status_value
+        self._icons = icons
+        self._title = title
+        self._age = age
+        self._age_style = age_style
+        self._status_style = status_style
+        self._selected = selected
+        self._no_color = no_color
+        super().__init__(self._line(), markup=False, classes="row compact-primary")
+
+    def _line(self) -> Text:
+        status_width = 1 if self._icons else _COMPACT_STATUS_WORD_WIDTH
+        age_width = max(_COMPACT_AGE_MIN_WIDTH, Text(self._age).cell_len)
+        title_width = max(1, self._width - 2 - status_width - age_width - 2)
+        self._title_offset = 3 + status_width
+        self._age_width = age_width
+        self._title_width = title_width
+        line = Text(no_wrap=True, overflow="ellipsis")
+        marker_style = "reverse bold" if self._selected and self._no_color else (
+            "bold" if self._selected else ""
+        )
+        line.append(self._marker, marker_style)
+        status = Text(self._status_value, style=self._status_style or None)
+        status.truncate(status_width, overflow="ellipsis")
+        status.pad_right(max(0, status_width - status.cell_len))
+        line.append_text(status)
+        line.append(" ")
+        title = Text(self._title, style="bold", no_wrap=True, overflow="ellipsis")
+        title.truncate(title_width, overflow="ellipsis")
+        title.pad_right(max(0, title_width - title.cell_len))
+        line.append_text(title)
+        line.append(" ")
+        age = Text(self._age, style=self._age_style or None, no_wrap=True)
+        age.truncate(age_width, overflow="ellipsis")
+        age.pad_left(max(0, age_width - age.cell_len))
+        line.append_text(age)
+        line.pad_right(max(0, self._width - line.cell_len))
+        return line
+
+    def adopt_line(self, other: CompactPrimaryLine) -> None:
+        """Synchronously adopt a candidate's complete primary-line geometry."""
+        self._width = other._width
+        self._marker = other._marker
+        self._status = other._status
+        self._status_value = other._status_value
+        self._icons = other._icons
+        self._title = other._title
+        self._age = other._age
+        self._age_style = other._age_style
+        self._status_style = other._status_style
+        self._selected = other._selected
+        self._no_color = other._no_color
+        self.update(self._line())
+
+    def update_age(self, value: str, style: str) -> None:
+        self._age = value
+        self._age_style = style
+        self.update(self._line())
+
+
+class CompactSessionRow(Vertical):
+    """Two-line dashboard row with atomic staged adoption."""
+
+    def __init__(
+        self,
+        primary: CompactPrimaryLine,
+        context: Static,
+        *,
+        selected: bool,
+        surface_selection: bool,
+    ) -> None:
+        self._primary_line = primary
+        self._context_line = context
+        self._selected_row = selected
+        self._surface_selection = surface_selection
+        classes = ["compact-row"]
+        if selected and surface_selection:
+            classes.append("selected-row")
+        super().__init__(primary, context, classes=" ".join(classes))
+
+    def adopt_row(self, other: CompactSessionRow) -> None:
+        """Update both visible lines before the staged painter yields."""
+        self._primary_line.adopt_line(other._primary_line)
+        self._context_line.update(other._context_line.render())
+        self._selected_row = other._selected_row
+        self._surface_selection = other._surface_selection
+        if self._selected_row and self._surface_selection:
+            self.add_class("selected-row")
+        else:
+            self.remove_class("selected-row")
 
 
 class DashboardApp(App[None]):
@@ -258,6 +411,7 @@ class DashboardApp(App[None]):
         self._paint_generation = 0
         self._painting = False
         self._paint_again = False
+        self._page_capacity_sync_pending = False
 
     @staticmethod
     def _copy_filters(filters: dict) -> dict:
@@ -399,7 +553,14 @@ class DashboardApp(App[None]):
         if self._projection is not None and self.reader.is_current(self._projection):
             if priority:
                 if not self._displayed_rows_are_represented(displayed_rows):
-                    self._hide_stale_visible_content()
+                    if (
+                        self._layout_mode() == "compact"
+                        and self._displayed_view == "list"
+                        and self._displayed_overlay is None
+                    ):
+                        self._hide_unrepresented_compact_rows(displayed_rows)
+                    else:
+                        self._hide_stale_visible_content()
                 self._paint_chrome()
             self._rebind_age_cells()
             if not self._painting:
@@ -412,13 +573,41 @@ class DashboardApp(App[None]):
             self._request_render(immediate=True)
         return False
 
+    def _hide_unrepresented_compact_rows(self, displayed: dict[tuple[str, ...], tuple]) -> None:
+        """Withdraw only compact rows whose exact current projection changed."""
+        current = {self._row_key(row): row for row in self._visible_rows}
+        retained_rows = {}
+        retained_ages = {}
+        retained_signatures = {}
+        for key, signature in displayed.items():
+            row = current.get(key)
+            widget = self._visible_row_widgets.get(key)
+            if row is None or self._row_signature(row) != signature:
+                if widget is not None:
+                    widget.display = False
+                continue
+            if widget is not None:
+                retained_rows[key] = widget
+                retained_signatures[key] = signature
+            age = self._age_cells.get(key)
+            if age is not None:
+                retained_ages[key] = (age[0], age[1], row)
+        self._visible_row_widgets = retained_rows
+        self._line_widgets = {}
+        self._age_cells = retained_ages
+        self._displayed_row_signatures = retained_signatures
+        self._content_signature_value = None
+        if not retained_rows and self._ui_active():
+            container = self._content or self.query_one("#content", VerticalScroll)
+            container.display = False
+
     def _displayed_rows_are_represented(
         self, displayed: dict[tuple[str, ...], tuple]
     ) -> bool:
         if (
             self._view != "list"
             or self._overlay is not None
-            or self._layout_mode() not in {"full", "compact", "stacked"}
+            or self._layout_mode() not in {"full", "compact"}
             or self._displayed_view != "list"
             or self._displayed_overlay is not None
             or self._displayed_layout_mode != self._layout_mode()
@@ -702,7 +891,7 @@ class DashboardApp(App[None]):
         self._request_render()
 
     def _layout_mode(self) -> str:
-        return layout_mode(self.size.width, self.size.height)
+        return dashboard_layout_mode(self.size.width, self.size.height)
 
     def _split_details(self) -> bool:
         return (
@@ -714,13 +903,13 @@ class DashboardApp(App[None]):
 
     def _page_size(self, width: int | None = None) -> int:
         split = self._split_details()
-        mode = layout_mode(
+        mode = dashboard_layout_mode(
             width if width is not None else self._split_left_width() if split else self.size.width,
             self.size.height,
         )
         line_budget = self._content_height_budget()
         row_lines = max(1, row_height(mode))
-        header_lines = header_height(mode)
+        header_lines = dashboard_header_height(mode)
         visible_pins, pinned_rows = self._visible_pin_counts()
         other_rows = self._visible_rows[pinned_rows:]
         section_lines = int(visible_pins > 0) + int(visible_pins > 0 and bool(other_rows))
@@ -1184,7 +1373,7 @@ class DashboardApp(App[None]):
         if (
             self._view != "list"
             or self._overlay is not None
-            or mode not in {"full", "compact", "stacked"}
+            or mode not in {"full", "compact"}
             or self._displayed_view not in {None, "list"}
             or self._displayed_overlay is not None
             or (
@@ -1236,7 +1425,10 @@ class DashboardApp(App[None]):
                 continue
             signature = self._row_signature(row)
             old_signature = self._displayed_row_signatures.get(key)
-            if isinstance(old_widget, SessionLine) and isinstance(new_widget, SessionLine):
+            if isinstance(old_widget, CompactSessionRow) and isinstance(new_widget, CompactSessionRow):
+                old_widget.adopt_row(new_widget)
+                old_widget.display = True
+            elif isinstance(old_widget, SessionLine) and isinstance(new_widget, SessionLine):
                 old_widget.adopt_row(new_widget)
                 old_widget.display = True
                 retained_lines[key] = old_widget
@@ -1254,7 +1446,7 @@ class DashboardApp(App[None]):
             pending_age = pending_ages.get(key)
             if previous_age is not None and pending_age is not None:
                 age_widget = previous_age[0]
-                if not isinstance(old_widget, SessionLine):
+                if not isinstance(old_widget, (SessionLine, CompactSessionRow)):
                     age_widget.update(pending_age[0].render())
                 retained_ages[key] = (age_widget, pending_age[1], row)
 
@@ -1267,11 +1459,7 @@ class DashboardApp(App[None]):
         self._displayed_view = self._view
         self._displayed_overlay = self._overlay
         mode = self._layout_mode()
-        if self._view == "list" and self._overlay is None and mode in {
-            "full",
-            "compact",
-            "stacked",
-        }:
+        if self._view == "list" and self._overlay is None and mode in {"full", "compact"}:
             self._displayed_layout_mode = mode
             self._displayed_size = (self.size.width, self.size.height)
             self._displayed_row_signatures = {
@@ -1281,6 +1469,40 @@ class DashboardApp(App[None]):
             self._displayed_layout_mode = None
             self._displayed_size = None
             self._displayed_row_signatures = {}
+        self._schedule_page_capacity_sync()
+
+    def _schedule_page_capacity_sync(self) -> None:
+        if (
+            self._page_capacity_sync_pending
+            or not self._ui_active()
+            or self._view != "list"
+            or self._overlay is not None
+            or self._layout_mode() not in {"full", "compact"}
+        ):
+            return
+        self._page_capacity_sync_pending = True
+        self.call_after_refresh(self._sync_page_capacity_after_refresh)
+
+    def _sync_page_capacity_after_refresh(self) -> None:
+        self._page_capacity_sync_pending = False
+        if (
+            not self._ui_active()
+            or self._view != "list"
+            or self._overlay is not None
+            or self._displayed_view != "list"
+            or self._displayed_overlay is not None
+            or self._displayed_layout_mode != self._layout_mode()
+            or self._displayed_size != (self.size.width, self.size.height)
+        ):
+            return
+        projection = self._projection
+        if projection is None or not self.reader.is_current(projection):
+            return
+
+        previous = tuple(self._row_key(row) for row in self._page_rows)
+        self._sync_page_rows()
+        if tuple(self._row_key(row) for row in self._page_rows) != previous:
+            self._request_render(immediate=True)
 
     def _content_signature(self):
         base = (
@@ -1292,7 +1514,7 @@ class DashboardApp(App[None]):
             self._focus,
             self._scroll_offset,
             self._selected_key
-            if self._view != "list" or self._layout_mode() in {"compact", "stacked"}
+            if self._view != "list" or self._layout_mode() == "compact"
             else None,
             self._selection_hidden,
             self._selection_available,
@@ -1534,6 +1756,11 @@ class DashboardApp(App[None]):
                     "Status filter: Space toggles one · a toggles all/none",
                     "Sources and exit",
                     "s sources · r retry · q quit · Ctrl+C exit",
+                    (
+                        "Status symbols: ● Working · ○ Ready · ! Blocked · - Inactive · ? Unknown · ~ Stale · × Unavailable"
+                        if self.icons
+                        else "Status labels: Working · Ready · Blocked · Inactive · Unknown · Stale · Unavailable"
+                    ),
                     "Palette: status=state · age fades new→old",
                     "Age is approximate time since conversation activity.",
                     "Profile: hue=host · shade=profile",
@@ -1912,7 +2139,7 @@ class DashboardApp(App[None]):
         self._age_cells = {}
         self._sync_page_rows()
         render_width = width or self.size.width
-        mode = layout_mode(render_width, self.size.height)
+        mode = dashboard_layout_mode(render_width, self.size.height)
         widgets: list[Any] = []
         total = len(self._visible_rows)
         page_size = self._page_size(render_width)
@@ -1933,26 +2160,11 @@ class DashboardApp(App[None]):
         stop = min(total, start + page_size)
         _, pinned_row_count = self._visible_pin_counts()
         has_visible_pins = self._visible_pin_counts()[0] > 0
-        medium_geometry = (
-            self._medium_column_widths(render_width) if mode == "compact" else None
-        )
         if mode == "full":
             widths = self._column_widths(render_width - 4)
             headers = ("STATUS", "", "SESSION", "PROFILE", "WORKSPACE")
             header, _ = self._row_widget(headers, widths, selected=False, header=True)
             widgets.append(header)
-        elif mode == "compact":
-            left_width, right_width, gap = medium_geometry
-            for left, right in (("STATUS", "SESSION"), ("PROFILE", "WORKSPACE")):
-                widgets.append(
-                    Horizontal(
-                        self._cell("  ", 2),
-                        self._cell(left, left_width, "bold"),
-                        self._cell(" " * gap, gap),
-                        self._cell(right, right_width, "bold"),
-                        classes="row table-heading compact-heading",
-                    )
-                )
         prior_group = None
         for index in range(start, stop):
             row = self._visible_rows[index]
@@ -1992,7 +2204,6 @@ class DashboardApp(App[None]):
                     index - start,
                     mode,
                     width=render_width,
-                    medium_geometry=medium_geometry,
                 )
             )
         if not self._visible_rows:
@@ -2029,149 +2240,35 @@ class DashboardApp(App[None]):
         mode: str,
         *,
         width: int,
-        medium_geometry: tuple[int, int, int] | None = None,
     ) -> list[Any]:
         selected = self._row_key(row) == self._selected_key
         key = self._row_key(row)
         title = self._safe(_session_title(row))
-        if mode == "stacked":
-            status = _status_label(_status_text(row), self.icons)
-            age = self._activity_age(row)
-            status_width, age_width = self._compact_column_budgets()
-            cell_width = max(1, width - 6)
-            spacer_width = max(1, cell_width - status_width - age_width)
-            age_cell = self._cell(
-                age,
-                age_width,
-                self._activity_style(row, selected=selected),
-                truncate=False,
-                right_align=True,
-            )
-            status_age = Horizontal(
-                self._cell(
-                    "> " if selected else "  ",
-                    2,
-                    "reverse bold" if selected and self.no_color else "",
-                    selection_marker=selected,
-                ),
-                self._cell(
-                    status,
-                    status_width,
-                    "reverse bold" if selected and self.no_color else self._semantic_style(status),
-                    truncate=False,
-                ),
-                self._cell(" " * spacer_width, spacer_width, truncate=False),
-                age_cell,
-                classes="row",
-            )
-            pin = "* " if self._is_pinned_row(row) else ""
-            title_line = Horizontal(
-                self._cell("  ", 2),
-                self._cell(pin + title, cell_width, "bold" if selected else ""),
-                classes="row",
-            )
-            profile = self._safe(_profile_text(row))
-            profile_line = Horizontal(
-                self._cell("  ", 2),
-                self._cell(
-                    profile,
-                    cell_width,
-                    self._profile_style(row, selected=selected),
-                    span_styles=(
-                        (
-                            0,
-                            len(self._safe(row.get("source", {}).get("host"))),
-                            self._profile_host_style(row, selected=selected),
-                        ),
-                    ),
-                ),
-                classes="row",
-            )
-            workspace = self._safe(_workspace_text(row))
-            workspace_line = Horizontal(
-                self._cell("  ", 2),
-                self._cell(
-                    workspace,
-                    cell_width,
-                    self._workspace_style(row, selected=selected),
-                ),
-                classes="row",
-            )
-            self._age_cells[key] = (age_cell, age, row)
-            row_widget = Vertical(
-                status_age,
-                title_line,
-                profile_line,
-                workspace_line,
-                classes="stacked-row " + self._row_classes(selected),
-            )
-            self._visible_row_widgets[key] = row_widget
-            return [row_widget]
-
         if mode == "compact":
-            if self._is_pinned_row(row):
-                title = "* " + title
-            selected_style = (
-                "reverse bold" if selected and self.no_color else "bold" if selected else ""
-            )
-            status = _status_label(_status_text(row), self.icons)
+            status = _status_text(row)
+            status_value = _COMPACT_STATUS_GLYPHS[status] if self.icons else status
             age = self._activity_age(row)
-            status_width, age_width = self._compact_column_budgets()
-            left_width, right_width, gap = medium_geometry
-            spacer_width = max(1, left_width - status_width - age_width)
-            age_cell = self._cell(
-                age,
-                age_width,
-                self._activity_style(row, selected=selected),
-                truncate=False,
-                right_align=True,
+            primary = CompactPrimaryLine(
+                width=max(1, width - 2),
+                marker=(">" if selected else " ") + ("*" if self._is_pinned_row(row) else " "),
+                status=status,
+                status_value=status_value,
+                icons=self.icons,
+                title=title,
+                age=age,
+                age_style=self._activity_style(row),
+                status_style=self._semantic_style(status),
+                selected=selected,
+                no_color=self.no_color,
             )
-            first = Horizontal(
-                self._cell(
-                    "> " if selected else "  ", 2, selected_style, selection_marker=selected
-                ),
-                self._cell(
-                    status,
-                    status_width,
-                    "reverse bold" if selected and self.no_color else self._semantic_style(status),
-                    truncate=False,
-                ),
-                self._cell(" " * spacer_width, spacer_width, truncate=False),
-                age_cell,
-                self._cell(" " * gap, gap),
-                self._cell(title, right_width, selected_style),
-                classes="row",
+            context = self._compact_context_widget(row, max(1, width - 2))
+            row_widget = CompactSessionRow(
+                primary,
+                context,
+                selected=selected,
+                surface_selection=not self.no_color,
             )
-            profile = self._safe(_profile_text(row))
-            workspace = self._safe(_workspace_text(row))
-            second = Horizontal(
-                self._cell("  ", 2),
-                self._cell(
-                    profile,
-                    left_width,
-                    self._profile_style(row, selected=selected),
-                    span_styles=(
-                        (
-                            0,
-                            len(self._safe(row.get("source", {}).get("host"))),
-                            self._profile_host_style(row, selected=selected),
-                        ),
-                    ),
-                ),
-                self._cell(" " * gap, gap),
-                self._cell(
-                    workspace,
-                    right_width,
-                    self._workspace_style(row, selected=selected),
-                ),
-                classes="row",
-            )
-            self._age_cells[key] = (age_cell, age, row)
-            row_widget = Vertical(
-                first,
-                second,
-                classes="compact-row " + self._row_classes(selected),
-            )
+            self._age_cells[key] = (primary, age, row)
             self._visible_row_widgets[key] = row_widget
             return [row_widget]
 
@@ -2182,7 +2279,7 @@ class DashboardApp(App[None]):
             status,
             age,
             title,
-            self._safe(_profile_text(row)),
+            self._safe(self._dashboard_profile_text(row)),
             self._safe(_workspace_text(row)),
         )
         widths = self._column_widths(width - 4)
@@ -2200,6 +2297,7 @@ class DashboardApp(App[None]):
                 len(self._safe(row.get("source", {}).get("host"))) if not self.no_color else 0
             ),
             workspace_style=self._workspace_style(row),
+            workspace_prefix_style=self._workspace_prefix_style(row),
             age_style=self._activity_style(row),
         )
         self._age_cells[key] = (age_cell, age, row)
@@ -2209,6 +2307,73 @@ class DashboardApp(App[None]):
 
     def _row_classes(self, selected: bool) -> str:
         return "row selected-row" if selected and not self.no_color else "row"
+
+    @staticmethod
+    def _dashboard_profile_text(row: dict) -> str:
+        """Use a concise row caption while retaining the exact home identity elsewhere."""
+        source = row.get("source")
+        profile = _profile_text(row)
+        if type(source) is dict and source.get("home") == "default" and profile != "unknown":
+            return str(source.get("host"))
+        return profile
+
+    def _compact_context_widget(self, row: dict, width: int) -> Static:
+        profile = self._safe(self._dashboard_profile_text(row))
+        workspace = self._safe(_workspace_text(row))
+        separator_width = Text(_COMPACT_CONTEXT_SEPARATOR).cell_len
+        profile_budget = min(
+            _COMPACT_CONTEXT_PROFILE_MAX,
+            max(1, (width - _COMPACT_CONTEXT_INDENT - separator_width) // 2),
+        )
+        workspace_budget = max(
+            1,
+            width - _COMPACT_CONTEXT_INDENT - separator_width - profile_budget,
+        )
+        light = not self.current_theme.dark
+
+        profile_line = Text(no_wrap=True, overflow="ellipsis")
+        source = row.get("source", {})
+        host = self._safe(source.get("host")) if type(source) is dict else ""
+        home = source.get("home") if type(source) is dict else None
+        if profile == "unknown":
+            profile_line.append(profile)
+        elif self.no_color:
+            profile_line.append(profile)
+        elif home == "default":
+            host_color = _host_color(row, light=light)
+            profile_line.append(profile, host_color[1] if host_color else None)
+        else:
+            host_color = _host_color(row, light=light)
+            home_color = _profile_color(row, light=light)
+            if host_color and home_color and profile.startswith(host + "/"):
+                profile_line.append(host, host_color[1])
+                profile_line.append("/")
+                profile_line.append(profile[len(host) + 1 :], home_color[1])
+            else:
+                profile_line.append(profile)
+        profile_line.truncate(profile_budget, overflow="ellipsis")
+        profile_line.pad_right(max(0, profile_budget - profile_line.cell_len))
+
+        context = Text(no_wrap=True, overflow="ellipsis")
+        context.append(" " * _COMPACT_CONTEXT_INDENT)
+        context.append_text(profile_line)
+        context.append(_COMPACT_CONTEXT_SEPARATOR)
+        workspace_text = Text(workspace, no_wrap=True, overflow="ellipsis")
+        if not self.no_color:
+            workspace_text.stylize(_workspace_color(row, light=light)[1])
+        workspace_text.truncate(workspace_budget, overflow="ellipsis")
+        prefix_end = _directory_prefix_end(workspace_text.plain, row)
+        if not self.no_color and prefix_end:
+            workspace_text.stylize(
+                _directory_prefix_color(light=light)[1],
+                0,
+                prefix_end,
+            )
+        workspace_text.pad_right(max(0, workspace_budget - workspace_text.cell_len))
+        context.append_text(workspace_text)
+        context.pad_right(max(0, width - context.cell_len))
+        context.stylize("italic", 0, len(context))
+        return Static(context, markup=False, classes="row compact-context")
 
     def _profile_style(self, row: dict, *, selected: bool = False) -> str:
         if self.no_color:
@@ -2229,6 +2394,12 @@ class DashboardApp(App[None]):
             return "reverse bold" if selected else "dim"
         style = _workspace_color(row, light=not self.current_theme.dark)[1]
         return f"bold {style}" if selected else style
+
+    def _workspace_prefix_style(self, row: dict) -> str:
+        workspace = self._safe(_workspace_text(row))
+        if self.no_color or _directory_prefix_end(workspace, row) is None:
+            return ""
+        return _directory_prefix_color(light=not self.current_theme.dark)[1]
 
     def _activity_style(
         self, row: dict | None, now_ms: int | None = None, *, selected: bool = False
@@ -2252,6 +2423,7 @@ class DashboardApp(App[None]):
         profile_host_style: str = "dim",
         profile_host_length: int = 0,
         workspace_style: str = "dim",
+        workspace_prefix_style: str = "",
         age_style: str = "",
     ) -> tuple[SessionLine, SessionLine]:
         values = (marker, *cells)
@@ -2297,6 +2469,7 @@ class DashboardApp(App[None]):
             age_style=age_style,
             profile_host_length=profile_host_length,
             profile_host_style=profile_host_style,
+            workspace_prefix_style=workspace_prefix_style,
             surface_selection=not self.no_color,
         )
         return line, line
@@ -2308,26 +2481,6 @@ class DashboardApp(App[None]):
         workspace = min(22, max(16, width - 2 - status_age - profile - 28))
         title = max(28, width - 2 - status_age - profile - workspace)
         return status_age, title, profile, workspace
-
-    def _compact_column_budgets(self) -> tuple[int, int]:
-        rows = self._page_rows or self._visible_rows[:1]
-        status_width, age_width = _status_age_parts_width(
-            rows, self._display_now_ms(), self.icons
-        )
-        # Reserve the full named age qualifier so ordinary age-only updates
-        # never change the split pane's structural grid.
-        return status_width, max(11, age_width)
-
-    def _medium_column_widths(self, width: int) -> tuple[int, int, int]:
-        rows = self._page_rows or self._visible_rows[:1]
-        status_width, age_width = self._compact_column_budgets()
-        profile_width = max([24, *(Text(_profile_text(row)).cell_len for row in rows)])
-        return medium_columns(
-            max(1, width - 4),
-            gutter=2,
-            required_left=status_width + 2 + age_width,
-            preferred_left=profile_width,
-        )
 
     def _semantic_style(self, value: str) -> str:
         red, amber, green, cyan, quiet = (
@@ -3548,7 +3701,7 @@ class DashboardApp(App[None]):
         order = self.filters.get("sort", "activity")
         group = self.filters.get("group", "none")
         pin_count = self._pinned_count_text() if self.saved_view.pins else None
-        if layout_mode(self.size.width) == "compact":
+        if self._layout_mode() == "compact":
             summary = []
             if query:
                 summary.append("Search active")
@@ -3676,7 +3829,7 @@ class DashboardApp(App[None]):
                 if total > page_size
                 else ""
             )
-            return f"↑↓ move · ↵ / ? q{page}"
+            return self._compact_footer_text(f"↑↓ move · ↵ / ? q{page}")
         if self.focused is not None and isinstance(self.focused, Input):
             return "Type search · Enter apply · Esc restore · Ctrl+C exit"
         if self._overlay == "help":
@@ -3718,8 +3871,45 @@ class DashboardApp(App[None]):
                 return "↑↓ scroll · P pins · Esc back\n? help · q quit · ^C exit"
             return "↑↓ scroll · P pins · Esc · ? · q"
         if self.size.width < 80:
-            return "↑↓ move · ↵ / ? q"
-        return "↑↓ move · p pin · P pins · Enter details · / · ? · q"
+            return self._compact_footer_text("↑↓ move · ↵ / ? q")
+        return self._compact_footer_text("↑↓ move · p pin · P pins · Enter details · / · ? · q")
+
+    def _compact_footer_text(self, text: str) -> str:
+        if self._layout_mode() != "compact" or self._view != "list" or self._overlay is not None:
+            return text
+        if self._selection_hidden or not self._selection_available:
+            return text
+        row = self._selected_detail_row if self._selection_available else None
+        if row is None:
+            return text
+        status = _status_text(row)
+        if self.size.width < 60:
+            page = ""
+            total = len(self._visible_rows)
+            page_size = self._page_size()
+            if total:
+                selected_index = next(
+                    (
+                        index
+                        for index, visible in enumerate(self._visible_rows)
+                        if self._row_key(visible) == self._selected_key
+                    ),
+                    0,
+                )
+                page = f"{selected_index // page_size + 1}/{(total + page_size - 1) // page_size}"
+            parts = [status, "↑↓", "?", "q"]
+            if page:
+                parts.append(page)
+            for candidate in (
+                " · ".join(parts),
+                " · ".join(part for part in parts if part != "↑↓"),
+                " ".join(part for part in parts if part != "↑↓"),
+            ):
+                if Text(candidate).cell_len <= self._chrome_width():
+                    return candidate
+            return status
+        combined = f"{text} · Status: {status}"
+        return combined if Text(combined).cell_len <= self._chrome_width() else text
 
     def _empty_state_text(self) -> str:
         if self._projection is None:
@@ -3767,6 +3957,12 @@ class DashboardApp(App[None]):
         age_now = self._display_now_ms()
         for key, (widget, previous, row) in tuple(self._age_cells.items()):
             current = self._activity_age(row, age_now)
+            if isinstance(widget, CompactPrimaryLine):
+                style = self._activity_style(row, age_now)
+                if current != previous or style != widget._age_style:
+                    widget.update_age(current, style)
+                    self._age_cells[key] = (widget, current, row)
+                continue
             if isinstance(widget, SessionLine):
                 style = self._activity_style(row, age_now)
                 if current != previous or style != widget._age_style:
