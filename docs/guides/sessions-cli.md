@@ -1,6 +1,6 @@
 # Sessions CLI
 
-The `0.7.0a18` prerelease clarifies overview counts, adds qualified `--status`
+The `0.7.0a19` reader retains clear overview counts, qualified `--status`
 filters and leads exact-session inspection with status/activity, profile,
 workspace and full ID. Human workspace labels reuse current cached repo/worktree
 metadata. Installing a reader does not change collector, publisher or other
@@ -28,8 +28,8 @@ Observer/Mesh pair with the qualified wheel hashes:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/agent_observer-0.7.0a18-py3-none-any.whl#sha256=694b086e744319ec1fa07b42519e0aa268a32b4c51e5b7745cd1150cd26ba30d' \
-  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/agent_observer-0.7.0a19-py3-none-any.whl#sha256=5f7a32d730277c1ed47fcee9f1cd35e04dfa9478a40cd2c123747ec89fea13eb' \
+  'https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer sessions --help
 ```
 
@@ -281,7 +281,7 @@ reconfigure the publisher's fixed window.
 or known nonmembers across every selected source. Filtered zero matches, expired
 coverage, warming and missing baselines do not satisfy that condition.
 
-The persistent dashboard is available with the optional `dashboard` extra in a18;
+The persistent dashboard is available with the optional `dashboard` extra in a19;
 see the [dashboard guide](dashboard.md) for setup and use and the
 [terminal product contract](../maintenance/terminal-product.md) for its acceptance
 limits. Managed reader installation, native acceptance and hardware/Fleet

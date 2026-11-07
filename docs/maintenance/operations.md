@@ -1,6 +1,6 @@
 # Releases and operations
 
-The [0.7.0a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
+The [0.7.0a19 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a19)
 provides the configured sessions CLI and optional standalone dashboard while
 retaining terminal JSON interface 1. Reader installation/configuration is
 independently selected; publication does not upgrade a collector or publisher.
@@ -14,34 +14,35 @@ independent reviewed selections.
 
 ## CLI and dashboard reader release
 
-The [a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
-clarifies finite overview counts, adds qualified repeatable CLI `--status` filters,
-and puts the exact-session summary before diagnostics. Cached leased repository
-metadata supplies human workspace labels after ordinary row selection, preserving
-finite query results and default JSON. Dashboard rows use four columns from 100
-terminal columns; staged list replacement keeps healthy rows visible during
-source setup/baseline arrival and withdraws expired facts before widget waits.
+The a19 dashboard uses two-line rows from 32 through 99 terminal columns:
+a qualified status symbol, bold truncated title and complete activity age,
+then indented italic profile/workspace context. A fixed profile field aligns
+workspace starts without depending on the current roster. The default home
+suffix is omitted only in dashboard row captions; details retain exact identity.
+The four-column layout starts at 100 columns. The softer dashboard palette and
+neutral directory parents preserve readable host/profile and workspace cues.
 
-CLI status choices OR together and AND with existing filters before the overview
-cap; exact `show` bypasses display filters. Supplying `--status` adds optional
-`filters.status` only; default JSON and per-row fields are unchanged. The dashboard
-keeps its independent in-app Status filter, exact hidden selection, watched-source
-health and quiet-expiry behavior. No configuration or saved-view field is added.
+Finite CLI output, qualified status filtering, exact lookup, terminal JSON v1,
+source health and quiet expiry retain their a18 contracts. Changed facts are
+withdrawn before widget waits; healthy compact rows may remain while current
+replacements are staged. The after-refresh page-capacity check is bounded and
+adds no polling or reader subscription.
 
-The [a18 artifact manifest](../../artifacts/observer-0.7.0a18.json) binds runtime
+The [a19 artifact manifest](../../artifacts/observer-0.7.0a19.json) binds runtime
 source and the frozen wheel. Public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/provenance.json)
-binds qualification/tag source, exact assets, CI and installed checks on Python
-3.11/3.14. Textual 8.2.8, Mesh a25, terminal JSON v1 schema, exit behavior, API 4,
-snapshot/watch 6, Service 4 and working-set v1 are unchanged. Bounded controlled
-expiry/paging and actual cached startup checks qualify reader behavior; no new
-native-classification, sustained-resource, large-fleet or soak acceptance is claimed.
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/provenance.json)
+binds qualification/tag source, assets, exact-head CI and installed checks on
+Python 3.11/3.14. Textual 8.2.8, Mesh a25, terminal JSON v1, API 4,
+snapshot/watch 6, Service 4 and working-set v1 are unchanged. Source/package and
+bounded cached terminal checks do not establish new native classification,
+sustained resource, large-fleet, soak or physical/font acceptance.
 
 Managed adoption belongs to `deployments/agent-observer-cli.json`, independently
 of the a11 collector/publisher cohort, routes, Agent Plus, Tmux, full publishers
-and hardware. This rollout targets Starship and Snap; Carbon is offline and remains
-pending. The previous [a17 artifact](../../artifacts/observer-0.7.0a17.json)
-and [a17 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a17)
+and hardware. Starship, Snap and Carbon have separate installed acceptance;
+source pins alone do not prove host adoption. The previous
+[a18 artifact](../../artifacts/observer-0.7.0a18.json) and
+[a18 release](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
 remain immutable rollback inputs.
 
 ## Selection and recovery

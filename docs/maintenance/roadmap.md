@@ -7,9 +7,10 @@ showcase; this repository owns observation semantics and the terminal product.
 
 ## Delivered baseline
 
-The [a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
+The [a19 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a19)
 provides the configured CLI and optional standalone dashboard. Its independent
-reader rollout targets Snap and Starship; offline Carbon remains pending.
+reader selection targets Starship, Snap and Carbon, with separate installed
+acceptance for each host.
 Collectors/working-set publishers retain the reviewed a11/Mesh a25 pair. Other consumers and roles
 retain their own selections. [Operations](operations.md) owns release provenance
 and managed-role guidance.
@@ -19,7 +20,7 @@ and managed-role guidance.
 | Quick check | Bare `agent-observer`: readable fleet overview, source health and up to ten rows |
 | Investigate | `sessions list/show/sources`: all matching rows, exact-session details, coverage and terminal JSON v1 |
 | Keep watch | `dashboard`: persistent list, literal metadata/repository search, filters, exact pinned selection, adaptive details and source recovery |
-| Host the first source | [First-source setup](../guides/source-setup.md): private foreground a11 collector + Mesh a25 publisher to the released a18 reader |
+| Host the first source | [First-source setup](../guides/source-setup.md): private foreground a11 collector + Mesh a25 publisher to the released a19 reader |
 
 Working-set supplies active membership and recent context, ordinarily over
 72 hours. Membership, runtime and phase remain separate; active does not mean
@@ -36,8 +37,9 @@ choices; they add no native, resource or physical qualification.
 
 ## Current focus: everyday CLI and dashboard use
 
-The a18 **read-only session board** prioritizes a combined status,
-last activity and session title, with profile/workspace context. It adds exact
+The a19 **read-only session board** prioritizes a combined status,
+last activity and session title, with indented italic profile/workspace
+context and aligned workspace starts in compact rows. It adds exact
 favorites in stable relative order and remembered sort/group choices beside
 the normal Codex TUI.
 The [session-board contract](terminal-product.md#read-only-session-board)
@@ -69,7 +71,7 @@ producer or other consumer pin.
 The released reader has source, installed-package, controlled lifecycle and
 short actual-fleet terminal checks. The original source-preview normal resource
 profile passed at the user-accepted <=5% of one core. Those measurements and
-selected native comparisons retain their exact earlier artifact bounds; a18
+selected native comparisons retain their exact earlier artifact bounds; a19
 adds no new sustained-resource or full native/remote claim. The
 [qualification summary](terminal-product.md#qualification-and-limits) links
 immutable evidence and preserves failed/incomplete historical results.

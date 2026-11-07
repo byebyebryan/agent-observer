@@ -2,7 +2,7 @@
 
 Start with [first-source setup](guides/source-setup.md) if you own the Codex
 home but have not published a working-set cache yet. It links the separately
-released a11 producer to the a18 [sessions CLI](guides/sessions-cli.md) and
+released a11 producer to the a19 [sessions CLI](guides/sessions-cli.md) and
 [standalone dashboard](guides/dashboard.md). For a direct native diagnostic
 read, use [getting started](getting-started.md).
 

@@ -1,6 +1,6 @@
 # CLI and dashboard product contract
 
-The [0.7.0a18 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a18)
+The [0.7.0a19 prerelease](https://github.com/byebyebryan/agent-observer/releases/tag/v0.7.0a19)
 provides the finite sessions CLI and optional persistent dashboard. This page
 records their current behavior, ownership and acceptance limits. Use the
 [sessions guide](../guides/sessions-cli.md) and [dashboard guide](../guides/dashboard.md)
@@ -71,10 +71,9 @@ than choosing by arrival order. Native observation semantics remain in
   transport heartbeats do not advance it; reconnect does not repair native
   clock uncertainty.
 
-The dashboard initially shows the full list with details closed. The current
-source preview has a dashboard-only row refinement, not included in the
-published a18 wheel. At 100 columns and wider it keeps the full four-cell
-Status / age, Session, Profile and Workspace table. At 32–99 columns each entry
+The dashboard initially shows the full list with details closed. The a19
+reader keeps the full four-cell table at 100 columns and wider:
+Status / age, Session, Profile and Workspace. At 32–99 columns each entry
 uses exactly two lines: a selection/pin marker, qualified status, truncated
 title and full activity age on the first line, then profile and workspace on
 the second. Age labels can grow on their row while the title start and age
@@ -214,11 +213,11 @@ comparisons under [validation](validation.md), preserving ordinary providers.
 
 ## Qualification and limits
 
-The a18 [manifest](../../artifacts/observer-0.7.0a18.json) and public
-[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/provenance.json)
+The a19 [manifest](../../artifacts/observer-0.7.0a19.json) and public
+[provenance](https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/provenance.json)
 bind runtime source, wheel, dependency stack, exact-head CI and source/installed
-checks. Managed rollout targets Snap and Starship; Carbon is offline and pending;
-[operations](operations.md) separates managed selections from publication.
+checks. Managed reader selection targets Starship, Snap and Carbon, with acceptance
+recorded per host; [operations](operations.md) separates it from publication.
 Reader delivery does not close separate producer incidents or establish human,
 full native/remote, resource or physical-device acceptance.
 
@@ -226,7 +225,7 @@ Sustained resource/native evidence retains its original source-preview boundary:
 source `d57233313f01983361b75fb0953662afa212c513`, wheel SHA256
 `fd8ec13ee37470d1e31788df399057ba371eeaad67d412087993eb75995c55f0`
 with unreleased a12 metadata. Its fixed normal profile measured 4.88%/4.74%
-of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15/a16/a17/a18
+of one core and 65.17/66.60 MiB peak RSS on Python 3.11/3.14. Later a13/a14/a15/a16/a17/a18/a19
 reader and package/delivery checks do not claim new sustained runs.
 Selected local native comparisons cover only their exact identities/intervals;
 agreement with another Observer command is cached-consumer evidence.
@@ -246,7 +245,7 @@ not as additional maintained contracts or current deployment instructions.
 
 ## Read-only session board
 
-The a18 reader prioritizes status and activity in human terminal output,
+The a19 reader prioritizes status and activity in human terminal output,
 with exact favorites and optional remembered ordering in the dashboard. The
 [reviewed plan](https://github.com/byebyebryan/agent-observer/blob/ef623e80b7f419518df844acc9a80477289cce00/docs/maintenance/terminal-product.md#proposed-refinement-a-read-only-session-board)
 records the design research. Native Codex owns conversation selection, drafts,
@@ -260,9 +259,7 @@ left/right boundary; 32–59 columns use four-line cards; and below 32 columns i
 uses stacked text with bounded wrapping. A non-TTY finite CLI has no known
 width and keeps its natural full-field layout.
 
-The dashboard keeps the four-cell table at 100 columns and wider. In the
-current unpublished source preview, 32–99 columns use exactly two lines per
-entry. The first line shows selection and pin markers, then the qualified
+The dashboard keeps the four-cell table at 100 columns and wider. At 32–99 columns, it uses exactly two lines per entry. The first line shows selection and pin markers, then the qualified
 status, bold truncated title and complete right-aligned activity age. The
 second uses a six-cell indent, then a profile field sized to at most 12 cells
 and a left-aligned workspace. The workspace starts at the same column for every

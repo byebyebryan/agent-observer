@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 6,
+  "package": "agent-observer",
+  "version": "0.7.0a19",
+  "wheel": "agent_observer-0.7.0a19-py3-none-any.whl",
+  "wheelSha256": "5f7a32d730277c1ed47fcee9f1cd35e04dfa9478a40cd2c123747ec89fea13eb",
+  "sourceRevision": "26a9413bcedea567cd51ceaf01259c8937250723",
+  "apiVersion": 4,
+  "schemas": {
+    "snapshot": 6,
+    "watch": 6
+  },
+  "service": {
+    "protocol": 4,
+    "schemas": {
+      "request": 4,
+      "frame": 4
+    }
+  },
+  "entrypoints": [
+    "agent-observer",
+    "agent-observer-service"
+  ],
+  "nativeContracts": [
+    "codex_daemon_status_v2",
+    "codex_database_only_catalog_v1",
+    "codex_saved_native_timing_v1",
+    "codex_client_system_classification_v1"
+  ],
+  "notes": [
+    "Qualified a19 read-only CLI/dashboard reader; publication and managed selection have separate receipts.",
+    "Dashboard rows at 32-99 terminal columns use a qualified status icon, bold truncated title and complete activity age, followed by italic normal-weight profile/workspace context with a six-cell indent.",
+    "A geometry-only fixed profile field aligns workspace text and caps/truncates long captions; literal configured default home is omitted only in human dashboard row captions. Wide four-column geometry starts at 100 columns.",
+    "Dashboard identity/workspace colours use the approved softer 50% palette, with neutral directory parents and type-coloured visible components. Status and age colours retain their meanings.",
+    "Exact identity, pins, selection, source health, membership/lease expiry, current-only staged rendering and bounded page-capacity synchronization are preserved.",
+    "Finite CLI/terminal JSON v1, native producer APIs/schemas, a11 selections, routes, Mesh a25 and Textual 8.2.8 are unchanged. No provider control, runtime controller, new native-classification, sustained-resource, stress, soak or physical acceptance."
+  ],
+  "retiredCapabilities": [
+    "write",
+    "active-feed"
+  ],
+  "pairedMesh": {
+    "version": "0.1.0a25",
+    "wheel": "mesh_plus-0.1.0a25-py3-none-any.whl",
+    "wheelSha256": "0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a",
+    "sourceRevision": "8ca467f2e37b5794861b46ca8b40eb8b301f6ca9"
+  }
+}

@@ -1,13 +1,11 @@
 # Standalone dashboard
 
-The published `0.7.0a18` prerelease smooths source arrivals and uses four
-columns from 100 terminal columns in the standalone dashboard,
-available through the optional `dashboard` extra. Bare `agent-observer` remains the quick overview;
-`agent-observer dashboard` opens the persistent terminal application until you quit.
-
-The current source preview adds a dashboard-only compact-row refinement for
-32–99 columns. It is not included in the published a18 wheel; finite CLI layout
-and output remain unchanged.
+The published `0.7.0a19` prerelease uses two-line rows at 32–99 terminal
+columns, with status/title/age above indented italic profile/workspace context.
+A fixed profile field aligns workspace names; the full four-column view starts
+at 100 columns. The softer dashboard palette keeps host/profile and workspace
+cues distinct. Bare `agent-observer` remains the finite quick overview;
+`agent-observer dashboard` opens the persistent application until you quit.
 
 ## Install the prerelease
 
@@ -18,12 +16,12 @@ Textual 8.2.8 and the unchanged Mesh a25 wheel:
 python3 -m venv .venv
 . .venv/bin/activate
 curl --fail --location \
-  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/dashboard-requirements.txt \
+  https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/dashboard-requirements.txt \
   --output dashboard-requirements.txt
 printf '%s  %s\n' 55091963b3457d9c0aa198b123b19f0f37909891be8e9127b8842d1dfd92cd46 dashboard-requirements.txt | sha256sum --check
 python -m pip install -c dashboard-requirements.txt \
-  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/agent_observer-0.7.0a18-py3-none-any.whl#sha256=694b086e744319ec1fa07b42519e0aa268a32b4c51e5b7745cd1150cd26ba30d' \
-  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a18/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
+  'agent-observer[dashboard] @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/agent_observer-0.7.0a19-py3-none-any.whl#sha256=5f7a32d730277c1ed47fcee9f1cd35e04dfa9478a40cd2c123747ec89fea13eb' \
+  'mesh-plus @ https://github.com/byebyebryan/agent-observer/releases/download/v0.7.0a19/mesh_plus-0.1.0a25-py3-none-any.whl#sha256=0055e42162827744add4f817d3918cfc20471e5ec5a3cdf0840d254f76f5dc3a'
 agent-observer dashboard --help
 ```
 
@@ -169,19 +167,17 @@ different set. Search history and display filters are never saved.
 
 ## Favorites and saved view
 
-The a18 reader provides exact favorites and optional remembered ordering.
+The a19 reader provides exact favorites and optional remembered ordering.
 
 Human finite CLI rows use four cells: **Status / age · Session · Profile ·
-Workspace**. Dashboard rows use four columns at 100 columns and wider. In the
-current source preview, 32–99 column dashboard rows use two lines: selection and
+Workspace**. Dashboard rows use four columns at 100 columns and wider. At 32–99 columns, dashboard rows use two lines: selection and
 pin markers, status, title and age on line one; profile and workspace on line
 two. The context line uses a six-cell indent and a profile field sized to at most
 12 cells; the left-aligned workspace starts at the same column for every row in
 that list pane. It is italic and remains normal weight when selected, with the
 existing host, home and workspace-type cues. Titles are bold at every width.
 Dashboard identity and workspace colors use a fixed, softer 50% palette; the
-finite CLI keeps its current palette. The published a18 wheel retains its
-previous compact breakpoints until a later release.
+finite CLI keeps its current palette. Finite CLI breakpoints and output remain unchanged.
 
 Icons-on compact rows show only a status shape: `●` Working, `○` Ready, `!`
 Blocked, `-` Inactive, `?` Unknown, `~` Stale and `×` Unavailable. `--icons
@@ -263,10 +259,10 @@ screen reset are separate outcomes when a terminal has stopped draining.
 ## Qualification boundary
 
 The [terminal product contract](../maintenance/terminal-product.md#qualification-and-limits)
-summarizes current evidence and links the frozen qualification record. The a18
+summarizes current evidence and links the frozen qualification record. The a19
 reader has source/installed checks and short actual-fleet terminal checks;
 sustained resource and selected native measurements retain their earlier exact
-artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16/a17/a18 reader work.
+artifact bounds. No new sustained run is claimed for the a13/a14/a15/a16/a17/a18/a19 reader work.
 
 The user accepted the practical preview and deferred large-fleet stress,
 read-path optimization and the extended eight-hour soak. Earlier failures and
